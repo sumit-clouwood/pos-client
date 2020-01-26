@@ -446,8 +446,17 @@ const actions = {
           note: item.note,
           originalItem: item,
         }
+        //add store id with item if available
+        if (item.store_id) {
+          orderItem.store_id = item.store_id
+        }
         if (typeof item.kitchen_invoice !== 'undefined') {
           orderItem['kitchen_invoice'] = item.kitchen_invoice
+        } else {
+          orderItem['kitchen_invoice'] = 0
+        }
+        if (item.measurement_unit) {
+          orderItem.measurement_unit = item.measurement_unit
         }
 
         //we are sending item price and modifier prices separtely but sending
@@ -471,6 +480,10 @@ const actions = {
           itemDiscount.itemId = item._id
           itemDiscount.itemNo = item.orderIndex
           itemDiscount.quantity = item.quantity
+
+          if (item.store_id) {
+            itemDiscount.store_id = item.store_id
+          }
           //undiscountedTax is without modifiers
 
           if (item.discountedNetPrice) {
@@ -486,10 +499,9 @@ const actions = {
             rootGetters['order/itemModifierDiscount'](item)
           item_discounts.push(itemDiscount)
         }
-
         if (item.modifiersData && item.modifiersData.length) {
           item.modifiersData.forEach(modifier => {
-            itemModifiers.push({
+            let modifierEntity = {
               entity_id: modifier.modifierId,
               for_item: item.orderIndex,
               price: modifier.price,
@@ -497,7 +509,11 @@ const actions = {
               name: modifier.name,
               qty: item.quantity,
               type: modifier.type,
-            })
+            }
+            if (modifier.store_id) {
+              modifierEntity.store_id = modifier.store_id
+            }
+            itemModifiers.push(modifierEntity)
           })
           //get all modifiers by modifier ids attached to item
         }
@@ -505,7 +521,7 @@ const actions = {
       }
     })
     order.item_discounts = item_discounts.map(itemDiscount => {
-      return {
+      let discountData = {
         name: itemDiscount.name,
         type: itemDiscount.type,
         rate:
@@ -517,6 +533,12 @@ const actions = {
         for_item: itemDiscount.itemNo,
         entity_id: itemDiscount.id,
       }
+
+      if (itemDiscount.store_id) {
+        discountData.store_id = itemDiscount.store_id
+      }
+
+      return discountData
     })
 
     order.item_modifiers = itemModifiers
@@ -617,6 +639,9 @@ const actions = {
                 console.log(e)
               }
 
+              if (rootGetters['auth/multistore']) {
+                order.multi_store = true
+              }
               order.order_surcharges = rootState.surcharge.surchargeAmounts.map(
                 appliedSurcharge => {
                   const surcharge = rootState.surcharge.surcharges.find(
@@ -1484,7 +1509,7 @@ const actions = {
     dispatch('surcharge/reset', {}, { root: true })
     if (full && getters.complete) {
       dispatch('order/reset', {}, { root: true })
-      dispatch('customer/reset', {}, { root: true })
+      dispatch('customer/reset', true, { root: true })
       dispatch('location/reset', {}, { root: true })
     }
   },

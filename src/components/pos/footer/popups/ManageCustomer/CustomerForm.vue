@@ -253,17 +253,21 @@ export default {
       fetchDeliveryAreas: state => state.customer.fetchDeliveryAreas,
 
       deliveryAreas() {
+        // eslint-disable-next-line no-console
+        console.log(this.fetchDeliveryAreas)
         if (this.fetchDeliveryAreas) {
           let storeId = this.$store.state.context.storeId
-          return this.fetchDeliveryAreas.map(area => {
+          let areas = []
+          this.fetchDeliveryAreas.forEach(area => {
             let DAStatus = area.stores.find(entity => {
               if (entity.entity_id == storeId && entity.item_status) {
                 return true
               } else false
             })
             if (typeof DAStatus != 'undefined' && DAStatus.item_status)
-              return area.name
+              areas.push(area.name)
           })
+          return areas
         } else {
           return []
         }
