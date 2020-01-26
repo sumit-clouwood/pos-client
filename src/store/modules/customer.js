@@ -464,8 +464,11 @@ const actions = {
     commit(mutation.SET_OFFLINE_DATA, data)
   },
 
-  reset({ commit }) {
-    commit(mutation.RESET)
+  reset({ commit, rootGetters }, force) {
+    commit(mutation.RESET, {
+      force: force,
+      multistore: rootGetters['auth/multistore'],
+    })
     commit(mutation.LOYALTY, false)
     commit(mutation.LOYALTY_FILTER)
   },
@@ -579,7 +582,10 @@ const mutations = {
   [mutation.SET_OFFLINE_DATA](state, data) {
     state.offlineData = data
   },
-  [mutation.RESET](state) {
+  [mutation.RESET](state, { force, multistore }) {
+    if (!force && multistore) {
+      return false
+    }
     state.offlineData = null
     state.address = false
     state.customer = false
