@@ -58,9 +58,7 @@ const getters = {
     return orders
   },
   getOrdersByDriver: (state, getters, rootState, rootGetters) => driver => {
-    const cashMethod = rootGetters['payment/methods'].find(
-      method => method.type == 'regular'
-    )
+    const cashMethod = rootGetters['payment/cash']
 
     let data = {
       orders: [],
