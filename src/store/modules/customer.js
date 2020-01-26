@@ -325,7 +325,7 @@ const actions = {
     customerDetails.pastOrders = false
     commit(mutation.SELECTED_CUSTOMER, customerDetails)
     commit('order/SET_REFERRAL', false, { root: true })
-    dispatch('reset')
+    dispatch('reset', true)
   },
   selectedAddress({ commit, dispatch }, address) {
     //let deliveryArea = getters.findDeliveryArea(address.delivery_area_id)
