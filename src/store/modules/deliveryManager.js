@@ -82,6 +82,9 @@ const getters = {
               data.creditPayment += parseFloat(payment.collected)
             }
           })
+        } else {
+          //it is for sure credit payment
+          data.creditPayment += parseFloat(order.balance_due)
         }
         //delivery time, start to end
         order.order_history.forEach(history => {
