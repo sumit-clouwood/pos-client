@@ -558,7 +558,12 @@ const mutations = {
     if (state.multistore) {
       let msDeliveryAreas = []
       state.fetchDeliveryAreas.forEach(area => {
-        msDeliveryAreas[area._id] = customerDetails.deliveryAreas[area._id]
+        if (
+          customerDetails.deliveryAreas &&
+          typeof customerDetails.deliveryAreas[area._id] !== 'undefined'
+        ) {
+          msDeliveryAreas[area._id] = customerDetails.deliveryAreas[area._id]
+        }
       })
       state.deliveryAreas = msDeliveryAreas
     } else {
