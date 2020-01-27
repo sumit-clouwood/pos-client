@@ -38,6 +38,7 @@
             class="footer-slider-list-item color-secondary"
             data-toggle="modal"
             data-target="#manage-customer"
+            @click="calculateHeights()"
           >
             <a
               class="footer-slider-list-item-link color-text-invert"
@@ -395,6 +396,7 @@
 </template>
 
 <script>
+import { bus } from '@/eventBus'
 import Invoice from '../pos/content/cart/payNow/Invoice'
 import DineIn from './footer/popups/DineIn'
 import AddNote from './footer/popups/AddNote'
@@ -537,6 +539,9 @@ export default {
     // },
   },
   methods: {
+    calculateHeights() {
+      bus.$emit('check-height')
+    },
     setOrderType(opt) {
       this.$store.commit('order/ORDER_TYPE', opt)
     },

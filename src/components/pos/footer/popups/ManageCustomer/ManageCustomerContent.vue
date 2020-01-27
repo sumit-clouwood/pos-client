@@ -121,6 +121,8 @@
 <script>
 import { mapState, mapGetters } from 'vuex'
 import Preloader from '@/components/util/Preloader'
+import { bus } from '@/eventBus'
+
 /* global $ */
 export default {
   name: 'ManageCustomerContent',
@@ -147,7 +149,6 @@ export default {
   },
   watch: {
     customerDetails(newVal, oldVal) {
-      alert(newVal + '==' + oldVal)
       if (newVal !== oldVal) {
         this.$nextTick(() => {
           this.custAreaCalculation()
@@ -163,6 +164,12 @@ export default {
     }
     // this.props.customerId = customerId
   },
+  mounted() {
+    this.custAreaCalculation()
+    bus.$on('check-height', () => {
+      this.custAreaCalculation()
+    })
+  },
   methods: {
     custAreaCalculation() {
       let custBlockHeight = $('.manage-customer-table').innerHeight()
@@ -170,8 +177,7 @@ export default {
       this.custBlockInitHeight = custBlockHeight
       this.custBlockItemHeight = $('.manage-customer-table > div').innerHeight()
       $('.cust-bottom-arrow, .cust-top-arrow').removeClass('disable')
-      alert(this.custBlockHeight + '>>' + this.custBlockItemHeight)
-      if (this.custBlockHeight > this.custBlockItemHeight) {
+      if (this.custBlockHeight >= this.custBlockItemHeight) {
         $('.cust-bottom-arrow, .cust-top-arrow').addClass('disable')
       }
     },

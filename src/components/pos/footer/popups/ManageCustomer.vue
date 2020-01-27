@@ -33,7 +33,7 @@ import ManageCustomerHeader from './ManageCustomer/ManageCustomerHeader'
 import ManageCustomerContent from './ManageCustomer/ManageCustomerContent'
 import ManageCustomerFooter from './ManageCustomer/ManageCustomerFooter'
 import { mapGetters, mapState } from 'vuex'
-
+import { bus } from '@/eventBus'
 export default {
   name: 'ManageCustomer',
   props: {},
@@ -55,14 +55,15 @@ export default {
       custBlockItemHeight: 0,
     }
   },
-  updated() {
-    this.$nextTick(() => {
+  mounted() {
+    /* eslint-disable */
+    this.custAreaCalculation()
+    bus.$on('check-height', () => {
       this.custAreaCalculation()
     })
   },
   watch: {
     customerDetails(newVal, oldVal) {
-      alert(newVal + '==' + oldVal)
       if (newVal !== oldVal) {
         this.$nextTick(() => {
           this.custAreaCalculation()
@@ -72,13 +73,15 @@ export default {
   },
   methods: {
     custAreaCalculation() {
+      /* eslint-disable */
+      console.log('I am called');
       let custBlockHeight = $('.manage-customer-table').innerHeight()
       this.custBlockHeight = custBlockHeight
       this.custBlockInitHeight = custBlockHeight
       this.custBlockItemHeight = $('.manage-customer-table > div').innerHeight()
+      console.log($('.manage-customer-table').innerHeight(), $('.manage-customer-table > div').innerHeight());
       $('.cust-bottom-arrow, .cust-top-arrow').removeClass('disable')
-      alert(this.custBlockHeight + '>>' + this.custBlockItemHeight)
-      if (this.custBlockHeight > this.custBlockItemHeight) {
+      if (this.custBlockHeight >= this.custBlockItemHeight) {
         $('.cust-bottom-arrow, .cust-top-arrow').addClass('disable')
       }
     },
