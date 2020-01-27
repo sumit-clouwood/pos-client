@@ -9,25 +9,40 @@ const state = {
 }
 
 const getters = {
-  totalTax: state =>
-    state.surchargeAmounts.reduce((tax, surcharge) => {
-      return tax + Num.round(surcharge.tax)
-    }, 0),
-  tax: () => surcharge => {
+  totalTax: (state, getters, rootState, rootGetters) => {
+    if (rootGetters['auth/multistore']) {
+      return 0
+    }
+    return state.surchargeAmounts.reduce((tax, surcharge) => {
+      return tax + surcharge.tax
+    }, 0)
+  },
+
+  tax: (state, getters, rootState, rootGetters) => surcharge => {
+    if (rootGetters['auth/multistore']) {
+      return 0
+    }
     if (surcharge.type === CONST.VALUE) {
       const beforeTax = surcharge.value / ((100 + surcharge.tax_sum) / 100)
       return surcharge.value - beforeTax
     }
   },
-  surcharge: state => {
+  surcharge: (state, getters, rootState, rootGetters) => {
+    if (rootGetters['auth/multistore']) {
+      return 0
+    }
     return state.surchargeAmounts.reduce((total, surcharge) => {
       return total + Num.round(surcharge.amount)
     }, 0)
   },
-  surcharges: (state, getters, rootState) =>
-    state.surcharges.filter(
+  surcharges: (state, getters, rootState, rootGetters) => {
+    if (rootGetters['auth/multistore']) {
+      return []
+    }
+    return state.surcharges.filter(
       surcharge => surcharge[rootState.order.orderType.OTApi] === true
-    ),
+    )
+  },
 }
 
 const actions = {

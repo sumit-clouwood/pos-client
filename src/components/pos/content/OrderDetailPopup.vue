@@ -93,6 +93,7 @@
               isPermitted(PERMISSIONS.MODIFY_ORDER) &&
                 typeof selectedOrder.item !== 'undefined' &&
                 selectedOrder.item.order_type === 'dine_in' &&
+                !multistore &&
                 selectedOrder.item.order_status === 'finished'
             "
             type="button"
@@ -108,6 +109,7 @@
             v-if="
               isPermitted(PERMISSIONS.MODIFY_ORDER) &&
                 typeof selectedOrder.item !== 'undefined' &&
+                !multistore &&
                 selectedOrder.item.order_type !== 'dine_in'
             "
             type="button"
@@ -190,6 +192,7 @@ export default {
     ...mapState('order', ['selectedOrder']),
     ...mapState('dinein', ['tables']),
     ...mapGetters('location', ['_t']),
+    ...mapGetters('auth', ['allowed', 'multistore']),
   },
   methods: {
     ...mapActions('customer', ['fetchSelectedCustomer']),

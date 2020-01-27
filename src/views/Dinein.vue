@@ -53,6 +53,8 @@ export default {
   },
   mounted() {
     this.$store.dispatch('dinein/fetchAll')
+    this.$store.commit('dinein/IS_MODIFIED', false)
+
     let getBody = $('body')
     getBody.removeAttr('class')
     getBody.attr('class', 'fixed-nav sticky-footer dm-manager')
