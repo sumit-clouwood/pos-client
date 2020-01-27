@@ -73,7 +73,7 @@ const getters = {
       if (order.driver == driver._id) {
         data.orders.push(order)
         data.amountToCollect += parseFloat(order.balance_due)
-        if (order.order_payments) {
+        if (order.order_payments && order.order_payments.length) {
           order.order_payments.forEach(payment => {
             data.totalAmount += parseFloat(payment.collected)
             if (cashMethod._id == payment.entity_id) {
@@ -101,7 +101,7 @@ const getters = {
           }
         })
 
-        if (order.deliveryEndTime && order.deliveryStartTime) {
+        if (order.deliveryEndTi.lengthme && order.deliveryStartTime) {
           data.totalDeliveryTime +=
             parseInt(order.deliveryEndTime.$date.$numberLong) -
             parseInt(order.deliveryStartTime.$date.$numberLong)
