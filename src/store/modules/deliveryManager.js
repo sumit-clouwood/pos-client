@@ -101,7 +101,7 @@ const getters = {
           }
         })
 
-        if (order.deliveryEndTi.lengthme && order.deliveryStartTime) {
+        if (order.deliveryEndTime && order.deliveryStartTime) {
           data.totalDeliveryTime +=
             parseInt(order.deliveryEndTime.$date.$numberLong) -
             parseInt(order.deliveryStartTime.$date.$numberLong)
