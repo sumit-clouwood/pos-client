@@ -73,7 +73,7 @@ const getters = {
       if (order.driver == driver._id) {
         data.orders.push(order)
         data.amountToCollect += parseFloat(order.balance_due)
-        if (order.order_payments) {
+        if (order.order_payments && order.order_payments.length) {
           order.order_payments.forEach(payment => {
             data.totalAmount += parseFloat(payment.collected)
             if (cashMethod._id == payment.entity_id) {
