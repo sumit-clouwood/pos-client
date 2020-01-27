@@ -33,7 +33,7 @@ import ManageCustomerHeader from './ManageCustomer/ManageCustomerHeader'
 import ManageCustomerContent from './ManageCustomer/ManageCustomerContent'
 import ManageCustomerFooter from './ManageCustomer/ManageCustomerFooter'
 import { mapGetters } from 'vuex'
-
+import { bus } from '@/eventBus'
 export default {
   name: 'ManageCustomer',
   props: {},
@@ -53,7 +53,13 @@ export default {
     }
   },
   mounted() {
-    this.custAreaCalculation()
+    bus.$on('check-height', () => {
+      setTimeout(() => {
+        if ($('#manage-customer').hasClass('show')) {
+          this.custAreaCalculation()
+        }
+      }, 500)
+    })
   },
   methods: {
     custAreaCalculation() {
