@@ -111,6 +111,7 @@ export default {
       currentCategory: state => state.category.category._id,
     }),
     ...mapGetters('context', ['store']),
+    ...mapState('context', ['storeId']),
     ...mapState('auth', ['userDetails']),
     ...mapGetters('auth', ['multistore']),
     ...mapGetters(['allCategoryHendler', 'subCategoryHendler']),
@@ -124,6 +125,13 @@ export default {
     this.menuHeighInIt = this.menuHeight = menuHeight
     this.menuInitHeight = menuHeight
     this.menuItemHeight = $('.navigation-list').innerHeight()
+  },
+  watch: {
+    storeId(oldVal, newVal) {
+      if (oldVal != newVal) {
+        this.browse(this.categories[0])
+      }
+    },
   },
   methods: {
     openMultiStore() {

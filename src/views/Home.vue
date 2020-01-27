@@ -52,7 +52,6 @@ export default {
     },
   },
   mounted() {
-    // alert('opening page')
     let vh = window.innerHeight * 0.01
     // Then we set the value in the --vh custom property to the root of the document
     document.documentElement.style.setProperty('--vh', `${vh}px`)
@@ -94,11 +93,11 @@ export default {
       this.customerId = this.$route.params.customer_id
       this.addressId = this.$route.params.address_id
       this.groupId = this.$route.params.group_id
-      alert(this.groupId)
       this.$store.dispatch('customer/setAddressForDelivery', {
         customerId: this.customerId,
         addressId: this.addressId,
       })
+      this.$store.dispatch('context/getStoresByGroupID', this.groupId)
     }
   },
 }

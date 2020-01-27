@@ -1,6 +1,7 @@
 import SurchargeService from '@/services/data/SurchargeService'
 import * as mutation from './surcharge/mutation-types'
 import * as CONST from '@/constants'
+import Num from '@/plugins/helpers/Num.js'
 
 const state = {
   surcharges: [],
@@ -8,26 +9,40 @@ const state = {
 }
 
 const getters = {
-  totalTax: state =>
-    state.surchargeAmounts.reduce((tax, surcharge) => {
+  totalTax: (state, getters, rootState, rootGetters) => {
+    if (rootGetters['auth/multistore']) {
+      return 0
+    }
+    return state.surchargeAmounts.reduce((tax, surcharge) => {
       return tax + surcharge.tax
-    }, 0),
+    }, 0)
+  },
 
-  tax: () => surcharge => {
+  tax: (state, getters, rootState, rootGetters) => surcharge => {
+    if (rootGetters['auth/multistore']) {
+      return 0
+    }
     if (surcharge.type === CONST.VALUE) {
       const beforeTax = surcharge.value / ((100 + surcharge.tax_sum) / 100)
       return surcharge.value - beforeTax
     }
   },
-  surcharge: state => {
+  surcharge: (state, getters, rootState, rootGetters) => {
+    if (rootGetters['auth/multistore']) {
+      return 0
+    }
     return state.surchargeAmounts.reduce((total, surcharge) => {
       return total + surcharge.amount
     }, 0)
   },
-  surcharges: (state, getters, rootState) =>
-    state.surcharges.filter(
+  surcharges: (state, getters, rootState, rootGetters) => {
+    if (rootGetters['auth/multistore']) {
+      return []
+    }
+    return state.surcharges.filter(
       surcharge => surcharge[rootState.order.orderType.OTApi] === true
-    ),
+    )
+  },
 }
 
 const actions = {
@@ -44,15 +59,18 @@ const actions = {
           let applidSurcharge = {
             id: surcharge._id,
             amount: surcharge.value,
-            tax: getters.tax(surcharge),
-            undiscountedTax: getters.tax(surcharge),
+            tax: Num.round(getters.tax(surcharge)),
+            undiscountedTax: Num.round(getters.tax(surcharge)),
           }
           //Assign variables if Surcharge type is percentage.
           if (surcharge.type === CONST.PERCENTAGE) {
-            applidSurcharge.amount = (subtotal * surcharge.rate) / 100
+            applidSurcharge.amount = Num.round(
+              (subtotal * surcharge.rate) / 100
+            )
 
-            applidSurcharge.tax =
+            applidSurcharge.tax = Num.round(
               (applidSurcharge.amount * surcharge.tax_sum) / 100
+            )
           }
           totalSurcharges.push(applidSurcharge)
         })

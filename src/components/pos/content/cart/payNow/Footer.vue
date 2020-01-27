@@ -73,7 +73,6 @@ export default {
   methods: {
     /*getTipAmountAction() {
       if (this.orderType === 'dine_in') {
-        alert(this.brand.accept_tips)
         return this.brand.accept_tips
       }
       return true
@@ -143,7 +142,6 @@ export default {
 
                 $('#payment-msg').modal('show')
                 if (this.changedAmount >= 0.1) {
-                  //alert('change amount is due')
                   setTimeout(() => {
                     $('#payment-msg').modal('hide')
                     setTimeout(() => {

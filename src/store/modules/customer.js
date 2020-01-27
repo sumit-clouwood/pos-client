@@ -2,10 +2,13 @@ import * as mutation from './customer/mutation-types'
 import CustomerService from '@/services/data/CustomerService'
 import LookupData from '@/plugins/helpers/LookupData'
 import OrderService from '@/services/data/OrderService'
+import MultistoreHelper from '@/plugins/helpers/Multistore.js'
 
 const state = {
   customer_list: [],
   customer: false,
+  multistore: false,
+  multistoreDeliveryArea: {},
   customerId: null,
   customer_group: {},
   paginate: {},
@@ -76,29 +79,26 @@ const getters = {
         if (checkDeliveryArea) {
           // let deliveryArea = getters.findDeliveryArea(checkDeliveryArea._id)
           let deliveryArea = state.fetchDeliveryAreas.map(dArea => {
-            if (checkDeliveryArea._id == dArea._id) {
-              let DAStatus = dArea.stores.find(entity => {
-                if (entity.entity_id == storeId && entity.item_status) {
-                  return true
-                } else false
-              })
-              if (typeof DAStatus != 'undefined' && DAStatus.item_status) {
-                if (DAStatus.min_order_value) {
-                  dArea.min_order_value = DAStatus.min_order_value
-                }
-                if (DAStatus.special_order_surcharge) {
-                  dArea.special_order_surcharge =
-                    DAStatus.special_order_surcharge
-                }
-                return dArea
-              } else return false
-            }
+            let DAStatus = dArea.stores.find(entity => {
+              if (entity.entity_id == storeId && entity.item_status) {
+                return true
+              } else false
+            })
+            if (typeof DAStatus != 'undefined' && DAStatus.item_status) {
+              if (DAStatus.min_order_value) {
+                dArea.min_order_value = DAStatus.min_order_value
+              }
+              if (DAStatus.special_order_surcharge) {
+                dArea.special_order_surcharge = DAStatus.special_order_surcharge
+              }
+              return dArea
+            } else return false
           })
 
           let data = deliveryArea.find(
             area => area && typeof area != 'undefined'
           )
-          if (typeof data._id !== 'undefined') {
+          if (data && typeof data._id !== 'undefined') {
             valueData.push({
               _id: data._id,
               special_order_surcharge: data.special_order_surcharge,
@@ -325,7 +325,7 @@ const actions = {
     customerDetails.pastOrders = false
     commit(mutation.SELECTED_CUSTOMER, customerDetails)
     commit('order/SET_REFERRAL', false, { root: true })
-    dispatch('reset')
+    dispatch('reset', true)
   },
   selectedAddress({ commit, dispatch }, address) {
     //let deliveryArea = getters.findDeliveryArea(address.delivery_area_id)
@@ -403,20 +403,60 @@ const actions = {
     commit(mutation.SET_ADD_DETAILS, setDefaultSettings)
   },
 
-  fetchDeliveryArea({ commit }, query) {
-    CustomerService.fetchDeliveryAreas(query).then(response => {
-      //Fetch Delivery Areas in add Customer Address and Add new customer form
-      commit(mutation.GET_DELIVERY_AREAS, response.data.data)
-    })
+  fetchDeliveryArea({ commit, rootGetters }, query) {
+    if (rootGetters['auth/multistore']) {
+      let msDeliveryAreas = MultistoreHelper.filter(
+        state.multistoreDeliveryArea,
+        '_id'
+      )
+      commit(mutation.GET_DELIVERY_AREAS, {
+        deliveryAreas: msDeliveryAreas,
+        multistore: false,
+      })
+    } else {
+      CustomerService.fetchDeliveryAreas(query, false).then(response => {
+        commit(mutation.GET_DELIVERY_AREAS, {
+          deliveryAreas: response.data.data,
+          multistore: false,
+        })
+      })
+    }
   },
 
+  fetchMultiStore({ rootState, commit, rootGetters }, stores) {
+    //don't repeat in case storeId is provided otherwise it ll just loop in
+    //load discounts for all stores both item and order
+    stores.forEach(storeId => {
+      //skip current store
+      if (storeId !== rootState.context.storeId) {
+        CustomerService.fetchDeliveryAreas('', storeId).then(response => {
+          //Fetch Delivery Areas in add Customer Address and Add new customer form
+          let msDeliveryAreas = response.data.data
+          let setMSDeliveryArea = {
+            deliveryAreas: msDeliveryAreas,
+            multistore: storeId
+              ? storeId
+              : rootGetters['auth/multistore']
+              ? rootState.context.storeId
+              : false,
+          }
+          commit(mutation.GET_DELIVERY_AREAS, setMSDeliveryArea)
+        })
+      }
+    })
+  },
   setCustomerAddressById({ dispatch, state, getters }, addressId) {
     return new Promise(resolve => {
-      let address = state.customer.customer_addresses.find(
-        address => address._id.$oid == addressId
-      )
-      address.delivery_area = getters.getDeliveryArea(address.delivery_area_id)
-      dispatch('selectedAddress', address).then(() => resolve())
+      let customerAddress = state.customer || false
+      if (customerAddress) {
+        let address = state.customer.customer_addresses.find(
+          address => address._id.$oid == addressId
+        )
+        address.delivery_area = getters.getDeliveryArea(
+          address.delivery_area_id
+        )
+        dispatch('selectedAddress', address).then(() => resolve())
+      }
     })
   },
 
@@ -424,8 +464,11 @@ const actions = {
     commit(mutation.SET_OFFLINE_DATA, data)
   },
 
-  reset({ commit }) {
-    commit(mutation.RESET)
+  reset({ commit, rootGetters }, force) {
+    commit(mutation.RESET, {
+      force: force,
+      multistore: rootGetters['auth/multistore'],
+    })
     commit(mutation.LOYALTY, false)
     commit(mutation.LOYALTY_FILTER)
   },
@@ -456,8 +499,15 @@ const mutations = {
   [mutation.PARAMS](state, paramsCollection) {
     state.params = paramsCollection
   },
-  [mutation.GET_DELIVERY_AREAS](state, fetchDeliveryAreas) {
-    state.fetchDeliveryAreas = fetchDeliveryAreas
+  [mutation.GET_DELIVERY_AREAS](state, { deliveryAreas, multistore }) {
+    if (multistore) {
+      state.multistoreDeliveryArea = {
+        ...state.multistoreDeliveryArea,
+        [multistore]: deliveryAreas,
+      }
+      state.multistore = true
+    }
+    state.fetchDeliveryAreas = deliveryAreas
   },
   [mutation.SET_PAST_ORDER_CURRENT_PAGE_NO](state, pageNumber) {
     state.params.past_order_page_number = pageNumber
@@ -502,7 +552,22 @@ const mutations = {
   },
   [mutation.SELECTED_CUSTOMER](state, customerDetails) {
     state.customer = customerDetails.customerData
-    state.deliveryAreas = customerDetails.deliveryAreas
+    if (state.multistore) {
+      let msDeliveryAreas = []
+      state.fetchDeliveryAreas.forEach(area => {
+        msDeliveryAreas[area._id] = customerDetails.deliveryAreas[area._id]
+      })
+      state.deliveryAreas = msDeliveryAreas
+    } else {
+      state.deliveryAreas = customerDetails.deliveryAreas
+    }
+    // eslint-disable-next-line no-console
+    console.log(
+      state.multistore,
+      state.deliveryAreas,
+      customerDetails.deliveryAreas,
+      'customerDetails.deliveryAreas'
+    )
     state.pastOrders = customerDetails.pastOrders
   },
   [mutation.SELECTED_CUSTOMER_ADDRESS](state, selectedAddress) {
@@ -517,7 +582,10 @@ const mutations = {
   [mutation.SET_OFFLINE_DATA](state, data) {
     state.offlineData = data
   },
-  [mutation.RESET](state) {
+  [mutation.RESET](state, { force, multistore }) {
+    if (!force && multistore) {
+      return false
+    }
     state.offlineData = null
     state.address = false
     state.customer = false

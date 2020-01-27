@@ -106,7 +106,6 @@ export default {
       }
     },
     foodBottom() {
-      //alert(this.foodBlockHeight + ' >> ' + this.foodBlockItemHeight)
       if (this.foodBlockHeight >= this.foodBlockItemHeight) {
         $('.food-bottom-arrow').addClass('disable')
         this.foodBlockHeight -= parseInt(this.foodBlockInitHeight)
@@ -117,7 +116,6 @@ export default {
       this.foodBlockHeight += parseInt(this.foodBlockInitHeight)
     },
     foodTop() {
-      //alert(this.foodBlockHeight + ' <> ' + this.foodBlockInitHeight)
       if (this.foodBlockHeight <= 0) {
         this.foodBlockHeight += parseInt(this.foodBlockInitHeight)
         $('.food-top-arrow').addClass('disable')
