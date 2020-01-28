@@ -10,7 +10,7 @@
         <div class="orders-amount">
           {{ formatPrice(itemGrossPriceDiscounted(item)) }}
         </div>
-        <div
+        <div v-if="typeof item.cover_name === 'undefined'"
           class="orders-close"
           @click.prevent="removeCurrentOrder({ item: item, index: index })"
         >
