@@ -1,10 +1,5 @@
 <template>
-  <div
-    class="modal fade"
-    id="loyalty-payment"
-    role="dialog"
-    style="display: none; padding-left: 6px;"
-  >
+  <div class="modal fade" id="loyalty-payment" role="dialog">
     <div class="modal-dialog">
       <!-- Modal content-->
       <div class="modal-content color-dashboard-background">
@@ -139,7 +134,6 @@ export default {
 #loyalty-payment {
   padding: 0 !important;
   .modal-dialog {
-    margin: 0;
     .modal-content {
       .modal-header {
         min-height: 80px;

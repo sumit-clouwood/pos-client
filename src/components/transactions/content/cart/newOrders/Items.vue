@@ -25,7 +25,7 @@
                 {{ item.name }}
               </p>
               <p class="price-qty">
-                @ {{ item.price }} x {{ item.qty }} &nbsp;
+                @ {{ formatPrice(item.price) }} x {{ item.qty }} &nbsp; - &nbsp;
                 {{ getItemDiscountValue(order.item_discounts).name }}
               </p>
               <a

@@ -40,10 +40,15 @@ export default {
       'brand'
     )
   },
-  fetchDeliveryAreas(query) {
-    return DataService.get(
+  fetchDeliveryAreas(query, storeId = false) {
+    /*return DataService.get(
       `/model/store_level_delivery_areas?page_id=store_level_delivery_areas_main_tbl&query=${query}&item_status=true&byColumn=1&limit=9999`
-    )
+    )*/
+    const apiUrl = `/model/store_level_delivery_areas?page_id=store_level_delivery_areas_main_tbl&query=${query}&item_status=true&byColumn=1&limit=9999`
+    if (storeId) {
+      return DataService.getT(`/${storeId}${apiUrl}`, 'brand')
+    }
+    return DataService.get(apiUrl)
   },
 
   customerList(...[stores, query, page, orderBy, perPage, pageId]) {

@@ -73,7 +73,6 @@ export default {
   methods: {
     /*getTipAmountAction() {
       if (this.orderType === 'dine_in') {
-        alert(this.brand.accept_tips)
         return this.brand.accept_tips
       }
       return true
@@ -95,7 +94,15 @@ export default {
               reject()
             } else if (this.method.type == CONST.LOYALTY) {
               //show loyalty popup if needed
-              reject()
+              this.$store
+                .dispatch('checkoutForm/validateLoyaltyPayment')
+                .then(() => {
+                  this.$store
+                    .dispatch('checkoutForm/addAmount')
+                    .then(payable => {
+                      resolve(payable)
+                    })
+                })
             } else if (this.method.reference_code) {
               showModal('#card-payemnt')
               reject()
@@ -135,7 +142,6 @@ export default {
 
                 $('#payment-msg').modal('show')
                 if (this.changedAmount >= 0.1) {
-                  //alert('change amount is due')
                   setTimeout(() => {
                     $('#payment-msg').modal('hide')
                     setTimeout(() => {

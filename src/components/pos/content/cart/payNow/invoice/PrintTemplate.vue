@@ -72,11 +72,13 @@
           </tr>
           <tr
             class="left-aligned"
-            v-if="tableNumber && orderType.OTApi === 'dine_in'"
+            v-if="selectedTableRservationData && orderType.OTApi === 'dine_in'"
           >
             <th colspan="3">
               {{ template.table_number_label }}
-              <span class="float-right">{{ tableNumber }}</span>
+              <span class="float-right">
+                {{ selectedTableRservationData }}
+              </span>
             </th>
           </tr>
           <tr v-if="crm_module_enabled && customer" class="left-aligned">
@@ -106,7 +108,9 @@
           </tr>
           <template v-for="(item, key) in order.items">
             <tr :key="'item' + key">
-              <td class="first-col" valign="top">{{ item.qty }}</td>
+              <td class="first-col" valign="top">
+                {{ item.qty }} {{ measurement_unit(item) }}
+              </td>
               <td>
                 <div class="food-title">
                   {{ translate_item(item) }}
@@ -121,7 +125,7 @@
                 <template v-for="(modifier, i) in order.item_modifiers">
                   <template v-if="modifier.for_item == item.no">
                     <div class="food-extra" :key="'modifier' + i">
-                      {{ translate_item_modifier(modifier) }}
+                      {{ translate_item_modifier(modifier, item) }}
                       <span v-if="modifier.price !== 0"
                         >({{
                           format_number(
@@ -156,7 +160,7 @@
                   </div>
                 </td>
                 <td class="right-aligned table-page-child" valign="top">
-                  -{{ format_number(discount.price) }}
+                  -{{ format_number(discount_total(discount)) }}
                 </td>
               </template>
             </tr>
@@ -257,7 +261,12 @@
                 {{ format_number(order_payment.collected) }}
               </td>
             </tr>
-            <tr class="important" v-if="!preview">
+            <tr
+              class="important"
+              v-if="
+                !preview && order.order_type !== CONST.ORDER_TYPE_CALL_CENTER
+              "
+            >
               <td colspan="3" class="footTotal">
                 <div>
                   {{ template.total_paid_label }}
@@ -268,7 +277,25 @@
                 </div>
               </td>
             </tr>
-            <tr v-if="!preview">
+            <tr
+              class="important"
+              v-if="order.order_type === CONST.ORDER_TYPE_CALL_CENTER"
+            >
+              <td colspan="3" class="footTotal">
+                {{ referral_data(order.referral) }}
+                {{
+                  referral.referral_type === CONST.REFERRAL_TYPE_COD
+                    ? 'Cash on Delivery'
+                    : 'Paid by ' + referral.name
+                }}
+                <!--Paid by {{ getReferral(order.referral).name }} {{ referral }}-->
+              </td>
+            </tr>
+            <tr
+              v-if="
+                !preview && order.order_type !== CONST.ORDER_TYPE_CALL_CENTER
+              "
+            >
               <td colspan="2">
                 {{ template.tips_label }}
               </td>
@@ -276,7 +303,11 @@
                 {{ format_number(order.tip_amount) }}
               </td>
             </tr>
-            <tr v-if="!preview">
+            <tr
+              v-if="
+                !preview && order.order_type !== CONST.ORDER_TYPE_CALL_CENTER
+              "
+            >
               <td colspan="2">
                 {{ template.changed_label }}
               </td>
@@ -318,6 +349,7 @@ export default {
   data() {
     return {
       currentBrand: this.$store.state.location.brand,
+      referral: false,
       currentStore: this.$store.state.location.store,
       current_locale: this.$store.state.location.locale,
       company_logo:
@@ -347,10 +379,10 @@ export default {
   },
   computed: {
     ...mapState('checkout', ['print']),
-    ...mapGetters('location', ['_t', 'isTokenManager']),
+    ...mapGetters('location', ['_t', 'isTokenManager', 'getReferral']),
     ...mapState('location', ['timezoneString', 'tokenNumber']),
     ...mapGetters('auth', ['allowed']),
-    ...mapState('invoice', ['tableNumber']),
+    ...mapState('dinein', ['selectedTableRservationData']),
     ...mapState('order', ['orderType']),
 
     dataBeingLoaded() {
@@ -467,6 +499,9 @@ export default {
     },
   },
   methods: {
+    referral_data(referralId) {
+      this.referral = this.$store.getters['location/getReferral'](referralId)
+    },
     is_ready_to_print() {
       if (this.all_data_fully_loaded) {
         return true
@@ -491,6 +526,19 @@ export default {
       }
       return results.join(' / ')
     },
+    measurement_unit(item) {
+      if (item.measurement_unit) {
+        return item.measurement_unit
+      }
+      return ''
+    },
+    discount_total(discount) {
+      if (discount.type === 'fixed_price') {
+        return parseFloat(discount.price) + parseFloat(discount.tax)
+      } else {
+        return parseFloat(discount.price)
+      }
+    },
     item_total(item_no) {
       var total = 0
       for (var item of this.order.items) {
@@ -508,14 +556,15 @@ export default {
       for (var item_discount of this.order.item_discounts) {
         if (item_discount.for_item == item_no) {
           total -= parseFloat(item_discount.price)
+          total -= parseFloat(item_discount.tax)
         }
       }
-      return total
+      return total < 0 ? '0.00' : total
     },
     //These methods would need to be updated at POS to search for objects in POS store
     //These functions
     translate_item(orderItem) {
-      var found_item = this.$store.state.category.items.find(
+      var found_item = this.$store.getters['category/items'].find(
         item => item._id == orderItem.entity_id
       )
       if (found_item) {
@@ -524,12 +573,13 @@ export default {
         }
         return this.translate_entity(found_item, 'name')
       } else {
-        return ''
+        return orderItem.name
       }
     },
-    translate_item_modifier(item) {
+    translate_item_modifier(item, orderItem) {
       var found_item = this.$store.getters['modifier/findModifier'](
-        item.entity_id
+        item.entity_id,
+        orderItem
       )
       if (found_item) {
         return this.translate_entity(found_item, 'name')
@@ -538,7 +588,7 @@ export default {
       }
     },
     translate_item_discount(item) {
-      var found_item = this.$store.state.discount.itemDiscounts.data.find(
+      var found_item = this.$store.getters['discount/itemDiscounts'].find(
         loaded_item => loaded_item._id == item.entity_id
       )
       if (found_item) {
@@ -558,7 +608,7 @@ export default {
       }
     },
     translate_order_discount(item) {
-      var found_item = this.$store.state.discount.orderDiscounts.find(
+      var found_item = this.$store.getters['discount/orderDiscounts'].find(
         loaded_item => loaded_item._id == item.entity_id
       )
       if (found_item) {

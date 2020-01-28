@@ -58,9 +58,7 @@ const getters = {
     return orders
   },
   getOrdersByDriver: (state, getters, rootState, rootGetters) => driver => {
-    const cashMethod = rootGetters['payment/methods'].find(
-      method => method.type == 'regular'
-    )
+    const cashMethod = rootGetters['payment/cash']
 
     let data = {
       orders: [],
@@ -84,6 +82,9 @@ const getters = {
               data.creditPayment += parseFloat(payment.collected)
             }
           })
+        } else {
+          //it is for sure credit payment
+          data.creditPayment += parseFloat(order.balance_due)
         }
         //delivery time, start to end
         order.order_history.forEach(history => {
@@ -297,9 +298,6 @@ const actions = {
       .finally(() => commit('SET_PROCESSING', false))
   },
   printInvoice({ commit }, { templateId, order }) {
-    if (order.table_number) {
-      commit('invoice/SET_TABLE_NUMBER', order.table_number, { root: true })
-    }
     commit('invoice/SET_TEMPLATE_ID', templateId, { root: true })
     commit('checkout/SET_ORDER', order.item, { root: true })
     commit('order/SET_ORDER_ID', order.item._id, { root: true })

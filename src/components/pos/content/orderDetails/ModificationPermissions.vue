@@ -172,7 +172,6 @@ export default {
         })
         .then(() => {
           if (this.changedAmount >= 0.1) {
-            //alert('change amount is due')
             setTimeout(() => {
               $('#payment-msg').modal('hide')
               setTimeout(() => {
