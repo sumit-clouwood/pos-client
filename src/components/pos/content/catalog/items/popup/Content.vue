@@ -43,7 +43,7 @@ export default {
     ...mapGetters('modifier', ['itemModifiers']),
   },
   mounted() {
-    this.modifier()
+    this.modifierScroll()
   },
   methods: {
     modifierScroll() {
@@ -94,9 +94,6 @@ export default {
   margin-bottom: 24px;
   padding-bottom: 24px;
   border-bottom: 1px solid #e3e7f2;
-}
-.modifier-bottom-arrow.food-arrow {
-  bottom: 0;
 }
 .positemoption_body::-webkit-scrollbar {
   width: 0;

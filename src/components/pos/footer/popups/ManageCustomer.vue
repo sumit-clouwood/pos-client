@@ -55,7 +55,7 @@ export default {
       custBlockItemHeight: 0,
     }
   },
-  mounted() {
+  updated() {
     /* eslint-disable */
     this.custAreaCalculation()
     bus.$on('check-height', () => {

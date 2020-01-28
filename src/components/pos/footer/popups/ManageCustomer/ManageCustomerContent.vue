@@ -157,6 +157,10 @@ export default {
     },
   },
   updated() {
+    this.custAreaCalculation()
+    bus.$on('check-height', () => {
+      this.custAreaCalculation()
+    })
     if (this.activeIndex != '') {
       if (typeof $('.last-order-wrap')[0] != 'undefined') {
         $('.last-order-wrap')[0].slick.refresh()
@@ -164,12 +168,7 @@ export default {
     }
     // this.props.customerId = customerId
   },
-  mounted() {
-    this.custAreaCalculation()
-    bus.$on('check-height', () => {
-      this.custAreaCalculation()
-    })
-  },
+  mounted() {},
   methods: {
     custAreaCalculation() {
       let custBlockHeight = $('.manage-customer-table').innerHeight()
