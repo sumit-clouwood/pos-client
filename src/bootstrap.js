@@ -86,7 +86,14 @@ export default {
             .dispatch('category/fetchAll')
             .then(() => {
               let storeIds = []
-              if (locationDetails.userDetails.brand_access_type !== 'all') {
+              //this check is for superadmin but I believe we should only check store_group accesstype to
+              //load multiple stores at once, but problem is super admin don't have this, so we need to check
+              //if not all, store or countries then load, I ll revise it with Yuvraj and Sohin and ll check only 'store_group' access type
+              if (
+                !['all', 'store', 'country'].includes(
+                  locationDetails.userDetails.brand_access_type
+                )
+              ) {
                 if (
                   locationDetails.availableStoreGroups &&
                   locationDetails.availableStoreGroups.length &&
