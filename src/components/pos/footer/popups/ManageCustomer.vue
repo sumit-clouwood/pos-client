@@ -32,15 +32,12 @@
 import ManageCustomerHeader from './ManageCustomer/ManageCustomerHeader'
 import ManageCustomerContent from './ManageCustomer/ManageCustomerContent'
 import ManageCustomerFooter from './ManageCustomer/ManageCustomerFooter'
-import { mapGetters, mapState } from 'vuex'
+import { mapGetters } from 'vuex'
 import { bus } from '@/eventBus'
 export default {
   name: 'ManageCustomer',
   props: {},
   computed: {
-    ...mapState({
-      customerDetails: state => state.customer.customer_list,
-    }),
     ...mapGetters('location', ['_t']),
   },
   components: {
@@ -63,15 +60,6 @@ export default {
         }
       }, 500)
     })
-  },
-  watch: {
-    customerDetails(newVal, oldVal) {
-      if (newVal !== oldVal) {
-        this.$nextTick(() => {
-          this.custAreaCalculation()
-        })
-      }
-    },
   },
   methods: {
     custAreaCalculation() {
