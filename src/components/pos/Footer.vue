@@ -246,6 +246,7 @@
             data-toggle="modal"
             data-target="#select-discount"
             id="discount-footer"
+            @click="discountHeights()"
           >
             <a
               class="footer-slider-list-item-link color-text-invert"
@@ -544,6 +545,9 @@ export default {
   methods: {
     calculateHeights() {
       bus.$emit('check-height')
+    },
+    discountHeights() {
+      bus.$emit('check-discount-height')
     },
     setOrderType(opt) {
       this.$store.commit('order/ORDER_TYPE', opt)

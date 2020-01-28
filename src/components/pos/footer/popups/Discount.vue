@@ -120,6 +120,7 @@
 /* global $ */
 /* global hideModal */
 import { mapGetters, mapState } from 'vuex'
+import { bus } from '@/eventBus'
 export default {
   name: 'Discount',
   props: {},
@@ -141,7 +142,13 @@ export default {
     }),
   },
   mounted() {
-    this.discountScroll()
+    bus.$on('check-discount-height', () => {
+      setTimeout(() => {
+        if ($('#select-discount').hasClass('show')) {
+          this.discountScroll()
+        }
+      }, 500)
+    })
   },
   methods: {
     applyOrderDiscount: function() {

@@ -152,11 +152,16 @@ export default {
       if (newVal !== oldVal) {
         this.$nextTick(() => {
           bus.$emit('check-height')
+          this.custAreaCalculation()
         })
       }
     },
   },
   updated() {
+    this.custAreaCalculation()
+    bus.$on('check-height', () => {
+      this.custAreaCalculation()
+    })
     if (this.activeIndex != '') {
       if (typeof $('.last-order-wrap')[0] != 'undefined') {
         $('.last-order-wrap')[0].slick.refresh()
