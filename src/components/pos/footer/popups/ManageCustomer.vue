@@ -55,11 +55,13 @@ export default {
       custBlockItemHeight: 0,
     }
   },
-  updated() {
-    /* eslint-disable */
-    this.custAreaCalculation()
+  mounted() {
     bus.$on('check-height', () => {
-      this.custAreaCalculation()
+      setTimeout(() => {
+        if ($('#manage-customer').hasClass('show')) {
+          this.custAreaCalculation()
+        }
+      }, 500)
     })
   },
   watch: {
@@ -73,15 +75,12 @@ export default {
   },
   methods: {
     custAreaCalculation() {
-      /* eslint-disable */
-      console.log('I am called');
       let custBlockHeight = $('.manage-customer-table').innerHeight()
       this.custBlockHeight = custBlockHeight
       this.custBlockInitHeight = custBlockHeight
       this.custBlockItemHeight = $('.manage-customer-table > div').innerHeight()
-      console.log($('.manage-customer-table').innerHeight(), $('.manage-customer-table > div').innerHeight());
       $('.cust-bottom-arrow, .cust-top-arrow').removeClass('disable')
-      if (this.custBlockHeight >= this.custBlockItemHeight) {
+      if (this.custBlockHeight > this.custBlockItemHeight) {
         $('.cust-bottom-arrow, .cust-top-arrow').addClass('disable')
       }
     },

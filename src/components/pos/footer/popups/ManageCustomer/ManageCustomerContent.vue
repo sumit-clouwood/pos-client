@@ -151,6 +151,7 @@ export default {
     customerDetails(newVal, oldVal) {
       if (newVal !== oldVal) {
         this.$nextTick(() => {
+          bus.$emit('check-height')
           this.custAreaCalculation()
         })
       }
@@ -168,7 +169,6 @@ export default {
     }
     // this.props.customerId = customerId
   },
-  mounted() {},
   methods: {
     custAreaCalculation() {
       let custBlockHeight = $('.manage-customer-table').innerHeight()
@@ -176,7 +176,7 @@ export default {
       this.custBlockInitHeight = custBlockHeight
       this.custBlockItemHeight = $('.manage-customer-table > div').innerHeight()
       $('.cust-bottom-arrow, .cust-top-arrow').removeClass('disable')
-      if (this.custBlockHeight >= this.custBlockItemHeight) {
+      if (this.custBlockHeight > this.custBlockItemHeight) {
         $('.cust-bottom-arrow, .cust-top-arrow').addClass('disable')
       }
     },

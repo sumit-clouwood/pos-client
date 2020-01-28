@@ -559,6 +559,7 @@ export default {
       this.$store.commit('order/SET_CART_TYPE', 'new')
     },
     add_customer_address() {
+      this.calculateHeights()
       if (this.$store.state.customer.address === false) {
         $('#manage-customer').modal()
       } else {
