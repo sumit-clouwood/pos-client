@@ -39,7 +39,9 @@
               <span class="color-text">{{ getUserName(history.user) }}</span>
             </td>
             <td class="color-tables-background field-type-select field-name">
-              <span class="color-text">{{ getHistoryType(history.name) }}</span>
+              <span class="color-text"
+                >{{ CONST[history.name] }} {{ history.param2 || '' }}</span
+              >
             </td>
           </tr>
           <!---->
@@ -72,14 +74,6 @@ export default {
         matchWith: userId,
         selection: 'name',
       })
-    },
-    getHistoryType(historyName) {
-      return this.CONST[historyName] === 'ORDER_HISTORY_TYPE_RECORD_UPDATED'
-        ? 'Updated'
-        : this.CONST[historyName] ===
-          'ORDER_HISTORY_TYPE_RECORD_NEW_FROM_MODIFIED'
-        ? 'Modified'
-        : this.CONST[historyName]
     },
   },
 }
