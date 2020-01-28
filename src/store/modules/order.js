@@ -183,10 +183,12 @@ const getters = {
 
   itemGrossDiscount: (state, getters) => item => {
     if (item.discountRate) {
-      if (item.discountedNetPrice) {
+      //if value type discount
+      if (item.discountType === CONST.VALUE) {
         return getters.itemNetPrice(item) - item.discountedNetPrice
       }
 
+      //percentage or fixed discount, note: fixed is also applied as percentage discount
       return (
         Num.round((item.grossPrice * item.discountRate) / 100) +
         getters.itemModifierDiscount(item) +
@@ -199,9 +201,11 @@ const getters = {
 
   itemNetDiscount: (state, getters) => item => {
     if (item.discountRate) {
-      if (item.discountedNetPrice) {
+      //if value type discount
+      if (item.discountType === CONST.VALUE) {
         return getters.itemNetPrice(item) - item.discountedNetPrice
       }
+      //percentage, fixed discount
       return Num.round((item.netPrice * item.discountRate) / 100)
     } else {
       return 0
@@ -209,12 +213,13 @@ const getters = {
   },
 
   itemTaxDiscount: (state, getters) => item => {
-    if (item.discountedNetPrice) {
+    //if value type discount
+    if (item.discountType === CONST.VALUE) {
       const modifiersTax = getters.itemModifiersTax(item)
       const totalTaxDiscount = item.tax + modifiersTax - item.discountedTax
       return totalTaxDiscount
     }
-
+    //percentage, fixed
     if (item.discountRate) {
       return Num.round((item.tax * item.discountRate) / 100)
     }
@@ -222,7 +227,13 @@ const getters = {
   },
 
   itemModifierDiscount: () => item => {
-    if (item.discountedNetPrice) {
+    if (item.discountType == CONST.FIXED) {
+      //no fixed discount for modifiers
+      return 0
+    }
+
+    //if value type discount, already calculated
+    if (item.discountType === CONST.VALUE) {
       return 0
     }
 
@@ -235,8 +246,14 @@ const getters = {
   },
 
   itemModifierTaxDiscount: () => item => {
+    if (item.discountType == CONST.FIXED) {
+      //no fixed discount for modifiers
+      return 0
+    }
+
     if (item.discountRate && item.modifiersData && item.modifiersData.length) {
-      if (item.discountedNetPrice) {
+      //if value type discount, already calculated
+      if (item.discountType === CONST.VALUE) {
         return 0
       }
       return item.modifiersData.reduce((discount, modifier) => {
@@ -248,9 +265,15 @@ const getters = {
 
   //ll be called as many times there is a commit on item
   itemGrossPriceDiscounted: (state, getters) => item => {
-    const itemGrossPrice = getters.itemGrossPrice(item)
-    const itemDiscount = getters.itemGrossDiscount(item)
-    return itemGrossPrice * item.quantity - itemDiscount * item.quantity
+    if (item.discount && item.discount.type === CONST.VALUE) {
+      const itemNetPrice = getters.itemNetPrice(item)
+      const itemDiscount = getters.itemGrossDiscount(item)
+      return (itemNetPrice - itemDiscount + item.discountedTax) * item.quantity
+    } else {
+      const itemGrossPrice = getters.itemGrossPrice(item)
+      const itemDiscount = getters.itemGrossDiscount(item)
+      return itemGrossPrice * item.quantity - itemDiscount * item.quantity
+    }
   },
 
   itemGrossPrice: (state, getters) => item => {
@@ -338,318 +361,292 @@ const actions = {
     return Promise.resolve(1)
   },
 
-  prepareItemTax({ rootState }, { item, type }) {
+  prepareItemTax({ rootState, getters }, { item, type }) {
     return new Promise(resolve => {
-      if (type === 'open') {
+      if (type === 'genericOpenItem') {
         //find tax for this item
         item.tax_sum = rootState.tax.openItemTax
         item._id = rootState.tax.openItemId
-        resolve(item)
       }
+      //item gross price is inclusive of tax
+      item.grossPrice = getters.grossPrice(item)
+      //net price is exclusive of tax, netPrice getter ll send unrounded price
+      item.netPrice = getters.netPrice(item)
+
+      //calculated item tax, it should be unrounded for precision
+      item.tax = Num.round(item.grossPrice - item.netPrice)
+
       resolve(item)
     })
   },
-  prepareItem({ commit, getters, dispatch }, { item, type }) {
-    return new Promise(resolve => {
-      commit('checkoutForm/RESET', 'process', { root: true })
-      item.split = false
-      item.paid = false
-
-      dispatch('prepareItemTax', { item, type }).then(item => {
-        //item gross price is inclusive of tax
-        item.grossPrice = getters.grossPrice(item)
-        //net price is exclusive of tax, getter ll send unrounded price that is real one
-        item.netPrice = getters.netPrice(item)
-
-        //calculated item tax
-        item.tax = Num.round(item.grossPrice - item.netPrice)
-
-        if (typeof item.orderIndex === 'undefined') {
-          item.orderIndex = getters.orderIndex
-        }
-
-        if (typeof item.quantity === 'undefined') {
-          item.quantity = 1
-        }
-        resolve(item)
-      })
-    })
-  },
-  addOpenItem({ dispatch, commit }, item) {
-    dispatch('prepareItem', { item: item, type: 'open' }).then(item => {
-      //this comes directly from the items menu without modifiers
-      item.modifiable = false
-      commit(mutation.ADD_ORDER_ITEM, item)
-      commit(mutation.SET_TOTAL_ITEMS, state.items.length)
-      //if dine in modify then calculate surcharges after every item has been added so
-      //it won't clear discounts while validating
-      dispatch('surchargeCalculation')
-    })
-    return Promise.resolve()
-  },
-  addToOrder({ state, getters, commit, dispatch }, stateItem) {
-    commit('checkoutForm/RESET', 'process', { root: true })
-    let item = { ...stateItem }
-    item.split = false
-    item.paid = false
-    //item gross price is inclusive of tax
-    item.grossPrice = getters.grossPrice(item)
-    //net price is exclusive of tax, getter ll send unrounded price that is real one
-    item.netPrice = getters.netPrice(item)
-    item.note = stateItem.note ? stateItem.note : ''
-    //calculated item tax
-    item.tax = Num.round(item.grossPrice - item.netPrice)
-
-    if (typeof item.orderIndex === 'undefined') {
-      item.orderIndex = getters.orderIndex
-    }
-
-    if (stateItem.no) {
-      item.orderIndex = stateItem.no
-    }
-
-    //this comes directly from the items menu without modifiers
-    item.modifiable = false
-
-    if (typeof item.quantity === 'undefined') {
-      item.quantity = 1
-    }
-
-    commit(mutation.SET_ITEM, item)
-
-    commit(mutation.ADD_ORDER_ITEM, state.item)
-
-    commit(mutation.SET_TOTAL_ITEMS, state.items.length)
-    //if dine in modify then calculate surcharges after every item has been added so
-    //it won't clear discounts while validating
-    if (!['dine-in-modify'].includes(state.cartType)) {
-      dispatch('surchargeCalculation')
-    }
-  },
-
-  //this function re-adds an item to order if item is in edit mode, it just replaces exiting item in cart
-  addModifierOrder(
-    { commit, getters, rootState, dispatch, rootGetters },
-    item
+  prepareItem(
+    { commit, getters, rootGetters, rootState, dispatch },
+    { item, data }
   ) {
     commit('checkoutForm/RESET', 'process', { root: true })
 
-    return new Promise((resolve, reject) => {
-      if (!item) {
-        item = { ...rootState.modifier.item }
-      }
+    return new Promise(resolve => {
       item.split = false
       item.paid = false
-      //this comes through the modifier popup
-      item.grossPrice = getters.grossPrice(item)
-      //getter will send un rounded value
-      item.netPrice = getters.netPrice(item)
+      //if generic open item, this comes from footer buttons
+      if (data) {
+        if (data.type === 'genericOpenItem') {
+          item.name = data.name
+          item.value = data.value
+        } else {
+          //this open item comes from backend
+          if (item.open_item === true) {
+            item.value = data.value
+            item.quantity = data.quantity
+          }
+        }
+      }
 
-      //calculated item tax, it ll be always calculated on discounted net price
-      item.tax = Num.round(item.grossPrice - item.netPrice)
+      //if item already have store id don't add because there are chances user is in different store now
+      if (rootGetters['auth/multistore'] && !item.store_id) {
+        item.store_id = rootState.context.storeId
+      }
 
-      //if there is item modifiers data assign it later
-      item.modifiersData = []
       if (!item.note) {
         item.note = ''
+      }
+
+      //Add no only if it is modification order, DON'T add no with new items, it ll break system
+      if (item.no) {
+        item.orderIndex = item.no
       }
 
       if (typeof item.orderIndex === 'undefined') {
         item.orderIndex = getters.orderIndex
       }
 
-      if (item.no) {
-        item.orderIndex = item.no
+      if (typeof item.quantity === 'undefined') {
+        item.quantity = 1
+      }
+
+      dispatch('prepareItemTax', {
+        item: item,
+        type: data ? data.type : null,
+      }).then(item => {
+        resolve(item)
+      })
+    })
+  },
+  addOpenItem({ dispatch, commit }, { item, data }) {
+    return new Promise(resolve => {
+      item.modifiable = false
+      dispatch('prepareItem', { item, data }).then(item => {
+        //this comes directly from the items menu without modifiers
+        commit(mutation.ADD_ORDER_ITEM, item)
+        dispatch('postCartItem').then(() => resolve())
+      })
+    })
+  },
+  addToOrder({ dispatch, commit }, stateItem) {
+    let item = { ...stateItem }
+
+    item.modifiable = false
+    item.note = stateItem.note ? stateItem.note : ''
+
+    dispatch('prepareItem', { item: item }).then(item => {
+      commit(mutation.SET_ITEM, item)
+      commit(mutation.ADD_ORDER_ITEM, state.item)
+      dispatch('postCartItem')
+    })
+  },
+
+  postCartItem({ dispatch, commit }) {
+    return new Promise(resolve => {
+      //reset the modifier form
+      commit('orderForm/clearSelection', null, { root: true })
+      commit(mutation.SET_TOTAL_ITEMS, state.items.length)
+      //if dine in modify then calculate surcharges after every item has been added so
+      //it won't clear discounts while validating
+      if (!['dine-in-modify'].includes(state.cartType)) {
+        dispatch('surchargeCalculation').then(() => resolve())
+      } else {
+        resolve()
+      }
+    })
+  },
+  //this function re-adds an item to order if item is in edit mode, it just replaces exiting item in cart
+  addModifierOrder({ commit, rootState, dispatch, rootGetters }, item) {
+    return new Promise((resolve, reject) => {
+      if (!item) {
+        item = { ...rootState.modifier.item }
       }
 
       item.modifiable = true
 
-      commit(mutation.SET_ITEM, item)
+      dispatch('prepareItem', { item: item }).then(item => {
+        //if there is item modifiers data assign it later
+        item.modifiersData = []
+        commit(mutation.SET_ITEM, item)
 
-      let itemModifierGroups = []
-      let itemModifiers = []
+        let itemModifierGroups = []
+        let itemModifiers = []
 
-      //adding modifers to item
-      if (item.modifiers && !item.editMode) {
-        /* ***********************************************/
-        /*  ORDER COMING FROM HOLD ORDER                 */
-        /* ***********************************************/
-        const itemModifiersArray = rootGetters['modifier/itemModifiers'](
+        //adding modifers to item
+        if (item.modifiers && !item.editMode) {
+          /* ***********************************************/
+          /*  ORDER COMING FROM HOLD ORDER                 */
+          /* ***********************************************/
+          const itemModifiersArray = rootGetters['modifier/itemModifiers'](
+            item._id
+          )
+          //re check if modifiers still available for the item
+          if (itemModifiersArray.length) {
+            itemModifiersArray.forEach(modifierItem => {
+              modifierItem.modifiers.forEach(modifier => {
+                if (item.modifiers.includes(modifier._id)) {
+                  const subgroup = rootGetters['modifier/getModifierSubgroup'](
+                    modifier._id
+                  )
+                  itemModifiers.push(modifier._id)
+                  itemModifierGroups.push({
+                    groupId: subgroup._id,
+                    itemId: item._id,
+                    limit: subgroup.no_of_selection,
+                    modifierId: modifier._id,
+                    type: subgroup.no_of_selection > 1 ? 'checkbox' : 'radio',
+                  })
+                }
+              })
+            })
+          }
+          //avoid cacthcing again in edit mode
+        } else {
+          /* ***********************************************/
+          /*        New ORDER COMING CATALOG               */
+          /* ***********************************************/
+
+          const modifiers = rootGetters['orderForm/modifiers'].filter(
+            modifier => modifier.itemId == item._id
+          )
+
+          let selectedModifeirGroups = []
+
+          modifiers.forEach(modifier => {
+            itemModifierGroups.push(modifier)
+            selectedModifeirGroups.push(modifier.groupId)
+          })
+
+          //match modifiers with mandatory modifiers for this item, if not matched set error and return false
+          const itemMandatoryModifierGroups = rootGetters[
+            'modifier/itemMandatoryGroups'
+          ](item._id)
+
+          let mandatorySelected = true
+
+          itemMandatoryModifierGroups.forEach(id => {
+            if (!selectedModifeirGroups.includes(id)) {
+              mandatorySelected = false
+            }
+          })
+
+          if (mandatorySelected) {
+            commit('orderForm/setError', false, {
+              root: true,
+            })
+          } else {
+            commit('orderForm/setError', 'Please select at least one item', {
+              root: true,
+            })
+            reject()
+            return false
+          }
+
+          modifiers.forEach(modifier => {
+            if (Array.isArray(modifier.modifierId)) {
+              itemModifiers.push(...modifier.modifierId)
+            } else {
+              itemModifiers.push(modifier.modifierId)
+            }
+          })
+        }
+
+        /*
+          itemModifiers
+            0:"5cfde3211578dd00215271d1"
+            1:"5cfde3211578dd00215271d0"
+          itemModifierGroups
+            0:
+              groupId:"5cfde3211578dd00215271c8"
+              itemId:"5cfde31f1578dd0021527183"
+              limit:81
+              modifierId:"5cfde3211578dd00215271d1"
+              type:"checkbox"
+        */
+
+        commit(mutation.ADD_MODIFIERS_TO_ITEM, {
+          modifiers: itemModifiers,
+          modifierGroups: itemModifierGroups,
+        })
+
+        //calculating item price based on modifiers selected
+        //since we have just ids attached to item,
+        //we need to consult modifier store for modifier data ie price
+
+        const modifierSubgroups = rootGetters['modifier/itemModifiers'](
           item._id
         )
-        //re check if modifiers still available for the item
-        if (itemModifiersArray.length) {
-          itemModifiersArray.forEach(modifierItem => {
-            modifierItem.modifiers.forEach(modifier => {
-              if (item.modifiers.includes(modifier._id)) {
-                const subgroup = rootGetters['modifier/getModifierSubgroup'](
-                  modifier._id
-                )
-                itemModifiers.push(modifier._id)
-                itemModifierGroups.push({
-                  groupId: subgroup._id,
-                  itemId: item._id,
-                  limit: subgroup.no_of_selection,
-                  modifierId: modifier._id,
-                  type: subgroup.no_of_selection > 1 ? 'checkbox' : 'radio',
-                })
+        let modifierData = []
+        modifierSubgroups.forEach(subgroup => {
+          subgroup.modifiers.forEach(modifier => {
+            if (item.modifiers.includes(modifier._id)) {
+              const modifierPrice = modifier.value
+                ? parseFloat(modifier.value)
+                : 0
+              const tax = Num.round((modifierPrice * item.tax_sum) / 100)
+
+              let selectedModifierData = {
+                modifierId: modifier._id,
+                price: modifierPrice,
+                tax: tax,
+                name: modifier.name,
+                type: subgroup.item_type,
               }
-            })
+
+              if (item.store_id) {
+                selectedModifierData.store_id = item.store_id
+              }
+
+              modifierData.push(selectedModifierData)
+            }
           })
-        }
-        //avoid cacthcing again in edit mode
-      } else {
-        /* ***********************************************/
-        /*        New ORDER COMING CATALOG               */
-        /* ***********************************************/
-
-        const modifiers = rootGetters['orderForm/modifiers'].filter(
-          modifier => modifier.itemId == item._id
-        )
-
-        let selectedModifeirGroups = []
-
-        modifiers.forEach(modifier => {
-          itemModifierGroups.push(modifier)
-          selectedModifeirGroups.push(modifier.groupId)
         })
 
-        //match modifiers with mandatory modifiers for this item, if not matched set error and return false
-        const itemMandatoryModifierGroups = rootGetters[
-          'modifier/itemMandatoryGroups'
-        ](item._id)
+        commit(mutation.ADD_MODIFIERS_DATA_TO_ITEM, modifierData)
 
-        let mandatorySelected = true
-
-        itemMandatoryModifierGroups.forEach(id => {
-          if (!selectedModifeirGroups.includes(id)) {
-            mandatorySelected = false
+        if (!item.editMode) {
+          let quantity = 0
+          //coming through hold orders
+          if (typeof item.quantity !== 'undefined') {
+            quantity = item.quantity
           }
-        })
-
-        if (mandatorySelected) {
-          commit('orderForm/setError', false, {
-            root: true,
-          })
-        } else {
-          commit('orderForm/setError', 'Please select at least one item', {
-            root: true,
-          })
-          reject()
-          return false
-        }
-
-        modifiers.forEach(modifier => {
-          if (Array.isArray(modifier.modifierId)) {
-            itemModifiers.push(...modifier.modifierId)
-          } else {
-            itemModifiers.push(modifier.modifierId)
+          if (!quantity) {
+            quantity = rootState.orderForm.quantity || 1
           }
-        })
-      }
-
-      /*
-        itemModifiers
-          0:"5cfde3211578dd00215271d1"
-          1:"5cfde3211578dd00215271d0"
-        itemModifierGroups
-          0:
-            groupId:"5cfde3211578dd00215271c8"
-            itemId:"5cfde31f1578dd0021527183"
-            limit:81
-            modifierId:"5cfde3211578dd00215271d1"
-            type:"checkbox"
-      */
-      commit(mutation.ADD_MODIFIERS_TO_ITEM, {
-        modifiers: itemModifiers,
-        modifierGroups: itemModifierGroups,
-      })
-
-      //calculating item price based on modifiers selected
-      //since we have just ids attached to item,
-      //we need to consult modifier store for modifier data ie price
-
-      const modifierSubgroups = rootGetters['modifier/itemModifiers'](item._id)
-      let modifierData = []
-      modifierSubgroups.forEach(subgroup => {
-        subgroup.modifiers.forEach(modifier => {
-          if (item.modifiers.includes(modifier._id)) {
-            const modifierPrice = modifier.value
-              ? parseFloat(modifier.value)
-              : 0
-            const tax = Num.round((modifierPrice * item.tax_sum) / 100)
-
-            modifierData.push({
-              modifierId: modifier._id,
-              price: modifierPrice,
-              tax: tax,
-              name: modifier.name,
-              type: subgroup.item_type,
-            })
-          }
-        })
-      })
-
-      commit(mutation.ADD_MODIFIERS_DATA_TO_ITEM, modifierData)
-
-      if (!item.editMode) {
-        //update current item with new modifiers
-
-        //check if item exists with same signature
-        /*
-        let itemExists = -1
-
-        state.items.forEach((orderItem, index) => {
-          if (
-            state.item._id == orderItem._id &&
-            orderItem.modifiers.every(modifierId =>
-              state.item.modifiers.includes(modifierId)
-            ) &&
-            orderItem.modifiers.length == state.item.modifiers.length
-          ) {
-            itemExists = index
-          }
-        })
-
-        if (itemExists > -1) {
-          commit(mutation.INCREMENT_ORDER_ITEM_QUANTITY, itemExists)
-        } else {
+          commit(mutation.SET_QUANTITY, quantity)
           commit(mutation.ADD_ORDER_ITEM_WITH_MODIFIERS, state.item)
-        }
-        */
-        let quantity = 0
-        //coming through hold orders
-        if (typeof item.quantity !== 'undefined') {
-          quantity = item.quantity
-        }
-        if (!quantity) {
-          quantity = rootState.orderForm.quantity || 1
-        }
-        commit(mutation.SET_QUANTITY, quantity)
-        commit(mutation.ADD_ORDER_ITEM_WITH_MODIFIERS, state.item)
-      } else {
-        //edit mode
-        //if the signature was different then modify modifiers,
-        //as we are creating new item and attached modifiers again so its better to just
-        //replace that item in state with existing item
+        } else {
+          //edit mode
+          //if the signature was different then modify modifiers,
+          //as we are creating new item and attached modifiers again so its better to just
+          //replace that item in state with existing item
 
-        const quantity = rootState.orderForm.quantity || 1
-        commit(mutation.SET_QUANTITY, quantity)
+          const quantity = rootState.orderForm.quantity || 1
+          commit(mutation.SET_QUANTITY, quantity)
 
-        commit(mutation.REPLACE_ORDER_ITEM, {
-          item: state.item,
+          commit(mutation.REPLACE_ORDER_ITEM, {
+            item: state.item,
+          })
+        }
+
+        dispatch('postCartItem').then(() => {
+          resolve()
         })
-      }
-
-      if (!['dine-in-modify'].includes(state.cartType)) {
-        dispatch('surchargeCalculation')
-      }
-      //reset the modifier form
-      commit('orderForm/clearSelection', null, { root: true })
-
-      commit(mutation.SET_TOTAL_ITEMS, state.items.length)
-
-      resolve()
+      })
     })
   },
 
@@ -750,7 +747,7 @@ const actions = {
           )
         } else {
           orderTotalDiscount = Num.round((subtotal * orderDiscount.rate) / 100)
-          totalTax = getters.totalItemsTax
+          totalTax = getters.totalItemsTax + getters.totalModifiersTax
           taxTotalDiscount = Num.round((totalTax * orderDiscount.rate) / 100)
           surchargeTotalDiscount = 0
         }
@@ -814,6 +811,7 @@ const actions = {
                   (totalTax * percentDiscountOnOrderTotalIncludingSurcharge) /
                     100
                 )
+
                 //when calculating percent discount on subtotal we include surcharge as well,
                 //so don't need to calculate discount on surcharge again
                 surchargeTotalDiscount = 0
@@ -849,6 +847,7 @@ const actions = {
                 orderTotalDiscount = Num.round(
                   (subtotal * orderDiscount.rate) / 100
                 )
+
                 console.log('order total discount', orderTotalDiscount)
                 taxTotalDiscount = Num.round(
                   (totalTax * orderDiscount.rate) / 100
@@ -858,6 +857,7 @@ const actions = {
                 surchargeTotalDiscount = Num.round(
                   (totalSurcharge * orderDiscount.rate) / 100
                 )
+
                 console.log('surchargeTotalDiscount', surchargeTotalDiscount)
                 const discountData = {
                   orderDiscount: orderTotalDiscount,
@@ -877,7 +877,7 @@ const actions = {
           //without surcharge
           //apply offtotal discount, don't calculate discount on surcharge
           //we are not including surcharge tax in total tax for discount
-          totalTax = getters.totalItemsTax
+          totalTax = getters.totalItemsTax + getters.totalModifiersTax
 
           if (
             orderDiscount.min_cart_value < subtotal &&
@@ -892,6 +892,7 @@ const actions = {
             taxTotalDiscount = Num.round(
               (totalTax * percentDiscountOnSubTotal) / 100
             )
+
             surchargeTotalDiscount = 0
 
             const discountData = {
@@ -921,6 +922,7 @@ const actions = {
                 taxTotalDiscount = Num.round(
                   (totalTax * percentDiscountOnSubTotal) / 100
                 )
+
                 surchargeTotalDiscount = 0
 
                 const discountData = {
@@ -954,10 +956,11 @@ const actions = {
                   (subtotal * orderDiscount.rate) / 100
                 )
                 //const subtotalWithDiscount = subtotal - orderTotalDiscount
-                totalTax = getters.totalItemsTax
+                totalTax = getters.totalItemsTax + getters.totalModifiersTax
                 taxTotalDiscount = Num.round(
                   (totalTax * orderDiscount.rate) / 100
                 )
+
                 surchargeTotalDiscount = 0
                 const discountData = {
                   orderDiscount: orderTotalDiscount,
@@ -978,7 +981,7 @@ const actions = {
     })
   },
 
-  recalculateItemPrices({ commit, rootState, getters, dispatch }) {
+  recalculateItemPrices({ commit, rootState, getters, rootGetters, dispatch }) {
     commit('discount/SET_ORDER_ERROR', false, { root: true })
     return new Promise((resolve, reject) => {
       let discountErrors = {}
@@ -999,12 +1002,35 @@ const actions = {
             value: discount.discount.value,
           }
 
+          if (item.store_id) {
+            item.discount.store_id = item.store_id
+          }
+
           if (discount.discount.type === CONST.FIXED) {
-            const priceDiff = item.grossPrice - discount.discount.value
-            const discountPercentage = (priceDiff * 100) / item.grossPrice
-            item.discountRate = discountPercentage
-            item.discountedTax = false
-            item.discountedNetPrice = false
+            if (discount.discount.value >= item.grossPrice) {
+              //if discount is equal to or greater than acutal item price
+              discountErrors[item.orderIndex] = {
+                item: item,
+                msg: rootGetters['location/_t'](
+                  `Discount is applicable on item price greater than
+                  ${rootGetters['location/formatPrice'](
+                    discount.discount.value
+                  )}`
+                ),
+              }
+              item.discount = false
+              item.discountRate = 0
+              item.discountedTax = false
+              item.discountType = null
+              item.discountedNetPrice = false
+            } else {
+              const priceDiff = item.grossPrice - discount.discount.value
+              const discountPercentage = (priceDiff * 100) / item.grossPrice
+              item.discountRate = discountPercentage
+              item.discountedTax = false
+              item.discountedNetPrice = false
+              item.discountType = CONST.FIXED
+            }
           } else if (discount.discount.type === CONST.VALUE) {
             if (
               discount.discount.value >
@@ -1016,7 +1042,9 @@ const actions = {
               item.discountRate = 0
               item.discountedTax = false
               item.discountedNetPrice = false
+              item.discountType = null
             } else {
+              item.discountType = CONST.VALUE
               const itemNetPriceWithModifiers = getters.itemNetPrice(item)
 
               const itemsNetPriceWithModifiers =
@@ -1026,7 +1054,9 @@ const actions = {
 
               item.discountedTax =
                 (itemsDiscountedPrice * item.tax_sum) / 100 / item.quantity
+
               item.discountedNetPrice = itemsDiscountedPrice / item.quantity
+
               item.discountRate = discount.discount.value
             }
           } else {
@@ -1035,8 +1065,10 @@ const actions = {
               //percentage based discount, use discount.rate here, not discount.value
               //apply discount with modifier price
               item.discountRate = discount.discount.rate
+
               item.discountedTax = false
               item.discountedNetPrice = false
+              item.discountType = CONST.PERCENTAGE
             } else {
               //discount error
               item.discount = false
@@ -1044,6 +1076,7 @@ const actions = {
               item.discountRate = 0
               item.discountedTax = false
               item.discountedNetPrice = false
+              item.discountType = null
             }
           }
         } else {
@@ -1052,6 +1085,7 @@ const actions = {
           item.discountRate = 0
           item.discountedTax = false
           item.discountedNetPrice = false
+          item.discountType = null
         }
         return item
       })
@@ -1314,6 +1348,11 @@ const actions = {
             }
             if (typeof orderItem.kitchen_invoice !== 'undefined') {
               item['kitchen_invoice'] = orderItem.kitchen_invoice
+            }
+
+            //add store id if it was there
+            if (orderItem.store_id) {
+              item['store_id'] = orderItem.store_id
             }
 
             if (modifiers.length) {

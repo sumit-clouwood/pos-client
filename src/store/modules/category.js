@@ -8,14 +8,17 @@ const state = {
   subcategoryImagePath: '',
   searchItemTerm: '',
   itemImagePath: '',
-  categories: [],
   category: {},
+  categories: [],
   subcategories: [],
+  items: [],
+  multistoreCategories: {},
+  multistoreSubcategories: {},
+  multistoreItems: {},
   subcategory: null,
   categoryItems: [],
   subcategoryItems: [],
   item: null,
-  items: [],
   taxData: [],
   taxAmount: {},
   searchItems: {},
@@ -24,42 +27,58 @@ const state = {
 
 // getters, computed properties
 const getters = {
-  categories: state => {
-    return state.categories
+  categories: (state, getters, rootState, rootGetters) => {
+    let categories = state.categories
+    if (rootGetters['auth/multistore']) {
+      categories = state.multistoreCategories[rootState.context.storeId]
+    }
+    return categories || []
   },
-  itemByCode: state => itemCode => {
-    return state.items.find(
-      item => item.item_code === itemCode || item.barcode === itemCode
-    )
+  subcategories: (state, getters, rootState, rootGetters) => {
+    if (typeof state.category !== 'undefined') {
+      let subcategories = state.subcategories
+      if (rootGetters['auth/multistore']) {
+        subcategories = state.multistoreSubcategories[rootState.context.storeId]
+      }
+      if (subcategories) {
+        return subcategories.filter(
+          subcategory =>
+            subcategory[CONSTANTS.REFERENCE_FIELD_SUBCATEGORY_TO_CATEGORY] ===
+            state.category[CONSTANTS.REFERENCE_FIELD_CATEGORY_TO_SUBCATEGORY]
+        )
+      }
+    }
   },
-  subcategories: state => {
-    if (typeof state.category != 'undefined') {
-      return state.subcategories.filter(
-        subcategory =>
-          subcategory[CONSTANTS.REFERENCE_FIELD_SUBCATEGORY_TO_CATEGORY] ===
-          state.category[CONSTANTS.REFERENCE_FIELD_CATEGORY_TO_SUBCATEGORY]
+  categoryItems: (state, getters, rootState, rootGetters) => {
+    let items = state.items
+    if (rootGetters['auth/multistore']) {
+      items = state.multistoreItems[rootState.context.storeId]
+    }
+
+    if (items) {
+      return items.filter(
+        item =>
+          item[CONSTANTS.REFERENCE_FIELD_ITEM_TO_CATEGORY] ===
+            state.category[CONSTANTS.REFERENCE_FIELD_CATEGORY_TO_ITEM] &&
+          !item[CONSTANTS.REFERENCE_FIELD_ITEM_TO_SUBCATEGORY]
       )
     }
   },
-  categoryItems: state => {
-    return state.items.filter(
-      item =>
-        item[CONSTANTS.REFERENCE_FIELD_ITEM_TO_CATEGORY] ===
-          state.category[CONSTANTS.REFERENCE_FIELD_CATEGORY_TO_ITEM] &&
-        !item[CONSTANTS.REFERENCE_FIELD_ITEM_TO_SUBCATEGORY]
-    )
-  },
-  subcategoryItems: state => {
+  subcategoryItems: (state, getters, rootState, rootGetters) => {
     if (!state.subcategory) return []
-    //Reset all search results if any category items are fetched
-    state.searchItems = ''
-
-    return state.items.filter(
-      item =>
-        item[CONSTANTS.REFERENCE_FIELD_ITEM_TO_CATEGORY] ===
-          state.category[CONSTANTS.REFERENCE_FIELD_CATEGORY_TO_ITEM] &&
-        item[CONSTANTS.REFERENCE_FIELD_ITEM_TO_SUBCATEGORY] ===
-          state.subcategory[CONSTANTS.REFERENCE_FIELD_SUBCATEGORY_TO_ITEM]
+    let items = state.items
+    if (rootGetters['auth/multistore']) {
+      items = state.multistoreItems[rootState.context.storeId]
+    }
+    return (
+      items &&
+      items.filter(
+        item =>
+          item[CONSTANTS.REFERENCE_FIELD_ITEM_TO_CATEGORY] ===
+            state.category[CONSTANTS.REFERENCE_FIELD_CATEGORY_TO_ITEM] &&
+          item[CONSTANTS.REFERENCE_FIELD_ITEM_TO_SUBCATEGORY] ===
+            state.subcategory[CONSTANTS.REFERENCE_FIELD_SUBCATEGORY_TO_ITEM]
+      )
     )
   },
   items: (state, getters) => {
@@ -78,19 +97,24 @@ const getters = {
     }
     return items
   },
+  itemByCode: (state, getters) => itemCode => {
+    return getters.items.find(
+      item => item.item_code === itemCode || item.barcode === itemCode
+    )
+  },
 
-  getImages() {
+  getImages: (state, getters) => {
     //for caching
     let images = []
 
-    state.categories.forEach(category => {
+    getters.categories.forEach(category => {
       images.push(category.category_image)
     })
-    state.subcategories.forEach(subcat => {
+    getters.subcategories.forEach(subcat => {
       images.push(subcat.sub_category_image)
     })
 
-    state.items.forEach(item => {
+    getters.items.forEach(item => {
       images.push(item.image)
     })
     return images
@@ -99,18 +123,52 @@ const getters = {
 
 // actions, often async
 const actions = {
-  fetchAll({ commit, dispatch, rootState }) {
+  fetchAll(
+    { commit, dispatch, getters, rootState, rootGetters },
+    storeId = null
+  ) {
     return new Promise((resolve, reject) => {
-      CategoryService.categories()
+      CategoryService.categories(storeId)
         .then(response => {
-          commit(mutation.SET_CATEGORIES, response.data.data)
+          commit(mutation.SET_CATEGORIES, {
+            categories: response.data.data,
+            multistore: storeId
+              ? storeId
+              : rootGetters['auth/multistore']
+              ? rootState.context.storeId
+              : false,
+          })
           //continue loading other stuff
-          CategoryService.subcategories().then(response => {
-            commit(mutation.SET_SUBCATEGORIES, response.data.data)
-            CategoryService.items().then(response => {
-              commit(mutation.SET_ITEMS, response.data.data)
-              if (!rootState.sync.reloaded) {
-                dispatch('browse', state.categories[0])
+          CategoryService.subcategories(storeId).then(response => {
+            commit(mutation.SET_SUBCATEGORIES, {
+              subcategories: response.data.data,
+              multistore: storeId
+                ? storeId
+                : rootGetters['auth/multistore']
+                ? rootState.context.storeId
+                : false,
+            })
+            CategoryService.items(storeId).then(response => {
+              let items = response.data.data
+              //for multistore items we need to set store_id with item
+              if (rootGetters['auth/multistore']) {
+                items = items.map(item => {
+                  item.store_id = storeId ? storeId : rootState.context.storeId
+                  return item
+                })
+              }
+              commit(mutation.SET_ITEMS, {
+                items: items,
+                multistore: storeId
+                  ? storeId
+                  : rootGetters['auth/multistore']
+                  ? rootState.context.storeId
+                  : false,
+              })
+
+              if (!rootState.sync.reloaded && !storeId) {
+                const categories = getters.categories
+                dispatch('browse', categories[0])
               }
               resolve()
             })
@@ -122,6 +180,16 @@ const actions = {
     })
   },
 
+  fetchMultistore({ rootState, dispatch }, stores) {
+    //don't repeat in case storeId is provided otherwise it ll just loop in
+    //load discounts for all stores both item and order
+    stores.forEach(storeId => {
+      //skip current store
+      if (storeId !== rootState.context.storeId) {
+        dispatch('fetchAll', storeId)
+      }
+    })
+  },
   collectSearchItems({ commit, state }, searchTerm) {
     let searchedItems = []
     state.searchItemTerm = ''
@@ -161,8 +229,15 @@ const actions = {
 //state should be only changed through mutation and these are synchronous
 const mutations = {
   //using constant as function name
-  [mutation.SET_CATEGORIES](state, categories) {
-    state.categories = categories
+  [mutation.SET_CATEGORIES](state, { categories, multistore }) {
+    if (multistore) {
+      state.multistoreCategories = {
+        ...state.multistoreCategories,
+        [multistore]: categories,
+      }
+    } else {
+      state.categories = categories
+    }
   },
 
   [mutation.SET_CATEGORY](state, category) {
@@ -170,8 +245,15 @@ const mutations = {
     state.subcategory = null
   },
 
-  [mutation.SET_SUBCATEGORIES](state, subcategories) {
-    state.subcategories = subcategories
+  [mutation.SET_SUBCATEGORIES](state, { subcategories, multistore }) {
+    if (multistore) {
+      state.multistoreSubcategories = {
+        ...state.multistoreSubcategories,
+        [multistore]: subcategories,
+      }
+    } else {
+      state.subcategories = subcategories
+    }
   },
 
   [mutation.SET_SUBCATEGORY](state, subcategory) {
@@ -179,8 +261,15 @@ const mutations = {
     state.item = null
   },
 
-  [mutation.SET_ITEMS](state, items) {
-    state.items = items
+  [mutation.SET_ITEMS](state, { items, multistore }) {
+    if (multistore) {
+      state.multistoreItems = {
+        ...state.multistoreItems,
+        [multistore]: items,
+      }
+    } else {
+      state.items = items
+    }
   },
 
   [mutation.SET_ITEM](state, item) {

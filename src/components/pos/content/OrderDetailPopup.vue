@@ -37,7 +37,10 @@
               :orderDetails="selectedOrder.item"
               :userDetails="selectedOrder.lookups"
             />
-            <Payment :orderDetails="selectedOrder.item" />
+            <Payment
+              :orderDetails="selectedOrder.item"
+              :lookups="selectedOrder.lookups"
+            />
           </div>
         </div>
         <div class="buttons">
@@ -90,6 +93,7 @@
               allowed(PERMS.MODIFY_ORDER) &&
                 typeof selectedOrder.item !== 'undefined' &&
                 selectedOrder.item.order_type === 'dine_in' &&
+                !multistore &&
                 selectedOrder.item.order_status === 'finished'
             "
             type="button"
@@ -98,13 +102,16 @@
           >
             <div class="button-content-container">
               <div class="button-icon-container"></div>
-              <div class="button-caption">{{ _t('Modify Order') }}</div>
+              <div class="button-caption">
+                {{ _t('Modify Order') }}
+              </div>
             </div>
           </button>
           <button
             v-if="
               allowed(PERMS.MODIFY_ORDER) &&
                 typeof selectedOrder.item !== 'undefined' &&
+                !multistore &&
                 selectedOrder.item.order_type !== 'dine_in'
             "
             type="button"
@@ -113,7 +120,9 @@
           >
             <div class="button-content-container">
               <div class="button-icon-container"></div>
-              <div class="button-caption">{{ _t('Modify Order') }}</div>
+              <div class="button-caption">
+                {{ _t('Modify Order') }}
+              </div>
             </div>
           </button>
           <button
@@ -187,7 +196,7 @@ export default {
     ...mapState('order', ['selectedOrder']),
     ...mapState('dinein', ['tables']),
     ...mapGetters('location', ['_t']),
-    ...mapGetters('auth', ['allowed']),
+    ...mapGetters('auth', ['allowed', 'multistore']),
   },
   methods: {
     ...mapActions('customer', ['fetchSelectedCustomer']),

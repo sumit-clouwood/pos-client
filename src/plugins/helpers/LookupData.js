@@ -29,7 +29,10 @@ export default {
       }
     }
     //TODO Remove it later
-    if (collectionItems && collectionItems[details.matchWith] != 'undefined') {
+    if (
+      typeof collectionItems != 'undefined' &&
+      typeof collectionItems[details.matchWith] != 'undefined'
+    ) {
       if (details.selection) {
         return collectionItems[details.matchWith][details.selection]
       } else {

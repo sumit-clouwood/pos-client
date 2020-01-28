@@ -1,3 +1,4 @@
+/* eslint-disable no-console*/
 import ModifierService from '@/services/data/ModifierService'
 import * as mutation from './modifier/mutation-types'
 
@@ -7,48 +8,87 @@ const state = {
   subgroups: [],
   modifiers: [],
 
-  item: false,
+  multistoreGroups: {},
+  multistoreSubgroups: {},
+  multistoreModifiers: {},
+
   itemModifiers: [],
+  multistoreItemModifiers: {},
+
   foodIcons: [],
+  item: false,
 }
 
 // getters, computed properties
 const getters = {
   //before item click there is no itemModifiers data available so get it direclty from groups
-  hasModifiers: (state, getters) => item => {
-    return state.groups.some(group => {
-      if (group.for_items.includes(item._id)) {
-        //check its subgroups if active
-        const subgroups = getters.subgroups(group)
-        if (subgroups.length) {
-          //check if any of the subgroup has modifiers
-          let subgroupHasModifiers = false
+  hasModifiers: (state, getters, rootState, rootGetters) => item => {
+    let groups = state.groups
+    if (rootGetters['auth/multistore']) {
+      groups = state.multistoreGroups[item.store_id]
+    }
+    return (
+      groups &&
+      groups.some(group => {
+        if (group.for_items.includes(item._id)) {
+          //check its subgroups if active
+          const subgroups = getters.subgroups(group, item)
+          if (subgroups.length) {
+            //check if any of the subgroup has modifiers
+            let subgroupHasModifiers = false
 
-          subgroups.forEach(subgroup => {
-            const modifiers = state.modifiers.filter(
-              modifier =>
-                modifier.modifier_group === group._id &&
-                modifier.modifier_sub_group === subgroup._id
-            )
-            if (modifiers.length) {
-              subgroupHasModifiers = true
-            }
-          })
-          return subgroupHasModifiers
+            subgroups.forEach(subgroup => {
+              const modifiers = getters
+                .rawModifiers(item)
+                .filter(
+                  modifier =>
+                    modifier.modifier_group === group._id &&
+                    modifier.modifier_sub_group === subgroup._id
+                )
+              if (modifiers.length) {
+                subgroupHasModifiers = true
+              }
+            })
+            return subgroupHasModifiers
+          }
         }
-      }
-      return false
-    })
+        return false
+      })
+    )
   },
 
-  groups: state => item => {
-    return state.groups.filter(group => group.for_items.includes(item._id))
+  groups: (state, getters, rootState, rootGetters) => item => {
+    let groups = state.groups
+    if (rootGetters['auth/multistore']) {
+      groups = state.multistoreGroups[item.store_id]
+    }
+    if (!groups) {
+      return []
+    }
+
+    return groups.filter(group => group.for_items.includes(item._id))
   },
-  subgroups: state => group => {
-    return state.subgroups.filter(subgroup =>
+  subgroups: (state, getters, rootState, rootGetters) => (group, item) => {
+    let subgroups = state.subgroups
+    if (rootGetters['auth/multistore']) {
+      subgroups = state.multistoreSubgroups[item.store_id]
+    }
+    if (!subgroups) {
+      return []
+    }
+
+    return subgroups.filter(subgroup =>
       subgroup.modifier_group.includes(group._id)
     )
   },
+  rawModifiers: (state, getters, rootState, rootGetters) => item => {
+    let modifiers = state.modifiers
+    if (rootGetters['auth/multistore']) {
+      modifiers = state.multistoreModifiers[item.store_id]
+    }
+    return modifiers
+  },
+
   //modifiers fetch from the groups
   modifiers: (state, getters) => item => {
     let groupedModifiers = {}
@@ -56,18 +96,20 @@ const getters = {
     const groups = getters.groups(item)
 
     groups.forEach(group => {
-      const subgroups = getters.subgroups(group)
+      const subgroups = getters.subgroups(group, item)
 
       subgroups.forEach(subgroup => {
         groupedModifiers[subgroup._id] = {}
         groupedModifiers[subgroup._id]['subgroup'] = subgroup
         groupedModifiers[subgroup._id]['modifiers'] = {}
 
-        const modifiers = state.modifiers.filter(
-          modifier =>
-            modifier.modifier_group === group._id &&
-            modifier.modifier_sub_group === subgroup._id
-        )
+        const modifiers = getters
+          .rawModifiers(item)
+          .filter(
+            modifier =>
+              modifier.modifier_group === group._id &&
+              modifier.modifier_sub_group === subgroup._id
+          )
 
         if (modifiers && modifiers.length) {
           modifiers.forEach(modifier => {
@@ -80,24 +122,46 @@ const getters = {
     return groupedModifiers
   },
 
-  findModifier: (state, getters) => modifierId => {
+  findModifier: (state, getters, rootState, rootGetters) => (
+    modifierId,
+    item
+  ) => {
     let modifier = {}
-    state.itemModifiers.forEach(item => {
-      const itemModifierSubgroups = getters.itemModifiers(item.itemId)
-      itemModifierSubgroups.forEach(subgroup => {
-        subgroup.modifiers.forEach(submod => {
-          if (submod._id == modifierId) {
-            modifier = submod
-          }
+
+    if (rootGetters['auth/multistore']) {
+      const stateModifiers = state.multistoreItemModifiers[item.store_id]
+      stateModifiers.forEach(entity => {
+        const itemModifierSubgroups = getters.multistoreItemModifiers(
+          entity.itemId,
+          item
+        )
+        itemModifierSubgroups.forEach(subgroup => {
+          subgroup.modifiers.forEach(submod => {
+            if (submod._id == modifierId) {
+              modifier = submod
+            }
+          })
         })
       })
-    })
+    } else {
+      state.itemModifiers.forEach(entity => {
+        const itemModifierSubgroups = getters.itemModifiers(entity.itemId)
+        itemModifierSubgroups.forEach(subgroup => {
+          subgroup.modifiers.forEach(submod => {
+            if (submod._id == modifierId) {
+              modifier = submod
+            }
+          })
+        })
+      })
+    }
+
     return modifier
   },
 
   getModifierSubgroup: (state, getters) => modifierId => {
     let modifier = {}
-    state.itemModifiers.forEach(item => {
+    getters.stateItemModifiers.forEach(item => {
       const itemModifierSubgroups = getters.itemModifiers(item.itemId)
       itemModifierSubgroups.forEach(subgroup => {
         subgroup.modifiers.forEach(submod => {
@@ -112,8 +176,29 @@ const getters = {
 
   //get modifiers specific to item id from current modifiers list not from groups
   //this getter is used in rendering
-  itemModifiers: state => itemId => {
-    const item = state.itemModifiers.find(obj => obj.itemId == itemId)
+  itemModifiers: (state, getters) => itemId => {
+    const item = getters.stateItemModifiers.find(obj => obj.itemId == itemId)
+    let subgroups = []
+    if (item) {
+      for (let subgroupId in item.modifiers) {
+        let subgroup = item.modifiers[subgroupId].subgroup
+        subgroup.modifiers = []
+        let submodifiers = item.modifiers[subgroupId].modifiers
+        for (let submodId in submodifiers) {
+          subgroup.modifiers.push(submodifiers[submodId])
+        }
+
+        if (subgroup.modifiers.length) {
+          subgroups.push(subgroup)
+        }
+      }
+    }
+    return subgroups
+  },
+  multistoreItemModifiers: state => (itemId, entity) => {
+    const item = state.multistoreItemModifiers[entity.store_id].find(
+      obj => obj.itemId == itemId
+    )
     let subgroups = []
     if (item) {
       for (let subgroupId in item.modifiers) {
@@ -149,7 +234,7 @@ const getters = {
   /* for prefetch only */
   getImages: (state, getters) => {
     let images = []
-    state.itemModifiers.forEach(item => {
+    getters.stateItemModifiers.forEach(item => {
       const itemModifierSubgroups = getters.itemModifiers(item.itemId)
       itemModifierSubgroups.forEach(subgroup => {
         subgroup.modifiers.forEach(submod => {
@@ -160,31 +245,73 @@ const getters = {
 
     return state ? images : []
   },
+
+  //dont' calcualte just return based on state
+  stateItemModifiers: (state, getters, rootState, rootGetters) => {
+    let modifiers = state.itemModifiers
+    if (rootGetters['auth/multistore']) {
+      //we have 3 places where item modifiers are being used
+      //1. catalog
+      //2. order/cart (includes modify order)
+      //3. invoice
+      //make sure every one is setting state of item for modifier
+      if (state.item) {
+        modifiers = state.multistoreItemModifiers[state.item.store_id]
+      }
+    }
+    return modifiers || []
+  },
 }
 
 // actions, often async
 const actions = {
-  async fetchAll({ commit }) {
-    const [groups, subgroups, modifiers, foodIcons] = await Promise.all([
-      ModifierService.groups(),
-      ModifierService.subgroups(),
-      ModifierService.modifiers(),
-      ModifierService.foodIcons(),
-    ])
+  fetchAll({ commit, rootState, rootGetters }, storeId = null) {
+    return new Promise(async resolve => {
+      const [groups, subgroups, modifiers, foodIcons] = await Promise.all([
+        ModifierService.groups(storeId),
+        ModifierService.subgroups(storeId),
+        ModifierService.modifiers(storeId),
+        ModifierService.foodIcons(),
+      ])
 
-    commit(mutation.SET_MODIFIER_GROUPS, groups.data.data)
-    commit(mutation.SET_MODIFIER_SUBGROUPS, subgroups.data.data)
-    commit(mutation.SET_MODIFIERS, modifiers.data.data)
-    commit(mutation.SET_FOOD_ICON, foodIcons.data.data)
-    return Promise.resolve(1)
+      commit(mutation.SET_MODIFIERS, {
+        groups: groups.data.data,
+        subgroups: subgroups.data.data,
+        modifiers: modifiers.data.data,
+        foodIcons: foodIcons.data.data,
+        multistore: storeId
+          ? storeId
+          : rootGetters['auth/multistore']
+          ? rootState.context.storeId
+          : false,
+      })
+
+      resolve()
+    })
+  },
+  fetchMultistore({ rootState, dispatch }, stores) {
+    //don't repeat in case storeId is provided otherwise it ll just loop in
+    //load discounts for all stores both item and order
+    stores.forEach(storeId => {
+      //skip current store
+      if (storeId !== rootState.context.storeId) {
+        dispatch('fetchAll', storeId)
+      }
+    })
   },
   //active item and index already been set to order.item
-  setActiveItem({ commit, dispatch, rootState }) {
+  setActiveItem({ commit, dispatch, rootState, rootGetters }) {
     //pop needs all modifiers available for this item so we need to fetch modifier from modifeir store
     //but first we need to get active order so we can find exact item from modifiers
 
     const orderItem = rootState.order.item
-    const modifierItem = state.itemModifiers.find(
+    let stateModifiers = state.itemModifiers
+
+    if (rootGetters['auth/multistore']) {
+      stateModifiers = state.multistoreModifiers[orderItem.store_id]
+    }
+
+    const modifierItem = stateModifiers.find(
       item => item.itemId == orderItem._id
     )
     let item = {}
@@ -210,17 +337,22 @@ const actions = {
 
   //find modifiers from all specific to current item and push to current list [item[0].modifiers]
   //this function is not yet adding item to order but just showing modifiers for selection here once modifiers are selected then click on button ll add it to order
-  assignModifiersToItem({ commit, getters }, item) {
+  assignModifiersToItem({ commit, getters, rootState, rootGetters }, item) {
     item.editMode = false
     commit(mutation.SET_ITEM, item)
     //commit item modifier only if it was not already in the list
-    if (!state.itemModifiers.find(obj => obj.itemId == item._id)) {
+
+    if (!getters.stateItemModifiers.find(obj => obj.itemId == item._id)) {
       //use updated modifiers
       const modifiers = getters.modifiers(item)
+
       commit(mutation.SET_ITEM_MODIFIERS, {
         itemId: item._id,
         modifiers: modifiers,
         item: item,
+        multistore: rootGetters['auth/multistore']
+          ? rootState.context.storeId
+          : false,
       })
     }
 
@@ -231,17 +363,28 @@ const actions = {
 // mutations
 //state should be only changed through mutation and these are synchronous
 const mutations = {
-  [mutation.SET_MODIFIER_GROUPS](state, modifierGroups) {
-    state.groups = modifierGroups
-  },
-  [mutation.SET_MODIFIER_SUBGROUPS](state, modifierSubgroups) {
-    state.subgroups = modifierSubgroups
-  },
-  [mutation.SET_MODIFIERS](state, modifiers) {
-    state.modifiers = modifiers
-  },
-
-  [mutation.SET_FOOD_ICON](state, foodIcons) {
+  [mutation.SET_MODIFIERS](
+    state,
+    { groups, subgroups, modifiers, foodIcons, multistore }
+  ) {
+    if (multistore) {
+      state.multistoreGroups = {
+        ...state.multistoreGroups,
+        [multistore]: groups,
+      }
+      state.multistoreSubgroups = {
+        ...state.multistoreSubgroups,
+        [multistore]: subgroups,
+      }
+      state.multistoreModifiers = {
+        ...state.multistoreModifiers,
+        [multistore]: modifiers,
+      }
+    } else {
+      state.groups = groups
+      state.subgroups = subgroups
+      state.modifiers = modifiers
+    }
     state.foodIcons = foodIcons
   },
 
@@ -255,14 +398,32 @@ const mutations = {
     state.item = false
     state.itemModifiers = []
     state.foodIcons = []
+
+    state.multistoreGroups = {}
+    state.multistoreSubgroups = {}
+    state.multistoreModifiers = {}
+    state.multistoreItemModifiers = {}
   },
 
-  [mutation.SET_ITEM_MODIFIERS](state, { itemId, modifiers, item }) {
-    state.itemModifiers.push({
+  [mutation.SET_ITEM_MODIFIERS](
+    state,
+    { itemId, modifiers, item, multistore }
+  ) {
+    let modifiersData = {
       itemId: itemId,
       modifiers: modifiers,
       item: item,
-    })
+    }
+    if (multistore) {
+      const storeModifiers = state.multistoreItemModifiers[multistore] || []
+      storeModifiers.push(modifiersData)
+      state.multistoreItemModifiers = {
+        ...state.multistoreItemModifiers,
+        [multistore]: storeModifiers,
+      }
+    } else {
+      state.itemModifiers.push(modifiersData)
+    }
   },
 }
 

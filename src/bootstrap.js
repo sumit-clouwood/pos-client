@@ -75,16 +75,39 @@ export default {
     return new Promise((resolve, reject) => {
       this.store
         .dispatch('location/fetch')
-        .then(() => {
+        .then(locationDetails => {
           this.updateLoading('store')
           this.store.dispatch('payment/fetchAll').then(() => {})
-          this.store.dispatch('discount/fetchAll').then(() => {})
           this.store.dispatch('tax/openItemTaxes')
           this.store.dispatch('surcharge/fetchAll').then(() => {})
+          this.store.dispatch('discount/fetchAll').then(() => {})
 
           this.store
             .dispatch('category/fetchAll')
             .then(() => {
+              if (
+                locationDetails.userDetails.brand_access_type ===
+                  'store_group' ||
+                (locationDetails.availableStoreGroups &&
+                  locationDetails.availableStoreGroups.length)
+              ) {
+                this.store.dispatch(
+                  'discount/fetchMultistore',
+                  locationDetails.stores
+                )
+                this.store.dispatch(
+                  'customer/fetchMultiStore',
+                  locationDetails.stores
+                )
+                this.store.dispatch(
+                  'category/fetchMultistore',
+                  locationDetails.stores
+                )
+                this.store.dispatch(
+                  'modifier/fetchMultistore',
+                  locationDetails.stores
+                )
+              }
               this.updateLoading('catalog')
               this.store.dispatch('modifier/fetchAll').then(() => {
                 this.updateLoading('modifiers')
