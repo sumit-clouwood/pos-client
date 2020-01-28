@@ -44,7 +44,9 @@ const getters = {
   },
   multistore: state =>
     state.brandAccessType === 'store_group' ||
-    (state.availableStoreGroups && state.availableStoreGroups.length),
+    (!['all', 'store', 'country'].includes(state.brandAccessType) &&
+      state.availableStoreGroups &&
+      state.availableStoreGroups.length),
   roleName: state => {
     if (!state.userDetails) {
       return ''
