@@ -74,6 +74,7 @@ export default {
   },
   methods: {
     payNow() {
+      let validationError = {}
       this.items.find(element => {
         if (typeof element.cover_name == 'undefined') {
           this.checkCover = false
@@ -90,9 +91,14 @@ export default {
         //   clickPayNow()
         // }
 
-        this.isModified() ? clickPayNow() : clickPayNow()
+        clickPayNow()
       } else {
-        this.showErrorMessage('Please select a cover for new item.')
+        validationError = {
+          status: 'flash_message',
+          flash_message: this._t('Please select a cover for new item.'),
+        }
+        this.$store.commit('customer/SET_RESPONSE_MESSAGES', validationError)
+        $('#information-popup').modal('show')
       }
     },
 
