@@ -86,8 +86,6 @@ export default {
       this.foodBlockItemHeight = currentItems.foodBlockItemHeight
     },
     setScreenScrolls() {
-      /* eslint-disable no-console */
-      console.log('I am called')
       let foodBlockHeight = $('.food-block').innerHeight()
       let foodCatHeight = $('.foodCatScroll').innerHeight()
       this.foodBlockHeight = foodBlockHeight
@@ -107,7 +105,6 @@ export default {
       }
 
       if (this.foodBlockHeight === this.foodBlockInitHeight) {
-        console.log('true')
         $('.food-top-arrow').addClass('disable')
       }
     },
