@@ -85,12 +85,28 @@ export default {
           this.store
             .dispatch('category/fetchAll')
             .then(() => {
-              if (
-                locationDetails.userDetails.brand_access_type ===
-                  'store_group' ||
-                (locationDetails.availableStoreGroups &&
-                  locationDetails.availableStoreGroups.length)
-              ) {
+              let storeIds = []
+              if (locationDetails.userDetails.brand_access_type !== 'all') {
+                if (
+                  locationDetails.availableStoreGroups &&
+                  locationDetails.availableStoreGroups.length &&
+                  locationDetails.userDetails.brand_access_type !==
+                    'store_group'
+                ) {
+                  storeIds = locationDetails.availableStoreGroups.forEach(
+                    group => {
+                      storeIds = [...storeIds, group.group_stores]
+                    }
+                  )
+                } else if (
+                  locationDetails.userDetails.brand_access_type ===
+                  'store_group'
+                ) {
+                  storeIds = locationDetails.stores
+                }
+              }
+
+              if (storeIds && storeIds.length) {
                 this.store.dispatch(
                   'discount/fetchMultistore',
                   locationDetails.stores

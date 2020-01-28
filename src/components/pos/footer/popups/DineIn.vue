@@ -141,6 +141,8 @@ export default {
       this.selectedOrderType = newVal
 
       if (newVal.OTApi !== oldVal.OTApi) {
+        //don't know what is this ???
+        /*
         if (!this.multistore || this.multistore) {
           let OrderDiscountMS = {
             storeId: this.$store.state.context.storeId,
@@ -151,6 +153,7 @@ export default {
             OrderDiscountMS
           )
         }
+        */
         if (this.$store.state.discount.appliedOrderDiscount) {
           this.$store.dispatch('discount/clearOrderDiscount')
         } else {
