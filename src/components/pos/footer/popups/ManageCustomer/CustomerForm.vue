@@ -253,8 +253,6 @@ export default {
       fetchDeliveryAreas: state => state.customer.fetchDeliveryAreas,
 
       deliveryAreas() {
-        // eslint-disable-next-line no-console
-        console.log(this.fetchDeliveryAreas)
         if (this.fetchDeliveryAreas) {
           let storeId = this.$store.state.context.storeId
           let areas = []
