@@ -83,7 +83,8 @@ export default {
       if (
         this.checkCover ||
         typeof this.selectedCover == 'object' ||
-        this.orderType.OTApi !== 'dine_in'
+        this.orderType.OTApi !== 'dine_in' ||
+        !this.brand.number_of_covers
       ) {
         // if (this.orderSource === 'backend') {
         //   showModal('#modificationReason')
