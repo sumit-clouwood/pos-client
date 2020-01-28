@@ -57,10 +57,8 @@ const actions = {
         }
       })
     }
-    // eslint-disable-next-line no-console
     localStorage.setItem('groupStores', JSON.stringify(groupStores))
     commit('SET_MULTI_STORES', groupStores)
-    // commit('context/SET_MULTI_STORES', availabeStores, { root: true })
   },
 }
 
@@ -85,8 +83,6 @@ const mutations = {
     state.brandId = null
   },
   [mutation.SET_MULTI_STORES](state, multiStores) {
-    // eslint-disable-next-line no-console
-    console.log(multiStores, 'multiStores')
     state.multiStores = multiStores
   },
   [mutation.SET_STORES_LENGTH](state, storeLength) {
