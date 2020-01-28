@@ -76,7 +76,9 @@ export default {
       this.setScreenScrolls()
     })
   },
-  mounted() {},
+  mounted() {
+    this.setScreenScrolls()
+  },
   methods: {
     getCurrentHeights(currentItems) {
       this.foodBlockHeight = currentItems.foodBlockHeight
@@ -84,6 +86,8 @@ export default {
       this.foodBlockItemHeight = currentItems.foodBlockItemHeight
     },
     setScreenScrolls() {
+      /* eslint-disable no-console */
+      console.log('I am called')
       let foodBlockHeight = $('.food-block').innerHeight()
       let foodCatHeight = $('.foodCatScroll').innerHeight()
       this.foodBlockHeight = foodBlockHeight
@@ -101,9 +105,13 @@ export default {
       if (this.foodCatHeight > this.foodCatItemHeight) {
         $('.food-cat-bottom-arrow, .food-cat-top-arrow').addClass('disable')
       }
+
+      if (this.foodBlockHeight === this.foodBlockInitHeight) {
+        console.log('true')
+        $('.food-top-arrow').addClass('disable')
+      }
     },
     foodBottom() {
-      //alert(this.foodBlockHeight + ' >> ' + this.foodBlockItemHeight)
       if (this.foodBlockHeight >= this.foodBlockItemHeight) {
         $('.food-bottom-arrow').addClass('disable')
         this.foodBlockHeight =
@@ -121,9 +129,12 @@ export default {
       } else {
         this.foodBlockHeight += parseInt(this.foodBlockInitHeight)
       }
+      if (this.foodBlockHeight > this.foodBlockItemHeight) {
+        this.foodBlockHeight = this.foodBlockItemHeight
+        $('.food-bottom-arrow').addClass('disable')
+      }
     },
     foodTop() {
-      //alert(this.foodBlockHeight + ' <> ' + this.foodBlockInitHeight)
       if (this.foodBlockHeight == 0) {
         this.foodBlockHeight += parseInt(this.foodBlockInitHeight)
         $('.food-top-arrow').addClass('disable')
@@ -136,6 +147,10 @@ export default {
         this.foodBlockHeight = 0
       }
       $('.food-block').animate({ scrollTop: this.foodBlockHeight }, 1000)
+      if (this.foodBlockHeight == 0) {
+        this.foodBlockHeight += parseInt(this.foodBlockInitHeight)
+        $('.food-top-arrow').addClass('disable')
+      }
     },
     foodCatTop() {
       if (this.foodCatHeight <= 0) {
