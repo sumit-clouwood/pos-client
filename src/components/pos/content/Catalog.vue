@@ -111,63 +111,75 @@ export default {
     foodBottom() {
       if (this.foodBlockHeight >= this.foodBlockItemHeight) {
         $('.food-bottom-arrow').addClass('disable')
-        this.foodBlockHeight =
-          this.foodBlockHeight - parseInt(this.foodBlockInitHeight) * 2
-        if (this.foodBlockHeight < 0) {
-          this.foodBlockHeight = 0
-        }
+        this.foodBlockHeight = parseInt(this.foodBlockItemHeight)
         return false
-      }
-      $('.food-top-arrow').removeClass('disable')
-      $('.food-block').animate({ scrollTop: this.foodBlockHeight }, 1000)
-      if (this.foodBlockHeight == 0) {
-        this.foodBlockHeight =
-          this.foodBlockHeight + parseInt(this.foodBlockInitHeight) * 2
       } else {
-        this.foodBlockHeight += parseInt(this.foodBlockInitHeight)
+        $('.food-top-arrow').removeClass('disable')
+        if (this.foodBlockHeight == 0) {
+          this.foodBlockHeight += parseInt(this.foodBlockInitHeight)
+        } else {
+          this.foodBlockHeight += parseInt(this.foodBlockInitHeight)
+        }
       }
-      if (this.foodBlockHeight > this.foodBlockItemHeight) {
-        this.foodBlockHeight = this.foodBlockItemHeight
+
+      $('.food-block').animate({ scrollTop: this.foodBlockHeight }, 1000)
+
+      if (this.foodBlockHeight >= this.foodBlockItemHeight) {
         $('.food-bottom-arrow').addClass('disable')
+        this.foodBlockHeight = parseInt(this.foodBlockItemHeight)
       }
     },
     foodTop() {
-      if (this.foodBlockHeight == 0) {
-        this.foodBlockHeight += parseInt(this.foodBlockInitHeight)
+      if (this.foodBlockHeight <= 0) {
+        this.foodBlockHeight = parseInt(this.foodBlockInitHeight)
         $('.food-top-arrow').addClass('disable')
         return false
+      } else {
+        $('.food-bottom-arrow').removeClass('disable')
+        this.foodBlockHeight -= parseInt(this.foodBlockInitHeight)
+        $('.food-block').animate({ scrollTop: this.foodBlockHeight }, 1000)
       }
-      $('.food-bottom-arrow').removeClass('disable')
-      this.foodBlockHeight =
-        this.foodBlockHeight - parseInt(this.foodBlockInitHeight) * 2
-      if (this.foodBlockHeight < 0) {
-        this.foodBlockHeight = 0
-      }
-      $('.food-block').animate({ scrollTop: this.foodBlockHeight }, 1000)
-      if (this.foodBlockHeight == 0) {
-        this.foodBlockHeight += parseInt(this.foodBlockInitHeight)
+      if (this.foodBlockHeight <= 0) {
+        this.foodBlockHeight = parseInt(this.foodBlockInitHeight)
         $('.food-top-arrow').addClass('disable')
       }
     },
     foodCatTop() {
       if (this.foodCatHeight <= 0) {
-        this.foodCatHeight += parseInt(this.foodCatInitHeight)
+        this.foodCatHeight = parseInt(this.foodCatInitHeight)
+        $('.food-cat-top-arrow').addClass('disable')
+        return false
+      } else {
+        this.foodCatHeight -= parseInt(this.foodCatInitHeight)
+        $('.food-cat-bottom-arrow').removeClass('disable')
+        $('.foodCatScroll').animate({ scrollTop: this.foodCatHeight }, 1000)
+      }
+      if (this.foodCatHeight <= 0) {
+        this.foodCatHeight = parseInt(this.foodCatInitHeight)
         $('.food-cat-top-arrow').addClass('disable')
         return false
       }
-      this.foodCatHeight -= parseInt(this.foodCatInitHeight)
-      $('.food-cat-bottom-arrow').removeClass('disable')
-      $('.foodCatScroll').animate({ scrollTop: this.foodCatHeight }, 1000)
     },
     foodCatBottom() {
       if (this.foodCatHeight >= this.foodCatItemHeight) {
-        this.foodCatHeight -= parseInt(this.foodCatInitHeight)
+        this.foodCatHeight = parseInt(this.foodCatItemHeight)
+        $('.food-cat-bottom-arrow').addClass('disable')
+        return false
+      } else {
+        $('.food-cat-top-arrow').removeClass('disable')
+        if (this.foodCatHeight === 0) {
+          this.foodCatHeight += parseInt(this.foodCatInitHeight)
+        } else {
+          this.foodCatHeight += parseInt(this.foodCatInitHeight)
+        }
+      }
+      $('.foodCatScroll').animate({ scrollTop: this.foodCatHeight }, 1000)
+
+      if (this.foodCatHeight >= this.foodCatItemHeight) {
+        this.foodCatHeight = parseInt(this.foodCatItemHeight)
         $('.food-cat-bottom-arrow').addClass('disable')
         return false
       }
-      $('.food-cat-top-arrow').removeClass('disable')
-      $('.foodCatScroll').animate({ scrollTop: this.foodCatHeight }, 1000)
-      this.foodCatHeight += parseInt(this.foodCatInitHeight)
     },
   },
   computed: {
