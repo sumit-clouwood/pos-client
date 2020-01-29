@@ -90,6 +90,7 @@ const actions = {
           root: true,
         }).then(customer => {
           customerData.push(customer)
+          dispatch('customer/resetCustomer', true, { root: true })
         })
         if (orderData.order_delivery_area && customerDetails.deliveryAreas) {
           delivery_area = Object.values(customerDetails.deliveryAreas).find(
