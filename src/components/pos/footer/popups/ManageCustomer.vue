@@ -11,10 +11,13 @@
           </h4>
         </div>
         <div class="modal-body manage-customer-wrap color-dashboard-background">
-          <div class="cust-top-arrow food-arrow" @click="customerTop">
+          <div class="cust-top-arrow food-arrow disable" @click="customerTop">
             <i class="fa fa-chevron-up" aria-hidden="true"></i>
           </div>
-          <div class="cust-bottom-arrow food-arrow" @click="customerBottom">
+          <div
+            class="cust-bottom-arrow food-arrow disable"
+            @click="customerBottom"
+          >
             <i class="fa fa-chevron-down" aria-hidden="true"></i>
           </div>
           <ManageCustomerHeader />
@@ -58,7 +61,7 @@ export default {
         if ($('#manage-customer').hasClass('show')) {
           this.custAreaCalculation()
         }
-      }, 500)
+      }, 300)
     })
   },
   methods: {
