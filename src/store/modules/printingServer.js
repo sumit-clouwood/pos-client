@@ -30,6 +30,7 @@ const actions = {
 
   convertDatetime({ rootState, commit }, { datetime, format }) {
     let tz = rootState.location.timezoneString
+    /* eslint-disable no-undef */
     moment.locale(tz)
     let value =
       datetime != null && typeof datetime.$date != 'undefined'

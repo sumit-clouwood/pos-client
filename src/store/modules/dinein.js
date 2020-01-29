@@ -47,7 +47,6 @@ const state = {
   reservationData: null,
   isModified: false,
   currentTableReservationData: null,
-  reservationData: null,
 }
 const getters = {
   getCurrentTableRunningReservations: state => {
