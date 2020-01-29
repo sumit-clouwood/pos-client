@@ -53,7 +53,7 @@ export default {
         if ($('#POSItemOptions').hasClass('show')) {
           this.modifierScroll()
         }
-      }, 500)
+      }, 300)
     })
   },
   methods: {

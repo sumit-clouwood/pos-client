@@ -74,34 +74,59 @@ export default {
       if (this.custBlockHeight > this.custBlockItemHeight) {
         $('.cust-bottom-arrow, .cust-top-arrow').addClass('disable')
       }
+      if (this.custBlockHeight === this.custBlockInitHeight) {
+        $('.cust-top-arrow').addClass('disable')
+      }
     },
     customerTop() {
-      if (this.custBlockItemHeight === 0) this.custAreaCalculation()
       if (this.custBlockHeight <= 0) {
-        this.custBlockHeight += parseInt(this.custBlockInitHeight)
+        this.custBlockHeight = parseInt(this.custBlockInitHeight)
         $('.cust-top-arrow').addClass('disable')
         return false
+      } else {
+        $('.cust-bottom-arrow').removeClass('disable')
+        if (this.custBlockHeight === this.custBlockItemHeight) {
+          this.custBlockHeight -= parseInt(this.custBlockInitHeight + 100)
+        } else {
+          this.custBlockHeight -= parseInt(this.custBlockInitHeight)
+        }
       }
-      this.custBlockHeight -= parseInt(this.custBlockInitHeight)
-      $('.cust-bottom-arrow').removeClass('disable')
       $('.manage-customer-table').animate(
         { scrollTop: this.custBlockHeight },
         1000
       )
+
+      if (this.custBlockHeight <= 0) {
+        this.custBlockHeight = parseInt(this.custBlockInitHeight)
+        $('.cust-top-arrow').addClass('disable')
+      }
     },
     customerBottom() {
-      if (this.custBlockItemHeight === 0) this.custAreaCalculation()
       if (this.custBlockHeight >= this.custBlockItemHeight) {
-        this.custBlockHeight -= parseInt(this.custBlockInitHeight)
         $('.cust-bottom-arrow').addClass('disable')
+        this.custBlockHeight = parseInt(this.custBlockItemHeight)
         return false
+      } else {
+        $('.cust-top-arrow').removeClass('disable')
+        if (
+          this.custBlockHeight == this.custBlockInitHeight ||
+          this.custBlockHeight === 0
+        ) {
+          this.custBlockHeight += parseInt(this.custBlockInitHeight - 100)
+        } else {
+          this.custBlockHeight += parseInt(this.custBlockInitHeight)
+        }
       }
-      $('.cust-top-arrow').removeClass('disable')
+
       $('.manage-customer-table').animate(
         { scrollTop: this.custBlockHeight },
         1000
       )
-      this.custBlockHeight += parseInt(this.custBlockInitHeight)
+
+      if (this.custBlockHeight >= this.custBlockItemHeight) {
+        $('.cust-bottom-arrow').addClass('disable')
+        this.custBlockHeight = parseInt(this.custBlockItemHeight)
+      }
     },
   },
 }

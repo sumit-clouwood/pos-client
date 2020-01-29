@@ -1,9 +1,12 @@
 <template>
   <div>
-    <div class="modifier-top-arrow food-arrow" @click="modifierTop">
+    <div class="modifier-top-arrow food-arrow disable" @click="modifierTop">
       <i class="fa fa-chevron-up" aria-hidden="true"></i>
     </div>
-    <div class="modifier-bottom-arrow food-arrow" @click="modifierBottom">
+    <div
+      class="modifier-bottom-arrow food-arrow disable"
+      @click="modifierBottom"
+    >
       <i class="fa fa-chevron-down" aria-hidden="true"></i>
     </div>
     <div
@@ -55,34 +58,63 @@ export default {
       if (this.modifierBlockHeight > this.modifierBlockItemHeight) {
         $('.modifier-bottom-arrow, .modifier-top-arrow').addClass('disable')
       }
+      if (this.modifierBlockHeight === this.modifierBlockInitHeight) {
+        $('.modifier-top-arrow').addClass('disable')
+      }
     },
     modifierBottom() {
-      if (this.modifierBlockItemHeight === 0) this.modifierScroll()
       if (this.modifierBlockHeight >= this.modifierBlockItemHeight) {
-        this.modifierBlockHeight -= parseInt(this.modifierBlockInitHeight)
         $('.modifier-bottom-arrow').addClass('disable')
+        this.modifierBlockHeight = parseInt(this.modifierBlockItemHeight)
         return false
+      } else {
+        $('.modifier-top-arrow').removeClass('disable')
+        if (
+          this.modifierBlockHeight == this.modifierBlockInitHeight ||
+          this.modifierBlockHeight === 0
+        ) {
+          this.modifierBlockHeight += parseInt(
+            this.modifierBlockInitHeight - 100
+          )
+        } else {
+          this.modifierBlockHeight += parseInt(this.modifierBlockInitHeight)
+        }
       }
-      $('.modifier-top-arrow').removeClass('disable')
+
       $('.positemoption_body').animate(
         { scrollTop: this.modifierBlockHeight },
         1000
       )
-      this.modifierBlockHeight += parseInt(this.modifierBlockInitHeight)
+
+      if (this.modifierBlockHeight >= this.modifierBlockItemHeight) {
+        $('.modifier-bottom-arrow').addClass('disable')
+        this.modifierBlockHeight = parseInt(this.modifierBlockItemHeight)
+      }
     },
     modifierTop() {
-      if (this.modifierBlockItemHeight === 0) this.modifierScroll()
       if (this.modifierBlockHeight <= 0) {
-        this.modifierBlockHeight += parseInt(this.modifierBlockInitHeight)
+        this.modifierBlockHeight = parseInt(this.modifierBlockInitHeight)
         $('.modifier-top-arrow').addClass('disable')
         return false
+      } else {
+        $('.modifier-bottom-arrow').removeClass('disable')
+        if (this.modifierBlockHeight === this.modifierBlockItemHeight) {
+          this.modifierBlockHeight -= parseInt(
+            this.modifierBlockInitHeight + 100
+          )
+        } else {
+          this.modifierBlockHeight -= parseInt(this.modifierBlockInitHeight)
+        }
       }
-      this.modifierBlockHeight -= parseInt(this.modifierBlockInitHeight)
-      $('.modifier-bottom-arrow').removeClass('disable')
       $('.positemoption_body').animate(
         { scrollTop: this.modifierBlockHeight },
         1000
       )
+
+      if (this.modifierBlockHeight <= 0) {
+        this.modifierBlockHeight = parseInt(this.modifierBlockInitHeight)
+        $('.modifier-top-arrow').addClass('disable')
+      }
     },
   },
 }
