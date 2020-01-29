@@ -54,7 +54,7 @@ export default {
         if ($('#POSOrderItemOptions').hasClass('show')) {
           this.modifierScroll()
         }
-      }, 500)
+      }, 300)
     })
   },
   methods: {

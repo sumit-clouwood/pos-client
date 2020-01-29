@@ -105,9 +105,11 @@ export default {
       if (this.foodCatHeight > this.foodCatItemHeight) {
         $('.food-cat-bottom-arrow, .food-cat-top-arrow').addClass('disable')
       }
-
       if (this.foodBlockHeight === this.foodBlockInitHeight) {
         $('.food-top-arrow').addClass('disable')
+      }
+      if (this.foodCatHeight === this.foodCatInitHeight) {
+        $('.food-cat-top-arrow').addClass('disable')
       }
     },
     foodBottom() {
@@ -117,8 +119,11 @@ export default {
         return false
       } else {
         $('.food-top-arrow').removeClass('disable')
-        if (this.foodBlockHeight == 0) {
-          this.foodBlockHeight += parseInt(this.foodBlockInitHeight)
+        if (
+          this.foodBlockHeight == this.foodBlockInitHeight ||
+          this.foodBlockHeight === 0
+        ) {
+          this.foodBlockHeight += parseInt(this.foodBlockInitHeight - 100)
         } else {
           this.foodBlockHeight += parseInt(this.foodBlockInitHeight)
         }
@@ -138,49 +143,62 @@ export default {
         return false
       } else {
         $('.food-bottom-arrow').removeClass('disable')
-        this.foodBlockHeight -= parseInt(this.foodBlockInitHeight)
-        $('.food-block').animate({ scrollTop: this.foodBlockHeight }, 1000)
+        if (this.foodBlockHeight === this.foodBlockItemHeight) {
+          this.foodBlockHeight -= parseInt(this.foodBlockInitHeight + 100)
+        } else {
+          this.foodBlockHeight -= parseInt(this.foodBlockInitHeight)
+        }
       }
+      $('.food-block').animate({ scrollTop: this.foodBlockHeight }, 1000)
+
       if (this.foodBlockHeight <= 0) {
         this.foodBlockHeight = parseInt(this.foodBlockInitHeight)
         $('.food-top-arrow').addClass('disable')
       }
     },
+    //      Foo categories
     foodCatTop() {
       if (this.foodCatHeight <= 0) {
         this.foodCatHeight = parseInt(this.foodCatInitHeight)
         $('.food-cat-top-arrow').addClass('disable')
         return false
       } else {
-        this.foodCatHeight -= parseInt(this.foodCatInitHeight)
         $('.food-cat-bottom-arrow').removeClass('disable')
-        $('.foodCatScroll').animate({ scrollTop: this.foodCatHeight }, 1000)
-      }
-      if (this.foodCatHeight <= 0) {
-        this.foodCatHeight = parseInt(this.foodCatInitHeight)
-        $('.food-cat-top-arrow').addClass('disable')
-        return false
-      }
-    },
-    foodCatBottom() {
-      if (this.foodCatHeight >= this.foodCatItemHeight) {
-        this.foodCatHeight = parseInt(this.foodCatItemHeight)
-        $('.food-cat-bottom-arrow').addClass('disable')
-        return false
-      } else {
-        $('.food-cat-top-arrow').removeClass('disable')
-        if (this.foodCatHeight === 0) {
-          this.foodCatHeight += parseInt(this.foodCatInitHeight)
+        if (this.foodCatHeight === this.foodCatItemHeight) {
+          this.foodCatHeight -= parseInt(this.foodCatInitHeight + 100)
         } else {
-          this.foodCatHeight += parseInt(this.foodCatInitHeight)
+          this.foodCatHeight -= parseInt(this.foodCatInitHeight)
         }
       }
       $('.foodCatScroll').animate({ scrollTop: this.foodCatHeight }, 1000)
 
-      if (this.foodCatHeight >= this.foodCatItemHeight) {
-        this.foodCatHeight = parseInt(this.foodCatItemHeight)
+      if (this.foodCatHeight <= 0) {
+        this.foodCatHeight = parseInt(this.foodCatInitHeight)
+        $('.food-cat-top-arrow').addClass('disable')
+      }
+    },
+    foodCatBottom() {
+      if (this.foodCatHeight >= this.foodBlockItemHeight) {
         $('.food-cat-bottom-arrow').addClass('disable')
+        this.foodCatHeight = parseInt(this.foodBlockItemHeight)
         return false
+      } else {
+        $('.food-cat-top-arrow').removeClass('disable')
+        if (
+          this.foodCatHeight == this.foodCatInitHeight ||
+          this.foodCatHeight === 0
+        ) {
+          this.foodCatHeight += parseInt(this.foodCatInitHeight - 100)
+        } else {
+          this.foodCatHeight += parseInt(this.foodCatInitHeight)
+        }
+      }
+
+      $('.foodCatScroll').animate({ scrollTop: this.foodCatHeight }, 1000)
+
+      if (this.foodCatHeight >= this.foodCatItemHeight) {
+        $('.food-cat-bottom-arrow').addClass('disable')
+        this.foodCatHeight = parseInt(this.foodCatItemHeight)
       }
     },
   },
