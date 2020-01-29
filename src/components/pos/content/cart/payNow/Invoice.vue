@@ -57,8 +57,6 @@ export default {
       if (this.preview) {
         return ''
       }
-      /* eslint-disable */
-      console.log(this.order.order_no);
       return (
         this._t('ORDER_DIALOG_TITLE_PREFIX') +
         (this.order.order_no
@@ -131,7 +129,6 @@ export default {
               w.print()
               this.iframe_body = ''
             }
-
             // if (!this.$store.getters['checkout/complete']) {
             //   this.$store.dispatch('checkout/splitOrder').then(() => {})
             // }

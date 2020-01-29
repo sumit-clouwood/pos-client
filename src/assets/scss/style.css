@@ -3987,7 +3987,8 @@ body {
           border-radius: 3px;
           transition: 0.2s linear; }
           .navigation .navigation-list-wrapper .navigation-list .nav-item .nav-link-nav.activebg {
-            padding: 0 5px; }
+            padding: 0 5px;
+            height: 5.3125rem; }
           .navigation .navigation-list-wrapper .navigation-list .nav-item .nav-link-nav.active, .navigation .navigation-list-wrapper .navigation-list .nav-item .nav-link-nav:hover {
             background-color: #767DFF !important;
             box-shadow: 0 0 5px rgba(0, 0, 0, 0.1); }
@@ -4236,6 +4237,8 @@ body {
           background-color: #fff;
           padding: 2px 2px 2px 2px;
           margin-top: 10px; }
+          .main .main-body .food-wrapper .food-categories .food-categories-item.cashier_app_sub_item {
+            height: 6.25rem; }
           .main .main-body .food-wrapper .food-categories .food-categories-item:hover, .main .main-body .food-wrapper .food-categories .food-categories-item.active {
             box-shadow: inset 0 0 0px 2px #5056CA; }
             .main .main-body .food-wrapper .food-categories .food-categories-item:hover .food-categories-item-check, .main .main-body .food-wrapper .food-categories .food-categories-item.active .food-categories-item-check {

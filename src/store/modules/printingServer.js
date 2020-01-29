@@ -2,7 +2,7 @@ import * as mutation from './printingServer/mutation-type'
 // import OrderService from '@/services/data/OrderService'
 import PrintingServerService from '@/services/data/PrintingServerService'
 // import LookupData from '@/plugins/helpers/LookupData'
-import moment from 'moment-timezone'
+// import moment from 'moment-timezone'
 import { compressToBase64 } from 'lz-string'
 const state = {
   kitchenitems: [],
@@ -66,6 +66,7 @@ const actions = {
   },
 
   //Create A JSON Request to send in Local Server API for Generating Invoices from a software.
+  // printingServerInvoiceRaw({ state, rootState, dispatch }, orderData) {
   printingServerInvoiceRaw({ state, rootState, dispatch }, orderData) {
     // printingServerInvoiceRaw({}, orderData) {
     // eslint-disable-next-line no-console
@@ -89,6 +90,7 @@ const actions = {
           root: true,
         }).then(customer => {
           customerData.push(customer)
+          dispatch('customer/resetCustomer', true, { root: true })
         })
         if (orderData.order_delivery_area && customerDetails.deliveryAreas) {
           delivery_area = Object.values(customerDetails.deliveryAreas).find(
@@ -176,7 +178,7 @@ const actions = {
         jsonResponse.table_number = table_no
       }
       let _order = {}
-      if (window.PrintHandle != undefined) {
+      if (window.PrintHandle != null) {
         jsonResponse.windows_app = true
         _order['printingServers'] = printingServers
         _order['orderData'] = jsonResponse

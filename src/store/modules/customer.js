@@ -359,7 +359,14 @@ const actions = {
             dispatch('fetchAll')
           }
           if (typeof response.data.id != 'undefined') {
-            dispatch('fetchSelectedCustomer', response.data.id)
+            dispatch('fetchSelectedCustomer', response.data.id).then(
+              customer => {
+                dispatch('selectedAddress', customer.customer_addresses[0])
+                commit('location/SET_MODAL', '#order-confirmation', {
+                  root: true,
+                })
+              }
+            )
           }
 
           resolve(response.data)
