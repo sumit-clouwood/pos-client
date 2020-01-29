@@ -50,6 +50,7 @@ const state = {
   modificationReasons: [],
   processing: false,
   inventoryBehavior: ['waste', 'return'],
+  needSupervisorAccess: false,
 }
 
 // getters
@@ -1917,6 +1918,9 @@ const mutations = {
   },
   SET_PROCESSING(state, status) {
     state.processing = status
+  },
+  NEED_SUPERVISOR_ACCESS(state, status) {
+    state.needSupervisorAccess = status
   },
 }
 

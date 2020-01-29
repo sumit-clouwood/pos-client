@@ -192,7 +192,7 @@ export default {
     ...mapState('order', ['selectedOrder']),
     ...mapState('dinein', ['tables']),
     ...mapGetters('location', ['_t']),
-    ...mapGetters('auth', ['allowed', 'multistore']),
+    ...mapGetters('auth', ['multistore']),
   },
   methods: {
     ...mapActions('customer', ['fetchSelectedCustomer']),
