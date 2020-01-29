@@ -117,8 +117,11 @@ export default {
         return false
       } else {
         $('.food-top-arrow').removeClass('disable')
-        if (this.foodBlockHeight == 0) {
-          this.foodBlockHeight += parseInt(this.foodBlockInitHeight)
+        if (
+          this.foodBlockHeight == this.foodBlockInitHeight ||
+          this.foodBlockHeight === 0
+        ) {
+          this.foodBlockHeight += parseInt(this.foodBlockInitHeight - 100)
         } else {
           this.foodBlockHeight += parseInt(this.foodBlockInitHeight)
         }
@@ -138,9 +141,14 @@ export default {
         return false
       } else {
         $('.food-bottom-arrow').removeClass('disable')
-        this.foodBlockHeight -= parseInt(this.foodBlockInitHeight)
-        $('.food-block').animate({ scrollTop: this.foodBlockHeight }, 1000)
+        if (this.foodBlockHeight === this.foodBlockItemHeight) {
+          this.foodBlockHeight -= parseInt(this.foodBlockInitHeight + 100)
+        } else {
+          this.foodBlockHeight -= parseInt(this.foodBlockInitHeight)
+        }
       }
+      $('.food-block').animate({ scrollTop: this.foodBlockHeight }, 1000)
+
       if (this.foodBlockHeight <= 0) {
         this.foodBlockHeight = parseInt(this.foodBlockInitHeight)
         $('.food-top-arrow').addClass('disable')
