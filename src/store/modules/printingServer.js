@@ -2,7 +2,7 @@ import * as mutation from './printingServer/mutation-type'
 // import OrderService from '@/services/data/OrderService'
 import PrintingServerService from '@/services/data/PrintingServerService'
 // import LookupData from '@/plugins/helpers/LookupData'
-// import moment from 'moment-timezone'
+import moment from 'moment-timezone'
 import { compressToBase64 } from 'lz-string'
 const state = {
   kitchenitems: [],
@@ -183,13 +183,16 @@ const actions = {
         jsonResponse.windows_app = true
         _order['printingServers'] = printingServers
         _order['orderData'] = jsonResponse
-
+        // eslint-disable-next-line no-console
+        console.log(window.PrintHandle, 'window.PrintHandle')
         window.PrintHandle.Print(
           JSON.stringify(_order),
           function callbackfunction(data) {
+            // eslint-disable-next-line no-console
+            console.log('callbackfunction')
             //perform your action in case of success or leave empty
             // eslint-disable-next-line no-console
-            console.log(data.status, 'data')
+            console.log(data, 'callbackfunction result')
           }
         )
       }

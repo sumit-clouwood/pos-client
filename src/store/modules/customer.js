@@ -573,13 +573,6 @@ const mutations = {
     } else {
       state.deliveryAreas = customerDetails.deliveryAreas
     }
-    // eslint-disable-next-line no-console
-    console.log(
-      state.multistore,
-      state.deliveryAreas,
-      customerDetails.deliveryAreas,
-      'customerDetails.deliveryAreas'
-    )
     state.pastOrders = customerDetails.pastOrders
   },
   [mutation.SELECTED_CUSTOMER_ADDRESS](state, selectedAddress) {
