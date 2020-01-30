@@ -27,7 +27,7 @@
             :key="index"
           >
             <td
-              class="color-tables-background field-type-cr_at field-created_at"
+              class="created_at color-tables-background field-type-cr_at field-created_at"
             >
               <span class="color-text">
                 {{ convertDatetime(history.created_at, timezoneString) }}
@@ -39,9 +39,7 @@
               <span class="color-text">{{ getUserName(history.user) }}</span>
             </td>
             <td class="color-tables-background field-type-select field-name">
-              <span class="color-text"
-                >{{ CONST[history.name] }} {{ history.param2 || '' }}</span
-              >
+              <span class="color-text">{{ CONST[history.name] }}</span>
             </td>
           </tr>
           <!---->
@@ -79,4 +77,9 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style lang="sass">
+.created_at
+  span
+    display: block
+    width: 140px
+</style>
