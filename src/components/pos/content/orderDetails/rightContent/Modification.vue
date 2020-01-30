@@ -37,8 +37,9 @@
           <div v-if="rec.order">
             <span class="caption-mr">{{ rec.order_prefix }}</span
             >&nbsp;<span
+              style="cursor:pointer; text-decoration:underline;"
               class="order value-mr"
-              @click="jumpToOrder(rec.order)"
+              @click="selectedOrderDetails(rec.order)"
               >{{ rec.order_no }}</span
             >
           </div>
@@ -56,7 +57,7 @@
 </template>
 
 <script>
-import { mapGetters, mapState } from 'vuex'
+import { mapGetters, mapState, mapActions } from 'vuex'
 import DateTime from '@/mixins/DateTime'
 import * as CONST from '@/constants.js'
 
@@ -169,6 +170,8 @@ export default {
     },
   },
   methods: {
+    ...mapActions('order', ['selectedOrderDetails']),
+
     removedItems(oldItems, newItems) {
       let removedItemsArray = oldItems.filter(
         oldItem =>
