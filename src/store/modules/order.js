@@ -651,7 +651,7 @@ const actions = {
     })
   },
 
-  removeFromOrder({ commit, dispatch }, { item, index }) {
+  removeFromOrder({ commit, dispatch, getters }, { item, index }) {
     commit('checkoutForm/RESET', 'process', { root: true })
     commit(mutation.SET_ITEM, item)
     commit(mutation.REMOVE_ORDER_ITEM, index)
@@ -659,6 +659,14 @@ const actions = {
       commit(mutation.SET_ITEM, state.items[0])
     } else {
       commit(mutation.SET_ITEM, false)
+    }
+    //check if its dine in item and item is being updated not modified
+    //if yes then mark it as supervisorpassword needed
+    if (
+      getters.orderType === CONST.ORDER_TYPE_DINE_IN &&
+      state.orderSource !== 'backend'
+    ) {
+      commit(mutation.NEED_SUPERVISOR_ACCESS, true)
     }
 
     //remove discounts for this item from state
@@ -1264,6 +1272,8 @@ const actions = {
   //from hold order, there would be a single order with multiple items so need to clear what we have already in cart
   async addOrderToCart({ rootState, commit, dispatch }, order) {
     //create cart items indexes so we can sort them when needed
+    commit(mutation.NEED_SUPERVISOR_ACCESS, false)
+
     return new Promise(async resolve => {
       dispatch('reset')
       commit(mutation.SET_ORDER_ID, order._id)
@@ -1919,7 +1929,7 @@ const mutations = {
   SET_PROCESSING(state, status) {
     state.processing = status
   },
-  NEED_SUPERVISOR_ACCESS(state, status) {
+  [mutation.NEED_SUPERVISOR_ACCESS](state, status) {
     state.needSupervisorAccess = status
   },
 }

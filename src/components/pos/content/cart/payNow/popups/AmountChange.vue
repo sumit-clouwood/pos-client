@@ -47,11 +47,15 @@ export default {
     ...mapState('location', ['currency']),
     ...mapGetters('location', ['formatPrice']),
     ...mapState('checkout', ['changedAmount']),
+    ...mapState('checkoutForm', ['msg']),
   },
   methods: {
     generateInvoice() {
-      $('#pay-now').modal('hide')
-      this.$store.commit('checkout/CHANGE_AMOUNT_STATUS', true)
+      if (this.msg.result !== 'error') {
+        this.$store.dispatch('checkout/generateInvoice')
+        $('#pay-now').modal('hide')
+        this.$store.commit('checkout/CHANGE_AMOUNT_STATUS', true)
+      }
     },
   },
 }

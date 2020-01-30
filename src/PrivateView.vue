@@ -98,10 +98,12 @@ export default {
             )
           })
       }
-      if (this.orderId && this.$route.name === 'ModifyBackendOrder') {
-        this.$store.commit('order/ORDER_SOURCE', 'backend')
-        this.$store.dispatch('order/modifyOrder', this.orderId)
+      if (this.orderId) {
         this.$store.dispatch('order/fetchModificationReasons')
+        if (this.$route.name === 'ModifyBackendOrder') {
+          this.$store.commit('order/ORDER_SOURCE', 'backend')
+          this.$store.dispatch('order/modifyOrder', this.orderId)
+        }
       }
     },
     setupServiceWorker() {
@@ -169,9 +171,15 @@ export default {
   },
   created() {},
   watch: {
+    currentRoute(any) {
+      if (any) {
+        this.$router.replace(any)
+      }
+    },
     // eslint-disable-next-line no-unused-vars
     $route(to, from) {
       // this.$store.commit('deliveryManager/LIST_TYPE', 'New Orders')
+      this.$store.commit('order/NEED_SUPERVISOR_ACCESS', false)
       if (this.$route.params.order_id) {
         this.orderId = this.$route.params.order_id
         this.$store.commit('order/RESET_SPLIT_BILL')
@@ -218,10 +226,12 @@ export default {
       }
 
       this.$store.commit('order/CLEAR_SELECTED_ORDER')
-      if (this.orderId && this.$route.name === 'ModifyBackendOrder') {
-        this.$store.commit('order/ORDER_SOURCE', 'backend')
-        this.$store.dispatch('order/modifyOrder', this.orderId)
+      if (this.orderId) {
         this.$store.dispatch('order/fetchModificationReasons')
+        if (this.$route.name === 'ModifyBackendOrder') {
+          this.$store.commit('order/ORDER_SOURCE', 'backend')
+          this.$store.dispatch('order/modifyOrder', this.orderId)
+        }
       }
     },
   },
@@ -231,6 +241,7 @@ export default {
         state.location.store ? state.location.store.default_language : false,
     }),
     ...mapState('sync', ['modules']),
+    ...mapState('context', ['currentRoute']),
     ...mapGetters('auth', ['loggedIn']),
     apisLoaded() {
       return this.$store.state.location.brand

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-if="needSupervisorAccess' || billSplit">
+    <div v-if="orderSource === 'backend' || billSplit">
       <div class="button">
         <div class="template-btn">
           <div class="pay-now">
@@ -58,7 +58,12 @@ export default {
   computed: {
     ...mapGetters('location', ['_t']),
     ...mapGetters('auth', ['waiter']),
-    ...mapState('order', ['items', 'needSupervisorAccess', 'orderType']),
+    ...mapState('order', [
+      'items',
+      'orderSource',
+      'needSupervisorAccess',
+      'orderType',
+    ]),
     ...mapState('dinein', ['selectedCover', 'orderReservationData']),
     ...mapState('checkoutForm', ['processing']),
     ...mapState('location', ['brand']),
@@ -86,7 +91,6 @@ export default {
         this.orderType.OTApi !== 'dine_in' ||
         !this.brand.number_of_covers
       ) {
-        
         clickPayNow()
       } else {
         validationError = {
