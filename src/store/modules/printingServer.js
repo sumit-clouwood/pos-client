@@ -181,13 +181,16 @@ const actions = {
         jsonResponse.windows_app = true
         _order['printingServers'] = printingServers
         _order['orderData'] = jsonResponse
-
+        // eslint-disable-next-line no-console
+        console.log(window.PrintHandle, 'window.PrintHandle')
         window.PrintHandle.Print(
           JSON.stringify(_order),
           function callbackfunction(data) {
+            // eslint-disable-next-line no-console
+            console.log('callbackfunction')
             //perform your action in case of success or leave empty
             // eslint-disable-next-line no-console
-            console.log(data.status, 'data')
+            console.log(data, 'callbackfunction result')
           }
         )
       }

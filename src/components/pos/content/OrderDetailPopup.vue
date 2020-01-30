@@ -170,7 +170,7 @@ import CancelOrderPopup from '@/components/pos/content/orderDetails/CancelOrderP
 import ModificationPermissions from '@/components/pos/content/orderDetails/ModificationPermissions'
 import CustomerInformation from '@/components/pos/footer/popups/ManageCustomer/CustomerInformation'
 import * as CONST from '@/constants'
-
+/* global $ */
 export default {
   name: 'OrderDetailPopup',
   props: {},
@@ -195,7 +195,15 @@ export default {
     ...mapActions('customer', ['fetchSelectedCustomer']),
     ...mapActions('deliveryManager', ['printInvoice']),
     printInvoiceDisableKitchenPrint(details) {
-      this.printInvoice(details)
+      if (window.PrintHandle == null) {
+        this.printInvoice(details)
+      } else {
+        this.$store.dispatch(
+          'printingServer/printingServerInvoiceRaw',
+          details.order.item
+        )
+      }
+      $('#orderDetailsPopup').modal('hide')
       this.$store.commit('dinein/KITCHEN_PRINT', false)
     },
     modifyOrder(order) {
