@@ -37,7 +37,7 @@
         <div v-if="!categories.length" class="text-danger">
           {{ _t('Nothing found to order.') }}
         </div>
-        <Items @heights="getCurrentHeights" v-else />
+        <Items v-else />
       </div>
     </div>
   </div>
@@ -45,6 +45,7 @@
 
 <script>
 /* global $ */
+import { bus } from '@/eventBus'
 import Items from './catalog/Items'
 import Breadcrumbs from './catalog/Breadcrumbs'
 import Search from './catalog/Search'
@@ -78,24 +79,36 @@ export default {
   },
   mounted() {
     this.setScreenScrolls()
+    bus.$on('heights', payLoad => {
+      this.setCurrentHeights(payLoad)
+      this.setScreenScrolls()
+    })
   },
   methods: {
-    getCurrentHeights(currentItems) {
+    setCurrentHeights(currentItems) {
       this.foodBlockHeight = currentItems.foodBlockHeight
       this.foodBlockInitHeight = currentItems.foodBlockInitHeight
       this.foodBlockItemHeight = currentItems.foodBlockItemHeight
     },
     setScreenScrolls() {
-      let foodBlockHeight = $('.food-block').innerHeight()
+      if (
+        !this.foodBlockHeight &&
+        !this.foodBlockInitHeight &&
+        !this.foodBlockItemHeight
+      ) {
+        let foodBlockHeight = $('.food-block').innerHeight()
+        let foodMenuItemHeight = $('.food-menu').innerHeight()
+        this.foodBlockHeight = foodBlockHeight
+        this.foodBlockInitHeight = foodBlockHeight
+        this.foodBlockItemHeight = foodMenuItemHeight
+      }
+
       let foodCatHeight = $('.foodCatScroll').innerHeight()
-      let foodMenuItemHeight = $('.food-menu').innerHeight()
       let foodCatItemHeight = $('.food-categories').innerHeight()
-      this.foodBlockHeight = foodBlockHeight
-      this.foodBlockInitHeight = foodBlockHeight
       this.foodCatHeight = foodCatHeight
       this.foodCatInitHeight = foodCatHeight
-      this.foodBlockItemHeight = foodMenuItemHeight
       this.foodCatItemHeight = foodCatItemHeight
+
       $(
         '.food-bottom-arrow, .food-top-arrow, .food-cat-bottom-arrow, .food-cat-top-arrow'
       ).removeClass('disable')
@@ -105,41 +118,38 @@ export default {
       if (this.foodCatHeight > this.foodCatItemHeight) {
         $('.food-cat-bottom-arrow, .food-cat-top-arrow').addClass('disable')
       }
-      if (this.foodBlockHeight === this.foodBlockInitHeight) {
-        $('.food-top-arrow').addClass('disable')
-      }
-      if (this.foodCatHeight === this.foodCatInitHeight) {
-        $('.food-cat-top-arrow').addClass('disable')
-      }
+      $('.food-block').animate({ scrollTop: 0 }, 1000)
     },
     foodBottom() {
       if (this.foodBlockHeight >= this.foodBlockItemHeight) {
-        $('.food-bottom-arrow').addClass('disable')
         this.foodBlockHeight = parseInt(this.foodBlockItemHeight)
         return false
       } else {
         $('.food-top-arrow').removeClass('disable')
         if (
-          this.foodBlockHeight == this.foodBlockInitHeight ||
+          this.foodBlockHeight === this.foodBlockInitHeight ||
           this.foodBlockHeight === 0
         ) {
-          this.foodBlockHeight += parseInt(this.foodBlockInitHeight - 100)
+          this.foodBlockHeight += parseInt(
+            $('.food-menu-item').innerHeight() - 100
+          )
         } else {
           this.foodBlockHeight += parseInt(this.foodBlockInitHeight)
         }
       }
-
       $('.food-block').animate({ scrollTop: this.foodBlockHeight }, 1000)
 
       if (this.foodBlockHeight >= this.foodBlockItemHeight) {
-        $('.food-bottom-arrow').addClass('disable')
         this.foodBlockHeight = parseInt(this.foodBlockItemHeight)
+        return false
       }
     },
     foodTop() {
-      if (this.foodBlockHeight <= 0) {
+      if (
+        this.foodBlockHeight <= 0 ||
+        this.foodBlockHeight === this.foodBlockInitHeight
+      ) {
         this.foodBlockHeight = parseInt(this.foodBlockInitHeight)
-        $('.food-top-arrow').addClass('disable')
         return false
       } else {
         $('.food-bottom-arrow').removeClass('disable')
@@ -151,16 +161,21 @@ export default {
       }
       $('.food-block').animate({ scrollTop: this.foodBlockHeight }, 1000)
 
-      if (this.foodBlockHeight <= 0) {
+      if (
+        this.foodBlockHeight <= 0 ||
+        this.foodBlockHeight === this.foodBlockInitHeight
+      ) {
         this.foodBlockHeight = parseInt(this.foodBlockInitHeight)
-        $('.food-top-arrow').addClass('disable')
+        return false
       }
     },
     //      Foo categories
     foodCatTop() {
-      if (this.foodCatHeight <= 0) {
+      if (
+        this.foodCatHeight <= 0 ||
+        this.foodCatHeight === this.foodCatInitHeight
+      ) {
         this.foodCatHeight = parseInt(this.foodCatInitHeight)
-        $('.food-cat-top-arrow').addClass('disable')
         return false
       } else {
         $('.food-cat-bottom-arrow').removeClass('disable')
@@ -172,14 +187,16 @@ export default {
       }
       $('.foodCatScroll').animate({ scrollTop: this.foodCatHeight }, 1000)
 
-      if (this.foodCatHeight <= 0) {
+      if (
+        this.foodCatHeight <= 0 ||
+        this.foodCatHeight === this.foodCatInitHeight
+      ) {
         this.foodCatHeight = parseInt(this.foodCatInitHeight)
-        $('.food-cat-top-arrow').addClass('disable')
+        return false
       }
     },
     foodCatBottom() {
       if (this.foodCatHeight >= this.foodBlockItemHeight) {
-        $('.food-cat-bottom-arrow').addClass('disable')
         this.foodCatHeight = parseInt(this.foodBlockItemHeight)
         return false
       } else {
@@ -197,8 +214,8 @@ export default {
       $('.foodCatScroll').animate({ scrollTop: this.foodCatHeight }, 1000)
 
       if (this.foodCatHeight >= this.foodCatItemHeight) {
-        $('.food-cat-bottom-arrow').addClass('disable')
         this.foodCatHeight = parseInt(this.foodCatItemHeight)
+        return false
       }
     },
   },
