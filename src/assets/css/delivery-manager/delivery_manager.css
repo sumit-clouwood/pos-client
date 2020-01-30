@@ -392,7 +392,7 @@ button.v-btn.v-btn--icon.theme--light {
     padding: 0;
   }
   .change-location > .walkin-btn > a{
-    min-height: 3.3rem;
+    height: 3.3rem;
     padding: 6px 12px;
     display: grid;
     align-items: center;

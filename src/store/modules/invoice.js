@@ -51,6 +51,7 @@ const actions = {
     commit(mutation.SET_RULES, rules)
     dispatch('getAllPrinters')
   },
+
   getAllPrinters({ commit }) {
     /*InvoiceService.getPrinters().then(response => {
       commit(mutation.SET_PRINTERS, response.data)

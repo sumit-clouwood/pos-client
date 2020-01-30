@@ -359,7 +359,14 @@ const actions = {
             dispatch('fetchAll')
           }
           if (typeof response.data.id != 'undefined') {
-            dispatch('fetchSelectedCustomer', response.data.id)
+            dispatch('fetchSelectedCustomer', response.data.id).then(
+              customer => {
+                dispatch('selectedAddress', customer.customer_addresses[0])
+                commit('location/SET_MODAL', '#order-confirmation', {
+                  root: true,
+                })
+              }
+            )
           }
 
           resolve(response.data)
@@ -555,19 +562,17 @@ const mutations = {
     if (state.multistore) {
       let msDeliveryAreas = []
       state.fetchDeliveryAreas.forEach(area => {
-        msDeliveryAreas[area._id] = customerDetails.deliveryAreas[area._id]
+        if (
+          customerDetails.deliveryAreas &&
+          typeof customerDetails.deliveryAreas[area._id] !== 'undefined'
+        ) {
+          msDeliveryAreas[area._id] = customerDetails.deliveryAreas[area._id]
+        }
       })
       state.deliveryAreas = msDeliveryAreas
     } else {
       state.deliveryAreas = customerDetails.deliveryAreas
     }
-    // eslint-disable-next-line no-console
-    console.log(
-      state.multistore,
-      state.deliveryAreas,
-      customerDetails.deliveryAreas,
-      'customerDetails.deliveryAreas'
-    )
     state.pastOrders = customerDetails.pastOrders
   },
   [mutation.SELECTED_CUSTOMER_ADDRESS](state, selectedAddress) {

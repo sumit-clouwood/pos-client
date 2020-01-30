@@ -68,10 +68,13 @@
           </div>
         </div>
         <div class="modal-footer discount-footer">
-          <div class="food-top-arrow food-arrow" @click="discountTop">
+          <div class="food-top-arrow food-arrow disable" @click="discountTop">
             <i class="fa fa-chevron-up" aria-hidden="true"></i>
           </div>
-          <div class="food-bottom-arrow food-arrow" @click="discountBottom">
+          <div
+            class="food-bottom-arrow food-arrow disable"
+            @click="discountBottom"
+          >
             <i class="fa fa-chevron-down" aria-hidden="true"></i>
           </div>
           <div class="btn-announce">
@@ -120,6 +123,7 @@
 /* global $ */
 /* global hideModal */
 import { mapGetters, mapState } from 'vuex'
+import { bus } from '@/eventBus'
 export default {
   name: 'Discount',
   props: {},
@@ -141,7 +145,13 @@ export default {
     }),
   },
   mounted() {
-    this.discountScroll()
+    bus.$on('check-discount-height', () => {
+      setTimeout(() => {
+        if ($('#select-discount').hasClass('show')) {
+          this.discountScroll()
+        }
+      }, 300)
+    })
   },
   methods: {
     applyOrderDiscount: function() {
@@ -172,34 +182,63 @@ export default {
           '.discount-footer .food-bottom-arrow, .discount-footer .food-top-arrow'
         ).addClass('disable')
       }
+      if (this.discountBlockHeight === this.discountBlockInitHeight) {
+        $('.discount-footer .food-top-arrow').addClass('disable')
+      }
     },
     discountBottom() {
-      if (this.discountBlockItemHeight === 0) this.discountScroll()
       if (this.discountBlockHeight >= this.discountBlockItemHeight) {
-        this.discountBlockHeight -= parseInt(this.discountBlockInitHeight)
         $('.discount-footer .food-bottom-arrow').addClass('disable')
+        this.discountBlockHeight = parseInt(this.discountBlockItemHeight)
         return false
+      } else {
+        $('.discount-footer .food-top-arrow').removeClass('disable')
+        if (
+          this.discountBlockHeight == this.discountBlockInitHeight ||
+          this.discountBlockHeight === 0
+        ) {
+          this.discountBlockHeight += parseInt(
+            this.discountBlockInitHeight - 100
+          )
+        } else {
+          this.discountBlockHeight += parseInt(this.discountBlockInitHeight)
+        }
       }
-      $('.discount-footer .food-top-arrow').removeClass('disable')
+
       $('.select-discount').animate(
         { scrollTop: this.discountBlockHeight },
         1000
       )
-      this.discountBlockHeight += parseInt(this.discountBlockInitHeight)
+
+      if (this.discountBlockHeight >= this.discountBlockItemHeight) {
+        $('.discount-footer .food-bottom-arrow').addClass('disable')
+        this.discountBlockHeight = parseInt(this.discountBlockItemHeight)
+      }
     },
     discountTop() {
-      if (this.discountBlockItemHeight === 0) this.discountScroll()
       if (this.discountBlockHeight <= 0) {
-        this.discountBlockHeight += parseInt(this.discountBlockInitHeight)
-        $('.discount-footer .food-top-arrow').addClass('disable')
+        this.discountBlockHeight = parseInt(this.discountBlockInitHeight)
+        $('.discount-footer  .food-top-arrow').addClass('disable')
         return false
+      } else {
+        $('.discount-footer  .food-bottom-arrow').removeClass('disable')
+        if (this.discountBlockHeight === this.discountBlockItemHeight) {
+          this.discountBlockHeight -= parseInt(
+            this.discountBlockInitHeight + 100
+          )
+        } else {
+          this.discountBlockHeight -= parseInt(this.discountBlockInitHeight)
+        }
       }
-      this.discountBlockHeight -= parseInt(this.discountBlockInitHeight)
-      $('.discount-footer .food-bottom-arrow').removeClass('disable')
       $('.select-discount').animate(
         { scrollTop: this.discountBlockHeight },
         1000
       )
+
+      if (this.discountBlockHeight <= 0) {
+        this.discountBlockHeight = parseInt(this.discountBlockInitHeight)
+        $('.discount-footer  .food-top-arrow').addClass('disable')
+      }
     },
   },
 }

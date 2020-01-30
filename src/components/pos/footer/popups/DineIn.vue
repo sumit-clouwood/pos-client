@@ -151,7 +151,6 @@ export default {
             OrderDiscountMS
           )
         }
-
         if (this.$store.state.discount.appliedOrderDiscount) {
           this.$store.dispatch('discount/clearOrderDiscount')
         } else {

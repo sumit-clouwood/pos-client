@@ -447,7 +447,6 @@ const actions = {
           note: item.note,
           originalItem: item,
         }
-
         //add store id with item if available
         if (item.store_id) {
           orderItem.store_id = item.store_id
@@ -457,6 +456,9 @@ const actions = {
           orderItem['kitchen_invoice'] = item.kitchen_invoice
         } else {
           orderItem['kitchen_invoice'] = 0
+        }
+        if (item.measurement_unit) {
+          orderItem.measurement_unit = item.measurement_unit
         }
 
         if (item.measurement_unit) {
@@ -502,7 +504,6 @@ const actions = {
             rootGetters['order/itemModifierDiscount'](item)
           item_discounts.push(itemDiscount)
         }
-
         if (item.modifiersData && item.modifiersData.length) {
           item.modifiersData.forEach(modifier => {
             let modifierEntity = {
@@ -647,7 +648,6 @@ const actions = {
               if (rootGetters['auth/multistore']) {
                 order.multi_store = true
               }
-
               order.order_surcharges = rootState.surcharge.surchargeAmounts.map(
                 appliedSurcharge => {
                   const surcharge = rootState.surcharge.surcharges.find(
@@ -1595,6 +1595,7 @@ const actions = {
           root: true,
         }).then(customer => {
           customerData.push(customer)
+          dispatch('customer/resetCustomer', true, { root: true })
         })
         if (orderData.order_delivery_area && customerDetails.deliveryAreas) {
           delivery_area = Object.values(customerDetails.deliveryAreas).find(
@@ -1688,7 +1689,12 @@ const actions = {
 // mutations
 const mutations = {
   [mutation.SET_ORDER](state, order) {
-    state.order = order
+    let orderData = { ...order }
+    orderData.windows_app = false
+    if (window.PrintHandle != null) {
+      orderData.windows_app = true
+    }
+    state.order = orderData
   },
   [mutation.SET_PAID_AMOUNT](state, amount) {
     state.paidAmount = amount

@@ -52,7 +52,7 @@
 
 <script>
 /* global $, showModal  */
-
+import { bus } from '@/eventBus'
 import { mapGetters, mapState } from 'vuex'
 import bootstrap from '@/bootstrap'
 import Popup from './items/Popup'
@@ -91,7 +91,9 @@ export default {
   },
   created() {},
   updated() {
-    this.setScreenScrolls()
+    this.$nextTick(() => {
+      this.setScreenScrolls()
+    })
   },
   methods: {
     setScreenScrolls() {
@@ -118,8 +120,15 @@ export default {
       }
     },
     addToOrder(item) {
-      if (this.selectedOrder && !this.allowed('orders.o.update_order_items')) {
-        return false
+      bus.$emit('modifier-height')
+      if (this.selectedOrder) {
+        if (
+          (this.orderType == 'carhop' || this.orderType.OTApi === 'carhop') &&
+          this.selectedOrder.item.order_status == 'in-progress' &&
+          this.isCarhop()
+        ) {
+          return
+        }
       }
       if (this.splitBill) {
         return false

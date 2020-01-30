@@ -42,6 +42,7 @@
             class="button-plus"
             data-toggle="modal"
             data-target="#POSOrderItemOptions"
+            @click="modifierHeights()"
           >
             <div
               class="button-plus-icon"
@@ -75,6 +76,7 @@
 </template>
 
 <script>
+import { bus } from '@/eventBus'
 import Modifiers from './items/Modifiers.vue'
 import Preloader from '@/components/util/Preloader'
 
@@ -124,6 +126,9 @@ export default {
       if (!this.items.length) {
         this.$store.dispatch('mainOrdersHendlerChange')
       }
+    },
+    modifierHeights() {
+      bus.$emit('modifier-heights')
     },
   },
   components: {
