@@ -1215,6 +1215,7 @@ const actions = {
   //modify order from backend or transaction screen
   modifyOrder({ commit, dispatch }, orderId) {
     commit(mutation.ORDER_TO_MODIFY, orderId)
+
     dispatch('startOrder')
 
     const params = ['orders', orderId, '']
@@ -1270,9 +1271,13 @@ const actions = {
     })
   },
   //from hold order, there would be a single order with multiple items so need to clear what we have already in cart
-  async addOrderToCart({ rootState, commit, dispatch }, order) {
+  async addOrderToCart({ state, rootState, commit, dispatch }, order) {
     //create cart items indexes so we can sort them when needed
-    commit(mutation.NEED_SUPERVISOR_ACCESS, false)
+    let needSupervisorpassword = false
+    if (state.orderSource === 'backend') {
+      needSupervisorpassword = true
+    }
+    commit(mutation.NEED_SUPERVISOR_ACCESS, needSupervisorpassword)
 
     return new Promise(async resolve => {
       dispatch('reset')
