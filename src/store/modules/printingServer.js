@@ -185,6 +185,8 @@ const actions = {
         _order['orderData'] = jsonResponse
         // eslint-disable-next-line no-console
         console.log(window.PrintHandle, 'window.PrintHandle')
+        // eslint-disable-next-line no-console
+        console.log(_order, '_order')
         window.PrintHandle.Print(
           JSON.stringify(_order),
           function callbackfunction(data) {
