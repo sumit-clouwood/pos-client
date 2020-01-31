@@ -79,6 +79,7 @@ export default {
   },
   methods: {
     payNow() {
+      this.$store.commit('checkoutForm/setAction', 'pay')
       let validationError = {}
       this.items.find(element => {
         if (typeof element.cover_name == 'undefined') {
@@ -110,7 +111,7 @@ export default {
           element.cover_name == 'undefined' || element.cover_name == undefined
         )
       })
-
+      this.$store.commit('checkoutForm/setAction', 'add')
       if (this.items.length > 0) {
         if (
           checkCovers == undefined ||
