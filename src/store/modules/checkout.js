@@ -965,7 +965,10 @@ const actions = {
               let msgStr = rootGetters['location/_t'](msg)
 
               if (
-                ['dine-in-place-order', 'modify-backend-order'].includes(action)
+                ['dine-in-place-order', 'modify-backend-order'].includes(
+                  action
+                ) &&
+                rootState.checkoutForm.action !== 'pay'
               ) {
                 msgStr = rootGetters['location/_t'](
                   'Dinein order has been updated.'

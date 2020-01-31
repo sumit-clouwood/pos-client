@@ -651,7 +651,7 @@ const actions = {
     })
   },
 
-  removeFromOrder({ commit, dispatch, getters }, { item, index }) {
+  removeFromOrder({ commit, dispatch }, { item, index }) {
     commit('checkoutForm/RESET', 'process', { root: true })
     commit(mutation.SET_ITEM, item)
     commit(mutation.REMOVE_ORDER_ITEM, index)
@@ -660,13 +660,12 @@ const actions = {
     } else {
       commit(mutation.SET_ITEM, false)
     }
-    //check if its dine in item and item is being updated not modified
-    //if yes then mark it as supervisorpassword needed
-    if (
-      getters.orderType === CONST.ORDER_TYPE_DINE_IN &&
-      state.orderSource !== 'backend'
-    ) {
-      commit(mutation.NEED_SUPERVISOR_ACCESS, true)
+    //check if we are going to process existing order
+    if (state.selectedOrder) {
+      //Check if existing order item is being removed
+      if (typeof item.no !== 'undefined') {
+        commit(mutation.NEED_SUPERVISOR_ACCESS, true)
+      }
     }
 
     //remove discounts for this item from state

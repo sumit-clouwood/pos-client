@@ -183,8 +183,9 @@ export default {
             $('#payment-msg').modal('show')
           }
           hidePayNow()
-          this.$store.dispatch('checkout/reset', true)
-          this.$store.dispatch('order/reset')
+          //uncomment below lines ll not print invoice
+          //this.$store.dispatch('checkout/reset', true)
+          //this.$store.dispatch('order/reset')
 
           $('#modificationReason').hide()
           this.$store.commit('order/ORDER_SOURCE', null)

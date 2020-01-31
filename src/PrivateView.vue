@@ -184,9 +184,11 @@ export default {
         this.orderId = this.$route.params.order_id
         this.$store.commit('order/RESET_SPLIT_BILL')
       }
-      //check if orderid exists from previous action
+      //check if orderid exists from previous action, but user choosed different route while editign order
       if (this.orderId) {
-        this.$store.dispatch('checkout/reset')
+        if (!this.$store.state.checkout.print) {
+          this.$store.dispatch('checkout/reset')
+        }
       }
       // if no order id found in current action reset this.orderId
       if (!this.$route.params.order_id) {
