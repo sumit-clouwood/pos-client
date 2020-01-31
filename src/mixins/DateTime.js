@@ -41,7 +41,7 @@ export default {
         return htmlElement
       }, 1000)
     },
-    convertDatetime(datetime, tz, format = 'YYYY-MM-DD HH:mm:ss') {
+    convertDatetime(datetime, tz, format = 'Do MMM YYYY,  hh:mm:ss A') {
       moment.locale(tz)
       var value =
         datetime != null && typeof datetime.$date != 'undefined'
