@@ -1,3 +1,4 @@
+/* eslint-disable */
 export default {
   round(amount) {
     if (!amount) amount = 0

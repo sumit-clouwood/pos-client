@@ -23,6 +23,8 @@
 </template>
 
 <script>
+/* global $ */
+import { bus } from '@/eventBus'
 import Header from './popup/Header.vue'
 import Content from '@/components/pos/content/catalog/items/popup/Content.vue'
 import Footer from './popup/Footer.vue'
@@ -31,6 +33,13 @@ import { mapState } from 'vuex'
 export default {
   name: 'Popup',
   props: {},
+  data() {
+    return {
+      modifierBlockHeight: 0,
+      modifierBlockInitHeight: 0,
+      modifierBlockItemHeight: 0,
+    }
+  },
   components: {
     Content,
     Header,
@@ -38,6 +47,31 @@ export default {
   },
   computed: {
     ...mapState('orderForm', ['error']),
+  },
+  mounted() {
+    bus.$on('modifier-heights', () => {
+      setTimeout(() => {
+        if ($('#POSOrderItemOptions').hasClass('show')) {
+          this.modifierScroll()
+        }
+      }, 300)
+    })
+  },
+  methods: {
+    modifierScroll() {
+      let modifierBlockHeight = $(
+        '#POSOrderItemOptions .positemoption_body'
+      ).innerHeight()
+      this.modifierBlockHeight = modifierBlockHeight
+      this.modifierBlockInitHeight = modifierBlockHeight
+      this.modifierBlockItemHeight = $(
+        '#POSOrderItemOptions .positemoption-wrapper'
+      ).innerHeight()
+      $('.modifier-bottom-arrow, .modifier-top-arrow').removeClass('disable')
+      if (this.modifierBlockHeight > this.modifierBlockItemHeight) {
+        $('.modifier-bottom-arrow, .modifier-top-arrow').addClass('disable')
+      }
+    },
   },
 }
 </script>

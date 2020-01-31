@@ -1,5 +1,5 @@
 <template>
-  <div style="overflow-y: scroll;">
+  <div style="overflow-y: auto;" class="foodCatScroll">
     <div
       v-if="subcategories && subcategories.length"
       :class="[
@@ -54,11 +54,21 @@
 </template>
 
 <script>
+/* global $ */
 import { mapState, mapGetters } from 'vuex'
+import { bus } from '@/eventBus'
+
 // import btnBack from '../../../mobileComponents/mobileElements/btnBack'
 
 export default {
   name: 'SubMenu',
+  data() {
+    return {
+      foodBlockItemHeight: 0,
+      foodBlockHeight: 0,
+      foodBlockInitHeight: 0,
+    }
+  },
   components: {
     // btnBack,
   },
@@ -79,6 +89,7 @@ export default {
       $('.breadcrumbs').show()
       // eslint-disable-next-line no-undef
       $('.search-field-input').val('')
+      bus.$emit('clear-search-input', '')
       this.$store.dispatch('category/getItems', item)
       this.$store.dispatch('foodMenuHendlerChange')
     },
@@ -131,13 +142,13 @@ export default {
         grid-template-columns: 65px 1fr;
         grid-gap: 20px;
         border-bottom: 1px solid $gray-middle;
-        /*background-color: #fafafa;*/
-        background: linear-gradient(
-          141deg,
-          #fcfcff 0%,
-          #d7e0e1 51%,
-          #ecebeb 75%
-        );
+        background-color: #fafafa;
+        /*background: linear-gradient(*/
+        /*  141deg,*/
+        /*  #fcfcff 0%,*/
+        /*  #d7e0e1 51%,*/
+        /*  #ecebeb 75%*/
+        /*);*/
 
         .food-categories-item-text {
           font-size: 14px;

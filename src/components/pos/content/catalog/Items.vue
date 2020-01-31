@@ -43,14 +43,16 @@
       :class="['food-menu', foodMenuHendler ? 'active' : 'notActive']"
     >
       <!--<btnBack :param="'item'" />-->
-      <div class="no_item"><h2>No menu item found</h2></div>
+      <div class="no_item">
+        <h2>{{ _t('No menu item found') }}</h2>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 /* global $, showModal  */
-
+import { bus } from '@/eventBus'
 import { mapGetters, mapState } from 'vuex'
 import bootstrap from '@/bootstrap'
 import Popup from './items/Popup'
@@ -71,6 +73,7 @@ export default {
     ...mapState('order', ['splitBill', 'selectedOrder']),
     ...mapGetters('order', ['orderType']),
     ...mapGetters('auth', ['allowed']),
+    ...mapGetters('location', ['_t']),
     ...mapGetters('category', ['items', 'itemByCode']),
     ...mapGetters('modifier', ['hasModifiers']),
     ...mapGetters(['foodMenuHendler', 'bascketItems']),
@@ -87,8 +90,34 @@ export default {
     },
   },
   created() {},
-  beforeDestroy() {},
+  updated() {
+    this.$nextTick(() => {
+      this.setScreenScrolls()
+    })
+  },
+  beforeUpdated() {
+    this.setScreenScrolls()
+  },
+  mounted() {
+    this.setScreenScrolls()
+  },
   methods: {
+    setScreenScrolls() {
+      let foodBlockHeight = $('.food-block').innerHeight()
+      let foodBlockInitHeight = foodBlockHeight
+      let foodBlockItemHeight = $('.food-menu').innerHeight()
+      $('.food-bottom-arrow, .food-top-arrow').removeClass('disable')
+
+      if (this.foodBlockHeight > this.foodBlockItemHeight) {
+        $('.food-bottom-arrow, .food-top-arrow').addClass('disable')
+      }
+
+      bus.$emit('heights', {
+        foodBlockHeight,
+        foodBlockInitHeight,
+        foodBlockItemHeight,
+      })
+    },
     choosePrice(item) {
       if (item.countries.length !== 0) {
         return item.countries[0].value
@@ -99,6 +128,7 @@ export default {
       }
     },
     addToOrder(item) {
+      bus.$emit('modifier-height')
       if (this.selectedOrder) {
         if (
           (this.orderType == 'carhop' || this.orderType.OTApi === 'carhop') &&
@@ -141,9 +171,15 @@ export default {
       if (this.$store.getters['modifier/hasModifiers'](item)) {
         this.$store.dispatch('modifier/assignModifiersToItem', item)
         this.$store.commit('orderForm/clearSelection')
+        //handle open item inside popup
         showModal('#POSItemOptions')
       } else {
-        this.$store.dispatch('order/addToOrder', item)
+        if (item.open_item === true) {
+          //show popup for open item
+          showModal('#open-item')
+        } else {
+          this.$store.dispatch('order/addToOrder', item)
+        }
       }
       this.$store.dispatch('addItemFood', item)
 
@@ -263,7 +299,7 @@ export default {
       border: none;
       border-bottom: 1px solid $gray-middle;
       padding-right: 20px;
-      background: linear-gradient(141deg, #fcfcff 0%, #d7e0e1 51%, #ecebeb 75%);
+      background: #fafafa;
       transition: 0.1s ease-out;
 
       &:not(.color-dashboard-background) {
