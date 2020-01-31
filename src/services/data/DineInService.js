@@ -3,7 +3,7 @@ import DateTime from '@/mixins/DateTime'
 export default {
   dineInRunningOrders(page, limit, userId) {
     return DataService.get(
-      `/model/reservations?page_id=running_orders&query=&limit=${limit}&ascending=1&page=${page}&byColumn=1&assigned_to=${userId}&orderBy=priority`
+      `/model/reservations?page_id=running_orders&query=&limit=${limit}&ascending=1&page=${page}&byColumn=1&assigned_to=${userId}&orderBy=priority&order_system_status=normal`
     )
   },
   dineInCompleteOrders(page, limit, userId) {
