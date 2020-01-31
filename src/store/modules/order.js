@@ -50,6 +50,7 @@ const state = {
   modificationReasons: [],
   processing: false,
   inventoryBehavior: ['waste', 'return'],
+  needSupervisorAccess: false,
 }
 
 // getters
@@ -659,6 +660,13 @@ const actions = {
     } else {
       commit(mutation.SET_ITEM, false)
     }
+    //check if we are going to process existing order
+    if (state.selectedOrder) {
+      //Check if existing order item is being removed
+      if (typeof item.no !== 'undefined') {
+        commit(mutation.NEED_SUPERVISOR_ACCESS, true)
+      }
+    }
 
     //remove discounts for this item from state
     commit('discount/REMOVE_ITEM_DISCOUNT', item, { root: true })
@@ -1207,6 +1215,7 @@ const actions = {
   //modify order from backend or transaction screen
   modifyOrder({ commit, dispatch }, orderId) {
     commit(mutation.ORDER_TO_MODIFY, orderId)
+
     dispatch('startOrder')
 
     const params = ['orders', orderId, '']
@@ -1262,8 +1271,14 @@ const actions = {
     })
   },
   //from hold order, there would be a single order with multiple items so need to clear what we have already in cart
-  async addOrderToCart({ rootState, commit, dispatch }, order) {
+  async addOrderToCart({ state, rootState, commit, dispatch }, order) {
     //create cart items indexes so we can sort them when needed
+    let needSupervisorpassword = false
+    if (state.orderSource === 'backend') {
+      needSupervisorpassword = true
+    }
+    commit(mutation.NEED_SUPERVISOR_ACCESS, needSupervisorpassword)
+
     return new Promise(async resolve => {
       dispatch('reset')
       commit(mutation.SET_ORDER_ID, order._id)
@@ -1918,6 +1933,9 @@ const mutations = {
   },
   SET_PROCESSING(state, status) {
     state.processing = status
+  },
+  [mutation.NEED_SUPERVISOR_ACCESS](state, status) {
+    state.needSupervisorAccess = status
   },
 }
 

@@ -363,7 +363,6 @@ export default {
     ...mapState('checkout', ['print']),
     ...mapGetters('location', ['_t', 'getReferral']),
     ...mapState('location', ['timezoneString']),
-    ...mapGetters('auth', ['allowed']),
     ...mapState('dinein', ['selectedTableRservationData']),
     ...mapState('order', ['orderType']),
 

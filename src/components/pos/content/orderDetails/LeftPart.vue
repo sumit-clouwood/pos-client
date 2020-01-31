@@ -197,7 +197,8 @@ export default {
       )
         this.datetime = this.convertDatetime(
           this.orderDetails.item.real_created_datetime,
-          this.timezoneString
+          this.timezoneString,
+          'YYYY-MM-DD HH:mm:ss'
         )
     },
     /*timerClock: function() {

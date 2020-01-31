@@ -410,7 +410,11 @@ export default {
     },
     timerClock(datetime) {
       return this.orderTimer(
-        this.convertDatetime(datetime, this.timezoneString),
+        this.convertDatetime(
+          datetime,
+          this.timezoneString,
+          'YYYY-MM-DD HH:mm:ss'
+        ),
         this.timezoneString
       )
     },

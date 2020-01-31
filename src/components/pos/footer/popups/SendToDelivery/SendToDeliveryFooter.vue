@@ -118,7 +118,7 @@ export default {
       getReferrals: state => state.location.referrals,
     }),
     ...mapState('customer', ['address']),
-    ...mapState('order', ['orderSource']),
+    ...mapState('order', ['needSupervisorAccess']),
     ...mapGetters('order', ['subTotal']),
     ...mapGetters('location', ['_t', 'formatPrice']),
   },
@@ -138,7 +138,7 @@ export default {
         const minOrderValue = this.formatPrice(this.address.min_order_value)
         this.errors = `Minimum order values should be ${minOrderValue} for selected delivery address`
       } else {
-        if (this.orderSource === 'backend') {
+        if (this.needSupervisorAccess) {
           showModal('#modificationReason')
         } else {
           $('#confirm_announcement').prop('disabled', true)
