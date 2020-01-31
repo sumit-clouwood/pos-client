@@ -143,6 +143,8 @@ const actions = {
       )
       let orderTypeLabel = orderData.order_type + '_label'
       orderData.order_no = orderData.orderNumber //Custom Order No to give appropriate field for Habib
+      orderData.real_created_datetime = created_date
+      orderData.created_at = null
       //Final JSON
       /*get selected table no*/
       let table_no = rootState.dinein.selectedTable
