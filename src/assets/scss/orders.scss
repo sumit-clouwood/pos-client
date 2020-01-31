@@ -44,9 +44,12 @@
         background: red;
         padding: $px1;
         border-radius: 50%;
-        height: $px20;
-        width: $px20;
+        height: $px30;
+        width: $px30;
         text-align: center;
+        display: grid;
+        align-items: center;
+        justify-content: center;
       }
     }
 
