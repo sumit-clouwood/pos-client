@@ -636,7 +636,8 @@ const actions = {
                 rootGetters['location/isTokenManager'] &&
                 rootState.order.orderType.OTApi ===
                   CONSTANTS.ORDER_TYPE_WALKIN &&
-                rootGetters['auth/allowed'](PERMS.TOKEN_NUMBER)
+                rootGetters['auth/allowed'](PERMS.TOKEN_NUMBER) &&
+                !rootState.sync.online
               ) {
                 let tokenNumber = localStorage.getItem('token_number')
                   ? localStorage.getItem('token_number')
@@ -1045,6 +1046,18 @@ const actions = {
                 'SET_ORDER_NUMBER',
                 rootState.order.selectedOrder.item.order_no
               )
+              if (
+                typeof rootState.order.selectedOrder.item.token_number !=
+                'undefined'
+              ) {
+                commit(
+                  'location/SET_TOKEN_NUMBER',
+                  rootState.order.selectedOrder.item.token_number,
+                  {
+                    root: true,
+                  }
+                )
+              }
               commit(mutation.PRINT, true)
               commit('order/CLEAR_SELECTED_ORDER', null, { root: true })
               resolve()
@@ -1126,15 +1139,9 @@ const actions = {
           if (response.data.status === 'ok') {
             commit('order/SET_ORDER_ID', response.data.id, { root: true })
             commit('SET_ORDER_NUMBER', response.data.order_no)
-            if (state.order.token_number) {
-              /* eslint-disable */
-              let tokenNumber = state.order.token_number
-              console.log(tokenNumber);
-              commit('location/SET_TOKEN_NUMBER', tokenNumber, {
-                root: true,
-              })
-              localStorage.setItem('token_number', ++tokenNumber)
-            }
+            commit('location/SET_TOKEN_NUMBER', response.data.token_number, {
+              root: true,
+            })
             const msg = rootGetters['location/_t']('Order placed Successfully')
             dispatch('setMessage', {
               result: 'success',
@@ -1366,7 +1373,21 @@ const actions = {
     })
     return Promise.reject(err_msg)
   },
-  handleNetworkError({ rootGetters, commit }) {
+  handleNetworkError({ rootState, rootGetters, commit }) {
+    if (
+      rootGetters['location/isTokenManager'] &&
+      rootState.order.orderType.OTApi === CONSTANTS.ORDER_TYPE_WALKIN &&
+      rootGetters['auth/allowed'](PERMS.TOKEN_NUMBER) &&
+      !rootState.sync.online
+    ) {
+      let tokenNumber = localStorage.getItem('token_number')
+        ? localStorage.getItem('token_number')
+        : localStorage.getItem('starting_token')
+      commit('location/SET_TOKEN_NUMBER', tokenNumber, {
+        root: true,
+      })
+      localStorage.setItem('token_number', ++tokenNumber)
+    }
     let errorMsg = rootGetters['location/_t'](
       'System went offline. Order is queued for sending later'
     )

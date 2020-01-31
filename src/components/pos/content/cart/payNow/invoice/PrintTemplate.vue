@@ -16,7 +16,7 @@
           allowed(PERMS.TOKEN_NUMBER) &&
             isTokenManager &&
             tokenNumber &&
-            orderType.OTApi === 'walk_in'
+            (orderType.OTApi === 'walk_in' || orderType.OTApi === 'carhop')
         "
       >
         {{ tokenNumber }}

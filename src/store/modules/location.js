@@ -30,6 +30,7 @@ const state = {
   terminalCode: null,
   timezones: [],
   tokenNumber: null,
+  openHours: null,
 }
 
 // getters
@@ -215,15 +216,25 @@ const actions = {
             commit(mutation.SET_BRAND, storedata.data.brand)
           }
 
+          let currentStore = storedata.data.store
           if (
-            storedata.data.store.token_manager &&
+            currentStore.token_manager &&
             rootGetters['auth/allowed'](PERMS.TOKEN_NUMBER) &&
-            storedata.data.store.token_starting_number
+            currentStore.token_starting_number
           ) {
+            localStorage.setItem(
+              'opening_hours',
+              JSON.stringify(currentStore.open_hours)
+            )
+            localStorage.setItem(
+              'starting_token',
+              currentStore.token_starting_number
+            )
+            commit('SET_OPEN_HOURS', currentStore.open_hours)
             if (!localStorage.getItem('token_number')) {
               localStorage.setItem(
                 'token_number',
-                storedata.data.store.token_starting_number
+                currentStore.token_starting_number
               )
             }
             commit(
@@ -479,6 +490,9 @@ const mutations = {
   },
   [mutation.SET_DATE](state, dateAPI) {
     state.apiDate = dateAPI
+  },
+  [mutation.SET_OPEN_HOURS](state, openHours) {
+    state.openHours = openHours
   },
   [mutation.SET_TERMINAL_CODE](state, terminalCode) {
     state.terminalCode = terminalCode

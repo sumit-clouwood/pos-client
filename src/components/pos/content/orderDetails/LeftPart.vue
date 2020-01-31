@@ -58,11 +58,19 @@
         </p>
       </div>
       <div class="details-item">
-        <span class="details-item-name color-text-invert">{{
-          _t('Placed By:')
-        }}</span>
+        <span class="details-item-name color-text-invert"
+          >{{ _t('Placed By') }}:</span
+        >
         <p class="color-text">
           {{ getPlacedBy(orderDetails) }}
+        </p>
+      </div>
+      <div class="details-item" v-if="orderDetails.token_number">
+        <span class="details-item-name color-text-invert"
+          >{{ _t('Token Number') }}:
+        </span>
+        <p class="color-text">
+          {{ orderDetails.token_number }}
         </p>
       </div>
       <div class="details-item" v-if="orderDetails.table_number">
