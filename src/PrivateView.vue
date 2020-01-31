@@ -174,6 +174,7 @@ export default {
     currentRoute(any) {
       if (any) {
         this.$router.replace(any)
+        this.$store.commit('context/SET_ROUTE', null)
       }
     },
     // eslint-disable-next-line no-unused-vars
