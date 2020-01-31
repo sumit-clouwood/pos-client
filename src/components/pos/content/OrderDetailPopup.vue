@@ -93,6 +93,7 @@
               allowed(PERMS.MODIFY_ORDER) &&
                 typeof selectedOrder.item !== 'undefined' &&
                 selectedOrder.item.order_type === 'dine_in' &&
+                !multistore &&
                 selectedOrder.item.order_status === 'finished'
             "
             type="button"
@@ -101,13 +102,16 @@
           >
             <div class="button-content-container">
               <div class="button-icon-container"></div>
-              <div class="button-caption">{{ _t('Modify Order') }}</div>
+              <div class="button-caption">
+                {{ _t('Modify Order') }}
+              </div>
             </div>
           </button>
           <button
             v-if="
               allowed(PERMS.MODIFY_ORDER) &&
                 typeof selectedOrder.item !== 'undefined' &&
+                !multistore &&
                 selectedOrder.item.order_type !== 'dine_in'
             "
             type="button"
@@ -116,7 +120,9 @@
           >
             <div class="button-content-container">
               <div class="button-icon-container"></div>
-              <div class="button-caption">{{ _t('Modify Order') }}</div>
+              <div class="button-caption">
+                {{ _t('Modify Order') }}
+              </div>
             </div>
           </button>
           <button
@@ -170,7 +176,7 @@ import CancelOrderPopup from '@/components/pos/content/orderDetails/CancelOrderP
 import ModificationPermissions from '@/components/pos/content/orderDetails/ModificationPermissions'
 import CustomerInformation from '@/components/pos/footer/popups/ManageCustomer/CustomerInformation'
 import * as CONST from '@/constants'
-
+/* global $ */
 export default {
   name: 'OrderDetailPopup',
   props: {},
@@ -190,13 +196,21 @@ export default {
     ...mapState('order', ['selectedOrder']),
     ...mapState('dinein', ['tables']),
     ...mapGetters('location', ['_t']),
-    ...mapGetters('auth', ['allowed']),
+    ...mapGetters('auth', ['allowed', 'multistore']),
   },
   methods: {
     ...mapActions('customer', ['fetchSelectedCustomer']),
     ...mapActions('deliveryManager', ['printInvoice']),
     printInvoiceDisableKitchenPrint(details) {
-      this.printInvoice(details)
+      if (window.PrintHandle == null) {
+        this.printInvoice(details)
+      } else {
+        this.$store.dispatch(
+          'printingServer/printingServerInvoiceRaw',
+          details.order.item
+        )
+      }
+      $('#orderDetailsPopup').modal('hide')
       this.$store.commit('dinein/KITCHEN_PRINT', false)
     },
     modifyOrder(order) {

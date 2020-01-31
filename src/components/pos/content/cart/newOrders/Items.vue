@@ -6,8 +6,14 @@
         v-for="(item, index) in items"
         :key="index + '-' + item._id"
       >
+        <div v-if="multistore" class="storename">
+          {{ storeName(item.store_id) }}
+        </div>
+
         <div class="main-orders-list-item-title color-text">
-          <div class="orders-name">{{ dt(item) }}</div>
+          <div class="orders-name">
+            {{ dt(item) }}
+          </div>
           <div class="orders-amount">
             {{ formatPrice(itemGrossPriceDiscounted(item)) }}
           </div>
@@ -25,12 +31,18 @@
         >
           <div v-html="formatItemDiscount(item)"></div>
         </div>
+
         <div class="main-orders-list-item-buttons">
-          <Modifiers v-bind:modifiers="item.modifiers" v-if="item.modifiable" />
+          <Modifiers
+            v-bind:modifiers="item.modifiers"
+            v-bind:item="item"
+            v-if="item.modifiable"
+          />
           <div
             class="button-plus"
             data-toggle="modal"
             data-target="#POSOrderItemOptions"
+            @click="modifierHeights()"
           >
             <div
               class="button-plus-icon"
@@ -64,6 +76,7 @@
 </template>
 
 <script>
+import { bus } from '@/eventBus'
 import Modifiers from './items/Modifiers.vue'
 import Preloader from '@/components/util/Preloader'
 
@@ -92,6 +105,8 @@ export default {
       'itemModifiersPrice',
     ]),
     ...mapGetters('location', ['formatPrice', '_t']),
+    ...mapGetters('context', ['storeName']),
+    ...mapGetters('auth', ['multistore']),
   },
   methods: {
     ...mapActions('category', ['getItems']),
@@ -112,6 +127,9 @@ export default {
         this.$store.dispatch('mainOrdersHendlerChange')
       }
     },
+    modifierHeights() {
+      bus.$emit('modifier-heights')
+    },
   },
   components: {
     Modifiers,
@@ -123,7 +141,15 @@ export default {
 @import '../../../../../assets/scss/pixels_rem.scss';
 @import '../../../../../assets/scss/variables.scss';
 @import '../../../../../assets/scss/mixins.scss';
-
+.main-orders-list-item {
+  .storename {
+    font-size: 9px;
+    padding-top: 0;
+    padding-bottom: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+}
 .button-plus-icon {
   width: 23px;
   height: 23px;

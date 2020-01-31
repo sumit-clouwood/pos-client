@@ -76,7 +76,7 @@
     .main-oreders-buttons {
       padding: 0px 0;
       display: grid;
-      grid-template-columns: 1fr 1fr 1fr auto;
+      grid-template-columns: 1fr 1fr 1fr auto auto;
       grid-gap: $px10;
       grid-column-start: 1;
       grid-column-end: 3;

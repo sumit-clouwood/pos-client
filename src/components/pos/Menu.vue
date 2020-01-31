@@ -3,7 +3,7 @@
     :class="['navigation', allCategoryHendler ? 'active' : 'notActive']"
     class="color-main"
   >
-    <div class="logo" title="logo">
+    <div class="logo" title="logo" @click="openMultiStore">
       <a class="logo-link" role="button">
         <!--<router-link :to="'/delivery-manager' + store">-->
         <img src="img/icons/icon.png" alt="icon" />
@@ -11,6 +11,7 @@
       </a>
     </div>
     <div class="navigation-list-wrapper">
+      <MultiStore />
       <!--<btnBack :param="'category'" />-->
       <ul class="navigation-list" v-if="categories.length">
         <li
@@ -89,6 +90,8 @@
 // import btnBack from '../mobileComponents/mobileElements/btnBack'
 
 import { mapState, mapGetters } from 'vuex'
+import MultiStore from './MultiStoreMenu'
+import { bus } from '@/eventBus'
 
 export default {
   name: 'Menu',
@@ -100,6 +103,7 @@ export default {
     }
   },
   components: {
+    MultiStore,
     // btnBack,
   },
   computed: {
@@ -107,7 +111,9 @@ export default {
       currentCategory: state => state.category.category._id,
     }),
     ...mapGetters('context', ['store']),
+    ...mapState('context', ['storeId']),
     ...mapState('auth', ['userDetails']),
+    ...mapGetters('auth', ['multistore']),
     ...mapGetters(['allCategoryHendler', 'subCategoryHendler']),
     ...mapGetters('category', ['categories', 'getImages']),
     ...mapGetters('modifier', {
@@ -115,18 +121,47 @@ export default {
     }), //to preftech modifier images, todo
   },
   updated() {
-    let menuHeight = $('.navigation-list-wrapper').innerHeight()
-    this.menuHeighInIt = this.menuHeight = menuHeight
-    this.menuInitHeight = menuHeight
-    this.menuItemHeight = $('.navigation-list').innerHeight()
+    this.$nextTick(() => {
+      this.posMenu()
+    })
+  },
+  watch: {
+    storeId(oldVal, newVal) {
+      if (oldVal != newVal) {
+        this.browse(this.categories[0])
+      }
+    },
   },
   methods: {
+    openMultiStore() {
+      if (this.multistore) {
+        $('.multi-store-menu-pos').slideToggle()
+        $('.navigation .logo').toggleClass('multistore')
+        let posMenuUpperLogo = $('.logo')
+        $('.main, .header').click(() => {
+          if (posMenuUpperLogo.hasClass('multistore')) {
+            $('.multi-store-menu-pos').slideUp()
+            posMenuUpperLogo.removeClass('multistore')
+          }
+        })
+      } else {
+        return false
+      }
+    },
     browse(item) {
       // eslint-disable-next-line no-undef
       $('.breadcrumbs').show()
       $('.search-field-input').val('')
       //bootstrap.loadUI().then(() => {})
+      bus.$emit('clear-search-input', '')
+
       this.$store.dispatch('category/browse', item)
+    },
+    posMenu() {
+      let menuHeight = $('.navigation-list-wrapper').innerHeight()
+      this.menuHeighInIt = this.menuHeight = menuHeight
+      this.menuInitHeight = menuHeight
+      this.menuItemHeight = $('.navigation-list').innerHeight()
     },
     showMore() {
       let menuHeightOld = this.menuHeighInIt
@@ -273,5 +308,8 @@ export default {
       }
     }
   }
+}
+.navigation .logo.multistore {
+  background: rgba(0, 0, 0, 0.7);
 }
 </style>

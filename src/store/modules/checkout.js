@@ -53,36 +53,40 @@ const getters = {
     }
 
     order.items.forEach(item => {
-      data.subTotal += item.price * item.qty
-      data.totalTax += item.tax * item.qty
+      data.subTotal += Num.round(Num.round(item.price) * Num.round(item.qty))
+      data.totalTax += Num.round(Num.round(item.tax) * Num.round(item.qty))
     })
 
     order.item_modifiers.forEach(modifier => {
-      data.subTotal += modifier.price * modifier.qty
-      data.totalTax += modifier.tax * modifier.qty
+      data.subTotal += Num.round(
+        Num.round(modifier.price) * Num.round(modifier.qty)
+      )
+      data.totalTax += Num.round(
+        Num.round(modifier.tax) * Num.round(modifier.qty)
+      )
     })
 
     order.order_surcharges.forEach(surcharge => {
-      data.totalSurcharge += surcharge.price
-      data.surchargeTax += surcharge.tax
-      data.totalTax += surcharge.tax
+      data.totalSurcharge += Num.round(surcharge.price)
+      data.surchargeTax += Num.round(surcharge.tax)
+      data.totalTax += Num.round(surcharge.tax)
     })
 
     order.item_discounts.forEach(discount => {
-      data.subTotal -= discount.price
-      data.totalTax -= discount.tax
+      data.subTotal -= Num.round(discount.price)
+      data.totalTax -= Num.round(discount.tax)
     })
 
     order.order_discounts.forEach(discount => {
-      data.totalDiscount += discount.price
-      data.totalTax -= discount.tax
+      data.totalDiscount += Num.round(discount.price)
+      data.totalTax -= Num.round(discount.tax)
     })
 
     data.balanceDue =
       data.subTotal + data.totalTax + data.totalSurcharge - data.totalDiscount
 
     if (order.delivery_surcharge) {
-      data.balanceDue += order.delivery_surcharge
+      data.balanceDue += Num.round(order.delivery_surcharge)
     }
     return data
   },
@@ -346,7 +350,37 @@ const actions = {
     }
 
     //order level discount
+    order.item_discounts = order.item_discounts.map(discount => {
+      discount.rate = Num.round(discount.rate).toFixed(2)
+      discount.price = Num.round(discount.price).toFixed(2)
+      discount.tax = Num.round(discount.tax).toFixed(2)
+      return discount
+    })
 
+    order.order_surcharges = order.order_surcharges.map(surcharge => {
+      surcharge.rate = surcharge.rate
+        ? Num.round(surcharge.rate).toFixed(2)
+        : surcharge.rate
+      surcharge.price = Num.round(surcharge.price).toFixed(2)
+      surcharge.tax = Num.round(surcharge.tax).toFixed(2)
+      surcharge.tax_rate = surcharge.tax_rate
+        ? Num.round(surcharge.tax_rate).toFixed(2)
+        : surcharge.tax_rate
+      return surcharge
+    })
+
+    //formatting
+    order.items = order.items.map(item => {
+      item.price = Num.round(item.price).toFixed(2)
+      item.tax = Num.round(item.tax).toFixed(2)
+      return item
+    })
+
+    order.item_modifiers = order.item_modifiers.map(item => {
+      item.price = Num.round(item.price).toFixed(2)
+      item.tax = Num.round(item.tax).toFixed(2)
+      return item
+    })
     const orderData = getters.calculateOrderTotals(order)
 
     order.sub_total = orderData.subTotal.toFixed(2)
@@ -413,48 +447,66 @@ const actions = {
           note: item.note,
           originalItem: item,
         }
+        //add store id with item if available
+        if (item.store_id) {
+          orderItem.store_id = item.store_id
+        }
+
         if (typeof item.kitchen_invoice !== 'undefined') {
           orderItem['kitchen_invoice'] = item.kitchen_invoice
         } else {
           orderItem['kitchen_invoice'] = 0
         }
+        if (item.measurement_unit) {
+          orderItem.measurement_unit = item.measurement_unit
+        }
 
+        if (item.measurement_unit) {
+          orderItem.measurement_unit = item.measurement_unit
+        }
         //we are sending item price and modifier prices separtely but sending
         //item discount as total of both discounts
 
         if (item.discount) {
-          let itemDiscountedTax = rootGetters['order/itemTaxDiscount'](item)
+          let itemDiscountedTax = Num.round(
+            rootGetters['order/itemTaxDiscount'](item)
+          )
 
           if (item.discountedNetPrice) {
             const modifiersTax = rootGetters['order/itemModifiersTax'](item)
             itemDiscountedTax = item.tax + modifiersTax - item.discountedTax
           }
 
-          const modifiersDiscountedTax = rootGetters[
-            'order/itemModifierTaxDiscount'
-          ](item)
+          const modifiersDiscountedTax = Num.round(
+            rootGetters['order/itemModifierTaxDiscount'](item)
+          )
 
           let itemDiscount = item.discount
           itemDiscount.itemId = item._id
           itemDiscount.itemNo = item.orderIndex
           itemDiscount.quantity = item.quantity
+
+          if (item.store_id) {
+            itemDiscount.store_id = item.store_id
+          }
           //undiscountedTax is without modifiers
 
           if (item.discountedNetPrice) {
             //don't round fixed discount calculations
             itemDiscount.tax = itemDiscountedTax + modifiersDiscountedTax
           } else {
-            itemDiscount.tax = itemDiscountedTax + modifiersDiscountedTax
+            itemDiscount.tax = Num.round(
+              itemDiscountedTax + modifiersDiscountedTax
+            )
           }
           itemDiscount.price =
             rootGetters['order/itemNetDiscount'](item) +
             rootGetters['order/itemModifierDiscount'](item)
           item_discounts.push(itemDiscount)
         }
-
         if (item.modifiersData && item.modifiersData.length) {
           item.modifiersData.forEach(modifier => {
-            itemModifiers.push({
+            let modifierEntity = {
               entity_id: modifier.modifierId,
               for_item: item.orderIndex,
               price: modifier.price,
@@ -462,7 +514,11 @@ const actions = {
               name: modifier.name,
               qty: item.quantity,
               type: modifier.type,
-            })
+            }
+            if (modifier.store_id) {
+              modifierEntity.store_id = modifier.store_id
+            }
+            itemModifiers.push(modifierEntity)
           })
           //get all modifiers by modifier ids attached to item
         }
@@ -470,7 +526,7 @@ const actions = {
       }
     })
     order.item_discounts = item_discounts.map(itemDiscount => {
-      return {
+      let discountData = {
         name: itemDiscount.name,
         type: itemDiscount.type,
         rate:
@@ -482,6 +538,12 @@ const actions = {
         for_item: itemDiscount.itemNo,
         entity_id: itemDiscount.id,
       }
+
+      if (itemDiscount.store_id) {
+        discountData.store_id = itemDiscount.store_id
+      }
+
+      return discountData
     })
 
     order.item_modifiers = itemModifiers
@@ -583,6 +645,9 @@ const actions = {
                 console.log(e)
               }
 
+              if (rootGetters['auth/multistore']) {
+                order.multi_store = true
+              }
               order.order_surcharges = rootState.surcharge.surchargeAmounts.map(
                 appliedSurcharge => {
                   const surcharge = rootState.surcharge.surcharges.find(
@@ -616,7 +681,9 @@ const actions = {
                 const discount = rootState.discount.appliedOrderDiscount
                 const orderDiscount = {
                   name: discount.name,
-                  price: rootGetters['discount/orderDiscountWithoutTax'],
+                  price: Num.round(
+                    rootGetters['discount/orderDiscountWithoutTax']
+                  ),
                   tax: rootState.discount.taxDiscountAmount,
                   type: discount.type,
                   rate:
@@ -1490,7 +1557,7 @@ const actions = {
     dispatch('surcharge/reset', {}, { root: true })
     if (full && getters.complete) {
       dispatch('order/reset', {}, { root: true })
-      dispatch('customer/reset', {}, { root: true })
+      dispatch('customer/reset', true, { root: true })
       dispatch('location/reset', {}, { root: true })
     }
   },
@@ -1551,6 +1618,7 @@ const actions = {
           root: true,
         }).then(customer => {
           customerData.push(customer)
+          dispatch('customer/resetCustomer', true, { root: true })
         })
         if (orderData.order_delivery_area && customerDetails.deliveryAreas) {
           delivery_area = Object.values(customerDetails.deliveryAreas).find(
@@ -1644,7 +1712,12 @@ const actions = {
 // mutations
 const mutations = {
   [mutation.SET_ORDER](state, order) {
-    state.order = order
+    let orderData = { ...order }
+    orderData.windows_app = false
+    if (window.PrintHandle != null) {
+      orderData.windows_app = true
+    }
+    state.order = orderData
   },
   [mutation.SET_PAID_AMOUNT](state, amount) {
     state.paidAmount = amount

@@ -17,7 +17,10 @@
               item.sub_category_image == '' ? item.sub_category_color : '',
           }"
           :key="item._id"
-          :class="{ active: currentSubcategory === item._id }"
+          :class="{
+            active: currentSubcategory === item._id,
+            cashier_app_sub_item: item.sub_category_image == '',
+          }"
           @click.prevent="getSubCatItems(item)"
         >
           <img
@@ -53,6 +56,8 @@
 <script>
 /* global $ */
 import { mapState, mapGetters } from 'vuex'
+import { bus } from '@/eventBus'
+
 // import btnBack from '../../../mobileComponents/mobileElements/btnBack'
 
 export default {
@@ -78,30 +83,15 @@ export default {
     ...mapGetters('category', ['subcategories', 'items']),
     ...mapGetters(['subCategoryHendler', 'foodMenuHendler']),
   },
-  updated() {
-    this.setScreenScrolls()
-  },
-  mounted() {
-    this.setScreenScrolls()
-  },
   methods: {
     getSubCatItems(item) {
       // eslint-disable-next-line no-undef
       $('.breadcrumbs').show()
       // eslint-disable-next-line no-undef
       $('.search-field-input').val('')
+      bus.$emit('clear-search-input', '')
       this.$store.dispatch('category/getItems', item)
       this.$store.dispatch('foodMenuHendlerChange')
-    },
-    setScreenScrolls() {
-      let foodBlockHeight = $('.food-block').innerHeight()
-      this.foodBlockHeight = foodBlockHeight
-      this.foodBlockInitHeight = foodBlockHeight
-      this.foodBlockItemHeight = $('.food-menu').innerHeight()
-      $('.food-bottom-arrow, .food-top-arrow').removeClass('disable')
-      if (this.foodBlockHeight > this.foodBlockItemHeight) {
-        $('.food-bottom-arrow, .food-top-arrow').addClass('disable')
-      }
     },
     // ...mapActions('category', ['getItems']),
   },

@@ -75,19 +75,23 @@ export default {
     ...mapState('sync', ['online']),
   },
   updated() {
-    let cartHeight = $('.main-orders-list-wrapper').innerHeight()
-    this.cartHeight = cartHeight
-    this.cartInitHeight = cartHeight
-    this.cartItemHeight = $('.main-orders-list').innerHeight()
+    this.$nextTick(() => {
+      this.cartHeader()
+    })
   },
   methods: {
     removeSelectedCustomer() {
       this.$store.commit('location/SET_MODAL', '#manage-customer')
       this.$store.dispatch('customer/resetCustomer')
     },
+    cartHeader() {
+      let cartHeight = $('.main-orders-list-wrapper').innerHeight()
+      this.cartHeight = cartHeight
+      this.cartInitHeight = cartHeight
+      this.cartItemHeight = $('.main-orders-list').innerHeight()
+    },
     cartBottom() {
       this.cartHeight += parseInt(this.cartInitHeight)
-      //alert(this.cartHeight + ' << ' + this.cartItemHeight)
       if (this.cartHeight >= this.cartItemHeight) {
         $('.cartBottomBtn').addClass('toggle')
         this.cartHeight = 0

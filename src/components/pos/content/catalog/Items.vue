@@ -52,7 +52,7 @@
 
 <script>
 /* global $, showModal  */
-
+import { bus } from '@/eventBus'
 import { mapGetters, mapState } from 'vuex'
 import bootstrap from '@/bootstrap'
 import Popup from './items/Popup'
@@ -72,6 +72,7 @@ export default {
     ...mapState('location', ['currency']),
     ...mapState('order', ['splitBill', 'selectedOrder']),
     ...mapGetters('order', ['orderType']),
+    ...mapGetters('auth', ['allowed']),
     ...mapGetters('location', ['_t']),
     ...mapGetters('category', ['items', 'itemByCode']),
     ...mapGetters('modifier', ['hasModifiers']),
@@ -90,6 +91,11 @@ export default {
   },
   created() {},
   updated() {
+    this.$nextTick(() => {
+      this.setScreenScrolls()
+    })
+  },
+  mounted() {
     this.setScreenScrolls()
   },
   methods: {
@@ -97,11 +103,13 @@ export default {
       let foodBlockHeight = $('.food-block').innerHeight()
       let foodBlockInitHeight = foodBlockHeight
       let foodBlockItemHeight = $('.food-menu').innerHeight()
+      $('.food-bottom-arrow, .food-top-arrow').removeClass('disable')
+
       if (this.foodBlockHeight > this.foodBlockItemHeight) {
         $('.food-bottom-arrow, .food-top-arrow').addClass('disable')
       }
 
-      this.$emit('heights', {
+      bus.$emit('heights', {
         foodBlockHeight,
         foodBlockInitHeight,
         foodBlockItemHeight,
@@ -117,8 +125,15 @@ export default {
       }
     },
     addToOrder(item) {
-      if (this.selectedOrder && !this.allowed('orders.o.update_order_items')) {
-        return false
+      bus.$emit('modifier-height')
+      if (this.selectedOrder) {
+        if (
+          (this.orderType == 'carhop' || this.orderType.OTApi === 'carhop') &&
+          this.selectedOrder.item.order_status == 'in-progress' &&
+          this.isCarhop()
+        ) {
+          return
+        }
       }
       if (this.splitBill) {
         return false

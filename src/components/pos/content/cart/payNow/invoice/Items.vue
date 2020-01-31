@@ -37,7 +37,6 @@ export default {
   props: ['labels', 'items', 'tpl'],
   computed: {
     ...mapGetters('location', ['formatPrice']),
-    ...mapGetters('modifier', ['findModifier']),
   },
   methods: {
     modifiers(item) {

@@ -129,6 +129,7 @@ export default {
   },
   computed: {
     ...mapGetters('location', ['_t']),
+    ...mapGetters('auth', ['multistore']),
     ...mapState('order', ['orderType']),
     ...mapGetters('context', ['store']),
     ...mapState('dinein', ['activeArea']),
@@ -139,8 +140,17 @@ export default {
         this.$store.dispatch('customer/reset')
       }
       this.selectedOrderType = newVal
-
       if (newVal.OTApi !== oldVal.OTApi) {
+        if (!this.multistore || this.multistore) {
+          let OrderDiscountMS = {
+            storeId: this.$store.state.context.storeId,
+            orderTypeChange: true,
+          }
+          this.$store.commit(
+            'discount/SET_MULTI_STORE_ORDER_DISCOUNTS',
+            OrderDiscountMS
+          )
+        }
         if (this.$store.state.discount.appliedOrderDiscount) {
           this.$store.dispatch('discount/clearOrderDiscount')
         } else {

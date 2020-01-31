@@ -30,7 +30,8 @@
           class="search-field-input"
           :placeholder="_t('Search or scan for items')"
           v-model="searchTransactions"
-          @keyup="searchingItems(searchTransactions)"
+          @keyup="searchingItems()"
+          @keypress="$event.keyCode == 13 ? $event.preventDefault() : true"
         />
       </div>
     </form>
@@ -52,7 +53,6 @@
 <script>
 /*Global $*/
 import { mapGetters } from 'vuex'
-
 export default {
   name: 'Search',
   props: {},
@@ -73,11 +73,13 @@ export default {
     this.searchTransactions = ''
   },
   methods: {
-    searchingItems(searchTransactions) {
-      this.$store.dispatch(
-        'transactionOrders/setTransactionOrders',
-        searchTransactions
-      )
+    searchingItems() {
+      if (this.searchTransactions.trim().length >= 1) {
+        this.$store.dispatch(
+          'transactionOrders/setTransactionOrders',
+          this.searchTransactions
+        )
+      }
     },
     searchHendlerChange() {
       this.$store.dispatch('searchHendlerChange')

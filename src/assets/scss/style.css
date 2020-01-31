@@ -831,6 +831,24 @@ h6 {
   border: solid white;
   border-width: 0 3px 3px 0; }
 
+.food-arrow {
+  position: absolute;
+  background: rgba(80, 86, 202, 0.7);
+  color: #fff;
+  padding: 0.8125rem 1.625rem;
+  border-radius: 0.25rem;
+  right: 0;
+  cursor: pointer;
+  z-index: 99;
+  width: 4.25rem; }
+  .food-arrow.disable {
+    display: none; }
+  .food-arrow.modifier-top-arrow {
+    right: 30px !important; }
+  .food-arrow.modifier-bottom-arrow {
+    right: 30px !important;
+    bottom: 90px !important; }
+
 #customer .modal-dialog,
 #manage-customer .modal-dialog {
   max-width: 73.75rem; }
@@ -3969,7 +3987,8 @@ body {
           border-radius: 3px;
           transition: 0.2s linear; }
           .navigation .navigation-list-wrapper .navigation-list .nav-item .nav-link-nav.activebg {
-            padding: 0 5px; }
+            padding: 0 5px;
+            height: 5.3125rem; }
           .navigation .navigation-list-wrapper .navigation-list .nav-item .nav-link-nav.active, .navigation .navigation-list-wrapper .navigation-list .nav-item .nav-link-nav:hover {
             background-color: #767DFF !important;
             box-shadow: 0 0 5px rgba(0, 0, 0, 0.1); }
@@ -4043,9 +4062,22 @@ body {
   grid-template-rows: 5.3125rem 1fr 3.75rem 7.3125rem;
   width: 4.6875rem;
   -webkit-transition: 0.3s ease-out;
-  transition: 0.3s ease-out; }
+  transition: 0.3s ease-out;
+  justify-content: inherit;
+  grid-template-columns: 4.6875rem; }
   .dm-manager .navigation.collapse-menu {
-    width: 12.5rem; }
+    width: 12.5rem;
+    grid-template-columns: 12.5rem; }
+    .dm-manager .navigation.collapse-menu .navigation-avatar {
+      -webkit-transition: width 0.3s;
+      /* For Safari 3.1 to 6.0 */
+      transition: width 0.3s;
+      width: 12.5rem; }
+      .dm-manager .navigation.collapse-menu .navigation-avatar .nav-link {
+        width: 12.5rem;
+        -webkit-transition: width 0.3s;
+        /* For Safari 3.1 to 6.0 */
+        transition: width 0.3s; }
   .dm-manager .navigation .logo {
     width: 4.6875rem; }
   .dm-manager .navigation .navigation-list-wrapper .navigation-list {
@@ -4089,6 +4121,19 @@ body {
           overflow: hidden;
           text-overflow: ellipsis;
           margin-left: 1.25rem; }
+  .dm-manager .navigation .slider-btn {
+    z-index: 9; }
+  .dm-manager .navigation .navigation-avatar {
+    justify-content: inherit;
+    -webkit-transition: width 0.3s;
+    /* For Safari 3.1 to 6.0 */
+    transition: width 0.3s;
+    width: 4.6875rem; }
+    .dm-manager .navigation .navigation-avatar .nav-link {
+      width: 4.6875rem;
+      -webkit-transition: width 0.3s;
+      /* For Safari 3.1 to 6.0 */
+      transition: width 0.3s; }
 
 .collapse-menu .navigation-list li {
   max-width: 12.25rem !important; }
@@ -4192,6 +4237,8 @@ body {
           background-color: #fff;
           padding: 2px 2px 2px 2px;
           margin-top: 10px; }
+          .main .main-body .food-wrapper .food-categories .food-categories-item.cashier_app_sub_item {
+            height: 6.25rem; }
           .main .main-body .food-wrapper .food-categories .food-categories-item:hover, .main .main-body .food-wrapper .food-categories .food-categories-item.active {
             box-shadow: inset 0 0 0px 2px #5056CA; }
             .main .main-body .food-wrapper .food-categories .food-categories-item:hover .food-categories-item-check, .main .main-body .food-wrapper .food-categories .food-categories-item.active .food-categories-item-check {
@@ -4495,7 +4542,7 @@ body {
     .main-orders .main-orders-contacts .main-oreders-buttons {
       padding: 0px 0;
       display: grid;
-      grid-template-columns: 1fr 1fr 1fr auto;
+      grid-template-columns: 1fr 1fr 1fr auto auto;
       grid-gap: 0.625rem;
       grid-column-start: 1;
       grid-column-end: 3;

@@ -13,6 +13,7 @@ import router from '../../router'
 // initial state
 const state = {
   currency: 'AED',
+  multiStoreIds: false,
   locale: 'en-US',
   timezone: 'Asia/Dubai',
   timezoneString: 'Asia/Dubai',
@@ -99,13 +100,6 @@ const actions = {
           })
           commit('context/SET_MULTI_STORES', availabeStores, { root: true })
         }
-        dispatch(
-          'auth/getAllPrinters',
-          {},
-          {
-            root: true,
-          }
-        )
         commit(mutation.SET_BRAND, storedata.data.brand)
 
         if (storedata.data.store) {
@@ -212,6 +206,11 @@ const actions = {
               }
             )
           }
+          let availableStoreGroups =
+            storedata.data.available_store_groups || false
+          commit('auth/AVAILABLE_STORE_GROUPS', availableStoreGroups, {
+            root: true,
+          })
           if (storedata.data.brand) {
             commit(mutation.SET_BRAND, storedata.data.brand)
           }
@@ -326,11 +325,27 @@ const actions = {
                       reject(error)
                     })
 
-                  resolve(state.locale)
-
                   dispatch('referrals')
+                  let multiStoreIds = storedata.data.available_stores.map(
+                    store => store._id
+                  )
+                  let storeId = router.currentRoute.params.group_id || false
+                  if (storeId) {
+                    availableStoreGroups.find(group => {
+                      if (group._id === storeId) {
+                        multiStoreIds = group.group_stores
+                      }
+                    })
+                  }
+                  commit(mutation.MULTI_STORE_IDS, multiStoreIds)
                   dispatch('auth/getUserDetails', storedata.data.user_id, {
                     root: true,
+                  }).then(response => {
+                    resolve({
+                      userDetails: response.item,
+                      stores: multiStoreIds,
+                      availableStoreGroups: availableStoreGroups,
+                    })
                   })
                 })
                 .catch(error => {
@@ -396,7 +411,6 @@ const actions = {
     document.body.classList.remove('body-rtl')
     document.body.classList.add('body-' + direction)*/
   },
-
   updateModalSelectionDelivery({ commit, rootState }, modalSelection) {
     commit(mutation.SET_MODAL, modalSelection)
     if (!rootState.customer.address && modalSelection != '#loyalty-payment') {
@@ -467,6 +481,9 @@ const mutations = {
   },
   [mutation.SET_TIMEZONES](state, timezones) {
     state.timezones = timezones
+  },
+  [mutation.MULTI_STORE_IDS](state, multiStoreIds) {
+    state.multiStoreIds = multiStoreIds
   },
   [mutation.RESET](state, full = false) {
     state.setModal = '#manage-customer'
