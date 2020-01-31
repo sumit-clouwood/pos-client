@@ -58,9 +58,7 @@ const getters = {
     return orders
   },
   getOrdersByDriver: (state, getters, rootState, rootGetters) => driver => {
-    const cashMethod = rootGetters['payment/methods'].find(
-      method => method.type == 'regular'
-    )
+    const cashMethod = rootGetters['payment/cash']
 
     let data = {
       orders: [],
@@ -75,7 +73,7 @@ const getters = {
       if (order.driver == driver._id) {
         data.orders.push(order)
         data.amountToCollect += parseFloat(order.balance_due)
-        if (order.order_payments) {
+        if (order.order_payments && order.order_payments.length) {
           order.order_payments.forEach(payment => {
             data.totalAmount += parseFloat(payment.collected)
             if (cashMethod._id == payment.entity_id) {
@@ -84,6 +82,9 @@ const getters = {
               data.creditPayment += parseFloat(payment.collected)
             }
           })
+        } else {
+          //it is for sure credit payment
+          data.creditPayment += parseFloat(order.balance_due)
         }
         //delivery time, start to end
         order.order_history.forEach(history => {

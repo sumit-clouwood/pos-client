@@ -208,7 +208,9 @@ export default {
             }
             break
         }
-        this.$store.commit('order/ORDER_TYPE', orderType)
+        if (!this.$store.getters['auth/multistore']) {
+          this.$store.commit('order/ORDER_TYPE', orderType)
+        }
       }
 
       if (this.$route.params.table_id) {

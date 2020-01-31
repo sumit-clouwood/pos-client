@@ -18,6 +18,13 @@ const router = new Router({
 
   routes: [
     ///5d6cff2d7dc7bf003d15f06b/5d6cff407dc7bf003d15f138/crm-order/5de29617e33e87000c0229de/5de29617e33e87000c0229dd
+    // http://localhost:8081/5d012569ae34d800185c67f4/5d012577ae34d800185c6927/crm-order/5daabf8ea777da353f4a9b95/5daabf8ea777da353f4a9b94/group/id-isss
+    {
+      path:
+        '/:brand_id/:store_id/crm-order/:customer_id/:address_id/group/:group_id',
+      name: 'selectGroupForCrmOrder',
+      component: Home,
+    },
     {
       path: '/:brand_id/:store_id/crm-order/:customer_id/:address_id',
       name: 'selectAddressForCrmOrder',
