@@ -156,6 +156,7 @@
 </template>
 
 <script>
+/* global $ *
 import { mapState, mapGetters, mapActions } from 'vuex'
 
 import Invoice from '@/components/pos/content/cart/payNow/Invoice'
