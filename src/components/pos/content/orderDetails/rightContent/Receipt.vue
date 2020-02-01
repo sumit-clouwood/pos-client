@@ -157,12 +157,12 @@
 </template>
 
 <script>
+/* eslint-disable max-len */
+
 import { mapGetters, mapState } from 'vuex'
 export default {
   name: 'Receipt',
-  props: {
-    orderDetails: Object,
-  },
+  props: ['order_data'],
   data() {
     return {
       iteDiscount: {},
@@ -172,6 +172,35 @@ export default {
   computed: {
     ...mapGetters('location', ['_t', 'formatPrice']),
     ...mapState('order', ['orderSource']),
+    orderDetails() {
+      if (!this.order_data || typeof this.order_data.item === undefined) {
+        return false
+      }
+      var order_item = this.order_data.item
+      if (
+        this.order_data.item.multi_store == true &&
+        this.order_data.item.multi_store_data &&
+        this.order_data.item.multi_store_data.items
+      ) {
+        order_item.items = this.order_data.item.multi_store_data.items
+        order_item.item_modifiers = this.order_data.item.multi_store_data.item_modifiers
+        order_item.item_discounts = this.order_data.item.multi_store_data.item_discounts
+        order_item.order_surcharges = this.order_data.item.multi_store_data.order_surcharges
+        order_item.order_discounts = this.order_data.item.multi_store_data.order_discounts
+        order_item.sub_total = this.order_data.item.multi_store_data.sub_total
+        order_item.total_surcharge = this.order_data.item.multi_store_data.total_surcharge
+        order_item.surcharge_tax = this.order_data.item.multi_store_data.surcharge_tax
+        order_item.amount_changed = this.order_data.item.multi_store_data.amount_changed
+        order_item.tip_amount = this.order_data.item.multi_store_data.tip_amount
+        order_item.total_tax = this.order_data.item.multi_store_data.total_tax
+        order_item.total_discount = this.order_data.item.multi_store_data.total_discount
+        order_item.total_paid = this.order_data.item.multi_store_data.total_paid
+        order_item.balance_due = this.order_data.item.multi_store_data.balance_due
+        order_item.order_payments = this.order_data.item.multi_store_data.order_payments
+        order_item.delivery_surcharge = this.order_data.item.multi_store_data.delivery_surcharge
+      }
+      return order_item
+    },
   },
   methods: {
     getTotalPrice: function(item) {
