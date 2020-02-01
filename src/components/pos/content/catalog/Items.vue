@@ -72,7 +72,6 @@ export default {
     ...mapState('location', ['currency']),
     ...mapState('order', ['splitBill', 'selectedOrder']),
     ...mapGetters('order', ['orderType']),
-    ...mapGetters('auth', ['allowed']),
     ...mapGetters('location', ['_t']),
     ...mapGetters('category', ['items', 'itemByCode']),
     ...mapGetters('modifier', ['hasModifiers']),

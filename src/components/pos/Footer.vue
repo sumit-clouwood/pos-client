@@ -381,7 +381,7 @@
     <CustomerNotes />
     <CartAddEmail />
     <CartAmountChange />
-    <ModificationPermissions v-if="orderSource === 'backend'" />
+    <ModificationPermissions v-if="needSupervisorAccess" />
 
     <CartPaymentMsg />
     <CartTipAmount />
@@ -497,7 +497,7 @@ export default {
       'items',
       'is_pay',
       'orderId',
-      'orderSource',
+      'needSupervisorAccess',
     ]),
     ...mapState('location', ['brand']),
     ...mapState('sync', ['online']),

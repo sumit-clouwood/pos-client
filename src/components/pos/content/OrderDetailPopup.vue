@@ -33,10 +33,7 @@
               :orderDetails="selectedOrder.item"
               :userDetails="selectedOrder.lookups"
             />
-            <Modification
-              :orderDetails="selectedOrder.item"
-              :userDetails="selectedOrder.lookups"
-            />
+            <Modification />
             <Payment
               :orderDetails="selectedOrder.item"
               :lookups="selectedOrder.lookups"
@@ -159,6 +156,8 @@
 </template>
 
 <script>
+/* global $ */
+
 import { mapState, mapGetters, mapActions } from 'vuex'
 
 import Invoice from '@/components/pos/content/cart/payNow/Invoice'
@@ -171,8 +170,6 @@ import LeftPart from '@/components/pos/content/orderDetails/LeftPart'
 import CancelOrderPopup from '@/components/pos/content/orderDetails/CancelOrderPopup'
 import ModificationPermissions from '@/components/pos/content/orderDetails/ModificationPermissions'
 import CustomerInformation from '@/components/pos/footer/popups/ManageCustomer/CustomerInformation'
-import * as CONST from '@/constants'
-/* global $ */
 export default {
   name: 'OrderDetailPopup',
   props: {},
@@ -192,7 +189,7 @@ export default {
     ...mapState('order', ['selectedOrder']),
     ...mapState('dinein', ['tables']),
     ...mapGetters('location', ['_t']),
-    ...mapGetters('auth', ['allowed', 'multistore']),
+    ...mapGetters('auth', ['multistore']),
   },
   methods: {
     ...mapActions('customer', ['fetchSelectedCustomer']),
@@ -210,9 +207,10 @@ export default {
       this.$store.commit('dinein/KITCHEN_PRINT', false)
     },
     modifyOrder(order) {
-      let orderId = order._id
       this.$store.dispatch('order/startOrder')
-
+      const path = this.$store.getters['context/store'] + '/update/' + order._id
+      this.$router.push({ path: path })
+      /*
       switch (order.order_type) {
         case CONST.ORDER_TYPE_DINE_IN: {
           let tableData = this.tables.find(
@@ -247,13 +245,15 @@ export default {
           }
         }
       }
+      */
     },
   },
 }
 </script>
 <style scoped lang="scss">
 #orderDetailsPopup .modal-dialog {
-  max-width: 70%;
+  font-size: 0.875rem;
+  max-width: 80%;
 }
 </style>
 <style lang="scss">
