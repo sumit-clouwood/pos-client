@@ -57,7 +57,6 @@ export default {
   },
   computed: {
     ...mapGetters('location', ['_t']),
-    ...mapGetters('auth', ['waiter']),
     ...mapState('order', [
       'items',
       'orderSource',

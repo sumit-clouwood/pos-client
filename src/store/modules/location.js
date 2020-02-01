@@ -394,6 +394,12 @@ const mutations = {
     state.translations = translations
   },
   [mutation.SET_REFERRALS](state, referrals) {
+    /*let referral = []
+    referrals.find(ref => {
+      if (typeof ref.name != 'undefined') {
+        referral.push(ref)
+      }
+    })*/
     state.referrals = referrals
   },
   [mutation.SET_TIMEZONES](state, timezones) {

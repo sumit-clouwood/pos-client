@@ -186,6 +186,8 @@ const actions = {
         _order['orderData'] = jsonResponse
         // eslint-disable-next-line no-console
         console.log(window.PrintHandle, 'window.PrintHandle')
+        // eslint-disable-next-line no-console
+        console.log(_order, '_order')
         window.PrintHandle.Print(
           JSON.stringify(_order),
           function callbackfunction(data) {
@@ -198,7 +200,7 @@ const actions = {
         )
       }
       // eslint-disable-next-line no-console
-      // console.log(jsonResponse, 'datatata')
+      console.log(jsonResponse, 'checkResponce')
       let x = JSON.stringify(jsonResponse)
 
       // let b = new Buffer(x)

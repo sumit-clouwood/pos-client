@@ -262,7 +262,7 @@ export default {
       border: none;
       border-bottom: 1px solid $gray-middle;
       padding-right: 20px;
-      background: linear-gradient(141deg, #fcfcff 0%, #d7e0e1 51%, #ecebeb 75%);
+      background: #fafafa;
       transition: 0.1s ease-out;
 
       &:not(.color-dashboard-background) {

@@ -59,7 +59,11 @@
                     :class="isOrderCancelledClass"
                   >
                     <div
-                      v-if="order && order.order_system_status !== 'modified'"
+                      v-if="
+                        order &&
+                          order.order_system_status !== 'modified' &&
+                          order.order_system_status !== 'cancelled'
+                      "
                     >
                       <div class="moodifiers-btn-wrapper">
                         <div class="progress-order-details">

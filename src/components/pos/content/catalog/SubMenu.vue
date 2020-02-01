@@ -131,13 +131,13 @@ export default {
         grid-template-columns: 65px 1fr;
         grid-gap: 20px;
         border-bottom: 1px solid $gray-middle;
-        /*background-color: #fafafa;*/
-        background: linear-gradient(
-          141deg,
-          #fcfcff 0%,
-          #d7e0e1 51%,
-          #ecebeb 75%
-        );
+        background-color: #fafafa;
+        /*background: linear-gradient(*/
+        /*  141deg,*/
+        /*  #fcfcff 0%,*/
+        /*  #d7e0e1 51%,*/
+        /*  #ecebeb 75%*/
+        /*);*/
 
         .food-categories-item-text {
           font-size: 14px;
