@@ -169,13 +169,13 @@ export default {
         })
     },
     resetTokenNumber() {
-      if (
-        this.isTokenManager &&
-        (this.orderType.OTApi === this.CONST.ORDER_TYPE_WALKIN ||
-          this.orderType.OTApi === this.CONST.ORDER_TYPE_WALKIN) &&
-        this.$store.getters['auth/allowed'](this.PERMS.TOKEN_NUMBER)
-      ) {
-        if (!this.$store.state.sync.online) {
+      if (!this.$store.state.sync.online) {
+        if (
+          this.isTokenManager &&
+          (this.orderType.OTApi === this.CONST.ORDER_TYPE_WALKIN ||
+            this.orderType.OTApi === this.CONST.ORDER_TYPE_WALKIN) &&
+          this.$store.getters['auth/allowed'](this.PERMS.TOKEN_NUMBER)
+        ) {
           const storeCurrentDate = moment()
             .tz(this.timezoneString)
             .format('YYYY-MM-DD')
