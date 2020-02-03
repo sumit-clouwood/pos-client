@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="food-items">
     <div
       class="color-dashboard-background"
       v-if="items.length"
@@ -354,6 +354,12 @@ export default {
   padding: 5em;
   h2 {
     width: max-content;
+  }
+}
+.food-items {
+  overflow-y: auto;
+  &::-webkit-scrollbar {
+    width: 0;
   }
 }
 </style>
