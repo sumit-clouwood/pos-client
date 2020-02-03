@@ -118,6 +118,9 @@ export default {
       }
       if (this.foodCatHeight > this.foodCatItemHeight) {
         $('.food-cat-bottom-arrow, .food-cat-top-arrow').addClass('disable')
+        $('.foodCatScroll').addClass('noscroll')
+      } else {
+        $('.foodCatScroll').removeClass('noscroll')
       }
       $('.food-items').animate({ scrollTop: 0 }, 1000)
     },

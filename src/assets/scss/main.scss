@@ -461,6 +461,9 @@
       grid-template-rows: $main-body-web-search-height 1fr;
       .foodCatScroll {
         margin-top: $px64;
+        &.noscroll{
+          margin-top: 0;
+        }
       }
       .food-wrapper{
         height: calc(100vh - #{$food-wrapper-web-height});
