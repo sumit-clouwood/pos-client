@@ -1118,11 +1118,8 @@ const actions = {
                 'undefined'
               ) {
                 commit(
-                  'location/SET_TOKEN_NUMBER',
-                  rootState.order.selectedOrder.item.token_number,
-                  {
-                    root: true,
-                  }
+                  'SET_TOKEN_NUMBER',
+                  rootState.order.selectedOrder.item.token_number
                 )
               }
               commit(mutation.PRINT, true)
@@ -1206,9 +1203,13 @@ const actions = {
           if (response.data.status === 'ok') {
             commit('order/SET_ORDER_ID', response.data.id, { root: true })
             commit('SET_ORDER_NUMBER', response.data.order_no)
-            commit('location/SET_TOKEN_NUMBER', response.data.token_number, {
-              root: true,
-            })
+            if (
+              typeof response.data.token_number != 'undefined' &&
+              response.data.token_number != ''
+            ) {
+              commit('SET_TOKEN_NUMBER', response.data.token_number)
+              localStorage.setItem('token_number', ++response.data.token_number)
+            }
             const msg = rootGetters['location/_t']('Order placed Successfully')
             dispatch('setMessage', {
               result: 'success',
@@ -1364,7 +1365,13 @@ const actions = {
             commit('order/SET_ORDER_ID', response.data.id, { root: true })
             commit('SET_ORDER_NUMBER', response.data.order_no)
             //we are not printing so reset manually here
-
+            if (
+              typeof response.data.token_number != 'undefined' &&
+              response.data.token_number != ''
+            ) {
+              commit('SET_TOKEN_NUMBER', response.data.token_number)
+              localStorage.setItem('token_number', ++response.data.token_number)
+            }
             const msg = rootGetters['location/_t'](
               'Carhop Order has been placed'
             )
@@ -1440,19 +1447,15 @@ const actions = {
     })
     return Promise.reject(err_msg)
   },
-  handleNetworkError({ rootState, rootGetters, commit }) {
+  handleNetworkError({ state, rootState, rootGetters, commit }) {
     if (
       rootGetters['location/isTokenManager'] &&
-      rootState.order.orderType.OTApi === CONSTANTS.ORDER_TYPE_WALKIN &&
+      (rootState.order.orderType.OTApi === CONSTANTS.ORDER_TYPE_WALKIN ||
+        rootState.order.orderType.OTApi === CONSTANTS.ORDER_TYPE_CARHOP) &&
       rootGetters['auth/allowed'](PERMS.TOKEN_NUMBER) &&
       !rootState.sync.online
     ) {
-      let tokenNumber = localStorage.getItem('token_number')
-        ? localStorage.getItem('token_number')
-        : localStorage.getItem('starting_token')
-      commit('location/SET_TOKEN_NUMBER', tokenNumber, {
-        root: true,
-      })
+      let tokenNumber = state.order.token_number
       localStorage.setItem('token_number', ++tokenNumber)
     }
     let errorMsg = rootGetters['location/_t'](
@@ -1738,6 +1741,12 @@ const mutations = {
     state.orderNumber = orderNumber
     let order = { ...state.order }
     order.orderNumber = state.orderNumber
+    state.order = order
+  },
+  [mutation.SET_TOKEN_NUMBER](state, tokenNumber) {
+    state.tokenNumber = tokenNumber
+    let order = { ...state.order }
+    order.tokenNumber = state.tokenNumber
     state.order = order
   },
   [mutation.LOADING](state, loadingStatus) {

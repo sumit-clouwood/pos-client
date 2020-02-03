@@ -65,12 +65,12 @@
           {{ getPlacedBy(orderDetails) }}
         </p>
       </div>
-      <div class="details-item" v-if="orderDetails.token_number">
+      <div class="details-item" v-if="orderDetails.item.token_number">
         <span class="details-item-name color-text-invert"
           >{{ _t('Token Number') }}:
         </span>
         <p class="color-text">
-          {{ orderDetails.token_number }}
+          {{ orderDetails.item.token_number }}
         </p>
       </div>
       <div class="details-item" v-if="orderDetails.table_number">

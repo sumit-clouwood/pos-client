@@ -380,7 +380,7 @@ export default {
   computed: {
     ...mapState('checkout', ['print']),
     ...mapGetters('location', ['_t', 'isTokenManager', 'getReferral']),
-    ...mapState('location', ['timezoneString', 'tokenNumber']),
+    ...mapState('location', ['timezoneString']),
     ...mapGetters('auth', ['allowed']),
     ...mapState('dinein', ['selectedTableRservationData']),
     ...mapState('order', ['orderType']),
@@ -459,6 +459,25 @@ export default {
       return this.$store.state.location.userShortDetails.username
         ? this.$store.state.location.userShortDetails.username
         : this.$store.state.auth.userDetails.item.name
+    },
+    tokenNumber() {
+      if (
+        this.isTokenManager &&
+        this.allowed(this.PERMS.TOKEN_NUMBER) &&
+        (this.orderType.OTApi === 'walk_in' ||
+          this.orderType.OTApi === 'carhop')
+      ) {
+        if (
+          this.$store.state.sync.online &&
+          typeof this.order.tokenNumber != 'undefined'
+        ) {
+          return this.order.tokenNumber
+        } else if (typeof this.order.token_number != 'undefined') {
+          return this.order.token_number
+        }
+      }
+
+      return false
     },
     //If the customer is set in the order, we check if there is a property with customer info. If there is -
     // we output it. If there are no, we use sample customer. If customer is not set on the order -

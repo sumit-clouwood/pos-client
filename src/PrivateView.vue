@@ -60,6 +60,7 @@ import ResizeMixin from '@/mixins/ResizeHandler'
 import bootstrap from '@/bootstrap'
 import Preloader from '@/components/util/Preloader'
 import { mapState, mapGetters } from 'vuex'
+import moment from 'moment-timezone'
 export default {
   name: 'PrivateView',
   props: {},
@@ -167,6 +168,46 @@ export default {
           //}, 1000 * 10)
         })
     },
+    resetTokenNumber() {
+      if (
+        this.isTokenManager &&
+        (this.orderType.OTApi === this.CONST.ORDER_TYPE_WALKIN ||
+          this.orderType.OTApi === this.CONST.ORDER_TYPE_WALKIN) &&
+        this.$store.getters['auth/allowed'](this.PERMS.TOKEN_NUMBER)
+      ) {
+        if (!this.$store.state.sync.online) {
+          const storeCurrentDate = moment()
+            .tz(this.timezoneString)
+            .format('YYYY-MM-DD')
+
+          const storeCurrentTime = moment()
+            .tz(this.timezoneString)
+            .utc()
+            .valueOf()
+
+          const storeOpeningTime = moment
+            .tz(
+              storeCurrentDate + ' ' + this.openHours.opens_at,
+              'YYYY-MM-DD HH:mm',
+              this.timezoneString
+            )
+            .utc()
+            .valueOf()
+
+          const tokenResetAt =
+            localStorage.getItem('token_reset_at') || storeCurrentDate
+
+          if (
+            storeCurrentDate > tokenResetAt &&
+            storeCurrentTime >= storeOpeningTime
+          ) {
+            let startingTokenNumber = localStorage.getItem('starting_token')
+            localStorage.setItem('token_number', startingTokenNumber)
+            localStorage.setItem('token_reset_at', storeCurrentDate)
+          }
+        }
+      }
+    },
   },
   created() {},
   watch: {
@@ -225,6 +266,8 @@ export default {
         this.$store.dispatch('order/fetchModificationReasons')
       }
     },
+    orderType: { handler: 'resetTokenNumber', immediate: true },
+    online: 'resetTokenNumber',
   },
   computed: {
     ...mapState({
@@ -233,6 +276,11 @@ export default {
     }),
     ...mapState('sync', ['modules']),
     ...mapGetters('auth', ['loggedIn']),
+    ...mapGetters('auth', ['allowed']),
+    ...mapGetters('location', ['isTokenManager']),
+    ...mapState('order', ['orderType']),
+    ...mapState('sync', ['online']),
+    ...mapState('location', ['timezoneString', 'openHours']),
     apisLoaded() {
       return this.$store.state.location.brand
     },
