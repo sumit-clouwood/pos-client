@@ -6,7 +6,6 @@ import Num from '@/plugins/helpers/Num'
 import db from '@/services/network/DB'
 import TimezoneService from '@/services/data/TimezoneService'
 import * as CONST from '@/constants'
-// import * as PERMS from '@/const/permissions'
 import router from '../../router'
 import moment from 'moment-timezone'
 
@@ -31,7 +30,6 @@ const state = {
   apiDate: '',
   terminalCode: null,
   timezones: [],
-  // tokenNumber: null,
   openHours: null,
 }
 
@@ -217,12 +215,6 @@ const actions = {
           }
 
           let currentStore = storedata.data.store
-          // Set Opening hours for store
-          // localStorage.setItem(
-          //   'opening_hours',
-          //   JSON.stringify(currentStore.open_hours)
-          // )
-          // Set Starting token number for store
           if (currentStore) {
             localStorage.setItem(
               'starting_token',
@@ -230,22 +222,6 @@ const actions = {
             )
             commit('SET_OPEN_HOURS', currentStore.open_hours)
           }
-          // if (
-          //   currentStore.token_manager &&
-          //   rootGetters['auth/allowed'](PERMS.TOKEN_NUMBER) &&
-          //   currentStore.token_starting_number
-          // ) {
-          // if (!localStorage.getItem('token_number')) {
-          //   localStorage.setItem(
-          //     'token_number',
-          //     currentStore.token_starting_number
-          //   )
-          // }
-          // commit(
-          //   mutation.SET_TOKEN_NUMBER,
-          //   localStorage.getItem('token_number')
-          // )
-          // }
 
           commit(mutation.SET_PERMISSION, storedata.data.menu)
           commit(mutation.SET_LANGUAGE_DIRECTION, storedata.data.direction)
@@ -443,9 +419,6 @@ const actions = {
 
 // mutations
 const mutations = {
-  // [mutation.SET_TOKEN_NUMBER](state, tokenNumber) {
-  //   state.tokenNumber = tokenNumber
-  // },
   [mutation.USER_SHORT_DETAILS](state, userDetails) {
     state.userShortDetails = userDetails
   },
