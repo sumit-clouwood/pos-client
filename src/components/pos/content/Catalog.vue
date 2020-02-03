@@ -97,7 +97,7 @@ export default {
         !this.foodBlockInitHeight &&
         !this.foodBlockItemHeight
       ) {
-        let foodBlockHeight = $('.food-block').innerHeight()
+        let foodBlockHeight = $('.food-items').innerHeight()
         let foodMenuItemHeight = $('.food-menu').innerHeight()
         this.foodBlockHeight = foodBlockHeight
         this.foodBlockInitHeight = foodBlockHeight
@@ -119,7 +119,7 @@ export default {
       if (this.foodCatHeight > this.foodCatItemHeight) {
         $('.food-cat-bottom-arrow, .food-cat-top-arrow').addClass('disable')
       }
-      $('.food-block').animate({ scrollTop: 0 }, 1000)
+      $('.food-items').animate({ scrollTop: 0 }, 1000)
     },
     foodBottom() {
       if (this.foodBlockHeight >= this.foodBlockItemHeight) {
@@ -138,7 +138,7 @@ export default {
           this.foodBlockHeight += parseInt(this.foodBlockInitHeight)
         }
       }
-      $('.food-block').animate({ scrollTop: this.foodBlockHeight }, 1000)
+      $('.food-items').animate({ scrollTop: this.foodBlockHeight }, 1000)
 
       if (this.foodBlockHeight >= this.foodBlockItemHeight) {
         this.foodBlockHeight = parseInt(this.foodBlockItemHeight)
@@ -160,7 +160,7 @@ export default {
           this.foodBlockHeight -= parseInt(this.foodBlockInitHeight)
         }
       }
-      $('.food-block').animate({ scrollTop: this.foodBlockHeight }, 1000)
+      $('.food-items').animate({ scrollTop: this.foodBlockHeight }, 1000)
 
       if (
         this.foodBlockHeight <= 0 ||
