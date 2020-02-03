@@ -6,8 +6,8 @@ import Num from '@/plugins/helpers/Num'
 import db from '@/services/network/DB'
 import TimezoneService from '@/services/data/TimezoneService'
 import * as CONST from '@/constants'
-import * as PERMS from '@/const/permissions'
 import router from '../../router'
+import moment from 'moment-timezone'
 
 /* global $, showModal */
 // initial state
@@ -30,7 +30,7 @@ const state = {
   apiDate: '',
   terminalCode: null,
   timezones: [],
-  tokenNumber: null,
+  openHours: null,
 }
 
 // getters
@@ -64,7 +64,7 @@ const getters = {
     }
     return false
   },
-  isTokenManager(state) {
+  isTokenManager: state => {
     if (state.store) {
       return state.store.token_manager
     }
@@ -214,21 +214,13 @@ const actions = {
             commit(mutation.SET_BRAND, storedata.data.brand)
           }
 
-          if (
-            storedata.data.store.token_manager &&
-            rootGetters['auth/allowed'](PERMS.TOKEN_NUMBER) &&
-            storedata.data.store.token_starting_number
-          ) {
-            if (!localStorage.getItem('token_number')) {
-              localStorage.setItem(
-                'token_number',
-                storedata.data.store.token_starting_number
-              )
-            }
-            commit(
-              mutation.SET_TOKEN_NUMBER,
-              localStorage.getItem('token_number')
+          let currentStore = storedata.data.store
+          if (currentStore) {
+            localStorage.setItem(
+              'starting_token',
+              currentStore.token_starting_number
             )
+            commit('SET_OPEN_HOURS', currentStore.open_hours)
           }
 
           commit(mutation.SET_PERMISSION, storedata.data.menu)
@@ -279,6 +271,14 @@ const actions = {
               if (timezoneStr) {
                 const timezone = timezoneStr.name.replace(/\s+(GMT|GTM).*/g, '')
                 commit(mutation.SET_TIMEZONE_STRING, timezone)
+                if (!localStorage.getItem('token_reset_at')) {
+                  localStorage.setItem(
+                    'token_reset_at',
+                    moment()
+                      .tz(state.timezoneString)
+                      .format('YYYY-MM-DD')
+                  )
+                }
               }
             }
           )
@@ -419,9 +419,6 @@ const actions = {
 
 // mutations
 const mutations = {
-  [mutation.SET_TOKEN_NUMBER](state, tokenNumber) {
-    state.tokenNumber = tokenNumber
-  },
   [mutation.USER_SHORT_DETAILS](state, userDetails) {
     state.userShortDetails = userDetails
   },
@@ -496,6 +493,9 @@ const mutations = {
   },
   [mutation.SET_DATE](state, dateAPI) {
     state.apiDate = dateAPI
+  },
+  [mutation.SET_OPEN_HOURS](state, openHours) {
+    state.openHours = openHours
   },
   [mutation.SET_TERMINAL_CODE](state, terminalCode) {
     state.terminalCode = terminalCode
