@@ -131,6 +131,11 @@
           background-color: #fff;
           padding: 2px 2px 2px 2px;
           margin-top: 10px;
+
+          &:first-child {
+            margin-top: 0 !important;
+          }
+          
           &.cashier_app_sub_item{
             height: $food-categories-item-height;
           }
@@ -460,7 +465,6 @@
     .main-body{
       grid-template-rows: $main-body-web-search-height 1fr;
       .foodCatScroll {
-        margin-top: $px64;
         &.noscroll{
           margin-top: 0;
         }

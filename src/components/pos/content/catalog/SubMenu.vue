@@ -6,36 +6,54 @@
         'food-categories-wrapper',
         subCategoryHendler ? 'foodCatigoriesActive' : 'foodCatigoriesNotActive',
       ]"
+      ref="subcategoryContainer"
     >
-      <!--<btnBack :param="'subcategory'" />-->
-      <div :class="['food-categories']" v-if="subcategories.length">
-        <div
-          class="food-categories-item box-shadow-selected"
-          v-for="item in subcategories"
-          :style="{
-            background:
-              item.sub_category_image == '' ? item.sub_category_color : '',
-          }"
-          :key="item._id"
-          :class="{
-            active: currentSubcategory === item._id,
-            cashier_app_sub_item: item.sub_category_image == '',
-          }"
-          @click.prevent="getSubCatItems(item)"
-        >
-          <img
-            v-if="item.sub_category_image != ''"
-            class="food-categories-item-img"
-            :src="item.sub_category_image"
-            :alt="dt(item)"
-          />
-          <div class="food-categories-item-text" :title="dt(item)">
-            {{ dt(item) }}
-          </div>
-          <div class="food-categories-item-check color-dashboard-background">
-            <i class="fa fa-check color-text-invert" aria-hidden="true"></i>
+      <div
+        class="subcategory-scroll food-cat-top-arrow food-arrow"
+        v-if="showScroll"
+        @click="scrollDownSubCategory"
+      >
+        <i class="fa fa-chevron-up" aria-hidden="true"></i>
+      </div>
+      <div class="subcat-menu" :class="{ 'has-scroll': showScroll }">
+        <!--<btnBack :param="'subcategory'" />-->
+        <div :class="['food-categories']" v-if="subcategories.length">
+          <div
+            class="food-categories-item box-shadow-selected"
+            v-for="item in subcategories"
+            :style="{
+              background:
+                item.sub_category_image == '' ? item.sub_category_color : '',
+            }"
+            :key="item._id"
+            :class="{
+              active: currentSubcategory === item._id,
+              cashier_app_sub_item: item.sub_category_image == '',
+            }"
+            @click.prevent="getSubCatItems(item)"
+            ref="subcatentity"
+          >
+            <img
+              v-if="item.sub_category_image != ''"
+              class="food-categories-item-img"
+              :src="item.sub_category_image"
+              :alt="dt(item)"
+            />
+            <div class="food-categories-item-text" :title="dt(item)">
+              {{ dt(item) }}
+            </div>
+            <div class="food-categories-item-check color-dashboard-background">
+              <i class="fa fa-check color-text-invert" aria-hidden="true"></i>
+            </div>
           </div>
         </div>
+      </div>
+      <div
+        class="subcategory-scroll food-cat-bottom-arrow food-arrow"
+        v-if="showScroll"
+        @click="scrollUpSubCategory"
+      >
+        <i class="fa fa-chevron-down" aria-hidden="true"></i>
       </div>
     </div>
     <!--add class bg if image not found => class="food-categories-item bg"-->
@@ -64,9 +82,7 @@ export default {
   name: 'SubMenu',
   data() {
     return {
-      foodBlockItemHeight: 0,
-      foodBlockHeight: 0,
-      foodBlockInitHeight: 0,
+      showScroll: false,
     }
   },
   components: {
@@ -76,6 +92,21 @@ export default {
   created() {
     this.$store.dispatch('showMainCategory')
   },
+  mounted() {
+    this.$nextTick(() => {
+      this.calculateScrolls()
+    })
+  },
+  watch: {
+    subcategories(newVal, oldVal) {
+      if (newVal != oldVal) {
+        this.$nextTick(() => {
+          this.calculateScrolls()
+        })
+      }
+    },
+  },
+
   computed: {
     ...mapState({
       currentSubcategory: state => state.category.subcategory._id,
@@ -93,7 +124,59 @@ export default {
       this.$store.dispatch('category/getItems', item)
       this.$store.dispatch('foodMenuHendlerChange')
     },
-    // ...mapActions('category', ['getItems']),
+    scrollUpSubCategory() {
+      if (this.$refs.subcategoryContainer.parentNode) {
+        //on 0 it ll be a scroll button
+        const entity = this.$refs.subcatentity[0]
+        const element = this.$refs.subcategoryContainer.parentNode
+        //10 is margin-top of the entity, which starts from second element
+        let toScroll = Math.round(
+          element.clientHeight / (entity.clientHeight + 10)
+        )
+        //add space for navigation icon, so -1 the category
+        toScroll = (toScroll - 1) * (entity.clientHeight + 10)
+        //element.scrollTop = element.scrollHeight
+        if (element.scrollTop + toScroll <= element.scrollHeight - toScroll) {
+          element.scrollTop += toScroll
+        } else {
+          element.scrollTop = element.scrollHeight
+        }
+      }
+    },
+    scrollDownSubCategory() {
+      if (this.$refs.subcategoryContainer.parentNode) {
+        //on 0 it ll be a scroll button
+        const entity = this.$refs.subcatentity[0]
+        const element = this.$refs.subcategoryContainer.parentNode
+        //10 is margin-top of the entity, which starts from second element
+        let toScroll = Math.round(
+          element.clientHeight / (entity.clientHeight + 10)
+        )
+        //add space for navigation icon, so -1 the category
+        toScroll = (toScroll - 1) * (entity.clientHeight + 10)
+        //element.scrollTop = element.scrollHeight
+        if (element.scrollTop - toScroll >= 0) {
+          element.scrollTop -= toScroll
+        } else {
+          element.scrollTop = 0
+        }
+      }
+    },
+    calculateScrolls() {
+      const parentHeight = this.$refs.subcategoryContainer.parentNode
+        .clientHeight
+      const currentHeight = this.$refs.subcategoryContainer.clientHeight
+
+      if (!parentHeight || !currentHeight) {
+        return false
+      }
+
+      if (currentHeight > parentHeight) {
+        this.showScroll = true
+      } else {
+        this.showScroll = false
+      }
+    },
   },
 }
 </script>
@@ -187,4 +270,11 @@ export default {
     }
   }
 }
+</style>
+<style lang="sass" scoped>
+.has-scroll
+  margin-top: 46px
+
+.foodCatScroll
+  scroll-behavior: smooth;
 </style>
