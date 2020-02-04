@@ -1033,6 +1033,7 @@ const actions = {
               item.discountedNetPrice = false
             } else {
               const priceDiff = item.grossPrice - discount.discount.value
+              //don't round the percentage value it ll cause errors
               const discountPercentage = (priceDiff * 100) / item.grossPrice
               item.discountRate = discountPercentage
               item.discountedTax = false
