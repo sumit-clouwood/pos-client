@@ -102,7 +102,7 @@ export default {
   },
   methods: {
     setScreenScrolls() {
-      let foodBlockHeight = $('.food-block').innerHeight()
+      let foodBlockHeight = $('.food-items').innerHeight()
       let foodBlockInitHeight = foodBlockHeight
       let foodBlockItemHeight = $('.food-menu').innerHeight()
       $('.food-bottom-arrow, .food-top-arrow').removeClass('disable')
