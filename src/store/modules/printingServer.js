@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import * as mutation from './printingServer/mutation-type'
 // import OrderService from '@/services/data/OrderService'
 import PrintingServerService from '@/services/data/PrintingServerService'
