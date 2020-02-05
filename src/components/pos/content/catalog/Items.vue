@@ -1,9 +1,21 @@
 <template>
   <div class="food-items">
+    <div class="food-top-arrow food-arrow" v-if="showScroll" @click="scroll">
+      <i class="fa fa-chevron-up" aria-hidden="true"></i>
+    </div>
+    <div
+      class="food-bottom-arrow food-arrow"
+      v-if="showScroll"
+      @click="scroll('up')"
+    >
+      <i class="fa fa-chevron-down" aria-hidden="true"></i>
+    </div>
+
     <div
       class="color-dashboard-background"
       v-if="items.length"
       :class="['food-menu', foodMenuHendler ? 'active' : 'notActive']"
+      ref="itemsContainer"
     >
       <!-- <div class="bg">bg</div> -->
       <!--      <btnBack :param="'item'" />-->
@@ -17,6 +29,7 @@
         :key="item._id"
         :value="dt(item)"
         @click.prevent="addToOrder(item)"
+        ref="entityItem"
       >
         <img
           v-if="item.image != ''"
@@ -56,6 +69,7 @@ import { bus } from '@/eventBus'
 import { mapGetters, mapState } from 'vuex'
 import bootstrap from '@/bootstrap'
 import Popup from './items/Popup'
+import Scroll from '@/mixins/Scroll'
 // import btnBack from '../../../mobileComponents/mobileElements/btnBack'
 
 export default {
@@ -63,9 +77,18 @@ export default {
   props: {
     msg: String,
   },
+  mixins: [Scroll],
   components: {
     Popup,
     // btnBack,
+  },
+  data() {
+    return {
+      container: 'itemsContainer',
+      entity: 'entityItem',
+      margin: 19.5,
+      keepEntitiesInScroll: 0,
+    }
   },
   computed: {
     ...mapState('category', ['barcode']),
@@ -78,6 +101,13 @@ export default {
     ...mapGetters(['foodMenuHendler', 'bascketItems']),
   },
   watch: {
+    items(newVal, oldVal) {
+      if (newVal != oldVal) {
+        this.$nextTick(() => {
+          this.calculateScrolls()
+        })
+      }
+    },
     barcode(itemCode) {
       if (itemCode) {
         const item = this.itemByCode(itemCode)
@@ -89,43 +119,9 @@ export default {
     },
   },
   created() {},
-  updated() {
-    this.$nextTick(() => {
-      this.setScreenScrolls()
-    })
-  },
-  beforeUpdated() {
-    this.setScreenScrolls()
-  },
-  mounted() {
-    this.setScreenScrolls()
-  },
+  updated() {},
+  beforeUpdated() {},
   methods: {
-    setScreenScrolls() {
-      let foodBlockHeight = $('.food-items').innerHeight()
-      let foodBlockInitHeight = foodBlockHeight
-      let foodBlockItemHeight = $('.food-menu').innerHeight()
-      $('.food-bottom-arrow, .food-top-arrow').removeClass('disable')
-
-      if (this.foodBlockHeight > this.foodBlockItemHeight) {
-        $('.food-bottom-arrow, .food-top-arrow').addClass('disable')
-      }
-
-      bus.$emit('heights', {
-        foodBlockHeight,
-        foodBlockInitHeight,
-        foodBlockItemHeight,
-      })
-    },
-    choosePrice(item) {
-      if (item.countries.length !== 0) {
-        return item.countries[0].value
-      } else if (item.cities.length !== 0) {
-        return item.cities[0].value
-      } else if (item.stores.length !== 0) {
-        return item.stores[0].value
-      }
-    },
     addToOrder(item) {
       bus.$emit('modifier-height')
       if (this.selectedOrder) {
@@ -362,4 +358,11 @@ export default {
     width: 0;
   }
 }
+</style>
+<style lang="sass" scoped>
+.food-items
+  scroll-behavior: smooth
+
+  .food-menu-item
+    height: 163px
 </style>

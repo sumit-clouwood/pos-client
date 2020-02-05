@@ -11,7 +11,7 @@
       <div
         class="subcategory-scroll food-cat-top-arrow food-arrow"
         v-if="showScroll"
-        @click="scrollDownSubCategory"
+        @click="scroll"
       >
         <i class="fa fa-chevron-up" aria-hidden="true"></i>
       </div>
@@ -31,7 +31,7 @@
               cashier_app_sub_item: item.sub_category_image == '',
             }"
             @click.prevent="getSubCatItems(item)"
-            ref="subcatentity"
+            ref="entitySubcategory"
           >
             <img
               v-if="item.sub_category_image != ''"
@@ -51,7 +51,7 @@
       <div
         class="subcategory-scroll food-cat-bottom-arrow food-arrow"
         v-if="showScroll"
-        @click="scrollUpSubCategory"
+        @click="scroll('up')"
       >
         <i class="fa fa-chevron-down" aria-hidden="true"></i>
       </div>
@@ -75,6 +75,7 @@
 /* global $ */
 import { mapState, mapGetters } from 'vuex'
 import { bus } from '@/eventBus'
+import Scroll from '@/mixins/Scroll'
 
 // import btnBack from '../../../mobileComponents/mobileElements/btnBack'
 
@@ -82,20 +83,19 @@ export default {
   name: 'SubMenu',
   data() {
     return {
-      showScroll: false,
+      container: 'subcategoryContainer',
+      entity: 'entitySubcategory',
+      margin: 10,
+      keepEntitiesInScroll: 1,
     }
   },
+  mixins: [Scroll],
   components: {
     // btnBack,
   },
   props: {},
   created() {
     this.$store.dispatch('showMainCategory')
-  },
-  mounted() {
-    this.$nextTick(() => {
-      this.calculateScrolls()
-    })
   },
   watch: {
     subcategories(newVal, oldVal) {
@@ -123,59 +123,6 @@ export default {
       bus.$emit('clear-search-input', '')
       this.$store.dispatch('category/getItems', item)
       this.$store.dispatch('foodMenuHendlerChange')
-    },
-    scrollUpSubCategory() {
-      if (this.$refs.subcategoryContainer.parentNode) {
-        //on 0 it ll be a scroll button
-        const entity = this.$refs.subcatentity[0]
-        const element = this.$refs.subcategoryContainer.parentNode
-        //10 is margin-top of the entity, which starts from second element
-        let toScroll = Math.round(
-          element.clientHeight / (entity.clientHeight + 10)
-        )
-        //add space for navigation icon, so -1 the category
-        toScroll = (toScroll - 1) * (entity.clientHeight + 10)
-        //element.scrollTop = element.scrollHeight
-        if (element.scrollTop + toScroll <= element.scrollHeight - toScroll) {
-          element.scrollTop += toScroll
-        } else {
-          element.scrollTop = element.scrollHeight
-        }
-      }
-    },
-    scrollDownSubCategory() {
-      if (this.$refs.subcategoryContainer.parentNode) {
-        //on 0 it ll be a scroll button
-        const entity = this.$refs.subcatentity[0]
-        const element = this.$refs.subcategoryContainer.parentNode
-        //10 is margin-top of the entity, which starts from second element
-        let toScroll = Math.round(
-          element.clientHeight / (entity.clientHeight + 10)
-        )
-        //add space for navigation icon, so -1 the category
-        toScroll = (toScroll - 1) * (entity.clientHeight + 10)
-        //element.scrollTop = element.scrollHeight
-        if (element.scrollTop - toScroll >= 0) {
-          element.scrollTop -= toScroll
-        } else {
-          element.scrollTop = 0
-        }
-      }
-    },
-    calculateScrolls() {
-      const parentHeight = this.$refs.subcategoryContainer.parentNode
-        .clientHeight
-      const currentHeight = this.$refs.subcategoryContainer.clientHeight
-
-      if (!parentHeight || !currentHeight) {
-        return false
-      }
-
-      if (currentHeight > parentHeight) {
-        this.showScroll = true
-      } else {
-        this.showScroll = false
-      }
     },
   },
 }
