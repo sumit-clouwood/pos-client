@@ -65,7 +65,6 @@
 
 <script>
 /* global $, showModal  */
-import { bus } from '@/eventBus'
 import { mapGetters, mapState } from 'vuex'
 import bootstrap from '@/bootstrap'
 import Popup from './items/Popup'
@@ -123,7 +122,6 @@ export default {
   beforeUpdated() {},
   methods: {
     addToOrder(item) {
-      bus.$emit('modifier-height')
       if (this.selectedOrder) {
         if (
           (this.orderType == 'carhop' || this.orderType.OTApi === 'carhop') &&
