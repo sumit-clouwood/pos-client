@@ -379,6 +379,7 @@ export default {
   },
   computed: {
     ...mapState('checkout', ['print']),
+    ...mapGetters('auth', ['allowed']),
     ...mapGetters('location', ['_t', 'isTokenManager', 'getReferral']),
     ...mapState('location', ['timezoneString']),
     ...mapState('dinein', ['selectedTableRservationData']),
