@@ -1,10 +1,11 @@
 <template>
-  <div class="main-orders-list">
+  <div class="main-orders-list" ref="cartItemsContainer">
     <div v-if="items && items.length">
       <div
         class="main-orders-list-item color-dashboard-background"
         v-for="(item, index) in items"
         :key="index + '-' + item._id"
+        ref="entityCartItem"
       >
         <div v-if="multistore" class="storename">
           {{ storeName(item.store_id) }}
@@ -76,19 +77,26 @@
 </template>
 
 <script>
-import { bus } from '@/eventBus'
 import Modifiers from './items/Modifiers.vue'
 import Preloader from '@/components/util/Preloader'
 
 import { mapState, mapActions, mapGetters } from 'vuex'
 import Discount from '@/mixins/Discount'
+import { bus } from '@/eventBus'
+import Scroll from '@/mixins/Scroll'
 
 export default {
   name: 'Items',
   data() {
-    return {}
+    return {
+      newItemList: [],
+      container: 'cartItemsContainer',
+      entity: 'entityCartItem',
+      margin: 4.375,
+      keepEntitiesInScroll: 0,
+    }
   },
-  mixins: [Discount],
+  mixins: [Discount, Scroll],
   computed: {
     ...mapState({
       currentItem: state => state.order.item._id,
@@ -107,6 +115,33 @@ export default {
     ...mapGetters('location', ['formatPrice', '_t']),
     ...mapGetters('context', ['storeName']),
     ...mapGetters('auth', ['multistore']),
+  },
+  mounted() {
+    bus.$on('scroll-cart', option => {
+      this.scroll(option)
+    })
+
+    bus.$emit('showScrollCart', this.showScroll)
+  },
+
+  watch: {
+    items(newVal, oldVal) {
+      if (newVal != oldVal) {
+        this.$nextTick(() => {
+          this.calculateScrolls().then(showScroll => {
+            bus.$emit('showScrollCart', showScroll)
+          })
+        })
+      }
+    },
+    orderType(newVal, previousVal) {
+      if (newVal.OTApi !== previousVal.OTApi)
+        if (this.$store.state.discount.appliedOrderDiscount) {
+          this.$store.dispatch('discount/clearOrderDiscount')
+        } else {
+          this.$store.dispatch('discount/clearItemDiscount')
+        }
+    },
   },
   methods: {
     ...mapActions('category', ['getItems']),

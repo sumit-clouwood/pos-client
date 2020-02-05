@@ -19,13 +19,20 @@ export default {
   methods: {
     calculateScrolls() {
       if (!this.$refs[this.container].parentNode) {
-        return false
+        return Promise.resolve(false)
       }
-      const parentHeight = this.$refs[this.container].parentNode.clientHeight
-      const currentHeight = this.$refs[this.container].clientHeight
+      if (
+        !this.$refs[this.container].offsetHeight &&
+        !this.$refs[this.container].offsetWidth
+      ) {
+        //element doesn't exist or not mounted in DOM
+        return Promise.reject(false)
+      }
+      const parentHeight = this.$refs[this.container].parentNode.offsetHeight
+      const currentHeight = this.$refs[this.container].offsetHeight
 
       if (!parentHeight || !currentHeight) {
-        return false
+        return Promise.resolve(false)
       }
 
       if (currentHeight > parentHeight) {
@@ -33,22 +40,34 @@ export default {
       } else {
         this.showScroll = false
       }
+      return Promise.resolve(this.showScroll)
     },
     scroll(direction = 'up') {
-      if (!this.$refs[this.container].parentNode) {
+      if (
+        !this.$refs[this.container] ||
+        !this.$refs[this.container].parentNode
+      ) {
+        return false
+      }
+      if (
+        !this.$refs[this.container].offsetHeight &&
+        !this.$refs[this.container].offsetWidth
+      ) {
+        //element doesn't exist or not mounted in DOM
         return false
       }
       //on 0 it ll be a scroll button
       const entity = this.$refs[this.entity][0]
       const element = this.$refs[this.container].parentNode
+
       //10 is margin-top of the entity, which starts from second element
       let toScroll = Math.round(
-        element.clientHeight / (entity.clientHeight + this.margin)
+        element.offsetHeight / (entity.offsetHeight + this.margin)
       )
       //add space for navigation icon, so -1 the category
       toScroll =
         (toScroll - this.keepEntitiesInScroll) *
-        (entity.clientHeight + this.margin)
+        (entity.offsetHeight + this.margin)
 
       //element.scrollTop = element.scrollHeight
       if (direction === 'up') {

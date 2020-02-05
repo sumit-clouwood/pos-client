@@ -42,7 +42,18 @@
       >
         {{ _t('Hold') }}
       </div>
-      <div class="btn btn-success cartBottomBtn" @click="cartBottom">
+      <div
+        class="btn btn-success cartBottomBtn"
+        @click="scroll('up')"
+        v-if="showScroll"
+      >
+        <i aria-hidden="true" class="fa fa-chevron-down"></i>
+      </div>
+      <div
+        class="btn btn-success cartBottomBtn down"
+        @click="scroll('down')"
+        v-if="showScroll"
+      >
         <i aria-hidden="true" class="fa fa-chevron-down"></i>
       </div>
     </div>
@@ -51,6 +62,8 @@
 
 <script>
 /* global $ */
+import { bus } from '@/eventBus'
+
 import { mapState, mapGetters, mapActions } from 'vuex'
 export default {
   name: 'Header',
@@ -71,39 +84,20 @@ export default {
     ...mapState({ offlineCustomer: state => state.customer.offlineData }),
     ...mapState('sync', ['online']),
   },
-  updated() {
-    this.$nextTick(() => {
-      this.cartHeader()
+  mounted() {
+    bus.$on('showScrollCart', option => {
+      this.showScroll = option
     })
   },
   methods: {
+    scroll(option) {
+      bus.$emit('scroll-cart', option)
+    },
     removeSelectedCustomer() {
       this.$store.commit('location/SET_MODAL', '#manage-customer')
       this.$store.dispatch('customer/resetCustomer')
     },
-    cartHeader() {
-      let cartHeight = $('.main-orders-list-wrapper').innerHeight()
-      this.cartHeight = cartHeight
-      this.cartInitHeight = cartHeight
-      this.cartItemHeight = $('.main-orders-list').innerHeight()
-    },
-    cartBottom() {
-      this.cartHeight += parseInt(this.cartInitHeight)
-      if (this.cartHeight >= this.cartItemHeight) {
-        $('.cartBottomBtn').addClass('toggle')
-        this.cartHeight = 0
-        $('.main-orders-list-wrapper').animate(
-          { scrollTop: this.cartHeight },
-          1000
-        )
-        return false
-      }
-      $('.cartBottomBtn').removeClass('toggle')
-      $('.main-orders-list-wrapper').animate(
-        { scrollTop: this.cartHeight },
-        1000
-      )
-    },
+
     hold() {
       this.$store
         .dispatch('checkout/pay', { action: 'on-hold' })
@@ -131,8 +125,15 @@ export default {
 }
 </script>
 <style lang="sass" scoped>
+.cartBottomBtn
+  &.down
+    -ms-transform: rotate(180deg)
+    transform: rotate(180deg)
+
 .hide
   display : none
   .cartBottomBtn
     width: 50px
+    -ms-transform: rotate(90deg)
+    transform: rotate(90deg)
 </style>

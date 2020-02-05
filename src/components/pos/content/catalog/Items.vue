@@ -85,7 +85,7 @@ export default {
     return {
       container: 'itemsContainer',
       entity: 'entityItem',
-      margin: 19.5,
+      margin: 17.5,
       keepEntitiesInScroll: 0,
     }
   },
@@ -362,5 +362,5 @@ export default {
   scroll-behavior: smooth
 
   .food-menu-item
-    height: 163px
+    height: 174px
 </style>
