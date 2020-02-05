@@ -106,6 +106,7 @@ export default {
     ]),
     ...mapGetters('location', ['formatPrice', '_t']),
     ...mapGetters('context', ['storeName']),
+    ...mapGetters('auth', ['allowed']),
     ...mapGetters('auth', ['multistore']),
   },
   methods: {
@@ -117,7 +118,7 @@ export default {
         if (
           (this.orderType == 'carhop' || this.orderType.OTApi === 'carhop') &&
           this.selectedOrder.item.order_status == 'in-progress' &&
-          this.isCarhop()
+          !this.allowed(this.PERMS.MODIFY_ORDER)
         ) {
           return
         }
