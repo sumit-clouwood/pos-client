@@ -51,7 +51,7 @@ export default {
   },
   computed: {
     ...mapState('checkoutForm', ['processing']),
-    ...mapState('order', ['items', 'orderSource', 'selectedOrder']),
+    ...mapState('order', ['items', 'orderSource', 'needSupervisorAccess']),
     ...mapGetters('auth', ['carhop']),
   },
   methods: {
@@ -70,7 +70,7 @@ export default {
         return false
       }
 
-      if (this.orderSource === 'backend' && this.selectedOrder) {
+      if (this.needSupervisorAccess) {
         $('#modificationReason').modal('show')
       } else {
         $('#payment-msg').modal('show')
