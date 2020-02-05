@@ -28,15 +28,12 @@
             <RightPartHeader />
 
             <!--content-->
-            <Receipt :orderDetails="selectedOrder.item" />
+            <Receipt :order_data="selectedOrder" />
             <History
               :orderDetails="selectedOrder.item"
               :userDetails="selectedOrder.lookups"
             />
-            <Modification
-              :orderDetails="selectedOrder.item"
-              :userDetails="selectedOrder.lookups"
-            />
+            <Modification />
             <Payment
               :orderDetails="selectedOrder.item"
               :lookups="selectedOrder.lookups"
@@ -196,7 +193,7 @@ export default {
     ...mapState('order', ['selectedOrder']),
     ...mapState('dinein', ['tables']),
     ...mapGetters('location', ['_t']),
-    ...mapGetters('auth', ['allowed', 'multistore']),
+    ...mapGetters('auth', ['multistore', 'allowed']),
   },
   methods: {
     ...mapActions('customer', ['fetchSelectedCustomer']),
@@ -214,9 +211,10 @@ export default {
       this.$store.commit('dinein/KITCHEN_PRINT', false)
     },
     modifyOrder(order) {
-      let orderId = order._id
       this.$store.dispatch('order/startOrder')
-
+      const path = this.$store.getters['context/store'] + '/update/' + order._id
+      this.$router.push({ path: path })
+      /*
       switch (order.order_type) {
         case CONST.ORDER_TYPE_DINE_IN: {
           let tableData = this.tables.find(
@@ -251,13 +249,15 @@ export default {
           }
         }
       }
+      */
     },
   },
 }
 </script>
 <style scoped lang="scss">
 #orderDetailsPopup .modal-dialog {
-  max-width: 70%;
+  font-size: 0.875rem;
+  max-width: 80%;
 }
 </style>
 <style lang="scss">

@@ -52,8 +52,7 @@ export default {
   components: {},
   computed: {
     ...mapState('checkout', ['changedAmount']),
-    ...mapState('dinein', ['isModified']),
-    ...mapState('order', ['orderSource']),
+    ...mapState('order', ['needSupervisorAccess']),
     ...mapGetters('order', ['orderType']),
     ...mapState('location', ['brand']),
     ...mapState('checkoutForm', ['msg', 'error', 'method', 'processing']),
@@ -127,7 +126,7 @@ export default {
           $('#payment-screen-footer').prop('disabled', true)
           this.$store.commit('checkoutForm/setAction', 'pay')
           this.$store.commit('order/IS_PAY', 1)
-          if (this.orderSource === 'backend' || this.isModified) {
+          if (this.needSupervisorAccess) {
             showModal('#modificationReason')
           } else {
             this.$store.dispatch('order/startOrder')

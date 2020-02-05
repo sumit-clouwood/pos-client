@@ -76,7 +76,7 @@ export default {
   },
   computed: {
     ...mapGetters('location', ['_t']),
-    ...mapState('order', ['orderSource']),
+    ...mapState('order', ['needSupervisorAccess']),
   },
   methods: {
     cancelPayment() {
@@ -95,7 +95,7 @@ export default {
             this.$store.state.checkoutForm.action == 'pay'
           ) {
             if (this.$store.getters['checkoutForm/validate']) {
-              if (this.orderSource === 'backend') {
+              if (this.needSupervisorAccess) {
                 showModal('#modificationReason')
               } else {
                 this.$store.commit('order/IS_PAY', 1)

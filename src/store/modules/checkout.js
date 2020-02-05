@@ -21,6 +21,7 @@ const state = {
   processing: false,
   paymentAction: '',
   splitPaid: false,
+  route: null,
 }
 
 // getters
@@ -460,10 +461,6 @@ const actions = {
         if (item.measurement_unit) {
           orderItem.measurement_unit = item.measurement_unit
         }
-
-        if (item.measurement_unit) {
-          orderItem.measurement_unit = item.measurement_unit
-        }
         //we are sending item price and modifier prices separtely but sending
         //item discount as total of both discounts
 
@@ -570,7 +567,6 @@ const actions = {
       oitem.cover_no = itemCover
       oitem.guest = rootState.dinein.guests
       oitem.cover_name = itemCoverName
-      // oitem.kitchen_invoice = 0
       return oitem
     })
     order.covers = orderCovers
@@ -959,24 +955,20 @@ const actions = {
   },
   modifyDineOrder(
     { dispatch, rootState, getters, rootGetters, commit },
-    dataObject
+    { action, data, route }
   ) {
-    let action = null
-    if (rootState.dinein.isModified && typeof dataObject != 'undefined') {
-      action = dataObject.action
-    } else {
-      action = dataObject
-    }
     if (action === 'dine-in-order-preview') {
       return new Promise(resolve => {
         commit(mutation.PRINT, true)
         resolve()
       })
     }
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
       dispatch('getModifyOrder').then(order => {
-        if (rootState.dinein.isModified && typeof dataObject != 'undefined') {
-          order = { ...order, ...dataObject.data }
+        let msg = 'Dinein order has been placed.'
+        if (route === 'updateOrder') {
+          order = { ...order, ...data }
+          msg = 'Dinein order has been updated'
         }
         //delete order.order_system_status
         delete order.new_real_transition_order_no
@@ -984,19 +976,23 @@ const actions = {
         OrderService.updateOrderItems(order, rootState.order.orderId)
           .then(response => {
             if (response.data.status === 'ok') {
-              let msgStr = rootGetters['location/_t'](
-                'Dinein order has been placed.'
-              )
+              let msgStr = rootGetters['location/_t'](msg)
 
-              if (action === 'dine-in-place-order') {
+              if (
+                ['dine-in-place-order', 'modify-backend-order'].includes(
+                  action
+                ) &&
+                rootState.checkoutForm.action !== 'pay'
+              ) {
                 msgStr = rootGetters['location/_t'](
                   'Dinein order has been updated.'
                 )
 
                 dispatch('createModifyOrderItemList')
+                //'modify-backend-order' means order was updated
+                commit(mutation.SET_ROUTE, { name: 'Dinein' })
                 dispatch('reset', true)
                 commit('order/CLEAR_SELECTED_ORDER', null, { root: true })
-                commit('dinein/IS_MODIFIED', false, { root: true })
                 resolve()
               } else {
                 //order paid
@@ -1005,7 +1001,6 @@ const actions = {
                   'SET_ORDER_NUMBER',
                   rootState.order.selectedOrder.item.order_no
                 )
-                commit('dinein/IS_MODIFIED', false, { root: true })
                 if (rootState.order.splitted || rootState.order.splitBill) {
                   commit('order/SET_SPLITTED', true, { root: true })
                   //mark items as paid in current execution
@@ -1024,7 +1019,6 @@ const actions = {
                       }).then(() => resolve())
                     } else {
                       commit('order/CLEAR_SELECTED_ORDER', null, { root: true })
-                      commit('dinein/IS_MODIFIED', false, { root: true })
                     }
                   })
                   //if splitted once
@@ -1042,7 +1036,9 @@ const actions = {
                 }
               )
             } else {
-              dispatch('handleSystemErrors', response).then(() => resolve())
+              dispatch('handleSystemErrors', response).then(() =>
+                reject(response)
+              )
             }
           })
           .catch(error => {
@@ -1153,7 +1149,19 @@ const actions = {
     })
   },
 
-  modifyBackendOrder({ dispatch, rootState, rootGetters, commit }, { data }) {
+  modifyBackendOrder(
+    { dispatch, rootState, rootGetters, commit },
+    { action, data }
+  ) {
+    if (rootState.order.orderSource !== 'backend') {
+      if (rootGetters['order/orderType'] === CONSTANTS.ORDER_TYPE_DINE_IN) {
+        return dispatch('modifyDineOrder', {
+          action: action,
+          data: data,
+          route: 'updateOrder',
+        })
+      }
+    }
     return new Promise((resolve, reject) => {
       dispatch('getModifyOrder').then(order => {
         order = { ...order, ...data }
@@ -1508,11 +1516,7 @@ const actions = {
     ) {
       return dispatch('modifyDeliveryOrder')
     } else if (action === 'modify-backend-order') {
-      if (rootState.dinein.isModified) {
-        return dispatch('modifyDineOrder', { action: action, data: data })
-      } else {
-        return dispatch('modifyBackendOrder', { action: action, data: data })
-      }
+      return dispatch('modifyBackendOrder', { action: action, data: data })
     } else if (action === CONSTANTS.ORDER_STATUS_ON_HOLD) {
       return dispatch('createHoldOrder')
     } else if (
@@ -1524,11 +1528,7 @@ const actions = {
     ) {
       if (rootState.order.order_status !== 'completed') {
         if (rootState.order.orderId || action === 'dine-in-order-preview') {
-          if (rootState.dinein.isModified) {
-            return dispatch('modifyDineOrder', { action: action, data: data })
-          } else {
-            return dispatch('modifyDineOrder', action)
-          }
+          return dispatch('modifyDineOrder', { action: action, data: data })
         } else {
           return dispatch('createDineOrder', action)
         }
@@ -1546,8 +1546,13 @@ const actions = {
     }
   },
 
-  generateInvoice() {
-    //commit(mutation.PRINT, true)
+  generateInvoice({ commit }) {
+    //don't actually generate invoice, invoice is generated by PRINT state which
+    //is set by update/create functions internally, here we only do things which are
+    //not related to any invoice printing, like REDIRECTION if no inovice needed, for
+    // example update (NOT MODIFY) dine in order
+    //AT THIS TIME ORDER HAS BEEN RESET SO WE DON'T HAVE ANY ORDER DATA EXCEPT ROUTE
+    commit('context/SET_ROUTE', state.route, { root: true })
   },
   reset({ state, commit, dispatch, getters }, full = true) {
     if (['dine-in-order-preview'].includes(state.paymentAction)) {
@@ -1700,9 +1705,6 @@ const actions = {
         store_id: rootState.context.storeId,
       }
       let x = JSON.stringify(jsonResponse)
-      //Case: print order invoice data was added in Localstorage for IOS APP, IOS webview would get this value and will send information to native printer.
-      localStorage.setItem('orderInvoiceColData', x)
-
       // let b = new Buffer(x)
       // let stringifyResponse = b.toString('base64')
       let decodedData = compressToBase64(x)
@@ -1769,6 +1771,9 @@ const mutations = {
   },
   [mutation.SPLIT_PAID](state, action) {
     state.splitPaid = action
+  },
+  [mutation.SET_ROUTE](state, route) {
+    state.route = route
   },
   [mutation.RESET](state, full = true) {
     state.paidAmount = 0

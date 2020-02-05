@@ -71,7 +71,7 @@ export default {
   },
   computed: {
     ...mapGetters('location', ['_t']),
-    ...mapState('order', ['orderSource']),
+    ...mapState('order', ['needSupervisorAccess']),
   },
   methods: {
     stopProcess() {
@@ -94,7 +94,7 @@ export default {
               payable <= 0.1 ||
               this.$store.state.checkoutForm.action == 'pay'
             ) {
-              if (this.orderSource === 'backend') {
+              if (this.needSupervisorAccess) {
                 showModal('#modificationReason')
               } else {
                 if (this.$store.getters['checkoutForm/validate']) {

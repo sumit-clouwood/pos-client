@@ -32,7 +32,7 @@ const getters = {
       return 0
     }
     return state.surchargeAmounts.reduce((total, surcharge) => {
-      return total + surcharge.amount
+      return total + Num.round(surcharge.amount)
     }, 0)
   },
   surcharges: (state, getters, rootState, rootGetters) => {

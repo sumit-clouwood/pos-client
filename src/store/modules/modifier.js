@@ -128,7 +128,10 @@ const getters = {
   ) => {
     let modifier = {}
 
-    if (rootGetters['auth/multistore']) {
+    if (
+      rootGetters['auth/multistore'] &&
+      typeof state.multistoreItemModifiers[item.store_id] !== 'undefined'
+    ) {
       const stateModifiers = state.multistoreItemModifiers[item.store_id]
       stateModifiers.forEach(entity => {
         const itemModifierSubgroups = getters.multistoreItemModifiers(

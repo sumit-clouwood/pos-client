@@ -381,7 +381,6 @@ export default {
     ...mapState('checkout', ['print']),
     ...mapGetters('location', ['_t', 'isTokenManager', 'getReferral']),
     ...mapState('location', ['timezoneString']),
-    ...mapGetters('auth', ['allowed']),
     ...mapState('dinein', ['selectedTableRservationData']),
     ...mapState('order', ['orderType']),
 
@@ -583,68 +582,23 @@ export default {
     //These methods would need to be updated at POS to search for objects in POS store
     //These functions
     translate_item(orderItem) {
-      var found_item = this.$store.getters['category/items'].find(
-        item => item._id == orderItem.entity_id
-      )
-      if (found_item) {
-        if (found_item.name === 'Open Item') {
-          return this.translate_entity(orderItem, 'name')
-        }
-        return this.translate_entity(found_item, 'name')
-      } else {
-        return orderItem.name
-      }
+      return this.translate_entity(orderItem, 'name')
     },
+    // eslint-disable-next-line no-unused-vars
     translate_item_modifier(item, orderItem) {
-      var found_item = this.$store.getters['modifier/findModifier'](
-        item.entity_id,
-        orderItem
-      )
-      if (found_item) {
-        return this.translate_entity(found_item, 'name')
-      } else {
-        return ''
-      }
+      return this.translate_entity(item, 'name')
     },
     translate_item_discount(item) {
-      var found_item = this.$store.getters['discount/itemDiscounts'].find(
-        loaded_item => loaded_item._id == item.entity_id
-      )
-      if (found_item) {
-        return this.translate_entity(found_item, 'name')
-      } else {
-        return ''
-      }
+      return this.translate_entity(item, 'name')
     },
     translate_surcharge(item) {
-      var found_item = this.$store.state.surcharge.surcharges.find(
-        loaded_item => loaded_item._id == item.entity_id
-      )
-      if (found_item) {
-        return this.translate_entity(found_item, 'name')
-      } else {
-        return ''
-      }
+      return this.translate_entity(item, 'name')
     },
     translate_order_discount(item) {
-      var found_item = this.$store.getters['discount/orderDiscounts'].find(
-        loaded_item => loaded_item._id == item.entity_id
-      )
-      if (found_item) {
-        return this.translate_entity(found_item, 'name')
-      } else {
-        return ''
-      }
+      return this.translate_entity(item, 'name')
     },
     translate_payment_type(item) {
-      var found_item = this.$store.getters['payment/methods'].find(
-        loaded_item => loaded_item._id == item.entity_id
-      )
-      if (found_item) {
-        return this.translate_entity(found_item, 'name')
-      } else {
-        return ''
-      }
+      return this.translate_entity(item, 'name')
     },
     get_delivery_area_name(delivery_area_id) {
       var found = this.$store.state.customer.fetchDeliveryAreas.find(

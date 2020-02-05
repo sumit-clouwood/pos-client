@@ -36,7 +36,6 @@
         </div>
       </div>
     </div>
-    <ModificationPermissions v-if="isModified" />
   </div>
 </template>
 <script>
@@ -44,14 +43,12 @@
 import { mapGetters, mapState } from 'vuex'
 import pay from './common/pay'
 import save from './common/save'
-import ModificationPermissions from '@/components/pos/content/orderDetails/ModificationPermissions'
 
 export default {
   name: 'DineinBtn',
   components: {
     pay,
     save,
-    ModificationPermissions,
   },
   data() {
     return {
@@ -60,12 +57,11 @@ export default {
   },
   computed: {
     ...mapGetters('location', ['_t']),
-    ...mapGetters('auth', ['waiter']),
     ...mapState('order', [
       'items',
       'orderSource',
+      'needSupervisorAccess',
       'orderType',
-      'selectedOrder',
     ]),
     ...mapState('dinein', ['selectedCover', 'orderReservationData']),
     ...mapState('checkoutForm', ['processing']),
@@ -82,6 +78,8 @@ export default {
   },
   methods: {
     payNow() {
+      this.$store.commit('checkoutForm/setAction', 'pay')
+      let validationError = {}
       this.items.find(element => {
         if (typeof element.cover_name == 'undefined') {
           this.checkCover = false
@@ -93,26 +91,26 @@ export default {
         this.orderType.OTApi !== 'dine_in' ||
         !this.brand.number_of_covers
       ) {
-        // if (this.orderSource === 'backend') {
-        //   showModal('#modificationReason')
-        // } else {
-        //   clickPayNow()
-        // }
-
-        this.isModified() ? clickPayNow() : clickPayNow()
+        clickPayNow()
       } else {
-        this.showErrorMessage('Please select a cover for new item.')
+        validationError = {
+          status: 'flash_message',
+          flash_message: this._t('Please select a cover for new item.'),
+        }
+        this.$store.commit('customer/SET_RESPONSE_MESSAGES', validationError)
+        $('#information-popup').modal('show')
       }
     },
 
     save() {
       //dine in order
+      let validationError = {}
       let checkCovers = this.items.find(element => {
         return (
           element.cover_name == 'undefined' || element.cover_name == undefined
         )
       })
-
+      this.$store.commit('checkoutForm/setAction', 'add')
       if (this.items.length > 0) {
         if (
           checkCovers == undefined ||
@@ -120,7 +118,7 @@ export default {
           this.selectedCover ||
           !this.brand.number_of_covers
         ) {
-          if (this.orderSource === 'backend' || this.isModified()) {
+          if (this.needSupervisorAccess) {
             showModal('#modificationReason')
           } else {
             if (this.processing) {
@@ -144,6 +142,7 @@ export default {
                 }
               })
               .catch(response => {
+                let validationError = {}
                 let errors = ''
                 if (response.status === 'form_errors') {
                   for (let i in response.form_errors) {
@@ -155,7 +154,15 @@ export default {
                   errors = response.error
                 }
                 if (errors !== '') {
-                  this.showErrorMessage(errors)
+                  validationError = {
+                    status: 'flash_message',
+                    flash_message: errors,
+                  }
+                  this.$store.commit(
+                    'customer/SET_RESPONSE_MESSAGES',
+                    validationError
+                  )
+                  $('#information-popup').modal('show')
                 }
               })
               .finally(() => {
@@ -163,55 +170,21 @@ export default {
               })
           }
         } else {
-          this.showErrorMessage('Please select a cover.')
+          validationError = {
+            status: 'flash_message',
+            flash_message: this._t('Please select a cover.'),
+          }
+          this.$store.commit('customer/SET_RESPONSE_MESSAGES', validationError)
+          $('#information-popup').modal('show')
         }
       } else {
-        this.showErrorMessage('Please Add items.')
-      }
-    },
-    isModified() {
-      let isChanged = false
-      let newItems = this.items.length > 0 ? this.items : false
-
-      if (!newItems) {
-        this.showErrorMessage()
-      }
-
-      if (this.selectedOrder && this.selectedOrder.item) {
-        let selectedOrderItems = this.selectedOrder.item.items
-        let oldItems = Object.values(selectedOrderItems)
-        if (newItems.length >= oldItems.length) {
-          selectedOrderItems.forEach((element, index) => {
-            if (
-              typeof newItems[index].no === 'undefined' ||
-              !(
-                Object.is(element.entity_id, newItems[index]._id) &&
-                Object.is(element.no, newItems[index].no)
-              )
-            ) {
-              isChanged = true
-              return 0
-            }
-          })
-        } else {
-          isChanged = true
+        validationError = {
+          status: 'flash_message',
+          flash_message: this._t('Please add items.'),
         }
+        this.$store.commit('customer/SET_RESPONSE_MESSAGES', validationError)
+        $('#information-popup').modal('show')
       }
-      if (isChanged) {
-        this.$store.commit('dinein/IS_MODIFIED', isChanged)
-        this.$store.dispatch('order/fetchModificationReasons')
-      }
-      return isChanged
-    },
-    showErrorMessage(errorMessage) {
-      let validationError = {}
-
-      validationError = {
-        status: 'flash_message',
-        flash_message: this._t(errorMessage),
-      }
-      this.$store.commit('customer/SET_RESPONSE_MESSAGES', validationError)
-      $('#information-popup').modal('show')
     },
   },
 }
