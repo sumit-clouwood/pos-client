@@ -9,20 +9,29 @@
     </div>
   </div> -->
   <!-- <div v-else> -->
-  <div v-if="selectedOrder && !needSupervisorAccess">
+  <div v-if="isCarhop()">
     <div class="button">
       <div class="template-btn">
         <div class="pay-now">
-          <pay class="pay-btn-holder" @pay="payNow"></pay>
+          <save class="pay-btn-holder" @save="placeCarhop"></save>
         </div>
       </div>
     </div>
   </div>
   <div v-else>
-    <div class="button">
-      <div class="template-btn">
-        <div class="pay-now">
-          <save class="pay-btn-holder" @save="placeCarhop"></save>
+    <div style="grid-template-columns: 1fr 1fr; display: grid;">
+      <div class="button">
+        <div class="template-btn">
+          <div class="pay-now">
+            <pay class="pay-btn-holder" @pay="payNow"></pay>
+          </div>
+        </div>
+      </div>
+      <div class="button">
+        <div class="template-btn">
+          <div class="pay-now">
+            <save class="pay-btn-holder" @save="placeCarhop"></save>
+          </div>
         </div>
       </div>
     </div>
