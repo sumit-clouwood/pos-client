@@ -1172,7 +1172,9 @@ const actions = {
                 root: true,
               })
               commit('SET_ORDER_NUMBER', rootState.order.orderData.order_no)
-
+              if (typeof response.data.token_number != 'undefined') {
+                commit('SET_TOKEN_NUMBER', response.data.token_number)
+              }
               const msg = rootGetters['location/_t']('Order has been modified.')
               dispatch('setMessage', {
                 result: 'success',

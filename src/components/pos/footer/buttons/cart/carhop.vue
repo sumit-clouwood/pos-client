@@ -9,29 +9,20 @@
     </div>
   </div> -->
   <!-- <div v-else> -->
-  <div v-if="isCarhop()">
+  <div v-if="selectedOrder && !needSupervisorAccess">
     <div class="button">
       <div class="template-btn">
         <div class="pay-now">
-          <save class="pay-btn-holder" @save="placeCarhop"></save>
+          <pay class="pay-btn-holder" @pay="payNow"></pay>
         </div>
       </div>
     </div>
   </div>
   <div v-else>
-    <div style="grid-template-columns: 1fr 1fr; display: grid;">
-      <div class="button">
-        <div class="template-btn">
-          <div class="pay-now">
-            <pay class="pay-btn-holder" @pay="payNow"></pay>
-          </div>
-        </div>
-      </div>
-      <div class="button">
-        <div class="template-btn">
-          <div class="pay-now">
-            <save class="pay-btn-holder" @save="placeCarhop"></save>
-          </div>
+    <div class="button">
+      <div class="template-btn">
+        <div class="pay-now">
+          <save class="pay-btn-holder" @save="placeCarhop"></save>
         </div>
       </div>
     </div>
@@ -51,7 +42,12 @@ export default {
   },
   computed: {
     ...mapState('checkoutForm', ['processing']),
-    ...mapState('order', ['items', 'orderSource', 'needSupervisorAccess']),
+    ...mapState('order', [
+      'items',
+      'orderSource',
+      'selectedOrder',
+      'needSupervisorAccess',
+    ]),
     ...mapGetters('auth', ['carhop']),
   },
   methods: {
