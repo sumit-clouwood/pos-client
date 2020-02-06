@@ -15,8 +15,8 @@
                 class="table-status"
                 style="text-align:center"
                 :class="{ active: assignedWaiter._id === waiter._id }"
-                v-for="waiter in waiters"
-                :key="waiter._id"
+                v-for="(waiter, index) in waiters"
+                :key="index"
                 @click="select(waiter)"
               >
                 <span v-html="waiter.name"></span>
