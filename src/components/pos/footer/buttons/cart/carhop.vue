@@ -40,7 +40,7 @@
 </template>
 <script>
 /* global $ clickPayNow */
-import { mapState, mapGetters } from 'vuex'
+import { mapState } from 'vuex'
 import save from './common/save'
 import pay from './common/pay'
 export default {
@@ -51,8 +51,7 @@ export default {
   },
   computed: {
     ...mapState('checkoutForm', ['processing']),
-    ...mapState('order', ['items', 'orderSource', 'selectedOrder']),
-    ...mapGetters('auth', ['carhop']),
+    ...mapState('order', ['items']),
   },
   methods: {
     payNow() {
@@ -70,20 +69,16 @@ export default {
         return false
       }
 
-      if (this.orderSource === 'backend' && this.selectedOrder) {
-        $('#modificationReason').modal('show')
-      } else {
-        $('#payment-msg').modal('show')
-        this.$store.dispatch('order/startOrder')
-        this.$store.commit('checkoutForm/SET_PROCESSING', true)
-        this.$store
-          .dispatch('checkout/pay', { action: 'carhop-place-order' })
-          .then(() => {})
-          .catch(() => {})
-          .finally(() => {
-            this.$store.commit('checkoutForm/SET_PROCESSING', false)
-          })
-      }
+      $('#payment-msg').modal('show')
+      this.$store.dispatch('order/startOrder')
+      this.$store.commit('checkoutForm/SET_PROCESSING', true)
+      this.$store
+        .dispatch('checkout/pay', { action: 'carhop-place-order' })
+        .then(() => {})
+        .catch(() => {})
+        .finally(() => {
+          this.$store.commit('checkoutForm/SET_PROCESSING', false)
+        })
     },
   },
 }
