@@ -14,7 +14,10 @@ const getters = {
   template: (state, getters, rootState) => {
     if (state.rules && typeof state.rules.data !== 'undefined') {
       let templateId = null
-      if (state.templateId) {
+      if (
+        state.templateId &&
+        state.templates.data.data.some(template => template._id == templateId)
+      ) {
         //template id already selected
         templateId = state.templateId
       } else {

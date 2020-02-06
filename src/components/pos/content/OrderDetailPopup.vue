@@ -28,7 +28,7 @@
             <RightPartHeader />
 
             <!--content-->
-            <Receipt :orderDetails="selectedOrder.item" />
+            <Receipt :order_data="selectedOrder" />
             <History
               :orderDetails="selectedOrder.item"
               :userDetails="selectedOrder.lookups"

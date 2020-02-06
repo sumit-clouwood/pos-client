@@ -203,13 +203,13 @@
         </a>
       </div>
     </div>
-    <mobile-footer />
+    <!-- <mobile-footer /> -->
   </div>
 </template>
 <script>
 /* global $ */
 import { mapActions, mapState, mapGetters } from 'vuex'
-import mobileFooter from './mobileFooter.vue'
+// import mobileFooter from './mobileFooter.vue'
 
 export default {
   data() {
@@ -217,9 +217,9 @@ export default {
       vbutton: '',
     }
   },
-  components: {
-    mobileFooter,
-  },
+  // components: {
+  //   mobileFooter,
+  // },
   computed: {
     ...mapGetters(['footerMenuHendler']),
     ...mapGetters('location', ['formatPrice', '_t']),
