@@ -75,7 +75,7 @@
                 type="button"
                 class="button btn btn-success"
                 v-if="driverBucket.length"
-                @click="assignBucketToDriver()"
+                @click="showRemainingItems"
               >
                 <div class="button-content-container">
                   <div class="button-icon-container"><!----></div>
@@ -142,7 +142,7 @@ import DMDeliveredItem from '@/components/deliveryManager/content/DMDeliveredIte
 import DMAssignedDriver from '@/components/deliveryManager/partial/DMAssignedDriver'
 import OrderDetailsPopup from '@/components/pos/content/OrderDetailPopup'
 import paginate from 'vuejs-paginate'
-import Preloader from '@/components/util/Preloader'
+import Preloader from '@/components/util/progressbar'
 
 /* global $ */
 export default {
@@ -231,11 +231,23 @@ export default {
     getSelectUser: function() {
       this.selectedUser = $('#get-customer-list').val()
     },
-
+    showRemainingItems: function() {
+      // eslint-disable-next-line no-console
+      console.log(this.driverBucket, this.$store.getters['auth/multistore'])
+      this.assignBucketToDriver()
+      if (this.$store.getters['auth/multistore']) {
+        this.updateDMOrderStatus({
+          orderStatus: 'ready',
+          collected: 'no',
+          pageId: 'home_delivery_pick',
+        })
+      }
+    },
     ...mapActions('deliveryManager', [
       'selectDriver',
       'restoreOrders',
       'assignBucketToDriver',
+      'updateDMOrderStatus',
     ]),
     /*imageLoadError() {
       for (let i = 0; i < document.images.length; i++) {
