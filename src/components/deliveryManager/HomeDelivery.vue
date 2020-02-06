@@ -238,21 +238,18 @@ export default {
       this.selectedUser = $('#get-customer-list').val()
     },
     showRemainingItems: function() {
-      this.assignBucketToDriver()
-      if (this.$store.getters['auth/multistore']) {
-        this.$store.commit('deliveryManager/SECTION', 'crm')
-        this.$store.dispatch('deliveryManager/updateDMOrderStatus', {
-          orderStatus: 'ready',
-          collected: 'no',
-          pageId: 'home_delivery_pick',
-        })
-      }
+      this.$store.dispatch('deliveryManager/assignBucketToDriver').then(() => {
+        if (this.$store.getters['auth/multistore']) {
+          this.$store.commit('deliveryManager/SECTION', 'crm')
+          this.$store.dispatch('deliveryManager/updateDMOrderStatus', {
+            orderStatus: 'ready',
+            collected: 'no',
+            pageId: 'home_delivery_pick',
+          })
+        }
+      })
     },
-    ...mapActions('deliveryManager', [
-      'selectDriver',
-      'restoreOrders',
-      'assignBucketToDriver',
-    ]),
+    ...mapActions('deliveryManager', ['selectDriver', 'restoreOrders']),
     /*imageLoadError() {
       for (let i = 0; i < document.images.length; i++) {
         document.images[i].remove()
