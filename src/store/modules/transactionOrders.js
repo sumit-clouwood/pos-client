@@ -85,7 +85,8 @@ const actions = {
       data.forEach(function(value) {
         let orderDateTime = LookupData.convertDatetimeCustom(
           value.real_created_datetime,
-          timezoneString
+          timezoneString,
+          'YYYY-MM-DD HH:mm:ss'
         )
         orderDateTime = orderDateTime.substring(0, orderDateTime.indexOf(' '))
         if (orderDateTime.length) {
@@ -110,13 +111,13 @@ const actions = {
             .toLowerCase()
             .indexOf(searchTerm.toString().toLowerCase()) != -1
         ) {
-          searchedItems.push(order)
+          if (!searchedItems.includes(order)) searchedItems.push(order)
         }
 
         //Searching with Order Item Names
         order.items.map(item => {
           if (item.name.toLowerCase().indexOf(searchTerm.toLowerCase()) != -1) {
-            searchedItems.push(order)
+            if (!searchedItems.includes(order)) searchedItems.push(order)
           }
         })
 
@@ -134,7 +135,7 @@ const actions = {
               .toLowerCase()
               .indexOf(searchTerm.toString().toLowerCase()) != -1
           ) {
-            searchedItems.push(order)
+            if (!searchedItems.includes(order)) searchedItems.push(order)
           }
         }
       })

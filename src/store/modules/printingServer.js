@@ -31,6 +31,7 @@ const actions = {
 
   convertDatetime({ rootState, commit }, { datetime, format }) {
     let tz = rootState.location.timezoneString
+    /* eslint-disable no-undef */
     moment.locale(tz)
     let value =
       datetime != null && typeof datetime.$date != 'undefined'
@@ -145,6 +146,8 @@ const actions = {
       )
       let orderTypeLabel = orderData.order_type + '_label'
       orderData.order_no = orderData.orderNumber //Custom Order No to give appropriate field for Habib
+      orderData.real_created_datetime = created_date
+      orderData.created_at = null
       //Final JSON
       /*get selected table no*/
       let table_no = rootState.dinein.selectedTable
@@ -183,18 +186,23 @@ const actions = {
         jsonResponse.windows_app = true
         _order['printingServers'] = printingServers
         _order['orderData'] = jsonResponse
-
+        // eslint-disable-next-line no-console
+        console.log(window.PrintHandle, 'window.PrintHandle')
+        // eslint-disable-next-line no-console
+        console.log(_order, '_order')
         window.PrintHandle.Print(
           JSON.stringify(_order),
           function callbackfunction(data) {
+            // eslint-disable-next-line no-console
+            console.log('callbackfunction')
             //perform your action in case of success or leave empty
             // eslint-disable-next-line no-console
-            console.log(data.status, 'data')
+            console.log(data, 'callbackfunction result')
           }
         )
       }
       // eslint-disable-next-line no-console
-      // console.log(jsonResponse, 'datatata')
+      console.log(jsonResponse, 'checkResponce')
       let x = JSON.stringify(jsonResponse)
 
       // let b = new Buffer(x)

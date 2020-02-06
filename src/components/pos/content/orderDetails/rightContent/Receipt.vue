@@ -10,111 +10,119 @@
       <div class="order-note" v-if="orderDetails.order_note">
         {{ orderDetails.order_note }}
       </div>
-      <table
-        class="table col-md-12 color-tables-background table-responsive receipt-table"
-      >
-        <thead>
-          <tr>
-            <th
-              class="receipt-heading color-text-invert color-secondary"
-              style="width: 250px;"
-            >
-              {{ _t('Item') }}
-            </th>
-            <th
-              class="receipt-heading color-text-invert color-secondary"
-              style="width: 150px;"
-            >
-              {{ _t('Base Price') }}
-            </th>
-            <th
-              class="receipt-heading color-text-invert color-secondary"
-              style="width: 60px;"
-            >
-              {{ _t('Qty') }}
-            </th>
-            <th
-              class="receipt-heading color-text-invert color-secondary"
-              style="width: 150px;"
-            >
-              {{ _t('Total Price') }}
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <template v-for="(item, key) in orderDetails.items">
-            <tr :key="'item' + key">
-              <td
+      <div class="items-container">
+        <table
+          class="table col-md-12 color-tables-background table-responsive receipt-table"
+        >
+          <thead>
+            <tr>
+              <th
+                class="receipt-heading color-text-invert color-secondary"
                 style="width: 250px;"
-                class="color-tables-background color-text"
               >
-                <div>{{ item.name }}</div>
-                <div class="discount" v-if="orderDetails.item_discounts.length">
-                  {{
-                    getItemSubsets({
-                      subset: orderDetails.item_discounts,
-                      itemId: item.no,
-                      selector: 'item_discounts',
-                    })
-                  }}
-                  <div
-                    v-for="(discount, index) in orderDetails.item_discounts"
-                    :key="index"
-                  >
-                    <span v-if="item.no === discount.for_item">
-                      {{ discount.name }} - {{ formatPrice(discount.price) }}
-                    </span>
-                  </div>
-                </div>
-                <div class="modifier" v-if="orderDetails.item_modifiers.length">
-                  {{
-                    getItemSubsets({
-                      subset: orderDetails.item_modifiers,
-                      itemId: item.no,
-                      selector: 'item_modifiers',
-                    })
-                  }}
-                  <div
-                    v-for="(modifier, key) in orderDetails.item_modifiers"
-                    :key="key"
-                  >
-                    <span v-if="modifier.for_item == item.no">
-                      <span v-if="modifier.qty > 0">+{{ modifier.qty }}</span>
-                      {{ modifier.name }}
-                    </span>
-                  </div>
-                </div>
-              </td>
-              <td
+                {{ _t('Item') }}
+              </th>
+              <th
+                class="receipt-heading color-text-invert color-secondary"
                 style="width: 150px;"
-                class="base-price color-tables-background color-text"
               >
-                {{ formatPrice(item.price) }}
-              </td>
-              <td
+                {{ _t('Base Price') }}
+              </th>
+              <th
+                class="receipt-heading color-text-invert color-secondary"
                 style="width: 60px;"
-                class="qty color-tables-background color-text"
               >
-                {{ item.qty }}
-              </td>
-              <td
+                {{ _t('Qty') }}
+              </th>
+              <th
+                class="receipt-heading color-text-invert color-secondary"
                 style="width: 150px;"
-                class="price color-tables-background color-text"
               >
-                {{ getTotalPrice(item) }}
-              </td>
+                {{ _t('Total Price') }}
+              </th>
             </tr>
-            <tr v-if="item.note" :key="'note' + key">
-              <td colspan="4" class="note-td">
-                <div>
-                  <span class="item-note">{{ _t('Note') }}: </span>
-                  <i>{{ item.note }}</i>
-                </div>
-              </td>
-            </tr>
-          </template>
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            <template v-for="(item, key) in orderDetails.items">
+              <tr :key="'item' + key">
+                <td
+                  style="width: 250px;"
+                  class="color-tables-background color-text"
+                >
+                  <div>{{ item.name }}</div>
+                  <div
+                    class="discount"
+                    v-if="orderDetails.item_discounts.length"
+                  >
+                    {{
+                      getItemSubsets({
+                        subset: orderDetails.item_discounts,
+                        itemId: item.no,
+                        selector: 'item_discounts',
+                      })
+                    }}
+                    <div
+                      v-for="(discount, index) in orderDetails.item_discounts"
+                      :key="index"
+                    >
+                      <span v-if="item.no === discount.for_item">
+                        {{ discount.name }} - {{ formatPrice(discount.price) }}
+                      </span>
+                    </div>
+                  </div>
+                  <div
+                    class="modifier"
+                    v-if="orderDetails.item_modifiers.length"
+                  >
+                    {{
+                      getItemSubsets({
+                        subset: orderDetails.item_modifiers,
+                        itemId: item.no,
+                        selector: 'item_modifiers',
+                      })
+                    }}
+                    <div
+                      v-for="(modifier, key) in orderDetails.item_modifiers"
+                      :key="key"
+                    >
+                      <span v-if="modifier.for_item == item.no">
+                        <span v-if="modifier.qty > 0">+{{ modifier.qty }}</span>
+                        {{ modifier.name }}
+                      </span>
+                    </div>
+                  </div>
+                </td>
+                <td
+                  style="width: 150px;"
+                  class="base-price color-tables-background color-text"
+                >
+                  {{ formatPrice(item.price) }}
+                </td>
+                <td
+                  style="width: 60px;"
+                  class="qty color-tables-background color-text"
+                >
+                  {{ item.qty }}
+                </td>
+                <td
+                  style="width: 150px;"
+                  class="price color-tables-background color-text"
+                >
+                  {{ getTotalPrice(item) }}
+                </td>
+              </tr>
+              <tr v-if="item.note" :key="'note' + key">
+                <td colspan="4" class="note-td">
+                  <div>
+                    <span class="item-note">{{ _t('Note') }}: </span>
+                    <i>{{ item.note }}</i>
+                  </div>
+                </td>
+              </tr>
+            </template>
+          </tbody>
+        </table>
+      </div>
 
       <div class="receipt-summary">
         <div class="caption subtotal color-text-invert">Sub Total:</div>
@@ -157,12 +165,12 @@
 </template>
 
 <script>
+/* eslint-disable max-len */
+
 import { mapGetters, mapState } from 'vuex'
 export default {
   name: 'Receipt',
-  props: {
-    orderDetails: Object,
-  },
+  props: ['order_data'],
   data() {
     return {
       iteDiscount: {},
@@ -172,6 +180,35 @@ export default {
   computed: {
     ...mapGetters('location', ['_t', 'formatPrice']),
     ...mapState('order', ['orderSource']),
+    orderDetails() {
+      if (!this.order_data || typeof this.order_data.item === undefined) {
+        return false
+      }
+      var order_item = this.order_data.item
+      if (
+        this.order_data.item.multi_store == true &&
+        this.order_data.item.multi_store_data &&
+        this.order_data.item.multi_store_data.items
+      ) {
+        order_item.items = this.order_data.item.multi_store_data.items
+        order_item.item_modifiers = this.order_data.item.multi_store_data.item_modifiers
+        order_item.item_discounts = this.order_data.item.multi_store_data.item_discounts
+        order_item.order_surcharges = this.order_data.item.multi_store_data.order_surcharges
+        order_item.order_discounts = this.order_data.item.multi_store_data.order_discounts
+        order_item.sub_total = this.order_data.item.multi_store_data.sub_total
+        order_item.total_surcharge = this.order_data.item.multi_store_data.total_surcharge
+        order_item.surcharge_tax = this.order_data.item.multi_store_data.surcharge_tax
+        order_item.amount_changed = this.order_data.item.multi_store_data.amount_changed
+        order_item.tip_amount = this.order_data.item.multi_store_data.tip_amount
+        order_item.total_tax = this.order_data.item.multi_store_data.total_tax
+        order_item.total_discount = this.order_data.item.multi_store_data.total_discount
+        order_item.total_paid = this.order_data.item.multi_store_data.total_paid
+        order_item.balance_due = this.order_data.item.multi_store_data.balance_due
+        order_item.order_payments = this.order_data.item.multi_store_data.order_payments
+        order_item.delivery_surcharge = this.order_data.item.multi_store_data.delivery_surcharge
+      }
+      return order_item
+    },
   },
   methods: {
     getTotalPrice: function(item) {
@@ -222,6 +259,10 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.items-container {
+  max-height: 282px;
+  overflow: auto;
+}
 .order-note {
   display: block;
   background: #f5f6f6;

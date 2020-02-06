@@ -16,7 +16,7 @@
           allowed(PERMS.TOKEN_NUMBER) &&
             isTokenManager &&
             tokenNumber &&
-            orderType.OTApi === 'walk_in'
+            (orderType.OTApi === 'walk_in' || orderType.OTApi === 'carhop')
         "
       >
         {{ tokenNumber }}
@@ -379,9 +379,9 @@ export default {
   },
   computed: {
     ...mapState('checkout', ['print']),
-    ...mapGetters('location', ['_t', 'isTokenManager', 'getReferral']),
-    ...mapState('location', ['timezoneString', 'tokenNumber']),
     ...mapGetters('auth', ['allowed']),
+    ...mapGetters('location', ['_t', 'isTokenManager', 'getReferral']),
+    ...mapState('location', ['timezoneString']),
     ...mapState('dinein', ['selectedTableRservationData']),
     ...mapState('order', ['orderType']),
 
@@ -459,6 +459,25 @@ export default {
       return this.$store.state.location.userShortDetails.username
         ? this.$store.state.location.userShortDetails.username
         : this.$store.state.auth.userDetails.item.name
+    },
+    tokenNumber() {
+      if (
+        this.isTokenManager &&
+        this.allowed(this.PERMS.TOKEN_NUMBER) &&
+        (this.orderType.OTApi === 'walk_in' ||
+          this.orderType.OTApi === 'carhop')
+      ) {
+        if (
+          this.$store.state.sync.online &&
+          typeof this.order.tokenNumber != 'undefined'
+        ) {
+          return this.order.tokenNumber
+        } else if (typeof this.order.token_number != 'undefined') {
+          return this.order.token_number
+        }
+      }
+
+      return false
     },
     //If the customer is set in the order, we check if there is a property with customer info. If there is -
     // we output it. If there are no, we use sample customer. If customer is not set on the order -
@@ -564,68 +583,23 @@ export default {
     //These methods would need to be updated at POS to search for objects in POS store
     //These functions
     translate_item(orderItem) {
-      var found_item = this.$store.getters['category/items'].find(
-        item => item._id == orderItem.entity_id
-      )
-      if (found_item) {
-        if (found_item.name === 'Open Item') {
-          return this.translate_entity(orderItem, 'name')
-        }
-        return this.translate_entity(found_item, 'name')
-      } else {
-        return orderItem.name
-      }
+      return this.translate_entity(orderItem, 'name')
     },
+    // eslint-disable-next-line no-unused-vars
     translate_item_modifier(item, orderItem) {
-      var found_item = this.$store.getters['modifier/findModifier'](
-        item.entity_id,
-        orderItem
-      )
-      if (found_item) {
-        return this.translate_entity(found_item, 'name')
-      } else {
-        return ''
-      }
+      return this.translate_entity(item, 'name')
     },
     translate_item_discount(item) {
-      var found_item = this.$store.getters['discount/itemDiscounts'].find(
-        loaded_item => loaded_item._id == item.entity_id
-      )
-      if (found_item) {
-        return this.translate_entity(found_item, 'name')
-      } else {
-        return ''
-      }
+      return this.translate_entity(item, 'name')
     },
     translate_surcharge(item) {
-      var found_item = this.$store.state.surcharge.surcharges.find(
-        loaded_item => loaded_item._id == item.entity_id
-      )
-      if (found_item) {
-        return this.translate_entity(found_item, 'name')
-      } else {
-        return ''
-      }
+      return this.translate_entity(item, 'name')
     },
     translate_order_discount(item) {
-      var found_item = this.$store.getters['discount/orderDiscounts'].find(
-        loaded_item => loaded_item._id == item.entity_id
-      )
-      if (found_item) {
-        return this.translate_entity(found_item, 'name')
-      } else {
-        return ''
-      }
+      return this.translate_entity(item, 'name')
     },
     translate_payment_type(item) {
-      var found_item = this.$store.getters['payment/methods'].find(
-        loaded_item => loaded_item._id == item.entity_id
-      )
-      if (found_item) {
-        return this.translate_entity(found_item, 'name')
-      } else {
-        return ''
-      }
+      return this.translate_entity(item, 'name')
     },
     get_delivery_area_name(delivery_area_id) {
       var found = this.$store.state.customer.fetchDeliveryAreas.find(

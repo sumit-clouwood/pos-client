@@ -131,14 +131,16 @@
                       'createdOrder-' +
                         convertDatetime(
                           order.real_created_datetime,
-                          timezoneString
+                          timezoneString,
+                          'YYYY-MM-DD HH:mm:ss'
                         )
                     "
                     >{{
                       orderTimer(
                         convertDatetime(
                           order.real_created_datetime,
-                          timezoneString
+                          timezoneString,
+                          'YYYY-MM-DD HH:mm:ss'
                         ),
                         timezoneString
                       )

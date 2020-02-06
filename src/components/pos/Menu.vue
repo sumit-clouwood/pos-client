@@ -91,6 +91,7 @@
 
 import { mapState, mapGetters } from 'vuex'
 import MultiStore from './MultiStoreMenu'
+import { bus } from '@/eventBus'
 
 export default {
   name: 'Menu',
@@ -152,6 +153,8 @@ export default {
       $('.breadcrumbs').show()
       $('.search-field-input').val('')
       //bootstrap.loadUI().then(() => {})
+      bus.$emit('clear-search-input', '')
+
       this.$store.dispatch('category/browse', item)
     },
     posMenu() {

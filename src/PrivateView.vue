@@ -60,6 +60,7 @@ import ResizeMixin from '@/mixins/ResizeHandler'
 import bootstrap from '@/bootstrap'
 import Preloader from '@/components/util/Preloader'
 import { mapState, mapGetters } from 'vuex'
+import moment from 'moment-timezone'
 export default {
   name: 'PrivateView',
   props: {},
@@ -98,10 +99,12 @@ export default {
             )
           })
       }
-      if (this.orderId && this.$route.name === 'ModifyBackendOrder') {
-        this.$store.commit('order/ORDER_SOURCE', 'backend')
-        this.$store.dispatch('order/modifyOrder', this.orderId)
+      if (this.orderId) {
         this.$store.dispatch('order/fetchModificationReasons')
+        if (this.$route.name === 'ModifyBackendOrder') {
+          this.$store.commit('order/ORDER_SOURCE', 'backend')
+          this.$store.dispatch('order/modifyOrder', this.orderId)
+        }
       }
     },
     setupServiceWorker() {
@@ -167,19 +170,67 @@ export default {
           //}, 1000 * 10)
         })
     },
+    resetTokenNumber() {
+      if (!this.$store.state.sync.online) {
+        if (
+          this.isTokenManager &&
+          (this.orderType.OTApi === this.CONST.ORDER_TYPE_WALKIN ||
+            this.orderType.OTApi === this.CONST.ORDER_TYPE_WALKIN) &&
+          this.$store.getters['auth/allowed'](this.PERMS.TOKEN_NUMBER)
+        ) {
+          const storeCurrentDate = moment()
+            .tz(this.timezoneString)
+            .format('YYYY-MM-DD')
+
+          const storeCurrentTime = moment()
+            .tz(this.timezoneString)
+            .utc()
+            .valueOf()
+
+          const storeOpeningTime = moment
+            .tz(
+              storeCurrentDate + ' ' + this.openHours.opens_at,
+              'YYYY-MM-DD HH:mm',
+              this.timezoneString
+            )
+            .utc()
+            .valueOf()
+
+          const tokenResetAt =
+            localStorage.getItem('token_reset_at') || storeCurrentDate
+
+          if (
+            storeCurrentDate > tokenResetAt &&
+            storeCurrentTime >= storeOpeningTime
+          ) {
+            let startingTokenNumber = localStorage.getItem('starting_token')
+            localStorage.setItem('token_number', startingTokenNumber)
+            localStorage.setItem('token_reset_at', storeCurrentDate)
+          }
+        }
+      }
+    },
   },
   created() {},
   watch: {
+    currentRoute(any) {
+      if (any) {
+        this.$router.replace(any)
+      }
+    },
     // eslint-disable-next-line no-unused-vars
     $route(to, from) {
       // this.$store.commit('deliveryManager/LIST_TYPE', 'New Orders')
+      this.$store.commit('order/NEED_SUPERVISOR_ACCESS', false)
       if (this.$route.params.order_id) {
         this.orderId = this.$route.params.order_id
         this.$store.commit('order/RESET_SPLIT_BILL')
       }
-      //check if orderid exists from previous action
+      //check if orderid exists from previous action, but user choosed different route while editign order
       if (this.orderId) {
-        this.$store.dispatch('checkout/reset')
+        if (!this.$store.state.checkout.print) {
+          this.$store.dispatch('checkout/reset')
+        }
       }
       // if no order id found in current action reset this.orderId
       if (!this.$route.params.order_id) {
@@ -219,12 +270,16 @@ export default {
       }
 
       this.$store.commit('order/CLEAR_SELECTED_ORDER')
-      if (this.orderId && this.$route.name === 'ModifyBackendOrder') {
-        this.$store.commit('order/ORDER_SOURCE', 'backend')
-        this.$store.dispatch('order/modifyOrder', this.orderId)
+      if (this.orderId) {
         this.$store.dispatch('order/fetchModificationReasons')
+        if (this.$route.name === 'ModifyBackendOrder') {
+          this.$store.commit('order/ORDER_SOURCE', 'backend')
+          this.$store.dispatch('order/modifyOrder', this.orderId)
+        }
       }
     },
+    orderType: { handler: 'resetTokenNumber', immediate: true },
+    online: 'resetTokenNumber',
   },
   computed: {
     ...mapState({
@@ -232,7 +287,13 @@ export default {
         state.location.store ? state.location.store.default_language : false,
     }),
     ...mapState('sync', ['modules']),
+    ...mapState('context', ['currentRoute']),
     ...mapGetters('auth', ['loggedIn']),
+    ...mapGetters('auth', ['allowed']),
+    ...mapGetters('location', ['isTokenManager']),
+    ...mapState('order', ['orderType']),
+    ...mapState('sync', ['online']),
+    ...mapState('location', ['timezoneString', 'openHours']),
     apisLoaded() {
       return this.$store.state.location.brand
     },

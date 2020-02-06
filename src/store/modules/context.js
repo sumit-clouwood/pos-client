@@ -9,6 +9,7 @@ const state = {
   multiStores: null,
   selectedStore: false,
   storesLength: 1,
+  currentRoute: null,
 }
 
 // getters
@@ -75,6 +76,9 @@ const mutations = {
   },
   [mutation.SET_STORE](state, store) {
     state.store = store
+  },
+  [mutation.SET_ROUTE](state, any) {
+    state.currentRoute = any
   },
   [mutation.RESET](state) {
     state.store = null

@@ -5,47 +5,50 @@
     role="tabpanel"
     aria-labelledby="nav-contact-tab"
   >
-    <div>
-      <div v-if="modificationDetails.length > 0">
-        <div v-for="(record, index) in modificationDetails" :key="index">
-          <div class="modification-history">
-            <span
-              class="font-weight-bold"
-              style="width: 100%;  text-align: center; display: inline-block;"
+    <div class="order-modif-history">
+      <div v-if="modification_records.length">
+        <div v-for="(rec, key) in modification_records" :key="key">
+          <div>
+            <span class="prefix-mr" :class="{ first: key === 0 }">{{
+              rec.prefix
+            }}</span>
+          </div>
+          <div>
+            <span class="caption-mr">{{ _t('By:') }}</span
+            >&nbsp;<span class="value-mr">{{ rec.by }}</span>
+          </div>
+          <div>
+            <span class="caption-mr">{{ _t('At:') }}</span
+            >&nbsp;<span class="value-mr">{{ rec.at }}</span>
+          </div>
+          <div v-if="rec.reason">
+            <span class="caption-mr">{{ rec.reason_prefix }}</span
+            >&nbsp;<span class="value-mr">{{ rec.reason }}</span>
+          </div>
+          <div v-if="rec.order_updated">
+            <span class="caption-mr">{{ rec.order_prefix }}</span
+            >&nbsp;<span class="value-mr">{{ rec.items_removed }}</span>
+            <div v-if="rec.items_added">
+              <span class="caption-mr">{{ rec.order_prefix_add }}</span
+              >&nbsp;<span class="value-mr">{{ rec.items_added }}</span>
+            </div>
+          </div>
+
+          <div v-if="rec.order">
+            <span class="caption-mr">{{ rec.order_prefix }}</span
+            >&nbsp;<span
+              style="cursor:pointer; text-decoration:underline;"
+              class="order value-mr"
+              @click="selectedOrderDetails(rec.order)"
+              >{{ rec.order_no }}</span
             >
-              {{ record.prefix }}
-            </span>
-          </div>
-          <div class="modification-history">
-            <span class="font-weight-bold">{{ _t('By') }} : </span>
-            <span> {{ record.by }} </span>
-          </div>
-          <div class="modification-history">
-            <span class="font-weight-bold">{{ _t('At') }} : </span>
-            <span>
-              {{ record.at }}
-            </span>
-          </div>
-          <div class="modification-history" v-if="record.reason">
-            <span class="font-weight-bold">{{ record.reasonPrefix }} : </span>
-            <span>
-              {{ record.reason }}
-            </span>
-          </div>
-          <div class="modification-history" v-if="record.order">
-            <span class="font-weight-bold">{{ record.orderPrefix }} : </span>
-            <span>{{ record.orderNumber }}</span>
-          </div>
-          <div v-if="record.orderUpdated">
-            <span class="font-weight-bold"> {{ _t('Items removed') }} : </span>
-            <span> {{ record.itemsRemoved }} </span>
           </div>
         </div>
       </div>
       <div v-else>
         {{
           _t(
-            'Order Have never been cancelled, modified or created as a modification another order'
+            'Order Have never been cancelled, modifier or created as a modification of another order'
           )
         }}
       </div>
@@ -54,18 +57,14 @@
 </template>
 
 <script>
-import { mapGetters, mapState } from 'vuex'
+import { mapGetters, mapState, mapActions } from 'vuex'
 import DateTime from '@/mixins/DateTime'
-import LookupData from '@/plugins/helpers/LookupData'
-import * as CONST from '@/constants'
+import * as CONST from '@/constants.js'
 
 export default {
   name: 'Modifications',
   mixins: [DateTime],
-  props: {
-    orderDetails: {},
-    userDetails: {},
-  },
+  props: {},
   data() {
     return {
       modification: false,
@@ -74,63 +73,105 @@ export default {
   computed: {
     ...mapGetters('location', ['_t']),
     ...mapState('location', ['timezoneString']),
-    modificationDetails() {
-      var modificationRecords = []
-      if (typeof this.orderDetails != 'undefined') {
-        for (var history of this.orderDetails.order_history) {
-          var modificationHistory = this.orderDetails.order_history.find(
-            item =>
-              item.name == CONST.ORDER_HISTORY_TYPE_RECORD_NEW_FROM_MODIFIED
-          )
-          let modificationRecord = {}
-          if (
-            history.name === CONST.ORDER_HISTORY_TYPE_RECORD_NEW_FROM_MODIFIED
-          ) {
-            modificationRecord = {
-              prefix: this._t(
-                'Order has been created as a modification of another order'
-              ),
-              by: this.getUserName(history.user),
-              at: this.convertDatetime(
-                modificationHistory.created_at,
-                this.timezoneString
-              ),
-              reasonPrefix: this._t('Modification Reason'),
-              reason: '', //TODO not getting modification reasons in response
-              orderPrefix: this._t('Old Order Number'),
-              order: this._t(modificationHistory.param1),
-              orderNumber: this._t(modificationHistory.param2),
-            }
-            modificationRecords.push(modificationRecord)
-          }
+    ...mapState({
+      collected_data: state => state.order.selectedOrder,
+      order: state =>
+        state.order.selectedOrder ? state.order.selectedOrder.item : false,
+    }),
+    modification_records() {
+      if (!this.order) return false
 
-          if (history.name == CONST.ORDER_HISTORY_TYPE_RECORD_UPDATED) {
-            modificationRecord = {
-              prefix: this._t('Order has been updated'),
-              by: this.getUserName(history.user),
-              at: this.convertDatetime(history.created_at, this.timezoneString),
-              reasonPrefix: this._t('Updation Reason'),
-              reason: this._t(history.param1),
-              orderPrefix: this._t('Item(s) removed:'),
-              orderUpdated: true,
-              itemsRemoved: this.removedItems(history.param2, history.param3),
-            }
-            modificationRecords.push(modificationRecord)
+      let modification_records = []
+      let from_modified = {}
+      let modify_hr = {}
+
+      for (let hr of this.order.order_history) {
+        modify_hr = this.order.order_history.find(
+          item => item.name == CONST.ORDER_HISTORY_TYPE_RECORD_NEW_FROM_MODIFIED
+        )
+        if (hr.name == CONST.ORDER_HISTORY_TYPE_RECORD_NEW_FROM_MODIFIED) {
+          from_modified = {
+            prefix: this._t(
+              'Order has been created as a modification of another order'
+            ),
+            by: this.collected_data.lookups['users']['_id'][modify_hr.user][
+              'name'
+            ],
+            at: this.convertDatetime(modify_hr.created_at, this.timezoneString),
+            reason_prefix: '', //TODOIMPR show reason of modification
+            reason: '',
+            order_prefix: this._t('Old Order Number:'),
+            order: modify_hr.param1,
+            order_no: modify_hr.param2,
           }
+          modification_records.push(from_modified)
         }
-        return modificationRecords
+
+        if (hr.name == CONST.ORDER_HISTORY_TYPE_RECORD_UPDATED) {
+          let removed_items = this.removedItems(hr.param2, hr.param3)
+          let added_items = this.addedItems(hr.param2, hr.param3)
+          from_modified = {
+            prefix: this._t('Order has been updated'),
+            by: this.collected_data.lookups['users']['_id'][hr.user]['name'],
+            at: this.convertDatetime(hr.created_at, this.timezoneString),
+            reason_prefix: this._t('Update reason:'),
+            reason: hr.param1,
+            order_prefix: this._t('Item(s) removed:'),
+            order_prefix_add: this._t('Item(s) added:'),
+            order_updated: true,
+            items_removed: removed_items,
+            items_added: added_items,
+          }
+          modification_records.push(from_modified)
+        }
       }
-      return ''
+      if (
+        this.order.order_system_status == CONST.ORDER_SYSTEM_STATUS_CANCELLED
+      ) {
+        let cancel_hr = this.order.order_history.find(
+          item => item.name == CONST.ORDER_HISTORY_TYPE_RECORD_CANCELLED
+        )
+        let cancellation_record = {
+          prefix: this._t('Order has been cancelled'),
+          by: this.collected_data.lookups['users']['_id'][cancel_hr.user][
+            'name'
+          ],
+          at: this.convertDatetime(cancel_hr.created_at, this.timezoneString),
+          reason_prefix: this._t('Cancellation Reason:'),
+          reason: cancel_hr.param1,
+          order_prefix: '',
+          order: '',
+          order_no: '',
+        }
+        modification_records.push(cancellation_record)
+      }
+      if (
+        this.order.order_system_status == CONST.ORDER_SYSTEM_STATUS_MODIFIED
+      ) {
+        modify_hr = this.order.order_history.find(
+          item => item.name == CONST.ORDER_HISTORY_TYPE_RECORD_MODIFIED
+        )
+        let modified_record = {
+          type: 'modified',
+          prefix: this._t('Order has been modified'),
+          by: this.collected_data.lookups['users']['_id'][modify_hr.user][
+            'name'
+          ],
+          at: this.convertDatetime(modify_hr.created_at, this.timezoneString),
+          reason_prefix: this._t('Modification Reason:'),
+          modification_reason: modify_hr.param1,
+          order_prefix: this._t('New Modified Order Number:'),
+          order: modify_hr.param2,
+          order_no: modify_hr.param3,
+        }
+        modification_records.push(modified_record)
+      }
+      return modification_records
     },
   },
   methods: {
-    getUserName(userId) {
-      return LookupData.check({
-        collection: this.userDetails.users._id,
-        matchWith: userId,
-        selection: 'name',
-      })
-    },
+    ...mapActions('order', ['selectedOrderDetails']),
+
     removedItems(oldItems, newItems) {
       let removedItemsArray = oldItems.filter(
         oldItem =>
@@ -142,6 +183,42 @@ export default {
         return removedItemsArray.map(item => this._t(item.name)).join(', ')
       else return this._t('Nothing was updated')
     },
+    addedItems(oldItems, newItems) {
+      let addedItemsArray = newItems.filter(
+        newItem =>
+          !oldItems.some(
+            oldItem => JSON.stringify(oldItem) === JSON.stringify(newItem)
+          )
+      )
+      if (addedItemsArray.length)
+        return addedItemsArray.map(item => this._t(item.name)).join(', ')
+      else return null
+    },
   },
 }
 </script>
+
+<style lang="scss" scoped>
+.order-modif-history {
+  .value-mr,
+  .prefix-mr {
+    font-weight: bold;
+    line-height: 1.5rem;
+  }
+
+  .prefix-mr {
+    width: 100%;
+    text-align: center;
+    display: inline-block;
+    padding-top: 10px;
+
+    &.first {
+      padding-top: 0;
+    }
+  }
+
+  .caption-mr {
+    line-height: 1.5rem;
+  }
+}
+</style>

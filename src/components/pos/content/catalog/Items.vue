@@ -52,7 +52,7 @@
 
 <script>
 /* global $, showModal  */
-import { bus } from '@/eventBus'
+
 import { mapGetters, mapState } from 'vuex'
 import bootstrap from '@/bootstrap'
 import Popup from './items/Popup'
@@ -90,26 +90,8 @@ export default {
     },
   },
   created() {},
-  updated() {
-    this.$nextTick(() => {
-      this.setScreenScrolls()
-    })
-  },
+  beforeDestroy() {},
   methods: {
-    setScreenScrolls() {
-      let foodBlockHeight = $('.food-block').innerHeight()
-      let foodBlockInitHeight = foodBlockHeight
-      let foodBlockItemHeight = $('.food-menu').innerHeight()
-      if (this.foodBlockHeight > this.foodBlockItemHeight) {
-        $('.food-bottom-arrow, .food-top-arrow').addClass('disable')
-      }
-
-      this.$emit('heights', {
-        foodBlockHeight,
-        foodBlockInitHeight,
-        foodBlockItemHeight,
-      })
-    },
     choosePrice(item) {
       if (item.countries.length !== 0) {
         return item.countries[0].value
@@ -120,7 +102,6 @@ export default {
       }
     },
     addToOrder(item) {
-      bus.$emit('modifier-height')
       if (this.selectedOrder) {
         if (
           (this.orderType == 'carhop' || this.orderType.OTApi === 'carhop') &&
@@ -142,7 +123,6 @@ export default {
 
       this.$store.commit('order/SET_CART_TYPE', 'new')
       this.$store.dispatch('order/startOrder')
-
       $('#POSItemOptions .modifier-option-radio').prop('checked', false)
       $('.food-menu-item').removeClass('active')
       $(this).addClass('active')

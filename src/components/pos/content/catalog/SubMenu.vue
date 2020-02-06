@@ -56,6 +56,8 @@
 <script>
 /* global $ */
 import { mapState, mapGetters } from 'vuex'
+import { bus } from '@/eventBus'
+
 // import btnBack from '../../../mobileComponents/mobileElements/btnBack'
 
 export default {
@@ -87,6 +89,7 @@ export default {
       $('.breadcrumbs').show()
       // eslint-disable-next-line no-undef
       $('.search-field-input').val('')
+      bus.$emit('clear-search-input', '')
       this.$store.dispatch('category/getItems', item)
       this.$store.dispatch('foodMenuHendlerChange')
     },

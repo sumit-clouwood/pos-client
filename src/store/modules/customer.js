@@ -573,13 +573,6 @@ const mutations = {
     } else {
       state.deliveryAreas = customerDetails.deliveryAreas
     }
-    // eslint-disable-next-line no-console
-    console.log(
-      state.multistore,
-      state.deliveryAreas,
-      customerDetails.deliveryAreas,
-      'customerDetails.deliveryAreas'
-    )
     state.pastOrders = customerDetails.pastOrders
   },
   [mutation.SELECTED_CUSTOMER_ADDRESS](state, selectedAddress) {
@@ -635,6 +628,7 @@ const mutations = {
   },
   [mutation.LOYALTY_FILTER](
     state,
+    // eslint-disable-next-line no-unused-vars
     { loyalty, orderType, orderCurrency, orderAmount } = {
       loyalty: null,
       orderType: null,
@@ -671,11 +665,12 @@ const mutations = {
         state.loyalty.card = false
         state.loyalty.details = false
         state.loyalty.points = false
-      } else if (state.loyalty.details.min_order > orderAmount) {
-        state.loyalty.card = false
-        state.loyalty.details = false
-        state.loyalty.points = false
       } else {
+        // if (state.loyalty.details.min_order > orderAmount) {
+        //   state.loyalty.card = false
+        //   state.loyalty.details = false
+        //   state.loyalty.points = false
+        // } else {
         /* do noting */
       }
     } else {

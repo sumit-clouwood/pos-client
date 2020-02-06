@@ -41,6 +41,7 @@
         v-if="isLoyaltyEnabled"
         type="button"
         class="btn loyalty-button shorten-sentence color-text color-secondary"
+        style="margin-inline-end: auto;"
         @click="showLoyaltyPopup()"
       >
         {{ _t('Loyalty') }}
@@ -125,8 +126,8 @@ export default {
     ...mapState({
       getReferrals: state => state.location.referrals,
     }),
+    ...mapState('order', ['needSupervisorAccess']),
     ...mapState('customer', ['address', 'loyalty']),
-    ...mapState('order', ['orderSource']),
     ...mapGetters('order', ['subTotal']),
     ...mapGetters('location', ['_t', 'formatPrice']),
     ...mapGetters('payment', ['methods']),
@@ -168,7 +169,7 @@ export default {
         const minOrderValue = this.formatPrice(this.address.min_order_value)
         this.errors = `Minimum order values should be ${minOrderValue} for selected delivery address`
       } else {
-        if (this.orderSource === 'backend') {
+        if (this.needSupervisorAccess) {
           this.$store.commit('order/SET_REFERRAL', this.changedReferral)
           showModal('#modificationReason')
         } else {
