@@ -70,9 +70,7 @@ export default {
   props: {},
   data() {
     return {
-      cartItemHeight: 0,
-      cartHeight: 0,
-      cartInitHeight: 0,
+      showScroll: false,
     }
   },
 
