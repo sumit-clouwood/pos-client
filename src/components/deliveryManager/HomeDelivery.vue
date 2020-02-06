@@ -232,22 +232,19 @@ export default {
       this.selectedUser = $('#get-customer-list').val()
     },
     showRemainingItems: function() {
-      // eslint-disable-next-line no-console
-      console.log(this.driverBucket, this.$store.getters['auth/multistore'])
       this.assignBucketToDriver()
-      if (this.$store.getters['auth/multistore']) {
+      /*if (this.$store.getters['auth/multistore']) {
         this.updateDMOrderStatus({
           orderStatus: 'ready',
           collected: 'no',
           pageId: 'home_delivery_pick',
         })
-      }
+      }*/
     },
     ...mapActions('deliveryManager', [
       'selectDriver',
       'restoreOrders',
       'assignBucketToDriver',
-      'updateDMOrderStatus',
     ]),
     /*imageLoadError() {
       for (let i = 0; i < document.images.length; i++) {

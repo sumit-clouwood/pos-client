@@ -274,7 +274,7 @@ const actions = {
     return Promise.resolve()
   },
 
-  assignBucketToDriver({ state, commit }) {
+  assignBucketToDriver({ state, commit, dispatch, rootGetters }) {
     if (state.processing) {
       return false
     }
@@ -284,15 +284,17 @@ const actions = {
       .then(response => {
         if (response.data.status == 'ok') {
           commit('REMOVE_FROM_DRIVER_BUCKET')
-          // dispatch(
-          //   'order/updateOrderAction',
-          //   {
-          //     orderStatus: 'ready',
-          //     collected: 'no',
-          //     pageId: 'home_delivery_pick',
-          //   },
-          //   { root: true }
-          // )
+          if (rootGetters['auth/multistore']) {
+            dispatch(
+              'order/updateOrderAction',
+              {
+                orderStatus: 'ready',
+                collected: 'no',
+                pageId: 'home_delivery_pick',
+              },
+              { root: true }
+            )
+          }
         }
       })
       .finally(() => commit('SET_PROCESSING', false))
