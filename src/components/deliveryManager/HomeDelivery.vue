@@ -233,13 +233,14 @@ export default {
     },
     showRemainingItems: function() {
       this.assignBucketToDriver()
-      /*if (this.$store.getters['auth/multistore']) {
-        this.updateDMOrderStatus({
+      if (this.$store.getters['auth/multistore']) {
+        this.$store.commit('deliveryManager/SECTION', 'crm')
+        this.$store.dispatch('deliveryManager/updateDMOrderStatus', {
           orderStatus: 'ready',
           collected: 'no',
           pageId: 'home_delivery_pick',
         })
-      }*/
+      }
     },
     ...mapActions('deliveryManager', [
       'selectDriver',

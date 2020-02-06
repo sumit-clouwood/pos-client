@@ -274,7 +274,7 @@ const actions = {
     return Promise.resolve()
   },
 
-  assignBucketToDriver({ state, commit, dispatch, rootGetters }) {
+  assignBucketToDriver({ state, commit }) {
     if (state.processing) {
       return false
     }
@@ -284,6 +284,7 @@ const actions = {
       .then(response => {
         if (response.data.status == 'ok') {
           commit('REMOVE_FROM_DRIVER_BUCKET')
+          /*alert(rootGetters['auth/multistore'])
           if (rootGetters['auth/multistore']) {
             dispatch(
               'order/updateOrderAction',
@@ -294,7 +295,7 @@ const actions = {
               },
               { root: true }
             )
-          }
+          }*/
         }
       })
       .finally(() => commit('SET_PROCESSING', false))
