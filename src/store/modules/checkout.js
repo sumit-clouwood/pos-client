@@ -4,7 +4,6 @@ import Num from '@/plugins/helpers/Num.js'
 import * as CONSTANTS from '@/constants'
 import { compressToBase64 } from 'lz-string'
 import OrderHelper from '@/plugins/helpers/Order'
-import * as PERMS from '@/const/permissions'
 
 // initial state
 const state = {
@@ -699,7 +698,6 @@ const actions = {
                 rootGetters['location/isTokenManager'] &&
                 rootState.order.orderType.OTApi ===
                   CONSTANTS.ORDER_TYPE_WALKIN &&
-                rootGetters['auth/allowed'](PERMS.TOKEN_NUMBER) &&
                 !rootState.sync.online
               ) {
                 let tokenNumber = localStorage.getItem('token_number')
@@ -1462,7 +1460,6 @@ const actions = {
       rootGetters['location/isTokenManager'] &&
       (rootState.order.orderType.OTApi === CONSTANTS.ORDER_TYPE_WALKIN ||
         rootState.order.orderType.OTApi === CONSTANTS.ORDER_TYPE_CARHOP) &&
-      rootGetters['auth/allowed'](PERMS.TOKEN_NUMBER) &&
       !rootState.sync.online
     ) {
       let tokenNumber = state.order.token_number
