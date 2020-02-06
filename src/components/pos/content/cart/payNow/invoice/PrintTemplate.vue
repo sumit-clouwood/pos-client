@@ -7,18 +7,17 @@
   >
     <div class="header">
       <div
-        style="
-          text-align: center;
-          font-weight: 700;
-          padding: 0 0 0.3em 0;
-          font-size: 3em;"
         v-if="
-          allowed(PERMS.TOKEN_NUMBER) &&
-            isTokenManager &&
+          isTokenManager &&
             tokenNumber &&
             (orderType.OTApi === 'walk_in' || orderType.OTApi === 'carhop')
         "
+        style="text-align: center;font-weight: 700;
+            padding: 0 0 0.3em 0;font-size: 3em;"
       >
+        <div style="  font-size: 0.3em;font-weight: normal;">
+          {{ template.token_number_label }}
+        </div>
         {{ tokenNumber }}
       </div>
 
@@ -381,7 +380,6 @@ export default {
     ...mapState('checkout', ['print']),
     ...mapGetters('location', ['_t', 'isTokenManager', 'getReferral']),
     ...mapState('location', ['timezoneString']),
-    ...mapGetters('auth', ['allowed']),
     ...mapState('dinein', ['selectedTableRservationData']),
     ...mapState('order', ['orderType']),
 
@@ -463,7 +461,6 @@ export default {
     tokenNumber() {
       if (
         this.isTokenManager &&
-        this.allowed(this.PERMS.TOKEN_NUMBER) &&
         (this.orderType.OTApi === 'walk_in' ||
           this.orderType.OTApi === 'carhop')
       ) {

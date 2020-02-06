@@ -173,8 +173,7 @@ export default {
         if (
           this.isTokenManager &&
           (this.orderType.OTApi === this.CONST.ORDER_TYPE_WALKIN ||
-            this.orderType.OTApi === this.CONST.ORDER_TYPE_WALKIN) &&
-          this.$store.getters['auth/allowed'](this.PERMS.TOKEN_NUMBER)
+            this.orderType.OTApi === this.CONST.ORDER_TYPE_CARHOP)
         ) {
           const storeCurrentDate = moment()
             .tz(this.timezoneString)
@@ -276,7 +275,6 @@ export default {
     }),
     ...mapState('sync', ['modules']),
     ...mapGetters('auth', ['loggedIn']),
-    ...mapGetters('auth', ['allowed']),
     ...mapGetters('location', ['isTokenManager']),
     ...mapState('order', ['orderType']),
     ...mapState('sync', ['online']),
