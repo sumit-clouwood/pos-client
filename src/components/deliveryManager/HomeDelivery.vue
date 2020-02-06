@@ -75,7 +75,7 @@
                 type="button"
                 class="button btn btn-success"
                 v-if="driverBucket.length"
-                @click="assignBucketToDriver()"
+                @click="showRemainingItems"
               >
                 <div class="button-content-container">
                   <div class="button-icon-container"><!----></div>
@@ -142,7 +142,7 @@ import DMDeliveredItem from '@/components/deliveryManager/content/DMDeliveredIte
 import DMAssignedDriver from '@/components/deliveryManager/partial/DMAssignedDriver'
 import OrderDetailsPopup from '@/components/pos/content/OrderDetailPopup'
 import paginate from 'vuejs-paginate'
-import Preloader from '@/components/util/Preloader'
+import Preloader from '@/components/util/progressbar'
 
 /* global $ */
 export default {
@@ -178,6 +178,7 @@ export default {
       selectedUser: '',
       paginationDirection: 'holdorders',
       page: 1,
+      interval: null,
     }
   },
   components: {
@@ -208,8 +209,13 @@ export default {
   },
   mounted() {
     this.$store.dispatch('deliveryManager/fetchDMOrderDetail')
+    this.interval = setInterval(() => {
+      this.$store.dispatch('deliveryManager/fetchDMOrderDetail')
+    }, 1000 * 20)
   },
-
+  destroyed() {
+    clearInterval(this.interval)
+  },
   methods: {
     activateDriveList() {
       this.isActive = !this.isActive
@@ -231,12 +237,19 @@ export default {
     getSelectUser: function() {
       this.selectedUser = $('#get-customer-list').val()
     },
-
-    ...mapActions('deliveryManager', [
-      'selectDriver',
-      'restoreOrders',
-      'assignBucketToDriver',
-    ]),
+    showRemainingItems: function() {
+      this.$store.dispatch('deliveryManager/assignBucketToDriver').then(() => {
+        if (this.$store.getters['auth/multistore']) {
+          this.$store.commit('deliveryManager/SECTION', 'crm')
+          this.$store.dispatch('deliveryManager/updateDMOrderStatus', {
+            orderStatus: 'ready',
+            collected: 'no',
+            pageId: 'home_delivery_pick',
+          })
+        }
+      })
+    },
+    ...mapActions('deliveryManager', ['selectDriver', 'restoreOrders']),
     /*imageLoadError() {
       for (let i = 0; i < document.images.length; i++) {
         document.images[i].remove()

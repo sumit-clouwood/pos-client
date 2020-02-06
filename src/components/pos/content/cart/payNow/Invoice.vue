@@ -133,7 +133,12 @@ export default {
             //   this.$store.dispatch('checkout/splitOrder').then(() => {})
             // }
             //Invoice APP API Call with Custom Request JSON
-            if (!['dine-in-order-preview'].includes(this.paymentAction)) {
+            console.log(this.paymentAction, 'paymentAction')
+            if (
+              !['dine-in-order-preview', 'dine-in-place-order'].includes(
+                this.paymentAction
+              )
+            ) {
               this.$store.dispatch(
                 'printingServer/printingServerInvoiceRaw',
                 orderData

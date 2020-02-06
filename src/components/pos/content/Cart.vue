@@ -314,17 +314,13 @@ export default {
       z-index: 10;
       padding-top: 20px;
       box-shadow: none;
-
+      display: block;
       .btn-cart {
         display: none;
       }
 
       .main-orders-buttons {
         display: grid;
-      }
-
-      .btn-next {
-        display: none;
       }
     }
   }
