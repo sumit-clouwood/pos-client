@@ -178,6 +178,7 @@ export default {
       selectedUser: '',
       paginationDirection: 'holdorders',
       page: 1,
+      interval: null,
     }
   },
   components: {
@@ -208,8 +209,13 @@ export default {
   },
   mounted() {
     this.$store.dispatch('deliveryManager/fetchDMOrderDetail')
+    this.interval = setInterval(() => {
+      this.$store.dispatch('deliveryManager/fetchDMOrderDetail')
+    }, 1000 * 20)
   },
-
+  destroyed() {
+    clearInterval(this.interval)
+  },
   methods: {
     activateDriveList() {
       this.isActive = !this.isActive

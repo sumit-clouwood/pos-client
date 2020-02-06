@@ -80,6 +80,7 @@ export default {
       },
       selectedUser: '',
       paginationDirection: 'holdorders',
+      interval: null,
     }
   },
   components: {
@@ -110,8 +111,14 @@ export default {
   },
   mounted() {
     this.$store.dispatch('deliveryManager/fetchDMOrderDetail')
-  },
 
+    this.interval = setInterval(() => {
+      this.$store.dispatch('deliveryManager/fetchDMOrderDetail')
+    }, 1000 * 20)
+  },
+  destroyed() {
+    clearInterval(this.interval)
+  },
   methods: {
     ...mapActions('order', ['updateOrderAction']),
     showDropdown: function() {
