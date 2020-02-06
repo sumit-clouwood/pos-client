@@ -18,7 +18,10 @@ export default {
 
   methods: {
     calculateScrolls() {
-      if (!this.$refs[this.container].parentNode) {
+      if (
+        !this.$refs[this.container] ||
+        !this.$refs[this.container].parentNode
+      ) {
         return Promise.resolve(false)
       }
       if (
@@ -42,6 +45,28 @@ export default {
       }
       return Promise.resolve(this.showScroll)
     },
+    getEntity(refElem, ref) {
+      let elem = null
+      if (refElem.className && refElem.className.split(' ').includes(ref)) {
+        return refElem
+      }
+      if (refElem.children && refElem.children.length) {
+        for (const i in refElem.children) {
+          const child = refElem.children[i]
+          if (child.className && child.className.split(' ').includes(ref)) {
+            return child
+          }
+          elem = this.getEntity(child, ref)
+          if (elem) {
+            return elem
+          }
+        }
+        if (elem) {
+          return elem
+        }
+      }
+      return elem
+    },
     scroll(direction = 'up') {
       if (
         !this.$refs[this.container] ||
@@ -57,7 +82,10 @@ export default {
         return false
       }
       //on 0 it ll be a scroll button
-      const entity = this.$refs[this.entity][0]
+      let entity = this.$refs[this.entity] ? this.$refs[this.entity][0] : false
+      if (!entity) {
+        entity = this.getEntity(this.$refs[this.container], this.entity)
+      }
       const element = this.$refs[this.container].parentNode
 
       //10 is margin-top of the entity, which starts from second element

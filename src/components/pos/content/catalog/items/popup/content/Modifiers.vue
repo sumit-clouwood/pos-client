@@ -18,7 +18,7 @@
       <div
         v-for="modifier in subgroup.modifiers"
         :key="modifier._id"
-        class="POSItemOptions_choose_choice"
+        class="POSItemOptions_choose_choice entityModifier"
       >
         <label
           :class="['POSItemOptions_choose_label', modifier.class]"
@@ -174,8 +174,6 @@ export default {
       } else {
         this.subgroup.modifiers[index].class = ''
       }
-
-      console.log(this.subgroup.modifiers[index])
     },
     setRadio(itemId, groupId, modifierId) {
       this.$store.commit('orderForm/setRadios', {
