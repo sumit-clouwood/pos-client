@@ -4,7 +4,6 @@ import Num from '@/plugins/helpers/Num.js'
 import * as CONSTANTS from '@/constants'
 import { compressToBase64 } from 'lz-string'
 import OrderHelper from '@/plugins/helpers/Order'
-import * as PERMS from '@/const/permissions'
 
 // initial state
 const state = {
@@ -699,7 +698,6 @@ const actions = {
                 rootGetters['location/isTokenManager'] &&
                 rootState.order.orderType.OTApi ===
                   CONSTANTS.ORDER_TYPE_WALKIN &&
-                rootGetters['auth/allowed'](PERMS.TOKEN_NUMBER) &&
                 !rootState.sync.online
               ) {
                 let tokenNumber = localStorage.getItem('token_number')
@@ -1462,7 +1460,6 @@ const actions = {
       rootGetters['location/isTokenManager'] &&
       (rootState.order.orderType.OTApi === CONSTANTS.ORDER_TYPE_WALKIN ||
         rootState.order.orderType.OTApi === CONSTANTS.ORDER_TYPE_CARHOP) &&
-      rootGetters['auth/allowed'](PERMS.TOKEN_NUMBER) &&
       !rootState.sync.online
     ) {
       let tokenNumber = state.order.token_number
@@ -1652,14 +1649,26 @@ const actions = {
           }
         })
       }
-      dispatch('printingServer/convertDatetime', {
-        datetime: orderData.real_created_datetime,
-        format: 'Do MMMM YYYY',
-      })
-      dispatch('printingServer/convertDatetime', {
-        datetime: orderData.real_created_datetime,
-        format: 'h:mm:ss A',
-      })
+      dispatch(
+        'printingServer/convertDatetime',
+        {
+          datetime: orderData.real_created_datetime,
+          format: 'Do MMMM YYYY',
+        },
+        {
+          root: true,
+        }
+      )
+      dispatch(
+        'printingServer/convertDatetime',
+        {
+          datetime: orderData.real_created_datetime,
+          format: 'h:mm:ss A',
+        },
+        {
+          root: true,
+        }
+      )
       //Created Date
       // let timezoneString = locationData.timezoneString
       let created_date = rootState.printingServer.createdDateTime.date

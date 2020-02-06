@@ -66,7 +66,7 @@ export default {
         return false
       }
 
-      if (this.orderSource === 'backend' && this.selectedOrder) {
+      if (this.needSupervisorAccess) {
         $('#modificationReason').modal('show')
       } else {
         $('#payment-msg').modal('show')
