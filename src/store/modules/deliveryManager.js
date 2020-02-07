@@ -140,7 +140,11 @@ const getters = {
 }
 
 const actions = {
-  fetchDMOrderDetail({ commit, state, dispatch, rootGetters }) {
+  fetchDMOrderDetail(
+    { commit, state, dispatch, rootGetters },
+    dmautoloader = true
+  ) {
+    if (!dmautoloader) return dmautoloader
     commit(mutation.SET_LOADING, true)
     // return new Promise((resolve, reject) => {
     const params = [

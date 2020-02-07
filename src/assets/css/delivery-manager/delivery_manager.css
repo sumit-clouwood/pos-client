@@ -972,7 +972,7 @@ tr.dataContentStyle > td > a {
     overflow: auto; }
     div.dm-ready-order-wrapper tbody {
       grid-template-columns: 1fr !important;
-      padding: 1.5rem !important; }
+      padding: 2.7rem 1.5rem 1.5rem 1.5rem !important; }
       div.dm-ready-order-wrapper tbody tr td {
         display: block; }
 

@@ -11,6 +11,11 @@
         class="with-drivers-filter block-table-page-container pagination_disabled"
       >
         <div class="home_delivery_pick">
+          <div class="refresh_button" @click="fetchWaitingOrders">
+            <button type="button" tabindex="" class="button">
+              <i class="fa fa-refresh"></i>
+            </button>
+          </div>
           <div class="row">
             <div class="col-md-12">
               <div class="form-group form-inline float-left search">
@@ -210,7 +215,8 @@ export default {
   mounted() {
     this.$store.dispatch('deliveryManager/fetchDMOrderDetail')
     this.interval = setInterval(() => {
-      this.$store.dispatch('deliveryManager/fetchDMOrderDetail')
+      let dmautoloader = this.listType == 'Waiting for Pick' ? false : true
+      this.$store.dispatch('deliveryManager/fetchDMOrderDetail', dmautoloader)
     }, 1000 * 20)
   },
   destroyed() {
@@ -219,6 +225,10 @@ export default {
   methods: {
     activateDriveList() {
       this.isActive = !this.isActive
+    },
+    fetchWaitingOrders: function() {
+      this.$store.dispatch('deliveryManager/fetchDMOrderDetail', true)
+      this.$store.dispatch('deliveryManager/restoreOrders')
     },
     ...mapActions('order', ['updateOrderAction']),
     selectedDriver: function(driver) {
@@ -258,3 +268,23 @@ export default {
   },
 }
 </script>
+<style scoped lang="css">
+.home_delivery_pick .refresh_button button {
+  width: 40px;
+  height: 38px;
+  border: medium none;
+  background: #5056ca;
+  border-radius: 4px;
+  color: #fff;
+}
+.home_delivery_pick .refresh_button {
+  position: absolute;
+  right: 5px;
+  text-align: right;
+  display: block;
+  margin-top: 0.3125rem;
+}
+.home_delivery_pick {
+  position: relative;
+}
+</style>

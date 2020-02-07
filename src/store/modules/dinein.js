@@ -501,7 +501,14 @@ const actions = {
       dispatch('dineInCompleteOrders', loader)
     }
   },
-  moveTable({ commit }, data) {
+  moveTable({ commit, state }, data) {
+    if (state.selectedTable) {
+      commit(
+        mutation.SELECTED_TABLE_RESERVATION,
+        state.selectedTable.table_number
+      )
+    }
+
     if (data.reservationid != 'false') {
       const params = [
         data.reservationid,
