@@ -11,6 +11,15 @@
           </h4>
         </div>
         <div class="modal-body manage-customer-wrap color-dashboard-background">
+          <div class="cust-top-arrow food-arrow disable" @click="customerTop">
+            <i class="fa fa-chevron-up" aria-hidden="true"></i>
+          </div>
+          <div
+            class="cust-bottom-arrow food-arrow disable"
+            @click="customerBottom"
+          >
+            <i class="fa fa-chevron-down" aria-hidden="true"></i>
+          </div>
           <ManageCustomerHeader />
           <ManageCustomerContent />
         </div>
@@ -22,11 +31,12 @@
 </template>
 
 <script>
+/* global $ */
 import ManageCustomerHeader from './ManageCustomer/ManageCustomerHeader'
 import ManageCustomerContent from './ManageCustomer/ManageCustomerContent'
 import ManageCustomerFooter from './ManageCustomer/ManageCustomerFooter'
 import { mapGetters } from 'vuex'
-
+import { bus } from '@/eventBus'
 export default {
   name: 'ManageCustomer',
   props: {},
@@ -37,6 +47,87 @@ export default {
     ManageCustomerHeader,
     ManageCustomerContent,
     ManageCustomerFooter,
+  },
+  data() {
+    return {
+      custBlockHeight: 0,
+      custBlockInitHeight: 0,
+      custBlockItemHeight: 0,
+    }
+  },
+  mounted() {
+    bus.$on('check-height', () => {
+      setTimeout(() => {
+        if ($('#manage-customer').hasClass('show')) {
+          this.custAreaCalculation()
+        }
+      }, 300)
+    })
+  },
+  methods: {
+    custAreaCalculation() {
+      let custBlockHeight = $('.manage-customer-table').innerHeight()
+      this.custBlockHeight = custBlockHeight
+      this.custBlockInitHeight = custBlockHeight
+      this.custBlockItemHeight = $('.manage-customer-table > div').innerHeight()
+      $('.cust-bottom-arrow, .cust-top-arrow').removeClass('disable')
+      if (this.custBlockHeight > this.custBlockItemHeight) {
+        $('.cust-bottom-arrow, .cust-top-arrow').addClass('disable')
+      }
+      if (this.custBlockHeight === this.custBlockInitHeight) {
+        $('.cust-top-arrow').addClass('disable')
+      }
+    },
+    customerTop() {
+      if (this.custBlockHeight <= 0) {
+        this.custBlockHeight = parseInt(this.custBlockInitHeight)
+        $('.cust-top-arrow').addClass('disable')
+        return false
+      } else {
+        $('.cust-bottom-arrow').removeClass('disable')
+        if (this.custBlockHeight === this.custBlockItemHeight) {
+          this.custBlockHeight -= parseInt(this.custBlockInitHeight + 100)
+        } else {
+          this.custBlockHeight -= parseInt(this.custBlockInitHeight)
+        }
+      }
+      $('.manage-customer-table').animate(
+        { scrollTop: this.custBlockHeight },
+        1000
+      )
+
+      if (this.custBlockHeight <= 0) {
+        this.custBlockHeight = parseInt(this.custBlockInitHeight)
+        $('.cust-top-arrow').addClass('disable')
+      }
+    },
+    customerBottom() {
+      if (this.custBlockHeight >= this.custBlockItemHeight) {
+        $('.cust-bottom-arrow').addClass('disable')
+        this.custBlockHeight = parseInt(this.custBlockItemHeight)
+        return false
+      } else {
+        $('.cust-top-arrow').removeClass('disable')
+        if (
+          this.custBlockHeight == this.custBlockInitHeight ||
+          this.custBlockHeight === 0
+        ) {
+          this.custBlockHeight += parseInt(this.custBlockInitHeight - 100)
+        } else {
+          this.custBlockHeight += parseInt(this.custBlockInitHeight)
+        }
+      }
+
+      $('.manage-customer-table').animate(
+        { scrollTop: this.custBlockHeight },
+        1000
+      )
+
+      if (this.custBlockHeight >= this.custBlockItemHeight) {
+        $('.cust-bottom-arrow').addClass('disable')
+        this.custBlockHeight = parseInt(this.custBlockItemHeight)
+      }
+    },
   },
 }
 </script>
