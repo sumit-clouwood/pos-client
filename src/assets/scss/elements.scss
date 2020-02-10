@@ -5,7 +5,6 @@
   --vh: 100%;
 }
 
-
 @font-face {
   font-family: 'ProximaNova-Regular';
   src: url('/fonts/ProximaNova-Regular.woff') format('woff');
@@ -227,7 +226,7 @@ img {
     height: $px35;
     @include responsive(mobile) {
       svg path {
-        fill: #000
+        fill: #000;
       }
     }
 
@@ -408,11 +407,11 @@ h6 {
 }
 
 @include responsive(mobile) {
-  .footer-slider-list-item-link{
-    >span{
+  .footer-slider-list-item-link {
+    > span {
       display: flex;
       align-items: center;
-      >span{
+      > span {
         font-size: 14px;
       }
     }
@@ -485,7 +484,6 @@ h6 {
       opacity: 1 !important;
 
       .modal-content {
-
         display: grid;
         grid-template-columns: 1fr;
         grid-template-rows: max-content 1fr max-content;
@@ -507,9 +505,13 @@ h6 {
 
         .modal-footer {
           .btn-announce {
+            display: flex;
+            flex-wrap: wrap;
+            flex-direction: row-reverse;
             button {
               height: 50px !important;
               font-size: 14px !important;
+              margin: 2px;
 
               &#discount-save {
                 background-color: $green-middle !important;
