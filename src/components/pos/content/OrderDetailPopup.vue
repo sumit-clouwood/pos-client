@@ -89,7 +89,6 @@
             v-if="
               isPermitted(PERMISSIONS.MODIFY_ORDER) &&
                 typeof selectedOrder.item !== 'undefined' &&
-                selectedOrder.item.order_type === 'dine_in' &&
                 !multistore &&
                 selectedOrder.item.order_status === 'finished'
             "
@@ -102,7 +101,7 @@
               <div class="button-caption">{{ _t('Modify Order') }}</div>
             </div>
           </button>
-          <button
+          <!-- <button
             v-if="
               isPermitted(PERMISSIONS.MODIFY_ORDER) &&
                 typeof selectedOrder.item !== 'undefined' &&
@@ -117,7 +116,7 @@
               <div class="button-icon-container"></div>
               <div class="button-caption">{{ _t('Modify Order') }}</div>
             </div>
-          </button>
+          </button> -->
           <button
             v-if="selectedOrder.customer"
             type="button"
