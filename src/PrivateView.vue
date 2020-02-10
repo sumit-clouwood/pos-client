@@ -257,6 +257,7 @@ export default {
               OTview: 'Carhop',
               OTApi: CONST.ORDER_TYPE_CARHOP,
             }
+            this.$store.commit('checkoutForm/setAction', 'add')
             break
         }
         if (!this.$store.getters['auth/multistore']) {

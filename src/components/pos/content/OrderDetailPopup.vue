@@ -89,7 +89,6 @@
             v-if="
               allowed(PERMS.MODIFY_ORDER) &&
                 typeof selectedOrder.item !== 'undefined' &&
-                selectedOrder.item.order_type === 'dine_in' &&
                 !multistore &&
                 selectedOrder.item.order_status === 'finished'
             "
@@ -104,7 +103,7 @@
               </div>
             </div>
           </button>
-          <button
+          <!-- <button
             v-if="
               allowed(PERMS.MODIFY_ORDER) &&
                 typeof selectedOrder.item !== 'undefined' &&
@@ -121,7 +120,7 @@
                 {{ _t('Modify Order') }}
               </div>
             </div>
-          </button>
+          </button> -->
           <button
             v-if="selectedOrder.customer"
             type="button"

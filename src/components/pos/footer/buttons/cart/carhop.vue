@@ -1,14 +1,4 @@
 <template>
-  <!-- <div v-if="isPayAction">
-    <div class="button">
-      <div class="template-btn">
-        <div class="pay-now">
-          <pay class="pay-btn-holder" @pay="payNow"></pay>
-        </div>
-      </div>
-    </div>
-  </div> -->
-  <!-- <div v-else> -->
   <div v-if="isCarhop()">
     <div class="button">
       <div class="template-btn">
@@ -19,6 +9,36 @@
     </div>
   </div>
   <div v-else>
+    <div
+      v-if="orderSource != 'backend'"
+      style="grid-template-columns: 1fr 1fr; display: grid;"
+    >
+      <div class="button">
+        <div class="template-btn">
+          <div class="pay-now">
+            <pay class="pay-btn-holder" @pay="payNow"></pay>
+          </div>
+        </div>
+      </div>
+      <div class="button">
+        <div class="template-btn">
+          <div class="pay-now">
+            <save class="pay-btn-holder" @save="placeCarhop"></save>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div v-else>
+      <div class="button">
+        <div class="template-btn">
+          <div class="pay-now">
+            <pay class="pay-btn-holder" @pay="payNow"></pay>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- <div v-else>
     <div style="grid-template-columns: 1fr 1fr; display: grid;">
       <div class="button">
         <div class="template-btn">
@@ -35,8 +55,7 @@
         </div>
       </div>
     </div>
-  </div>
-  <!-- </div> -->
+  </div> -->
 </template>
 <script>
 /* global $ clickPayNow */
@@ -51,7 +70,7 @@ export default {
   },
   computed: {
     ...mapState('checkoutForm', ['processing']),
-    ...mapState('order', ['items']),
+    ...mapState('order', ['items', 'orderSource', 'selectedOrder']),
   },
   methods: {
     payNow() {
@@ -68,12 +87,16 @@ export default {
       if (this.items.length === 0) {
         return false
       }
+      let action = 'carhop-place-order'
+      if (this.selectedOrder && this.orderSource != 'backend') {
+        action = 'carhop-update-order'
+      }
 
       $('#payment-msg').modal('show')
       this.$store.dispatch('order/startOrder')
       this.$store.commit('checkoutForm/SET_PROCESSING', true)
       this.$store
-        .dispatch('checkout/pay', { action: 'carhop-place-order' })
+        .dispatch('checkout/pay', { action: action })
         .then(() => {})
         .catch(() => {})
         .finally(() => {
