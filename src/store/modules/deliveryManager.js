@@ -315,6 +315,9 @@ const actions = {
     commit('checkout/SET_ORDER', order.item, { root: true })
     commit('order/SET_ORDER_ID', order.item._id, { root: true })
     commit('checkout/PRINT', true, { root: true })
+    commit('checkout/SET_PAYMENT_ACTION', 'dine-in-running-order', {
+      root: true,
+    })
   },
 
   modifyOrder({ rootState, commit, dispatch }) {
