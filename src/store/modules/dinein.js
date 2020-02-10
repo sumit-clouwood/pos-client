@@ -60,8 +60,6 @@ const getters = {
     })
   },
   getOrderStatus: () => order_status => {
-    // eslint-disable-next-line no-console
-    console.log(order_status)
     if (
       order_status === CONST.ORDER_STATUS_ON_HOLD ||
       order_status === CONST.ORDER_STATUS_IN_PROGRESS
@@ -501,7 +499,14 @@ const actions = {
       dispatch('dineInCompleteOrders', loader)
     }
   },
-  moveTable({ commit }, data) {
+  moveTable({ commit, state }, data) {
+    if (state.selectedTable) {
+      commit(
+        mutation.SELECTED_TABLE_RESERVATION,
+        state.selectedTable.table_number
+      )
+    }
+
     if (data.reservationid != 'false') {
       const params = [
         data.reservationid,

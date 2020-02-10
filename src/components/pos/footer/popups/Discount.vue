@@ -67,7 +67,16 @@
             </p>
           </div>
         </div>
-        <div class="modal-footer">
+        <div class="modal-footer discount-footer">
+          <div class="food-top-arrow food-arrow disable" @click="discountTop">
+            <i class="fa fa-chevron-up" aria-hidden="true"></i>
+          </div>
+          <div
+            class="food-bottom-arrow food-arrow disable"
+            @click="discountBottom"
+          >
+            <i class="fa fa-chevron-down" aria-hidden="true"></i>
+          </div>
           <div class="btn-announce">
             <button
               v-if="
@@ -111,11 +120,20 @@
 </template>
 
 <script>
+/* global $ */
 /* global hideModal */
 import { mapGetters, mapState } from 'vuex'
+import { bus } from '@/eventBus'
 export default {
   name: 'Discount',
   props: {},
+  data() {
+    return {
+      discountBlockHeight: 0,
+      discountBlockInitHeight: 0,
+      discountBlockItemHeight: 0,
+    }
+  },
   computed: {
     ...mapState('discount', ['orderError', 'appliedItemDiscounts']),
     ...mapState('order', ['items']),
@@ -125,6 +143,15 @@ export default {
       discounts: 'orderDiscounts',
       activeOrderDiscountId: 'activeOrderDiscountId',
     }),
+  },
+  mounted() {
+    bus.$on('check-discount-height', () => {
+      setTimeout(() => {
+        if ($('#select-discount').hasClass('show')) {
+          this.discountScroll()
+        }
+      }, 300)
+    })
   },
   methods: {
     applyOrderDiscount: function() {
@@ -141,6 +168,77 @@ export default {
     },
     selectOrderDiscount: function(discount) {
       this.$store.dispatch('discount/selectOrderDiscount', discount)
+    },
+    discountScroll() {
+      let discountBlockHeight = $('.select-discount').innerHeight()
+      this.discountBlockHeight = discountBlockHeight
+      this.discountBlockInitHeight = discountBlockHeight
+      this.discountBlockItemHeight = $('.select-discount-option').innerHeight()
+      $(
+        '.discount-footer .food-bottom-arrow, .discount-footer .food-top-arrow'
+      ).removeClass('disable')
+      if (this.discountBlockHeight > this.discountBlockItemHeight) {
+        $(
+          '.discount-footer .food-bottom-arrow, .discount-footer .food-top-arrow'
+        ).addClass('disable')
+      }
+      if (this.discountBlockHeight === this.discountBlockInitHeight) {
+        $('.discount-footer .food-top-arrow').addClass('disable')
+      }
+    },
+    discountBottom() {
+      if (this.discountBlockHeight >= this.discountBlockItemHeight) {
+        $('.discount-footer .food-bottom-arrow').addClass('disable')
+        this.discountBlockHeight = parseInt(this.discountBlockItemHeight)
+        return false
+      } else {
+        $('.discount-footer .food-top-arrow').removeClass('disable')
+        if (
+          this.discountBlockHeight == this.discountBlockInitHeight ||
+          this.discountBlockHeight === 0
+        ) {
+          this.discountBlockHeight += parseInt(
+            this.discountBlockInitHeight - 100
+          )
+        } else {
+          this.discountBlockHeight += parseInt(this.discountBlockInitHeight)
+        }
+      }
+
+      $('.select-discount').animate(
+        { scrollTop: this.discountBlockHeight },
+        1000
+      )
+
+      if (this.discountBlockHeight >= this.discountBlockItemHeight) {
+        $('.discount-footer .food-bottom-arrow').addClass('disable')
+        this.discountBlockHeight = parseInt(this.discountBlockItemHeight)
+      }
+    },
+    discountTop() {
+      if (this.discountBlockHeight <= 0) {
+        this.discountBlockHeight = parseInt(this.discountBlockInitHeight)
+        $('.discount-footer  .food-top-arrow').addClass('disable')
+        return false
+      } else {
+        $('.discount-footer  .food-bottom-arrow').removeClass('disable')
+        if (this.discountBlockHeight === this.discountBlockItemHeight) {
+          this.discountBlockHeight -= parseInt(
+            this.discountBlockInitHeight + 100
+          )
+        } else {
+          this.discountBlockHeight -= parseInt(this.discountBlockInitHeight)
+        }
+      }
+      $('.select-discount').animate(
+        { scrollTop: this.discountBlockHeight },
+        1000
+      )
+
+      if (this.discountBlockHeight <= 0) {
+        this.discountBlockHeight = parseInt(this.discountBlockInitHeight)
+        $('.discount-footer  .food-top-arrow').addClass('disable')
+      }
     },
   },
 }

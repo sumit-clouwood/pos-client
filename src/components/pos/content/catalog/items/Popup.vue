@@ -24,6 +24,8 @@
 </template>
 
 <script>
+/* global $ */
+import { bus } from '@/eventBus'
 import Header from './popup/Header'
 import HeaderDetails from './popup/header/HeaderDetails'
 import Content from './popup/Content'
@@ -32,11 +34,39 @@ import Footer from './popup/Footer'
 export default {
   name: 'Popup',
   props: {},
+  data() {
+    return {
+      modifierBlockHeight: 0,
+      modifierBlockInitHeight: 0,
+      modifierBlockItemHeight: 0,
+    }
+  },
   components: {
     Content,
     Header,
     HeaderDetails,
     Footer,
+  },
+  mounted() {
+    bus.$on('modifier-height', () => {
+      setTimeout(() => {
+        if ($('#POSItemOptions').hasClass('show')) {
+          this.modifierScroll()
+        }
+      }, 300)
+    })
+  },
+  methods: {
+    modifierScroll() {
+      let modifierBlockHeight = $('.positemoption_body').innerHeight()
+      this.modifierBlockHeight = modifierBlockHeight
+      this.modifierBlockInitHeight = modifierBlockHeight
+      this.modifierBlockItemHeight = $('.positemoption-wrapper').innerHeight()
+      $('.modifier-bottom-arrow, .modifier-top-arrow').removeClass('disable')
+      if (this.modifierBlockHeight > this.modifierBlockItemHeight) {
+        $('.modifier-bottom-arrow, .modifier-top-arrow').addClass('disable')
+      }
+    },
   },
 }
 </script>
