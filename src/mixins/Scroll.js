@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { bus } from '@/eventBus'
 
 export default {
@@ -137,16 +136,7 @@ export default {
             this.showScrollUp = true
             this.showScrollDown = false
           }
-          console.log(
-            element.scrollTop,
-            this.toScroll,
-            this.margin,
-            this.keepEntitiesInScroll * entity.offsetHeight,
-            this.keepEntitiesInScroll * this.margin,
-            this.scrollMarginBottom,
-            '>=',
-            element.scrollHeight
-          )
+
           if (
             element.scrollTop +
               this.toScroll +
