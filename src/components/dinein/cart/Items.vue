@@ -1,9 +1,14 @@
 <template>
-  <div class="main-orders-list dine-cart-items" v-if="items">
+  <div
+    class="main-orders-list dine-cart-items"
+    v-if="items"
+    ref="cartItemsContainerDine"
+  >
     <div
       class="main-orders-list-item color-dashboard-background"
       v-for="(item, index) in items"
       :key="index + '-' + item._id"
+      ref="entityCartItem"
     >
       <div class="main-orders-list-item-title color-text">
         <div class="orders-name">{{ dt(item) }}</div>
@@ -80,15 +85,47 @@ import Modifiers from '@/components/pos/content/cart/newOrders/items/Modifiers.v
 import CheckBox from '@/components/util/form/CheckBox.vue'
 import { mapState, mapActions, mapGetters } from 'vuex'
 import Discount from '@/mixins/Discount'
+import { bus } from '@/eventBus'
+import Scroll from '@/mixins/Scroll'
 
 export default {
   name: 'Items',
   data() {
     return {
       newItemList: [],
+      container: 'cartItemsContainer',
+      entity: 'entityCartItem',
+      margin: 10,
+      keepEntitiesInScroll: 0,
     }
   },
-  mixins: [Discount],
+  mixins: [Discount, Scroll],
+  mounted() {
+    bus.$on('scroll-cart', option => {
+      this.scroll(option)
+    })
+
+    bus.$emit('showScrollCart', this.showScroll)
+  },
+  watch: {
+    items(newVal, oldVal) {
+      if (newVal != oldVal) {
+        this.$nextTick(() => {
+          this.calculateScrolls().then(showScroll => {
+            bus.$emit('showScrollCart', showScroll)
+          })
+        })
+      }
+    },
+    orderType(newVal, previousVal) {
+      if (newVal.OTApi !== previousVal.OTApi)
+        if (this.$store.state.discount.appliedOrderDiscount) {
+          this.$store.dispatch('discount/clearOrderDiscount')
+        } else {
+          this.$store.dispatch('discount/clearItemDiscount')
+        }
+    },
+  },
   computed: {
     splittedItems: {
       get() {
@@ -131,16 +168,6 @@ export default {
   components: {
     Modifiers,
     CheckBox,
-  },
-  watch: {
-    orderType(newVal, previousVal) {
-      if (newVal.OTApi !== previousVal.OTApi)
-        if (this.$store.state.discount.appliedOrderDiscount) {
-          this.$store.dispatch('discount/clearOrderDiscount')
-        } else {
-          this.$store.dispatch('discount/clearItemDiscount')
-        }
-    },
   },
 }
 </script>

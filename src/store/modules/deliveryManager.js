@@ -140,7 +140,11 @@ const getters = {
 }
 
 const actions = {
-  fetchDMOrderDetail({ commit, state, dispatch, rootGetters }) {
+  fetchDMOrderDetail(
+    { commit, state, dispatch, rootGetters },
+    dmautoloader = true
+  ) {
+    if (!dmautoloader) return dmautoloader
     commit(mutation.SET_LOADING, true)
     // return new Promise((resolve, reject) => {
     const params = [
@@ -280,22 +284,31 @@ const actions = {
     }
     commit('SET_PROCESSING', true)
     const orderIds = state.driverBucket.map(order => order._id)
-    DMService.assignOrdersToDriver(state.selectedDriver._id, orderIds)
-      .then(response => {
-        if (response.data.status == 'ok') {
-          commit('REMOVE_FROM_DRIVER_BUCKET')
-          // dispatch(
-          //   'order/updateOrderAction',
-          //   {
-          //     orderStatus: 'ready',
-          //     collected: 'no',
-          //     pageId: 'home_delivery_pick',
-          //   },
-          //   { root: true }
-          // )
-        }
-      })
-      .finally(() => commit('SET_PROCESSING', false))
+    return new Promise((resolve, reject) => {
+      DMService.assignOrdersToDriver(state.selectedDriver._id, orderIds)
+        .then(response => {
+          if (response.data.status == 'ok') {
+            commit('REMOVE_FROM_DRIVER_BUCKET')
+            resolve()
+            /*alert(rootGetters['auth/multistore'])
+              if (rootGetters['auth/multistore']) {
+                dispatch(
+                  'order/updateOrderAction',
+                  {
+                    orderStatus: 'ready',
+                    collected: 'no',
+                    pageId: 'home_delivery_pick',
+                  },
+                  { root: true }
+                )
+              }*/
+          }
+        })
+        .catch(er => {
+          reject(er)
+        })
+        .finally(() => commit('SET_PROCESSING', false))
+    })
   },
   printInvoice({ commit }, { templateId, order }) {
     commit('invoice/SET_TEMPLATE_ID', templateId, { root: true })

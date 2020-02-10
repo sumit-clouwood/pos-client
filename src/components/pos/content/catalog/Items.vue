@@ -1,9 +1,21 @@
 <template>
-  <div>
+  <div class="food-items">
+    <div class="food-top-arrow food-arrow" v-if="showScroll" @click="scroll">
+      <i class="fa fa-chevron-up" aria-hidden="true"></i>
+    </div>
+    <div
+      class="food-bottom-arrow food-arrow"
+      v-if="showScroll"
+      @click="scroll('up')"
+    >
+      <i class="fa fa-chevron-down" aria-hidden="true"></i>
+    </div>
+
     <div
       class="color-dashboard-background"
       v-if="items.length"
       :class="['food-menu', foodMenuHendler ? 'active' : 'notActive']"
+      ref="itemsContainer"
     >
       <!-- <div class="bg">bg</div> -->
       <!--      <btnBack :param="'item'" />-->
@@ -17,6 +29,7 @@
         :key="item._id"
         :value="dt(item)"
         @click.prevent="addToOrder(item)"
+        ref="entityItem"
       >
         <img
           v-if="item.image != ''"
@@ -43,17 +56,19 @@
       :class="['food-menu', foodMenuHendler ? 'active' : 'notActive']"
     >
       <!--<btnBack :param="'item'" />-->
-      <div class="no_item"><h2>No menu item found</h2></div>
+      <div class="no_item">
+        <h2>{{ _t('No menu item found') }}</h2>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 /* global $, showModal  */
-
 import { mapGetters, mapState } from 'vuex'
 import bootstrap from '@/bootstrap'
 import Popup from './items/Popup'
+import Scroll from '@/mixins/Scroll'
 // import btnBack from '../../../mobileComponents/mobileElements/btnBack'
 
 export default {
@@ -61,20 +76,37 @@ export default {
   props: {
     msg: String,
   },
+  mixins: [Scroll],
   components: {
     Popup,
     // btnBack,
+  },
+  data() {
+    return {
+      container: 'itemsContainer',
+      entity: 'entityItem',
+      margin: 17.5,
+      keepEntitiesInScroll: 0,
+    }
   },
   computed: {
     ...mapState('category', ['barcode']),
     ...mapState('location', ['currency']),
     ...mapState('order', ['splitBill', 'selectedOrder']),
     ...mapGetters('order', ['orderType']),
+    ...mapGetters('location', ['_t']),
     ...mapGetters('category', ['items', 'itemByCode']),
     ...mapGetters('modifier', ['hasModifiers']),
     ...mapGetters(['foodMenuHendler', 'bascketItems']),
   },
   watch: {
+    items(newVal, oldVal) {
+      if (newVal != oldVal) {
+        this.$nextTick(() => {
+          this.calculateScrolls()
+        })
+      }
+    },
     barcode(itemCode) {
       if (itemCode) {
         const item = this.itemByCode(itemCode)
@@ -86,17 +118,9 @@ export default {
     },
   },
   created() {},
-  beforeDestroy() {},
+  updated() {},
+  beforeUpdated() {},
   methods: {
-    choosePrice(item) {
-      if (item.countries.length !== 0) {
-        return item.countries[0].value
-      } else if (item.cities.length !== 0) {
-        return item.cities[0].value
-      } else if (item.stores.length !== 0) {
-        return item.stores[0].value
-      }
-    },
     addToOrder(item) {
       if (this.selectedOrder) {
         if (
@@ -140,9 +164,15 @@ export default {
       if (this.$store.getters['modifier/hasModifiers'](item)) {
         this.$store.dispatch('modifier/assignModifiersToItem', item)
         this.$store.commit('orderForm/clearSelection')
+        //handle open item inside popup
         showModal('#POSItemOptions')
       } else {
-        this.$store.dispatch('order/addToOrder', item)
+        if (item.open_item === true) {
+          //show popup for open item
+          showModal('#open-item')
+        } else {
+          this.$store.dispatch('order/addToOrder', item)
+        }
       }
       this.$store.dispatch('addItemFood', item)
 
@@ -320,4 +350,17 @@ export default {
     width: max-content;
   }
 }
+.food-items {
+  overflow-y: auto;
+  &::-webkit-scrollbar {
+    width: 0;
+  }
+}
+</style>
+<style lang="sass" scoped>
+.food-items
+  scroll-behavior: smooth
+
+  .food-menu-item
+    height: 174px
 </style>

@@ -11,6 +11,11 @@
         class="with-drivers-filter block-table-page-container pagination_disabled"
       >
         <div class="home_delivery_pick">
+          <div class="refresh_button" @click="fetchWaitingOrders">
+            <button type="button" tabindex="" class="button">
+              <i class="fa fa-refresh"></i>
+            </button>
+          </div>
           <div class="row">
             <div class="col-md-12">
               <div class="form-group form-inline float-left search">
@@ -75,7 +80,7 @@
                 type="button"
                 class="button btn btn-success"
                 v-if="driverBucket.length"
-                @click="assignBucketToDriver()"
+                @click="showRemainingItems"
               >
                 <div class="button-content-container">
                   <div class="button-icon-container"><!----></div>
@@ -142,7 +147,7 @@ import DMDeliveredItem from '@/components/deliveryManager/content/DMDeliveredIte
 import DMAssignedDriver from '@/components/deliveryManager/partial/DMAssignedDriver'
 import OrderDetailsPopup from '@/components/pos/content/OrderDetailPopup'
 import paginate from 'vuejs-paginate'
-import Preloader from '@/components/util/Preloader'
+import Preloader from '@/components/util/progressbar'
 
 /* global $ */
 export default {
@@ -178,6 +183,7 @@ export default {
       selectedUser: '',
       paginationDirection: 'holdorders',
       page: 1,
+      interval: null,
     }
   },
   components: {
@@ -208,11 +214,21 @@ export default {
   },
   mounted() {
     this.$store.dispatch('deliveryManager/fetchDMOrderDetail')
+    this.interval = setInterval(() => {
+      let dmautoloader = this.listType == 'Waiting for Pick' ? false : true
+      this.$store.dispatch('deliveryManager/fetchDMOrderDetail', dmautoloader)
+    }, 1000 * 20)
   },
-
+  destroyed() {
+    clearInterval(this.interval)
+  },
   methods: {
     activateDriveList() {
       this.isActive = !this.isActive
+    },
+    fetchWaitingOrders: function() {
+      this.$store.dispatch('deliveryManager/fetchDMOrderDetail', true)
+      this.$store.dispatch('deliveryManager/restoreOrders')
     },
     ...mapActions('order', ['updateOrderAction']),
     selectedDriver: function(driver) {
@@ -231,12 +247,19 @@ export default {
     getSelectUser: function() {
       this.selectedUser = $('#get-customer-list').val()
     },
-
-    ...mapActions('deliveryManager', [
-      'selectDriver',
-      'restoreOrders',
-      'assignBucketToDriver',
-    ]),
+    showRemainingItems: function() {
+      this.$store.dispatch('deliveryManager/assignBucketToDriver').then(() => {
+        if (this.$store.getters['auth/multistore']) {
+          this.$store.commit('deliveryManager/SECTION', 'crm')
+          this.$store.dispatch('deliveryManager/updateDMOrderStatus', {
+            orderStatus: 'ready',
+            collected: 'no',
+            pageId: 'home_delivery_pick',
+          })
+        }
+      })
+    },
+    ...mapActions('deliveryManager', ['selectDriver', 'restoreOrders']),
     /*imageLoadError() {
       for (let i = 0; i < document.images.length; i++) {
         document.images[i].remove()
@@ -245,3 +268,23 @@ export default {
   },
 }
 </script>
+<style scoped lang="css">
+.home_delivery_pick .refresh_button button {
+  width: 40px;
+  height: 38px;
+  border: medium none;
+  background: #5056ca;
+  border-radius: 4px;
+  color: #fff;
+}
+.home_delivery_pick .refresh_button {
+  position: absolute;
+  right: 5px;
+  text-align: right;
+  display: block;
+  margin-top: 0.3125rem;
+}
+.home_delivery_pick {
+  position: relative;
+}
+</style>

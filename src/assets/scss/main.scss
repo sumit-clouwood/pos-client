@@ -52,7 +52,7 @@
     padding: 0 $px30;
 
     .search-field {
-      margin-top: $px29;
+      margin-top: $px10;
     }
 
     .food-wrapper {
@@ -61,6 +61,41 @@
       grid-template-rows: auto;
       grid-gap: $px10;
       height: calc(100vh - #{$food-wrapper-height});
+      position: relative;
+      .foodCatScroll{
+        &::-webkit-scrollbar{
+          width: 0;
+        }
+      }
+      .food-arrow {
+        position: absolute;
+        background: rgba(80, 86, 202,0.7);
+        color: #fff;
+        padding: $px13 $px26;
+        border-radius: $px4;
+        right: 0;
+        cursor: pointer;
+        z-index: 99;
+        width: $px68;
+        &.disable{
+          display: none;
+        }
+        &.food-cat-top-arrow{
+          left: $px15;
+          top: 0;
+        }
+        &.food-cat-bottom-arrow{
+          left: $px15;
+          bottom: -$px10;
+        }
+        &.food-top-arrow {
+          top: 0;
+        }
+        &.food-bottom-arrow {
+          bottom: -$px10;
+          right: 0;
+        }
+      }
 
       .food-categories-wrapper {
         overflow: auto;
@@ -96,6 +131,11 @@
           background-color: #fff;
           padding: 2px 2px 2px 2px;
           margin-top: 10px;
+
+          &:first-child {
+            margin-top: 0 !important;
+          }
+          
           &.cashier_app_sub_item{
             height: $food-categories-item-height;
           }
@@ -164,7 +204,10 @@
         display: grid;
         grid-template-rows: auto 1fr;
         grid-gap: 20px;
-        overflow-y: auto;
+        border-right: 1px solid $gray-middle;
+        &::-webkit-scrollbar{
+          width: 0;
+        }
 
         .breadcrumbs {
           padding: 0px $px20;
@@ -382,6 +425,9 @@
 }
 
 @include responsive(mobile) {
+  .cartBottomBtn, .food-arrow{
+    display: none;
+  }
   .ullist-inventory-location {
     padding: 0 !important;
     position: absolute;
@@ -411,6 +457,32 @@
         }
       }
 
+    }
+  }
+}
+@media only screen and (min-width: 992px) {
+  .main {
+    .main-body{
+      grid-template-rows: $main-body-web-search-height 1fr;
+      .foodCatScroll {
+        &.noscroll{
+          margin-top: 0;
+        }
+      }
+      .food-wrapper{
+        height: calc(100vh - #{$food-wrapper-web-height});
+        .food-block{
+          height: calc(100vh - #{$food-wrapper-web-height});
+          margin-right: -$px5;
+        }
+      }
+    }
+    .cartBottomBtn{
+      Width:$px50;
+      &.toggle{
+        -webkit-transform: rotate(180deg);
+        transform: rotate(180deg);
+      }
     }
   }
 }

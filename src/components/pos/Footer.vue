@@ -38,6 +38,7 @@
             class="footer-slider-list-item color-secondary"
             data-toggle="modal"
             data-target="#manage-customer"
+            @click="calculateHeights()"
           >
             <a
               class="footer-slider-list-item-link color-text-invert"
@@ -245,6 +246,7 @@
             data-toggle="modal"
             data-target="#select-discount"
             id="discount-footer"
+            @click="discountHeights()"
           >
             <a
               class="footer-slider-list-item-link color-text-invert"
@@ -395,6 +397,7 @@
 </template>
 
 <script>
+import { bus } from '@/eventBus'
 import Invoice from '../pos/content/cart/payNow/Invoice'
 import DineIn from './footer/popups/DineIn'
 import AddNote from './footer/popups/AddNote'
@@ -537,6 +540,12 @@ export default {
     // },
   },
   methods: {
+    calculateHeights() {
+      bus.$emit('check-height')
+    },
+    discountHeights() {
+      bus.$emit('check-discount-height')
+    },
     setOrderType(opt) {
       this.$store.commit('order/ORDER_TYPE', opt)
     },
@@ -554,6 +563,7 @@ export default {
       this.$store.commit('order/SET_CART_TYPE', 'new')
     },
     add_customer_address() {
+      this.calculateHeights()
       if (this.$store.state.customer.address === false) {
         $('#manage-customer').modal()
       } else {
@@ -563,7 +573,7 @@ export default {
     slicker() {
       $('ul.ullist-icons').slick({
         slidesToShow: 5,
-        slidesToScroll: 5,
+        slidesToScroll: 4,
         accessibility: false,
         dots: false,
         arrows: true,
