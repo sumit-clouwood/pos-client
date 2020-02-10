@@ -1,12 +1,18 @@
+/* eslint-disable no-console */
+import { bus } from '@/eventBus'
+
 export default {
   data: function() {
     return {
       showScroll: false,
+      showScrollUp: false,
+      showScrollDown: false,
       container: 'scroll-container',
       entity: 'scroll-entity',
       margin: 0,
       keepEntitiesInScroll: 0,
       scrollMarginBottom: 0,
+      toScroll: 0,
     }
   },
 
@@ -22,20 +28,20 @@ export default {
         !this.$refs[this.container] ||
         !this.$refs[this.container].parentNode
       ) {
-        return Promise.resolve(false)
+        return Promise.reject()
       }
       if (
         !this.$refs[this.container].offsetHeight &&
         !this.$refs[this.container].offsetWidth
       ) {
         //element doesn't exist or not mounted in DOM
-        return Promise.reject(false)
+        return Promise.reject()
       }
       const parentHeight = this.$refs[this.container].parentNode.offsetHeight
       const currentHeight = this.$refs[this.container].offsetHeight
 
       if (!parentHeight || !currentHeight) {
-        return Promise.resolve(false)
+        Promise.resolve()
       }
 
       if (currentHeight > parentHeight) {
@@ -43,7 +49,16 @@ export default {
       } else {
         this.showScroll = false
       }
-      return Promise.resolve(this.showScroll)
+      this.setScrolls()
+      return Promise.resolve()
+    },
+    setScrolls() {
+      this.showScrollUp = false
+      this.showScrollDown = false
+
+      if (this.showScroll) {
+        this.showScrollDown = true
+      }
     },
     getEntity(refElem, ref) {
       let elem = null
@@ -89,39 +104,88 @@ export default {
       const element = this.$refs[this.container].parentNode
 
       //10 is margin-top of the entity, which starts from second element
-      let toScroll = Math.round(
+      this.toScroll = Math.floor(
         element.offsetHeight / (entity.offsetHeight + this.margin)
       )
       //add space for navigation icon, so -1 the category
-      toScroll =
-        (toScroll - this.keepEntitiesInScroll) *
+      this.toScroll =
+        (this.toScroll - this.keepEntitiesInScroll) *
         (entity.offsetHeight + this.margin)
 
       //element.scrollTop = element.scrollHeight
       if (direction === 'up') {
-        if (element.scrollTop + toScroll <= element.scrollHeight - toScroll) {
-          element.scrollTop += toScroll
+        //its down scroll but natural up
+        this.showScrollUp = true
+        bus.$emit('showScrollUp-' + this.container, this.showScrollUp)
+
+        if (
+          element.scrollTop + this.toScroll + this.margin <=
+          element.scrollHeight - this.toScroll
+        ) {
+          element.scrollTop += this.toScroll
         } else {
           if (!this.scrollMarginBottom) {
             this.scrollMarginBottom =
               element.scrollHeight -
-              (element.scrollTop + toScroll + this.margin)
+              (element.scrollTop + this.toScroll + this.margin)
           }
           element.scrollTop = element.scrollHeight
         }
+
+        setTimeout(() => {
+          if (element.scrollTop >= element.scrollHeight) {
+            this.showScrollUp = true
+            this.showScrollDown = false
+          }
+          console.log(
+            element.scrollTop,
+            this.toScroll,
+            this.margin,
+            this.keepEntitiesInScroll * entity.offsetHeight,
+            this.keepEntitiesInScroll * this.margin,
+            this.scrollMarginBottom,
+            '>=',
+            element.scrollHeight
+          )
+          if (
+            element.scrollTop +
+              this.toScroll +
+              this.margin +
+              this.keepEntitiesInScroll * entity.offsetHeight +
+              this.keepEntitiesInScroll * this.margin +
+              this.scrollMarginBottom >=
+            element.scrollHeight
+          ) {
+            this.showScrollDown = false
+          }
+          bus.$emit('showScrollUp-' + this.container, this.showScrollUp)
+          bus.$emit('showScrollDown-' + this.container, this.showScrollDown)
+        }, 300)
       } else {
-        if (element.scrollTop - toScroll >= 0) {
+        this.showScrollDown = true
+        bus.$emit('showScrollDown-' + this.container, this.showScrollDown)
+        if (element.scrollTop - this.toScroll >= 0) {
           if (this.scrollMarginBottom) {
             element.scrollTop =
               element.scrollHeight -
-              (toScroll + this.margin + this.scrollMarginBottom)
+              (this.toScroll + this.margin + this.scrollMarginBottom)
             this.scrollMarginBottom = 0
           } else {
-            element.scrollTop -= toScroll
+            element.scrollTop -= this.toScroll
           }
         } else {
           element.scrollTop = 0
         }
+
+        setTimeout(() => {
+          if (element.scrollTop <= 0) {
+            this.showScrollUp = false
+            this.showScrollDown = true
+          }
+
+          bus.$emit('showScrollUp-' + this.container, this.showScrollUp)
+          bus.$emit('showScrollDown-' + this.container, this.showScrollDown)
+        }, 300)
       }
     },
   },

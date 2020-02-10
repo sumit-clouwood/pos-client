@@ -2,7 +2,7 @@
   <div
     class="main-orders-list dine-cart-items"
     v-if="items"
-    ref="cartItemsContainerDine"
+    ref="cartItemsContainer"
   >
     <div
       class="main-orders-list-item color-dashboard-background"
@@ -95,7 +95,7 @@ export default {
       newItemList: [],
       container: 'cartItemsContainer',
       entity: 'entityCartItem',
-      margin: 10,
+      margin: 4.375,
       keepEntitiesInScroll: 0,
     }
   },
@@ -105,15 +105,27 @@ export default {
       this.scroll(option)
     })
 
-    bus.$emit('showScrollCart', this.showScroll)
+    bus.$emit('showScrollCartUp', this.showScrollUp)
+    bus.$emit('showScrollCartDown', this.showScrollDown)
+
+    bus
+      .$on('showScrollUp-cartItemsContainer', option => {
+        bus.$emit('showScrollCartUp', option)
+      })
+      .$on('showScrollDown-cartItemsContainer', option => {
+        bus.$emit('showScrollCartDown', option)
+      })
   },
   watch: {
     items(newVal, oldVal) {
       if (newVal != oldVal) {
         this.$nextTick(() => {
-          this.calculateScrolls().then(showScroll => {
-            bus.$emit('showScrollCart', showScroll)
-          })
+          this.calculateScrolls()
+            .then(() => {
+              bus.$emit('showScrollCartUp', this.showScrollUp)
+              bus.$emit('showScrollCartDown', this.showScrollDown)
+            })
+            .catch(() => {})
         })
       }
     },
