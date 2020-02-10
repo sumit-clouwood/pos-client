@@ -134,11 +134,7 @@ export default {
             // }
             //Invoice APP API Call with Custom Request JSON
             console.log(this.paymentAction, 'paymentAction')
-            if (
-              !['dine-in-order-preview', 'dine-in-place-order'].includes(
-                this.paymentAction
-              )
-            ) {
+            if (!['dine-in-order-preview'].includes(this.paymentAction)) {
               this.$store.dispatch(
                 'printingServer/printingServerInvoiceRaw',
                 orderData

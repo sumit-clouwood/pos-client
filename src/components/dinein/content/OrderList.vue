@@ -361,8 +361,6 @@ export default {
   },
   methods: {
     hasOrders(orderDetails) {
-      // eslint-disable-next-line no-console
-      console.log(orderDetails)
       return orderDetails.orders.length
     },
     completeOrder(tableId) {
