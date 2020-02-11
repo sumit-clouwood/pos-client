@@ -119,7 +119,9 @@ export default {
 
         if (
           element.scrollTop + this.toScroll + this.margin <=
-          element.scrollHeight - this.toScroll
+          element.scrollHeight -
+            this.toScroll +
+            this.keepEntitiesInScroll * element.offsetHeight
         ) {
           element.scrollTop += this.toScroll
         } else {

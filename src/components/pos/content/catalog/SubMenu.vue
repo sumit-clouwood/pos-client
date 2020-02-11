@@ -85,7 +85,7 @@ export default {
     return {
       container: 'subcategoryContainer',
       entity: 'entitySubcategory',
-      margin: 10,
+      margin: 9.5,
       keepEntitiesInScroll: 1,
     }
   },
