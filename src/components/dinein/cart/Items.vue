@@ -41,11 +41,11 @@
         <!--add condition here split true-->
         <div class="pay-split">
           <check-box
-            v-bind:value="index"
-            v-bind:index="index"
+            v-bind:value="item.no"
+            v-bind:index="item.no"
             v-bind:title="'Pay'"
             v-if="splitBill && item.paid !== true"
-            v-model="splittedItems[index]"
+            v-model="splittedItems[item.no]"
             @change="markSplit"
           ></check-box>
         </div>
