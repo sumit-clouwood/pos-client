@@ -48,7 +48,7 @@
           {{ currency }} {{ item.value || 0 }}
         </div>
       </div>
-      <Popup />
+      <!-- <Popup /> -->
     </div>
     <div
       class="color-dashboard-background"
@@ -67,7 +67,7 @@
 /* global $, showModal  */
 import { mapGetters, mapState } from 'vuex'
 import bootstrap from '@/bootstrap'
-import Popup from './items/Popup'
+// import Popup from './items/Popup'
 import Scroll from '@/mixins/Scroll'
 // import btnBack from '../../../mobileComponents/mobileElements/btnBack'
 
@@ -78,7 +78,7 @@ export default {
   },
   mixins: [Scroll],
   components: {
-    Popup,
+    // Popup,
     // btnBack,
   },
   data() {
