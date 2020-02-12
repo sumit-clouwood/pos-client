@@ -43,7 +43,6 @@
             class="button-plus"
             data-toggle="modal"
             data-target="#POSOrderItemOptions"
-            @click="modifierHeights()"
           >
             <div
               class="button-plus-icon"

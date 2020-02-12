@@ -1,6 +1,6 @@
-@import "../pixels_rem.scss";
-@import "../variables.scss";
-@import "../mixins.scss";
+@import '../pixels_rem.scss';
+@import '../variables.scss';
+@import '../mixins.scss';
 @import './POSItemOptions.scss';
 @import './customer.scss';
 @import './diningOption.scss';
@@ -92,7 +92,7 @@
   border-right: 1px solid $gray-middle;
 
   .value-qty {
-    border: 1px solid #D8DCE1;
+    border: 1px solid #d8dce1;
     border-right: medium none;
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
@@ -103,7 +103,7 @@
   border-left: 1px solid $gray-middle;
 
   .value-qty {
-    border: 1px solid #D8DCE1;
+    border: 1px solid #d8dce1;
     border-left: medium none;
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
@@ -220,7 +220,6 @@ button {
     }
   }
 
-
   &#modify-btn {
     width: $px125;
     height: $px50;
@@ -296,7 +295,7 @@ button {
 
 input {
   .qty {
-    border: 1px solid #D8DCE1;
+    border: 1px solid #d8dce1;
     border-left: medium none;
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
@@ -309,7 +308,6 @@ input {
   color: #fff;
 }
 
-
 .validation-error {
   position: absolute;
   width: 100%;
@@ -317,18 +315,16 @@ input {
   left: 41%;
   font-size: $px12;
   color: #f44040;
-   @include responsive(mobile) {
-                position: static;
-              }
+  @include responsive(mobile) {
+    position: static;
+  }
 }
-
 
 input {
   &#input {
     position: relative;
   }
 }
-
 
 img {
   &.input-image {
@@ -358,4 +354,27 @@ h1 {
   }
 }
 
-
+@include responsive(mobile) {
+  .modal {
+    .modal-dialog {
+      .modal-content {
+        .select-discount,
+        .dining-options-block,
+        .add-note-wrap {
+          min-height: 0 !important;
+          margin-bottom: 0px !important;
+        }
+        .modal-footer {
+          .btn-announce {
+            button {
+              margin-left: 1.5px !important;
+            }
+          }
+        }
+      }
+    }
+  }
+  #POSOrderItemOptions {
+    padding: 0px;
+  }
+}

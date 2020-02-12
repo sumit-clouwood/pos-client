@@ -484,9 +484,9 @@ h6 {
       opacity: 1 !important;
 
       .modal-content {
-        display: grid;
-        grid-template-columns: 1fr;
-        grid-template-rows: max-content 1fr max-content;
+        display: flex;
+        // grid-template-columns: 1fr;
+        // grid-template-rows: max-content 1fr max-content;
         width: 100% !important;
         max-width: none;
         //min-height: 100% !important;
@@ -498,9 +498,11 @@ h6 {
         opacity: 1 !important;
 
         .modal-body {
-          width: 100vw;
+          width: 100%;
           border: none !important;
           padding: 20px !important;
+          min-height: 23.75rem;
+          max-height: 23.75rem;
         }
 
         .modal-footer {
@@ -508,10 +510,12 @@ h6 {
             display: flex;
             flex-wrap: wrap;
             flex-direction: row-reverse;
+            margin-bottom: 35px;
             button {
               height: 50px !important;
               font-size: 14px !important;
               margin: 2px;
+              margin-bottom: 0px !important;
 
               &#discount-save {
                 background-color: $green-middle !important;
@@ -577,6 +581,7 @@ h6 {
 
         .modal-footer {
           padding: 20px !important;
+          margin-bottom: 0px !important;
           box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
       }

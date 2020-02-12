@@ -147,7 +147,7 @@ export default {
           margin: 0;
           max-height: none;
           order: 4;
-          margin-bottom: 75px;
+          // margin-bottom: 75px;
 
           .POSItemOption {
             margin-bottom: 20px;
