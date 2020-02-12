@@ -313,6 +313,12 @@ const actions = {
   printInvoice({ commit }, { templateId, order }) {
     commit('invoice/SET_TEMPLATE_ID', templateId, { root: true })
     commit('checkout/SET_ORDER', order.item, { root: true })
+    if (order.table_number) {
+      //set table no to show on invoice, only dinein order ll have it
+      commit('dinein/SELECTED_TABLE_RESERVATION', order.table_number, {
+        root: true,
+      })
+    }
     commit('order/SET_ORDER_ID', order.item._id, { root: true })
     commit('checkout/PRINT', true, { root: true })
     commit('checkout/SET_PAYMENT_ACTION', 'dine-in-running-order', {
