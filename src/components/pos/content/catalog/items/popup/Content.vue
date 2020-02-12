@@ -1,21 +1,26 @@
 <template>
   <div>
-    <div class="modifier-top-arrow food-arrow disable" @click="modifierTop">
+    <div
+      class="modifier-top-arrow food-arrow"
+      @click="scroll('down')"
+      v-show="showScrollUp"
+    >
       <i class="fa fa-chevron-up" aria-hidden="true"></i>
     </div>
     <div
-      class="modifier-bottom-arrow food-arrow disable"
-      @click="modifierBottom"
+      class="modifier-bottom-arrow food-arrow"
+      v-show="showScrollDown"
+      @click="scroll('up')"
     >
       <i class="fa fa-chevron-down" aria-hidden="true"></i>
     </div>
     <div
       class="modal-body color-dashboard-background positemoption_body"
-      v-if="itemModifiers(item._id)"
+      v-if="getItemModifiers"
     >
-      <div class="positemoption-wrapper">
+      <div class="positemoption-wrapper" ref="modifiersContianer">
         <Modifiers
-          v-for="subgroup in itemModifiers(item._id)"
+          v-for="subgroup in getItemModifiers"
           :subgroup="subgroup"
           :key="subgroup._id"
         />
@@ -25,98 +30,45 @@
 </template>
 
 <script>
-/* global $ */
 import { mapGetters, mapState } from 'vuex'
 import Modifiers from './content/Modifiers'
+import Scroll from '@/mixins/Scroll'
+
 export default {
   name: 'Content',
   props: {},
   data() {
     return {
-      modifierBlockHeight: 0,
-      modifierBlockInitHeight: 0,
-      modifierBlockItemHeight: 0,
+      container: 'modifiersContianer',
+      entity: 'entityModifier',
+      margin: 40,
+      keepEntitiesInScroll: 0,
     }
   },
   components: {
     Modifiers,
   },
+  mixins: [Scroll],
+
   computed: {
     ...mapState('modifier', ['item']),
     ...mapGetters('modifier', ['itemModifiers']),
-  },
-  mounted() {
-    this.modifierScroll()
-  },
-  methods: {
-    modifierScroll() {
-      let modifierBlockHeight = $('.positemoption_body').innerHeight()
-      this.modifierBlockHeight = modifierBlockHeight
-      this.modifierBlockInitHeight = modifierBlockHeight
-      this.modifierBlockItemHeight = $('.positemoption-wrapper').innerHeight()
-      $('.modifier-bottom-arrow, .modifier-top-arrow').removeClass('disable')
-      if (this.modifierBlockHeight > this.modifierBlockItemHeight) {
-        $('.modifier-bottom-arrow, .modifier-top-arrow').addClass('disable')
-      }
-      if (this.modifierBlockHeight === this.modifierBlockInitHeight) {
-        $('.modifier-top-arrow').addClass('disable')
-      }
-    },
-    modifierBottom() {
-      if (this.modifierBlockHeight >= this.modifierBlockItemHeight) {
-        $('.modifier-bottom-arrow').addClass('disable')
-        this.modifierBlockHeight = parseInt(this.modifierBlockItemHeight)
-        return false
-      } else {
-        $('.modifier-top-arrow').removeClass('disable')
-        if (
-          this.modifierBlockHeight == this.modifierBlockInitHeight ||
-          this.modifierBlockHeight === 0
-        ) {
-          this.modifierBlockHeight += parseInt(
-            this.modifierBlockInitHeight - 100
-          )
-        } else {
-          this.modifierBlockHeight += parseInt(this.modifierBlockInitHeight)
-        }
-      }
-
-      $('.positemoption_body').animate(
-        { scrollTop: this.modifierBlockHeight },
-        1000
-      )
-
-      if (this.modifierBlockHeight >= this.modifierBlockItemHeight) {
-        $('.modifier-bottom-arrow').addClass('disable')
-        this.modifierBlockHeight = parseInt(this.modifierBlockItemHeight)
-      }
-    },
-    modifierTop() {
-      if (this.modifierBlockHeight <= 0) {
-        this.modifierBlockHeight = parseInt(this.modifierBlockInitHeight)
-        $('.modifier-top-arrow').addClass('disable')
-        return false
-      } else {
-        $('.modifier-bottom-arrow').removeClass('disable')
-        if (this.modifierBlockHeight === this.modifierBlockItemHeight) {
-          this.modifierBlockHeight -= parseInt(
-            this.modifierBlockInitHeight + 100
-          )
-        } else {
-          this.modifierBlockHeight -= parseInt(this.modifierBlockInitHeight)
-        }
-      }
-      $('.positemoption_body').animate(
-        { scrollTop: this.modifierBlockHeight },
-        1000
-      )
-
-      if (this.modifierBlockHeight <= 0) {
-        this.modifierBlockHeight = parseInt(this.modifierBlockInitHeight)
-        $('.modifier-top-arrow').addClass('disable')
-      }
+    getItemModifiers() {
+      return this.itemModifiers(this.item._id)
     },
   },
+  watch: {
+    getItemModifiers() {
+      this.$nextTick(() => {
+        setTimeout(() => {
+          //wait for modifiers to load
+          this.calculateScrolls()
+        }, 300)
+      })
+    },
+  },
+  mounted() {},
+  methods: {},
 }
 </script>
 
@@ -130,4 +82,8 @@ export default {
 .positemoption_body::-webkit-scrollbar {
   width: 0;
 }
+</style>
+<style lang="sass" scoped>
+.positemoption_body
+  scroll-behavior: smooth
 </style>

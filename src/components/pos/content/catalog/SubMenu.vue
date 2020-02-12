@@ -1,41 +1,59 @@
 <template>
-  <div style="overflow-y: scroll;" class="foodCatScroll">
+  <div style="overflow-y: auto;" class="foodCatScroll">
     <div
       v-if="subcategories && subcategories.length"
       :class="[
         'food-categories-wrapper',
         subCategoryHendler ? 'foodCatigoriesActive' : 'foodCatigoriesNotActive',
       ]"
+      ref="subcategoryContainer"
     >
-      <!--<btnBack :param="'subcategory'" />-->
-      <div :class="['food-categories']" v-if="subcategories.length">
-        <div
-          class="food-categories-item box-shadow-selected"
-          v-for="item in subcategories"
-          :style="{
-            background:
-              item.sub_category_image == '' ? item.sub_category_color : '',
-          }"
-          :key="item._id"
-          :class="{
-            active: currentSubcategory === item._id,
-            cashier_app_sub_item: item.sub_category_image == '',
-          }"
-          @click.prevent="getSubCatItems(item)"
-        >
-          <img
-            v-if="item.sub_category_image != ''"
-            class="food-categories-item-img"
-            :src="item.sub_category_image"
-            :alt="dt(item)"
-          />
-          <div class="food-categories-item-text" :title="dt(item)">
-            {{ dt(item) }}
-          </div>
-          <div class="food-categories-item-check color-dashboard-background">
-            <i class="fa fa-check color-text-invert" aria-hidden="true"></i>
+      <div
+        class="subcategory-scroll food-cat-top-arrow food-arrow"
+        v-show="showScrollUp"
+        @click="scroll"
+      >
+        <i class="fa fa-chevron-up" aria-hidden="true"></i>
+      </div>
+      <div class="subcat-menu" :class="{ 'has-scroll': showScrollUp }">
+        <!--<btnBack :param="'subcategory'" />-->
+        <div :class="['food-categories']" v-if="subcategories.length">
+          <div
+            class="food-categories-item box-shadow-selected"
+            v-for="item in subcategories"
+            :style="{
+              background:
+                item.sub_category_image == '' ? item.sub_category_color : '',
+            }"
+            :key="item._id"
+            :class="{
+              active: currentSubcategory === item._id,
+              cashier_app_sub_item: item.sub_category_image == '',
+            }"
+            @click.prevent="getSubCatItems(item)"
+            ref="entitySubcategory"
+          >
+            <img
+              v-if="item.sub_category_image != ''"
+              class="food-categories-item-img"
+              :src="item.sub_category_image"
+              :alt="dt(item)"
+            />
+            <div class="food-categories-item-text" :title="dt(item)">
+              {{ dt(item) }}
+            </div>
+            <div class="food-categories-item-check color-dashboard-background">
+              <i class="fa fa-check color-text-invert" aria-hidden="true"></i>
+            </div>
           </div>
         </div>
+      </div>
+      <div
+        class="subcategory-scroll food-cat-bottom-arrow food-arrow"
+        v-show="showScrollDown"
+        @click="scroll('up')"
+      >
+        <i class="fa fa-chevron-down" aria-hidden="true"></i>
       </div>
     </div>
     <!--add class bg if image not found => class="food-categories-item bg"-->
@@ -57,6 +75,7 @@
 /* global $ */
 import { mapState, mapGetters } from 'vuex'
 import { bus } from '@/eventBus'
+import Scroll from '@/mixins/Scroll'
 
 // import btnBack from '../../../mobileComponents/mobileElements/btnBack'
 
@@ -64,11 +83,13 @@ export default {
   name: 'SubMenu',
   data() {
     return {
-      foodBlockItemHeight: 0,
-      foodBlockHeight: 0,
-      foodBlockInitHeight: 0,
+      container: 'subcategoryContainer',
+      entity: 'entitySubcategory',
+      margin: 9.5,
+      keepEntitiesInScroll: 1,
     }
   },
+  mixins: [Scroll],
   components: {
     // btnBack,
   },
@@ -76,6 +97,16 @@ export default {
   created() {
     this.$store.dispatch('showMainCategory')
   },
+  watch: {
+    subcategories(newVal, oldVal) {
+      if (newVal != oldVal) {
+        this.$nextTick(() => {
+          this.calculateScrolls()
+        })
+      }
+    },
+  },
+
   computed: {
     ...mapState({
       currentSubcategory: state => state.category.subcategory._id,
@@ -93,7 +124,6 @@ export default {
       this.$store.dispatch('category/getItems', item)
       this.$store.dispatch('foodMenuHendlerChange')
     },
-    // ...mapActions('category', ['getItems']),
   },
 }
 </script>
@@ -187,4 +217,11 @@ export default {
     }
   }
 }
+</style>
+<style lang="sass" scoped>
+.has-scroll
+  margin-top: 46px
+
+.foodCatScroll
+  scroll-behavior: smooth;
 </style>

@@ -1,9 +1,14 @@
 <template>
-  <div class="main-orders-list dine-cart-items" v-if="items">
+  <div
+    class="main-orders-list dine-cart-items"
+    v-if="items"
+    ref="cartItemsContainer"
+  >
     <div
       class="main-orders-list-item color-dashboard-background"
       v-for="(item, index) in items"
       :key="index + '-' + item._id"
+      ref="entityCartItem"
     >
       <div class="main-orders-list-item-title color-text">
         <div class="orders-name">{{ dt(item) }}</div>
@@ -36,11 +41,11 @@
         <!--add condition here split true-->
         <div class="pay-split">
           <check-box
-            v-bind:value="index"
-            v-bind:index="index"
+            v-bind:value="item.no"
+            v-bind:index="item.no"
             v-bind:title="'Pay'"
             v-if="splitBill && item.paid !== true"
-            v-model="splittedItems[index]"
+            v-model="splittedItems[item.no]"
             @change="markSplit"
           ></check-box>
         </div>
@@ -80,15 +85,59 @@ import Modifiers from '@/components/pos/content/cart/newOrders/items/Modifiers.v
 import CheckBox from '@/components/util/form/CheckBox.vue'
 import { mapState, mapActions, mapGetters } from 'vuex'
 import Discount from '@/mixins/Discount'
+import { bus } from '@/eventBus'
+import Scroll from '@/mixins/Scroll'
 
 export default {
   name: 'Items',
   data() {
     return {
       newItemList: [],
+      container: 'cartItemsContainer',
+      entity: 'entityCartItem',
+      margin: 4.375,
+      keepEntitiesInScroll: 0,
     }
   },
-  mixins: [Discount],
+  mixins: [Discount, Scroll],
+  mounted() {
+    bus.$on('scroll-cart', option => {
+      this.scroll(option)
+    })
+
+    bus.$emit('showScrollCartUp', this.showScrollUp)
+    bus.$emit('showScrollCartDown', this.showScrollDown)
+
+    bus
+      .$on('showScrollUp-cartItemsContainer', option => {
+        bus.$emit('showScrollCartUp', option)
+      })
+      .$on('showScrollDown-cartItemsContainer', option => {
+        bus.$emit('showScrollCartDown', option)
+      })
+  },
+  watch: {
+    items(newVal, oldVal) {
+      if (newVal != oldVal) {
+        this.$nextTick(() => {
+          this.calculateScrolls()
+            .then(() => {
+              bus.$emit('showScrollCartUp', this.showScrollUp)
+              bus.$emit('showScrollCartDown', this.showScrollDown)
+            })
+            .catch(() => {})
+        })
+      }
+    },
+    orderType(newVal, previousVal) {
+      if (newVal.OTApi !== previousVal.OTApi)
+        if (this.$store.state.discount.appliedOrderDiscount) {
+          this.$store.dispatch('discount/clearOrderDiscount')
+        } else {
+          this.$store.dispatch('discount/clearItemDiscount')
+        }
+    },
+  },
   computed: {
     splittedItems: {
       get() {
@@ -131,16 +180,6 @@ export default {
   components: {
     Modifiers,
     CheckBox,
-  },
-  watch: {
-    orderType(newVal, previousVal) {
-      if (newVal.OTApi !== previousVal.OTApi)
-        if (this.$store.state.discount.appliedOrderDiscount) {
-          this.$store.dispatch('discount/clearOrderDiscount')
-        } else {
-          this.$store.dispatch('discount/clearItemDiscount')
-        }
-    },
   },
 }
 </script>

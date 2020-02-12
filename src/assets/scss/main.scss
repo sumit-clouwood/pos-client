@@ -96,6 +96,7 @@
           right: 0;
         }
       }
+
       .food-categories-wrapper {
         overflow: auto;
         display: grid;
@@ -130,6 +131,11 @@
           background-color: #fff;
           padding: 2px 2px 2px 2px;
           margin-top: 10px;
+
+          &:first-child {
+            margin-top: 0 !important;
+          }
+
           &.cashier_app_sub_item{
             height: $food-categories-item-height;
           }
@@ -198,11 +204,11 @@
         display: grid;
         grid-template-rows: auto 1fr;
         grid-gap: 20px;
-        overflow-y: auto;
         border-right: 1px solid $gray-middle;
         &::-webkit-scrollbar{
           width: 0;
         }
+
         .breadcrumbs {
           padding: 0px $px20;
           height: $breadcrumbs-height;
@@ -419,7 +425,6 @@
 }
 
 @include responsive(mobile) {
-
   .cartBottomBtn, .food-arrow{
     display: none;
   }
@@ -460,7 +465,9 @@
     .main-body{
       grid-template-rows: $main-body-web-search-height 1fr;
       .foodCatScroll {
-        margin-top: $px64;
+        &.noscroll{
+          margin-top: 0;
+        }
       }
       .food-wrapper{
         height: calc(100vh - #{$food-wrapper-web-height});

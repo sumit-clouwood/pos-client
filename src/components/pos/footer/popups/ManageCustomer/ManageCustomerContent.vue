@@ -122,7 +122,6 @@
 import { mapState, mapGetters } from 'vuex'
 import Preloader from '@/components/util/Preloader'
 import { bus } from '@/eventBus'
-
 /* global $ */
 export default {
   name: 'ManageCustomerContent',

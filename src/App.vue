@@ -63,6 +63,14 @@ export default {
   mounted() {
     DataService.setStore(this.$store)
     this.setup()
+
+    setInterval(() => {
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.ready.then(registration => {
+          registration.update()
+        })
+      }
+    }, 1000 * 60 * 5)
   },
 }
 </script>

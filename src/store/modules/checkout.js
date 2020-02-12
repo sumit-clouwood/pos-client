@@ -993,6 +993,7 @@ const actions = {
                 //'modify-backend-order' means order was updated
                 commit(mutation.SET_ROUTE, { name: 'Dinein' })
                 dispatch('reset', true)
+                commit(mutation.PRINT, false)
                 commit('order/CLEAR_SELECTED_ORDER', null, { root: true })
                 resolve()
               } else {

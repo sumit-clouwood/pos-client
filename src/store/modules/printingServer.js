@@ -72,7 +72,10 @@ const actions = {
   printingServerInvoiceRaw({ state, rootState, dispatch }, orderData) {
     // printingServerInvoiceRaw({}, orderData) {
     // eslint-disable-next-line no-console
-    console.log('IN')
+    console.log('IN', rootState.checkout.paymentAction)
+    if (['dine-in-place-order'].includes(rootState.checkout.paymentAction)) {
+      return false
+    }
     // eslint-disable-next-line no-console
     console.log(orderData)
     let printingServers = state.printingservers //Get All Printing Servers

@@ -53,7 +53,7 @@
 import { mapState, mapActions, mapGetters } from 'vuex'
 import OrderDetailsPopup from '@/components/pos/content/OrderDetailPopup'
 import paginate from 'vuejs-paginate'
-import Preloader from '@/components/util/Preloader'
+import Preloader from '@/components/util/progressbar'
 import DMItem from '@/components/deliveryManager/content/DMItem'
 import DMTakeAwaySubMenu from '@/components/deliveryManager/header/DMTakeAwaySubMenu'
 export default {

@@ -1,10 +1,11 @@
 <template>
-  <div class="main-orders-list">
+  <div class="main-orders-list" ref="cartItemsContainer">
     <div v-if="items && items.length">
       <div
         class="main-orders-list-item color-dashboard-background"
         v-for="(item, index) in items"
         :key="index + '-' + item._id"
+        ref="entityCartItem"
       >
         <div v-if="multistore" class="storename">
           {{ storeName(item.store_id) }}
@@ -82,13 +83,21 @@ import Preloader from '@/components/util/Preloader'
 
 import { mapState, mapActions, mapGetters } from 'vuex'
 import Discount from '@/mixins/Discount'
+import { bus } from '@/eventBus'
+import Scroll from '@/mixins/Scroll'
 
 export default {
   name: 'Items',
   data() {
-    return {}
+    return {
+      newItemList: [],
+      container: 'cartItemsContainer',
+      entity: 'entityCartItem',
+      margin: 4.375,
+      keepEntitiesInScroll: 0,
+    }
   },
-  mixins: [Discount],
+  mixins: [Discount, Scroll],
   computed: {
     ...mapState({
       currentItem: state => state.order.item._id,
@@ -108,6 +117,45 @@ export default {
     ...mapGetters('context', ['storeName']),
     ...mapGetters('auth', ['allowed']),
     ...mapGetters('auth', ['multistore']),
+  },
+  mounted() {
+    bus.$on('scroll-cart', option => {
+      this.scroll(option)
+    })
+
+    bus.$emit('showScrollCartUp', this.showScrollUp)
+    bus.$emit('showScrollCartDown', this.showScrollDown)
+
+    bus
+      .$on('showScrollUp-cartItemsContainer', option => {
+        bus.$emit('showScrollCartUp', option)
+      })
+      .$on('showScrollDown-cartItemsContainer', option => {
+        bus.$emit('showScrollCartDown', option)
+      })
+  },
+
+  watch: {
+    items(newVal, oldVal) {
+      if (newVal != oldVal) {
+        this.$nextTick(() => {
+          this.calculateScrolls()
+            .then(() => {
+              bus.$emit('showScrollCartUp', this.showScrollUp)
+              bus.$emit('showScrollCartDown', this.showScrollDown)
+            })
+            .catch(() => {})
+        })
+      }
+    },
+    orderType(newVal, previousVal) {
+      if (newVal.OTApi !== previousVal.OTApi)
+        if (this.$store.state.discount.appliedOrderDiscount) {
+          this.$store.dispatch('discount/clearOrderDiscount')
+        } else {
+          this.$store.dispatch('discount/clearItemDiscount')
+        }
+    },
   },
   methods: {
     ...mapActions('category', ['getItems']),

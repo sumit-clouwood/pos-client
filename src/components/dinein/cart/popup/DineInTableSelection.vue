@@ -132,8 +132,6 @@ export default {
       } else {
         this.selectedTableMove = ''
       }
-      // eslint-disable-next-line no-console
-      console.log(this.$route.name)
       if (moveToDineIn && typeof this.moveTableDetails == 'object')
         this.$router.push('/dine-in' + this.store)
       $('#dine-in-table-selection').modal('toggle')
