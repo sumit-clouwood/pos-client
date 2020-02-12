@@ -21,7 +21,7 @@ export default {
 
   dineTables() {
     return DataService.get(
-      `/model/dine_in_tables?byColumn=1&item_status=true&limit=999`
+      `/model/dine_in_tables?byColumn=1&item_status=true&no_limit=true`
     )
   },
 
