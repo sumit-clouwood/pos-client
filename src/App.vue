@@ -70,7 +70,7 @@ export default {
           registration.update()
         })
       }
-    }, 1000 * 10 * 5)
+    }, 1000 * 60 * 5)
   },
 }
 </script>
