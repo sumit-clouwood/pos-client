@@ -1,8 +1,8 @@
 // custom service-worker.js
 /* global workbox */
 /* eslint-disable no-console */
-//appVersion has production build number . staging build number . int build number
-var appVersion = '6.7.33'
+//appVersion has production build number . staging build number . int build number . bugfix
+var appVersion = '6.7.33.1'
 
 var clientUrl = ''
 
