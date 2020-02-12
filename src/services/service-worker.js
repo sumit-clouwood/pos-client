@@ -2,7 +2,7 @@
 /* global workbox */
 /* eslint-disable no-console */
 //appVersion has production build number . staging build number . int build number
-var appVersion = '6.6.33'
+var appVersion = '6.7.33'
 
 var clientUrl = ''
 

@@ -10,12 +10,12 @@
     >
       <div
         class="subcategory-scroll food-cat-top-arrow food-arrow"
-        v-if="showScroll"
+        v-show="showScrollUp"
         @click="scroll"
       >
         <i class="fa fa-chevron-up" aria-hidden="true"></i>
       </div>
-      <div class="subcat-menu" :class="{ 'has-scroll': showScroll }">
+      <div class="subcat-menu" :class="{ 'has-scroll': showScrollUp }">
         <!--<btnBack :param="'subcategory'" />-->
         <div :class="['food-categories']" v-if="subcategories.length">
           <div
@@ -50,7 +50,7 @@
       </div>
       <div
         class="subcategory-scroll food-cat-bottom-arrow food-arrow"
-        v-if="showScroll"
+        v-show="showScrollDown"
         @click="scroll('up')"
       >
         <i class="fa fa-chevron-down" aria-hidden="true"></i>
@@ -85,7 +85,7 @@ export default {
     return {
       container: 'subcategoryContainer',
       entity: 'entitySubcategory',
-      margin: 10,
+      margin: 9.5,
       keepEntitiesInScroll: 1,
     }
   },

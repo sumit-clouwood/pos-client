@@ -1,11 +1,15 @@
 <template>
   <div class="food-items">
-    <div class="food-top-arrow food-arrow" v-if="showScroll" @click="scroll">
+    <div
+      class="food-top-arrow food-arrow"
+      v-show="showScrollUp"
+      @click="scroll"
+    >
       <i class="fa fa-chevron-up" aria-hidden="true"></i>
     </div>
     <div
       class="food-bottom-arrow food-arrow"
-      v-if="showScroll"
+      v-show="showScrollDown"
       @click="scroll('up')"
     >
       <i class="fa fa-chevron-down" aria-hidden="true"></i>
@@ -100,12 +104,10 @@ export default {
     ...mapGetters(['foodMenuHendler', 'bascketItems']),
   },
   watch: {
-    items(newVal, oldVal) {
-      if (newVal != oldVal) {
-        this.$nextTick(() => {
-          this.calculateScrolls()
-        })
-      }
+    items() {
+      this.$nextTick(() => {
+        this.calculateScrolls()
+      })
     },
     barcode(itemCode) {
       if (itemCode) {
@@ -360,6 +362,9 @@ export default {
 <style lang="sass" scoped>
 .food-items
   scroll-behavior: smooth
+
+  .food-arrow
+    margin-right: -26px
 
   .food-menu-item
     height: 174px

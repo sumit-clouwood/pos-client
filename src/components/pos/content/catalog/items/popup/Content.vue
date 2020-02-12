@@ -3,13 +3,13 @@
     <div
       class="modifier-top-arrow food-arrow"
       @click="scroll('down')"
-      v-show="showScroll"
+      v-show="showScrollUp"
     >
       <i class="fa fa-chevron-up" aria-hidden="true"></i>
     </div>
     <div
       class="modifier-bottom-arrow food-arrow"
-      v-show="showScroll"
+      v-show="showScrollDown"
       @click="scroll('up')"
     >
       <i class="fa fa-chevron-down" aria-hidden="true"></i>
