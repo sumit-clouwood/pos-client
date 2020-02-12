@@ -139,8 +139,10 @@ export default {
       this.$store.commit('order/RESET_SPLIT_BILL')
       //load data only when new order is starting
       if (!this.$store.state.order.items.length) {
-        this.$store.commit('sync/reload', true)
-        bootstrap.loadUI('orderStart').then(() => {})
+        this.$store.commit('sync/backgroundSync', true)
+        bootstrap.loadUI('orderStart').then(() => {
+          this.$store.commit('sync/backgroundSync', false)
+        })
       }
 
       this.$store.commit('order/SET_CART_TYPE', 'new')
