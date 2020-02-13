@@ -100,7 +100,7 @@ export default {
     return validResponse
   },
 
-  getLive(url, resolve, reject) {
+  getLive(url) {
     if (!localStorage.getItem('token')) {
       this.store.dispatch('auth/logout', 'token_not_exists')
       return Promise.reject('token expired or not found, logout')
@@ -109,32 +109,34 @@ export default {
     //const newDate = new DateTime()
     //this.syncDate = newDate.getDate()
     const absUrl = this.getAbsUrl(url)
-    axios
-      .get(apiURL + url)
-      .then(response => {
-        if (this.isValidResponse(response)) {
-          this.saveEventOffline({
-            request: absUrl,
-            response: response.data,
-          }).then(() => {
-            this.setLastUpdate(absUrl, new Date())
-          })
+    return new Promise((resolve, reject) => {
+      axios
+        .get(apiURL + url)
+        .then(response => {
+          if (this.isValidResponse(response)) {
+            this.saveEventOffline({
+              request: absUrl,
+              response: response.data,
+            }).then(() => {
+              this.setLastUpdate(absUrl, new Date())
+            })
 
-          resolve(response)
-        } else {
-          reject(response)
-        }
-      })
-      .catch(() => {
-        this.getOfflineEventData(absUrl).then(response => {
-          if (response) {
             resolve(response)
           } else {
-            //reject(`No data found in both live and local for url ${absUrl}`)
-            resolve({ data: {} })
+            reject(response)
           }
         })
-      })
+        .catch(() => {
+          this.getOfflineEventData(absUrl).then(response => {
+            if (response) {
+              resolve(response.data)
+            } else {
+              //reject(`No data found in both live and local for url ${absUrl}`)
+              resolve({ data: {} })
+            }
+          })
+        })
+    })
   },
 
   get(url, level) {
@@ -155,7 +157,9 @@ export default {
           .then(response => resolve(response))
           .catch(error => reject(error))
       } else {
-        return this.getLive(url, resolve, reject)
+        this.getLive(url)
+          .then(response => resolve(response))
+          .catch(error => reject(error))
       }
     })
   },
@@ -172,7 +176,9 @@ export default {
         .then(response => {
           if (!response.lastUpdated) {
             //no response found in local db, get it from live
-            this.getLive(url, resolve, reject)
+            this.getLive(url)
+              .then(response => resolve(response))
+              .catch(error => reject(error))
           } else {
             const lastUpdatedTime = response.lastUpdated.getTime()
             const nowTime = new Date().getTime()
@@ -182,7 +188,9 @@ export default {
 
             if (days > 1) {
               //resync time greater than 1 day, get live, we ll change this later
-              this.getLive(absUrl, resolve, reject)
+              this.getLive(absUrl)
+                .then(response => resolve(response))
+                .catch(error => reject(error))
             } else {
               this.syncDate = newDate.getDate()
               resolve(response)
@@ -191,7 +199,9 @@ export default {
         })
         .catch(() => {
           //no data found in the localdb
-          this.getLive(url, resolve, reject)
+          this.getLive(url)
+            .then(response => resolve(response))
+            .catch(error => reject(error))
         })
     })
   },
