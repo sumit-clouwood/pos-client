@@ -2,8 +2,8 @@
 /* global workbox */
 /* eslint-disable no-console */
 //appVersion has production build number . staging build number . int build number . bugfix
-//Reason: Make use of caching
-var appVersion = '6.8.33.2'
+//Reason: Reduce the time to reload apis
+var appVersion = '6.9.33.2'
 
 var clientUrl = ''
 
