@@ -273,7 +273,7 @@ export default {
       this.setup()
       setTimeout(() => {
         this.loading = false
-      }, 1000 * 1 + 500)
+      }, 1700)
     }
 
     let vh = window.innerHeight * 0.01
