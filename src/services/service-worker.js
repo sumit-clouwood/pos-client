@@ -2,8 +2,8 @@
 /* global workbox */
 /* eslint-disable no-console */
 //appVersion has production build number . staging build number . int build number . bugfix
-//Reason: fast move test
-var appVersion = '6.7.33.5'
+//Reason: fix dine in issues
+var appVersion = '6.7.33.6'
 
 var clientUrl = ''
 
