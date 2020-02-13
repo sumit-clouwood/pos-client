@@ -80,10 +80,8 @@
 import { bus } from '@/eventBus'
 import Modifiers from './items/Modifiers.vue'
 import Preloader from '@/components/util/Preloader'
-
 import { mapState, mapActions, mapGetters } from 'vuex'
 import Discount from '@/mixins/Discount'
-import { bus } from '@/eventBus'
 import Scroll from '@/mixins/Scroll'
 
 export default {
