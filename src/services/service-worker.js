@@ -3,7 +3,7 @@
 /* eslint-disable no-console */
 //appVersion has production build number . staging build number . int build number . bugfix
 //Reason: Reduce the time to reload apis
-var appVersion = '6.9.33.2'
+var appVersion = '6.10.33.2'
 
 var clientUrl = ''
 
