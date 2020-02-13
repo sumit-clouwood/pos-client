@@ -147,13 +147,9 @@ export default {
       bootstrap
         .setup(this.$store)
         .then(() => {
-          setTimeout(() => {
-            clearInterval(interval)
-            this.progressIncrement = 100
-          }, 100)
-          setTimeout(() => {
-            this.loading = false
-          }, 300)
+          clearInterval(interval)
+          this.progressIncrement = 100
+          this.loading = false
           this.setupServiceWorker()
           this.setupRoutes()
           this.setupExternalScripts()
@@ -274,7 +270,9 @@ export default {
     ) {
       this.loading = false
     } else {
-      this.setup()
+      this.setup().then(() => {
+        this.loading = false
+      })
     }
 
     let vh = window.innerHeight * 0.01

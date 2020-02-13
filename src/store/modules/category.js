@@ -166,7 +166,7 @@ const actions = {
                   : false,
               })
 
-              if (!rootState.sync.reloaded && !storeId) {
+              if (!rootState.sync.backgroundSync && !storeId) {
                 const categories = getters.categories
                 dispatch('browse', categories[0])
               }

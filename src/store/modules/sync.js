@@ -7,8 +7,9 @@ const state = {
   online: true,
   idb: null,
   idbVersion: 1,
-  reloaded: false,
   appUpdateNotification: false,
+  cacheFirst: false,
+  backgroundSync: false,
 
   modules: {
     store: CONST.LOADING_STATUS_LOADING,
@@ -55,8 +56,11 @@ const mutations = {
   setIdb(state, handle) {
     state.idb = handle
   },
-  reload(state, val) {
-    state.reloaded = val
+  cacheFirst(state, val) {
+    state.cacheFirst = val
+  },
+  backgroundSync(state, val) {
+    state.cacheFirst = val
   },
   setAppUpdateNotification(state, val) {
     state.appUpdateNotification = val

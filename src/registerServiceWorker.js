@@ -3,6 +3,7 @@ import { register } from 'register-service-worker'
 import store from './store'
 
 const notifyUserAboutUpdate = worker => {
+  console.log('update available')
   worker.postMessage({ action: 'skipWaiting' })
 
   const today = new Date()
@@ -33,10 +34,13 @@ if (process.env.NODE_ENV === 'production') {
       // console.log('Content has been cached for offline use.')
     },
     updatefound() {
-      // console.log('Update found, New content is downloading.')
+      console.log('Update found, New content is downloading.')
     },
     updated(registration) {
-      // console.log('New content is available; please refresh.')
+      console.log(
+        'New content is available; please refresh., notifying user about update',
+        registration
+      )
       notifyUserAboutUpdate(registration.waiting)
     },
     offline() {

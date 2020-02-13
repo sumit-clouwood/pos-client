@@ -121,16 +121,28 @@ export default {
       this.scroll(option)
     })
 
-    bus.$emit('showScrollCart', this.showScroll)
+    bus.$emit('showScrollCartUp', this.showScrollUp)
+    bus.$emit('showScrollCartDown', this.showScrollDown)
+
+    bus
+      .$on('showScrollUp-cartItemsContainer', option => {
+        bus.$emit('showScrollCartUp', option)
+      })
+      .$on('showScrollDown-cartItemsContainer', option => {
+        bus.$emit('showScrollCartDown', option)
+      })
   },
 
   watch: {
     items(newVal, oldVal) {
       if (newVal != oldVal) {
         this.$nextTick(() => {
-          this.calculateScrolls().then(showScroll => {
-            bus.$emit('showScrollCart', showScroll)
-          })
+          this.calculateScrolls()
+            .then(() => {
+              bus.$emit('showScrollCartUp', this.showScrollUp)
+              bus.$emit('showScrollCartDown', this.showScrollDown)
+            })
+            .catch(() => {})
         })
       }
     },
@@ -161,9 +173,6 @@ export default {
       if (!this.items.length) {
         this.$store.dispatch('mainOrdersHendlerChange')
       }
-    },
-    modifierHeights() {
-      bus.$emit('modifier-heights')
     },
   },
   components: {

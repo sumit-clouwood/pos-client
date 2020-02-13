@@ -3,6 +3,7 @@ import axios from 'axios'
 import createAuthRefreshInterceptor from 'axios-auth-refresh'
 import db from '@/services/network/DB'
 import DateTime from '@/plugins/helpers/DateTime.js'
+import Store from '@/store'
 
 const apiURL = process.env.VUE_APP_API_ENDPOINT
 
@@ -149,7 +150,7 @@ export default {
       //     }
       //   })
       //   .catch(error => reject(error))
-      if (process.env.VUE_APP_CACHE_FIRST) {
+      if (process.env.VUE_APP_CACHE_FIRST || Store.state.sync.cacheFirst) {
         this.getCacheable(url)
           .then(response => resolve(response))
           .catch(error => reject(error))

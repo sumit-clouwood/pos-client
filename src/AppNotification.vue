@@ -1,10 +1,8 @@
 <template>
-  <div class="app-notification" v-show="appUpdateNotification">
-    <span class="title">Application update is available.</span>
-    <button class="button" @click="reloadWindow">UPDATE</button>
-    <button class="button" @click="closeNotification">No thanks</button>
-    <div tabindex="0" role="button" class="close" @click="closeNotification">
-      <div class="btn"></div>
+  <div class="overlay" v-show="appUpdateNotification">
+    <div class="app-notification">
+      <span class="title">Application update is available.</span>
+      <button class="button" @click="reloadWindow">UPDATE</button>
     </div>
   </div>
 </template>
@@ -38,6 +36,18 @@ export default {
 @import './assets/scss/style.scss';
 </style>
 <style lang="sass" scoped>
+.overlay
+  position: fixed
+  width: 100%
+  height: 100%
+  top: 0
+  left: 0
+  right: 0
+  bottom: 0
+  background-color: hsla(0, 0%, 48%, 0.68)
+  z-index: 2
+  cursor: pointer
+
 .app-notification
   -webkit-font-smoothing: antialiased
   line-height: 100%
@@ -63,7 +73,7 @@ export default {
   max-width: 640px
   min-height: 52px
   padding: 8px 24px
-  padding-right: 52px
+  padding-right: 24px
   position: fixed
   right: auto
   text-align: left
@@ -114,9 +124,12 @@ export default {
       top: -50%
       left: -50%
       width: 200%
+  .title
+    padding-right: 28px
+
   .button
     align-items: center
-    border: none
+    border: 1px solid
     display: inline-flex
     justify-content: center
     outline: none
