@@ -138,31 +138,34 @@ export default {
       }, 3000)
     },
     setup() {
-      const interval = setInterval(() => {
-        this.progressIncrement += 10
-        if (this.progressIncrement > 100) {
-          this.progressIncrement = 0
-        }
-      }, 1000)
-      bootstrap
-        .setup(this.$store)
-        .then(() => {
-          clearInterval(interval)
-          this.progressIncrement = 100
-          this.loading = false
-          this.setupServiceWorker()
-          this.setupRoutes()
-          this.setupExternalScripts()
-        })
-        .catch(error => {
-          //this.errored = error
-          //setTimeout(() => {
-          this.loading = false
-          console.log(error, ', dispatch logout')
-          //this.$store.dispatch('auth/logout', error)
-          this.errored = ''
-          //}, 1000 * 10)
-        })
+      return new Promise(resolve => {
+        const interval = setInterval(() => {
+          this.progressIncrement += 10
+          if (this.progressIncrement > 100) {
+            this.progressIncrement = 0
+          }
+        }, 1000)
+        bootstrap
+          .setup(this.$store)
+          .then(() => {
+            this.loading = false
+            resolve()
+            clearInterval(interval)
+            this.progressIncrement = 100
+            this.setupServiceWorker()
+            this.setupRoutes()
+            this.setupExternalScripts()
+          })
+          .catch(error => {
+            //this.errored = error
+            //setTimeout(() => {
+            this.loading = false
+            console.log(error, ', dispatch logout')
+            //this.$store.dispatch('auth/logout', error)
+            this.errored = ''
+            //}, 1000 * 10)
+          })
+      })
     },
   },
   created() {},
@@ -271,9 +274,6 @@ export default {
       this.loading = false
     } else {
       this.setup()
-      setTimeout(() => {
-        this.loading = false
-      }, 1700)
     }
 
     let vh = window.innerHeight * 0.01
