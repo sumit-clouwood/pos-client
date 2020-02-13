@@ -60,7 +60,7 @@ const mutations = {
     state.cacheFirst = val
   },
   backgroundSync(state, val) {
-    state.cacheFirst = val
+    state.backgroundSync = val
   },
   setAppUpdateNotification(state, val) {
     state.appUpdateNotification = val
