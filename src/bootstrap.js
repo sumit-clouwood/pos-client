@@ -11,7 +11,8 @@ export default {
   lastSynced: null,
   syncInterval: 10, //300 sec = 5 min
 
-  setup(store) {
+  // eslint-disable-next-line no-unused-vars
+  setup(store, route) {
     this.store = store
 
     this.store.commit('sync/cacheFirst', true)
