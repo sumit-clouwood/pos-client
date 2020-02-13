@@ -31,7 +31,7 @@ export default {
                 this.initLoadUI().then(() => {
                   this.store.commit('sync/backgroundSync', false)
                 })
-              }, 1000 * 60 * 1)
+              }, 1000 * 3)
             })
             .catch(error => reject(error))
         })
