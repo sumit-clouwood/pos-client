@@ -1547,7 +1547,10 @@ const actions = {
         let item = {}
         let orderItem = {}
         orderData.item.item_discounts.forEach(itemDiscount => {
-          orderItem = orderData.item.items[itemDiscount.for_item]
+          orderItem = orderData.item.items.find(
+            item => item.no === itemDiscount.for_item
+          )
+          console.log(orderItem, 'orderItem', itemDiscount)
           item = {
             orderIndex: itemDiscount.for_item,
             _id: orderItem.entity_id,
