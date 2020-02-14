@@ -3,6 +3,7 @@ import axios from 'axios'
 import createAuthRefreshInterceptor from 'axios-auth-refresh'
 import db from '@/services/network/DB'
 import DateTime from '@/plugins/helpers/DateTime.js'
+import Store from '@/store'
 
 const apiURL = process.env.VUE_APP_API_ENDPOINT
 
@@ -99,7 +100,7 @@ export default {
     return validResponse
   },
 
-  getLive(url, resolve, reject) {
+  _getLive(url, resolve, reject) {
     if (!localStorage.getItem('token')) {
       this.store.dispatch('auth/logout', 'token_not_exists')
       return Promise.reject('token expired or not found, logout')
@@ -127,7 +128,7 @@ export default {
       .catch(() => {
         this.getOfflineEventData(absUrl).then(response => {
           if (response) {
-            resolve(response)
+            resolve(response.data)
           } else {
             //reject(`No data found in both live and local for url ${absUrl}`)
             resolve({ data: {} })
@@ -136,6 +137,12 @@ export default {
       })
   },
 
+  getLive(url, level) {
+    url = this.getContextUrl(url, level)
+    return new Promise((resolve, reject) => {
+      return this._getLive(url, resolve, reject)
+    })
+  },
   get(url, level) {
     url = this.getContextUrl(url, level)
     return new Promise((resolve, reject) => {
@@ -149,12 +156,12 @@ export default {
       //     }
       //   })
       //   .catch(error => reject(error))
-      if (process.env.VUE_APP_CACHE_FIRST) {
+      if (process.env.VUE_APP_CACHE_FIRST || Store.state.sync.cacheFirst) {
         this.getCacheable(url)
           .then(response => resolve(response))
           .catch(error => reject(error))
       } else {
-        return this.getLive(url, resolve, reject)
+        return this._getLive(url, resolve, reject)
       }
     })
   },
@@ -171,7 +178,7 @@ export default {
         .then(response => {
           if (!response.lastUpdated) {
             //no response found in local db, get it from live
-            this.getLive(url, resolve, reject)
+            this._getLive(url, resolve, reject)
           } else {
             const lastUpdatedTime = response.lastUpdated.getTime()
             const nowTime = new Date().getTime()
@@ -181,7 +188,7 @@ export default {
 
             if (days > 1) {
               //resync time greater than 1 day, get live, we ll change this later
-              this.getLive(absUrl, resolve, reject)
+              this._getLive(absUrl, resolve, reject)
             } else {
               this.syncDate = newDate.getDate()
               resolve(response)
@@ -190,7 +197,7 @@ export default {
         })
         .catch(() => {
           //no data found in the localdb
-          this.getLive(url, resolve, reject)
+          this._getLive(url, resolve, reject)
         })
     })
   },
