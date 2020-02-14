@@ -429,9 +429,16 @@ const actions = {
         item.orderIndex = getters.orderIndex
       }
 
-      if (typeof item.quantity === 'undefined') {
-        item.quantity = 1
+      let quantity = 0
+      //coming through hold orders
+      if (typeof item.quantity !== 'undefined') {
+        quantity = item.quantity
       }
+      if (!quantity) {
+        quantity = rootState.orderForm.quantity || 1
+      }
+
+      item.quantity = quantity
 
       dispatch('prepareItemTax', {
         item: item,
