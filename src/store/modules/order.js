@@ -1368,6 +1368,8 @@ const actions = {
         if (items.length) {
           console.log('items reamining, recurrsive call')
           await dispatch('addItemsToCart', items)
+          console.log('resolve in the recurrsion')
+          resolve()
         } else {
           console.log('finally no items left')
           resolve()
