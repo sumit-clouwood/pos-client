@@ -121,14 +121,18 @@ export default {
         this.isPrint = true
         try {
           setTimeout(() => {
-            // Code Pane reflects in DIMS WEB APP window.PrintHandle.GetAgent() !== 'Dimspos.App'
-            if (window.PrintHandle == null) {
+            if (this.$store.state.auth.deviceType.osType) {
+              this.$store.dispatch('checkout/iosWebviewPrintAction', {
+                orderData: this.$store.state.checkout.order,
+              })
+            } else if (window.PrintHandle == null) {
               //this.$refs.iframe.contentWindow.print()
               let w = this.$refs.iframe.contentWindow
               w.focus()
               w.print()
               this.iframe_body = ''
             }
+            // Code Pane reflects in DIMS WEB APP window.PrintHandle.GetAgent() !== 'Dimspos.App'
             // if (!this.$store.getters['checkout/complete']) {
             //   this.$store.dispatch('checkout/splitOrder').then(() => {})
             // }
