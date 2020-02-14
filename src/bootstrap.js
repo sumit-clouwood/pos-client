@@ -11,28 +11,15 @@ export default {
   lastSynced: null,
   syncInterval: 10, //300 sec = 5 min
 
-  // eslint-disable-next-line no-unused-vars
-  setup(store, route) {
+  setup(store) {
     this.store = store
-
-    this.store.commit('sync/cacheFirst', true)
-
     return new Promise((resolve, reject) => {
       this.setupDB()
         .then(idb => {
           this.store.commit('sync/setIdb', idb)
           this.fetchData()
             .then(() => {
-              this.store.commit('sync/cacheFirst', false)
               resolve()
-              //reload UI in background, in 1 minute
-              setTimeout(() => {
-                this.store.commit('sync/backgroundSync', true)
-
-                this.initLoadUI().then(() => {
-                  this.store.commit('sync/backgroundSync', false)
-                })
-              }, 1000 * 3)
             })
             .catch(error => reject(error))
         })

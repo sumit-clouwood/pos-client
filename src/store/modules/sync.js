@@ -7,6 +7,7 @@ const state = {
   online: true,
   idb: null,
   idbVersion: 1,
+  reloaded: false,
   appUpdateNotification: false,
   cacheFirst: false,
   backgroundSync: false,
@@ -56,11 +57,8 @@ const mutations = {
   setIdb(state, handle) {
     state.idb = handle
   },
-  cacheFirst(state, val) {
-    state.cacheFirst = val
-  },
-  backgroundSync(state, val) {
-    state.backgroundSync = val
+  reload(state, val) {
+    state.reloaded = val
   },
   setAppUpdateNotification(state, val) {
     state.appUpdateNotification = val
