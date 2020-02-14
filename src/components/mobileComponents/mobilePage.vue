@@ -186,7 +186,7 @@ export default {
   .mobile-search {
     border-top: 1px solid #e3e7f2;
     border-bottom: 1px solid #e3e7f2;
-    padding: 10px 0;
+    padding: 5px 0;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     z-index: 1;
     background: linear-gradient(90deg, #e6e6e8 0%, #dfdfe0 35%, #eaeeef 100%);

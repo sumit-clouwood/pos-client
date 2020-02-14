@@ -254,6 +254,9 @@
         grid-row-gap: 20px;
         padding: 30.5px 20px;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        @include responsive(mobile){
+          padding: 30.5px 7px;
+        }
 
         .btn-close {
           font-size: 18px;
