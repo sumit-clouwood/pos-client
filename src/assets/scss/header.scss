@@ -1,5 +1,5 @@
-@import "pixels_rem.scss";
-@import "variables.scss";
+@import 'pixels_rem.scss';
+@import 'variables.scss';
 .header {
   padding: 0 $px30;
   .header-main {
@@ -7,13 +7,18 @@
     display: grid;
     grid-template-columns: auto auto;
     //padding: 0 $px30;
-
+    @include responsive(mobile){
+      padding: 5px;
+    }
     .header-main-left {
       height: $header-height;
       display: grid;
       grid-template-columns: auto auto;
       align-items: center;
       justify-content: start;
+      @include responsive(mobile) {
+        width: 10rem !important;
+      }
 
       .header-main-left-info {
         margin-right: $px30;
@@ -58,9 +63,9 @@
       position: relative;
       .menu-language {
         margin-right: $px10;
-         img{
-           width: 24px;
-         }
+        img {
+          width: 24px;
+        }
       }
       .switch-store {
         padding-right: $px10;
@@ -94,7 +99,7 @@
           width: $px15;
           height: $px15;
           border-radius: 50%;
-          border: 1px solid rgba(0,0,0,0.1);
+          border: 1px solid rgba(0, 0, 0, 0.1);
           margin-top: $px2;
           margin-right: $px10;
 
@@ -106,7 +111,6 @@
           &:before {
             color: $red;
           }
-
         }
       }
 
@@ -116,7 +120,7 @@
         border-radius: $btn-border-radius;
         padding: 0 $px35;
         color: #fff;
-        margin-right:  $px10;
+        margin-right: $px10;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -127,7 +131,7 @@
             color: #fff;
             display: flex;
             align-items: center;
-            .online-digit{
+            .online-digit {
               width: $px20;
               height: $px20;
               display: flex;
@@ -151,19 +155,19 @@
         justify-content: center;
         position: relative;
         cursor: pointer;
-        .nav-link{
+        .nav-link {
           padding: 0;
           display: inline-flex;
           align-items: center;
           justify-content: center;
-          svg{
+          svg {
             width: $px25;
             height: $px25;
           }
         }
       }
-      .status{
-        .online{
+      .status {
+        .online {
           height: auto;
           justify-content: flex-start;
           margin-left: 0;
@@ -178,45 +182,51 @@
         right: 0;
         top: 0;
         height: 100vh;
-        -webkit-box-shadow: 0 0px 0.0625rem 0 rgba(23, 23, 32, 0.05), 0 0px 0.1875rem 0 rgba(23, 23, 32, 0.05), 0 0px 0.1875rem 0 rgba(23, 23, 32, 0.05), 0 0px 0.375rem 0 rgba(23, 23, 32, 0.05), 0 0px 0.75rem 0 rgba(23, 23, 32, 0.05);
-        box-shadow: 0 0px 0.0625rem 0 rgba(23, 23, 32, 0.05), 0 0px 0.1875rem 0 rgba(23, 23, 32, 0.05), 0 0px 0.1875rem 0 rgba(23, 23, 32, 0.05), 0 0px 0.375rem 0 rgba(23, 23, 32, 0.05), 0 0px 0.75rem 0 rgba(23, 23, 32, 0.05);
+        -webkit-box-shadow: 0 0px 0.0625rem 0 rgba(23, 23, 32, 0.05),
+          0 0px 0.1875rem 0 rgba(23, 23, 32, 0.05),
+          0 0px 0.1875rem 0 rgba(23, 23, 32, 0.05),
+          0 0px 0.375rem 0 rgba(23, 23, 32, 0.05),
+          0 0px 0.75rem 0 rgba(23, 23, 32, 0.05);
+        box-shadow: 0 0px 0.0625rem 0 rgba(23, 23, 32, 0.05),
+          0 0px 0.1875rem 0 rgba(23, 23, 32, 0.05),
+          0 0px 0.1875rem 0 rgba(23, 23, 32, 0.05),
+          0 0px 0.375rem 0 rgba(23, 23, 32, 0.05),
+          0 0px 0.75rem 0 rgba(23, 23, 32, 0.05);
         border: 1px solid $gray-light;
         border-radius: $btn-border-radius;
         background-color: #fff;
         color: #000;
         font-size: $px16;
-          .setting-menu-wrapper {
-            height: calc(100vh - 160px);
-            overflow: auto;
-          }
-        ul{
+        .setting-menu-wrapper {
+          height: calc(100vh - 160px);
+          overflow: auto;
+        }
+        ul {
           &.dine-footer-navmenu {
             display: flex;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             position: absolute;
             bottom: 0;
             width: 100%;
-            li{
+            li {
               border-bottom: medium none;
               display: grid;
               align-items: center;
               width: 100%;
-              svg{
-                path{
+              svg {
+                path {
                   fill: #cc3232;
                   opacity: 1;
                 }
               }
             }
-
           }
         }
         li {
-
-          &:hover{
-            background: #5056CA;
-            svg{
-              path{
+          &:hover {
+            background: #5056ca;
+            svg {
+              path {
                 fill: #fff;
                 opacity: 1;
               }
@@ -225,9 +235,9 @@
               color: #fff;
             }
           }
-          svg{
+          svg {
             width: $px25;
-            path{
+            path {
               fill: #000;
               opacity: 0.5;
             }
@@ -254,7 +264,7 @@
         grid-row-gap: 20px;
         padding: 30.5px 20px;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        @include responsive(mobile){
+        @include responsive(mobile) {
           padding: 30.5px 7px;
         }
 
@@ -277,11 +287,11 @@
     }
   }
 }
-.transaction-orders{
-  .header-main{
-    .header-main-right{
-      .walkin-btn-design{
-        > .walkin-btn{
+.transaction-orders {
+  .header-main {
+    .header-main-right {
+      .walkin-btn-design {
+        > .walkin-btn {
           height: $px50;
           margin-right: $px10;
         }
@@ -289,8 +299,8 @@
     }
   }
 }
-.header{
-  .header-main{
+.header {
+  .header-main {
     .change-brand-setting {
       display: none !important;
     }
@@ -298,9 +308,9 @@
 }
 
 @include responsive(mobile) {
-  .header{
+  .header {
     padding: 0;
-    .header-main{
+    .header-main {
       .change-brand-setting {
         display: grid !important;
       }
@@ -309,17 +319,17 @@
       }
     }
   }
-  .setting-dropdown{
+  .setting-dropdown {
     z-index: 999;
     width: 90% !important;
     overflow: auto;
     height: calc(100vh - 80px) !important;
-    ul{
-      &.dine-footer-navmenu{
+    ul {
+      &.dine-footer-navmenu {
         position: static !important;
       }
     }
-    li{
+    li {
       text-align: left;
     }
   }
