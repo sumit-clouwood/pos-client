@@ -146,7 +146,7 @@ export default {
           }
         }, 1000)
         bootstrap
-          .setup(this.$store)
+          .setup(this.$store, this.$route)
           .then(() => {
             this.loading = false
             resolve()

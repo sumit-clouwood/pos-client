@@ -2,31 +2,31 @@ import DataService from '@/services/DataService'
 import DateTime from '@/mixins/DateTime'
 export default {
   dineInRunningOrders(page, limit, userId) {
-    return DataService.get(
+    return DataService.getLive(
       `/model/reservations?page_id=running_orders&query=&limit=${limit}&ascending=1&page=${page}&byColumn=1&assigned_to=${userId}&orderBy=priority`
     )
   },
   dineInCompleteOrders(page, limit, userId) {
     let currentDate = DateTime.getPreviousDayUTCDate()
-    return DataService.get(
+    return DataService.getLive(
       `/model/reservations?page_id=reservations_main_tbl&query=&limit=${limit}&ascending=1&page=${page}&byColumn=1&assigned_to=${userId}&status=completed&byColumn=1&orderBy=priority&start_date=${currentDate}~gte`
     )
   },
 
   dineAreas() {
-    return DataService.get(
+    return DataService.getLive(
       `/model/dine_in_area?page_id=dinning_section&query=&limit=99999999&ascending=1&page=1&byColumn=0&orderBy=priority`
     )
   },
 
   dineTables() {
-    return DataService.get(
+    return DataService.getLive(
       `/model/dine_in_tables?byColumn=1&item_status=true&no_limit=true`
     )
   },
 
   waitingLists() {
-    return DataService.get(
+    return DataService.getLive(
       `/model/waiting_lists?page_id=waiting_lists_main_tbl&query=&limit=10&ascending=1&page=1&byColumn=0&orderBy=start_date`
     )
   },
@@ -69,14 +69,14 @@ export default {
   },
 
   dineInCovers() {
-    return DataService.get(
+    return DataService.getLive(
       `/model/brand_dine_in_covers?page_id=brand_dine_in_covers_main_tbl&query=&limit=10&ascending=1&page=1&byColumn=0&orderBy=priority`,
       'brand'
     )
   },
 
   getAllBookedTables() {
-    return DataService.get(
+    return DataService.getLive(
       '/model/reservations?page_id=tables_reserved&page=1&limit=999999'
     )
   },
@@ -85,12 +85,12 @@ export default {
     return DataService.post(`/model/reservations/${action}`, data)
   },
   bookings(page, limit, UTC_Date) {
-    return DataService.get(
+    return DataService.getLive(
       `/model/reservations?page_id=reservations_main_tbl&query=&limit=${limit}&ascending=1&page=${page}&byColumn=1&status=reserved&byColumn=1&orderBy=priority&start_date=${UTC_Date}`
     )
   },
   bookedTables(page, limit, UTC_Date, status) {
-    return DataService.get(
+    return DataService.getLive(
       `/model/reservations?page_id=tables_booked&limit=${limit}&ascending=1&page=${page}&byColumn=1&start_date=${UTC_Date}&status=${status}`
     )
   },
@@ -114,17 +114,17 @@ export default {
     )
   },*/
   storeUsers() {
-    return DataService.get(
+    return DataService.getLive(
       '/model/store_users?page_id=store_users_main_tbl&query=&limit=10&ascending=1&page=1&byColumn=0&orderBy=name&brand_role=&undefined='
     )
   },
   getReservationTags() {
-    return DataService.get(
+    return DataService.getLive(
       '/model/reservation_tags?page_id=reservation_tags_main_tbl&query=&limit=10&ascending=1&page=1&byColumn=0&orderBy=priority'
     )
   },
   getReservationByMobile(mobile) {
-    return DataService.get(
+    return DataService.getLive(
       `/model/reservations?page_id=reservations_main_tbl&page=1&limit=999999&byColumn=1&guest_phone=${mobile}`
     )
   },
