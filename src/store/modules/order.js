@@ -51,6 +51,7 @@ const state = {
   processing: false,
   inventoryBehavior: ['waste', 'return'],
   needSupervisorAccess: false,
+  originalOrder: null,
 }
 
 // getters
@@ -65,8 +66,14 @@ const getters = {
     if (!state.items.length) {
       return 0
     }
-    const lastItem = state.items[state.items.length - 1]
-    return lastItem.orderIndex + 1
+
+    let index = -1
+    state.items.forEach(item => {
+      if (item.orderIndex > index) {
+        index = item.orderIndex
+      }
+    })
+    return ++index
   },
 
   item: state => state.item,
@@ -380,7 +387,8 @@ const actions = {
       resolve(item)
     })
   },
-  prepareItem(
+
+  async prepareItem(
     { commit, getters, rootGetters, rootState, dispatch },
     { item, data }
   ) {
@@ -433,6 +441,7 @@ const actions = {
       })
     })
   },
+
   addOpenItem({ dispatch, commit }, { item, data }) {
     return new Promise(resolve => {
       item.modifiable = false
@@ -443,20 +452,27 @@ const actions = {
       })
     })
   },
-  addToOrder({ dispatch, commit }, stateItem) {
-    let item = { ...stateItem }
 
-    item.modifiable = false
-    item.note = stateItem.note ? stateItem.note : ''
+  async addToOrder({ dispatch, commit }, stateItem) {
+    return new Promise(resolve => {
+      let item = { ...stateItem }
 
-    dispatch('prepareItem', { item: item }).then(item => {
-      commit(mutation.SET_ITEM, item)
-      commit(mutation.ADD_ORDER_ITEM, state.item)
-      dispatch('postCartItem')
+      item.modifiable = false
+      item.note = stateItem.note ? stateItem.note : ''
+      console.log('adding simple item to cart', item)
+
+      dispatch('prepareItem', { item: item }).then(item => {
+        commit(mutation.SET_ITEM, item)
+        commit(mutation.ADD_ORDER_ITEM, state.item)
+        dispatch('postCartItem').then(() => {
+          console.log('simple item added to cart', item)
+          resolve()
+        })
+      })
     })
   },
 
-  postCartItem({ dispatch, commit }) {
+  async postCartItem({ dispatch, commit }) {
     return new Promise(resolve => {
       //reset the modifier form
       commit('orderForm/clearSelection', null, { root: true })
@@ -471,7 +487,7 @@ const actions = {
     })
   },
   //this function re-adds an item to order if item is in edit mode, it just replaces exiting item in cart
-  addModifierOrder({ commit, rootState, dispatch, rootGetters }, item) {
+  async addModifierOrder({ commit, rootState, dispatch, rootGetters }, item) {
     return new Promise((resolve, reject) => {
       if (!item) {
         item = { ...rootState.modifier.item }
@@ -483,6 +499,7 @@ const actions = {
         //if there is item modifiers data assign it later
         item.modifiersData = []
         commit(mutation.SET_ITEM, item)
+        console.log('adding modifier item to cart', item)
 
         let itemModifierGroups = []
         let itemModifiers = []
@@ -645,6 +662,7 @@ const actions = {
         }
 
         dispatch('postCartItem').then(() => {
+          console.log('item modifer added to cart', state.item)
           resolve()
         })
       })
@@ -1270,8 +1288,102 @@ const actions = {
       })
     })
   },
+
+  async addItemToCart({ state, rootState, dispatch }, { menuItem, orderItem }) {
+    let allCovers = rootState.dinein.covers
+    let item = { ...menuItem }
+
+    return new Promise(async resolve => {
+      item.no = orderItem.no
+      item.note = orderItem.note
+      item.quantity = orderItem.qty
+
+      let modifiers = []
+
+      if (state.originalOrder.item_modifiers.length) {
+        state.originalOrder.item_modifiers.forEach(modifier => {
+          if (modifier.for_item === item.no) {
+            modifiers.push(modifier.entity_id)
+          }
+        })
+      }
+
+      if (state.originalOrder.order_type === 'dine_in') {
+        let coverNo = state.originalOrder.items.filter(
+          data => data.entity_id === item._id
+        )
+        if (coverNo.length) {
+          item.coverNo = coverNo[0].cover_no
+          if (allCovers !== false && item.coverNo !== '') {
+            let coverDetail = allCovers.filter(
+              cover => cover._id === item.coverNo
+            )
+            item.cover_name = coverDetail.length > 0 ? coverDetail[0].name : ''
+          }
+        }
+      }
+
+      if (typeof orderItem.kitchen_invoice !== 'undefined') {
+        item['kitchen_invoice'] = orderItem.kitchen_invoice
+      }
+
+      //add store id if it was there
+      if (orderItem.store_id) {
+        item['store_id'] = orderItem.store_id
+      }
+
+      if (modifiers.length) {
+        item.modifiers = modifiers
+        console.log('adding modifiers to item')
+        await dispatch('modifier/assignModifiersToItem', item, {
+          root: true,
+        })
+        console.log('modifiers added to item')
+        console.log('adding modifier item', item.no, item)
+        await dispatch('addModifierOrder', item)
+        console.log('modifier item added', item.no, item)
+        resolve()
+      } else {
+        console.log('adding simple item', item.no, item)
+        await dispatch('addToOrder', item)
+        console.log('simple item added', item.no, item)
+        resolve()
+      }
+    })
+  },
+
+  async addItemsToCart({ dispatch, rootGetters }, items) {
+    return new Promise(async resolve => {
+      const item = items.shift()
+      const menuItem = rootGetters['category/findItem'](
+        item,
+        'entity_id',
+        '_id'
+      )
+      console.log('menu item', menuItem)
+
+      if (menuItem) {
+        console.log('adding item: ', menuItem, item)
+        await dispatch('addItemToCart', { menuItem: menuItem, orderItem: item })
+        if (items.length) {
+          console.log('items reamining, recurrsive call')
+          await dispatch('addItemsToCart', items)
+        } else {
+          console.log('finally no items left')
+          resolve()
+        }
+      } else {
+        //if item was removed from backend, resolve straigt away
+        console.log('item was deleted from backend')
+        resolve()
+      }
+    })
+  },
+
   //from hold order, there would be a single order with multiple items so need to clear what we have already in cart
   async addOrderToCart({ state, rootState, commit, dispatch }, order) {
+    commit('SET_ORIGINAL_ITEM', order)
+
     //create cart items indexes so we can sort them when needed
     let needSupervisorpassword = false
     if (state.orderSource === 'backend') {
@@ -1327,66 +1439,9 @@ const actions = {
       }
       commit(mutation.SET_ORDER_DATA, orderData)
 
-      let allCovers = rootState.dinein.covers
-      let promises = []
-      order.items.forEach((orderItem, key) => {
-        rootState.category.items.forEach(categoryItem => {
-          let item = { ...categoryItem }
-          item.no = orderItem.no
-          item.note = orderItem.note
-          if (
-            state.selectedOrder &&
-            state.selectedOrder.item.order_type === 'dine_in'
-          ) {
-            let coverNo = state.selectedOrder.item.items.filter(
-              data => data.entity_id === item._id
-            )
-            if (coverNo.length) {
-              item.coverNo = coverNo[0].cover_no
-              if (allCovers !== false && item.coverNo !== '') {
-                let coverDetail = allCovers.filter(
-                  cover => cover._id === item.coverNo
-                )
-                item.cover_name =
-                  coverDetail.length > 0 ? coverDetail[0].name : ''
-              }
-            }
-          }
-          if (orderItem.entity_id === categoryItem._id) {
-            item.quantity = orderItem.qty
-            let modifiers = []
-            if (order.item_modifiers.length) {
-              order.item_modifiers.forEach(modifier => {
-                if (modifier.for_item === key) {
-                  modifiers.push(modifier.entity_id)
-                }
-              })
-            }
-            if (typeof orderItem.kitchen_invoice !== 'undefined') {
-              item['kitchen_invoice'] = orderItem.kitchen_invoice
-            }
+      await dispatch('addItemsToCart', order.items)
+      console.log('items added to cart')
 
-            //add store id if it was there
-            if (orderItem.store_id) {
-              item['store_id'] = orderItem.store_id
-            }
-
-            if (modifiers.length) {
-              item.modifiers = modifiers
-              dispatch('modifier/assignModifiersToItem', item, {
-                root: true,
-              }).then(() => {
-                promises.push(dispatch('addModifierOrder', item))
-              })
-            } else {
-              promises.push(dispatch('addToOrder', item))
-            }
-          }
-        })
-      })
-
-      await Promise.all(promises)
-      commit(mutation.REINDEX_ITEMS)
       //if modifying from dine in then calculate totals once every order has been added, it ll be when all have been resolved
       resolve()
     })
@@ -1780,22 +1835,6 @@ const mutations = {
   [mutation.UPDATE_ITEMS](state, items) {
     state.items = items
   },
-  [mutation.REINDEX_ITEMS](state) {
-    //reset items according to their order no, THIS IS DONE when some of orders are paid and again added to cart
-    const newItems = []
-    state.items.map(item => {
-      item.orderIndex = item.no
-      newItems[item.no] = item
-    })
-    //remove deleted items
-    const filteredItems = newItems.filter(item => {
-      if (typeof item !== 'undefined' && item._id) {
-        return true
-      }
-      return false
-    })
-    state.items = filteredItems
-  },
   CLEAR_SELECTED_ORDER(state) {
     state.orderSource = null
     state.selectedOrder = false
@@ -1933,6 +1972,9 @@ const mutations = {
   },
   SET_PROCESSING(state, status) {
     state.processing = status
+  },
+  SET_ORIGINAL_ITEM(state, order) {
+    state.originalOrder = order
   },
   [mutation.NEED_SUPERVISOR_ACCESS](state, status) {
     state.needSupervisorAccess = status
