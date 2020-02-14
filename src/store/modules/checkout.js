@@ -1613,13 +1613,13 @@ const actions = {
     let dt = rootState.auth.deviceType
     // eslint-disable-next-line no-console
     console.log(dt, 'deviceType')
-    if (dt.osType === 'ios') {
+    if (dt.osType) {
       /*if (!standalone && safari) {
           window.location.href = 'print.me1'
         } else if (standalone && !safari) {
           window.location.href = 'print.me2'
         } else */
-      if (!dt.standalone && dt.browserType != 'safari') {
+      if (!dt.standalone && !dt.browserType) {
         //This is  a uiwebview
         const urlParams = new URLSearchParams(window.location.search)
         urlParams.set('iosprint', '1')
