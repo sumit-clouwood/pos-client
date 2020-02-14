@@ -1545,21 +1545,17 @@ const actions = {
     /*commit(mutation.SET_ORDER, order)
     dispatch('createOrder')*/
   },
-
   iosWebviewPrintAction({ rootState, dispatch }, { orderData }) {
-    //Detect IOS device WebViews
-    let standalone = window.navigator.standalone,
-      userAgent = window.navigator.userAgent.toLowerCase(),
-      safari = /safari/.test(userAgent),
-      ios = /iphone|ipod|ipad/.test(userAgent)
-
-    if (ios) {
+    let dt = rootState.auth.deviceType
+    // eslint-disable-next-line no-console
+    console.log(dt, 'deviceType')
+    if (dt.osType === 'ios') {
       /*if (!standalone && safari) {
           window.location.href = 'print.me1'
         } else if (standalone && !safari) {
           window.location.href = 'print.me2'
         } else */
-      if (!standalone && !safari) {
+      if (!dt.standalone && dt.browserType != 'safari') {
         //This is  a uiwebview
         const urlParams = new URLSearchParams(window.location.search)
         urlParams.set('iosprint', '1')
