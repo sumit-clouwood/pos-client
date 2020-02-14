@@ -51,7 +51,7 @@ const state = {
   processing: false,
   inventoryBehavior: ['waste', 'return'],
   needSupervisorAccess: false,
-  originalOrder: null,
+  newOrder: null,
 }
 
 // getters
@@ -1290,6 +1290,8 @@ const actions = {
   },
 
   async addItemToCart({ state, rootState, dispatch }, { menuItem, orderItem }) {
+    console.log('neworder', state.newOrder)
+
     let allCovers = rootState.dinein.covers
     let item = { ...menuItem }
 
@@ -1299,17 +1301,20 @@ const actions = {
       item.quantity = orderItem.qty
 
       let modifiers = []
-
-      if (state.originalOrder.item_modifiers.length) {
-        state.originalOrder.item_modifiers.forEach(modifier => {
+      //get modifiers from order and associate them with concerned item
+      if (state.newOrder.item_modifiers.length) {
+        state.newOrder.item_modifiers.forEach(modifier => {
           if (modifier.for_item === item.no) {
             modifiers.push(modifier.entity_id)
           }
         })
       }
 
-      if (state.originalOrder.order_type === 'dine_in') {
-        let coverNo = state.originalOrder.items.filter(
+      if (
+        state.selectedOrder &&
+        state.selectedOrder.item.order_type === 'dine_in'
+      ) {
+        let coverNo = state.selectedOrder.item.items.filter(
           data => data.entity_id === item._id
         )
         if (coverNo.length) {
@@ -1384,8 +1389,6 @@ const actions = {
 
   //from hold order, there would be a single order with multiple items so need to clear what we have already in cart
   async addOrderToCart({ state, rootState, commit, dispatch }, order) {
-    commit('SET_ORIGINAL_ITEM', order)
-
     //create cart items indexes so we can sort them when needed
     let needSupervisorpassword = false
     if (state.orderSource === 'backend') {
@@ -1440,8 +1443,11 @@ const actions = {
         customer: order.customer,
       }
       commit(mutation.SET_ORDER_DATA, orderData)
+      commit('newOrder', order)
 
-      await dispatch('addItemsToCart', order.items)
+      let existingItems = [...order.items]
+      await dispatch('addItemsToCart', existingItems)
+
       console.log('items added to cart')
 
       //if modifying from dine in then calculate totals once every order has been added, it ll be when all have been resolved
@@ -1978,9 +1984,10 @@ const mutations = {
   SET_PROCESSING(state, status) {
     state.processing = status
   },
-  SET_ORIGINAL_ITEM(state, order) {
-    state.originalOrder = order
+  newOrder(state, order) {
+    state.newOrder = order
   },
+
   [mutation.NEED_SUPERVISOR_ACCESS](state, status) {
     state.needSupervisorAccess = status
   },
