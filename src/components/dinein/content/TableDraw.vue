@@ -530,10 +530,11 @@ export default {
       /*.attr('fill', 'green')*/
       /*if (this.selectedTableD3)
               d3.select(this.selectedTableD3).attr('class', 'dinein_table active')*/
-      d3.selectAll('.dinein_table_parent').each(() => {
-        this.drawViews()
-        this.setTableProperties()
-      })
+      this.setTableProperties()
+      this.drawViews()
+      // eslint-disable-next-line no-console
+      console.log('f')
+      // d3.selectAll('.dinein_table_parent').each(() => {})
     },
     setTableColour(selectedItem, data) {
       let dis = this
