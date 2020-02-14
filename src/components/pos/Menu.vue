@@ -266,7 +266,7 @@ export default {
           .nav-link-nav {
             color: #333;
             width: auto;
-            height: 4rem;
+            height: 4rem !important;
             min-height: auto;
             flex-direction: row;
             justify-content: flex-start;

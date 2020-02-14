@@ -125,6 +125,9 @@ img {
 ::-webkit-scrollbar {
   width: $px10;
   height: $px3;
+  @include responsive(mobile) {
+    width: 0px;
+  }
 }
 
 ::-webkit-scrollbar-track-piece {
