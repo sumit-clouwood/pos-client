@@ -56,9 +56,7 @@ export default {
   },
 
   fetchOnlineOrderDetails(...[orderid, locationId]) {
-    return DataService.getLive(
-      `/auth/online-order-list/${locationId}/${orderid}`
-    )
+    return DataService.get(`/auth/online-order-list/${locationId}/${orderid}`)
   },
   getOrders(
     query,
@@ -72,7 +70,7 @@ export default {
     customerId
   ) {
     let customer = customerId != '' ? '&customer=' + customerId : ''
-    return DataService.getLive(
+    return DataService.get(
       `/model/orders?page_id=${pageId}&query=${query}&limit=${limit}&ascending=1&page=${page}&byColumn=1&orderBy=${orderBy}&order_status=${orderStatus}&order_type=${orderType}&store_id=${storeId}${customer}`
     )
   },
@@ -90,16 +88,13 @@ export default {
     customerId
   ) {
     let customer = customerId != '' ? '&customer=' + customerId : ''
-    return DataService.getLive(
+    return DataService.get(
       `/model/orders?page_id=${pageId}&query=${query}&limit=${limit}&ascending=1&page=${page}&byColumn=1&orderBy=${orderBy}&order_system_status=${orderSystemStatus}&order_type=${orderType}&store_id=${storeId}${customer}`
     )
   },
   getGlobalDetails(modal, id, action) {
     let validAction = action !== '' ? '/' + action : ''
-    return DataService.getLive(
-      `/model/${modal}/id/${id}${validAction}`,
-      'brand'
-    )
+    return DataService.get(`/model/${modal}/id/${id}${validAction}`, 'brand')
   },
 
   getModalDetails(model) {
@@ -107,14 +102,11 @@ export default {
       model === 'brand_cancellation_reasons'
         ? '?no_limit=true&byColumn=1&item_status=true'
         : '?no_limit=true'
-    return DataService.getLive(`/model/${model}${query}`, 'brand')
+    return DataService.get(`/model/${model}${query}`, 'brand')
   },
 
   getModifyReasons() {
-    return DataService.getLive(
-      `/model/brand_modify_reasons?no_limit=true`,
-      'brand'
-    )
+    return DataService.get(`/model/brand_modify_reasons?no_limit=true`, 'brand')
   },
 
   updateOrderAction(id, action, params) {

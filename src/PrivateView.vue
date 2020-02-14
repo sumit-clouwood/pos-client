@@ -138,34 +138,35 @@ export default {
       }, 3000)
     },
     setup() {
-      return new Promise(resolve => {
-        const interval = setInterval(() => {
-          this.progressIncrement += 10
-          if (this.progressIncrement > 100) {
-            this.progressIncrement = 0
-          }
-        }, 1000)
-        bootstrap
-          .setup(this.$store, this.$route)
-          .then(() => {
-            this.loading = false
-            resolve()
+      const interval = setInterval(() => {
+        this.progressIncrement += 10
+        if (this.progressIncrement > 100) {
+          this.progressIncrement = 0
+        }
+      }, 1000)
+      bootstrap
+        .setup(this.$store)
+        .then(() => {
+          setTimeout(() => {
             clearInterval(interval)
             this.progressIncrement = 100
-            this.setupServiceWorker()
-            this.setupRoutes()
-            this.setupExternalScripts()
-          })
-          .catch(error => {
-            //this.errored = error
-            //setTimeout(() => {
+          }, 100)
+          setTimeout(() => {
             this.loading = false
-            console.log(error, ', dispatch logout')
-            //this.$store.dispatch('auth/logout', error)
-            this.errored = ''
-            //}, 1000 * 10)
-          })
-      })
+          }, 300)
+          this.setupServiceWorker()
+          this.setupRoutes()
+          this.setupExternalScripts()
+        })
+        .catch(error => {
+          //this.errored = error
+          //setTimeout(() => {
+          this.loading = false
+          console.log(error, ', dispatch logout')
+          //this.$store.dispatch('auth/logout', error)
+          this.errored = ''
+          //}, 1000 * 10)
+        })
     },
   },
   created() {},
