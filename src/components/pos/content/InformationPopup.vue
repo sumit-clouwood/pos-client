@@ -97,6 +97,14 @@ export default {
           height: 80px;
           background-color: #fff;
         }
+        .modal-body {
+          min-height: 0rem !important;
+        }
+        .modal-footer {
+          .btn-announce {
+            margin-bottom: 0px;
+          }
+        }
       }
     }
   }

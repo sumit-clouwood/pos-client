@@ -322,8 +322,22 @@ function showModal(modalName) {
   .dropdown-content {
     top: 1em !important;
   }
+  div#cancellationReason .modal-dialog .autocomplete-container {
+    grid-template-columns: 1fr !important;
+  }
+  .dropdown-content span {
+    white-space: nowrap;
+  }
+  .input-search-driver {
+    width: 100%;
+  }
   #cancellationReason .modal-header {
     max-width: 95%;
+  }
+  #successCancel {
+    .modal-content {
+      width: 95% !important;
+    }
   }
 }
 </style>
