@@ -41,6 +41,11 @@ const router = new Router({
       component: Home,
     },
     {
+      path: '/:iosprinter',
+      name: 'iosApplication',
+      component: Home,
+    },
+    {
       path: '/cashier-login/*',
       name: 'cashierLogin',
       component: CashierLogin,

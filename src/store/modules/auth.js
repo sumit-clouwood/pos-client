@@ -155,7 +155,6 @@ const actions = {
           //wait for localstorage to be updated
           setTimeout(() => {
             dispatch('location/setContext', null, { root: true }).then(() => {
-              alert('g')
               commit(mutation.SET_TOKEN, response.data.token)
               resolve(response.data.token)
             })

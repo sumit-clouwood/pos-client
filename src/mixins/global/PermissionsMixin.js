@@ -18,5 +18,12 @@ Vue.mixin({
       }
       return false
     },
+    isDimsIOSApp() {
+      // Mixin to check if DIMS POS App
+      if (localStorage.getItem('IOSPrinters') != null) {
+        return true
+      }
+      return false
+    },
   },
 })
