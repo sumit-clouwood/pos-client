@@ -82,9 +82,6 @@
                       >{{ behavior }}
                     </span>
                   </div>
-                  <p v-if="errorMessage.length > 0" class="text-danger">
-                    {{ errorMessage }}
-                  </p>
                 </div>
                 <div
                   v-if="
@@ -102,6 +99,9 @@
                       v-model="supervisorPassword"
                     />
                   </div>
+                  <p v-if="errorMessage.length > 0" class="text-danger">
+                    {{ errorMessage }}
+                  </p>
                   <p
                     v-if="
                       errors &&
@@ -293,6 +293,7 @@ export default {
   },
 }
 function closeModal(modalName) {
+  this.errorMessage = ''
   $('body').removeClass('modal-open')
   $('#transparent-screen').css('display', 'none')
   $(modalName).modal('hide')
