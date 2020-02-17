@@ -1548,7 +1548,7 @@ const actions = {
   iosWebviewPrintAction({ rootState, dispatch }, { orderData }) {
     let dt = rootState.auth.deviceType
     // eslint-disable-next-line no-console
-    console.log(dt, 'deviceType')
+    console.log(dt, 'deviceType', orderData)
     if (dt.osType) {
       /*if (!standalone && safari) {
           window.location.href = 'print.me1'

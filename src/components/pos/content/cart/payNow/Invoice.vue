@@ -123,7 +123,7 @@ export default {
           setTimeout(() => {
             if (this.$store.state.auth.deviceType.osType) {
               this.$store.dispatch('checkout/iosWebviewPrintAction', {
-                orderData: this.$store.state.checkout.order,
+                orderData: orderData,
               })
             } else if (window.PrintHandle == null) {
               //this.$refs.iframe.contentWindow.print()
