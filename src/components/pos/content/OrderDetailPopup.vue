@@ -315,6 +315,7 @@ export default {
               .receipt-summary {
                 text-align: left;
                 font-weight: bold;
+                padding: 5px;
               }
             }
           }
