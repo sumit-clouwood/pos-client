@@ -301,3 +301,29 @@ function showModal(modalName) {
   $(modalName).modal('show')
 }
 </script>
+
+<style lang="scss" scoped>
+@import '@/assets/scss/pixels_rem.scss';
+@import '@/assets/scss/variables.scss';
+@import '@/assets/scss/mixins.scss';
+@include responsive(mobile) {
+  #cancellationReason,
+  #successCancel,
+  #information-popup {
+    position: fixed !important;
+    .modal-body {
+      min-height: 0rem !important;
+    }
+  }
+  .dropdown-content .cancel-order-dd {
+    margin-top: 15px !important;
+    min-width: 100% !important;
+  }
+  .dropdown-content {
+    top: 1em !important;
+  }
+  #cancellationReason .modal-header {
+    max-width: 95%;
+  }
+}
+</style>
