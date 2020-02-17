@@ -121,6 +121,7 @@ export default {
         this.isPrint = true
         try {
           setTimeout(() => {
+            console.log(orderData, 'orderDataorderDataorderData')
             if (this.$store.state.auth.deviceType.osType) {
               this.$store.dispatch('checkout/iosWebviewPrintAction', {
                 orderData: orderData,
