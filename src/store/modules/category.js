@@ -102,7 +102,9 @@ const getters = {
       item => item.item_code === itemCode || item.barcode === itemCode
     )
   },
-
+  findItem: state => (itemToFind, key, map) => {
+    return state.items.find(item => item[map] === itemToFind[key])
+  },
   getImages: (state, getters) => {
     //for caching
     let images = []

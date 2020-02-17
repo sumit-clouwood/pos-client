@@ -9,6 +9,8 @@ const state = {
   idbVersion: 1,
   reloaded: false,
   appUpdateNotification: false,
+  cacheFirst: false,
+  backgroundSync: false,
   lastFetch: 0,
   modules: {
     store: CONST.LOADING_STATUS_LOADING,
