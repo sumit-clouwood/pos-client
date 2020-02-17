@@ -181,7 +181,7 @@
         width: $px300;
         right: 0;
         top: 0;
-        height: 100vh;
+        height: 100vh !important;
         -webkit-box-shadow: 0 0px 0.0625rem 0 rgba(23, 23, 32, 0.05),
           0 0px 0.1875rem 0 rgba(23, 23, 32, 0.05),
           0 0px 0.1875rem 0 rgba(23, 23, 32, 0.05),
@@ -323,7 +323,6 @@
     z-index: 999;
     width: 90% !important;
     overflow: auto;
-    height: calc(100vh - 80px) !important;
     ul {
       &.dine-footer-navmenu {
         position: static !important;

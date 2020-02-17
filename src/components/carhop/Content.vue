@@ -64,11 +64,15 @@ export default {
 </script>
 <style lang="scss">
 @import '../../assets/scss/variables.scss';
+@import '../../assets/scss/mixins.scss';
 
 .orders {
   .carhop-running-orders-wrapper {
     overflow: auto;
     width: calc(100vw - 20px);
+    @include responsive(mobile) {
+      width: calc(100vw - 10px);
+    }
 
     .dropdown-menu.show {
       top: inherit !important;
