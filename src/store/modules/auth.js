@@ -158,7 +158,6 @@ const actions = {
               alert('g')
               commit(mutation.SET_TOKEN, response.data.token)
               resolve(response.data.token)
-              dispatch('checkDevice')
             })
           }, 100)
           //resolve()
