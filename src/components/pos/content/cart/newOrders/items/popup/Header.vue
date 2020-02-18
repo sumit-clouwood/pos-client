@@ -2,7 +2,7 @@
   <div v-if="item" class="modal-header-wrapper">
     <div class="modal-header color-secondary">
       <h5 class="modal-title color-text-invert" id="POSItemOptionsTitle">
-        {{ item.name }}
+        {{ dt(item) }}
       </h5>
       <CloseButton />
     </div>

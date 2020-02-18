@@ -24,7 +24,7 @@
 
 <script>
 export default {
-  name: 'Radio',
+  name: 'Checkbox',
   components: {},
   props: ['value', 'title', 'index'],
 }
