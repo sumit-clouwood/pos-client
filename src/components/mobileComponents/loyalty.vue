@@ -49,6 +49,7 @@ export default {
       right: 0;
       bottom: 0;
       left: 0;
+      width: 100% !important;
 
       .modal-dialog {
         position: absolute;
@@ -59,10 +60,12 @@ export default {
         height: auto;
         min-height: auto;
         max-width: 100%;
-        margin: 0;
+        margin-top: 50%;
         transform: none;
 
         .modal-content {
+          width: 95% !important;
+          margin: auto;
           grid-template-rows: max-content 1fr max-content;
 
           .modal-header {

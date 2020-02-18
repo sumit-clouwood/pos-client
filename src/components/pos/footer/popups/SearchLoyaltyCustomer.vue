@@ -234,7 +234,8 @@ export default {
   height: 3.125rem;
   border-radius: 0px 5px 5px 0px;
 }
-.cancel-announce {
+.cancel-announce,
+#save-note {
   height: 3.125rem;
 }
 
@@ -283,7 +284,7 @@ export default {
         }
 
         .modal-footer {
-          padding: 8px !important;
+          padding: 5px !important;
           .cursor-pointer {
             background-color: $green-middle;
             height: 50px;
@@ -293,7 +294,7 @@ export default {
             align-items: center;
             justify-content: center;
             text-align: center;
-            width: 100%;
+            width: 50vh;
             grid-template-columns: 1fr;
           }
 
@@ -322,6 +323,8 @@ export default {
   .cursor-pointer,
   #save-note {
     height: 40px !important;
+    font-size: 1rem !important;
+    margin-right: 0px !important;
   }
 }
 </style>
