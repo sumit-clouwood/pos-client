@@ -1633,12 +1633,14 @@ const actions = {
       let customerData = [] //Customer Information
       let delivery_area = {} //Delivery Area
       let kitchen_menu_items = []
-      if (orderData.order_type == 'DINE-IN') {
-        let table_no = rootState.dinein.selectedTable
-          ? rootState.dinein.selectedTable.number
-          : false
-        orderData.table_number = table_no
+      if (orderData.order_type == 'dine_in') {
+        // let table_no = rootState.dinein.selectedTable
+        //   ? rootState.dinein.selectedTable.number
+        //   : false
+        orderData.table_number = rootState.order.selectedOrder.table_number
       }
+      // eslint-disable-next-line no-console
+      console.log(orderData, 'orderDataorderData')
       //Customer Data
       if (customerId) {
         //get customer name by customer id
