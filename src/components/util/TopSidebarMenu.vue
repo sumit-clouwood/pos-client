@@ -349,7 +349,8 @@
         <li>
           <a
             data-toggle="modal"
-            data-target="#business-summary"
+            @click="checkSuperVisorPassword"
+            :data-target="businessSummary"
             role="button"
             class="cursor-pointer business-summary"
             ><svg
@@ -392,6 +393,7 @@
     </ul>
     <PrinterSettings v-if="isDimsPosApp()" />
     <BusinessSummary />
+    <ModificationPermissions />
   </ul>
 </template>
 <script>
@@ -400,6 +402,7 @@ import { mapState, mapGetters, mapActions } from 'vuex'
 import AuthService from '@/services/data/AuthService'
 import bootstrap from '@/bootstrap'
 //import SwitchStore from '@/components/commonButtons/SwitchStore'
+import ModificationPermissions from '@/components/pos/content/orderDetails/ModificationPermissions'
 import avatar from '@/components/mobileComponents/mobileElements/avatar'
 import PrinterSettings from '../pos/footer/popups/PrinterSettings'
 import BusinessSummary from '../pos/footer/popups/BusinessSummary'
@@ -411,9 +414,12 @@ export default {
     avatar,
     PrinterSettings,
     BusinessSummary,
+    ModificationPermissions,
   },
   data: function() {
     return {
+      supervisorPassword: false,
+      businessSummary: '#modificationReason',
       iconCodeSelection: 'us',
       onlineOrdersCount: 0,
       dm: this.baseurl('delivery') + '/delivery_home/new',
@@ -447,6 +453,12 @@ export default {
     ...mapGetters('location', ['_t', 'permitted']),
   },
   methods: {
+    checkSuperVisorPassword() {
+      // this.$store.dispatch('order/fetchModificationReasons')
+      this.businessSummary = this.supervisorPassword
+        ? '#business-summary'
+        : '#modificationReason'
+    },
     baseurl(link) {
       /*DeliveryManager, Dinein*/
       let replaceURI = ''
