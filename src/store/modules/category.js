@@ -105,6 +105,12 @@ const getters = {
   findItem: state => (itemToFind, key, map) => {
     return state.items.find(item => item[map] === itemToFind[key])
   },
+  rawItems: (state, getters, rootState, rootGetters) => {
+    if (rootGetters['auth/multistore']) {
+      return state.multistoreItems[rootState.context.storeId]
+    }
+    return state.items
+  },
   getImages: (state, getters) => {
     //for caching
     let images = []
