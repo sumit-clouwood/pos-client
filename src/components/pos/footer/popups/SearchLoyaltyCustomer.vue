@@ -251,6 +251,7 @@ export default {
   }
   #search-loyalty-customer {
     border: none;
+    overflow: hidden;
     .modal-dialog {
       border: none;
       .modal-content {

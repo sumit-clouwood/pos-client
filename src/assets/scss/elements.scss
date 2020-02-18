@@ -23,7 +23,7 @@
 html {
   color: #1e1e20;
   @include responsive(mobile) {
-    font-size: 12px;
+    font-size: 14px;
   }
   @include responsive(xs) {
     font-size: 10px;
