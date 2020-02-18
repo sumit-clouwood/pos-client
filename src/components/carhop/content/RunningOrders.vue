@@ -207,7 +207,6 @@ export default {
   .carhop-running-orders-wrapper {
     padding: 10px;
     font-size: 0.75rem;
-    width: 50vh;
   }
   .order-number,
   .item-name {
@@ -220,7 +219,7 @@ export default {
       overflow-y: scroll;
       &::-webkit-scrollbar {
         width: 0.625rem;
-        height: 0.625rem;
+        height: 0.625rem !important;
       }
     }
   }
