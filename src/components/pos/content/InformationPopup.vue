@@ -93,9 +93,22 @@ export default {
       margin: 0;
 
       .modal-content {
+        width: 95% !important;
+        height: 50% !important;
+        margin: auto;
+        margin-top: 50%;
+        margin-bottom: 50%;
         .modal-header {
           height: 80px;
           background-color: #fff;
+        }
+        .modal-body {
+          min-height: 0rem !important;
+        }
+        .modal-footer {
+          .btn-announce {
+            margin-bottom: 0px;
+          }
         }
       }
     }

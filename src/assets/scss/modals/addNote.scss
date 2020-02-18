@@ -1,4 +1,4 @@
-@import "../variables.scss";
+@import '../variables.scss';
 
 #add-note {
   .modal-dialog {
@@ -12,11 +12,9 @@
       box-shadow: 0 10px 40px rgba(133, 139, 151, 0.16);
 
       .modal-header {
-
       }
 
       .modal-body {
-
         .add-note-area {
           > input {
             width: 100%;
@@ -76,10 +74,10 @@
     left: 0;
     height: 100vh;
     max-height: 100vh;
-    &.show{
-      .modal-dialog{
+    &.show {
+      .modal-dialog {
         max-width: none;
-        .modal-content{
+        .modal-content {
           margin-bottom: 0;
         }
       }
@@ -95,7 +93,7 @@
       min-height: auto;
       overflow-y: hidden;
       animation: none;
-        transform: none;
+      transform: none;
 
       .modal-content {
         top: auto;
@@ -136,7 +134,6 @@
         }
 
         .modal-footer {
-
           .btn-announce {
             margin: 0;
             display: flex;

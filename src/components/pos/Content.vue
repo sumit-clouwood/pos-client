@@ -3,6 +3,7 @@
     <Announcement />
     <catalog />
     <Cart />
+    <Popup />
   </div>
 </template>
 
@@ -10,7 +11,7 @@
 import Catalog from './content/Catalog'
 import Announcement from './header/Announcement'
 import Cart from './content/Cart'
-
+import Popup from './content/catalog/items/Popup'
 export default {
   name: 'Contents',
   props: {},
@@ -18,6 +19,7 @@ export default {
     Catalog,
     Cart,
     Announcement,
+    Popup,
   },
 }
 </script>

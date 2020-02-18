@@ -7,7 +7,10 @@
   >
     <div class="search-trans-wrapper">
       <div class="back-trans-button">
-        <button class="btn btn-success" v-on:click="getReferPath()">
+        <button
+          class="btn btn-success mobile-back-button"
+          v-on:click="getReferPath()"
+        >
           &lt; {{ _t('Back') }}
         </button>
       </div>

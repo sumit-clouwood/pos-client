@@ -264,11 +264,19 @@ export default {
       grid-row-gap: 20px;
       padding: 30.5px 20px;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-
+      @include responsive(mobile) {
+        padding: 30.5px 10px;
+      }
       .btn-close {
         font-size: 18px;
         justify-self: end;
         margin-right: 5px;
+        @include responsive(mobile) {
+          font-size: 25px;
+          position: absolute;
+          top: 29px;
+          right: 5px;
+        }
       }
 
       .separator {
@@ -289,7 +297,9 @@ export default {
           align-items: center;
           height: 65px;
           color: #b0b2bb;
-
+          @include responsive(mobile) {
+            height: 55px;
+          }
           &.active {
             color: #64c434;
             a {
@@ -307,6 +317,9 @@ export default {
             display: flex;
             align-items: center;
             border-bottom: 1px solid #e3e7f2;
+            @include responsive(mobile) {
+              height: 60%;
+            }
           }
 
           &:last-child {
@@ -322,6 +335,9 @@ export default {
       display: flex;
       padding: 20px;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      @include responsive(mobile) {
+        padding: 2px 24px;
+      }
       .logout {
         height: 50px;
         display: grid;

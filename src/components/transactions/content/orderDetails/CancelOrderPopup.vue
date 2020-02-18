@@ -82,9 +82,6 @@
                       >{{ behavior }}
                     </span>
                   </div>
-                  <p v-if="errorMessage.length > 0" class="text-danger">
-                    {{ errorMessage }}
-                  </p>
                 </div>
                 <div
                   v-if="
@@ -102,6 +99,9 @@
                       v-model="supervisorPassword"
                     />
                   </div>
+                  <p v-if="errorMessage.length > 0" class="text-danger">
+                    {{ errorMessage }}
+                  </p>
                   <p
                     v-if="
                       errors &&
@@ -293,6 +293,7 @@ export default {
   },
 }
 function closeModal(modalName) {
+  this.errorMessage = ''
   $('body').removeClass('modal-open')
   $('#transparent-screen').css('display', 'none')
   $(modalName).modal('hide')
@@ -301,3 +302,43 @@ function showModal(modalName) {
   $(modalName).modal('show')
 }
 </script>
+
+<style lang="scss" scoped>
+@import '@/assets/scss/pixels_rem.scss';
+@import '@/assets/scss/variables.scss';
+@import '@/assets/scss/mixins.scss';
+@include responsive(mobile) {
+  #cancellationReason,
+  #successCancel,
+  #information-popup {
+    position: fixed !important;
+    .modal-body {
+      min-height: 0rem !important;
+    }
+  }
+  .dropdown-content .cancel-order-dd {
+    margin-top: 15px !important;
+    min-width: 100% !important;
+  }
+  .dropdown-content {
+    top: 1em !important;
+  }
+  div#cancellationReason .modal-dialog .autocomplete-container {
+    grid-template-columns: 1fr !important;
+  }
+  .dropdown-content span {
+    white-space: nowrap;
+  }
+  .input-search-driver {
+    width: 100%;
+  }
+  #cancellationReason .modal-header {
+    max-width: 95%;
+  }
+  #successCancel {
+    .modal-content {
+      width: 95% !important;
+    }
+  }
+}
+</style>

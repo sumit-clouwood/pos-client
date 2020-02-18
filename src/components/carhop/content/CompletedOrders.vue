@@ -5,10 +5,10 @@
         <table class="responsive-table">
           <thead>
             <tr>
-              <th class="table_header" style="width: 200px">Order No</th>
-              <th class="table_header" style="width: 400px">Items</th>
-              <th class="table_header" width="150px">Amount</th>
-              <th class="table_header text-center" width="200px">Status</th>
+              <th class="table_header" style="width: 150px">Order No</th>
+              <th class="table_header" width="400px">Items</th>
+              <th class="table_header" style="width: 150px">Amount</th>
+              <th class="table_header" style="width: 100px">Status</th>
             </tr>
           </thead>
           <tbody>
@@ -23,7 +23,7 @@
                   >Order # {{ order.order_no }}</span
                 >
               </td>
-              <td>
+              <td class="mobile-items">
                 <div
                   v-for="item in order.items"
                   :key="item.no"
@@ -164,6 +164,58 @@ export default {
 </style>
 <style lang="scss" scoped>
 @import '../../../assets/scss/responsive_table.scss';
+@import '../../../assets/scss/pixels_rem.scss';
+@import '../../../assets/scss/variables.scss';
+@import '../../../assets/scss/mixins.scss';
+@include responsive(mobile) {
+  .carhop-completed-orders-wrapper {
+    padding: 10px;
+    font-size: 0.75rem;
+    width: 50vh;
+  }
+  .carhop-completed-orders-wrapper tr {
+    overflow-y: scroll;
+    .mobile-items {
+      max-height: 20vh;
+      overflow-y: scroll;
+      &::-webkit-scrollbar {
+        width: 0.625rem;
+        height: 0.625rem;
+      }
+    }
+  }
+  .item-name {
+    font-size: 12px !important;
+  }
+  .pagination-wrapper {
+    height: 65px;
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    margin-right: 0px;
+    margin-left: 0px;
+    padding: 4px;
+    border-top: 1px solid gray;
+    overflow-x: scroll !important;
+  }
+  .carhop-completed-orders-wrapper .carhop-completed-orders {
+    height: calc(100vh - 150px);
+  }
+  .pagination-customer-details {
+    display: flex;
+    width: 95%;
+    margin: auto;
+    flex-direction: row;
+    justify-content: flex-start;
+  }
+  .button-wrapper {
+    width: max-content;
+  }
+  .button-wrapper > a span.dinefor-paynow {
+    margin-left: 0;
+  }
+}
 .responsive-table {
   @extend %responive-tables;
   @include responive-tables('ORDER NO', 'ITEMS', 'AMOUNT', 'STATUS');

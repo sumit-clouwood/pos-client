@@ -44,7 +44,7 @@
         "
       >
         <button
-          class="btn btn-large btn-success popup-btn-save color-text-invert color-main pos-button-design ml-2"
+          class="btn btn-large btn-success popup-btn-save color-text-invert color-main pos-button-design ml-2 btn-tans-mbl"
           data-toggle="modal"
           data-target=".cancel-order"
         >
@@ -52,7 +52,7 @@
         </button>
         <button
           v-if="!multistore"
-          class="btn btn-large btn-success popup-btn-save color-text-invert color-main pos-button-design"
+          class="btn btn-large btn-success popup-btn-save color-text-invert color-main pos-button-design btn-tans-mbl"
           @click="modifyOrder(1)"
         >
           {{ _t('Modify Transaction') }}
@@ -65,7 +65,7 @@
         "
       >
         <button
-          class="btn btn-large btn-success popup-btn-save color-text-invert color-main pos-button-design"
+          class="btn btn-large btn-success popup-btn-save color-text-invert color-main pos-button-design  btn-tans-mbl"
           data-toggle="modal"
           data-target=".cancel-order"
         >
@@ -73,7 +73,7 @@
         </button>
         <button
           v-if="!multistore"
-          class="btn btn-large btn-success popup-btn-save color-text-invert color-main pos-button-design"
+          class="btn btn-large btn-success popup-btn-save color-text-invert color-main pos-button-design  btn-tans-mbl"
           @click="modifyOrder(1)"
         >
           {{ _t('Modify Transaction') }}

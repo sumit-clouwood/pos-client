@@ -138,6 +138,7 @@ export default {
         transition: 0.3s ease-out;
         font-family: 'ProximaNova-Regular';
         font-size: 14px;
+        border-radius: 10px;
       }
 
       .allCategory {
