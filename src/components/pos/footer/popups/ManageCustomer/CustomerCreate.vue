@@ -207,6 +207,10 @@ export default {
 
         .modal-footer {
           z-index: 1;
+          min-height: 0px !important;
+          .btn-announce {
+            margin-bottom: 0px !important;
+          }
         }
       }
     }

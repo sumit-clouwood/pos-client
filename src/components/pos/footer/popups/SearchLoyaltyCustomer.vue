@@ -80,14 +80,6 @@
             {{ _t('Create New Customer') }}
           </div>
           <button
-            type="button"
-            class="btn btn-danger cancel-announce color-text-invert color-button"
-            data-dismiss="modal"
-            @click="loyaltyHendlerChange"
-          >
-            {{ _t('Cancel') }}
-          </button>
-          <button
             @click="addLoyalty"
             class="btn btn-success btn-large color-text-invert color-main"
             type="button"
@@ -95,7 +87,16 @@
           >
             {{ _t('Select') }}
           </button>
+          <button
+            type="button"
+            class="btn btn-danger cancel-announce color-text-invert color-button"
+            data-dismiss="modal"
+            @click="loyaltyHendlerChange"
+          >
+            {{ _t('Cancel') }}
+          </button>
         </div>
+
         <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
       </div>
     </div>
@@ -256,7 +257,6 @@ export default {
         border: none;
         /*top: auto;*/
         .modal-header {
-          height: 80px;
           background-color: #fff;
           display: grid !important;
           align-items: center;
@@ -285,6 +285,9 @@ export default {
 
         .modal-footer {
           padding: 5px !important;
+          display: grid;
+          grid-template-columns: 1fr;
+          grid-row-gap: 10px;
           .cursor-pointer {
             background-color: $green-middle;
             height: 50px;
@@ -325,6 +328,9 @@ export default {
     height: 40px !important;
     font-size: 1rem !important;
     margin-right: 0px !important;
+    width: 90% !important;
+    margin-left: 5% !important;
+    margin-right: 5% !important;
   }
 }
 </style>

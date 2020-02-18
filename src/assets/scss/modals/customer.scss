@@ -319,6 +319,8 @@
       border-left: 1px solid #ddd;
 
       .modal-content {
+        width: 95vw !important;
+        margin: auto;
         .modal-header {
           border-radius: 0;
           padding: 10px 20px;

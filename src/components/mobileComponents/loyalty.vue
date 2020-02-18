@@ -60,12 +60,10 @@ export default {
         height: auto;
         min-height: auto;
         max-width: 100%;
-        margin-top: 50%;
+        margin-top: 20vh;
         transform: none;
 
         .modal-content {
-          width: 95% !important;
-          margin: auto;
           grid-template-rows: max-content 1fr max-content;
 
           .modal-header {
