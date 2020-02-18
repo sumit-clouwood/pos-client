@@ -1,8 +1,10 @@
 <template>
   <div class="page-header">
-    <div class="header">
+    <div class="header  header-width">
       <div class="header-main">
-        <div class="header-main-right color-dashboard-background">
+        <div
+          class="header-main-right color-dashboard-background header-width header-content-display content-wrapper"
+        >
           <div class="current-time">
             <div class="header-main-left-time">
               <span>{{ todayDate }} </span>
@@ -22,6 +24,8 @@
                 </svg>
               </div>
             </div>
+          </div>
+          <div class="header-content-display">
             <div class="change-location">
               <button
                 class="btn btn-success change-brand-web"
@@ -42,10 +46,14 @@
                 </router-link>
               </button>
             </div>
+            <LanguageMenu />
+            <div class="store-wrapper">
+              <SwitchStore />
+            </div>
+            <div class="sidebar-wrapper store-wrapper">
+              <TopSidebarMenu />
+            </div>
           </div>
-          <LanguageMenu />
-          <SwitchStore />
-          <TopSidebarMenu />
         </div>
       </div>
     </div>
@@ -142,7 +150,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '../../assets/scss/header';
+@import '@/assets/scss/header';
+@import '@/assets/scss/pixels_rem.scss';
+@import '@/assets/scss/variables.scss';
+@import '@/assets/scss/mixins.scss';
 .header-main-left-time {
   margin-right: 10px;
   span {
@@ -177,5 +188,28 @@ export default {
   display: inline-flex;
   -webkit-box-pack: center;
   padding: 0.25px;
+}
+.header-content-display {
+  display: flex;
+}
+
+@include responsive(mobile) {
+  .header-width {
+    width: 100vw;
+  }
+  .header-content-display {
+    display: flex;
+  }
+
+  .store-wrapper {
+    margin-top: 4px;
+  }
+  .sidebar-wrapper {
+    margin-right: 10px;
+  }
+
+  .content-wrapper {
+    justify-content: space-between !important;
+  }
 }
 </style>
