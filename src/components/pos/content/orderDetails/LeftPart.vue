@@ -58,11 +58,19 @@
         </p>
       </div>
       <div class="details-item">
-        <span class="details-item-name color-text-invert">{{
-          _t('Placed By:')
-        }}</span>
+        <span class="details-item-name color-text-invert"
+          >{{ _t('Placed By') }}:</span
+        >
         <p class="color-text">
           {{ getPlacedBy(orderDetails) }}
+        </p>
+      </div>
+      <div class="details-item" v-if="orderDetails.item.token_number">
+        <span class="details-item-name color-text-invert"
+          >{{ _t('Token Number') }}:
+        </span>
+        <p class="color-text">
+          {{ orderDetails.item.token_number }}
         </p>
       </div>
       <div class="details-item" v-if="orderDetails.table_number">
@@ -94,9 +102,9 @@
         <p class="color-text">{{ orderDetails.customer.email }}</p>
       </div>
       <div class="details-item">
-        <span class="details-item-name color-text-invert">{{
-          _t('Loyalty Points Earned:')
-        }}</span>
+        <span class="details-item-name color-text-invert"
+          >{{ _t('Loyalty Points Earned') }}:</span
+        >
         <p class="color-text">
           {{
             orderDetails.item.loyalty_cards_with_points &&
