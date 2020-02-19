@@ -26,7 +26,7 @@
             </div>
           </div>
           <div class="header-content-display">
-            <div class="change-location">
+            <div class="change-location btns-wrapper">
               <button
                 class="btn btn-success change-brand-web"
                 v-if="isPermitted(PERMISSIONS.BRAND_SETTINGS)"
@@ -46,11 +46,13 @@
                 </router-link>
               </button>
             </div>
-            <LanguageMenu />
-            <div class="store-wrapper">
+            <div class="language-wrapper btns-wrapper ">
+              <LanguageMenu />
+            </div>
+            <div class="store-wrapper btns-wrapper">
               <SwitchStore />
             </div>
-            <div class="sidebar-wrapper store-wrapper">
+            <div class="sidebar-wrapper store-wrapper btns-wrapper">
               <TopSidebarMenu />
             </div>
           </div>
@@ -192,7 +194,9 @@ export default {
 .header-content-display {
   display: flex;
 }
-
+.btns-wrapper {
+  min-height: 3.3rem !important;
+}
 @include responsive(mobile) {
   .header-width {
     width: 100vw;
@@ -200,7 +204,9 @@ export default {
   .header-content-display {
     display: flex;
   }
-
+  .header-main-right {
+    background: lightslategrey;
+  }
   .store-wrapper {
     margin-top: 4px;
   }
@@ -210,6 +216,23 @@ export default {
 
   .content-wrapper {
     justify-content: space-between !important;
+  }
+  .language-wrapper {
+    margin-left: 10px !important;
+  }
+  .btns-wrapper {
+    min-height: 3.3rem !important;
+  }
+  .header .header-main .header-main-right #setting-icon {
+    min-height: 3.3rem !important;
+  }
+
+  .tables-btn-style {
+    min-height: 3.3rem !important;
+  }
+  .menu-language {
+    height: 3.3rem !important;
+    margin-top: 4px !important;
   }
 }
 </style>

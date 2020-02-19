@@ -3,8 +3,10 @@
   <div class="modal fade" id="tip-amount" role="dialog">
     <div class="modal-dialog">
       <!-- Modal content-->
-      <div class="modal-content color-dashboard-background">
-        <div class="modal-body tip-amount">
+      <div
+        class="modal-content color-dashboard-background  modal-content-wrapper"
+      >
+        <div class="modal-body tip-amount  modal-body-wrapper">
           <div class="tip-amount-wrap">
             <p class="color-text-invert">{{ _t('Enter Tip Amount') }}</p>
             <input
@@ -116,6 +118,15 @@ export default {
         display: grid;
         grid-template-rows: 1fr max-content;
       }
+    }
+    .modal-footer-btn-wrapper {
+      margin-bottom: 0px !important;
+    }
+    .modal-content-wrapper {
+      height: fit-content;
+    }
+    .modal-body-wrapper {
+      min-height: 0 !important;
     }
   }
 }

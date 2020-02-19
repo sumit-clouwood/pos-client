@@ -84,3 +84,10 @@ export default {
   },
 }
 </script>
+<style lang="scss" scoped>
+@import '@/assets/scss/variables.scss';
+@import '@/assets/scss/mixins.scss';
+#dropdownLanguage {
+  min-height: 3.3rem !important;
+}
+</style>
