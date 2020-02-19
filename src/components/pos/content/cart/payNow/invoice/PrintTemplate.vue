@@ -6,6 +6,21 @@
     :style="{ direction: template.rtl_supported ? 'rtl' : 'ltr' }"
   >
     <div class="header">
+      <div
+        v-if="
+          isTokenManager &&
+            tokenNumber &&
+            (orderType.OTApi === 'walk_in' || orderType.OTApi === 'carhop')
+        "
+        style="text-align: center;font-weight: 700;
+            padding: 0 0 0.3em 0;font-size: 3em;"
+      >
+        <div style="  font-size: 0.3em;font-weight: normal;">
+          {{ template.token_number_label }}
+        </div>
+        {{ tokenNumber }}
+      </div>
+
       <template v-if="template.show_logo">
         <img class="header-img" :src="company_logo" alt="Logo" />
       </template>
@@ -361,7 +376,7 @@ export default {
   },
   computed: {
     ...mapState('checkout', ['print']),
-    ...mapGetters('location', ['_t', 'getReferral']),
+    ...mapGetters('location', ['_t', 'isTokenManager', 'getReferral']),
     ...mapState('location', ['timezoneString']),
     ...mapState('dinein', ['selectedTableRservationData']),
     ...mapState('order', ['orderType']),
@@ -440,6 +455,24 @@ export default {
       return this.$store.state.location.userShortDetails.username
         ? this.$store.state.location.userShortDetails.username
         : this.$store.state.auth.userDetails.item.name
+    },
+    tokenNumber() {
+      if (
+        this.isTokenManager &&
+        (this.orderType.OTApi === 'walk_in' ||
+          this.orderType.OTApi === 'carhop')
+      ) {
+        if (
+          this.$store.state.sync.online &&
+          typeof this.order.tokenNumber != 'undefined'
+        ) {
+          return this.order.tokenNumber
+        } else if (typeof this.order.token_number != 'undefined') {
+          return this.order.token_number
+        }
+      }
+
+      return false
     },
     //If the customer is set in the order, we check if there is a property with customer info. If there is -
     // we output it. If there are no, we use sample customer. If customer is not set on the order -
