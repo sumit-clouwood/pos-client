@@ -378,7 +378,6 @@ export default {
   },
   computed: {
     ...mapState('checkout', ['print']),
-    ...mapGetters('auth', ['allowed']),
     ...mapGetters('location', ['_t', 'isTokenManager', 'getReferral']),
     ...mapState('location', ['timezoneString']),
     ...mapState('dinein', ['selectedTableRservationData']),
@@ -512,10 +511,77 @@ export default {
       if (this.dataBeingLoaded) {
         return null
       }
-      return this.order_to_print
+      let order = { ...this.order_to_print }
+      order.items = this.loadFromCollection(
+        order.items,
+        'entity_id',
+        '_id',
+        'category/rawItems',
+        ['translations_dict']
+      )
+      order.item_modifiers = order.item_modifiers.map(modifier => {
+        this.$store.getters['modifier/rawModifiers'](modifier).forEach(
+          catalogModifier => {
+            if (catalogModifier._id === modifier.entity_id) {
+              modifier['translations_dict'] =
+                catalogModifier['translations_dict']
+            }
+          }
+        )
+        return modifier
+      })
+
+      order.order_surcharges = this.loadFromCollection(
+        order.order_surcharges,
+        'entity_id',
+        '_id',
+        'surcharge/surcharges',
+        ['translations_dict']
+      )
+
+      order.order_discounts = this.loadFromCollection(
+        order.order_discounts,
+        'entity_id',
+        '_id',
+        'discount/orderDiscounts',
+        ['translations_dict']
+      )
+
+      order.item_discounts = this.loadFromCollection(
+        order.item_discounts,
+        'entity_id',
+        '_id',
+        'discount/itemDiscounts',
+        ['translations_dict']
+      )
+
+      return order
     },
   },
   methods: {
+    loadFromCollection(orderEntities, key, map, getter, keysToLoad) {
+      if (!Array.isArray(orderEntities) || !key || !map) {
+        return orderEntities
+      }
+
+      const data = this.$store.getters[getter]
+      if (!data) {
+        return orderEntities
+      }
+
+      return orderEntities.map(entity => {
+        data.forEach(item => {
+          if (entity[key] === item[map]) {
+            keysToLoad.forEach(index => {
+              if (item[index]) {
+                entity[index] = item[index]
+              }
+            })
+          }
+        })
+        return entity
+      })
+    },
     referral_data(referralId) {
       this.referral = this.$store.getters['location/getReferral'](referralId)
     },

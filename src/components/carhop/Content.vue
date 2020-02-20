@@ -113,6 +113,9 @@ export default {
     display: inline-block;
     padding: $px4 $px10;
     font-size: $px16;
+    @include responsive(mobile) {
+      font-size: 12px;
+    }
     line-height: 1.8;
   }
   .finished {

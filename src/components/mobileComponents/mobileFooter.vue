@@ -62,15 +62,15 @@
       >
         <i class="fa fa-times" aria-hidden="true"></i>
       </div>
-      <div class="btn-chatge" @click="buttonChargeAction()">
+      <div class="btn-charge" @click="buttonChargeAction()">
         <div
-          class="btn-chatge-amount"
+          class="btn-charge-amount"
           v-show="orderType.OTApi !== 'call_center'"
         >
           {{ formatPrice(orderTotal || 0) }}
         </div>
         <div
-          class="btn-chatge-title"
+          class="btn-charge-title"
           v-show="orderType.OTApi !== 'call_center'"
         >
           CHARGE
@@ -341,7 +341,7 @@ width: 100%;
   }
 }
 
-.btn-chatge {
+.btn-charge {
   display: grid;
   align-items: center;
   background-color: $green-middle;
@@ -375,7 +375,7 @@ width: 100%;
     }
   }
 
-  .btn-chatge-amount {
+  .btn-charge-amount {
     margin-bottom: -5px;
 
     strong {

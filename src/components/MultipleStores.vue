@@ -100,6 +100,8 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+@import '@/assets/scss/variables.scss';
+@import '@/assets/scss/mixins.scss';
 .modal-title {
   font-weight: 500;
 }
@@ -108,6 +110,9 @@ export default {
   background: #cc3232;
   color: white;
   width: 10%;
+  @include responsive(mobile) {
+    width: 30%;
+  }
   border: none;
   font-size: 12.75px;
 }
@@ -131,6 +136,10 @@ export default {
   width: 100%;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr;
+  @include responsive(mobile) {
+    grid-template-columns: 1fr;
+    padding: 0px;
+  }
   grid-gap: 1.5625rem;
   padding-top: 1.5625rem;
   padding-bottom: 1.5625rem;
@@ -165,6 +174,14 @@ export default {
 
 .modal-dialog {
   max-width: 90% !important;
+  @include responsive(mobile) {
+    max-width: 95% !important;
+  }
   min-height: 80% !important;
+}
+.modal-content {
+  width: 95%;
+  margin: auto;
+  margin-top: 10%;
 }
 </style>

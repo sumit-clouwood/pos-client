@@ -172,6 +172,8 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+@import '@/assets/scss/variables.scss';
+@import '@/assets/scss/mixins.scss';
 .setting-dropdown {
   li {
     padding: 0 !important;
@@ -179,6 +181,19 @@ export default {
       display: block;
       width: 100%;
       padding: 5px 20px;
+    }
+  }
+}
+@include responsive(mobile) {
+  .header-main-right {
+    .user-name,
+    .online,
+    .online-counter,
+    .curent-sale,
+    .menu-language,
+    .switch-store,
+    #dropdownLanguage {
+      display: none !important;
     }
   }
 }

@@ -102,9 +102,9 @@
         <p class="color-text">{{ orderDetails.customer.email }}</p>
       </div>
       <div class="details-item">
-        <span class="details-item-name color-text-invert">{{
-          _t('Loyalty Points Earned')
-        }}</span>
+        <span class="details-item-name color-text-invert"
+          >{{ _t('Loyalty Points Earned') }}:</span
+        >
         <p class="color-text">
           {{
             orderDetails.item.loyalty_cards_with_points &&

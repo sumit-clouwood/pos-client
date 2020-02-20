@@ -1,8 +1,10 @@
 <template>
-  <div class="page-header dm-top-header">
-    <div class="header">
+  <div class="page-header">
+    <div class="header  header-width">
       <div class="header-main">
-        <div class="header-main-right color-dashboard-background">
+        <div
+          class="header-main-right color-dashboard-background header-width header-content-display content-wrapper"
+        >
           <div class="current-time">
             <div class="header-main-left-time">
               <DateTimeVue />
@@ -22,7 +24,9 @@
               <!--</svg>-->
               <!--</div>-->
             </div>
-            <div class="change-location">
+          </div>
+          <div class="header-content-display">
+            <div class="change-location btns-wrapper">
               <button
                 class="btn btn-success change-brand-web"
                 v-if="allowed(PERMS.BRAND_SETTINGS)"
