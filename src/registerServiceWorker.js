@@ -8,15 +8,18 @@ const notifyUserAboutUpdate = worker => {
 
   const time = +new Date()
 
-  localStorage.setItem('pos_version_updated_on', time)
-  store.commit('sync/setAppUpdateNotification', true)
-  localStorage.setItem('update_available', true)
+  // localStorage.setItem('pos_version_updated_on', time)
+  // store.commit('sync/setAppUpdateNotification', true)
+  // localStorage.setItem('update_available', true)
 
-  // if (localStorage.getItem('pos_version_updated_on') != dateTime) {
-  //   localStorage.setItem('pos_version_updated_on', dateTime)
-  //   store.commit('sync/setAppUpdateNotification', true)
-  //   localStorage.setItem('update_available', true)
-  // }
+  if (
+    parseInt(localStorage.getItem('pos_version_updated_on')) + 1000 * 60 * 5 <=
+    time
+  ) {
+    localStorage.setItem('pos_version_updated_on', time)
+    store.commit('sync/setAppUpdateNotification', true)
+    localStorage.setItem('update_available', true)
+  }
 }
 
 if (process.env.NODE_ENV === 'production') {
