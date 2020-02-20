@@ -288,10 +288,18 @@
 }
 
 @include responsive(mobile){
+  .POSItemOptions{
+    .POSItemOptions_money{
+      text-align: right !important;
+      padding-right: 1rem !important;
+    }
+  }
   .POSItemOptions .modal-dialog .modal-content .modal-footer {
     .btn-announce{
       display: grid !important;
-      grid-template-columns: 1fr;
+      grid-template-columns: 1fr !important;
+      grid-row-gap: 0.75rem !important;
+      width: 100% !important;
     }
     .buttoned.colorwhite.donebutton    {
       width: 100%;

@@ -240,9 +240,9 @@ export default {
 .getAreaId {
   width: 55.6795rem !important;
 }
-@import '../../../../../../assets/scss/pixels_rem.scss';
-@import '../../../../../../assets/scss/variables.scss';
-@import '../../../../../../assets/scss/mixins.scss';
+@import '@/assets/scss/pixels_rem.scss';
+@import '@/assets/scss/variables.scss';
+@import '@/assets/scss/mixins.scss';
 #add_address {
   .modal-dialog {
     /*margin: 0;*/

@@ -70,10 +70,10 @@ export default {
   },
 }
 </script>
-<style lang="scss">
-@import '../../../../../assets/scss/pixels_rem.scss';
-@import '../../../../../assets/scss/variables.scss';
-@import '../../../../../assets/scss/mixins.scss';
+<style lang="scss" scoped>
+@import '@/assets/scss/pixels_rem.scss';
+@import '@/assets/scss/variables.scss';
+@import '@/assets/scss/mixins.scss';
 
 @include responsive(mobile) {
   .POSItemOptions {
@@ -99,6 +99,7 @@ export default {
 
         .modal-details {
           padding: 0 25px;
+          padding-left: 0px !important;
           border: none;
           z-index: 1;
           background-color: #fff;
@@ -137,6 +138,7 @@ export default {
               }
 
               .POSItemOptions_label {
+                padding-left: 8px !important;
                 /*display: none;*/
               }
             }
@@ -273,8 +275,8 @@ export default {
           }
 
           .btn-announce {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
+            display: grid !important;
+            grid-template-columns: 1fr !important;
             margin: 0;
             justify-content: space-between;
             grid-gap: 10px;
