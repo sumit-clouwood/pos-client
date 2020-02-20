@@ -28,6 +28,62 @@ const actions = {
         .catch(error => reject(error))
     })
   },
+  setInvoiceDetails(
+    { rootState, dispatch },
+    {
+      locationData,
+      orderData,
+      kitchen_menu_items,
+      staff,
+      customerData,
+      delivery_area,
+      invoiceTemplate,
+      orderTypeLabel,
+      created_date,
+      created_time,
+      crm_module_enabled,
+      isIOS,
+    }
+  ) {
+    // eslint-disable-next-line no-console
+    console.log(locationData, 'locationData', customerData)
+    let jsonResponse = {
+      status: 'ok',
+      brand_logo: locationData.brand.company_logo || '',
+      order: orderData,
+      menu_items: kitchen_menu_items,
+      staff: staff.item.name,
+      customer: customerData,
+      delivery_area: delivery_area,
+      template: invoiceTemplate,
+      order_type: invoiceTemplate[orderTypeLabel],
+      created_date: created_date,
+      created_time: created_time,
+      crm_module_enabled: crm_module_enabled,
+      translations: rootState.payment.appInvoiceData, //Unstable
+      default_header_brand: locationData.brand.name,
+      default_header_branch: locationData.store.city + ' Branch',
+      default_header_phone: 'Tel No. ' + locationData.brand.contact_phone,
+      generate_time: orderData.real_created_datetime,
+      flash_message: 'Order Details',
+      store_id: rootState.context.storeId,
+      token_manager: false,
+      windows_app: false,
+    }
+    if (orderData.order_type == 'DINE-IN') {
+      let table_no = rootState.dinein.selectedTable
+        ? rootState.dinein.selectedTable.number
+        : false
+      jsonResponse.table_number = table_no
+    }
+    if (isIOS) {
+      // eslint-disable-next-line no-console
+      console.log(jsonResponse, 'ff')
+      localStorage.setItem('orderInvoiceColData', JSON.stringify(jsonResponse))
+    }
+    if (customerData) dispatch('customer/resetCustomer', true, { root: true })
+    return jsonResponse
+  },
 
   convertDatetime({ rootState, commit }, { datetime, format }) {
     let tz = rootState.location.timezoneString
@@ -76,33 +132,27 @@ const actions = {
     if (['dine-in-place-order'].includes(rootState.checkout.paymentAction)) {
       return false
     }
-    // eslint-disable-next-line no-console
-    console.log(orderData)
+    let dt = rootState.auth.deviceType
+    let isIOS = dt.osType
+    if (isIOS) {
+      localStorage.setItem('orderInvoiceColData', '')
+      if (!dt.standalone && !dt.browserType) {
+        //This is  a uiwebview
+        const urlParams = new URLSearchParams(window.location.search)
+        urlParams.set('iosprint', '1')
+        window.location.search = urlParams
+      }
+    }
     let printingServers = state.printingservers //Get All Printing Servers
-    if (printingServers && orderData) {
+    if ((printingServers && orderData) || isIOS) {
       let staff = rootState.auth.userDetails
       let customerDetails = rootState.customer
       let locationData = rootState.location
       let customerId = orderData.customer
-      let customerData = [] //Customer Information
       let delivery_area = {} //Delivery Area
       let kitchen_menu_items = []
+      let jsonResponse = false
 
-      //Customer Data
-      if (customerId) {
-        //get customer name by customer id
-        dispatch('customer/fetchSelectedCustomer', customerId, {
-          root: true,
-        }).then(customer => {
-          customerData.push(customer)
-          dispatch('customer/resetCustomer', true, { root: true })
-        })
-        if (orderData.order_delivery_area && customerDetails.deliveryAreas) {
-          delivery_area = Object.values(customerDetails.deliveryAreas).find(
-            delivery_area => delivery_area._id === orderData.order_delivery_area
-          )
-        }
-      }
       //Item according to Kitchens Sections
       let kitchenSectionsItems = state.kitchenitems
       if (kitchenSectionsItems.length) {
@@ -148,69 +198,80 @@ const actions = {
         invoice => invoice
       )
       let orderTypeLabel = orderData.order_type + '_label'
-      orderData.order_no = orderData.orderNumber //Custom Order No to give appropriate field for Habib
+      orderData.order_no = orderData.orderNumber || orderData.order_no //Custom Order No to give appropriate field for Habib
       orderData.real_created_datetime = created_date
       orderData.created_at = null
       //Final JSON
       /*get selected table no*/
-      let table_no = rootState.dinein.selectedTable
-        ? rootState.dinein.selectedTable.number
-        : false
-      let jsonResponse = {
-        status: 'ok',
-        brand_logo: locationData.brand.company_logo
-          ? locationData.brand.company_logo
-          : '',
-        order: orderData,
-        menu_items: kitchen_menu_items,
-        staff: staff.item.name,
-        customer: customerData,
-        delivery_area: delivery_area,
-        template: invoiceTemplate,
-        order_type: invoiceTemplate[orderTypeLabel],
-        created_date: created_date,
-        created_time: created_time,
-        crm_module_enabled: crm_module_enabled,
-        translations: rootState.payment.appInvoiceData, //Unstable
-        default_header_brand: locationData.brand.name,
-        default_header_branch: locationData.store.city + ' Branch',
-        default_header_phone: 'Tel No. ' + locationData.brand.contact_phone,
-        generate_time: orderData.real_created_datetime,
-        flash_message: 'Order Details',
-        store_id: rootState.context.storeId,
-        token_manager: false,
-        windows_app: false,
-      }
-      if (orderData.order_type == 'DINE-IN') {
-        jsonResponse.table_number = table_no
-      }
-      let _order = {}
-      if (window.PrintHandle != null) {
-        jsonResponse.windows_app = true
-        _order['printingServers'] = printingServers
-        _order['orderData'] = jsonResponse
-        // eslint-disable-next-line no-console
-        console.log(window.PrintHandle, 'window.PrintHandle')
-        // eslint-disable-next-line no-console
-        console.log(_order, '_order')
-        window.PrintHandle.Print(
-          JSON.stringify(_order),
-          function callbackfunction(data) {
-            // eslint-disable-next-line no-console
-            console.log('callbackfunction')
-            //perform your action in case of success or leave empty
-            // eslint-disable-next-line no-console
-            console.log(data, 'callbackfunction result')
-          }
-        )
+
+      //Customer Data
+      if (customerId) {
+        if (orderData.order_delivery_area && customerDetails.deliveryAreas) {
+          delivery_area = Object.values(customerDetails.deliveryAreas).find(
+            delivery_area => delivery_area._id === orderData.order_delivery_area
+          )
+        }
+        //get customer name by customer id
+        dispatch('customer/fetchSelectedCustomer', customerId, {
+          root: true,
+        }).then(customerData => {
+          // eslint-disable-next-line no-console
+          console.log(customerData, 'customercustomercustomercustomer')
+          jsonResponse = dispatch('setInvoiceDetails', {
+            locationData,
+            orderData,
+            kitchen_menu_items,
+            staff,
+            customerData,
+            delivery_area,
+            invoiceTemplate,
+            orderTypeLabel,
+            created_date,
+            created_time,
+            crm_module_enabled,
+            isIOS,
+          })
+        })
+      } else {
+        let customerData = false //Customer Information
+        jsonResponse = dispatch('setInvoiceDetails', {
+          locationData,
+          orderData,
+          kitchen_menu_items,
+          staff,
+          customerData,
+          delivery_area,
+          invoiceTemplate,
+          orderTypeLabel,
+          created_date,
+          created_time,
+          crm_module_enabled,
+          isIOS,
+        })
+        let _order = {}
+        if (window.PrintHandle != null) {
+          jsonResponse.windows_app = true
+          _order['printingServers'] = printingServers
+          _order['orderData'] = jsonResponse
+          // eslint-disable-next-line no-console
+          console.log(window.PrintHandle, 'window.PrintHandle')
+          // eslint-disable-next-line no-console
+          console.log(_order, '_order')
+          window.PrintHandle.Print(
+            JSON.stringify(_order),
+            function callbackfunction(data) {
+              // eslint-disable-next-line no-console
+              console.log('callbackfunction')
+              //perform your action in case of success or leave empty
+              // eslint-disable-next-line no-console
+              console.log(data, 'callbackfunction result')
+            }
+          )
+        }
       }
       // eslint-disable-next-line no-console
-      console.log(jsonResponse, 'checkResponce')
-      let x = JSON.stringify(jsonResponse)
-
-      // let b = new Buffer(x)
-      // let stringifyResponse = b.toString('base64')
-      let decodedData = compressToBase64(x)
+      /*console.log(jsonResponse, 'checkResponce')
+      let decodedData = compressToBase64(JSON.stringify(jsonResponse))
       // eslint-disable-next-line no-console
       if (jsonResponse && rootState.dinein.kitchenPrint) {
         printingServers.forEach(item => {
@@ -227,21 +288,8 @@ const actions = {
             h: '300',
             scroll: 'yes ',
           })
-          /*setTimeout(function() {
-            // eslint-disable-next-line no-console
-            console.log(state.kitchenInvoiceResponse.closed)
-            if (
-              typeof state.kitchenInvoiceResponse.closed != 'undefined' &&
-              !state.kitchenInvoiceResponse.closed
-            ) {
-              // eslint-disable-next-line no-console
-              console.log('close')
-              state.kitchenInvoiceResponse.close()
-            }
-          }, 3000)*/
-          // OrderService.invoiceAPI(jsonResponse, APIURL) //Run API for sending invoice to Window APP
         })
-      }
+      }*/
     }
   },
 

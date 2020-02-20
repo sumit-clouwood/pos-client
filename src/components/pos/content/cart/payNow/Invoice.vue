@@ -120,32 +120,28 @@ export default {
         this.$store.commit('checkout/PRINT', false)
         this.isPrint = true
         try {
-          if (this.$store.state.auth.deviceType.osType) {
-            this.$store.dispatch('checkout/iosWebviewPrintAction', {
-              orderData: orderData,
-            })
-            this.isPrint = false
-          } else {
-            setTimeout(() => {
-              if (window.PrintHandle == null) {
-                //this.$refs.iframe.contentWindow.print()
-                let w = this.$refs.iframe.contentWindow
-                w.focus()
-                w.print()
-                this.iframe_body = ''
-              }
-              // Code Pane reflects in DIMS WEB APP window.PrintHandle.GetAgent() !== 'Dimspos.App'
-              // if (!this.$store.getters['checkout/complete']) {
-              //   this.$store.dispatch('checkout/splitOrder').then(() => {})
-              // }
-              if (!['dine-in-order-preview'].includes(this.paymentAction)) {
-                this.$store.dispatch(
-                  'printingServer/printingServerInvoiceRaw',
-                  orderData
-                )
-              }
-            }, 500)
-          }
+          setTimeout(() => {
+            if (window.PrintHandle == null) {
+              //this.$refs.iframe.contentWindow.print()
+              let w = this.$refs.iframe.contentWindow
+              w.focus()
+              w.print()
+              this.iframe_body = ''
+            }
+            // Code Pane reflects in DIMS WEB APP window.PrintHandle.GetAgent() !== 'Dimspos.App'
+            // if (!this.$store.getters['checkout/complete']) {
+            //   this.$store.dispatch('checkout/splitOrder').then(() => {})
+            // }
+            if (
+              !['dine-in-order-preview'].includes(this.paymentAction) ||
+              this.$store.state.auth.deviceType.osType
+            ) {
+              this.$store.dispatch(
+                'printingServer/printingServerInvoiceRaw',
+                orderData
+              )
+            }
+          }, 500)
           //this.$refs.iframe.contentWindow.print()
         } catch (e) {
           // eslint-disable-next-line
