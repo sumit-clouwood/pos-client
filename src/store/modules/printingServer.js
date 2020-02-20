@@ -41,7 +41,6 @@ const actions = {
       created_date,
       created_time,
       crm_module_enabled,
-      isIOS,
     }
   ) {
     // eslint-disable-next-line no-console
@@ -75,11 +74,11 @@ const actions = {
         : false
       jsonResponse.table_number = table_no
     }
-    if (isIOS) {
+    /*if (isIOS) {
       // eslint-disable-next-line no-console
       console.log(jsonResponse, 'ff')
       localStorage.setItem('orderInvoiceColData', JSON.stringify(jsonResponse))
-    }
+    }*/
     if (customerData) dispatch('customer/resetCustomer', true, { root: true })
     return jsonResponse
   },
