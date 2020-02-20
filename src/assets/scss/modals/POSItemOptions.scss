@@ -1,4 +1,5 @@
 @import '../variables.scss';
+@import '../mixins.scss';
 
 .POSItemOptions {
   padding-right: $px10;
@@ -283,5 +284,17 @@
   &.modifier-bottom-arrow{
     right: 30px !important;
     bottom: 90px !important;
+  }
+}
+
+@include responsive(mobile){
+  .POSItemOptions .modal-dialog .modal-content .modal-footer {
+    .btn-announce{
+      display: grid !important;
+      grid-template-columns: 1fr;
+    }
+    .buttoned.colorwhite.donebutton    {
+      width: 100%;
+    }
   }
 }
