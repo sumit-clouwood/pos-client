@@ -28,7 +28,7 @@
 
     <!--body content left-->
     <div class="content-wrapper toggle-nav-content" id="dm-content-wrapper">
-      <div class="inner-content-dm conatiner-wrapper">
+      <div class="inner-content-dm">
         <DMMenu />
         <HomeDelivery v-if="section === 'crm'" />
 
@@ -84,22 +84,3 @@ export default {
   },
 }
 </script>
-
-<style lang="scss" scoped>
-@import '@/assets/scss/header';
-@import '@/assets/scss/pixels_rem.scss';
-@import '@/assets/scss/variables.scss';
-@import '@/assets/scss/mixins.scss';
-@include responsive(mobile) {
-  .left-fixed-menu {
-    display: none !important;
-  }
-
-  .conatiner-wrapper {
-    margin-top: 14vh;
-  }
-  .dm-screen-wrap.dm-screen-wrap {
-    background-color: white !important;
-  }
-}
-</style>
