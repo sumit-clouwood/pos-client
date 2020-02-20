@@ -1,6 +1,6 @@
 <template>
   <div class="modal fade" id="popup-item-note" role="dialog">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-body-wrapper">
       <div class="modal-content color-dashboard-background">
         <div class="modal-header customer-header color-secondary">
           <h4 class="customer-title color-text-invert">
@@ -20,19 +20,20 @@
         <div class="modal-footer">
           <div class="btn-announce">
             <button
-              type="button"
-              class="btn btn-danger cancel-announce color-button"
-              data-dismiss="modal"
-            >
-              {{ _t('Cancel') }}
-            </button>
-            <button
               @click="addNoteToItem()"
               class="btn btn-success btn-large color-main "
               type="button"
               id="save-note"
             >
               {{ _t('Save') }}
+            </button>
+
+            <button
+              type="button"
+              class="btn btn-danger cancel-announce color-button"
+              data-dismiss="modal"
+            >
+              {{ _t('Cancel') }}
             </button>
           </div>
         </div>
@@ -79,15 +80,18 @@ export default {
   },
 }
 </script>
-<style lang="scss">
-@import '../../../../assets/scss/pixels_rem.scss';
-@import '../../../../assets/scss/variables.scss';
-@import '../../../../assets/scss/mixins.scss';
+<style lang="scss" scoped>
+@import '@/assets/scss/mixins.scss';
 
 @include responsive(mobile) {
   #add-note {
+    position: fixed !important;
+
     .modal-dialog {
       .modal-content {
+        width: 95% !important;
+        overflow: hidden !important;
+
         .modal-header {
           padding: 20px;
           box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -95,6 +99,9 @@ export default {
 
         .modal-body {
           padding: 20px;
+          margin-top: 2rem !important;
+          margin-left: 0 !important;
+          position: fixed !important;
 
           .add-note-area {
             p {

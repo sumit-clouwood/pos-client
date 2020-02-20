@@ -25,15 +25,7 @@
           </div>
         </div>
         <div class="modal-footer">
-          <div class="btn-announce">
-            <button
-              type="button"
-              class="btn btn-danger cancel-announce color-button color-text-invert"
-              data-dismiss="modal"
-              @click="resetWaiter"
-            >
-              {{ _t('Cancel') }}
-            </button>
+          <div class="btn-announce btn-announce-wrapper ">
             <button
               class="btn btn-success btn-large color-main color-text-invert"
               type="button"
@@ -41,6 +33,14 @@
               @click="switchWaiter(selectedWaiter)"
             >
               {{ _t('Assign') }}
+            </button>
+            <button
+              type="button"
+              class="btn btn-danger cancel-announce color-button color-text-invert"
+              data-dismiss="modal"
+              @click="resetWaiter"
+            >
+              {{ _t('Cancel') }}
             </button>
           </div>
         </div>
@@ -103,3 +103,42 @@ export default {
   },
 }
 </script>
+
+<style lang="scss" scoped>
+@import '@/assets/scss/pixels_rem.scss';
+@import '@/assets/scss/variables.scss';
+@import '@/assets/scss/mixins.scss';
+
+@include responsive(mobile) {
+  #switchWaiter {
+    overflow: hidden !important;
+    .modal-dialog {
+      max-width: 100% !important;
+      margin: 0px !important;
+      margin-top: 2rem !important;
+      .modal-content {
+        width: 95% !important;
+        margin: auto !important;
+        .modal-body {
+          padding-left: 0px !important;
+          padding-right: 0px !important;
+        }
+        .btn-announce-wrapper {
+          display: grid !important;
+          grid-template-columns: 1fr !important;
+          grid-row-gap: 10px !important;
+          width: 100%;
+        }
+
+        #available-tables {
+          width: 90%;
+          margin-left: auto;
+          .table-status-container {
+            grid-template-columns: 1fr 1fr !important;
+          }
+        }
+      }
+    }
+  }
+}
+</style>

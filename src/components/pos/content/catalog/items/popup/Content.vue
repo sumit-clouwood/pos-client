@@ -91,6 +91,7 @@ export default {
 @include responsive(mobile) {
   .modal-body {
     min-height: 0 !important;
+    max-height: 15.65rem !important;
   }
 }
 </style>

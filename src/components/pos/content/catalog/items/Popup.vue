@@ -8,10 +8,12 @@
     aria-labelledby="POSItemOptions"
     aria-hidden="true"
   >
-    <div class="modal-dialog modal-dialog-centered" role="document">
+    <div
+      class="modal-dialog modal-dialog-centered modal-dialog-wrapper"
+      role="document"
+    >
       <div
-        class="modal-content color-dashboard-background footerStyle"
-        style="bottom: 0"
+        class="modal-content color-dashboard-background modal-content-wrapper footerStyle"
       >
         <Header />
         <HeaderDetails />
@@ -80,20 +82,20 @@ export default {
     padding: 0;
     width: 100vw;
     max-width: none;
+    overflow: hidden;
     // position: fixed;
 
     .modal-dialog {
-      width: 100vw;
-      max-width: none;
-      min-width: 100vw;
-
+      margin-top: 2rem !important;
       .modal-content {
         display: flex;
         flex-direction: column;
+        width: 95% !important;
+        margin: auto !important;
 
         .modal-header {
           height: 70px;
-          background-color: #fff;
+          background-color: #d7dce2;
           margin: 0;
         }
 
@@ -304,6 +306,13 @@ export default {
         }
       }
     }
+  }
+  .modal-content-wrapper {
+    margin: 0 !important;
+    overflow: hidden;
+  }
+  .modal-dialog-wrapper {
+    margin: 0 !important;
   }
 }
 </style>
