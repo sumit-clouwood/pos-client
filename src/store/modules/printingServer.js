@@ -238,7 +238,7 @@ const actions = {
           root: true,
         }).then(customerData => {
           // eslint-disable-next-line no-console
-          console.log(customerData, 'customercustomercustomercustomer')
+          // console.log(customerData, 'customercustomercustomercustomer')
           dispatch('setInvoiceDetails', {
             locationData,
             orderData,
@@ -253,6 +253,12 @@ const actions = {
             crm_module_enabled,
           }).then(response => {
             jsonResponse = response
+            // eslint-disable-next-line no-console
+            console.log(
+              customerData,
+              'customercustomercustomercustomer',
+              jsonResponse
+            )
             dispatch('orderDataMerging', { jsonResponse, printingServers })
           })
         })
