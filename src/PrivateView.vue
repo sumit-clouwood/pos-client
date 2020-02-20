@@ -60,6 +60,7 @@ import ResizeMixin from '@/mixins/ResizeHandler'
 import bootstrap from '@/bootstrap'
 import Preloader from '@/components/util/Preloader'
 import { mapState, mapGetters } from 'vuex'
+import moment from 'moment-timezone'
 export default {
   name: 'PrivateView',
   props: {},
@@ -154,6 +155,7 @@ export default {
           setTimeout(() => {
             this.loading = false
           }, 300)
+
           this.setupServiceWorker()
           this.setupRoutes()
           this.setupExternalScripts()
@@ -167,6 +169,45 @@ export default {
           this.errored = ''
           //}, 1000 * 10)
         })
+    },
+    resetTokenNumber() {
+      if (!this.$store.state.sync.online) {
+        if (
+          this.isTokenManager &&
+          (this.orderType.OTApi === this.CONST.ORDER_TYPE_WALKIN ||
+            this.orderType.OTApi === this.CONST.ORDER_TYPE_CARHOP)
+        ) {
+          const storeCurrentDate = moment()
+            .tz(this.timezoneString)
+            .format('YYYY-MM-DD')
+
+          const storeCurrentTime = moment()
+            .tz(this.timezoneString)
+            .utc()
+            .valueOf()
+
+          const storeOpeningTime = moment
+            .tz(
+              storeCurrentDate + ' ' + this.openHours.opens_at,
+              'YYYY-MM-DD HH:mm',
+              this.timezoneString
+            )
+            .utc()
+            .valueOf()
+
+          const tokenResetAt =
+            localStorage.getItem('token_reset_at') || storeCurrentDate
+
+          if (
+            storeCurrentDate > tokenResetAt &&
+            storeCurrentTime >= storeOpeningTime
+          ) {
+            let startingTokenNumber = localStorage.getItem('starting_token')
+            localStorage.setItem('token_number', startingTokenNumber)
+            localStorage.setItem('token_reset_at', storeCurrentDate)
+          }
+        }
+      }
     },
   },
   created() {},
@@ -236,6 +277,8 @@ export default {
         }
       }
     },
+    orderType: { handler: 'resetTokenNumber', immediate: true },
+    online: 'resetTokenNumber',
   },
   computed: {
     ...mapState({
@@ -245,6 +288,10 @@ export default {
     ...mapState('sync', ['modules']),
     ...mapState('context', ['currentRoute']),
     ...mapGetters('auth', ['loggedIn']),
+    ...mapGetters('location', ['isTokenManager']),
+    ...mapState('order', ['orderType']),
+    ...mapState('sync', ['online']),
+    ...mapState('location', ['timezoneString', 'openHours']),
     apisLoaded() {
       return this.$store.state.location.brand
     },

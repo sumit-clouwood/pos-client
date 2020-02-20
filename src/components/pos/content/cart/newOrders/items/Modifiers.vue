@@ -5,7 +5,7 @@
       v-for="modifierId in modifiers"
       :key="modifierId"
     >
-      {{ findModifier(modifierId, item).name }}
+      {{ dt(findModifier(modifierId, item)) }}
     </div>
   </div>
 </template>
@@ -17,6 +17,7 @@ export default {
   props: ['modifiers', 'item'],
   computed: {
     ...mapGetters('modifier', ['findModifier']),
+    ...mapGetters('location'),
   },
 }
 </script>

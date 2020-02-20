@@ -256,7 +256,15 @@ const actions = {
       localStorage.getItem('reservationId') || rootState.dinein.reserverationId
     return Promise.resolve(order)
   },
-
+  injectWalkinData({ rootState, rootGetters }, order) {
+    if (rootGetters['location/isTokenManager']) {
+      let tokenNumber = localStorage.getItem('token_number')
+        ? localStorage.getItem('token_number')
+        : rootState.location.tokenNumber
+      order.token_number = tokenNumber
+    }
+    return Promise.resolve(order)
+  },
   preOrderHook({ rootState, dispatch }, { order, action }) {
     if (rootState.order.orderType.OTApi == CONSTANTS.ORDER_TYPE_CALL_CENTER) {
       return dispatch('injectCrmData', order)
@@ -265,7 +273,12 @@ const actions = {
     if (rootState.order.orderType.OTApi === CONSTANTS.ORDER_TYPE_DINE_IN) {
       return dispatch('injectDineinData', order)
     }
-
+    if (
+      rootState.order.orderType.OTApi === CONSTANTS.ORDER_TYPE_WALKIN &&
+      !rootState.sync.online
+    ) {
+      return dispatch('injectWalkinData', order)
+    }
     if (action === CONSTANTS.ORDER_STATUS_ON_HOLD) {
       return dispatch('injectHoldOrderData', order)
     }
@@ -451,6 +464,7 @@ const actions = {
         if (item.store_id) {
           orderItem.store_id = item.store_id
         }
+
         if (typeof item.kitchen_invoice !== 'undefined') {
           orderItem['kitchen_invoice'] = item.kitchen_invoice
         } else {
@@ -1096,6 +1110,10 @@ const actions = {
                 'SET_ORDER_NUMBER',
                 rootState.order.selectedOrder.item.order_no
               )
+              dispatch(
+                'setToken',
+                rootState.order.selectedOrder.item.token_number
+              )
               commit(mutation.PRINT, true)
               commit('order/CLEAR_SELECTED_ORDER', null, { root: true })
               resolve()
@@ -1150,7 +1168,7 @@ const actions = {
                 root: true,
               })
               commit('SET_ORDER_NUMBER', rootState.order.orderData.order_no)
-
+              dispatch('setToken', response.data.token_number)
               const msg = rootGetters['location/_t']('Order has been modified.')
               dispatch('setMessage', {
                 result: 'success',
@@ -1181,15 +1199,20 @@ const actions = {
       })
     })
   },
-
-  createWalkinOrder({ dispatch, commit, rootGetters }) {
+  setToken({ commit }, tokenNumber) {
+    if (typeof tokenNumber != 'undefined' && tokenNumber != '') {
+      commit('SET_TOKEN_NUMBER', tokenNumber)
+      localStorage.setItem('token_number', ++tokenNumber)
+    }
+  },
+  createWalkinOrder({ state, dispatch, commit, rootState, rootGetters }) {
     return new Promise(resolve => {
       OrderService.saveOrder(state.order)
         .then(response => {
           if (response.data.status === 'ok') {
             commit('order/SET_ORDER_ID', response.data.id, { root: true })
             commit('SET_ORDER_NUMBER', response.data.order_no)
-
+            dispatch('setToken', response.data.token_number)
             const msg = rootGetters['location/_t']('Order placed Successfully')
             dispatch('setMessage', {
               result: 'success',
@@ -1209,6 +1232,12 @@ const actions = {
             offline: true,
           })
             .then(() => {
+              if (
+                rootGetters['location/isTokenManager'] &&
+                !rootState.sync.online
+              ) {
+                dispatch('setToken', state.order.token_number)
+              }
               commit(mutation.PRINT, true)
               resolve()
             })
@@ -1345,7 +1374,7 @@ const actions = {
             commit('order/SET_ORDER_ID', response.data.id, { root: true })
             commit('SET_ORDER_NUMBER', response.data.order_no)
             //we are not printing so reset manually here
-
+            dispatch('setToken', response.data.token_number)
             const msg = rootGetters['location/_t'](
               'Carhop Order has been placed'
             )
@@ -1699,6 +1728,12 @@ const mutations = {
     state.orderNumber = orderNumber
     let order = { ...state.order }
     order.orderNumber = state.orderNumber
+    state.order = order
+  },
+  [mutation.SET_TOKEN_NUMBER](state, tokenNumber) {
+    state.tokenNumber = tokenNumber
+    let order = { ...state.order }
+    order.tokenNumber = state.tokenNumber
     state.order = order
   },
   [mutation.LOADING](state, loadingStatus) {
