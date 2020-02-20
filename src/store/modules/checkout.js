@@ -1372,6 +1372,7 @@ const actions = {
           })
             .then(() => {
               resolve()
+              dispatch('reset')
             })
             .catch(() => resolve())
         })

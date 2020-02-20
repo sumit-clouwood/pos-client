@@ -3,7 +3,7 @@
 /* eslint-disable no-console */
 //appVersion has production build number . staging build number . int build number . bugfix
 //Reason: fixed carhop test
-var appVersion = '7.8.33.9'
+var appVersion = '7.8.33.8'
 
 var clientUrl = ''
 
