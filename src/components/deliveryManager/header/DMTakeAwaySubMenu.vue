@@ -111,18 +111,4 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
-@import '@/assets/scss/variables.scss';
-@import '@/assets/scss/mixins.scss';
-@include responsive(mobile) {
-  .dm-ullist {
-    padding-bottom: 8px !important;
-    & li.active > a {
-      color: white !important;
-      border-radius: 5px;
-      background-color: cadetblue !important;
-      border: none;
-    }
-  }
-}
-</style>
+<style scoped></style>

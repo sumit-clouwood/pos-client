@@ -1,10 +1,8 @@
 <template>
-  <div class="page-header">
-    <div class="header  header-width">
+  <div class="page-header dm-top-header">
+    <div class="header">
       <div class="header-main">
-        <div
-          class="header-main-right color-dashboard-background header-width header-content-display content-wrapper"
-        >
+        <div class="header-main-right color-dashboard-background">
           <div class="current-time">
             <div class="header-main-left-time">
               <span>{{ todayDate }} </span>

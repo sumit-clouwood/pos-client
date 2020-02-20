@@ -83,15 +83,4 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
-@import '@/assets/scss/variables.scss';
-@import '@/assets/scss/mixins.scss';
-@include responsive(mobile) {
-  .left-btn-wrap {
-    display: grid !important;
-  }
-  .dm-btn-wrap {
-    grid-template-columns: 1fr !important;
-  }
-}
-</style>
+<style scoped></style>
