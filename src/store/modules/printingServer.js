@@ -4,7 +4,7 @@ import * as mutation from './printingServer/mutation-type'
 import PrintingServerService from '@/services/data/PrintingServerService'
 // import LookupData from '@/plugins/helpers/LookupData'
 import moment from 'moment-timezone'
-import { compressToBase64 } from 'lz-string'
+// import { compressToBase64 } from 'lz-string'
 const state = {
   kitchenitems: [],
   printingservers: [],

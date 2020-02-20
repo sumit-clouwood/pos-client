@@ -1385,9 +1385,7 @@ const actions = {
             commit('SET_ORDER_NUMBER', response.data.order_no)
             //we are not printing so reset manually here
             dispatch('setToken', response.data.token_number)
-            const msg = rootGetters['location/_t'](
-              'Carhop Order has been placed'
-            )
+            let msg = rootGetters['location/_t']('Carhop Order has been placed')
             //Invoice APP API Call with Custom Request JSON
             dispatch('printingServer/printingServerInvoiceRaw', state.order, {
               root: true,

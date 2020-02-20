@@ -8,7 +8,7 @@ import TimezoneService from '@/services/data/TimezoneService'
 import * as CONST from '@/constants'
 import router from '../../router'
 import moment from 'moment-timezone'
-/* global $ */
+/* global $ showModal*/
 // initial state
 const state = {
   currency: 'AED',
