@@ -84,10 +84,14 @@ export default {
 @import '@/assets/scss/mixins.scss';
 
 @include responsive(mobile) {
+  #popup-item-note {
+    overflow: hidden !important;
+  }
   #add-note {
     position: fixed !important;
 
     .modal-dialog {
+      margin: 0px !important;
       .modal-content {
         width: 95% !important;
         overflow: hidden !important;
@@ -111,15 +115,6 @@ export default {
             textarea {
               outline: none;
               padding: 10px;
-            }
-          }
-        }
-
-        .modal-footer {
-          .btn-announce {
-            button,
-            #save-note {
-              height: 50px;
             }
           }
         }

@@ -34,7 +34,11 @@
   .modal-dialog {
     .modal-content {
       width: 100%;
-
+      @include responsive(mobile) {
+        width: 95% !important;
+        margin: auto !important;
+        margin-top: 2rem !important;
+      }
       .modal-header {
         background-color: $gray-bg-dark;
         @include responsive(mobile) {
@@ -65,6 +69,12 @@
           align-items: center;
           justify-content: flex-end;
           margin-left: auto;
+          @include responsive(mobile) {
+            display: grid !important;
+            grid-template-columns: 1fr !important;
+            width: 100% !important;
+            grid-row-gap: 10px !important;
+          }
 
           button {
             height: $header-btn-height;

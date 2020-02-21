@@ -149,29 +149,31 @@
             {{ cancelReservationMsg }}
           </div>
           <div class="modal-footer">
-            <button
-              type="button"
-              id="confirm"
-              v-if="!moveReservation"
-              class="btn btn-success"
-              data-dismiss="modal"
-              @click="confirmCancelReservation()"
-            >
-              {{ _t('Ok') }}
-            </button>
-            <button
-              v-if="moveReservation"
-              type="button"
-              id="running_order"
-              class="btn btn-success"
-              data-dismiss="modal"
-              @click="moveRunningOrder()"
-            >
-              {{ _t('Running Orders') }}
-            </button>
-            <button type="button" class="btn btn-danger" data-dismiss="modal">
-              {{ _t('Close') }}
-            </button>
+            <div class="btn-announce">
+              <button
+                type="button"
+                id="confirm"
+                v-if="!moveReservation"
+                class="btn btn-success"
+                data-dismiss="modal"
+                @click="confirmCancelReservation()"
+              >
+                {{ _t('Ok') }}
+              </button>
+              <button
+                v-if="moveReservation"
+                type="button"
+                id="running_order"
+                class="btn btn-success"
+                data-dismiss="modal"
+                @click="moveRunningOrder()"
+              >
+                {{ _t('Running Orders') }}
+              </button>
+              <button type="button" class="btn btn-danger" data-dismiss="modal">
+                {{ _t('Close') }}
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -226,19 +228,21 @@
             >
               {{ _t('Place order') }}
             </button>-->
-            <button
-              type="button"
-              id="BookedTable"
-              class="btn btn-success"
-              data-dismiss="modal"
-              @click="newOrder(false, brand.book_table)"
-            >
-              {{ _t(addOrSplit) }}
-            </button>
+            <div class="btn-announce">
+              <button
+                type="button"
+                id="BookedTable"
+                class="btn btn-success"
+                data-dismiss="modal"
+                @click="newOrder(false, brand.book_table)"
+              >
+                {{ _t(addOrSplit) }}
+              </button>
 
-            <button type="button" class="btn btn-danger" data-dismiss="modal">
-              {{ _t('Close') }}
-            </button>
+              <button type="button" class="btn btn-danger" data-dismiss="modal">
+                {{ _t('Close') }}
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -919,6 +923,7 @@ export default {
             this.popupItemLoader = true
             this.cssClass = 'allowed'
           }
+          // alert(this.popupItemLoader + ' >> ' + this.cssClass)
           if (this.cssClass == 'restricted') return false
           // $('#tooltipdata').hide()
           $('#tooltipdata').show()
@@ -957,6 +962,7 @@ export default {
               /*end square screen code*/
             }
             if (tableX > 3000) left -= 80
+            // alert(window.screen.availHeight + ' > ' + window.screen.availWidth)
             if (top < 0) top = 0
             if (left < 0) left = 0
             range
@@ -1361,6 +1367,9 @@ export default {
 }
 </style>
 <style lang="scss" scoped>
+@import '@/assets/scss/header';
+@import '@/assets/scss/mixins.scss';
+
 .m-1 {
   &.buttons {
     span {
@@ -1368,6 +1377,26 @@ export default {
       &:last-child {
         margin-right: 0px !important;
       }
+    }
+  }
+}
+
+@include responsive(mobile) {
+  .modal .modal-dialog .modal-content {
+    width: 95% !important;
+  }
+  .modal-dialog {
+    margin-top: 2rem !important;
+  }
+  .modal-open .modal {
+    overflow: hidden !important;
+  }
+  .modal-footer {
+    .btn-announce {
+      display: grid !important;
+      grid-template-columns: 1fr !important;
+      width: 100% !important;
+      grid-row-gap: 10px !important;
     }
   }
 }
