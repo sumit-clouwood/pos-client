@@ -2,8 +2,8 @@
 /* global workbox */
 /* eslint-disable no-console */
 //appVersion has production build number . staging build number . int build number . bugfix
-//Reason: test offline msg
-var appVersion = '7.9.34.10'
+//Reason: fixed msg
+var appVersion = '7.9.34.11'
 
 var clientUrl = ''
 

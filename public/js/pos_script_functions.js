@@ -20,6 +20,9 @@ $(document).on('click', function(event) {
 })
 function showModal(modalName) {
   $(modalName).modal('show')
+  $(modalName)
+    .show()
+    .removeClass('fade')
 }
 function hideModal(modalName) {
   $(modalName).modal('hide')
