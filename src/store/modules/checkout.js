@@ -1239,6 +1239,8 @@ const actions = {
           }
         })
         .catch(error => {
+          // eslint-disable-next-line no-console
+          console.log(response)
           dispatch('handleRejectedResponse', {
             response: error,
             offline: true,
@@ -1439,7 +1441,12 @@ const actions = {
     })
   },
   handleRejectedResponse({ dispatch }, { response, offline = false }) {
-    if (offline && response.message === 'Network Error') {
+    // eslint-disable-next-line no-console
+    console.log(response)
+    if (
+      offline &&
+      (response.message === 'Network Error' || response.match('Network Error'))
+    ) {
       return dispatch('handleNetworkError', response)
     }
     var err_msg = ''
