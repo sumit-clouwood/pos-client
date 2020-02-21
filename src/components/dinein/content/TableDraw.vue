@@ -83,7 +83,9 @@
                       {{ created_date(orderData.startDate) }},
                       {{ created_time(orderData.startTime) }}
                     </div>
-                    <div class="order-details-with-action table-draw-order-details">
+                    <div
+                      class="order-details-with-action table-draw-order-details"
+                    >
                       <div
                         class="table-popup bg-success font-weight-bold"
                         @click="newOrder(orderData.reservationId, true)"
