@@ -3,7 +3,7 @@ import * as mutation from './printingServer/mutation-type'
 // import OrderService from '@/services/data/OrderService'
 import PrintingServerService from '@/services/data/PrintingServerService'
 // import LookupData from '@/plugins/helpers/LookupData'
-import moment from 'moment-timezone'
+// import moment from 'moment-timezone'
 // import { compressToBase64 } from 'lz-string'
 const state = {
   kitchenitems: [],
@@ -12,6 +12,7 @@ const state = {
   pageLookups: {},
   createdDateTime: { date: '', time: '' },
   kitchenInvoiceResponse: true,
+  orderData: false,
 }
 
 const actions = {
@@ -27,6 +28,32 @@ const actions = {
         })
         .catch(error => reject(error))
     })
+  },
+  orderDataMerging({ rootState }, { jsonResponse, printingServers }) {
+    let _order = {}
+    if (window.PrintHandle != null) {
+      jsonResponse.windows_app = true
+      _order['printingServers'] = printingServers
+      _order['orderData'] = jsonResponse
+      // eslint-disable-next-line no-console
+      console.log(window.PrintHandle, 'window.PrintHandle')
+      // eslint-disable-next-line no-console
+      console.log(_order, '_order')
+      window.PrintHandle.Print(
+        JSON.stringify(_order),
+        function callbackfunction(data) {
+          // eslint-disable-next-line no-console
+          console.log('callbackfunction')
+          //perform your action in case of success or leave empty
+          // eslint-disable-next-line no-console
+          console.log(
+            data,
+            'callbackfunction result',
+            rootState.payment.appInvoiceData
+          )
+        }
+      )
+    }
   },
   setInvoiceDetails(
     { rootState, dispatch },
@@ -47,47 +74,53 @@ const actions = {
   ) {
     // eslint-disable-next-line no-console
     console.log(locationData, 'locationData', customerData)
-    let jsonResponse = {
-      status: 'ok',
-      brand_logo: locationData.brand.company_logo || '',
-      order: orderData,
-      menu_items: kitchen_menu_items,
-      staff: staff.item.name,
-      customer: customerData,
-      delivery_area: delivery_area,
-      template: invoiceTemplate,
-      order_type: invoiceTemplate[orderTypeLabel],
-      created_date: created_date,
-      created_time: created_time,
-      crm_module_enabled: crm_module_enabled,
-      translations: rootState.payment.appInvoiceData, //Unstable
-      default_header_brand: locationData.brand.name,
-      default_header_branch: locationData.store.city + ' Branch',
-      default_header_phone: 'Tel No. ' + locationData.brand.contact_phone,
-      generate_time: orderData.real_created_datetime,
-      flash_message: 'Order Details',
-      store_id: rootState.context.storeId,
-      token_manager: false,
-      windows_app: false,
-    }
-    if (orderData.order_type == 'DINE-IN') {
-      let table_no = rootState.dinein.selectedTable
-        ? rootState.dinein.selectedTable.number
-        : false
-      jsonResponse.table_number = table_no
-    }
-    if (isIOS) {
-      // eslint-disable-next-line no-console
-      console.log(jsonResponse, 'ff')
-      localStorage.setItem('orderInvoiceColData', JSON.stringify(jsonResponse))
-    }
-    if (customerData) dispatch('customer/resetCustomer', true, { root: true })
-    return jsonResponse
+    return new Promise(resolve => {
+      let jsonResponse = {
+        status: 'ok',
+        brand_logo: locationData.brand.company_logo || '',
+        order: orderData,
+        menu_items: kitchen_menu_items,
+        staff: staff.item.name,
+        customer: customerData,
+        delivery_area: delivery_area,
+        template: invoiceTemplate,
+        order_type: invoiceTemplate[orderTypeLabel],
+        created_date: created_date,
+        created_time: created_time,
+        crm_module_enabled: crm_module_enabled,
+        translations: rootState.payment.appInvoiceData, //Unstable
+        default_header_brand: locationData.brand.name,
+        default_header_branch: locationData.store.city + ' Branch',
+        default_header_phone: 'Tel No. ' + locationData.brand.contact_phone,
+        generate_time: orderData.real_created_datetime,
+        flash_message: 'Order Details',
+        store_id: rootState.context.storeId,
+        token_manager: false,
+        windows_app: false,
+      }
+      if (orderData.order_type == 'DINE-IN') {
+        let table_no = rootState.dinein.selectedTable
+          ? rootState.dinein.selectedTable.number
+          : false
+        jsonResponse.table_number = table_no
+      }
+      if (isIOS) {
+        // eslint-disable-next-line no-console
+        console.log(jsonResponse, 'ff')
+        localStorage.setItem('orderInvoiceColData', JSON.stringify(jsonResponse))
+      }
+      if (customerData) {
+        dispatch('customer/resetCustomer', true, { root: true }).then(() => {
+          resolve(jsonResponse)
+        })
+      } else {
+        resolve(jsonResponse)
+      }
+    })
   },
 
-  convertDatetime({ rootState, commit }, { datetime, format }) {
+  /*convertDatetime({ rootState, commit }, { datetime, format }) {
     let tz = rootState.location.timezoneString
-    /* eslint-disable no-undef */
     moment.locale(tz)
     let value =
       datetime != null && typeof datetime.$date != 'undefined'
@@ -108,7 +141,7 @@ const actions = {
       commit(mutation.CREATED_DATE, result)
     }
     return result
-  },
+  },*/
   //Fetch All Kitchens
   fetchAllKitchens({ commit }) {
     return new Promise((resolve, reject) => {
@@ -216,8 +249,8 @@ const actions = {
           root: true,
         }).then(customerData => {
           // eslint-disable-next-line no-console
-          console.log(customerData, 'customercustomercustomercustomer')
-          jsonResponse = dispatch('setInvoiceDetails', {
+          // console.log(customerData, 'customercustomercustomercustomer')
+          dispatch('setInvoiceDetails', {
             locationData,
             orderData,
             kitchen_menu_items,
@@ -230,11 +263,20 @@ const actions = {
             created_time,
             crm_module_enabled,
             isIOS,
+          }).then(response => {
+            jsonResponse = response
+            // eslint-disable-next-line no-console
+            console.log(
+              customerData,
+              'customercustomercustomercustomer',
+              jsonResponse
+            )
+            dispatch('orderDataMerging', { jsonResponse, printingServers })
           })
         })
       } else {
         let customerData = false //Customer Information
-        jsonResponse = dispatch('setInvoiceDetails', {
+        dispatch('setInvoiceDetails', {
           locationData,
           orderData,
           kitchen_menu_items,
@@ -247,27 +289,10 @@ const actions = {
           created_time,
           crm_module_enabled,
           isIOS,
+        }).then(response => {
+          jsonResponse = response
+          dispatch('orderDataMerging', { jsonResponse, printingServers })
         })
-        let _order = {}
-        if (window.PrintHandle != null) {
-          jsonResponse.windows_app = true
-          _order['printingServers'] = printingServers
-          _order['orderData'] = jsonResponse
-          // eslint-disable-next-line no-console
-          console.log(window.PrintHandle, 'window.PrintHandle')
-          // eslint-disable-next-line no-console
-          console.log(_order, '_order')
-          window.PrintHandle.Print(
-            JSON.stringify(_order),
-            function callbackfunction(data) {
-              // eslint-disable-next-line no-console
-              console.log('callbackfunction')
-              //perform your action in case of success or leave empty
-              // eslint-disable-next-line no-console
-              console.log(data, 'callbackfunction result')
-            }
-          )
-        }
       }
       // eslint-disable-next-line no-console
       /*console.log(jsonResponse, 'checkResponce')
