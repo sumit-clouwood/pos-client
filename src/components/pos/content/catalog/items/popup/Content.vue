@@ -72,7 +72,9 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+@import '@/assets/scss/header';
+@import '@/assets/scss/mixins.scss';
 .error {
   color: #ff0000;
   margin-bottom: 24px;
@@ -81,6 +83,16 @@ export default {
 }
 .positemoption_body::-webkit-scrollbar {
   width: 0;
+}
+.positemoption_body {
+  scroll-behavior: smooth;
+}
+
+@include responsive(mobile) {
+  .modal-body {
+    min-height: 0 !important;
+    max-height: 15.65rem !important;
+  }
 }
 </style>
 <style lang="sass" scoped>

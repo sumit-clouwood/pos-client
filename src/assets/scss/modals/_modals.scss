@@ -37,6 +37,9 @@
 
       .modal-header {
         background-color: $gray-bg-dark;
+        @include responsive(mobile) {
+          background-color: $gray-bg-dark !important;
+        }
         display: flex;
         align-items: center;
         padding: $px15 $px30;
@@ -179,7 +182,7 @@ button {
     font-weight: 600;
     letter-spacing: 0.58px;
     border: medium none;
-    @include responsive(mobile){
+    @include responsive(mobile) {
       padding: 0.3125rem 0.25rem !important;
     }
   }

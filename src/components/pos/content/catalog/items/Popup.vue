@@ -8,10 +8,12 @@
     aria-labelledby="POSItemOptions"
     aria-hidden="true"
   >
-    <div class="modal-dialog modal-dialog-centered" role="document">
+    <div
+      class="modal-dialog modal-dialog-centered modal-dialog-wrapper"
+      role="document"
+    >
       <div
-        class="modal-content color-dashboard-background footerStyle"
-        style="bottom: 0"
+        class="modal-content color-dashboard-background modal-content-wrapper footerStyle"
       >
         <Header />
         <HeaderDetails />
@@ -70,35 +72,36 @@ export default {
   },
 }
 </script>
-<style lang="scss">
-@import '../../../../../assets/scss/pixels_rem.scss';
-@import '../../../../../assets/scss/variables.scss';
-@import '../../../../../assets/scss/mixins.scss';
+<style lang="scss" scoped>
+@import '@/assets/scss/pixels_rem.scss';
+@import '@/assets/scss/variables.scss';
+@import '@/assets/scss/mixins.scss';
 
 @include responsive(mobile) {
   .POSItemOptions {
     padding: 0;
     width: 100vw;
     max-width: none;
+    overflow: hidden;
     // position: fixed;
 
     .modal-dialog {
-      width: 100vw;
-      max-width: none;
-      min-width: 100vw;
-
+      margin-top: 2rem !important;
       .modal-content {
         display: flex;
         flex-direction: column;
+        width: 95% !important;
+        margin: auto !important;
 
         .modal-header {
           height: 70px;
-          background-color: #fff;
+          background-color: #d7dce2;
           margin: 0;
         }
 
         .modal-details {
           padding: 0 25px;
+          padding-left: 0px !important;
           border: none;
           z-index: 1;
           background-color: #fff;
@@ -137,6 +140,7 @@ export default {
               }
 
               .POSItemOptions_label {
+                padding-left: 8px !important;
                 /*display: none;*/
               }
             }
@@ -273,8 +277,8 @@ export default {
           }
 
           .btn-announce {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
+            display: grid !important;
+            grid-template-columns: 1fr !important;
             margin: 0;
             justify-content: space-between;
             grid-gap: 10px;
@@ -302,6 +306,13 @@ export default {
         }
       }
     }
+  }
+  .modal-content-wrapper {
+    margin: 0 !important;
+    overflow: hidden;
+  }
+  .modal-dialog-wrapper {
+    margin: 0 !important;
   }
 }
 </style>

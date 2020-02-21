@@ -555,6 +555,14 @@ export default {
         ['translations_dict']
       )
 
+      order.order_payments = this.loadFromCollection(
+        order.order_payments,
+        'entity_id',
+        '_id',
+        'payment/methods',
+        ['translations_dict']
+      )
+
       return order
     },
   },

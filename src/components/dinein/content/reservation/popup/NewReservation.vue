@@ -653,7 +653,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import '../../../../../assets/scss/variables';
+@import '@/assets/scss/variables';
 
 .num_guests {
   display: grid;

@@ -213,9 +213,9 @@ function getCustomerList(state) {
 
 </style>
 <style lang="scss">
-    @import '../../../../../../assets/scss/pixels_rem.scss';
-    @import '../../../../../../assets/scss/variables.scss';
-    @import '../../../../../../assets/scss/mixins.scss';
+    @import '@/assets/scss/pixels_rem.scss';
+    @import '@/assets/scss/variables.scss';
+    @import '@/assets/scss/mixins.scss';
 
     @include responsive(mobile) {
         .customer-insight {
