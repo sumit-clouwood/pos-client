@@ -3,7 +3,7 @@
 /* eslint-disable no-console */
 //appVersion has production build number . staging build number . int build number . bugfix
 //Reason: Fixed giftcard, modify hold orders
-var appVersion = '7.9.34.8'
+var appVersion = '7.9.34.9'
 
 var clientUrl = ''
 
