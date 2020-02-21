@@ -789,17 +789,29 @@ const actions = {
       '-' +
       rootState.order.startTime
     delete order.real_created_datetime
-    if (rootState.order.selectedOrder.item.cashier_id) {
-      order.cashier_id = rootState.order.selectedOrder.item.cashier_id
-    } else if (rootState.order.selectedOrder.item.order_history) {
-      const history = OrderHelper.lookup(
-        rootState.order.selectedOrder.item,
-        'order_history',
-        'name',
-        'ORDER_HISTORY_TYPE_RECORD_NEW'
-      )
-      if (history) {
-        order.cashier_id = history.user
+
+    //fix modify hold order
+    let selOrder = rootState.order.selectedOrder
+    if (selOrder) {
+      selOrder = selOrder.item
+    } else {
+      selOrder = rootState.order.newOrder
+    }
+
+    //while modifying order keep origin cashier id to idenfity orders later
+    if (selOrder) {
+      if (selOrder.cashier_id) {
+        order.cashier_id = selOrder.cashier_id
+      } else if (selOrder.order_history) {
+        const history = OrderHelper.lookup(
+          selOrder,
+          'order_history',
+          'name',
+          'ORDER_HISTORY_TYPE_RECORD_NEW'
+        )
+        if (history) {
+          order.cashier_id = history.user
+        }
       }
     }
     return Promise.resolve(order)

@@ -2,8 +2,8 @@
 /* global workbox */
 /* eslint-disable no-console */
 //appVersion has production build number . staging build number . int build number . bugfix
-//Reason: Carhop and takeaway orders
-var appVersion = '7.8.34.8'
+//Reason: Fixed giftcard, modify hold orders
+var appVersion = '7.9.34.8'
 
 var clientUrl = ''
 

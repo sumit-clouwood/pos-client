@@ -101,7 +101,7 @@ export default {
     subcategories(newVal, oldVal) {
       if (newVal != oldVal) {
         this.$nextTick(() => {
-          this.calculateScrolls()
+          this.calculateScrolls().catch(() => {})
         })
       }
     },

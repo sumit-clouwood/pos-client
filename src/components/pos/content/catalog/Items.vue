@@ -106,7 +106,7 @@ export default {
   watch: {
     items() {
       this.$nextTick(() => {
-        this.calculateScrolls()
+        this.calculateScrolls().catch(() => {})
       })
     },
     barcode(itemCode) {

@@ -22,11 +22,12 @@
 </template>
 
 <script>
-/* global showModal, $*/
-import * as CONST from '@/constants'
+/* global $*/
+import CheckoutMixin from '@/mixins/Checkout'
 import { mapState, mapGetters } from 'vuex'
 export default {
   name: 'AmountCalculator',
+  mixins: [CheckoutMixin],
   computed: {
     ...mapState('checkout', ['changedAmount']),
     ...mapState('order', ['needSupervisorAccess']),
@@ -43,77 +44,12 @@ export default {
     addAmount() {
       $('#payment-breakdown').show()
       this.$store.commit('checkoutForm/setAction', 'add')
-      this.$store.dispatch('checkoutForm/validatePayment').then(() => {
-        if (this.method.type == CONST.GIFT_CARD) {
-          showModal('#Gift-card-payemnt')
-        } else if (this.method.reference_code) {
-          showModal('#card-payemnt')
-        } else {
-          //cash payments
-          this.$store.dispatch('checkoutForm/addAmount').then(payable => {
-            //check if full payment was made, then just start processing the order straight away
-            if (
-              payable <= 0.1
-              //&&
-              //this.$store.state.checkoutForm.payments.length == 1
-            ) {
-              if (this.processing) {
-                // eslint-disable-next-line no-console
-                console.log('dual click from add button')
-                return false
-              }
 
-              this.$store.commit('checkoutForm/SET_PROCESSING', true)
-              this.$store.commit('order/IS_PAY', 1)
-              this.$store.commit('checkoutForm/setAction', 'pay')
-              $('#payment-screen-footer').prop('disabled', true)
-
-              this.$store.dispatch('order/startOrder')
-              if (this.needSupervisorAccess) {
-                showModal('#modificationReason')
-              } else {
-                $('#payment-msg').modal('show')
-
-                this.$store
-                  .dispatch(
-                    'checkout/pay',
-                    this.$store.state.order.orderType.OTApi
-                  )
-                  .then(() => {
-                    $('#payment-msg').modal('show')
-
-                    if (this.changedAmount >= 0.1) {
-                      //alert('change amount is due')
-                      setTimeout(() => {
-                        $('#payment-msg').modal('hide')
-                        setTimeout(() => {
-                          $('#change-amount').modal('show')
-                        }, 500)
-                      }, 500)
-                    } else if (this.msg) {
-                      $('#payment-msg').modal('show')
-                    }
-                    setTimeout(function() {
-                      $('#payment-screen-footer').prop('disabled', false)
-                    }, 1000)
-                  })
-                  .catch(() => {
-                    setTimeout(() => {
-                      $('#payment-msg').modal('hide')
-                      $('#payment-screen-footer').prop('disabled', false)
-                    }, 500)
-                  })
-                  .finally(() => {
-                    // eslint-disable-next-line no-console
-                    console.log('process complete from add button')
-                    this.$store.commit('checkoutForm/SET_PROCESSING', false)
-                  })
-              }
-            }
-          })
+      this._addAmount().then(payable => {
+        if (payable <= 0.1) {
+          this.doPayment(this.$store.state.order.orderType.OTApi)
         }
       })
-      // this.$store.commit('checkoutForm/setAction', 'pay')
     },
     set(amount) {
       this.$store.commit('checkoutForm/SET_PROCESSING', false)
