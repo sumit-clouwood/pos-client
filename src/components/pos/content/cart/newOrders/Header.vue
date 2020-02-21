@@ -63,12 +63,13 @@
 </template>
 
 <script>
-/* global $ */
 import { bus } from '@/eventBus'
+import CheckoutMixin from '@/mixins/Checkout'
 
 import { mapState, mapGetters, mapActions } from 'vuex'
 export default {
   name: 'Header',
+  mixins: [CheckoutMixin],
   props: {},
   data() {
     return {
@@ -103,26 +104,7 @@ export default {
     },
 
     hold() {
-      this.$store
-        .dispatch('checkout/pay', { action: 'on-hold' })
-        .then(() => {
-          /*if (this.changedAmount >= 0.1) {
-                    $('#payment-msg').modal('hide')
-                    $('#change-amount').modal('show')
-                  } else*/
-          if (this.msg) {
-            $('#payment-msg').modal('show')
-          }
-          setTimeout(function() {
-            $('#payment-screen-footer').prop('disabled', false)
-          }, 1000)
-        })
-        .catch(() => {
-          setTimeout(() => {
-            $('#payment-msg').modal('hide')
-            $('#payment-screen-footer').prop('disabled', false)
-          }, 500)
-        })
+      this.executePayment({ action: 'on-hold' })
     },
     ...mapActions('checkout', ['orderOnHold']),
   },

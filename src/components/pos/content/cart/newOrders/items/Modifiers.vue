@@ -17,7 +17,6 @@ export default {
   props: ['modifiers', 'item'],
   computed: {
     ...mapGetters('modifier', ['findModifier']),
-    ...mapGetters('location'),
   },
 }
 </script>

@@ -37,12 +37,15 @@
   </div> -->
 </template>
 <script>
-/* global $ clickPayNow */
+/* global clickPayNow */
+import CheckoutMixin from '@/mixins/Checkout'
+
 import { mapState, mapGetters } from 'vuex'
 import save from './common/save'
 import pay from './common/pay'
 export default {
   name: 'CarhopBtn',
+  mixins: [CheckoutMixin],
   components: {
     save,
     pay,
@@ -57,31 +60,11 @@ export default {
       clickPayNow()
     },
     placeCarhop() {
-      if (this.processing) {
-        return false
-      }
-
-      this.processing = true
-
       if (this.items.length === 0) {
         return false
       }
-      if (this.processing) {
-        // eslint-disable-next-line no-console
-        console.log('dual footer click')
-        return false
-      }
 
-      $('#payment-msg').modal('show')
-      this.$store.dispatch('order/startOrder')
-      this.$store.commit('checkoutForm/SET_PROCESSING', true)
-      this.$store
-        .dispatch('checkout/pay', { action: 'carhop-place-order' })
-        .then(() => {})
-        .catch(() => {})
-        .finally(() => {
-          this.$store.commit('checkoutForm/SET_PROCESSING', false)
-        })
+      this.executePayment({ action: 'carhop-place-order' })
     },
   },
 }

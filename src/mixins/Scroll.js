@@ -17,7 +17,7 @@ export default {
 
   mounted() {
     this.$nextTick(() => {
-      this.calculateScrolls()
+      this.calculateScrolls().catch(() => {})
     })
   },
 
