@@ -1,4 +1,4 @@
-/* global $, showModal */
+/* global $, showModal hideModal */
 /* eslint-disable no-console */
 import * as CONST from '@/constants'
 
@@ -79,18 +79,17 @@ export default {
       })
     },
     showMsg() {
-      $('#payment-msg').modal('show')
-
+      showModal('#payment-msg')
       if (this.changedAmount >= 0.1) {
         //alert('change amount is due')
         setTimeout(() => {
-          $('#payment-msg').modal('hide')
+          hideModal('#payment-msg')
           setTimeout(() => {
-            $('#change-amount').modal('show')
+            showModal('#change-amount')
           }, 500)
         }, 500)
       } else if (this.msg) {
-        $('#payment-msg').modal('show')
+        showModal('#payment-msg')
       }
       setTimeout(function() {
         $('#payment-screen-footer').prop('disabled', false)
