@@ -1397,10 +1397,11 @@ const actions = {
         .catch(error => {
           dispatch('handleRejectedResponse', {
             response: error,
-            offline: false,
+            offline: true,
           })
             .then(() => {
               resolve()
+              dispatch('reset')
             })
             .catch(() => resolve())
         })
