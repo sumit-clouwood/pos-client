@@ -277,12 +277,9 @@ export default {
           }
 
           .btn-announce {
-            display: grid !important;
-            grid-template-columns: 1fr !important;
             margin: 0;
             justify-content: space-between;
             grid-gap: 10px;
-            width: 100%;
             &.apply_btn {
               grid-template-columns: 1fr;
             }

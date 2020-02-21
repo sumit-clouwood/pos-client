@@ -25,7 +25,7 @@
           </div>
         </div>
         <div class="modal-footer">
-          <div class="btn-announce btn-announce-wrapper ">
+          <div class="btn-announce">
             <button
               class="btn btn-success btn-large color-main color-text-invert"
               type="button"
@@ -123,13 +123,6 @@ export default {
           padding-left: 0px !important;
           padding-right: 0px !important;
         }
-        .btn-announce-wrapper {
-          display: grid !important;
-          grid-template-columns: 1fr !important;
-          grid-row-gap: 10px !important;
-          width: 100%;
-        }
-
         #available-tables {
           width: 90%;
           margin-left: auto;
