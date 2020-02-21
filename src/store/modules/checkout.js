@@ -1240,7 +1240,7 @@ const actions = {
         })
         .catch(error => {
           // eslint-disable-next-line no-console
-          console.log(response)
+          console.log(error)
           dispatch('handleRejectedResponse', {
             response: error,
             offline: true,
