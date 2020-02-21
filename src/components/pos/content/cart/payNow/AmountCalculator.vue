@@ -32,7 +32,7 @@ export default {
     ...mapState('checkout', ['changedAmount']),
     ...mapState('order', ['needSupervisorAccess']),
     ...mapGetters('location', ['_t']),
-    ...mapState('checkoutForm', ['method', 'processing']),
+    ...mapState('checkoutForm', ['msg', 'error', 'method', 'processing']),
     ...mapGetters(['payNowCalcHendler']),
   },
   data() {

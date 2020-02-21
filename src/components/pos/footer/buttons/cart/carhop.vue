@@ -51,7 +51,7 @@ export default {
     pay,
   },
   computed: {
-    ...mapState('checkoutForm', ['processing']),
+    ...mapState('checkoutForm', ['msg', 'error', 'processing']),
     ...mapState('order', ['items', 'orderSource', 'selectedOrder']),
     ...mapGetters('auth', ['carhop']),
   },
