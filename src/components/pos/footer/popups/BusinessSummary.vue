@@ -166,11 +166,12 @@
                       {{ totalPayments.value }}
                     </td>
                   </tr>
-                  <tr class="font-weight-bold">
+                  <tr
+                    class="font-weight-bold"
+                    v-if="BSData.REPORT_TIPS_VALUE > 0"
+                  >
                     <td>{{ _t('Tips') }}</td>
-                    <td class="align-right">
-                      1
-                    </td>
+                    <td class="align-right"></td>
                     <td class="align-right">
                       {{ formatPrice(BSData.REPORT_TIPS_VALUE) }}
                     </td>
@@ -185,6 +186,18 @@
                     </td>
                     <td class="align-right">
                       {{ formatPrice(BSData.REPORT_DINEIN_PANDDING_ORDER) }}
+                    </td>
+                  </tr>
+                  <tr
+                    class="font-weight-bold"
+                    v-if="BSData.REPORT_CRM_PANDDING_ORDER_COUNT"
+                  >
+                    <td>{{ _t('Unfinished Dine-In Orders') }}</td>
+                    <td class="align-right">
+                      {{ BSData.REPORT_CRM_PANDDING_ORDER_COUNT }}
+                    </td>
+                    <td class="align-right">
+                      {{ formatPrice(BSData.REPORT_CRM_PANDDING_ORDER) }}
                     </td>
                   </tr>
                   <tr
