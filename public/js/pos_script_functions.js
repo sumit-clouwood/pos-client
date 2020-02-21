@@ -26,6 +26,9 @@ function showModal(modalName) {
 }
 function hideModal(modalName) {
   $(modalName).modal('hide')
+  $(modalName)
+    .hide()
+    .addClass('fade')
 }
 function hidePayNow() {
   $('div#pay-now').addClass('effect-screen')
