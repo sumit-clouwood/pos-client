@@ -133,16 +133,10 @@ export default {
 
       .modal-content {
         .modal-header {
-          height: 80px;
+          height: 50px;
           background-color: #fff;
           box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
           border: none;
-        }
-
-        .modal-body {
-        }
-
-        .modal-footer {
         }
       }
     }

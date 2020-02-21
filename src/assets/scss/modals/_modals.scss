@@ -32,6 +32,9 @@
   justify-content: center;
   overflow: auto;
   .modal-dialog {
+    @include responsive(mobile) {
+      margin: 0px;
+    }
     .modal-content {
       width: 100%;
       @include responsive(mobile) {

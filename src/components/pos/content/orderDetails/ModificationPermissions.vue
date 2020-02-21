@@ -75,25 +75,27 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button
-            type="button"
-            class="btn btn-danger"
-            data-dismiss="modal"
-            @click="cancelPayment()"
-          >
-            {{ _t('Close') }}
-          </button>
-          <button
-            type="button"
-            class="btn btn-success"
-            @click="
-              modifyOrderAction({
-                order: selectedOrder.item,
-              })
-            "
-          >
-            {{ _t('Submit') }}
-          </button>
+          <div class="btn-announce">
+            <button
+              type="button"
+              class="btn btn-success"
+              @click="
+                modifyOrderAction({
+                  order: selectedOrder.item,
+                })
+              "
+            >
+              {{ _t('Submit') }}
+            </button>
+            <button
+              type="button"
+              class="btn btn-danger"
+              data-dismiss="modal"
+              @click="cancelPayment()"
+            >
+              {{ _t('Close') }}
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -240,6 +242,13 @@ export default {
 @include responsive(mobile) {
   #modificationReason {
     .modal-dialog {
+      margin: 0 !important;
+      #my-dropdown {
+        position: relative !important;
+        top: 0px !important;
+        max-height: 5rem !important;
+        overflow: scroll !important;
+      }
       .modal-content {
         .modal-header {
           box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
