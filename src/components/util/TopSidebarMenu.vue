@@ -349,8 +349,7 @@
         <li>
           <a
             data-toggle="modal"
-            @click="checkSuperVisorPassword"
-            :data-target="businessSummary"
+            :data-target="modalView"
             role="button"
             class="cursor-pointer business-summary"
             ><svg
@@ -393,7 +392,7 @@
     </ul>
     <PrinterSettings v-if="isDimsPosApp()" />
     <BusinessSummary />
-    <ModificationPermissions />
+    <SupervisorPasswordView />
   </ul>
 </template>
 <script>
@@ -402,7 +401,7 @@ import { mapState, mapGetters, mapActions } from 'vuex'
 import AuthService from '@/services/data/AuthService'
 import bootstrap from '@/bootstrap'
 //import SwitchStore from '@/components/commonButtons/SwitchStore'
-import ModificationPermissions from '@/components/pos/content/orderDetails/ModificationPermissions'
+import SupervisorPasswordView from './SupervisorPassword'
 import avatar from '@/components/mobileComponents/mobileElements/avatar'
 import PrinterSettings from '../pos/footer/popups/PrinterSettings'
 import BusinessSummary from '../pos/footer/popups/BusinessSummary'
@@ -414,12 +413,10 @@ export default {
     avatar,
     PrinterSettings,
     BusinessSummary,
-    ModificationPermissions,
+    SupervisorPasswordView,
   },
   data: function() {
     return {
-      supervisorPassword: false,
-      businessSummary: '#modificationReason',
       iconCodeSelection: 'us',
       onlineOrdersCount: 0,
       dm: this.baseurl('delivery') + '/delivery_home/new',
@@ -443,6 +440,7 @@ export default {
     ...mapGetters('auth', ['waiter', 'carhop']),
     ...mapState('location', ['availableLanguages', 'language']),
     ...mapState('dinein', ['dineInTabType', 'activeArea']),
+    ...mapState('reports', ['modalView']),
     ...mapState('sync', ['online']),
     ...mapState({
       latestOnlineOrders: state =>
@@ -453,12 +451,6 @@ export default {
     ...mapGetters('location', ['_t', 'permitted']),
   },
   methods: {
-    checkSuperVisorPassword() {
-      // this.$store.dispatch('order/fetchModificationReasons')
-      this.businessSummary = this.supervisorPassword
-        ? '#business-summary'
-        : '#modificationReason'
-    },
     baseurl(link) {
       /*DeliveryManager, Dinein*/
       let replaceURI = ''
