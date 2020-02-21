@@ -236,7 +236,7 @@ export default {
   },
 }
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
 .getAreaId {
   width: 55.6795rem !important;
 }
@@ -331,6 +331,9 @@ export default {
   }
 }
 @include responsive(mobile) {
+  .getAreaId {
+    width: auto !important;
+  }
   #add_address {
     .modal-dialog {
       margin: 0;

@@ -127,6 +127,9 @@
 }
 
 button {
+  @include responsive(mobile) {
+    width: auto !important;
+  }
   cursor: pointer;
   white-space: nowrap;
 

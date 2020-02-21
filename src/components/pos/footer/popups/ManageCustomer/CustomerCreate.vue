@@ -188,7 +188,7 @@ export default {
         form {
           overflow-y: auto;
           overflow-x: hidden;
-          width: 100vw;
+          width: 95vw !important;
         }
 
         .modal-body {
