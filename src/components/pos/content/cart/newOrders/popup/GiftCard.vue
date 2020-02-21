@@ -22,6 +22,7 @@
                 type="text"
                 class="add-email-from"
                 v-model="code"
+                @keydown.space.prevent
                 @keypress="
                   $event.keyCode == 13 ? $event.preventDefault() : true
                 "
