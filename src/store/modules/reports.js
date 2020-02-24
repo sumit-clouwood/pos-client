@@ -29,7 +29,7 @@ const actions = {
     }
     // eslint-disable-next-line no-undef,no-console
     console.log(data, 'data passing')
-    new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       ReportService.fetchBusinessSummery(data)
         .then(response => {
           // eslint-disable-next-line no-undef,no-console
