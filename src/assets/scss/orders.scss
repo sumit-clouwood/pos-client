@@ -1,14 +1,22 @@
-@import "pixels_rem.scss";
-@import "variables.scss";
+@import 'pixels_rem.scss';
+@import 'variables.scss';
 
 .main-orders {
-  padding: $px20 $px30 0;
+  padding: $px5 $px30 0;
   display: grid;
   grid-template-rows: min-content 1fr min-content;
   height: calc(100vh - #{$main-body-height});
   overflow: hidden;
   background-color: $gray-bg-light;
   grid-column-start: 2;
+  &.mainOrdersDine {
+    grid-template-rows: 1fr min-content;
+    .main-orders-list-wrapper {
+      &::-webkit-scrollbar {
+        width: $px10;
+      }
+    }
+  }
 
   .main-orders-title {
     display: none;
@@ -19,7 +27,7 @@
     //grid-template-columns: auto max-content;
     grid-template-rows: auto auto;
     align-items: center;
-    margin-bottom: $px20;
+    margin-bottom: $px5;
 
     .main-oreders-title {
       font-weight: 600;
@@ -36,7 +44,7 @@
       letter-spacing: $px1;
       position: relative;
       border: $px1 dashed $header-gray-light;
-      > span{
+      > span {
         position: absolute;
         top: -$px12;
         color: #fff;
@@ -44,9 +52,12 @@
         background: red;
         padding: $px1;
         border-radius: 50%;
-        height: $px20;
-        width: $px20;
+        height: $px30;
+        width: $px30;
         text-align: center;
+        display: grid;
+        align-items: center;
+        justify-content: center;
       }
     }
 
@@ -68,11 +79,11 @@
     .main-oreders-buttons {
       padding: 0px 0;
       display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
+      grid-template-columns: 1fr 1fr 1fr auto auto;
       grid-gap: $px10;
       grid-column-start: 1;
       grid-column-end: 3;
-      margin-top: $px10;
+      margin-top: $px5;
 
       .button {
         cursor: pointer;
@@ -90,18 +101,26 @@
           background-color: $blue-dark;
         }
       }
+      .cartBottomBtn{
+        i{
+          vertical-align: middle;
+        }
+      }
     }
   }
 
   .main-orders-list-wrapper {
     overflow: auto;
     position: relative;
-    padding-right: $px20;
+    padding-right: 0;
+    &::-webkit-scrollbar{
+      width: 0;
+    }
 
     .main-orders-list {
       display: grid;
       grid-template-columns: auto;
-      grid-gap: $px20;
+      grid-gap: $px5;
       position: relative;
 
       &.hide {
@@ -114,11 +133,11 @@
         border: 1px solid $gray-middle;
         border-radius: $card-border-radius;
         background-color: $white;
-        padding: $px15 $px20;
+        padding: $px5 $px20;
         display: grid;
         grid-template-columns: 1fr;
         grid-template-rows: auto auto 1fr;
-        margin-top: $px20;
+        margin-bottom: $px5;
 
         .main-orders-list-item-title {
           display: grid;
@@ -155,9 +174,7 @@
           align-items: center;
         }
       }
-      .main-orders-list-item:first-child {
-        margin-top: unset;
-      }
+      
     }
 
     .wrappers-order-block {
@@ -177,11 +194,10 @@
     }
   }
 
-
   .main-orders-total {
     display: grid;
     grid-template-columns: 1fr;
-    padding-top: $px18;
+    padding-top: $px5;
 
     .item {
       display: grid;
@@ -212,7 +228,7 @@
       color: $blue-dark;
       border-top: 2px dotted $blue-dark;
       padding: $px10 0;
-      margin-top: $px10;
+      //margin-top: $px10;
 
       .sub-total-text {
         font-size: $px18;
@@ -222,7 +238,7 @@
       .sub-total-num {
         font-size: $px20;
         font-weight: 700;
-        .fa{
+        .fa {
           display: none;
         }
       }
@@ -236,6 +252,9 @@
 
 .main-orders {
   .orders-menu-overlay {
+    display: none;
+  }
+  .mobile-footer {
     display: none;
   }
 }
@@ -302,13 +321,11 @@
         background-color: #fff;
         align-items: end;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        display: none;
+        display: block;
+      }
+      .btn-next{
+        display: inline;
       }
     }
   }
-}
-
-
-.mobile-footer {
-  display: none;
 }

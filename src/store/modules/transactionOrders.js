@@ -85,7 +85,8 @@ const actions = {
       data.forEach(function(value) {
         let orderDateTime = LookupData.convertDatetimeCustom(
           value.real_created_datetime,
-          timezoneString
+          timezoneString,
+          'YYYY-MM-DD HH:mm:ss'
         )
         orderDateTime = orderDateTime.substring(0, orderDateTime.indexOf(' '))
         if (orderDateTime.length) {

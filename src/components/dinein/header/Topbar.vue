@@ -12,7 +12,9 @@
         class="popup-btn-save"
         v-if="isPermitted(PERMISSIONS.BRAND_SETTINGS)"
       >
-        <a :href="baseurl('dashboard')">{{ _t('Change Brand') }}</a>
+        <a :href="baseurl('dashboard')" target="_self">{{
+          _t('Change Brand')
+        }}</a>
       </button>
     </div>
   </div>

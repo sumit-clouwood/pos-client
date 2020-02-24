@@ -79,7 +79,7 @@ img {
 ::-webkit-scrollbar-thumb {
   -webkit-border-radius: 3px;
   border-radius: 3px;
-  background-color: #b2becf;
+  background-color: #777a7d;
   margin: 2px; }
 
 ::-webkit-resizer {
@@ -88,7 +88,7 @@ img {
   height: 0; }
 
 ::-webkit-scrollbar {
-  width: 0.5625rem;
+  width: 0.625rem;
   height: 0.1875rem; }
 
 ::-webkit-scrollbar-track-piece {
@@ -581,7 +581,8 @@ h6 {
           grid-gap: 1.25rem;
           padding: 0.9375rem 1.25rem;
           border-bottom: 0.0625rem solid #e3e7f2;
-          align-items: center; }
+          align-items: center;
+          cursor: pointer; }
       .header .header-main .header-main-right .profile-sidebar-header {
         display: grid;
         grid-template-columns: max-content auto max-content;
@@ -825,6 +826,24 @@ h6 {
   height: 12px;
   border: solid white;
   border-width: 0 3px 3px 0; }
+
+.food-arrow {
+  position: absolute;
+  background: rgba(80, 86, 202, 0.7);
+  color: #fff;
+  padding: 0.8125rem 1.625rem;
+  border-radius: 0.25rem;
+  right: 0;
+  cursor: pointer;
+  z-index: 99;
+  width: 4.25rem; }
+  .food-arrow.disable {
+    display: none; }
+  .food-arrow.modifier-top-arrow {
+    right: 30px !important; }
+  .food-arrow.modifier-bottom-arrow {
+    right: 30px !important;
+    bottom: 90px !important; }
 
 #customer .modal-dialog,
 #manage-customer .modal-dialog {
@@ -2122,6 +2141,33 @@ a:hover {
   grid-gap: 1.25rem;
   grid-template-columns: 1fr 1fr; }
 
+.select-discount {
+  max-height: 300px;
+  overflow: auto; }
+  .select-discount::-webkit-scrollbar {
+    width: 0; }
+
+.discount-footer {
+  padding: 0 0.875rem 1.875rem 1.875rem !important; }
+  .discount-footer .food-arrow {
+    position: absolute;
+    background: rgba(80, 86, 202, 0.7);
+    color: #fff;
+    padding: 0.8125rem 1.625rem;
+    border-radius: 0.25rem;
+    right: 0;
+    cursor: pointer;
+    z-index: 99;
+    width: 4.25rem; }
+    .discount-footer .food-arrow.disable {
+      display: none; }
+    .discount-footer .food-arrow.food-top-arrow {
+      top: 68px;
+      right: 12px; }
+    .discount-footer .food-arrow.food-bottom-arrow {
+      bottom: 86px;
+      right: 12px; }
+
 .dining-option-block.select-discount-option > div > p {
   border-radius: 3px;
   background-color: #f99c32;
@@ -2160,6 +2206,9 @@ a:hover {
   color: #5056ca; }
 
 @media only screen and (min-width: 320px) and (max-width: 960px) {
+  .food-arrow {
+    display: none; }
+
   #select-discount .modal-dialog {
     position: absolute;
     top: 50px;
@@ -2204,6 +2253,15 @@ a:hover {
       #select-discount .modal-dialog .modal-content .modal-footer .btn-announce #discount-save-btn {
         background-color: #64C434;
         border: none; } }
+@media only screen and (min-width: 992px) {
+  .select-discount {
+    margin-top: 2.375rem;
+    margin-bottom: 3.125rem; }
+    .select-discount .select-discount-option {
+      grid-template-columns: repeat(3, 1fr); }
+
+  #select-discount .modal-dialog {
+    max-width: 45%; } }
 #manage-customer .modal-dialog {
   max-width: 58.75rem;
   box-shadow: 0 10px 40px rgba(133, 139, 151, 0.16);
@@ -2274,6 +2332,24 @@ a:hover {
 
 .manage-customer-wrap {
   padding: 0.625rem 1.875rem; }
+  .manage-customer-wrap .food-arrow {
+    position: absolute;
+    background: rgba(80, 86, 202, 0.7);
+    color: #fff;
+    padding: 0.8125rem 1.625rem;
+    border-radius: 0.25rem;
+    right: 0;
+    cursor: pointer;
+    z-index: 99;
+    width: 4.25rem; }
+    .manage-customer-wrap .food-arrow.disable {
+      display: none; }
+    .manage-customer-wrap .food-arrow.cust-top-arrow {
+      top: 70px;
+      right: 30px; }
+    .manage-customer-wrap .food-arrow.cust-bottom-arrow {
+      bottom: 0;
+      right: 30px; }
   .manage-customer-wrap .manage-customer-table span svg {
     /*@include responsive(xs) {
       display: none;
@@ -2305,6 +2381,8 @@ a:hover {
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
   touch-action: auto; }
+  .manage-customer-table::-webkit-scrollbar {
+    width: 0; }
 
 .holdorders {
   justify-content: flex-end; }
@@ -2320,6 +2398,9 @@ a:hover {
   font-weight: bold !important; }
 
 @media only screen and (min-width: 320px) and (max-width: 960px) {
+  .food-arrow {
+    display: none; }
+
   #manage-customer {
     opacity: 1;
     position: absolute;
@@ -3849,7 +3930,13 @@ body {
   grid-row-end: 4;
   background-color: #5056CA;
   display: grid;
-  grid-template-rows: 5.3125rem 1fr 3.75rem 6.25rem; }
+  grid-template-rows: 5.3125rem 1fr 3.75rem 6.25rem;
+  justify-content: center;
+  grid-template-columns: 1fr;
+  overflow: hidden;
+  /*img{
+    max-width: 100%;
+  }*/ }
   .navigation .logo {
     display: grid;
     grid-template-columns: auto;
@@ -3895,7 +3982,8 @@ body {
           border-radius: 3px;
           transition: 0.2s linear; }
           .navigation .navigation-list-wrapper .navigation-list .nav-item .nav-link-nav.activebg {
-            padding: 0 5px; }
+            padding: 0 5px;
+            height: 5.3125rem; }
           .navigation .navigation-list-wrapper .navigation-list .nav-item .nav-link-nav.active, .navigation .navigation-list-wrapper .navigation-list .nav-item .nav-link-nav:hover {
             background-color: #767DFF !important;
             box-shadow: 0 0 5px rgba(0, 0, 0, 0.1); }
@@ -3969,9 +4057,22 @@ body {
   grid-template-rows: 5.3125rem 1fr 3.75rem 7.3125rem;
   width: 4.6875rem;
   -webkit-transition: 0.3s ease-out;
-  transition: 0.3s ease-out; }
+  transition: 0.3s ease-out;
+  justify-content: inherit;
+  grid-template-columns: 4.6875rem; }
   .dm-manager .navigation.collapse-menu {
-    width: 12.5rem; }
+    width: 12.5rem;
+    grid-template-columns: 12.5rem; }
+    .dm-manager .navigation.collapse-menu .navigation-avatar {
+      -webkit-transition: width 0.3s;
+      /* For Safari 3.1 to 6.0 */
+      transition: width 0.3s;
+      width: 12.5rem; }
+      .dm-manager .navigation.collapse-menu .navigation-avatar .nav-link {
+        width: 12.5rem;
+        -webkit-transition: width 0.3s;
+        /* For Safari 3.1 to 6.0 */
+        transition: width 0.3s; }
   .dm-manager .navigation .logo {
     width: 4.6875rem; }
   .dm-manager .navigation .navigation-list-wrapper .navigation-list {
@@ -4015,10 +4116,26 @@ body {
           overflow: hidden;
           text-overflow: ellipsis;
           margin-left: 1.25rem; }
+  .dm-manager .navigation .slider-btn {
+    z-index: 9; }
+  .dm-manager .navigation .navigation-avatar {
+    justify-content: inherit;
+    -webkit-transition: width 0.3s;
+    /* For Safari 3.1 to 6.0 */
+    transition: width 0.3s;
+    width: 4.6875rem; }
+    .dm-manager .navigation .navigation-avatar .nav-link {
+      width: 4.6875rem;
+      -webkit-transition: width 0.3s;
+      /* For Safari 3.1 to 6.0 */
+      transition: width 0.3s; }
 
 .collapse-menu .navigation-list li {
   max-width: 12.25rem !important; }
 
+@media only screen and (min-width: 961px) {
+  .navigation img {
+    max-width: 100%; } }
 .main {
   display: grid;
   grid-template-columns: 65% 35%; }
@@ -4051,19 +4168,45 @@ body {
       font-size: 1rem; }
   .main .main-body {
     border-right: 1px solid #E3E7F2;
-    height: calc(100vh - 14.0625rem);
+    height: calc(100vh - 13.0625rem);
     overflow: hidden;
     display: grid;
     grid-template-rows: 6.875rem 1fr;
     padding: 0 1.875rem; }
     .main .main-body .search-field {
-      margin-top: 1.8125rem; }
+      margin-top: 0.625rem; }
     .main .main-body .food-wrapper {
       display: grid;
       grid-template-columns: auto 1fr;
       grid-template-rows: auto;
       grid-gap: 0.625rem;
-      height: calc(100vh - 21.5625rem); }
+      height: calc(100vh - 21.5625rem);
+      position: relative; }
+      .main .main-body .food-wrapper .foodCatScroll::-webkit-scrollbar {
+        width: 0; }
+      .main .main-body .food-wrapper .food-arrow {
+        position: absolute;
+        background: rgba(80, 86, 202, 0.7);
+        color: #fff;
+        padding: 0.8125rem 1.625rem;
+        border-radius: 0.25rem;
+        right: 0;
+        cursor: pointer;
+        z-index: 99;
+        width: 4.25rem; }
+        .main .main-body .food-wrapper .food-arrow.disable {
+          display: none; }
+        .main .main-body .food-wrapper .food-arrow.food-cat-top-arrow {
+          left: 0.9375rem;
+          top: 0; }
+        .main .main-body .food-wrapper .food-arrow.food-cat-bottom-arrow {
+          left: 0.9375rem;
+          bottom: -0.625rem; }
+        .main .main-body .food-wrapper .food-arrow.food-top-arrow {
+          top: 0; }
+        .main .main-body .food-wrapper .food-arrow.food-bottom-arrow {
+          bottom: -0.625rem;
+          right: 0; }
       .main .main-body .food-wrapper .food-categories-wrapper {
         overflow: auto;
         display: grid;
@@ -4089,6 +4232,8 @@ body {
           background-color: #fff;
           padding: 2px 2px 2px 2px;
           margin-top: 10px; }
+          .main .main-body .food-wrapper .food-categories .food-categories-item.cashier_app_sub_item {
+            height: 6.25rem; }
           .main .main-body .food-wrapper .food-categories .food-categories-item:hover, .main .main-body .food-wrapper .food-categories .food-categories-item.active {
             box-shadow: inset 0 0 0px 2px #5056CA; }
             .main .main-body .food-wrapper .food-categories .food-categories-item:hover .food-categories-item-check, .main .main-body .food-wrapper .food-categories .food-categories-item.active .food-categories-item-check {
@@ -4136,7 +4281,10 @@ body {
         display: grid;
         grid-template-rows: auto 1fr;
         grid-gap: 20px;
-        overflow-y: auto; }
+        overflow-y: auto;
+        border-right: 1px solid #E3E7F2; }
+        .main .main-body .food-wrapper .food-block::-webkit-scrollbar {
+          width: 0; }
         .main .main-body .food-wrapper .food-block .breadcrumbs {
           padding: 0px 1.25rem;
           height: 3.125rem;
@@ -4293,6 +4441,9 @@ body {
               display: none; }
 
 @media only screen and (min-width: 320px) and (max-width: 960px) {
+  .cartBottomBtn, .food-arrow {
+    display: none; }
+
   .ullist-inventory-location {
     padding: 0 !important;
     position: absolute;
@@ -4314,21 +4465,40 @@ body {
         grid-template-rows: 1fr max-content max-content; }
         .ullist-inventory-location .p-3 .margin220 .loading-modules {
           width: 100%; } }
+@media only screen and (min-width: 992px) {
+  .main .main-body {
+    grid-template-rows: 4.875rem 1fr; }
+    .main .main-body .foodCatScroll {
+      margin-top: 4rem; }
+    .main .main-body .food-wrapper {
+      height: calc(100vh - 19.5625rem); }
+      .main .main-body .food-wrapper .food-block {
+        height: calc(100vh - 19.5625rem);
+        margin-right: -0.3125rem; }
+  .main .cartBottomBtn {
+    Width: 3.125rem; }
+    .main .cartBottomBtn.toggle {
+      -webkit-transform: rotate(180deg);
+      transform: rotate(180deg); } }
 .main-orders {
-  padding: 1.25rem 1.875rem 0;
+  padding: 0.3125rem 1.875rem 0;
   display: grid;
   grid-template-rows: min-content 1fr min-content;
-  height: calc(100vh - 14.0625rem);
+  height: calc(100vh - 13.0625rem);
   overflow: hidden;
   background-color: #F1F3F6;
   grid-column-start: 2; }
+  .main-orders.mainOrdersDine {
+    grid-template-rows: 1fr min-content; }
+    .main-orders.mainOrdersDine .main-orders-list-wrapper::-webkit-scrollbar {
+      width: 0.625rem; }
   .main-orders .main-orders-title {
     display: none; }
   .main-orders .main-orders-contacts {
     display: grid;
     grid-template-rows: auto auto;
     align-items: center;
-    margin-bottom: 1.25rem; }
+    margin-bottom: 0.3125rem; }
     .main-orders .main-orders-contacts .main-oreders-title {
       font-weight: 600;
       font-size: 1.25rem;
@@ -4350,9 +4520,12 @@ body {
         background: red;
         padding: 0.0625rem;
         border-radius: 50%;
-        height: 1.25rem;
-        width: 1.25rem;
-        text-align: center; }
+        height: 1.875rem;
+        width: 1.875rem;
+        text-align: center;
+        display: grid;
+        align-items: center;
+        justify-content: center; }
     .main-orders .main-orders-contacts .main-oreders-date {
       padding: 0px 0;
       font-size: 0.75rem;
@@ -4367,11 +4540,11 @@ body {
     .main-orders .main-orders-contacts .main-oreders-buttons {
       padding: 0px 0;
       display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
+      grid-template-columns: 1fr 1fr 1fr auto auto;
       grid-gap: 0.625rem;
       grid-column-start: 1;
       grid-column-end: 3;
-      margin-top: 0.625rem; }
+      margin-top: 0.3125rem; }
       .main-orders .main-orders-contacts .main-oreders-buttons .button {
         cursor: pointer;
         background-color: #5056CA;
@@ -4385,14 +4558,18 @@ body {
         transition: 0.2s linear; }
         .main-orders .main-orders-contacts .main-oreders-buttons .button:hover {
           background-color: #3A3E9F; }
+      .main-orders .main-orders-contacts .main-oreders-buttons .cartBottomBtn i {
+        vertical-align: middle; }
   .main-orders .main-orders-list-wrapper {
     overflow: auto;
     position: relative;
-    padding-right: 1.25rem; }
+    padding-right: 0; }
+    .main-orders .main-orders-list-wrapper::-webkit-scrollbar {
+      width: 0; }
     .main-orders .main-orders-list-wrapper .main-orders-list {
       display: grid;
       grid-template-columns: auto;
-      grid-gap: 1.25rem;
+      grid-gap: 0.3125rem;
       position: relative; }
       .main-orders .main-orders-list-wrapper .main-orders-list.hide {
         display: none; }
@@ -4402,11 +4579,11 @@ body {
         border: 1px solid #E3E7F2;
         border-radius: 5px;
         background-color: #fff;
-        padding: 0.9375rem 1.25rem;
+        padding: 0.3125rem 1.25rem;
         display: grid;
         grid-template-columns: 1fr;
         grid-template-rows: auto auto 1fr;
-        margin-top: 1.25rem; }
+        margin-top: 0.3125rem; }
         .main-orders .main-orders-list-wrapper .main-orders-list .main-orders-list-item .main-orders-list-item-title {
           display: grid;
           grid-template-columns: 1fr auto auto;
@@ -4448,7 +4625,7 @@ body {
   .main-orders .main-orders-total {
     display: grid;
     grid-template-columns: 1fr;
-    padding-top: 1.125rem; }
+    padding-top: 0.3125rem; }
     .main-orders .main-orders-total .item {
       display: grid;
       grid-template-columns: max-content max-content;
@@ -4469,8 +4646,7 @@ body {
       justify-content: space-between;
       color: #3A3E9F;
       border-top: 2px dotted #3A3E9F;
-      padding: 0.625rem 0;
-      margin-top: 0.625rem; }
+      padding: 0.625rem 0; }
       .main-orders .main-orders-total .total .sub-total-text {
         font-size: 1.125rem;
         font-weight: 700; }

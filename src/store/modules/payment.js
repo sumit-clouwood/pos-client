@@ -16,9 +16,9 @@ const getters = {
   cash: state => {
     let method = ''
     if (typeof state.methods.data != 'undefined') {
-      method = state.methods.data.find(method => method.name.match(/cash/i))
+      method = state.methods.data.find(method => method.type === 'cash')
       if (!method) {
-        method = state.methods.data.find(method => method.type == 'regular')
+        method = state.methods.data.find(method => method.name.match(/cash/i))
       }
     }
     return method

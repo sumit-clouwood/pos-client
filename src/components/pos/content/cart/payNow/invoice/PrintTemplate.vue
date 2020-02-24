@@ -54,6 +54,17 @@
               <span class="float-right">{{ order_type }}</span>
             </th>
           </tr>
+          <tr
+            class="left-aligned"
+            v-if="selectedTableRservationData && orderType.OTApi === 'dine_in'"
+          >
+            <th colspan="3">
+              {{ template.table_number_label }}
+              <span class="float-right">
+                {{ selectedTableRservationData }}
+              </span>
+            </th>
+          </tr>
           <tr v-if="crm_module_enabled && customer" class="left-aligned">
             <th colspan="3">
               {{ template.customer_label }}
@@ -96,7 +107,7 @@
                 <template v-for="(modifier, i) in order.item_modifiers">
                   <template v-if="modifier.for_item == item.no">
                     <div class="food-extra" :key="'modifier' + i">
-                      {{ translate_item_modifier(modifier) }}
+                      {{ translate_item_modifier(modifier, item) }}
                       <span v-if="modifier.price !== 0"
                         >({{
                           format_number(
@@ -131,7 +142,7 @@
                   </div>
                 </td>
                 <td class="right-aligned table-page-child" valign="top">
-                  -{{ format_number(discount.price) }}
+                  -{{ format_number(discount_total(discount)) }}
                 </td>
               </template>
             </tr>
@@ -232,7 +243,12 @@
                 {{ format_number(order_payment.collected) }}
               </td>
             </tr>
-            <tr class="important" v-if="!preview">
+            <tr
+              class="important"
+              v-if="
+                !preview && order.order_type !== CONST.ORDER_TYPE_CALL_CENTER
+              "
+            >
               <td colspan="3" class="footTotal">
                 <div>
                   {{ template.total_paid_label }}
@@ -243,7 +259,25 @@
                 </div>
               </td>
             </tr>
-            <tr v-if="!preview">
+            <tr
+              class="important"
+              v-if="order.order_type === CONST.ORDER_TYPE_CALL_CENTER"
+            >
+              <td colspan="3" class="footTotal">
+                {{ referral_data(order.referral) }}
+                {{
+                  referral.referral_type === CONST.REFERRAL_TYPE_COD
+                    ? 'Cash on Delivery'
+                    : 'Paid by ' + referral.name
+                }}
+                <!--Paid by {{ getReferral(order.referral).name }} {{ referral }}-->
+              </td>
+            </tr>
+            <tr
+              v-if="
+                !preview && order.order_type !== CONST.ORDER_TYPE_CALL_CENTER
+              "
+            >
               <td colspan="2">
                 {{ template.tips_label }}
               </td>
@@ -251,7 +285,11 @@
                 {{ format_number(order.tip_amount) }}
               </td>
             </tr>
-            <tr v-if="!preview">
+            <tr
+              v-if="
+                !preview && order.order_type !== CONST.ORDER_TYPE_CALL_CENTER
+              "
+            >
               <td colspan="2">
                 {{ template.changed_label }}
               </td>
@@ -293,6 +331,7 @@ export default {
   data() {
     return {
       currentBrand: this.$store.state.location.brand,
+      referral: false,
       currentStore: this.$store.state.location.store,
       current_locale: this.$store.state.location.locale,
       company_logo:
@@ -322,8 +361,10 @@ export default {
   },
   computed: {
     ...mapState('checkout', ['print']),
-    ...mapGetters('location', ['_t']),
+    ...mapGetters('location', ['_t', 'getReferral']),
     ...mapState('location', ['timezoneString']),
+    ...mapState('dinein', ['selectedTableRservationData']),
+    ...mapState('order', ['orderType']),
 
     dataBeingLoaded() {
       if (!this.order_to_print || !this.template) {
@@ -435,10 +476,80 @@ export default {
       if (this.dataBeingLoaded) {
         return null
       }
-      return this.order_to_print
+      let order = { ...this.order_to_print }
+      order.items = this.loadFromCollection(
+        order.items,
+        'entity_id',
+        '_id',
+        'category/rawItems',
+        ['translations_dict']
+      )
+      order.item_modifiers = order.item_modifiers.map(modifier => {
+        this.$store.getters['modifier/rawModifiers'](modifier).forEach(
+          catalogModifier => {
+            if (catalogModifier._id === modifier.entity_id) {
+              modifier['translations_dict'] =
+                catalogModifier['translations_dict']
+            }
+          }
+        )
+        return modifier
+      })
+
+      order.order_surcharges = this.loadFromCollection(
+        order.order_surcharges,
+        'entity_id',
+        '_id',
+        'surcharge/surcharges',
+        ['translations_dict']
+      )
+
+      order.order_discounts = this.loadFromCollection(
+        order.order_discounts,
+        'entity_id',
+        '_id',
+        'discount/orderDiscounts',
+        ['translations_dict']
+      )
+
+      order.item_discounts = this.loadFromCollection(
+        order.item_discounts,
+        'entity_id',
+        '_id',
+        'discount/itemDiscounts',
+        ['translations_dict']
+      )
+
+      return order
     },
   },
   methods: {
+    loadFromCollection(orderEntities, key, map, getter, keysToLoad) {
+      if (!Array.isArray(orderEntities) || !key || !map) {
+        return orderEntities
+      }
+
+      const data = this.$store.getters[getter]
+      if (!data) {
+        return orderEntities
+      }
+
+      return orderEntities.map(entity => {
+        data.forEach(item => {
+          if (entity[key] === item[map]) {
+            keysToLoad.forEach(index => {
+              if (item[index]) {
+                entity[index] = item[index]
+              }
+            })
+          }
+        })
+        return entity
+      })
+    },
+    referral_data(referralId) {
+      this.referral = this.$store.getters['location/getReferral'](referralId)
+    },
     is_ready_to_print() {
       if (this.all_data_fully_loaded) {
         return true
@@ -463,6 +574,13 @@ export default {
       }
       return results.join(' / ')
     },
+    discount_total(discount) {
+      if (discount.type === 'fixed_price') {
+        return parseFloat(discount.price) + parseFloat(discount.tax)
+      } else {
+        return parseFloat(discount.price)
+      }
+    },
     item_total(item_no) {
       var total = 0
       for (var item of this.order.items) {
@@ -480,74 +598,31 @@ export default {
       for (var item_discount of this.order.item_discounts) {
         if (item_discount.for_item == item_no) {
           total -= parseFloat(item_discount.price)
+          total -= parseFloat(item_discount.tax)
         }
       }
-      return total
+      return total < 0 ? '0.00' : total
     },
     //These methods would need to be updated at POS to search for objects in POS store
     //These functions
     translate_item(orderItem) {
-      var found_item = this.$store.state.category.items.find(
-        item => item._id == orderItem.entity_id
-      )
-      if (found_item) {
-        if (found_item.name === 'Open Item') {
-          return this.translate_entity(orderItem, 'name')
-        }
-        return this.translate_entity(found_item, 'name')
-      } else {
-        return ''
-      }
+      return this.translate_entity(orderItem, 'name')
     },
-    translate_item_modifier(item) {
-      var found_item = this.$store.getters['modifier/findModifier'](
-        item.entity_id
-      )
-      if (found_item) {
-        return this.translate_entity(found_item, 'name')
-      } else {
-        return ''
-      }
+    // eslint-disable-next-line no-unused-vars
+    translate_item_modifier(item, orderItem) {
+      return this.translate_entity(item, 'name')
     },
     translate_item_discount(item) {
-      var found_item = this.$store.state.discount.itemDiscounts.data.find(
-        loaded_item => loaded_item._id == item.entity_id
-      )
-      if (found_item) {
-        return this.translate_entity(found_item, 'name')
-      } else {
-        return ''
-      }
+      return this.translate_entity(item, 'name')
     },
     translate_surcharge(item) {
-      var found_item = this.$store.state.surcharge.surcharges.find(
-        loaded_item => loaded_item._id == item.entity_id
-      )
-      if (found_item) {
-        return this.translate_entity(found_item, 'name')
-      } else {
-        return ''
-      }
+      return this.translate_entity(item, 'name')
     },
     translate_order_discount(item) {
-      var found_item = this.$store.state.discount.orderDiscounts.find(
-        loaded_item => loaded_item._id == item.entity_id
-      )
-      if (found_item) {
-        return this.translate_entity(found_item, 'name')
-      } else {
-        return ''
-      }
+      return this.translate_entity(item, 'name')
     },
     translate_payment_type(item) {
-      var found_item = this.$store.getters['payment/methods'].find(
-        loaded_item => loaded_item._id == item.entity_id
-      )
-      if (found_item) {
-        return this.translate_entity(found_item, 'name')
-      } else {
-        return ''
-      }
+      return this.translate_entity(item, 'name')
     },
     get_delivery_area_name(delivery_area_id) {
       var found = this.$store.state.customer.fetchDeliveryAreas.find(

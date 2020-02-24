@@ -31,6 +31,7 @@ export default {
       orderId: null,
       customerId: null,
       addressId: null,
+      groupId: null,
     }
   },
   components: {
@@ -87,6 +88,17 @@ export default {
         customerId: this.customerId,
         addressId: this.addressId,
       })
+    }
+    /* Implemented for multistore*/
+    if (this.$route.name.match('selectGroupForCrmOrder')) {
+      this.customerId = this.$route.params.customer_id
+      this.addressId = this.$route.params.address_id
+      this.groupId = this.$route.params.group_id
+      this.$store.dispatch('customer/setAddressForDelivery', {
+        customerId: this.customerId,
+        addressId: this.addressId,
+      })
+      this.$store.dispatch('context/getStoresByGroupID', this.groupId)
     }
   },
 }

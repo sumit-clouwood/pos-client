@@ -43,6 +43,7 @@
 import { mapGetters, mapState } from 'vuex'
 import pay from './common/pay'
 import save from './common/save'
+
 export default {
   name: 'DineinBtn',
   components: {
@@ -56,8 +57,12 @@ export default {
   },
   computed: {
     ...mapGetters('location', ['_t']),
-    ...mapGetters('auth', ['waiter']),
-    ...mapState('order', ['items', 'orderSource', 'orderType']),
+    ...mapState('order', [
+      'items',
+      'orderSource',
+      'needSupervisorAccess',
+      'orderType',
+    ]),
     ...mapState('dinein', ['selectedCover', 'orderReservationData']),
     ...mapState('checkoutForm', ['processing']),
     ...mapState('location', ['brand']),
@@ -73,6 +78,7 @@ export default {
   },
   methods: {
     payNow() {
+      this.$store.commit('checkoutForm/setAction', 'pay')
       let validationError = {}
       this.items.find(element => {
         if (typeof element.cover_name == 'undefined') {
@@ -82,13 +88,9 @@ export default {
       if (
         this.checkCover ||
         typeof this.selectedCover == 'object' ||
-        this.orderType.OTApi !== 'dine_in'
+        this.orderType.OTApi !== 'dine_in' ||
+        !this.brand.number_of_covers
       ) {
-        // if (this.orderSource === 'backend') {
-        //   showModal('#modificationReason')
-        // } else {
-        //   clickPayNow()
-        // }
         clickPayNow()
       } else {
         validationError = {
@@ -108,6 +110,7 @@ export default {
           element.cover_name == 'undefined' || element.cover_name == undefined
         )
       })
+      this.$store.commit('checkoutForm/setAction', 'add')
       if (this.items.length > 0) {
         if (
           checkCovers == undefined ||
@@ -115,7 +118,7 @@ export default {
           this.selectedCover ||
           !this.brand.number_of_covers
         ) {
-          if (this.orderSource === 'backend') {
+          if (this.needSupervisorAccess) {
             showModal('#modificationReason')
           } else {
             if (this.processing) {

@@ -6,10 +6,13 @@ import Num from '@/plugins/helpers/Num'
 import db from '@/services/network/DB'
 import TimezoneService from '@/services/data/TimezoneService'
 import * as CONST from '@/constants'
+import router from '../../router'
 
+/* global $ */
 // initial state
 const state = {
   currency: 'AED',
+  multiStoreIds: false,
   locale: 'en-US',
   timezone: 'Asia/Dubai',
   timezoneString: 'Asia/Dubai',
@@ -34,6 +37,10 @@ const getters = {
   formatPrice: state => price => {
     if (!price) price = 0.0
     return state.currency + ' ' + Num.round(price, 2).toFixed(2)
+  },
+
+  getReferral: state => id => {
+    return state.referrals.find(referral => referral._id === id)
   },
 
   permitted: state => (pageId, parentId) => {
@@ -75,6 +82,15 @@ const actions = {
   setContext({ state, commit, rootGetters }) {
     return new Promise(resolve => {
       LocationService.getLocationData().then(storedata => {
+        let availabeStores = storedata.data.available_stores
+        if (!router.currentRoute.params.store_id && availabeStores.length > 1) {
+          $('#multiStoresModal').css({ 'background-color': 'grey' })
+          $('#multiStoresModal').modal('show')
+          commit('context/SET_STORES_LENGTH', availabeStores.length, {
+            root: true,
+          })
+          commit('context/SET_MULTI_STORES', availabeStores, { root: true })
+        }
         commit(mutation.SET_BRAND, storedata.data.brand)
 
         if (storedata.data.store) {
@@ -122,18 +138,40 @@ const actions = {
         .catch(er => reject(er))
     })
   },
+  updateTranslations({ commit }) {
+    return new Promise((resolve, reject) => {
+      LocationService.getLocationData()
+        .then(uiMenu => {
+          commit(mutation.SET_TRASLATIONS, uiMenu.data.translations)
+
+          return resolve(true)
+        })
+        .catch(er => reject(er))
+    })
+  },
   //got through brand/store
   fetch({ state, commit, dispatch, rootState, rootGetters }) {
     dispatch('formatDate')
     return new Promise((resolve, reject) => {
       LocationService.getLocationData()
         .then(storedata => {
-          commit(
-            'context/SET_STORES_LENGTH',
-            storedata.data.available_stores.length,
-            { root: true }
-          )
-          commit('context/SET_MULTI_STORES', storedata.data.available_stores, {
+          if (typeof storedata.data.available_stores != undefined) {
+            commit(
+              'context/SET_STORES_LENGTH',
+              storedata.data.available_stores.length,
+              { root: true }
+            )
+            commit(
+              'context/SET_MULTI_STORES',
+              storedata.data.available_stores,
+              {
+                root: true,
+              }
+            )
+          }
+          let availableStoreGroups =
+            storedata.data.available_store_groups || false
+          commit('auth/AVAILABLE_STORE_GROUPS', availableStoreGroups, {
             root: true,
           })
           if (storedata.data.brand) {
@@ -223,11 +261,27 @@ const actions = {
                       reject(error)
                     })
 
-                  resolve(state.locale)
-
                   dispatch('referrals')
+                  let multiStoreIds = storedata.data.available_stores.map(
+                    store => store._id
+                  )
+                  let storeId = router.currentRoute.params.group_id || false
+                  if (storeId) {
+                    availableStoreGroups.find(group => {
+                      if (group._id === storeId) {
+                        multiStoreIds = group.group_stores
+                      }
+                    })
+                  }
+                  commit(mutation.MULTI_STORE_IDS, multiStoreIds)
                   dispatch('auth/getUserDetails', storedata.data.user_id, {
                     root: true,
+                  }).then(response => {
+                    resolve({
+                      userDetails: response.item,
+                      stores: multiStoreIds,
+                      availableStoreGroups: availableStoreGroups,
+                    })
                   })
                 })
                 .catch(error => {
@@ -340,10 +394,19 @@ const mutations = {
     state.translations = translations
   },
   [mutation.SET_REFERRALS](state, referrals) {
+    /*let referral = []
+    referrals.find(ref => {
+      if (typeof ref.name != 'undefined') {
+        referral.push(ref)
+      }
+    })*/
     state.referrals = referrals
   },
   [mutation.SET_TIMEZONES](state, timezones) {
     state.timezones = timezones
+  },
+  [mutation.MULTI_STORE_IDS](state, multiStoreIds) {
+    state.multiStoreIds = multiStoreIds
   },
   [mutation.RESET](state, full = false) {
     state.setModal = '#manage-customer'

@@ -6,6 +6,7 @@ const state = {
   templates: null,
   rules: null,
   templateId: null,
+  printerConfig: false,
 }
 
 // getters
@@ -13,7 +14,10 @@ const getters = {
   template: (state, getters, rootState) => {
     if (state.rules && typeof state.rules.data !== 'undefined') {
       let templateId = null
-      if (state.templateId) {
+      if (
+        state.templateId &&
+        state.templates.data.data.some(template => template._id == templateId)
+      ) {
         //template id already selected
         templateId = state.templateId
       } else {
@@ -45,11 +49,31 @@ const getters = {
 
 // actions
 const actions = {
-  async printRules({ commit }) {
+  async printRules({ commit, dispatch }) {
     const rules = await InvoiceService.fetchPrintRules()
     commit(mutation.SET_RULES, rules)
+    dispatch('getAllPrinters')
   },
 
+  getAllPrinters({ commit }) {
+    /*InvoiceService.getPrinters().then(response => {
+      commit(mutation.SET_PRINTERS, response.data)
+    })*/
+    if (window.PrintHandle != null) {
+      window.PrintHandle.GetAllPrinters(function(data) {
+        let dataObj = JSON.parse(data)
+        this.printers = dataObj.printerlist
+        let printerSetting = {
+          printers: dataObj.printerlist,
+          is_kot: dataObj.printbykot,
+          printCopies: dataObj.printcopies,
+        }
+        commit(mutation.SET_PRINTERS, printerSetting)
+        /*dataObj.printbykot
+        dataObj.printcopies*/
+      })
+    }
+  },
   async fetchTemplates({ commit }) {
     const templates = await InvoiceService.fetchTemplates()
     commit('SET_PRINT_TEMPLATES', templates)
@@ -85,6 +109,9 @@ const mutations = {
   },
   [mutation.SET_TEMPLATE_ID](state, templateId) {
     state.templateId = templateId
+  },
+  [mutation.SET_PRINTERS](state, printers) {
+    state.printerConfig = printers
   },
   // [mutation.RESET](state) {
   //   state.templateHtml = null

@@ -13,6 +13,7 @@ const state = {
     lookup_completed: false,
   },
   kitchenPrint: true,
+  selectedTableRservationData: false,
   bills: null,
   guests: 1,
   updateTableArea: 0,
@@ -44,6 +45,7 @@ const state = {
   billSplit: null,
   processingSplit: false,
   currentTableReservationData: null,
+  reservationData: null,
 }
 const getters = {
   getCurrentTableRunningReservations: state => {
@@ -58,8 +60,6 @@ const getters = {
     })
   },
   getOrderStatus: () => order_status => {
-    // eslint-disable-next-line no-console
-    console.log(order_status)
     if (
       order_status === CONST.ORDER_STATUS_ON_HOLD ||
       order_status === CONST.ORDER_STATUS_IN_PROGRESS
@@ -142,8 +142,6 @@ const actions = {
       DineInService.getAllBookedTables()
         .then(response => {
           commit(mutation.BOOKED_TABLES, response.data)
-          // eslint-disable-next-line no-console
-          console.log(response.data.data, 'boked data')
           dispatch('getDineInArea').then(() => {
             return resolve()
           })
@@ -501,7 +499,14 @@ const actions = {
       dispatch('dineInCompleteOrders', loader)
     }
   },
-  moveTable({ commit }, data) {
+  moveTable({ commit, state }, data) {
+    if (state.selectedTable) {
+      commit(
+        mutation.SELECTED_TABLE_RESERVATION,
+        state.selectedTable.table_number
+      )
+    }
+
     if (data.reservationid != 'false') {
       const params = [
         data.reservationid,
@@ -681,6 +686,9 @@ const mutations = {
   },
   [mutation.KITCHEN_PRINT](state, status) {
     state.kitchenPrint = status
+  },
+  [mutation.SELECTED_TABLE_RESERVATION](state, reservationData) {
+    state.selectedTableRservationData = reservationData
   },
   [mutation.UPDATE_ITEM_GUEST](state, { item, guest, action }) {
     switch (action) {

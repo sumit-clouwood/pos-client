@@ -53,7 +53,7 @@
 import { mapState, mapActions, mapGetters } from 'vuex'
 import OrderDetailsPopup from '@/components/pos/content/OrderDetailPopup'
 import paginate from 'vuejs-paginate'
-import Preloader from '@/components/util/Preloader'
+import Preloader from '@/components/util/progressbar'
 import DMItem from '@/components/deliveryManager/content/DMItem'
 import DMTakeAwaySubMenu from '@/components/deliveryManager/header/DMTakeAwaySubMenu'
 export default {
@@ -80,6 +80,7 @@ export default {
       },
       selectedUser: '',
       paginationDirection: 'holdorders',
+      interval: null,
     }
   },
   components: {
@@ -110,8 +111,14 @@ export default {
   },
   mounted() {
     this.$store.dispatch('deliveryManager/fetchDMOrderDetail')
-  },
 
+    this.interval = setInterval(() => {
+      this.$store.dispatch('deliveryManager/fetchDMOrderDetail')
+    }, 1000 * 20)
+  },
+  destroyed() {
+    clearInterval(this.interval)
+  },
   methods: {
     ...mapActions('order', ['updateOrderAction']),
     showDropdown: function() {

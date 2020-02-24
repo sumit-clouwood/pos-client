@@ -3,7 +3,7 @@
     :class="['navigation', allCategoryHendler ? 'active' : 'notActive']"
     class="color-main"
   >
-    <div class="logo" title="logo">
+    <div class="logo" title="logo" @click="openMultiStore">
       <a class="logo-link" role="button">
         <!--<router-link :to="'/delivery-manager' + store">-->
         <img src="img/icons/icon.png" alt="icon" />
@@ -11,6 +11,7 @@
       </a>
     </div>
     <div class="navigation-list-wrapper">
+      <MultiStore />
       <!--<btnBack :param="'category'" />-->
       <ul class="navigation-list" v-if="categories.length">
         <li
@@ -89,16 +90,19 @@
 // import btnBack from '../mobileComponents/mobileElements/btnBack'
 
 import { mapState, mapGetters } from 'vuex'
+import MultiStore from './MultiStoreMenu'
 
 export default {
   name: 'Menu',
   data() {
     return {
-      topHeight: 0,
-      counter: 0,
+      menuItemHeight: 0,
+      menuHeight: 0,
+      menuInitHeight: 0,
     }
   },
   components: {
+    MultiStore,
     // btnBack,
   },
   computed: {
@@ -106,81 +110,81 @@ export default {
       currentCategory: state => state.category.category._id,
     }),
     ...mapGetters('context', ['store']),
+    ...mapState('context', ['storeId']),
     ...mapState('auth', ['userDetails']),
+    ...mapGetters('auth', ['multistore']),
     ...mapGetters(['allCategoryHendler', 'subCategoryHendler']),
     ...mapGetters('category', ['categories', 'getImages']),
     ...mapGetters('modifier', {
       modifierImages: 'getImages',
     }), //to preftech modifier images, todo
   },
+  updated() {
+    this.$nextTick(() => {
+      this.posMenu()
+    })
+  },
+  watch: {
+    storeId(oldVal, newVal) {
+      if (oldVal != newVal) {
+        this.browse(this.categories[0])
+      }
+    },
+  },
   methods: {
+    openMultiStore() {
+      if (this.multistore) {
+        $('.multi-store-menu-pos').slideToggle()
+        $('.navigation .logo').toggleClass('multistore')
+        let posMenuUpperLogo = $('.logo')
+        $('.main, .header').click(() => {
+          if (posMenuUpperLogo.hasClass('multistore')) {
+            $('.multi-store-menu-pos').slideUp()
+            posMenuUpperLogo.removeClass('multistore')
+          }
+        })
+      } else {
+        return false
+      }
+    },
     browse(item) {
       // eslint-disable-next-line no-undef
       $('.breadcrumbs').show()
       $('.search-field-input').val('')
-      this.$store.commit('sync/reload', true)
       //bootstrap.loadUI().then(() => {})
       this.$store.dispatch('category/browse', item)
     },
+    posMenu() {
+      let menuHeight = $('.navigation-list-wrapper').innerHeight()
+      this.menuHeighInIt = this.menuHeight = menuHeight
+      this.menuInitHeight = menuHeight
+      this.menuItemHeight = $('.navigation-list').innerHeight()
+    },
     showMore() {
-      // menuShowMore()
-      let navigationListY =
-        document.querySelector('.navigation-list').getBoundingClientRect().top +
-        document.querySelector('.navigation-list').getBoundingClientRect()
-          .height
-      let navigationListWrapperY =
-        document
-          .querySelector('.navigation-list-wrapper')
-          .getBoundingClientRect().top +
-        document
-          .querySelector('.navigation-list-wrapper')
-          .getBoundingClientRect().height
-      if (
-        this.counter <= this.categories.length &&
-        navigationListY + 5 >= navigationListWrapperY
-      ) {
-        this.topHeight += document.querySelector('.nav-item').offsetHeight
-        this.topHeight += 10
-        this.counter++
-      } else {
-        this.topHeight = 0
-        this.counter = 0
+      let menuHeightOld = this.menuHeighInIt
+      //Toggles it up
+      if (this.menuHeight >= this.menuItemHeight) {
+        this.menuHeight = 0
+        $('.slider-btn').removeClass('toggle')
+        $('.navigation-list-wrapper').animate(
+          { scrollTop: this.menuHeight },
+          1000
+        )
+        this.menuHeight = menuHeightOld
+        return false
       }
-      let myElement = document.querySelector('.navigation-list-wrapper')
-      myElement.scrollTop += 20
+
+      //Toggles it down
+      $('.slider-btn').addClass('toggle')
+      $('.navigation-list-wrapper').animate(
+        { scrollTop: this.menuHeight },
+        1000
+      )
+      this.menuHeight += parseInt(this.menuInitHeight)
     },
     subCategoryHendlerChange() {
       //this.$store.dispatch('subCategoryHendlerChange')
     },
-  },
-  updated() {
-    $('li.nav-item.arrow-bottom > a > .bt-arrow').click(function(e) {
-      e.preventDefault()
-      let menuHeight = 0
-      $('#menuAccordion li').each(function() {
-        menuHeight = menuHeight + $(this).innerHeight()
-      })
-      let accordionHeight = $('#menuAccordion').innerHeight()
-      if (menuHeight > accordionHeight) {
-        $('#menuAccordion')
-          .stop()
-          .animate({ top: accordionHeight - (menuHeight + 60) + 'px' }, 800)
-      } else {
-        $('.top-arrow').css('display', 'none')
-      }
-      $('.bt-arrow').css('display', 'none')
-      $('.top-arrow').css('display', 'block')
-      return false
-    }),
-      $('li.nav-item.arrow-bottom > a > .top-arrow').click(function(e) {
-        e.preventDefault()
-        $('#menuAccordion')
-          .stop()
-          .animate({ top: 0 + 'px' }, 800)
-        $('.bt-arrow').css('display', 'block')
-        $('.top-arrow').css('display', 'none')
-        return false
-      })
   },
 }
 </script>
@@ -300,5 +304,8 @@ export default {
       }
     }
   }
+}
+.navigation .logo.multistore {
+  background: rgba(0, 0, 0, 0.7);
 }
 </style>

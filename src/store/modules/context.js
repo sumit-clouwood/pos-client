@@ -9,6 +9,7 @@ const state = {
   multiStores: null,
   selectedStore: false,
   storesLength: 1,
+  currentRoute: null,
 }
 
 // getters
@@ -39,10 +40,28 @@ const getters = {
       return ''
     }
   },
+  storeName: state => storeId =>
+    state.multiStores.find(store => store._id == storeId).name,
 }
 
 // actions
-const actions = {}
+const actions = {
+  getStoresByGroupID({ state, commit, rootState }, groupId) {
+    let availableGroups = rootState.auth.availableStoreGroups.find(
+      group => group._id == groupId
+    )
+    let groupStores = []
+    if (availableGroups.group_stores) {
+      state.multiStores.forEach(store => {
+        if (availableGroups.group_stores.includes(store._id)) {
+          groupStores.push(store)
+        }
+      })
+    }
+    localStorage.setItem('groupStores', JSON.stringify(groupStores))
+    commit('SET_MULTI_STORES', groupStores)
+  },
+}
 
 // mutations
 const mutations = {
@@ -57,6 +76,9 @@ const mutations = {
   },
   [mutation.SET_STORE](state, store) {
     state.store = store
+  },
+  [mutation.SET_ROUTE](state, any) {
+    state.currentRoute = any
   },
   [mutation.RESET](state) {
     state.store = null

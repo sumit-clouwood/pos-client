@@ -92,7 +92,7 @@
         </button>
       </div>
       <div class="color-main color-text dine-in-table-guest-details-pos">
-        <span class="tables-draw">
+        <span class="tables-draw" v-if="selectedTable">
           <img src="img/dinein/dine-intable.svg" />
           <b> {{ selectedTable.number }}</b>
         </span>
@@ -101,11 +101,29 @@
         </span>
       </div>
     </div>
+    <div class="scrolls">
+      <div
+        class="btn btn-success cartBottomBtn"
+        @click="scroll('up')"
+        :class="{ visible: showScrollDown }"
+      >
+        <i aria-hidden="true" class="fa fa-chevron-down"></i>
+      </div>
+      <div
+        class="btn btn-success cartBottomBtn  down"
+        @click="scroll('down')"
+        :class="{ visible: showScrollUp }"
+      >
+        <i aria-hidden="true" class="fa fa-chevron-down"></i>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 /* global $ */
+import { bus } from '@/eventBus'
+
 import { mapState, mapGetters, mapActions } from 'vuex'
 //import SplitBill from './popup/SplitBill'
 //import PreviewSplit from './popup/PreviewSplit.vue'
@@ -121,6 +139,8 @@ export default {
   },
   data() {
     return {
+      showScrollUp: false,
+      showScrollDown: false,
       OrderSelectedCover: 'Select Cover',
       myStyle: {
         backgroundColor: '#fff',
@@ -128,6 +148,13 @@ export default {
     }
   },
   mounted() {
+    bus.$on('showScrollCartUp', option => {
+      this.showScrollUp = option
+    })
+    bus.$on('showScrollCartDown', option => {
+      this.showScrollDown = option
+    })
+
     if (!this.selectedTable && !this.orderSource === 'backend') {
       this.$router.push(this.store)
       this.$store.commit('order/ORDER_TYPE', {
@@ -182,6 +209,9 @@ export default {
     },
   },
   methods: {
+    scroll(option) {
+      bus.$emit('scroll-cart', option)
+    },
     printSplit() {
       this.$store.commit('checkoutForm/SET_PROCESSING', true)
       this.$store.dispatch('order/startOrder')
@@ -279,4 +309,19 @@ export default {
     }
   }
 }
+</style>
+<style lang="sass" scoped>
+.cartBottomBtn
+  opacity: 0
+
+  &.visible
+    opacity: 1
+  &.down
+    margin-left: 10px
+    -ms-transform: rotate(180deg)
+    transform: rotate(180deg)
+</style>
+<style lang="sass" scoped>
+.scrolls
+  margin-top: 4px
 </style>

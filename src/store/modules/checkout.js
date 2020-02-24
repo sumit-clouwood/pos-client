@@ -20,6 +20,7 @@ const state = {
   processing: false,
   paymentAction: '',
   splitPaid: false,
+  route: null,
 }
 
 // getters
@@ -349,7 +350,6 @@ const actions = {
     }
 
     //order level discount
-
     order.item_discounts = order.item_discounts.map(discount => {
       discount.rate = Num.round(discount.rate).toFixed(2)
       discount.price = Num.round(discount.price).toFixed(2)
@@ -381,7 +381,6 @@ const actions = {
       item.tax = Num.round(item.tax).toFixed(2)
       return item
     })
-
     const orderData = getters.calculateOrderTotals(order)
 
     order.sub_total = orderData.subTotal.toFixed(2)
@@ -448,11 +447,17 @@ const actions = {
           note: item.note,
           originalItem: item,
         }
-        if (typeof item.kitchen_invoice !== 'undefined') {
-          orderItem['kitchen_invoice'] = item.kitchen_invoice
+        //add store id with item if available
+        if (item.store_id) {
+          orderItem.store_id = item.store_id
         }
         if (typeof item.kitchen_invoice !== 'undefined') {
           orderItem['kitchen_invoice'] = item.kitchen_invoice
+        } else {
+          orderItem['kitchen_invoice'] = 0
+        }
+        if (item.measurement_unit) {
+          orderItem.measurement_unit = item.measurement_unit
         }
 
         //we are sending item price and modifier prices separtely but sending
@@ -476,6 +481,10 @@ const actions = {
           itemDiscount.itemId = item._id
           itemDiscount.itemNo = item.orderIndex
           itemDiscount.quantity = item.quantity
+
+          if (item.store_id) {
+            itemDiscount.store_id = item.store_id
+          }
           //undiscountedTax is without modifiers
 
           if (item.discountedNetPrice) {
@@ -491,10 +500,9 @@ const actions = {
             rootGetters['order/itemModifierDiscount'](item)
           item_discounts.push(itemDiscount)
         }
-
         if (item.modifiersData && item.modifiersData.length) {
           item.modifiersData.forEach(modifier => {
-            itemModifiers.push({
+            let modifierEntity = {
               entity_id: modifier.modifierId,
               for_item: item.orderIndex,
               price: modifier.price,
@@ -502,7 +510,11 @@ const actions = {
               name: modifier.name,
               qty: item.quantity,
               type: modifier.type,
-            })
+            }
+            if (modifier.store_id) {
+              modifierEntity.store_id = modifier.store_id
+            }
+            itemModifiers.push(modifierEntity)
           })
           //get all modifiers by modifier ids attached to item
         }
@@ -510,7 +522,7 @@ const actions = {
       }
     })
     order.item_discounts = item_discounts.map(itemDiscount => {
-      return {
+      let discountData = {
         name: itemDiscount.name,
         type: itemDiscount.type,
         rate:
@@ -522,6 +534,12 @@ const actions = {
         for_item: itemDiscount.itemNo,
         entity_id: itemDiscount.id,
       }
+
+      if (itemDiscount.store_id) {
+        discountData.store_id = itemDiscount.store_id
+      }
+
+      return discountData
     })
 
     order.item_modifiers = itemModifiers
@@ -622,6 +640,9 @@ const actions = {
                 console.log(e)
               }
 
+              if (rootGetters['auth/multistore']) {
+                order.multi_store = true
+              }
               order.order_surcharges = rootState.surcharge.surchargeAmounts.map(
                 appliedSurcharge => {
                   const surcharge = rootState.surcharge.surcharges.find(
@@ -920,7 +941,7 @@ const actions = {
   },
   modifyDineOrder(
     { dispatch, rootState, getters, rootGetters, commit },
-    action
+    { action, data, route }
   ) {
     if (action === 'dine-in-order-preview') {
       return new Promise(resolve => {
@@ -928,25 +949,36 @@ const actions = {
         resolve()
       })
     }
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
       dispatch('getModifyOrder').then(order => {
+        let msg = 'Dinein order has been placed.'
+        if (route === 'updateOrder') {
+          order = { ...order, ...data }
+          msg = 'Dinein order has been updated'
+        }
         //delete order.order_system_status
         delete order.new_real_transition_order_no
         //delete order.real_created_datetime
         OrderService.updateOrderItems(order, rootState.order.orderId)
           .then(response => {
             if (response.data.status === 'ok') {
-              let msgStr = rootGetters['location/_t'](
-                'Dinein order has been placed.'
-              )
+              let msgStr = rootGetters['location/_t'](msg)
 
-              if (action === 'dine-in-place-order') {
+              if (
+                ['dine-in-place-order', 'modify-backend-order'].includes(
+                  action
+                ) &&
+                rootState.checkoutForm.action !== 'pay'
+              ) {
                 msgStr = rootGetters['location/_t'](
                   'Dinein order has been updated.'
                 )
 
                 dispatch('createModifyOrderItemList')
+                //'modify-backend-order' means order was updated
+                commit(mutation.SET_ROUTE, { name: 'Dinein' })
                 dispatch('reset', true)
+                commit(mutation.PRINT, false)
                 commit('order/CLEAR_SELECTED_ORDER', null, { root: true })
                 resolve()
               } else {
@@ -991,7 +1023,9 @@ const actions = {
                 }
               )
             } else {
-              dispatch('handleSystemErrors', response).then(() => resolve())
+              dispatch('handleSystemErrors', response).then(() =>
+                reject(response)
+              )
             }
           })
           .catch(error => {
@@ -1093,7 +1127,19 @@ const actions = {
     })
   },
 
-  modifyBackendOrder({ dispatch, rootState, rootGetters, commit }, { data }) {
+  modifyBackendOrder(
+    { dispatch, rootState, rootGetters, commit },
+    { action, data }
+  ) {
+    if (rootState.order.orderSource !== 'backend') {
+      if (rootGetters['order/orderType'] === CONSTANTS.ORDER_TYPE_DINE_IN) {
+        return dispatch('modifyDineOrder', {
+          action: action,
+          data: data,
+          route: 'updateOrder',
+        })
+      }
+    }
     return new Promise((resolve, reject) => {
       dispatch('getModifyOrder').then(order => {
         order = { ...order, ...data }
@@ -1438,7 +1484,7 @@ const actions = {
     ) {
       if (rootState.order.order_status !== 'completed') {
         if (rootState.order.orderId || action === 'dine-in-order-preview') {
-          return dispatch('modifyDineOrder', action)
+          return dispatch('modifyDineOrder', { action: action, data: data })
         } else {
           return dispatch('createDineOrder', action)
         }
@@ -1456,8 +1502,13 @@ const actions = {
     }
   },
 
-  generateInvoice() {
-    //commit(mutation.PRINT, true)
+  generateInvoice({ commit }) {
+    //don't actually generate invoice, invoice is generated by PRINT state which
+    //is set by update/create functions internally, here we only do things which are
+    //not related to any invoice printing, like REDIRECTION if no inovice needed, for
+    // example update (NOT MODIFY) dine in order
+    //AT THIS TIME ORDER HAS BEEN RESET SO WE DON'T HAVE ANY ORDER DATA EXCEPT ROUTE
+    commit('context/SET_ROUTE', state.route, { root: true })
   },
   reset({ state, commit, dispatch, getters }, full = true) {
     if (['dine-in-order-preview'].includes(state.paymentAction)) {
@@ -1470,7 +1521,7 @@ const actions = {
     dispatch('surcharge/reset', {}, { root: true })
     if (full && getters.complete) {
       dispatch('order/reset', {}, { root: true })
-      dispatch('customer/reset', {}, { root: true })
+      dispatch('customer/reset', true, { root: true })
       dispatch('location/reset', {}, { root: true })
     }
   },
@@ -1531,6 +1582,7 @@ const actions = {
           root: true,
         }).then(customer => {
           customerData.push(customer)
+          dispatch('customer/resetCustomer', true, { root: true })
         })
         if (orderData.order_delivery_area && customerDetails.deliveryAreas) {
           delivery_area = Object.values(customerDetails.deliveryAreas).find(
@@ -1621,7 +1673,12 @@ const actions = {
 // mutations
 const mutations = {
   [mutation.SET_ORDER](state, order) {
-    state.order = order
+    let orderData = { ...order }
+    orderData.windows_app = false
+    if (window.PrintHandle != null) {
+      orderData.windows_app = true
+    }
+    state.order = orderData
   },
   [mutation.SET_PAID_AMOUNT](state, amount) {
     state.paidAmount = amount
@@ -1664,6 +1721,9 @@ const mutations = {
   },
   [mutation.SPLIT_PAID](state, action) {
     state.splitPaid = action
+  },
+  [mutation.SET_ROUTE](state, route) {
+    state.route = route
   },
   [mutation.RESET](state, full = true) {
     state.paidAmount = 0

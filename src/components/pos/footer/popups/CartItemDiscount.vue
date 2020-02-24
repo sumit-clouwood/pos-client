@@ -27,11 +27,13 @@
               @click.prevent="selectItemDiscount(discount)"
             >
               <p>
-                {{
-                  discount.type === 'percentage'
-                    ? discount.rate + '%'
-                    : formatPrice(discount.value)
-                }}
+                <span v-if="discount.type === 'percentage'">
+                  {{ discount.rate }} %
+                </span>
+                <span v-else-if="discount.type === 'fixed_price'">
+                  {{ _t('Fixed Price') }} {{ formatPrice(discount.value) }}
+                </span>
+                <span v-else> {{ formatPrice(discount.value) }} </span>
               </p>
               <span class="mores">{{ dt(discount) }}</span>
             </div>

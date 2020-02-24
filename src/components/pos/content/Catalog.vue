@@ -16,6 +16,8 @@
 </template>
 
 <script>
+/* global */
+//import { bus } from '@/eventBus'
 import Items from './catalog/Items'
 import Breadcrumbs from './catalog/Breadcrumbs'
 import Search from './catalog/Search'
@@ -27,12 +29,24 @@ export default {
   props: {
     msg: String,
   },
+  data() {
+    return {
+      foodBlockItemHeight: 0,
+      foodBlockHeight: 0,
+      foodBlockInitHeight: 0,
+      foodCatItemHeight: 0,
+      foodCatHeight: 0,
+      foodCatInitHeight: 0,
+    }
+  },
   components: {
     Breadcrumbs,
     Items,
     Search,
     SubMenu,
   },
+  mounted() {},
+  methods: {},
   computed: {
     ...mapGetters(['subCategoryHendler']),
     ...mapGetters('category', ['categories', 'subcategories', 'items']),

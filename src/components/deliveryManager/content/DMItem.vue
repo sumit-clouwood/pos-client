@@ -122,7 +122,8 @@
                       'createdOrder-' +
                         convertDatetime(
                           order.real_created_datetime,
-                          timezoneString
+                          timezoneString,
+                          'YYYY-MM-DD HH:mm:ss'
                         )
                     "
                     style="display: none"
@@ -133,7 +134,8 @@
                     :value="
                       convertDatetime(
                         order.real_created_datetime,
-                        timezoneString
+                        timezoneString,
+                        'YYYY-MM-DD HH:mm:ss'
                       )
                     "
                   />

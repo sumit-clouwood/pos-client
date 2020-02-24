@@ -29,7 +29,7 @@ export default {
   name: 'AmountCalculator',
   computed: {
     ...mapState('checkout', ['changedAmount']),
-    ...mapState('order', ['orderSource']),
+    ...mapState('order', ['needSupervisorAccess']),
     ...mapGetters('location', ['_t']),
     ...mapState('checkoutForm', ['method', 'processing']),
     ...mapGetters(['payNowCalcHendler']),
@@ -69,7 +69,7 @@ export default {
               $('#payment-screen-footer').prop('disabled', true)
 
               this.$store.dispatch('order/startOrder')
-              if (this.orderSource === 'backend') {
+              if (this.needSupervisorAccess) {
                 showModal('#modificationReason')
               } else {
                 $('#payment-msg').modal('show')
@@ -136,4 +136,6 @@ export default {
 <style lang="sass" scoped>
 .amount-keypad
   min-width: 518px
+#backspace
+  color: white
 </style>

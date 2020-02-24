@@ -31,14 +31,14 @@
     <Header v-if="orderType.OTApi !== 'dine_in'" />
     <dineInHeader v-else />
 
-    <div class="main-orders-list-wrapper" v-if="orderType.OTApi !== 'dine_in'">
+    <div class="main-orders-list-wrapper">
       <HoldingOrders v-if="cartType === 'hold'" />
-      <Items v-else />
+      <template v-else>
+        <dineInItems v-if="orderType.OTApi === 'dine_in'" />
+        <Items v-else />
+      </template>
     </div>
-    <div class="main-orders-list-wrapper" v-else>
-      <HoldingOrders v-if="cartType === 'hold'" />
-      <dineInItems v-else />
-    </div>
+
     <PayNow />
     <Footer />
     <mobile-footer />
@@ -118,12 +118,7 @@ export default {
     dineInItems,
     mobileFooter,
   },
-  mounted() {
-    // setTimeout(() => {
-    //   //this.$refs.barcode.focus()
-    //   //this.$refs.barcode.click()
-    // }, 1000)
-  },
+  mounted() {},
   created() {
     setTimeout(() => {
       const eventBus = this.$barcodeScanner.init(this.onBarcodeScanned, {
@@ -150,6 +145,10 @@ export default {
   },
 }
 </script>
+<style lang="sass" scoped>
+.main-orders-list-wrapper
+  scroll-behavior: smooth
+</style>
 <style lang="scss">
 @import '../../../assets/scss/pixels_rem.scss';
 @import '../../../assets/scss/variables.scss';
@@ -315,17 +314,13 @@ export default {
       z-index: 10;
       padding-top: 20px;
       box-shadow: none;
-
+      display: block;
       .btn-cart {
         display: none;
       }
 
       .main-orders-buttons {
         display: grid;
-      }
-
-      .btn-next {
-        display: none;
       }
     }
   }

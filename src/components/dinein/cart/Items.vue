@@ -1,9 +1,14 @@
 <template>
-  <div class="main-orders-list dine-cart-items" v-if="items">
+  <div
+    class="main-orders-list dine-cart-items"
+    v-if="items"
+    ref="cartItemsContainer"
+  >
     <div
       class="main-orders-list-item color-dashboard-background"
       v-for="(item, index) in items"
       :key="index + '-' + item._id"
+      ref="entityCartItem"
     >
       <div class="main-orders-list-item-title color-text">
         <div class="orders-name">{{ dt(item) }}</div>
@@ -11,7 +16,6 @@
           {{ formatPrice(itemGrossPriceDiscounted(item)) }}
         </div>
         <div
-          v-if="typeof item.cover_name === 'undefined'"
           class="orders-close"
           @click.prevent="removeCurrentOrder({ item: item, index: index })"
         >
@@ -24,11 +28,7 @@
         class="main-orders-list-item-subtitle color-text-invert item-exclude"
       >
         <div>
-          <div>
-            @ {{ formatPrice(itemGrossPrice(item)) }} x
-            {{ item.quantity }}
-            {{ discountInfo(item) }}
-          </div>
+          <div v-html="formatItemDiscount(item)"></div>
           <div
             class="main-orders-list-item-subtitle color-text-invert"
             v-if="orderType.OTApi === 'dine_in'"
@@ -41,11 +41,11 @@
         <!--add condition here split true-->
         <div class="pay-split">
           <check-box
-            v-bind:value="index"
-            v-bind:index="index"
+            v-bind:value="item.no"
+            v-bind:index="item.no"
             v-bind:title="'Pay'"
             v-if="splitBill && item.paid !== true"
-            v-model="splittedItems[index]"
+            v-model="splittedItems[item.no]"
             @change="markSplit"
           ></check-box>
         </div>
@@ -83,15 +83,60 @@
 <script>
 import Modifiers from '@/components/pos/content/cart/newOrders/items/Modifiers.vue'
 import CheckBox from '@/components/util/form/CheckBox.vue'
-import * as CONST from '@/constants'
 import { mapState, mapActions, mapGetters } from 'vuex'
+import Discount from '@/mixins/Discount'
+import { bus } from '@/eventBus'
+import Scroll from '@/mixins/Scroll'
 
 export default {
   name: 'Items',
   data() {
     return {
       newItemList: [],
+      container: 'cartItemsContainer',
+      entity: 'entityCartItem',
+      margin: 4.375,
+      keepEntitiesInScroll: 0,
     }
+  },
+  mixins: [Discount, Scroll],
+  mounted() {
+    bus.$on('scroll-cart', option => {
+      this.scroll(option)
+    })
+
+    bus.$emit('showScrollCartUp', this.showScrollUp)
+    bus.$emit('showScrollCartDown', this.showScrollDown)
+
+    bus
+      .$on('showScrollUp-cartItemsContainer', option => {
+        bus.$emit('showScrollCartUp', option)
+      })
+      .$on('showScrollDown-cartItemsContainer', option => {
+        bus.$emit('showScrollCartDown', option)
+      })
+  },
+  watch: {
+    items(newVal, oldVal) {
+      if (newVal != oldVal) {
+        this.$nextTick(() => {
+          this.calculateScrolls()
+            .then(() => {
+              bus.$emit('showScrollCartUp', this.showScrollUp)
+              bus.$emit('showScrollCartDown', this.showScrollDown)
+            })
+            .catch(() => {})
+        })
+      }
+    },
+    orderType(newVal, previousVal) {
+      if (newVal.OTApi !== previousVal.OTApi)
+        if (this.$store.state.discount.appliedOrderDiscount) {
+          this.$store.dispatch('discount/clearOrderDiscount')
+        } else {
+          this.$store.dispatch('discount/clearItemDiscount')
+        }
+    },
   },
   computed: {
     splittedItems: {
@@ -113,6 +158,7 @@ export default {
       'itemGrossPriceDiscounted',
       'itemGrossPrice',
       'orderModifiers',
+      'itemModifiersPrice',
     ]),
     ...mapGetters('location', ['formatPrice', '_t']),
   },
@@ -123,25 +169,7 @@ export default {
       this.$set(this.splittedItems, item.index, item.checked)
       this.$store.dispatch('order/splitItems', this.splittedItems)
     },
-    discountInfo(item) {
-      if (item.discount) {
-        return (
-          ' - ' +
-          (item.discount.type === CONST.VALUE
-            ? item.discount.value
-            : item.discount.rate + ' %') +
-          ' ( ' +
-          item.discount.name +
-          ' - ' +
-          (item.discount.type == CONST.VALUE
-            ? this.formatPrice(item.discount.value)
-            : item.discount.rate + ' %') +
-          ' )'
-        )
-      }
 
-      return ''
-    },
     removeCurrentOrder(param) {
       this.removeFromOrder(param)
       if (!this.items.length) {
@@ -152,16 +180,6 @@ export default {
   components: {
     Modifiers,
     CheckBox,
-  },
-  watch: {
-    orderType(newVal, previousVal) {
-      if (newVal.OTApi !== previousVal.OTApi)
-        if (this.$store.state.discount.appliedOrderDiscount) {
-          this.$store.dispatch('discount/clearOrderDiscount')
-        } else {
-          this.$store.dispatch('discount/clearItemDiscount')
-        }
-    },
   },
 }
 </script>

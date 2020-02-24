@@ -39,8 +39,25 @@ export default {
       .utc()
       .valueOf()
 
+    const itemStartHour = parseInt(item.from.split(':')[0])
+    const itemStartMin = parseInt(item.from.split(':')[1])
+    const itemEndHour = parseInt(item.until.split(':')[0])
+    const itemEndMin = parseInt(item.until.split(':')[1])
+
+    let incrementDay = 0
+    if (itemStartHour == itemEndHour) {
+      //check minutes, time may be like 00:35 => 00:10
+      if (itemStartMin > itemEndMin) {
+        incrementDay = 1
+      }
+    } else if (itemStartHour > itemEndHour) {
+      //time may be 09:00 => 01:34
+      incrementDay = 1
+    }
+
     let itemEndTime = moment
       .tz(todayStoreDate + ' ' + item.until, 'YYYY-MM-DD HH:mm', timezone)
+      .add(incrementDay, 'days')
       .utc()
       .valueOf()
 

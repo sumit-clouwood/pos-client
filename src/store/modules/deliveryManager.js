@@ -58,9 +58,7 @@ const getters = {
     return orders
   },
   getOrdersByDriver: (state, getters, rootState, rootGetters) => driver => {
-    const cashMethod = rootGetters['payment/methods'].find(
-      method => method.type == 'regular'
-    )
+    const cashMethod = rootGetters['payment/cash']
 
     let data = {
       orders: [],
@@ -75,7 +73,7 @@ const getters = {
       if (order.driver == driver._id) {
         data.orders.push(order)
         data.amountToCollect += parseFloat(order.balance_due)
-        if (order.order_payments) {
+        if (order.order_payments && order.order_payments.length) {
           order.order_payments.forEach(payment => {
             data.totalAmount += parseFloat(payment.collected)
             if (cashMethod._id == payment.entity_id) {
@@ -84,6 +82,9 @@ const getters = {
               data.creditPayment += parseFloat(payment.collected)
             }
           })
+        } else {
+          //it is for sure credit payment
+          data.creditPayment += parseFloat(order.balance_due)
         }
         //delivery time, start to end
         order.order_history.forEach(history => {
@@ -139,7 +140,11 @@ const getters = {
 }
 
 const actions = {
-  fetchDMOrderDetail({ commit, state, dispatch, rootGetters }) {
+  fetchDMOrderDetail(
+    { commit, state, dispatch, rootGetters },
+    dmautoloader = true
+  ) {
+    if (!dmautoloader) return dmautoloader
     commit(mutation.SET_LOADING, true)
     // return new Promise((resolve, reject) => {
     const params = [
@@ -279,28 +284,46 @@ const actions = {
     }
     commit('SET_PROCESSING', true)
     const orderIds = state.driverBucket.map(order => order._id)
-    DMService.assignOrdersToDriver(state.selectedDriver._id, orderIds)
-      .then(response => {
-        if (response.data.status == 'ok') {
-          commit('REMOVE_FROM_DRIVER_BUCKET')
-          // dispatch(
-          //   'order/updateOrderAction',
-          //   {
-          //     orderStatus: 'ready',
-          //     collected: 'no',
-          //     pageId: 'home_delivery_pick',
-          //   },
-          //   { root: true }
-          // )
-        }
-      })
-      .finally(() => commit('SET_PROCESSING', false))
+    return new Promise((resolve, reject) => {
+      DMService.assignOrdersToDriver(state.selectedDriver._id, orderIds)
+        .then(response => {
+          if (response.data.status == 'ok') {
+            commit('REMOVE_FROM_DRIVER_BUCKET')
+            resolve()
+            /*alert(rootGetters['auth/multistore'])
+              if (rootGetters['auth/multistore']) {
+                dispatch(
+                  'order/updateOrderAction',
+                  {
+                    orderStatus: 'ready',
+                    collected: 'no',
+                    pageId: 'home_delivery_pick',
+                  },
+                  { root: true }
+                )
+              }*/
+          }
+        })
+        .catch(er => {
+          reject(er)
+        })
+        .finally(() => commit('SET_PROCESSING', false))
+    })
   },
   printInvoice({ commit }, { templateId, order }) {
     commit('invoice/SET_TEMPLATE_ID', templateId, { root: true })
     commit('checkout/SET_ORDER', order.item, { root: true })
+    if (order.table_number) {
+      //set table no to show on invoice, only dinein order ll have it
+      commit('dinein/SELECTED_TABLE_RESERVATION', order.table_number, {
+        root: true,
+      })
+    }
     commit('order/SET_ORDER_ID', order.item._id, { root: true })
     commit('checkout/PRINT', true, { root: true })
+    commit('checkout/SET_PAYMENT_ACTION', 'dine-in-running-order', {
+      root: true,
+    })
   },
 
   modifyOrder({ rootState, commit, dispatch }) {

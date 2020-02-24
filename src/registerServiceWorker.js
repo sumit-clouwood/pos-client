@@ -3,19 +3,20 @@ import { register } from 'register-service-worker'
 import store from './store'
 
 const notifyUserAboutUpdate = worker => {
+  console.log('update available')
   worker.postMessage({ action: 'skipWaiting' })
 
-  const today = new Date()
+  const time = +new Date()
 
-  const date =
-    today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate()
-  const time = today.getHours()
-  const dateTime = date + ' ' + time
-  if (localStorage.getItem('pos_version_updated_on') != dateTime) {
-    localStorage.setItem('pos_version_updated_on', dateTime)
-    store.commit('sync/setAppUpdateNotification', true)
-    localStorage.setItem('update_available', true)
-  }
+  localStorage.setItem('pos_version_updated_on', time)
+  store.commit('sync/setAppUpdateNotification', true)
+  localStorage.setItem('update_available', true)
+
+  // if (localStorage.getItem('pos_version_updated_on') != dateTime) {
+  //   localStorage.setItem('pos_version_updated_on', dateTime)
+  //   store.commit('sync/setAppUpdateNotification', true)
+  //   localStorage.setItem('update_available', true)
+  // }
 }
 
 if (process.env.NODE_ENV === 'production') {
@@ -33,10 +34,13 @@ if (process.env.NODE_ENV === 'production') {
       // console.log('Content has been cached for offline use.')
     },
     updatefound() {
-      // console.log('Update found, New content is downloading.')
+      console.log('Update found, New content is downloading.')
     },
     updated(registration) {
-      // console.log('New content is available; please refresh.')
+      console.log(
+        'New content is available; please refresh., notifying user about update',
+        registration
+      )
       notifyUserAboutUpdate(registration.waiting)
     },
     offline() {

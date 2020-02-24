@@ -42,16 +42,40 @@
       >
         {{ _t('Hold') }}
       </div>
+      <div>
+        <div
+          class="btn btn-success cartBottomBtn"
+          @click="scroll('up')"
+          :class="{ visible: showScrollDown }"
+        >
+          <i aria-hidden="true" class="fa fa-chevron-down"></i>
+        </div>
+        <div
+          class="btn btn-success cartBottomBtn  down"
+          @click="scroll('down')"
+          :class="{ visible: showScrollUp }"
+        >
+          <i aria-hidden="true" class="fa fa-chevron-down"></i>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 /* global $ */
+import { bus } from '@/eventBus'
+
 import { mapState, mapGetters, mapActions } from 'vuex'
 export default {
   name: 'Header',
   props: {},
+  data() {
+    return {
+      showScrollUp: false,
+      showScrollDown: false,
+    }
+  },
 
   computed: {
     ...mapGetters('location', ['_t']),
@@ -61,11 +85,23 @@ export default {
     ...mapState({ offlineCustomer: state => state.customer.offlineData }),
     ...mapState('sync', ['online']),
   },
+  mounted() {
+    bus.$on('showScrollCartUp', option => {
+      this.showScrollUp = option
+    })
+    bus.$on('showScrollCartDown', option => {
+      this.showScrollDown = option
+    })
+  },
   methods: {
+    scroll(option) {
+      bus.$emit('scroll-cart', option)
+    },
     removeSelectedCustomer() {
       this.$store.commit('location/SET_MODAL', '#manage-customer')
       this.$store.dispatch('customer/resetCustomer')
     },
+
     hold() {
       this.$store
         .dispatch('checkout/pay', { action: 'on-hold' })
@@ -93,6 +129,20 @@ export default {
 }
 </script>
 <style lang="sass" scoped>
+.cartBottomBtn
+  opacity: 0
+
+  &.visible
+    opacity: 1
+  &.down
+    margin-left: 10px
+    -ms-transform: rotate(180deg)
+    transform: rotate(180deg)
+
 .hide
   display : none
+  .cartBottomBtn
+    width: 50px
+    -ms-transform: rotate(90deg)
+    transform: rotate(90deg)
 </style>

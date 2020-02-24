@@ -1,13 +1,20 @@
 <template>
-  <div class="main-orders-list">
+  <div class="main-orders-list" ref="cartItemsContainer">
     <div v-if="items && items.length">
       <div
         class="main-orders-list-item color-dashboard-background"
         v-for="(item, index) in items"
         :key="index + '-' + item._id"
+        ref="entityCartItem"
       >
+        <div v-if="multistore" class="storename">
+          {{ storeName(item.store_id) }}
+        </div>
+
         <div class="main-orders-list-item-title color-text">
-          <div class="orders-name">{{ dt(item) }}</div>
+          <div class="orders-name">
+            {{ dt(item) }}
+          </div>
           <div class="orders-amount">
             {{ formatPrice(itemGrossPriceDiscounted(item)) }}
           </div>
@@ -23,18 +30,20 @@
         <div
           class="main-orders-list-item-subtitle color-text-invert item-exclude"
         >
-          <div>
-            @ {{ formatPrice(itemGrossPrice(item)) }} x
-            {{ item.quantity }}
-            {{ discountInfo(item) }}
-          </div>
+          <div v-html="formatItemDiscount(item)"></div>
         </div>
+
         <div class="main-orders-list-item-buttons">
-          <Modifiers v-bind:modifiers="item.modifiers" v-if="item.modifiable" />
+          <Modifiers
+            v-bind:modifiers="item.modifiers"
+            v-bind:item="item"
+            v-if="item.modifiable"
+          />
           <div
             class="button-plus"
             data-toggle="modal"
             data-target="#POSOrderItemOptions"
+            @click="modifierHeights()"
           >
             <div
               class="button-plus-icon"
@@ -70,15 +79,24 @@
 <script>
 import Modifiers from './items/Modifiers.vue'
 import Preloader from '@/components/util/Preloader'
-import * as CONST from '@/constants'
 
 import { mapState, mapActions, mapGetters } from 'vuex'
+import Discount from '@/mixins/Discount'
+import { bus } from '@/eventBus'
+import Scroll from '@/mixins/Scroll'
 
 export default {
   name: 'Items',
   data() {
-    return {}
+    return {
+      newItemList: [],
+      container: 'cartItemsContainer',
+      entity: 'entityCartItem',
+      margin: 4.375,
+      keepEntitiesInScroll: 0,
+    }
   },
+  mixins: [Discount, Scroll],
   computed: {
     ...mapState({
       currentItem: state => state.order.item._id,
@@ -92,31 +110,55 @@ export default {
       'itemGrossPrice',
       'orderModifiers',
       'orderType',
+      'itemModifiersPrice',
     ]),
     ...mapGetters('location', ['formatPrice', '_t']),
+    ...mapGetters('context', ['storeName']),
+    ...mapGetters('auth', ['multistore']),
+  },
+  mounted() {
+    bus.$on('scroll-cart', option => {
+      this.scroll(option)
+    })
+
+    bus.$emit('showScrollCartUp', this.showScrollUp)
+    bus.$emit('showScrollCartDown', this.showScrollDown)
+
+    bus
+      .$on('showScrollUp-cartItemsContainer', option => {
+        bus.$emit('showScrollCartUp', option)
+      })
+      .$on('showScrollDown-cartItemsContainer', option => {
+        bus.$emit('showScrollCartDown', option)
+      })
+  },
+
+  watch: {
+    items(newVal, oldVal) {
+      if (newVal != oldVal) {
+        this.$nextTick(() => {
+          this.calculateScrolls()
+            .then(() => {
+              bus.$emit('showScrollCartUp', this.showScrollUp)
+              bus.$emit('showScrollCartDown', this.showScrollDown)
+            })
+            .catch(() => {})
+        })
+      }
+    },
+    orderType(newVal, previousVal) {
+      if (newVal.OTApi !== previousVal.OTApi)
+        if (this.$store.state.discount.appliedOrderDiscount) {
+          this.$store.dispatch('discount/clearOrderDiscount')
+        } else {
+          this.$store.dispatch('discount/clearItemDiscount')
+        }
+    },
   },
   methods: {
     ...mapActions('category', ['getItems']),
     ...mapActions('order', ['removeFromOrder', 'setActiveItem']),
 
-    discountInfo(item) {
-      if (item.discount) {
-        return (
-          ' - ' +
-          (item.discount.type === CONST.VALUE
-            ? item.discount.value
-            : item.discount.rate + ' %') +
-          ' ( ' +
-          item.discount.name +
-          ' - ' +
-          (item.discount.type == CONST.VALUE
-            ? this.formatPrice(item.discount.value)
-            : item.discount.rate + ' %') +
-          ' )'
-        )
-      }
-      return ''
-    },
     removeCurrentOrder(param) {
       if (this.selectedOrder || this.orderId) {
         if (
@@ -143,7 +185,15 @@ export default {
 @import '../../../../../assets/scss/pixels_rem.scss';
 @import '../../../../../assets/scss/variables.scss';
 @import '../../../../../assets/scss/mixins.scss';
-
+.main-orders-list-item {
+  .storename {
+    font-size: 9px;
+    padding-top: 0;
+    padding-bottom: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+}
 .button-plus-icon {
   width: 23px;
   height: 23px;

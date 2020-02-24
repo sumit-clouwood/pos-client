@@ -118,13 +118,14 @@ export default {
       getReferrals: state => state.location.referrals,
     }),
     ...mapState('customer', ['address']),
-    ...mapState('order', ['orderSource']),
+    ...mapState('order', ['needSupervisorAccess']),
     ...mapGetters('order', ['subTotal']),
     ...mapGetters('location', ['_t', 'formatPrice']),
   },
   methods: {
     selectedReferral(referral) {
       this.changedReferral = referral
+      this.$store.commit('order/SET_REFERRAL', this.changedReferral)
     },
     placeOrder() {
       hidePayNow()
@@ -137,7 +138,7 @@ export default {
         const minOrderValue = this.formatPrice(this.address.min_order_value)
         this.errors = `Minimum order values should be ${minOrderValue} for selected delivery address`
       } else {
-        if (this.orderSource === 'backend') {
+        if (this.needSupervisorAccess) {
           showModal('#modificationReason')
         } else {
           $('#confirm_announcement').prop('disabled', true)
@@ -227,5 +228,16 @@ export default {
       top: 13%;
     }
   }
+}
+.referal.show .dropdown-menu {
+  max-height: 200px;
+  overflow: auto;
+}
+
+.referal.show .dropdown-menu a {
+  padding: 8px;
+  border-bottom: 1px solid #ddd;
+  margin: 0;
+  font-weight: bold;
 }
 </style>

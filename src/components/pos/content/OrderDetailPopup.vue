@@ -28,16 +28,16 @@
             <RightPartHeader />
 
             <!--content-->
-            <Receipt :orderDetails="selectedOrder.item" />
+            <Receipt :order_data="selectedOrder" />
             <History
               :orderDetails="selectedOrder.item"
               :userDetails="selectedOrder.lookups"
             />
-            <Modification
+            <Modification />
+            <Payment
               :orderDetails="selectedOrder.item"
-              :userDetails="selectedOrder.lookups"
+              :lookups="selectedOrder.lookups"
             />
-            <Payment :orderDetails="selectedOrder.item" />
           </div>
         </div>
         <div class="buttons">
@@ -90,6 +90,7 @@
               isPermitted(PERMISSIONS.MODIFY_ORDER) &&
                 typeof selectedOrder.item !== 'undefined' &&
                 selectedOrder.item.order_type === 'dine_in' &&
+                !multistore &&
                 selectedOrder.item.order_status === 'finished'
             "
             type="button"
@@ -105,6 +106,7 @@
             v-if="
               isPermitted(PERMISSIONS.MODIFY_ORDER) &&
                 typeof selectedOrder.item !== 'undefined' &&
+                !multistore &&
                 selectedOrder.item.order_type !== 'dine_in'
             "
             type="button"
@@ -154,6 +156,8 @@
 </template>
 
 <script>
+/* global $ */
+
 import { mapState, mapGetters, mapActions } from 'vuex'
 
 import Invoice from '@/components/pos/content/cart/payNow/Invoice'
@@ -166,7 +170,7 @@ import LeftPart from '@/components/pos/content/orderDetails/LeftPart'
 import CancelOrderPopup from '@/components/pos/content/orderDetails/CancelOrderPopup'
 import ModificationPermissions from '@/components/pos/content/orderDetails/ModificationPermissions'
 import CustomerInformation from '@/components/pos/footer/popups/ManageCustomer/CustomerInformation'
-
+/* global $ */
 export default {
   name: 'OrderDetailPopup',
   props: {},
@@ -186,20 +190,30 @@ export default {
     ...mapState('order', ['selectedOrder']),
     ...mapState('dinein', ['tables']),
     ...mapGetters('location', ['_t']),
+    ...mapGetters('auth', ['multistore']),
   },
   methods: {
     ...mapActions('customer', ['fetchSelectedCustomer']),
     ...mapActions('deliveryManager', ['printInvoice']),
     printInvoiceDisableKitchenPrint(details) {
-      this.printInvoice(details)
+      if (window.PrintHandle == null) {
+        this.printInvoice(details)
+      } else {
+        this.$store.dispatch(
+          'printingServer/printingServerInvoiceRaw',
+          details.order.item
+        )
+      }
+      $('#orderDetailsPopup').modal('hide')
       this.$store.commit('dinein/KITCHEN_PRINT', false)
     },
     modifyOrder(order) {
-      let orderId = order._id
       this.$store.dispatch('order/startOrder')
-      this.$store.dispatch('deliveryManager/modifyOrder').then(() => {
-        let order_type = order.order_type || ''
-        if (order_type === 'dine_in') {
+      const path = this.$store.getters['context/store'] + '/update/' + order._id
+      this.$router.push({ path: path })
+      /*
+      switch (order.order_type) {
+        case CONST.ORDER_TYPE_DINE_IN: {
           let tableData = this.tables.find(
             table => table._id === order.assigned_table_id
           )
@@ -218,24 +232,29 @@ export default {
               '/' +
               orderId,
           })
-        } else {
-          this.$store.commit('order/IS_PAY', 1)
-          this.$store.dispatch('order/modifyOrderTransaction').then(order => {
-            this.$store.dispatch('order/loadCarhopOrder', order._id)
-            this.$router.push({
-              path:
-                this.$store.getters['context/store'] + '/update/' + order._id,
-            })
-          })
+          break
         }
-      })
+        default: {
+          const path =
+            this.$store.getters['context/store'] + '/update/' + order._id
+          if (order.order_type === CONST.ORDER_TYPE_CALL_CENTER) {
+            this.$store.dispatch('deliveryManager/modifyOrder').then(() => {
+              this.$router.push({ path: path })
+            })
+          } else {
+            this.$router.push({ path: path })
+          }
+        }
+      }
+      */
     },
   },
 }
 </script>
 <style scoped lang="scss">
 #orderDetailsPopup .modal-dialog {
-  max-width: 70%;
+  font-size: 0.875rem;
+  max-width: 80%;
 }
 </style>
 <style lang="scss">

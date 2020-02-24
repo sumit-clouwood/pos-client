@@ -91,14 +91,17 @@ export default {
     acceptMsg() {
       if (this.msg.result !== 'error') {
         this.$store.commit('checkout/PAYMENT_MSG_STATUS', true)
+        this.$store.dispatch('checkout/generateInvoice')
       }
     },
     generateInvoice() {
-      $('#pay-now').modal('hide')
-      this.$store.dispatch('checkout/generateInvoice')
-      $('#transparent-screen').hide()
-      this.$store.commit('checkout/PAYMENT_MSG_STATUS', true)
-      this.$store.dispatch('showMainCategory')
+      if (this.msg.result !== 'error') {
+        $('#pay-now').modal('hide')
+        this.$store.dispatch('checkout/generateInvoice')
+        $('#transparent-screen').hide()
+        this.$store.commit('checkout/PAYMENT_MSG_STATUS', true)
+        this.$store.dispatch('showMainCategory')
+      }
     },
     confirmDelete(resultLoad) {
       if (resultLoad.flag === 'hold order') {

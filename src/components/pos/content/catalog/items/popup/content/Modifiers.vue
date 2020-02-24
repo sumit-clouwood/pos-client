@@ -3,7 +3,7 @@
     <div class="POSItemOptions_type">
       <h3 class="POSItemOptions_typehead color-secondary">
         <!--<span>{{ subgroup.name }} ({{ subgroup.item_type }}) </span>-->
-        <span class="color-text-invert">{{ subgroup.name }}</span>
+        <span class="color-text-invert">{{ _t(subgroup.name) }}</span>
       </h3>
       <span class="POSItemOptions_typeline"></span>
     </div>
@@ -18,7 +18,7 @@
       <div
         v-for="modifier in subgroup.modifiers"
         :key="modifier._id"
-        class="POSItemOptions_choose_choice"
+        class="POSItemOptions_choose_choice entityModifier"
       >
         <label
           :class="['POSItemOptions_choose_label', modifier.class]"
@@ -59,7 +59,7 @@
             }"
           />
           <div class="label-text">
-            <span class="color-text">{{ modifier.name }}</span>
+            <span class="color-text">{{ dt(modifier) }}</span>
             <div
               class="color-text-price itm-price"
               v-if="Num.toPrice(modifier.value)"
@@ -126,7 +126,7 @@
                   : '',
             }"
           />
-          <span class="color-text">{{ modifier.name }}</span>
+          <span class="color-text">{{ dt(modifier) }}</span>
           <div class="color-text dis" v-if="Num.toPrice(modifier.value)">
             ({{ formatPrice(modifier.value) }})
           </div>
@@ -164,7 +164,7 @@ export default {
     ...mapState('orderForm', ['error', 'radios']),
     ...mapGetters('orderForm', ['isSelected']),
     ...mapGetters('modifier', ['itemModifiers']),
-    ...mapGetters('location', ['formatPrice']),
+    ...mapGetters('location', ['formatPrice', '_t']),
   },
   mounted() {},
   methods: {
@@ -174,8 +174,6 @@ export default {
       } else {
         this.subgroup.modifiers[index].class = ''
       }
-
-      console.log(this.subgroup.modifiers[index])
     },
     setRadio(itemId, groupId, modifierId) {
       this.$store.commit('orderForm/setRadios', {

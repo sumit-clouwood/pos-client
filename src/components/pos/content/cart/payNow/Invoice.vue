@@ -59,8 +59,8 @@ export default {
       }
       return (
         this._t('ORDER_DIALOG_TITLE_PREFIX') +
-        (this.order.orderNumber
-          ? this.order.orderNumber
+        (this.order.order_no
+          ? this.order.order_no
           : this.order.real_created_datetime
           ? this.order.real_created_datetime
           : '') +
@@ -121,16 +121,19 @@ export default {
         this.isPrint = true
         try {
           setTimeout(() => {
-            //this.$refs.iframe.contentWindow.print()
-            let w = this.$refs.iframe.contentWindow
-            w.focus()
-            w.print()
-            this.iframe_body = ''
-
+            // Code Pane reflects in DIMS WEB APP window.PrintHandle.GetAgent() !== 'Dimspos.App'
+            if (window.PrintHandle == null) {
+              //this.$refs.iframe.contentWindow.print()
+              let w = this.$refs.iframe.contentWindow
+              w.focus()
+              w.print()
+              this.iframe_body = ''
+            }
             // if (!this.$store.getters['checkout/complete']) {
             //   this.$store.dispatch('checkout/splitOrder').then(() => {})
             // }
             //Invoice APP API Call with Custom Request JSON
+            console.log(this.paymentAction, 'paymentAction')
             if (!['dine-in-order-preview'].includes(this.paymentAction)) {
               this.$store.dispatch(
                 'printingServer/printingServerInvoiceRaw',
