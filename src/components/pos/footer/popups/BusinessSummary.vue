@@ -192,7 +192,7 @@
                     class="font-weight-bold"
                     v-if="BSData.REPORT_CRM_PANDDING_ORDER_COUNT"
                   >
-                    <td>{{ _t('Unfinished Dine-In Orders') }}</td>
+                    <td>{{ _t('Unfinished CRM Orders') }}</td>
                     <td class="align-right">
                       {{ BSData.REPORT_CRM_PANDDING_ORDER_COUNT }}
                     </td>
@@ -216,7 +216,7 @@
                     class="font-weight-bold"
                     v-if="BSData.REPORT_ITEM_REFERRAL_QUANTITY"
                   >
-                    <td>{{ _t('Carhop') }}</td>
+                    <td>{{ _t('Referral') }}</td>
                     <td class="align-right">
                       {{ BSData.REPORT_ITEM_REFERRAL_QUANTITY }}
                     </td>
