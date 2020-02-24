@@ -46,7 +46,7 @@ const actions = {
           }
         })
         .catch(er => {
-          commit(mutation.PASSWORD_VERIFICATION, er.data.error)
+          // commit(mutation.PASSWORD_VERIFICATION, er.data.error)
           reject(er)
         })
     })
@@ -91,17 +91,19 @@ const actions = {
 const mutations = {
   [mutation.BUSINESS_SUMMERY](state, BSData) {
     state.BSData = BSData
-    let paymentsValues = Object.values(BSData['PAYMENT_TYPES'])
-    state.totalPayments = { value: 0, count: 0 }
-    paymentsValues.forEach(payment => {
-      // eslint-disable-next-line no-console
-      console.log(payment['REPORT-PAYMENT-TYPE-QUANTITY'], 'payment')
-      state.totalPayments.count += parseInt(
-        payment['REPORT-PAYMENT-TYPE-QUANTITY']
-      )
-      state.totalPayments.value += parseFloat(payment['REPORT-PAYMENT-TYPE'])
-    })
-    state.totalPayments
+    if (typeof BSData['PAYMENT_TYPES'] != 'undefined') {
+      let paymentsValues = Object.values(BSData['PAYMENT_TYPES'])
+      state.totalPayments = { value: 0, count: 0 }
+      paymentsValues.forEach(payment => {
+        // eslint-disable-next-line no-console
+        console.log(payment['REPORT-PAYMENT-TYPE-QUANTITY'], 'payment')
+        state.totalPayments.count += parseInt(
+          payment['REPORT-PAYMENT-TYPE-QUANTITY']
+        )
+        state.totalPayments.value += parseFloat(payment['REPORT-PAYMENT-TYPE'])
+      })
+      state.totalPayments
+    }
   },
   [mutation.DATE_FROM](state, date_from) {
     state.date_from = date_from
