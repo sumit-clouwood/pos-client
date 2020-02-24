@@ -28,7 +28,7 @@ const actions = {
       supervisor_password: state.supervisor_password,
     }
     // eslint-disable-next-line no-undef,no-console
-    console.log(data, 'datadatadata')
+    console.log(data, 'data passing')
     new Promise((resolve, reject) => {
       ReportService.fetchBusinessSummery(data)
         .then(response => {
