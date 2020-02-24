@@ -317,7 +317,7 @@ export default {
         .right-part {
           #nav-tabContent {
             #nav-home {
-              padding: 0;
+              padding: 3px;
 
               .table {
                 padding: 0;
@@ -336,6 +336,7 @@ export default {
           display: grid;
           grid-template-columns: 1fr 1fr;
           grid-gap: 5px;
+          margin: 4px;
 
           button.button {
             margin: 0;
