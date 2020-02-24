@@ -349,7 +349,7 @@
         <li>
           <a
             data-toggle="modal"
-            :data-target="modalView"
+            data-target="#supervisor-password"
             role="button"
             class="cursor-pointer business-summary"
             ><svg
@@ -440,7 +440,6 @@ export default {
     ...mapGetters('auth', ['waiter', 'carhop']),
     ...mapState('location', ['availableLanguages', 'language']),
     ...mapState('dinein', ['dineInTabType', 'activeArea']),
-    ...mapState('reports', ['modalView']),
     ...mapState('sync', ['online']),
     ...mapState({
       latestOnlineOrders: state =>
