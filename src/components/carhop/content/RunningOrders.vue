@@ -225,10 +225,10 @@ export default {
     padding-right: 10px
 </style>
 <style lang="scss" scoped>
-@import '../../../assets/scss/responsive_table.scss';
-@import '../../../assets/scss/pixels_rem.scss';
-@import '../../../assets/scss/variables.scss';
-@import '../../../assets/scss/mixins.scss';
+@import '@/assets/scss/responsive_table.scss';
+@import '@/assets/scss/pixels_rem.scss';
+@import '@/assets/scss/variables.scss';
+@import '@/assets/scss/mixins.scss';
 
 @include responsive(mobile) {
   .carhop-running-orders-wrapper {

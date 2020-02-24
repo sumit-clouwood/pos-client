@@ -1,4 +1,5 @@
 @import '../variables.scss';
+@import '../mixins.scss';
 
 #display-order {
   .slick-dots {
@@ -853,6 +854,10 @@ button:focus {
 
 button#gift-card-btn {
   width: $px105;
+  @include responsive (mobile){
+    width: auto !important;
+  }
+
 }
 
 .gift-card-details-wrap > div.gift-card-detail {

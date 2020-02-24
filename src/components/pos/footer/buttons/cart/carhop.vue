@@ -9,10 +9,7 @@
     </div>
   </div>
   <div v-else>
-    <div
-      v-if="orderSource != 'backend'"
-      style="grid-template-columns: 1fr 1fr; display: grid;"
-    >
+    <div v-if="orderSource != 'backend'" class="carhop-cart-buttons">
       <div class="button">
         <div class="template-btn">
           <div class="pay-now">
@@ -74,7 +71,11 @@ export default {
   },
   methods: {
     payNow() {
-      clickPayNow()
+      if (this.$store.state.mobile.device === 'mobile') {
+        this.$store.dispatch('paymentMethodsChange')
+      } else {
+        clickPayNow()
+      }
     },
     placeCarhop() {
       if (this.processing) {
@@ -106,3 +107,16 @@ export default {
   },
 }
 </script>
+
+<style lang="scss" scoped>
+@import '@/assets/scss/mixins.scss';
+.carhop-cart-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  @include responsive(mobile) {
+    grid-gap: 10px !important;
+    font-size: 15px;
+    font-weight: 500;
+  }
+}
+</style>

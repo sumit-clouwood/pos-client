@@ -7,14 +7,17 @@
         <Preloader v-if="customerLoading" />
         <div v-else class="modal-body manage-customer-wrap">
           <div class="crm-details-wrap">
-            <div id="order-profile" class="profile-order">
+            <div
+              id="order-profile"
+              class="profile-order order-profile-wrapper "
+            >
               <CustomerProfile />
               <CustomerDeliveryAddress />
               <div class="cu-loyality-points">
                 <LoyaltyPoint />
                 <div class="btn-right-neworder">
                   <button
-                    class="color-button color-main color-text-invert"
+                    class="color-button color-main color-text-invert place-new-order-wrapper"
                     id="place-new-order"
                     data-dismiss="modal"
                     @click="
@@ -186,12 +189,12 @@ div#display-order .modal-dialog {
 
               .cu-loyality-points {
                 display: grid;
-                grid-template-columns: 1fr;
+                grid-template-columns: 1fr !important;
               }
             }
 
             .customer-insight {
-              width: 100%;
+              width: 100% !important;
 
               .title-cu {
                 padding: 10px 0;
@@ -261,11 +264,14 @@ div#display-order .modal-dialog {
             }
           }
         }
-
-        .modal-footer {
-        }
       }
     }
+  }
+  .order-profile-wrapper {
+    width: 95% !important;
+  }
+  .place-new-order-wrapper {
+    width: 100% !important;
   }
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <div @click="$emit('pay')">
+  <div @click="$emit('pay')" class="btn-charge">
     <div class="pay-button">
       <a role="button">
         <img src="img/pos/payment.svg" :alt="_t('Pay Now')" />
@@ -17,3 +17,15 @@ export default {
   },
 }
 </script>
+<style lang="scss" scoped>
+@import '@/assets/scss/mixins.scss';
+.pay-button {
+  a {
+    img {
+      @include responsive(mobile) {
+        display: none !important;
+      }
+    }
+  }
+}
+</style>

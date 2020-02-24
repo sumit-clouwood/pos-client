@@ -19,7 +19,7 @@
       </div>
     </div>
     <div v-else>
-      <div style="grid-template-columns: 1fr 1fr; display: grid;">
+      <div class="dinein-cart-buttons">
         <div class="button">
           <div class="template-btn">
             <div class="pay-now">
@@ -91,7 +91,11 @@ export default {
         this.orderType.OTApi !== 'dine_in' ||
         !this.brand.number_of_covers
       ) {
-        clickPayNow()
+        if (this.$store.state.mobile.device === 'mobile') {
+          this.$store.dispatch('paymentMethodsChange')
+        } else {
+          clickPayNow()
+        }
       } else {
         validationError = {
           status: 'flash_message',
@@ -189,3 +193,16 @@ export default {
   },
 }
 </script>
+
+<style lang="scss" scoped>
+@import '@/assets/scss/mixins.scss';
+.dinein-cart-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  @include responsive(mobile) {
+    grid-gap: 10px !important;
+    font-size: 15px;
+    font-weight: 500;
+  }
+}
+</style>

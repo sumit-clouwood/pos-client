@@ -36,16 +36,16 @@
         <div class="dropdown-menu color-text-invert" v-if="!getReferrals">
           {{ _t('Nothing found') }}
         </div>
+        <button
+          v-if="isLoyaltyEnabled"
+          type="button"
+          class="btn loyalty-button shorten-sentence color-text color-secondary"
+          style="margin-inline-end: auto;"
+          @click="showLoyaltyPopup()"
+        >
+          {{ _t('Loyalty') }}
+        </button>
       </div>
-      <button
-        v-if="isLoyaltyEnabled"
-        type="button"
-        class="btn loyalty-button shorten-sentence color-text color-secondary"
-        style="margin-inline-end: auto;"
-        @click="showLoyaltyPopup()"
-      >
-        {{ _t('Loyalty') }}
-      </button>
       <datetime
         type="datetime"
         title="Schedule"
@@ -99,7 +99,6 @@ import { Datetime } from 'vue-datetime'
 import { mapState, mapActions, mapGetters } from 'vuex'
 export default {
   name: 'SendToDeliveryFooter',
-  props: {},
   components: {
     Datetime,
   },
@@ -238,6 +237,9 @@ export default {
 }
 </script>
 <style lang="scss">
+@import '@/assets/scss/pixels_rem.scss';
+@import '@/assets/scss/variables.scss';
+@import '@/assets/scss/mixins.scss';
 #referralDropdown {
   max-height: 15vh;
   overflow-y: scroll;
@@ -269,23 +271,40 @@ export default {
   padding-left: 0.9375rem;
   padding-right: 1.5625rem;
 }
-
-@import '@/assets/scss/pixels_rem.scss';
-@import '@/assets/scss/variables.scss';
-@import '@/assets/scss/mixins.scss';
+.referal {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 10px;
+}
 
 @include responsive(mobile) {
   #order-confirmation {
-    .vdatetime > input {
-      width: 100%;
+    .modal-footer {
+      width: auto !important;
+      .referal {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-gap: 10px;
+      }
+      .vdatetime > input {
+        width: 95% !important;
+        margin-left: 0px !important;
+      }
+      .showpropermsg .text-danger {
+        position: absolute;
+        left: 23%;
+        top: 13%;
+      }
     }
-    .referal {
-      position: relative;
-    }
-    .showpropermsg .text-danger {
-      position: absolute;
-      left: 23%;
-      top: 13%;
+    .btn-announce {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      width: auto;
+      grid-gap: 10px;
+      .btn-danger {
+        width: auto !important;
+        margin-left: 0.625rem !important;
+      }
     }
   }
 }

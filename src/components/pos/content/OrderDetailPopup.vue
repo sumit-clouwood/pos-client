@@ -275,7 +275,9 @@ export default {
         display: block;
         position: static;
         overflow: auto;
-
+        padding-left: 0px !important;
+        padding-right: 0px !important;
+        padding-top: 0px !important;
         .details {
           display: grid;
           grid-template-columns: 1fr;
@@ -297,11 +299,19 @@ export default {
             }
           }
         }
+        .modal-header {
+          height: 80px !important;
+        }
 
         .left-part,
         .right-part {
           border: none;
           height: auto;
+        }
+        .left-part {
+          padding-left: 1.5625rem !important;
+          padding-right: 1.5625rem !important;
+          margin-top: 10px !important;
         }
 
         .right-part {
@@ -348,11 +358,6 @@ export default {
                 width: 100%;
               }
             }
-          }
-
-          .btn-danger {
-            grid-column-start: 1;
-            grid-column-end: 3;
           }
         }
       }

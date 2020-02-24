@@ -100,8 +100,8 @@ export default {
 }
 </script>
 <style lang="scss">
-@import '../../assets/scss/variables.scss';
-@import '../../assets/scss/mixins.scss';
+@import '@/assets/scss/variables.scss';
+@import '@/assets/scss/mixins.scss';
 
 .mobile-page {
   background-color: #fff;
@@ -170,6 +170,9 @@ export default {
     .btn-menu {
       width: 50px;
       height: 50px;
+      @include responsive(mobile) {
+        margin-right: 10px;
+      }
       /*background-color: $btn-bg-black;*/
       background: linear-gradient(
         0deg,

@@ -221,8 +221,8 @@ export default {
   opacity: 0
 </style>
 <style lang="scss">
-@import '../../assets/scss/variables.scss';
-@import '../../assets/scss/mixins.scss';
+@import '@/assets/scss/variables.scss';
+@import '@/assets/scss/mixins.scss';
 ::-webkit-scrollbar {
   width: 0.625rem;
   height: 0.625rem;

@@ -33,7 +33,7 @@
   overflow: auto;
   .modal-dialog {
     @include responsive(mobile) {
-      margin: 0px;
+      margin: auto !important;
     }
     .modal-content {
       width: 100%;

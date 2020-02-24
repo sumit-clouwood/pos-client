@@ -163,10 +163,10 @@ export default {
     color: #7ac241
 </style>
 <style lang="scss" scoped>
-@import '../../../assets/scss/responsive_table.scss';
-@import '../../../assets/scss/pixels_rem.scss';
-@import '../../../assets/scss/variables.scss';
-@import '../../../assets/scss/mixins.scss';
+@import '@/assets/scss/responsive_table.scss';
+@import '@/assets/scss/pixels_rem.scss';
+@import '@/assets/scss/variables.scss';
+@import '@/assets/scss/mixins.scss';
 @include responsive(mobile) {
   .carhop-completed-orders-wrapper {
     padding: 10px;

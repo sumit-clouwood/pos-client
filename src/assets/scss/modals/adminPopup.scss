@@ -1,14 +1,9 @@
 @import '../variables.scss';
+@import '../mixins.scss';
 
 #admin-popup{
   .modal-dialog{
     .modal-content{
-      .modal-header{
-
-      }
-      .modal-body{
-
-      }
       .modal-footer{
         padding: $px30;
       }
@@ -21,6 +16,9 @@ button.btn.btn-danger.cancel-announce {
    width: $px125;
    background: #cc3232;
    border-color: #cc3232;
+   @include responsive(mobile){
+    width: auto !important;
+  }
  }
 
  button.btn.btn-danger.cancel-announce > span {

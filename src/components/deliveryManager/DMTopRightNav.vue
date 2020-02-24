@@ -271,7 +271,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '../../assets/scss/header';
+@import '@/assets/scss/header';
 .header-main-left-time {
   margin-right: 10px;
   span {
