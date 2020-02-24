@@ -2,8 +2,8 @@
 /* global workbox */
 /* eslint-disable no-console */
 //appVersion has production build number . staging build number . int build number . bugfix
-//Reason: fix quantity issue
-var appVersion = '6.8.33.8'
+//Reason: fixed msg 13
+var appVersion = '7.9.34.14'
 
 var clientUrl = ''
 
