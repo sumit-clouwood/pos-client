@@ -62,7 +62,7 @@ export default {
       this.$nextTick(() => {
         setTimeout(() => {
           //wait for modifiers to load
-          this.calculateScrolls()
+          this.calculateScrolls().catch(() => {})
         }, 300)
       })
     },

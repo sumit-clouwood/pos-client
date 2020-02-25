@@ -411,6 +411,7 @@ h6 {
       .modal .modal-dialog .modal-content .modal-footer {
         padding: 10px !important;
         margin-bottom: 0px !important;
+        margin-bottom: 0px !important;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); } }
 .header {
   padding: 0 1.875rem; }
@@ -651,6 +652,28 @@ h6 {
       position: static !important; }
     .setting-dropdown li {
       text-align: left; } }
+#business-summary .modal-dialog {
+  max-width: 70%; }
+  #business-summary .modal-dialog .business-summary-wrapper {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 1.25rem;
+    width: 100%; }
+    #business-summary .modal-dialog .business-summary-wrapper table {
+      border-collapse: collapse;
+      width: 100%; }
+      #business-summary .modal-dialog .business-summary-wrapper table thead tr {
+        background: #5056CA;
+        color: #fff; }
+      #business-summary .modal-dialog .business-summary-wrapper table tbody tr:nth-child(even) {
+        background-color: #E3E7F2; }
+      #business-summary .modal-dialog .business-summary-wrapper table tbody tr .align-right {
+        text-align: right; }
+      #business-summary .modal-dialog .business-summary-wrapper table td, #business-summary .modal-dialog .business-summary-wrapper table th {
+        border: 1px solid #E3E7F2;
+        text-align: left;
+        padding: 0.5rem; }
+
 .POSItemOptions {
   padding-right: 0.625rem; }
   .POSItemOptions .modal-title {

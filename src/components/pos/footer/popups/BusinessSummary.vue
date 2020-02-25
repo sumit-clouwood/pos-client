@@ -1,0 +1,357 @@
+<template>
+  <div class="modal fade" id="business-summary" role="dialog" v-if="BSData">
+    <div class="modal-dialog">
+      <!-- Modal content-->
+      <div class="modal-content color-dashboard-background">
+        <div class="modal-header customer-header color-secondary">
+          <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
+          <h4 class="customer-title color-text-invert">
+            {{ _t('Business Summary Details') }}
+          </h4>
+          <div>
+            <label class="container-checkbox"
+              >Store Time
+              <input
+                type="checkbox"
+                checked="checked"
+                @click="getBSStoreTime"
+                v-model="timeMode"
+              />
+              <span class="checkmark"></span>
+            </label>
+          </div>
+          <!--<div class="printConfg">
+            <label>
+              <input
+                @click="getBSStoreTime"
+                type="checkbox"
+                v-model="timeMode"
+                name="printcong"
+                id="printcongs"
+              />
+            </label>
+            <label> Store</label>
+          </div>-->
+        </div>
+        <div class="modal-body row business-summary">
+          <div class="business-summary-wrapper">
+            <div class="table-responsive">
+              <table>
+                <thead>
+                  <tr>
+                    <th>
+                      {{ _t('Sales') }}
+                      <span><i class="fa fa-sort" aria-hidden="true"></i></span>
+                    </th>
+                    <th>
+                      {{ _t('Value') }}
+                      <span><i class="fa fa-sort" aria-hidden="true"></i></span>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>{{ _t('Gross Sales') }}</td>
+                    <td class="align-right">
+                      {{ formatPrice(BSData.REPORT_CALCULATED_GROSS_SALES) }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>{{ _t('Item Discounts') }}</td>
+                    <td class="align-right">
+                      {{ formatPrice(BSData.REPORT_ITEM_DISCOUNT_VALUE) }}
+                    </td>
+                  </tr>
+                  <tr class="font-weight-bold">
+                    <td>{{ _t('Order Discounts') }}</td>
+                    <td class="align-right">
+                      {{ formatPrice(BSData.REPORT_ORDER_DISCOUNT) }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>{{ _t('Net Sales Before Surcharge') }}</td>
+                    <td class="align-right">
+                      {{
+                        formatPrice(
+                          BSData.REPORT_CALCULATED_NET_SALES_BEFORE_SURCHARGE
+                        )
+                      }}
+                    </td>
+                  </tr>
+                  <tr class="font-weight-bold">
+                    <td>{{ _t('Surcharges') }}</td>
+                    <td class="align-right">
+                      {{ formatPrice(BSData.REPORT_ORDER_SURCHARGE) }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>{{ _t('Net Sales') }}</td>
+                    <td class="align-right">
+                      {{ formatPrice(BSData.REPORT_ORDER_SALES) }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>{{ _t('Tax') }}</td>
+                    <td class="align-right">
+                      {{ formatPrice(BSData.REPORT_ORDER_TAX) }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>{{ _t('Total Collected') }}</td>
+                    <td class="align-right">
+                      {{ formatPrice(BSData.REPORT_CALCULATED_TOTAL_SALES) }}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="table-responsive">
+              <table>
+                <thead>
+                  <tr>
+                    <th>
+                      {{ _t('Orders') }}
+                      <span><i class="fa fa-sort" aria-hidden="true"></i></span>
+                    </th>
+                    <th>
+                      {{ _t('Oty') }}
+                      <span><i class="fa fa-sort" aria-hidden="true"></i></span>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>{{ _t('Total Orders') }}</td>
+                    <td class="align-right">
+                      {{ BSData.REPORT_ORDER_COUNT }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>{{ _t('Cancelled Orders') }}</td>
+                    <td class="align-right">
+                      {{ BSData.REPORT_ORDER_CANCEL_REASON_QUANTITY }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>{{ _t('Modified Orders') }}</td>
+                    <td class="align-right">
+                      {{ BSData.REPORT_MODIFY_REASON_QUANTITY }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>{{ _t('Not Finished Orders') }}</td>
+                    <td class="align-right">
+                      {{ BSData.REPORT_IN_PROGRESS_QUANTITY }}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="table-responsive">
+              <table>
+                <thead>
+                  <tr>
+                    <th>
+                      {{ _t('Payment Types') }}
+                      <span><i class="fa fa-sort" aria-hidden="true"></i></span>
+                    </th>
+                    <th>
+                      {{ _t('Qty') }}
+                      <span><i class="fa fa-sort" aria-hidden="true"></i></span>
+                    </th>
+                    <th>
+                      {{ _t('Value') }}
+                      <span><i class="fa fa-sort" aria-hidden="true"></i></span>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                    v-for="(payment, index) in BSData.PAYMENT_TYPES"
+                    :key="index"
+                  >
+                    <td>
+                      {{ _t(payment['REPORT-PAYMENT-TYPE-NAME']) }}
+                    </td>
+                    <td class="align-right">
+                      {{ payment['REPORT-PAYMENT-TYPE-QUANTITY'] }}
+                    </td>
+                    <td class="align-right">
+                      {{ formatPrice(payment['REPORT-PAYMENT-TYPE']) }}
+                      <!--{{ setTotalValue(payment['REPORT-PAYMENT-TYPE']) }}-->
+                    </td>
+                  </tr>
+                  <tr class="font-weight-bold">
+                    <td>{{ _t('Total') }}</td>
+                    <td class="align-right">
+                      {{ totalPayments.count }}
+                    </td>
+                    <td class="align-right">
+                      {{ totalPayments.value }}
+                    </td>
+                  </tr>
+                  <tr
+                    class="font-weight-bold"
+                    v-if="BSData.REPORT_TIPS_VALUE > 0"
+                  >
+                    <td>{{ _t('Tips') }}</td>
+                    <td class="align-right"></td>
+                    <td class="align-right">
+                      {{ formatPrice(BSData.REPORT_TIPS_VALUE) }}
+                    </td>
+                  </tr>
+                  <tr
+                    class="font-weight-bold"
+                    v-if="BSData.REPORT_DINEIN_PANDDING_ORDER_COUNT"
+                  >
+                    <td>{{ _t('Unfinished Dine-In Orders') }}</td>
+                    <td class="align-right">
+                      {{ BSData.REPORT_DINEIN_PANDDING_ORDER_COUNT }}
+                    </td>
+                    <td class="align-right">
+                      {{ formatPrice(BSData.REPORT_DINEIN_PANDDING_ORDER) }}
+                    </td>
+                  </tr>
+                  <tr
+                    class="font-weight-bold"
+                    v-if="BSData.REPORT_CRM_PANDDING_ORDER_COUNT"
+                  >
+                    <td>{{ _t('Unfinished CRM Orders') }}</td>
+                    <td class="align-right">
+                      {{ BSData.REPORT_CRM_PANDDING_ORDER_COUNT }}
+                    </td>
+                    <td class="align-right">
+                      {{ formatPrice(BSData.REPORT_CRM_PANDDING_ORDER) }}
+                    </td>
+                  </tr>
+                  <tr
+                    class="font-weight-bold"
+                    v-if="BSData.REPORT_CAPHOP_PANDDING_ORDER_COUNT"
+                  >
+                    <td>{{ _t('Carhop') }}</td>
+                    <td class="align-right">
+                      {{ BSData.REPORT_CAPHOP_PANDDING_ORDER_COUNT }}
+                    </td>
+                    <td class="align-right">
+                      {{ formatPrice(BSData.REPORT_CAPHOP_PANDDING_ORDER) }}
+                    </td>
+                  </tr>
+                  <tr
+                    class="font-weight-bold"
+                    v-if="BSData.REPORT_ITEM_REFERRAL_QUANTITY"
+                  >
+                    <td>{{ _t('Referral') }}</td>
+                    <td class="align-right">
+                      {{ BSData.REPORT_ITEM_REFERRAL_QUANTITY }}
+                    </td>
+                    <td class="align-right">
+                      {{ formatPrice(BSData.REPORT_ITEM_REFERRAL_VALUE) }}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <div class="btn-announce">
+            <button
+              class="btn btn-success btn-large color-main color-text-invert"
+              type="button"
+              data-dismiss="modal"
+            >
+              {{ _t('Ok') }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End Select Discount -->
+</template>
+<script>
+import { mapGetters, mapState } from 'vuex'
+
+export default {
+  name: 'BusinessSummary',
+  data() {
+    return {
+      timeMode: this.time_mode,
+    }
+  },
+  computed: {
+    ...mapGetters('location', ['_t', 'formatPrice']),
+    ...mapState('reports', ['BSData', 'totalPayments', 'time_mode']),
+  },
+  methods: {
+    getBSStoreTime() {
+      this.timeMode = !this.timeMode
+      this.$store.commit('reports/TIME_MODE', this.timeMode)
+      this.$store.dispatch('reports/businessSummary', {}, { root: true })
+    },
+  },
+}
+</script>
+<style>
+/* The container */
+.container-checkbox {
+  display: block;
+  position: relative;
+  padding-left: 26px;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Hide the browser's default checkbox */
+.container-checkbox input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+
+/* Create a custom checkbox */
+.container-checkbox .checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: #eee;
+}
+
+/* On mouse-over, add a grey background color */
+.container-checkbox:hover input ~ .checkmark {
+  background-color: #ccc;
+}
+
+/* When the checkbox is checked, add a blue background */
+.container-checkbox input:checked ~ .checkmark {
+  background-color: #5056ca;
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.container-checkbox .checkmark:after {
+  content: '';
+  position: absolute;
+  display: none;
+}
+
+/* Show the checkmark when checked */
+.container-checkbox input:checked ~ .checkmark:after {
+  display: block;
+}
+
+/* Style the checkmark/indicator */
+.container-checkbox .checkmark:after {
+  left: 7px;
+  top: 3px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 3px 3px 0;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+</style>

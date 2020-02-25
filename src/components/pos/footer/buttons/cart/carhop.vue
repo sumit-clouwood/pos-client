@@ -55,18 +55,21 @@
   </div> -->
 </template>
 <script>
-/* global $ clickPayNow */
+/* global clickPayNow */
+import CheckoutMixin from '@/mixins/Checkout'
+
 import { mapState } from 'vuex'
 import save from './common/save'
 import pay from './common/pay'
 export default {
   name: 'CarhopBtn',
+  mixins: [CheckoutMixin],
   components: {
     save,
     pay,
   },
   computed: {
-    ...mapState('checkoutForm', ['processing']),
+    ...mapState('checkoutForm', ['msg', 'error', 'processing']),
     ...mapState('order', ['items', 'orderSource', 'selectedOrder']),
   },
   methods: {
@@ -78,31 +81,11 @@ export default {
       }
     },
     placeCarhop() {
-      if (this.processing) {
-        // eslint-disable-next-line no-console
-        console.log('dual footer click')
-        return false
-      }
-      this.$store.commit('checkoutForm/SET_PROCESSING', true)
-
       if (this.items.length === 0) {
         return false
       }
-      let action = 'carhop-place-order'
-      if (this.selectedOrder && this.orderSource != 'backend') {
-        action = 'carhop-update-order'
-      }
 
-      $('#payment-msg').modal('show')
-      this.$store.dispatch('order/startOrder')
-      this.$store.commit('checkoutForm/SET_PROCESSING', true)
-      this.$store
-        .dispatch('checkout/pay', { action: action })
-        .then(() => {})
-        .catch(() => {})
-        .finally(() => {
-          this.$store.commit('checkoutForm/SET_PROCESSING', false)
-        })
+      this.executePayment({ action: 'carhop-place-order' })
     },
   },
 }

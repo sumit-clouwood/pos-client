@@ -3,7 +3,7 @@ import * as mutation from './printingServer/mutation-type'
 // import OrderService from '@/services/data/OrderService'
 import PrintingServerService from '@/services/data/PrintingServerService'
 // import LookupData from '@/plugins/helpers/LookupData'
-// import moment from 'moment-timezone'
+import moment from 'moment-timezone'
 // import { compressToBase64 } from 'lz-string'
 const state = {
   kitchenitems: [],
@@ -75,6 +75,9 @@ const actions = {
     // eslint-disable-next-line no-console
     console.log(locationData, 'locationData', customerData)
     return new Promise(resolve => {
+      let table_no = rootState.dinein.selectedTable
+        ? rootState.dinein.selectedTable.number
+        : false
       let jsonResponse = {
         status: 'ok',
         brand_logo: locationData.brand.company_logo || '',
@@ -98,11 +101,14 @@ const actions = {
         token_manager: false,
         windows_app: false,
       }
-      if (orderData.order_type == 'DINE-IN') {
-        let table_no = rootState.dinein.selectedTable
-          ? rootState.dinein.selectedTable.number
-          : false
-        jsonResponse.table_number = table_no
+      if (
+        orderData.order_type == 'DINE-IN' ||
+        orderData.order_type == 'dine_in'
+      ) {
+        Object.assign(jsonResponse, { table_number: table_no })
+        // jsonResponse.table_number = table_no
+        // eslint-disable-next-line no-console
+        console.log(jsonResponse, orderData, 'table number section')
       }
       if (isIOS) {
         // eslint-disable-next-line no-console
@@ -122,7 +128,7 @@ const actions = {
     })
   },
 
-  /*convertDatetime({ rootState, commit }, { datetime, format }) {
+  convertDatetime({ rootState, commit }, { datetime, format }) {
     let tz = rootState.location.timezoneString
     moment.locale(tz)
     let value =
@@ -144,7 +150,7 @@ const actions = {
       commit(mutation.CREATED_DATE, result)
     }
     return result
-  },*/
+  },
   //Fetch All Kitchens
   fetchAllKitchens({ commit }) {
     return new Promise((resolve, reject) => {

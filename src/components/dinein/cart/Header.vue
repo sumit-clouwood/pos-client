@@ -128,17 +128,15 @@
 import { bus } from '@/eventBus'
 
 import { mapState, mapGetters, mapActions } from 'vuex'
-//import SplitBill from './popup/SplitBill'
-//import PreviewSplit from './popup/PreviewSplit.vue'
+import CheckoutMixin from '@/mixins/Checkout'
 import DineInTableSelection from './popup/DineInTableSelection'
 import DineInCoverSelection from './popup/DineInCoverSelection'
 export default {
   name: 'Header',
+  mixins: [CheckoutMixin],
   components: {
     DineInTableSelection,
     DineInCoverSelection,
-    //SplitBill,
-    //PreviewSplit,
   },
   data() {
     return {
@@ -224,19 +222,11 @@ export default {
       bus.$emit('scroll-cart', option)
     },
     printSplit() {
-      this.$store.commit('checkoutForm/SET_PROCESSING', true)
-      this.$store.dispatch('order/startOrder')
-      $('#payment-msg').modal('show')
-      this.$store
-        .dispatch('checkout/pay', { action: 'dine-in-order-preview' })
-        .then(() => {})
-        .catch(() => {})
-        .finally(() => {
-          setTimeout(() => {
-            $('#payment-msg').modal('hide')
-          }, 500)
-          this.$store.commit('checkoutForm/SET_PROCESSING', false)
-        })
+      this.executePayment({ action: 'dine-in-order-preview' }).then(() => {
+        setTimeout(() => {
+          $('#payment-msg').modal('hide')
+        }, 700)
+      })
     },
     showSplitBill() {
       this.$store.dispatch('order/setSplitBill')
@@ -273,22 +263,7 @@ export default {
     },
     hold() {
       $('#holdorder').hide()
-      this.$store
-        .dispatch('checkout/pay', { action: 'on-hold' })
-        .then(() => {
-          if (this.msg) {
-            $('#payment-msg').modal('show')
-          }
-          setTimeout(function() {
-            $('#payment-screen-footer').prop('disabled', false)
-          }, 1000)
-        })
-        .catch(() => {
-          setTimeout(() => {
-            $('#payment-msg').modal('hide')
-            $('#payment-screen-footer').prop('disabled', false)
-          }, 500)
-        })
+      this.executePayment({ action: 'on-hold' })
     },
     ...mapActions('checkout', ['orderOnHold']),
   },
