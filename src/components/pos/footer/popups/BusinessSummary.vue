@@ -8,6 +8,18 @@
           <h4 class="customer-title color-text-invert">
             {{ _t('Business Summary Details') }}
           </h4>
+          <div class="printConfg">
+            <label>
+              <input
+                @click="getBSStoreTime"
+                type="checkbox"
+                v-model="timeMode"
+                name="printcong"
+                id="printcongs"
+              />
+            </label>
+            <label> Store</label>
+          </div>
         </div>
         <div class="modal-body row business-summary">
           <div class="business-summary-wrapper">
@@ -252,12 +264,19 @@ export default {
   name: 'BusinessSummary',
   data() {
     return {
-      // total: { value: 0, count: 0 },
+      timeMode: this.time_mode,
     }
   },
   computed: {
     ...mapGetters('location', ['_t', 'formatPrice']),
-    ...mapState('reports', ['BSData', 'totalPayments']),
+    ...mapState('reports', ['BSData', 'totalPayments', 'time_mode']),
+  },
+  methods: {
+    getBSStoreTime() {
+      this.timeMode = !this.timeMode
+      this.$store.commit('reports/TIME_MODE', this.timeMode)
+      this.$store.dispatch('reports/businessSummary', {}, { root: true })
+    },
   },
 }
 </script>
