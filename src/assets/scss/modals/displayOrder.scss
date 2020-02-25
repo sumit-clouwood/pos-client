@@ -234,7 +234,7 @@
             }
 
             .cu-loyality-points {
-              overflow: hidden;
+              overflow: scroll;
               margin: 0 auto;
               display: grid;
               grid-template-columns: max-content 1fr;

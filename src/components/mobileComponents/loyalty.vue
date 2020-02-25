@@ -34,7 +34,6 @@ export default {
     right: -100vw;
     bottom: 0;
     z-index: 1060;
-    background-color: #fff;
     border-left: 1px solid #eee;
 
     &.active {

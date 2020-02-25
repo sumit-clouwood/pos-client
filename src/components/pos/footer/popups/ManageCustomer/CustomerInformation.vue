@@ -38,21 +38,21 @@
           <CustomerPastOrders :pastOrders="pastOrders" />
         </div>
         <div class="modal-footer">
-          <div class="pagination-customer-details">
-            <paginate
-              v-if="paginateDetails.totalPages"
-              :page-count="paginateDetails.totalPages"
-              :page-range="1"
-              :margin-pages="1"
-              :clickHandler="setPastOrderPageNumber"
-              :prev-text="_t('Prev')"
-              :next-text="_t('Next')"
-              :container-class="''"
-              :page-class="_t('page-item')"
-            ></paginate>
-            <!--</template>-->
-          </div>
           <div class="btn-announce">
+            <div class="pagination-customer-details">
+              <paginate
+                v-if="paginateDetails.totalPages"
+                :page-count="paginateDetails.totalPages"
+                :page-range="1"
+                :margin-pages="1"
+                :clickHandler="setPastOrderPageNumber"
+                :prev-text="_t('Prev')"
+                :next-text="_t('Next')"
+                :container-class="''"
+                :page-class="_t('page-item')"
+              ></paginate>
+              <!--</template>-->
+            </div>
             <button
               type="button"
               class="btn btn-danger cancel-announce color-button color-text-invert"
