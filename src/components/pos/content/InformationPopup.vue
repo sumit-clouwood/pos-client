@@ -94,13 +94,17 @@ export default {
 
       .modal-content {
         width: 95% !important;
-        height: 50% !important;
+        height: auto !important;
         margin: auto;
         margin-top: 50%;
         margin-bottom: 50%;
         .modal-header {
-          height: 80px;
+          height: 50px;
           background-color: #fff;
+          font-size: 18px !important;
+          .customer-title {
+            font-size: 2rem !important;
+          }
         }
         .modal-body {
           min-height: 0rem !important;

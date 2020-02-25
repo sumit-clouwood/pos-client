@@ -394,6 +394,8 @@
     <Invoice />
     <OrderDetailsPopup />
     <InformationPopup :responseInformation="this.message" :title="this.title" />
+    <DineInCoverSelection />
+    <DineInTableSelection />
   </div>
 </template>
 
@@ -436,7 +438,8 @@ import CarhopBtn from './footer/buttons/cart/carhop'
 import openItemButton from '@/components/pos/openItem/button'
 import openItem from '@/components/pos/openItem/item'
 import genericOpenItem from '@/components/pos/openItem/genericItem'
-
+import DineInTableSelection from '@/components/dinein/cart/popup/DineInTableSelection'
+import DineInCoverSelection from '@/components/dinein/cart/popup/DineInCoverSelection.vue'
 import * as CONST from '@/constants'
 
 import { mapState, mapGetters } from 'vuex'
@@ -482,6 +485,8 @@ export default {
     openItemButton,
     openItem,
     genericOpenItem,
+    DineInTableSelection,
+    DineInCoverSelection,
   },
   data() {
     return {

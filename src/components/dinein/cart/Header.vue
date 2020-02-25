@@ -54,7 +54,6 @@
         >
           {{ _t('Move Table') }}
         </button>
-        <DineInTableSelection />
       </div>
       <div
         v-if="brand.number_of_covers && covers && cartType !== 'hold'"
@@ -68,7 +67,6 @@
         >
           {{ selectedCover.name ? _t(selectedCover.name) : _t('Select Cover') }}
         </button>
-        <DineInCoverSelection />
       </div>
       <div
         v-if="enabledSplitBill && orderId && covers && cartType !== 'hold'"
@@ -129,15 +127,10 @@ import { bus } from '@/eventBus'
 
 import { mapState, mapGetters, mapActions } from 'vuex'
 import CheckoutMixin from '@/mixins/Checkout'
-import DineInTableSelection from './popup/DineInTableSelection'
-import DineInCoverSelection from './popup/DineInCoverSelection'
 export default {
   name: 'Header',
   mixins: [CheckoutMixin],
-  components: {
-    DineInTableSelection,
-    DineInCoverSelection,
-  },
+  components: {},
   data() {
     return {
       showScrollUp: false,
@@ -309,7 +302,7 @@ export default {
     .main-oreders-buttons {
       display: grid !important;
       align-items: center;
-      margin: 0;
+      margin: auto !important;
       #holdorder {
         height: 35px;
         width: 30%;

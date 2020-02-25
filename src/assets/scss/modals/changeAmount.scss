@@ -1,9 +1,9 @@
 @import "../variables.scss";
+@import "../mixins.scss";
+
 #change-amount {
   .modal-dialog {
     .modal-content {
-      .modal-header {}
-
       .modal-body {
         .amount-change-wrap {
           > p {
@@ -23,8 +23,6 @@
           }
         }
       }
-
-      .modal-footer {}
     }
   }
 }
@@ -33,4 +31,7 @@
   overflow: hidden;
   text-align: center;
   padding-top: $px35;
+  @include responsive(mobile){
+    padding-top: 0px !important;
+  }
 }

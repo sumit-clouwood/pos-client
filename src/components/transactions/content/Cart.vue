@@ -147,6 +147,7 @@ export default {
 
       .main-oreders-buttons {
         display: none;
+        margin: auto !important;
       }
     }
 
