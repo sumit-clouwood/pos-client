@@ -50,6 +50,11 @@ export default {
           this.doPayment(this.$store.state.order.orderType.OTApi)
         }
       })
+      if (this.$store.state.mobile.device === 'mobile') {
+        this.$store.dispatch('payNowCalcHendlerChange')
+        this.$store.dispatch('paymentMethodsChange')
+        this.$store.dispatch('mainOrdersHendlerChange')
+      }
     },
     set(amount) {
       this.$store.commit('checkoutForm/SET_PROCESSING', false)
