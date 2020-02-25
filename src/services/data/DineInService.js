@@ -1,5 +1,7 @@
 import DataService from '@/services/DataService'
 import DateTime from '@/mixins/DateTime'
+import workflow from '@/plugins/helpers/workflow'
+
 export default {
   dineInRunningOrders(page, limit, userId) {
     return DataService.get(
@@ -80,9 +82,41 @@ export default {
       '/model/reservations?page_id=tables_reserved&page=1&limit=999999'
     )
   },
-  reservationOperation(data, action) {
+  async reservationOperation(data, action) {
     // action: add, move_waiting_to_reservation
-    return DataService.post(`/model/reservations/${action}`, data)
+
+    //uncomment below for online booking
+    let process_online = false
+
+    if (process_online) {
+      return DataService.post(`/model/reservations/${action}`, data)
+    }
+
+    //offline booking
+    const id = workflow.createId()
+    const entry = {
+      id: id,
+      step: 'booking',
+      type: data.order_type,
+      keys: { bookingId: id },
+      status: 'offline',
+      request: {
+        url: `/model/reservations/${action}`,
+        method: 'POST',
+        data: data,
+      },
+      startTime: id,
+      rootStep: '',
+    }
+    await workflow.addEntry(entry)
+    return {
+      data: {
+        status: 'ok',
+        id: id,
+        generate_time: id,
+        flash_message: ' Reservation Added',
+      },
+    }
   },
   bookings(page, limit, UTC_Date) {
     return DataService.get(

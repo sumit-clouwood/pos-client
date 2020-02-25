@@ -93,6 +93,17 @@ export default {
       }
     })
   },
+  delete(bucket, key) {
+    return new Promise((resolve, reject) => {
+      var objectStoreRequest = bucket.delete(key)
+      objectStoreRequest.onsuccess = function() {
+        resolve(objectStoreRequest.result)
+      }
+      objectStoreRequest.onerror = function(event) {
+        reject(event)
+      }
+    })
+  },
   add(bucket, data) {
     return new Promise((resolve, reject) => {
       try {

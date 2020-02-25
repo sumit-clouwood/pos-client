@@ -4,6 +4,7 @@ import * as CONST from '@/constants'
 import moment from 'moment-timezone'
 // import OrderHelper from '@/plugins/helpers/Order'
 import * as PERMS from '@/const/permissions'
+import workflow from '@/plugins/helpers/workflow'
 
 const state = {
   orders: {
@@ -138,16 +139,25 @@ const actions = {
   getBookedTables({ commit, dispatch }, loader = false) {
     return new Promise((resolve, reject) => {
       if (loader) commit(mutation.LOADING, loader)
-      /*localStorage.setItem('reservationId', false)*/
-      DineInService.getAllBookedTables()
-        .then(response => {
-          commit(mutation.BOOKED_TABLES, response.data)
-          dispatch('getDineInArea').then(() => {
-            return resolve()
+
+      let bookings = []
+      workflow.getEntries().then(entries => {
+        /*localStorage.setItem('reservationId', false)*/
+        bookings = [
+          ...entries.filter(entry => entry.request.order_type === 'dinein'),
+        ]
+        DineInService.getAllBookedTables()
+          .then(response => {
+            bookings = [...bookings, response.data]
+            commit(mutation.BOOKED_TABLES, bookings)
+
+            dispatch('getDineInArea').then(() => {
+              return resolve()
+            })
+            if (loader) commit(mutation.LOADING, false)
           })
-          if (loader) commit(mutation.LOADING, false)
-        })
-        .catch(er => reject(er))
+          .catch(er => reject(er))
+      })
     })
   },
 
