@@ -6,6 +6,12 @@
       <div
         class="modal-content color-dashboard-background  modal-content-wrapper"
       >
+        <div class="modal-header customer-header color-secondary">
+          <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
+          <h4 class="customer-title color-text-invert">
+            {{ _t('Tip') + ' ' + _t('Amount') }}
+          </h4>
+        </div>
         <div class="modal-body tip-amount  modal-body-wrapper">
           <div class="tip-amount-wrap">
             <p class="color-text-invert">{{ _t('Enter Tip Amount') }}</p>
@@ -22,46 +28,23 @@
         <div class="modal-footer">
           <div class="btn-announce">
             <button
+              class="btn btn-success btn-large color-main"
+              type="button"
+              data-dismiss="modal"
+              @click="addTip"
+            >
+              {{ _t('Add') }}
+            </button>
+            <button
               type="button"
               class="btn btn-danger cancel-announce color-button"
               data-dismiss="modal"
             >
               {{ _t('Cancel') }}
             </button>
-            <button
-              class="btn btn-success btn-large color-main"
-              type="button"
-              data-dismiss="modal"
-              id="add-top"
-              @click="addTip"
-            >
-              {{ _t('Add') }}
-            </button>
           </div>
-          <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
         </div>
       </div>
-    </div>
-    <div class="modal-footer">
-      <div class="btn-announce">
-        <button
-          type="button"
-          class="btn btn-danger cancel-announce color-button"
-          data-dismiss="modal"
-        >
-          {{ _t('Cancel') }}
-        </button>
-        <button
-          class="btn btn-success btn-large color-main"
-          type="button"
-          data-dismiss="modal"
-          id="add-top"
-          @click="addTip"
-        >
-          {{ _t('Add') }}
-        </button>
-      </div>
-      <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
     </div>
   </div>
   <!-- End Tip Amount -->
@@ -114,9 +97,7 @@ export default {
       display: grid;
 
       .modal-content {
-        height: 100%;
-        display: grid;
-        grid-template-rows: 1fr max-content;
+        height: auto;
         background-color: transparent;
         .modal-body {
           background-color: #fff;

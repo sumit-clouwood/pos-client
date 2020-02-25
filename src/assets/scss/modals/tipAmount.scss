@@ -1,4 +1,5 @@
 @import '../variables.scss';
+@import '../mixins.scss';
 
 #tip-amount {
   .modal-dialog {
@@ -34,6 +35,9 @@
             letter-spacing: 0.5px;
             padding: $px20 0 0 0;
             text-align: left;
+            @include responsive(mobile) {
+              font-size: $px20;
+            }
           }
 
           input {
@@ -46,12 +50,20 @@
             color: $btn-bg-black;
             border: 1px solid $gray-middle;
             margin-top: $px10;
+            @include responsive(mobile) {
+              font-size: $px20;
+            }
           }
         }
       }
 
       .modal-footer {
         .btn-announce {
+          button {
+            @include responsive(mobile) {
+              font-size: $px20 !important;
+            }
+          }
           #add-top {
             width: $px110;
             height: $px50;
@@ -67,9 +79,6 @@
         }
       }
     }
-  }
-  > .modal-footer {
-    display: none;
   }
 }
 
@@ -93,24 +102,11 @@
 
       .modal-content {
         border-radius: 0;
-        display: grid;
-        grid-template-rows: max-content max-content;
-        //margin-bottom: 100px;
         position: absolute;
         margin-top: auto;
 
         .modal-body {
-          .dining-option-block {
-            .select-discount-option {
-              > div {
-              }
-            }
-          }
-
           .tip-amount-wrap {
-            > p {
-            }
-
             input {
               text-align: left;
               padding: 0 20px;
@@ -121,13 +117,6 @@
         .modal-footer {
           box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
           padding: 20px;
-
-          .btn-announce {
-            #add-top {
-              > span {
-              }
-            }
-          }
         }
       }
     }
