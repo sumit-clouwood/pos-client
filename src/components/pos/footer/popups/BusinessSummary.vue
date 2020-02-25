@@ -35,6 +35,7 @@
         <div class="modal-body row business-summary" id="print_bs">
           <div style="width: 90%; text-align: center; margin-bottom: 15px">
             <h4 style="text-align: center">{{ store.name }}</h4>
+            <span class="date">{{ todayDate }} / {{ todayTime }}</span>
           </div>
           <div class="business-summary-wrapper" style="text-align: center">
             <div class="table-responsive">
@@ -502,12 +503,15 @@
 </template>
 <script>
 import { mapGetters, mapState } from 'vuex'
+import moment from 'moment-timezone'
 
 export default {
   name: 'BusinessSummary',
   data() {
     return {
       timeMode: this.time_mode,
+      todayDate: moment().format('L'),
+      todayTime: moment().format('h:mm:ss a'),
     }
   },
   computed: {
