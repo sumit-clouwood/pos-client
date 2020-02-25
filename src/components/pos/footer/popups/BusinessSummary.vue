@@ -13,7 +13,6 @@
               >Store Time
               <input
                 type="checkbox"
-                checked="checked"
                 @click="getBSStoreTime"
                 v-model="timeMode"
               />
