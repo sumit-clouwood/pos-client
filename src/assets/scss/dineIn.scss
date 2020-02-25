@@ -1007,7 +1007,8 @@ div {
                   .order-details-with-action{
                     grid-template-columns: 1fr;
                     .table-draw-order-details {
-                      grid-template-columns: auto auto;
+                      grid-template-columns: 1fr auto;
+                      grid-gap: 6px;
                     }
                   }
                 }
