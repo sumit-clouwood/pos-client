@@ -34,8 +34,8 @@
         </div>
         <div class="modal-body row business-summary" id="print_bs">
           <div style="width: 90%; text-align: center; margin-bottom: 15px">
-            <h4 style="text-align: center">{{ store.name }}</h4>
-            <span class="date">{{ todayDate }} / {{ todayTime }}</span>
+            <h4 style="text-align: center; padding-bottom:5px; margin-bottom: 0" >{{ store.name }}</h4>
+            <span class="date">{{ todayDate }} <br> {{ todayTime }}</span>
           </div>
           <div class="business-summary-wrapper" style="text-align: center">
             <div class="table-responsive">
