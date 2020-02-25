@@ -32,16 +32,28 @@
             <label> Store</label>
           </div>-->
         </div>
-        <div class="modal-body row business-summary" id="print_bs">
-          <div style="width: 90%; text-align: center; margin-bottom: 15px">
-            <h4 style="text-align: center">{{ store.name }}</h4>
-            <span class="date">{{ todayDate }} / {{ todayTime }}</span>
+        <div
+          class="modal-body row business-summary"
+          id="print_bs"
+          style="font-family: sans-serif; font-weight: bold"
+        >
+          <div style="width: 100%; text-align: center; margin-bottom: 15px;">
+            <h4
+              style="text-align: center; padding-bottom:5px; margin-bottom: 0"
+            >
+              {{ store.name }}
+            </h4>
+            <small class="date" style="text-transform: uppercase"
+              >{{ todayDate }} <br />
+              {{ todayTime }}</small
+            >
           </div>
           <div class="business-summary-wrapper" style="text-align: center">
             <div class="table-responsive">
               <table
                 style="margin-bottom: 20px; width: 98%;
-                border-bottom: 1px dashed #000; font-size: 12px"
+                border-bottom: 1px dashed #000;
+                font-size: 12px; font-family: sans-serif;"
               >
                 <thead>
                   <tr style="border: 1px dashed #000">
@@ -192,7 +204,8 @@
             <div class="table-responsive">
               <table
                 style="margin-bottom: 20px;
-                border-bottom: 1px dashed #000; font-size: 12px; width: 98%"
+                border-bottom: 1px dashed #000;
+                font-size: 12px; font-family: sans-serif; width: 98%"
               >
                 <thead>
                   <tr>
@@ -279,7 +292,8 @@
             </div>
             <div class="table-responsive">
               <table
-                style="margin-bottom: 20px; width: 98%;
+                style="margin-bottom: 20px;
+                width: 98%; font-family: sans-serif;;
                 border-bottom: 1px dashed #000; font-size: 12px"
               >
                 <thead>
