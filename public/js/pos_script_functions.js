@@ -20,9 +20,15 @@ $(document).on('click', function(event) {
 })
 function showModal(modalName) {
   $(modalName).modal('show')
+  $(modalName)
+    .show()
+    .removeClass('fade')
 }
 function hideModal(modalName) {
   $(modalName).modal('hide')
+  $(modalName)
+    .hide()
+    .addClass('fade')
 }
 function hidePayNow() {
   $('div#pay-now').addClass('effect-screen')
