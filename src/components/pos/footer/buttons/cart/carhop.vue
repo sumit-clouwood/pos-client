@@ -1,18 +1,39 @@
 <template>
-  <div v-if="(orderSource === 'backend' || selectedOrder) && !isCarhop()">
+  <div v-if="isCarhop()">
     <div class="button">
       <div class="template-btn">
         <div class="pay-now">
-          <pay class="pay-btn-holder" @pay="payNow"></pay>
+          <save class="pay-btn-holder" @save="placeCarhop"></save>
         </div>
       </div>
     </div>
   </div>
   <div v-else>
-    <div class="button">
-      <div class="template-btn">
-        <div class="pay-now">
-          <save class="pay-btn-holder" @save="placeCarhop"></save>
+    <div
+      v-if="orderSource != 'backend'"
+      style="grid-template-columns: 1fr 1fr; display: grid;"
+    >
+      <div class="button">
+        <div class="template-btn">
+          <div class="pay-now">
+            <pay class="pay-btn-holder" @pay="payNow"></pay>
+          </div>
+        </div>
+      </div>
+      <div class="button">
+        <div class="template-btn">
+          <div class="pay-now">
+            <save class="pay-btn-holder" @save="placeCarhop"></save>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div v-else>
+      <div class="button">
+        <div class="template-btn">
+          <div class="pay-now">
+            <pay class="pay-btn-holder" @pay="payNow"></pay>
+          </div>
         </div>
       </div>
     </div>
@@ -40,7 +61,7 @@
 /* global clickPayNow */
 import CheckoutMixin from '@/mixins/Checkout'
 
-import { mapState, mapGetters } from 'vuex'
+import { mapState } from 'vuex'
 import save from './common/save'
 import pay from './common/pay'
 export default {
@@ -51,9 +72,8 @@ export default {
     pay,
   },
   computed: {
-    ...mapState('checkoutForm', ['msg', 'error', 'processing']),
+    ...mapState('checkoutForm', ['processing']),
     ...mapState('order', ['items', 'orderSource', 'selectedOrder']),
-    ...mapGetters('auth', ['carhop']),
   },
   methods: {
     payNow() {
@@ -63,8 +83,12 @@ export default {
       if (this.items.length === 0) {
         return false
       }
+      let action = 'carhop-place-order'
+      if (this.selectedOrder && this.orderSource != 'backend') {
+        action = 'carhop-update-order'
+      }
 
-      this.executePayment({ action: 'carhop-place-order' })
+      this.executePayment({ action: action })
     },
   },
 }

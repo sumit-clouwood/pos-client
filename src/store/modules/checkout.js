@@ -94,6 +94,7 @@ const getters = {
 
 // actions
 const actions = {
+  setRoutes() {},
   validatePayment({ rootState, rootGetters, commit }, action) {
     const totalPayable = rootGetters['checkoutForm/orderTotal']
     commit(mutation.SET_PAYABLE_AMOUNT, totalPayable)
@@ -103,6 +104,7 @@ const actions = {
       [
         'dine-in-place-order',
         'carhop-place-order',
+        'carhop-update-order',
         'dine-in-order-preview',
         'modify-backend-order',
         CONSTANTS.ORDER_STATUS_ON_HOLD,
@@ -335,6 +337,7 @@ const actions = {
       const actions = [
         'dine-in-place-order',
         'carhop-place-order',
+        'carhop-update-order',
         'dine-in-order-preview',
         'modify-backend-order',
         CONSTANTS.ORDER_STATUS_ON_HOLD,
@@ -1114,10 +1117,9 @@ const actions = {
           .then(response => {
             if (response.data.status === 'ok') {
               let msgStr = rootGetters['location/_t'](
-                'Carhop order has been placed.'
+                'Carhop order has been Updated'
               )
 
-              //order paid
               commit(
                 'SET_ORDER_NUMBER',
                 rootState.order.selectedOrder.item.order_no
@@ -1125,11 +1127,15 @@ const actions = {
               dispatch(
                 'setToken',
                 rootState.order.selectedOrder.item.token_number
-              )
-              commit(mutation.PRINT, true)
+              ) //order paid
+              if (rootState.checkoutForm.action === 'pay' && !action) {
+                msgStr = rootGetters['location/_t'](
+                  'Carhop order has been Paid'
+                )
+                commit(mutation.PRINT, true)
+              }
               commit('order/CLEAR_SELECTED_ORDER', null, { root: true })
               resolve()
-
               commit(
                 'checkoutForm/SET_MSG',
                 { result: '', message: msgStr },
@@ -1137,6 +1143,13 @@ const actions = {
                   root: true,
                 }
               )
+
+              commit(mutation.SET_ROUTE, { name: 'CarhopOrders' })
+
+              commit('order/CLEAR_SELECTED_ORDER', null, { root: true })
+              // dispatch('reset', true)
+
+              resolve()
             } else {
               dispatch('handleSystemErrors', response).then(() => resolve())
             }
@@ -1379,8 +1392,11 @@ const actions = {
         .catch(error => reject(error))
     })
   },
-  // eslint-disable-next-line no-unused-vars
-  createCarhopOrder({ dispatch, commit, rootGetters, state }, action) {
+  createCarhopOrder(
+    { dispatch, commit, rootGetters, state, rootState },
+    // eslint-disable-next-line no-unused-vars
+    action
+  ) {
     return new Promise(resolve => {
       OrderService.saveOrder(state.order)
         .then(response => {
@@ -1389,15 +1405,18 @@ const actions = {
             commit('SET_ORDER_NUMBER', response.data.order_no)
             //we are not printing so reset manually here
             dispatch('setToken', response.data.token_number)
-            const msg = rootGetters['location/_t'](
-              'Carhop Order has been placed'
-            )
+            let msg = rootGetters['location/_t']('Carhop Order has been placed')
             //Invoice APP API Call with Custom Request JSON
             dispatch('printingServer/printingServerInvoiceRaw', state.order, {
               root: true,
             })
-            dispatch('reset')
-
+            if (rootState.checkoutForm.action === 'pay') {
+              msg = rootGetters['location/_t']('Carhop Order has been Paid')
+              commit(mutation.PRINT, true)
+            } else {
+              dispatch('reset')
+            }
+            commit(mutation.SET_ROUTE, { name: 'CarhopOrders' })
             dispatch('setMessage', {
               result: 'success',
               msg: msg,
