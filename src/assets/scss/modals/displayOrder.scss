@@ -830,6 +830,9 @@ label.container-radio-btn img {
   margin-right: $px10;
   width: $px35;
   height: $px35;
+  @include responsive(mobile) {
+    margin: auto;
+  }
 }
 
 button:focus {
@@ -854,10 +857,9 @@ button:focus {
 
 button#gift-card-btn {
   width: $px105;
-  @include responsive (mobile){
+  @include responsive(mobile) {
     width: auto !important;
   }
-
 }
 
 .gift-card-details-wrap > div.gift-card-detail {

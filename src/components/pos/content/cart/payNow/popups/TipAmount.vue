@@ -117,6 +117,13 @@ export default {
         height: 100%;
         display: grid;
         grid-template-rows: 1fr max-content;
+        background-color: transparent;
+        .modal-body {
+          background-color: #fff;
+        }
+        .modal-footer {
+          background-color: #fff;
+        }
       }
     }
     .modal-footer-btn-wrapper {

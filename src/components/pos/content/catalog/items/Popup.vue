@@ -92,6 +92,7 @@ export default {
         flex-direction: column;
         width: 95% !important;
         margin: auto !important;
+        font-size: 16px !important;
 
         .modal-header {
           height: 70px;
