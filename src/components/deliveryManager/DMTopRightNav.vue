@@ -143,8 +143,8 @@
                 </div>
               </div>
               <div class="dm-switch-langage">
-                <LanguageMenu />
                 <SwitchStore />
+                <LanguageMenu />
                 <TopSidebarMenu />
               </div>
             </div>
