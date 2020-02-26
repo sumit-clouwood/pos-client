@@ -97,6 +97,7 @@ export default {
           hideModal('#supervisor-password')
         }
       })
+      this.supervisorPassword = ''
     },
   },
 }
