@@ -23,9 +23,7 @@
                 class="add-email-from"
                 v-model="code"
                 @keydown.space.prevent
-                @keypress="
-                  $event.keyCode == 13 ? $event.preventDefault() : true
-                "
+                @change.space.prevent
               />
             </form>
           </div>
@@ -102,12 +100,14 @@ export default {
               if (this.needSupervisorAccess) {
                 showModal('#modificationReason')
               } else {
-                this.executePayment(
-                  this.$store.state.order.orderType.OTApi
-                ).then(() => {
-                  hideModal('#Gift-card-payemnt')
-                  showModal('#gift-card-info')
-                })
+                hideModal('#Gift-card-payemnt')
+                this.executePayment(this.$store.state.order.orderType.OTApi)
+                  .then(() => {
+                    showModal('#gift-card-info')
+                  })
+                  .catch(() => {
+                    showModal('#Gift-card-payemnt')
+                  })
               }
             }
           }
