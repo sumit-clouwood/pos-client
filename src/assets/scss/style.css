@@ -363,7 +363,7 @@ h6 {
           width: 100%;
           border: none !important;
           padding: 20px !important;
-          max-height: 23.75rem; }
+          margin: auto; }
         .modal .modal-dialog .modal-content .modal-footer .btn-announce {
           display: flex;
           flex-wrap: wrap;
@@ -410,7 +410,6 @@ h6 {
             font-size: 16px; }
       .modal .modal-dialog .modal-content .modal-footer {
         padding: 10px !important;
-        margin-bottom: 0px !important;
         margin-bottom: 0px !important;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); } }
 .header {
@@ -673,6 +672,8 @@ h6 {
         border: 1px solid #E3E7F2;
         text-align: left;
         padding: 0.5rem; }
+        #business-summary .modal-dialog .business-summary-wrapper table td span, #business-summary .modal-dialog .business-summary-wrapper table th span {
+          cursor: pointer; }
 
 .POSItemOptions {
   padding-right: 0.625rem; }
@@ -896,6 +897,8 @@ h6 {
   .POSItemOptions .POSItemOptions_money {
     text-align: right !important;
     padding-right: 1rem !important; }
+  .POSItemOptions .POSItemOptions_quantity_inputs {
+    width: 7.1875rem !important; }
 
   .POSItemOptions .modal-dialog .modal-content .modal-footer .btn-announce {
     display: grid !important;
@@ -1653,6 +1656,9 @@ h6 {
   overflow: hidden;
   text-align: center;
   padding-top: 2.1875rem; }
+  @media only screen and (min-width: 320px) and (max-width: 960px) {
+    .amount-change-wrap {
+      padding-top: 0px !important; } }
 
 a:hover {
   text-decoration: none; }
@@ -1686,7 +1692,6 @@ div#order-confirmation .modal-dialog {
   height: 36.875rem;
   box-shadow: 0 10px 40px rgba(133, 139, 151, 0.16);
   border-radius: 3px;
-  background-color: #ffffff;
   max-width: 39.6875rem; }
 
 .order-header > h4.order-confirm-title {
@@ -1919,6 +1924,9 @@ button:focus {
         letter-spacing: 0.5px;
         padding: 1.25rem 0 0 0;
         text-align: left; }
+        @media only screen and (min-width: 320px) and (max-width: 960px) {
+          #tip-amount .modal-dialog .modal-content .modal-body .tip-amount-wrap > p {
+            font-size: 1.25rem; } }
       #tip-amount .modal-dialog .modal-content .modal-body .tip-amount-wrap input {
         height: 3.125rem;
         width: 100%;
@@ -1929,6 +1937,12 @@ button:focus {
         color: #4B4E53;
         border: 1px solid #E3E7F2;
         margin-top: 0.625rem; }
+        @media only screen and (min-width: 320px) and (max-width: 960px) {
+          #tip-amount .modal-dialog .modal-content .modal-body .tip-amount-wrap input {
+            font-size: 1.25rem; } }
+    @media only screen and (min-width: 320px) and (max-width: 960px) {
+      #tip-amount .modal-dialog .modal-content .modal-footer .btn-announce button {
+        font-size: 1.25rem !important; } }
     #tip-amount .modal-dialog .modal-content .modal-footer .btn-announce #add-top {
       width: 6.875rem;
       height: 3.125rem;
@@ -1938,8 +1952,6 @@ button:focus {
       border-color: #5056ca; }
       #tip-amount .modal-dialog .modal-content .modal-footer .btn-announce #add-top > span {
         padding-right: 0.625rem; }
-#tip-amount > .modal-footer {
-  display: none; }
 
 @media only screen and (min-width: 320px) and (max-width: 960px) {
   #tip-amount {
@@ -1959,8 +1971,6 @@ button:focus {
       display: grid; }
       #tip-amount .modal-dialog .modal-content {
         border-radius: 0;
-        display: grid;
-        grid-template-rows: max-content max-content;
         position: absolute;
         margin-top: auto; }
         #tip-amount .modal-dialog .modal-content .modal-body .tip-amount-wrap input {
@@ -2041,7 +2051,6 @@ button:focus {
   width: 35rem;
   box-shadow: 0 10px 40px rgba(133, 139, 151, 0.16);
   border-radius: 3px;
-  background-color: #ffffff;
   max-width: 35rem; }
   #add-note .modal-dialog .modal-content {
     box-shadow: 0 10px 40px rgba(133, 139, 151, 0.16); }
@@ -2741,7 +2750,7 @@ a:hover {
               margin-right: 0.3125rem;
               cursor: pointer; }
       #display-order .modal-dialog .modal-content .modal-body .crm-details-wrap #order-profile .cu-loyality-points {
-        overflow: hidden;
+        overflow: scroll;
         margin: 0 auto;
         display: grid;
         grid-template-columns: max-content 1fr;
@@ -2934,7 +2943,8 @@ a:hover {
             #display-order .modal-dialog .modal-content .modal-body .crm-details-wrap .customer-insight .customer-insight-feedback .ullist-feedback li.active .color-smile {
               z-index: 1; }
   #display-order .modal-dialog .modal-content .modal-footer {
-    padding-top: 0; }
+    padding-top: 0;
+    border-top: 2px solid grey; }
 
 /**********************************/
 .cu-delivery-area-location {
@@ -3181,6 +3191,9 @@ label.container-radio-btn img {
   margin-right: 0.625rem;
   width: 2.1875rem;
   height: 2.1875rem; }
+  @media only screen and (min-width: 320px) and (max-width: 960px) {
+    label.container-radio-btn img {
+      margin: auto; } }
 
 button:focus {
   box-shadow: none !important; }
@@ -3200,6 +3213,9 @@ button:focus {
 
 button#gift-card-btn {
   width: 6.5625rem; }
+  @media only screen and (min-width: 320px) and (max-width: 960px) {
+    button#gift-card-btn {
+      width: auto !important; } }
 
 .gift-card-details-wrap > div.gift-card-detail {
   width: 47.5%;
@@ -3632,6 +3648,9 @@ button.btn.btn-danger.cancel-announce {
   width: 7.8125rem;
   background: #cc3232;
   border-color: #cc3232; }
+  @media only screen and (min-width: 320px) and (max-width: 960px) {
+    button.btn.btn-danger.cancel-announce {
+      width: auto !important; } }
 
 button.btn.btn-danger.cancel-announce > span {
   padding-right: 0.625rem; }
@@ -3726,7 +3745,7 @@ div#user-details .modal-dialog {
   overflow: auto; }
   @media only screen and (min-width: 320px) and (max-width: 960px) {
     .modal .modal-dialog {
-      margin: 0px; } }
+      margin: auto !important; } }
   .modal .modal-dialog .modal-content {
     width: 100%; }
     @media only screen and (min-width: 320px) and (max-width: 960px) {
@@ -3764,6 +3783,7 @@ div#user-details .modal-dialog {
             width: 100% !important;
             grid-row-gap: 10px !important; } }
         .modal .modal-dialog .modal-content .modal-footer .btn-announce button {
+          margin-top: auto;
           height: 3.125rem;
           font-weight: 600;
           font-size: 1rem;
@@ -3795,9 +3815,6 @@ div#user-details .modal-dialog {
 button {
   cursor: pointer;
   white-space: nowrap; }
-  @media only screen and (min-width: 320px) and (max-width: 960px) {
-    button {
-      width: auto !important; } }
   button:hover {
     opacity: 0.8; }
   button .btn .btn-danger .cancel-announce {
@@ -3806,6 +3823,9 @@ button {
     width: 7.8125rem;
     background: #cc3232;
     border-color: #cc3232; }
+    @media only screen and (min-width: 320px) and (max-width: 960px) {
+      button .btn .btn-danger .cancel-announce {
+        width: auto !important; } }
   button .btn .btn-danger > span {
     padding-right: 0.5rem; }
   button #post_announcement {
@@ -3815,6 +3835,9 @@ button {
     border-color: #5056ca;
     margin-left: 0.9375rem;
     font-size: 0.875rem; }
+    @media only screen and (min-width: 320px) and (max-width: 960px) {
+      button #post_announcement {
+        width: auto !important; } }
   button #dining-opt {
     width: 6.875rem;
     height: 3.125rem;
@@ -3858,6 +3881,9 @@ button {
     border-radius: 3px;
     background-color: #cc3232;
     box-shadow: 0 2px 2px 0 rgba(232, 150, 150, 0.5); }
+    @media only screen and (min-width: 320px) and (max-width: 960px) {
+      button#cancel-annc {
+        width: auto !important; } }
   button.reject-order {
     height: 2.1875rem;
     border-radius: 3px;
@@ -3871,6 +3897,9 @@ button {
     height: 2.1875rem;
     padding: 0 0.9375rem;
     float: right; }
+    @media only screen and (min-width: 320px) and (max-width: 960px) {
+      button.add-to-delivery {
+        width: auto !important; } }
     button.add-to-delivery:hover {
       background: #5056ca;
       color: #fff !important;
@@ -3891,6 +3920,9 @@ button {
     line-height: normal;
     letter-spacing: 0.6px;
     color: #ffffff; }
+    @media only screen and (min-width: 320px) and (max-width: 960px) {
+      button#modify-btn {
+        width: auto !important; } }
     button#modify-btn > span {
       float: left; }
   button#view-history {
@@ -4926,6 +4958,13 @@ body {
           justify-content: center;
           padding: 0 10px;
           height: 100%; }
+          @media only screen and (min-width: 320px) and (max-width: 960px) {
+            .footer .footer-buttons .button .pay-btn-holder .pay-button {
+              display: grid;
+              grid-template-columns: auto;
+              width: auto;
+              color: red;
+              background-color: blue; } }
           .footer .footer-buttons .button .pay-btn-holder .pay-button span {
             color: #fff;
             padding-left: 0.625rem;
@@ -5065,7 +5104,8 @@ body {
 #dm-content-wrapper {
   overflow: hidden; }
 
-div#reservation-orders-show .rinning-order-title, #waiting-dinein-show .rinning-order-title {
+div#reservation-orders-show .rinning-order-title,
+#waiting-dinein-show .rinning-order-title {
   padding: 2.8125rem; }
 
 .dinein-footer-icon {
@@ -5453,7 +5493,7 @@ button.qtyminus.value-qty {
   border-bottom-right-radius:  0;*/ }
 
 input.qty {
-  border: 0.0625rem solid #D8DCE1;
+  border: 0.0625rem solid #d8dce1;
   border-left: medium none;
   border-right: medium none;
   border-radius: 0; }
@@ -5465,7 +5505,7 @@ input.qty {
   width: 33.33%;
   text-align: center;
   outline: none;
-  color: #3D3F43;
+  color: #3d3f43;
   font-size: 1rem;
   font-weight: 600;
   height: 2.5rem;
@@ -5522,7 +5562,7 @@ input.qty {
 
 .sitting-image svg {
   -webkit-filter: drop-shadow(2px 2px 3px rgba(0, 0, 0, 0.3));
-  filter: drop-shadow(1px 1PX 2px rgba(0, 0, 0, 0.3)); }
+  filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.3)); }
   .sitting-image svg #dine-in-area {
     background: #ffffff; }
 
@@ -5701,7 +5741,7 @@ div#confirmModal .customer-title {
       transition: 0.3s ease-in-out; }
 
 #available-tables > .table-status:hover {
-  background: #E3E7F2; }
+  background: #e3e7f2; }
 
 .cancel-order-dd > .dropdown {
   border-bottom: 1px solid #cccccc; }
@@ -5757,7 +5797,8 @@ div#confirmModal .customer-title {
       body#page-top.dm-manager .new-pos #sitting-dinein-table .dropdown-content .tooltip-c-range .table-order-content .order-details-with-action {
         grid-template-columns: 1fr; }
         body#page-top.dm-manager .new-pos #sitting-dinein-table .dropdown-content .tooltip-c-range .table-order-content .order-details-with-action .table-draw-order-details {
-          grid-template-columns: auto auto; }
+          grid-template-columns: 1fr auto;
+          grid-gap: 6px; }
 
   .table-order-view-wrapper {
     grid-template-columns: 1fr; }
@@ -5790,9 +5831,9 @@ div#confirmModal .customer-title {
     margin: 0;
     padding: 0;
     background: #000000;
-    opacity: .65;
+    opacity: 0.65;
     filter: alpha(opacity=65);
-    -moz-opacity: .65;
+    -moz-opacity: 0.65;
     z-index: 101;
     display: none; }
   .hideBigScreen .all-booking-btns {
@@ -5845,7 +5886,7 @@ div#confirmModal .customer-title {
         text-align: left;
         font-size: 17px;
         font-weight: normal;
-        border-bottom: 1px solid #E3E7F2;
+        border-bottom: 1px solid #e3e7f2;
         min-height: 60px;
         margin: 0;
         border-radius: 0; }
@@ -5862,7 +5903,7 @@ div#confirmModal .customer-title {
       -ms-flex-pack: center;
       justify-content: center;
       border-radius: 3px;
-      background-color: #4B4E53; }
+      background-color: #4b4e53; }
       .hideBigScreen .all-booking-btns .footer-slide-menu.btn-menu-close {
         background-color: #cc3232;
         display: none;
@@ -5940,12 +5981,18 @@ div#confirmModal .customer-title {
         text-overflow: ellipsis;
         white-space: nowrap; }
       .dm-manager .header .header-main .header-main-left .change-location > button {
-        margin-right: 0; } }
+        margin-right: 0; }
+
+  .fixed-reservation {
+    width: 100vw !important; } }
 .dine-in-table-guest-details-pos {
   display: grid;
   grid-template-columns: 1fr 1fr;
   align-content: center;
   text-align: center; }
+  @media only screen and (min-width: 320px) and (max-width: 960px) {
+    .dine-in-table-guest-details-pos {
+      grid-column-gap: 10px !important; } }
 
 .tables-draw {
   border: 0.0625rem dashed;
@@ -5968,6 +6015,9 @@ div#confirmModal .customer-title {
       padding: 0.75rem 0.3125rem;
       position: relative;
       border-radius: 4px; }
+      @media only screen and (min-width: 320px) and (max-width: 960px) {
+        #available-tables .table-status-container .table-status {
+          text-align: center; } }
       #available-tables .table-status-container .table-status > span {
         padding: 0 2px !important;
         display: block !important;
@@ -5994,7 +6044,7 @@ div#confirmModal .customer-title {
       #available-tables .table-status-container .table-status.active {
         border-color: #5056CA !important; }
         #available-tables .table-status-container .table-status.active:after {
-          content: "\F00C";
+          content: '\F00C';
           font-family: FontAwesome;
           font-size: 1.125rem;
           color: #fff;
@@ -6006,9 +6056,9 @@ div#confirmModal .customer-title {
           right: 0rem;
           top: 0rem;
           border-radius: 0px 0px 0px 3px;
-          background-color: #767DFF;
+          background-color: #767dff;
           background-position: center center;
-          border-color: #767DFF !important; }
+          border-color: #767dff !important; }
 
 .driver-container > button {
   width: 100%; }
@@ -6164,7 +6214,7 @@ button.res-select-table {
   @media only screen and (min-width: 320px) and (max-width: 960px) {
     .transaction-orders .main-orders #cancellationReason .modal-dialog,
     .transaction-orders .main-orders #cancellationReason .modal-header {
-      max-width: 97%; } }
+      max-width: 100%; } }
   .transaction-orders .main-orders #cancellationReason .modal-dialog .autocomplete-container {
     grid-gap: 10px; }
   @media only screen and (min-width: 320px) and (max-width: 960px) {

@@ -810,10 +810,10 @@ div#NewReservation .num_guests .btn-secondary label {
   justify-content: center;
 }
 .next {
-  width: 40px !important;
+  width: 20px !important;
 }
 .prev {
-  width: 40px !important;
+  width: 20px !important;
 }
 .pre .SCDayNum {
   width: 80px;
