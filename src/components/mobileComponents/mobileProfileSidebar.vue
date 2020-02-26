@@ -240,7 +240,13 @@
             v-if="!isWaiter() && !isCarhop() && permitted('dashboard', 'root')"
           >
             <a :href="dashboard" target="_self" class="profile-menu-item-icon">
-              <svg data-v-0fe42853="" id="dashboard_icon" viewBox="0 0 24 24"  width="24" height="24">
+              <svg
+                data-v-0fe42853=""
+                id="dashboard_icon"
+                viewBox="0 0 24 24"
+                width="24"
+                height="24"
+              >
                 <path
                   data-v-0fe42853=""
                   fill="#B0B2BB"
@@ -256,7 +262,13 @@
             v-if="!isWaiter() && !isCarhop() && permitted('crm', 'root')"
           >
             <div class="profile-menu-item-icon">
-              <svg data-v-0fe42853="" id="crm_icon" viewBox="0 0 22 24"  width="24" height="24">
+              <svg
+                data-v-0fe42853=""
+                id="crm_icon"
+                viewBox="0 0 22 24"
+                width="24"
+                height="24"
+              >
                 <path
                   data-v-0fe42853=""
                   fill="#B0B2BB"
