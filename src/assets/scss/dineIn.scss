@@ -903,6 +903,16 @@ div {
 }
 //Media Queries
 @include responsive(mobile) {
+  #sitting-dinein-table{
+    .sitting-image{
+      overflow: auto;
+      svg{
+        width: 768px;
+        overflow: auto;
+      }
+    }
+  }
+
   #NewReservation {
     .modal-dialog {
       max-width: 96% !important;

@@ -78,7 +78,8 @@
             </td>
             <td>{{ avgTime(driOrders) }}</td>
             <td class="align-right">
-              <button
+              <div class="delivered-items-iocns">
+                <button
                 id="open-collect-money-modal"
                 role="button"
                 class="btn btn-success btn-large collect-driver-money-btn"
@@ -88,9 +89,8 @@
               >
                 <i class="fa fa-refresh fa"></i>
                 {{ _t('Collect Money') }}
-              </button>
-              &nbsp;
-              <a
+              </button>&nbsp;
+                <a
                 :id="'refresh_data-' + driOrders.driverId"
                 href
                 class="btn btn-success btn-large btnRefreshDetails btn-data-refresh"
@@ -99,7 +99,7 @@
                 <i class="fa fa-refresh fa"></i>
                 {{ _t('Refresh Data') }} </a
               >&nbsp;
-              <a
+                <a
                 :id="'driver_details-' + driOrders.driverId"
                 role="button"
                 class="btn btn-info btn-large btnShowDetails btn-show-details-delivered"
@@ -108,7 +108,7 @@
                 <i class="fa fa-eye" aria-hidden="true"></i>
                 <!--{{ _t('Show Details') }}-->
               </a>
-              <a
+                <a
                 :class="'driver_details_hide-' + driOrders.driverId"
                 role="button"
                 class="btn btn-info btn-large btnShowDetails btn-show-details"
@@ -116,6 +116,7 @@
                 @click="showOrders(driOrders.driverId)"
                 ><i class="fa fa-eye-slash" aria-hidden="true"></i>
               </a>
+              </div>
             </td>
           </tr>
           <tr
@@ -293,6 +294,17 @@ tr.dataContentStyle > td > a svg {
   a {
     font-size: 12px;
     color: #fff;
+  }
+}
+.delivered-items-iocns {
+  display: flex;
+  a {
+    font-size: 12px;
+    color: #fff;
+    i {
+      font-size: 20px;
+      color: #fff;
+    }
   }
 }
 </style>
