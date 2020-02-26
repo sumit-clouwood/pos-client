@@ -4,7 +4,6 @@ import * as CONST from '@/constants'
 import moment from 'moment-timezone'
 // import OrderHelper from '@/plugins/helpers/Order'
 import * as PERMS from '@/const/permissions'
-import DB from '@/services/network/DB'
 import workflow from '../../plugins/helpers/workflow'
 
 const state = {
@@ -138,7 +137,7 @@ const actions = {
     })
   },
   getBookedTables({ commit, dispatch }, loader = false) {
-    return new Promise((resolve, reject) => {
+    return new Promise(resolve => {
       if (loader) commit(mutation.LOADING, loader)
 
       /*localStorage.setItem('reservationId', false)*/
@@ -146,26 +145,54 @@ const actions = {
         .then(async response => {
           let promises = []
           //add booked tables data to the indexedDB, and serve all from there wether its online or offline
-          response.data.data.forEach(entry =>
+          //TODO: serve directly from the iDB and sync it in bg with server
+          response.data.data.forEach(booking => {
+            const entry = {
+              id: booking._id,
+              step: booking.status,
+              type: 'dinein',
+              keys: { reservationId: booking._id },
+              status: 'online',
+              request: {},
+              response: booking,
+              startTime: booking.start_date + ' ' + booking.start_time,
+              rootStep: '',
+            }
             promises.push(workflow.addEntry(entry))
-          )
+          })
 
           //get back all the entries
           await Promise.all(promises)
 
           let dineInEntries = {}
           workflow.getEntries().then(entries => {
-            dineInEntries.data = entries.filter(
-              entry => entry.request.order_type === 'dinein'
-            )
-            commit(mutation.BOOKED_TABLES, response.data)
+            dineInEntries.data = entries.map(entry => {
+              if (entry.step === 'reserved') {
+                return entry.response
+              }
+            })
+            dineInEntries.count = dineInEntries.data.length
+
+            commit(mutation.BOOKED_TABLES, dineInEntries)
+
             dispatch('getDineInArea').then(() => {
               return resolve()
             })
             if (loader) commit(mutation.LOADING, false)
           })
         })
-        .catch(er => reject(er))
+        .catch(() => {
+          //serve from cache
+          let dineInEntries = {}
+          workflow.getEntries().then(entries => {
+            dineInEntries.data = entries.filter(
+              entry => entry.request.order_type === 'dinein'
+            )
+            dineInEntries.count = dineInEntries.data.length
+
+            commit(mutation.BOOKED_TABLES, dineInEntries)
+          })
+        })
     })
   },
 

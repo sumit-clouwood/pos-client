@@ -105,6 +105,7 @@ export default {
         method: 'POST',
         data: data,
       },
+      response: {},
       startTime: id,
       rootStep: '',
     }

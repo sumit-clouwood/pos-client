@@ -1,9 +1,9 @@
 import DB from '@/services/network/DB'
 
 export default {
-  bucketName: 'order_post_requests',
-  DBVersion: 4,
-  keyName: 'order_time', //this we can use as id/pk, it is being used in old code so we don't want to distract
+  bucketName: 'workflow_order',
+  DBVersion: 5,
+  keyName: '_id', //this we can use as id/pk, it is being used in old code so we don't want to distract
   //running customers, can't take a risk to change its name, once every thing stable we ll change it.
   createId(prefix = '', postfix = '') {
     return prefix + +new Date() + postfix
@@ -11,6 +11,7 @@ export default {
   getEntry() {
     return {
       step: '',
+      type: '',
       keys: {},
       status: '',
       request: {
@@ -27,15 +28,27 @@ export default {
     if (DB.idb) return Promise.resolve()
     return DB.openDatabase(this.DBVersion)
   },
-  async addEntry({ id, step, keys, status, request, startTime, rootStep }) {
+  async addEntry({
+    id,
+    step,
+    type,
+    keys,
+    status,
+    request,
+    response,
+    startTime,
+    rootStep,
+  }) {
     this.openDB().then(() => {
       return new Promise((resolve, reject) => {
         let entry = this.getEntry()
 
         entry.step = step
+        entry.type = type
         entry.keys = keys
         entry.status = status
         entry.request = request
+        entry.response = response
         entry.startTime = startTime
         entry.rootStep = rootStep
 

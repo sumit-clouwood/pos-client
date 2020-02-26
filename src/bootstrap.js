@@ -214,7 +214,10 @@ export default {
             this.createDb(3).then(idb => {
               idb.close()
               this.createDb(4).then(idb => {
-                resolve(idb)
+                idb.close()
+                this.createDb(5).then(idb => {
+                  resolve(idb)
+                })
               })
             })
           })
@@ -222,7 +225,7 @@ export default {
         .catch(event => {
           if (event.target.error.code === 0) {
             //db has been created already so try with a recent version
-            const version = 4
+            const version = 5
             db.openDatabase(version)
               .then(({ idb, flag }) => {
                 if (flag === 'open') {
@@ -318,6 +321,53 @@ export default {
               unique: false,
             })
             bucket.createIndex('event_title', 'event_title', {
+              unique: false,
+            })
+            bucket.createIndex('event_data', 'event_data', {
+              unique: false,
+            })
+          }
+        )
+          .then(() => {
+            console.log('created bucket events')
+            this.store.commit('sync/setIdbVersion', 4)
+
+            resolve(4)
+          })
+          .catch(error => reject(error))
+      }
+
+      if (event.oldVersion === 4) {
+        // initial database creation
+        // (your code does nothing here)
+        console.log('creating bucket workflow_order')
+        db.createBucket(
+          'workflow_order',
+          {
+            autoIncrement: true,
+            keyPath: '_id',
+          },
+          bucket => {
+            step: '',
+      keys: {},
+      status: '',
+      request: {
+        url: '',
+        data: {},
+      },
+      response: {},
+      startTime: '',
+      endTime: '',
+      rootStep: '',
+
+            bucket.createIndex('step', 'step', { unique: false })
+            bucket.createIndex('keys', 'keys', {
+              unique: false,
+            })
+            bucket.createIndex('status', 'status', {
+              unique: false,
+            })
+            bucket.createIndex('request', 'request', {
               unique: false,
             })
             bucket.createIndex('event_data', 'event_data', {
