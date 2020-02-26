@@ -5,7 +5,6 @@
   --vh: 100%;
 }
 
-
 @font-face {
   font-family: 'ProximaNova-Regular';
   src: url('/fonts/ProximaNova-Regular.woff') format('woff');
@@ -126,6 +125,9 @@ img {
 ::-webkit-scrollbar {
   width: $px10;
   height: $px3;
+  @include responsive(mobile) {
+    width: 0px;
+  }
 }
 
 ::-webkit-scrollbar-track-piece {
@@ -227,7 +229,7 @@ img {
     height: $px35;
     @include responsive(mobile) {
       svg path {
-        fill: #000
+        fill: #000;
       }
     }
 
@@ -408,11 +410,11 @@ h6 {
 }
 
 @include responsive(mobile) {
-  .footer-slider-list-item-link{
-    >span{
+  .footer-slider-list-item-link {
+    > span {
       display: flex;
       align-items: center;
-      >span{
+      > span {
         font-size: 14px;
       }
     }
@@ -485,10 +487,9 @@ h6 {
       opacity: 1 !important;
 
       .modal-content {
-
-        display: grid;
-        grid-template-columns: 1fr;
-        grid-template-rows: max-content 1fr max-content;
+        display: flex;
+        // grid-template-columns: 1fr;
+        // grid-template-rows: max-content 1fr max-content;
         width: 100% !important;
         max-width: none;
         //min-height: 100% !important;
@@ -500,16 +501,24 @@ h6 {
         opacity: 1 !important;
 
         .modal-body {
-          width: 100vw;
+          width: 100%;
           border: none !important;
           padding: 20px !important;
+          min-height: 23.75rem;
+          max-height: 23.75rem;
         }
 
         .modal-footer {
           .btn-announce {
+            display: flex;
+            flex-wrap: wrap;
+            flex-direction: row-reverse;
+            margin-bottom: 35px;
             button {
               height: 50px !important;
               font-size: 14px !important;
+              margin: 2px;
+              margin-bottom: 0px !important;
 
               &#discount-save {
                 background-color: $green-middle !important;
@@ -575,6 +584,7 @@ h6 {
 
         .modal-footer {
           padding: 20px !important;
+          margin-bottom: 0px !important;
           box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
       }

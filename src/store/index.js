@@ -23,12 +23,15 @@ import payment from './modules/payment'
 import invoice from './modules/invoice'
 import loyalty from './modules/loyalty'
 import context from './modules/context'
+import reports from './modules/reports'
 import modules from './modules/modules'
 import deliveryManager from './modules/deliveryManager'
 import mobile from './mobile'
 import dinein from './modules/dinein'
 import carhop from './modules/carhop'
 import Datetime from 'vue-datetime'
+import VueHtmlToPaper from 'vue-html-to-paper'
+
 // You need a specific loader for CSS files
 import 'vue-datetime/dist/vue-datetime.css'
 
@@ -46,6 +49,7 @@ import 'vue-cool-select/dist/themes/bootstrap.css'
 Vue.use(CoolSelectPlugin)
 
 Vue.use(Vuex)
+Vue.use(VueHtmlToPaper)
 Vue.use(Datetime)
 
 //const debug = process.env.NODE_ENV !== 'production'
@@ -79,6 +83,7 @@ const store = new Vuex.Store({
     mobile,
     dinein,
     carhop,
+    reports,
     dineinReservation,
   },
   strict: false,

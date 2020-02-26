@@ -78,7 +78,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
-/* global $ */
+/* global $ hideModal */
 import { mapState } from 'vuex'
 import Preloader from '@/components/util/Preloader'
 
@@ -89,6 +89,8 @@ export default {
   },
   methods: {
     acceptMsg() {
+      hideModal('#pay-now')
+      hideModal('#payment-msg')
       if (this.msg.result !== 'error') {
         this.$store.commit('checkout/PAYMENT_MSG_STATUS', true)
         this.$store.dispatch('checkout/generateInvoice')
@@ -96,7 +98,8 @@ export default {
     },
     generateInvoice() {
       if (this.msg.result !== 'error') {
-        $('#pay-now').modal('hide')
+        hideModal('#pay-now')
+        hideModal('#payment-msg')
         this.$store.dispatch('checkout/generateInvoice')
         $('#transparent-screen').hide()
         this.$store.commit('checkout/PAYMENT_MSG_STATUS', true)

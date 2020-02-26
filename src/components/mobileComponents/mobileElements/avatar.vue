@@ -46,6 +46,8 @@ export default {
 }
 </script>
 <style lang="scss">
+@import '@/assets/scss/variables.scss';
+@import '@/assets/scss/mixins.scss';
 .avatar {
   grid-column-start: 1;
   grid-column-end: 3;
@@ -60,6 +62,11 @@ export default {
       margin-right: 20px;
       grid-row-start: 1;
       grid-row-end: 3;
+      @include responsive(mobile) {
+        width: 51px;
+        height: 48px;
+        margin-right: 9px;
+      }
     }
 
     .avatar-link-user {
@@ -67,6 +74,9 @@ export default {
       line-height: 20px;
       font-weight: 600;
       color: #4b4e53;
+      @include responsive(mobile) {
+        text-transform: capitalize;
+      }
     }
   }
 }

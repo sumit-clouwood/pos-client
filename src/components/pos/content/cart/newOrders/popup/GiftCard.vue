@@ -22,9 +22,8 @@
                 type="text"
                 class="add-email-from"
                 v-model="code"
-                @keypress="
-                  $event.keyCode == 13 ? $event.preventDefault() : true
-                "
+                @keydown.space.prevent
+                @change.space.prevent
               />
             </form>
           </div>
@@ -64,9 +63,12 @@
 </template>
 <script>
 import { mapGetters, mapState } from 'vuex'
-/* global $ showModal, hideModal */
+/* global showModal, hideModal */
+import CheckoutMixin from '@/mixins/Checkout'
+
 export default {
   name: 'GiftCard',
+  mixins: [CheckoutMixin],
   data: function() {
     return {
       code: '',
@@ -98,34 +100,17 @@ export default {
               if (this.needSupervisorAccess) {
                 showModal('#modificationReason')
               } else {
-                this.$store.commit('order/IS_PAY', 1)
-                this.error = null
-                this.$store.commit('checkoutForm/SET_PROCESSING', true)
-                this.$store
-                  .dispatch(
-                    'checkout/pay',
-                    this.$store.state.order.orderType.OTApi
-                  )
+                hideModal('#Gift-card-payemnt')
+                this.executePayment(this.$store.state.order.orderType.OTApi)
                   .then(() => {
-                    $('#payment-msg').modal('show')
-                    setTimeout(function() {
-                      $('#payment-screen-footer').prop('disabled', false)
-                    }, 1000)
+                    showModal('#gift-card-info')
                   })
                   .catch(() => {
-                    setTimeout(() => {
-                      $('#payment-msg').modal('hide')
-                      $('#payment-screen-footer').prop('disabled', false)
-                    }, 500)
-                  })
-                  .finally(() => {
-                    this.$store.commit('checkoutForm/SET_PROCESSING', false)
+                    showModal('#Gift-card-payemnt')
                   })
               }
             }
           }
-          hideModal('#Gift-card-payemnt')
-          showModal('#gift-card-info')
         })
         .catch(error => {
           this.error = error

@@ -8,14 +8,13 @@
 </template>
 
 <script>
-import { mapState, mapGetters } from 'vuex'
+import { mapState } from 'vuex'
 import CloseButton from './header/CloseButton'
 
 export default {
   name: 'Header',
   props: {},
   computed: {
-    ...mapGetters('location'),
     ...mapState({
       item: state => state.modifier.item,
     }),

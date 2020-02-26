@@ -94,6 +94,7 @@ const getters = {
 
 // actions
 const actions = {
+  setRoutes() {},
   validatePayment({ rootState, rootGetters, commit }, action) {
     const totalPayable = rootGetters['checkoutForm/orderTotal']
     commit(mutation.SET_PAYABLE_AMOUNT, totalPayable)
@@ -103,6 +104,7 @@ const actions = {
       [
         'dine-in-place-order',
         'carhop-place-order',
+        'carhop-update-order',
         'dine-in-order-preview',
         'modify-backend-order',
         CONSTANTS.ORDER_STATUS_ON_HOLD,
@@ -256,7 +258,15 @@ const actions = {
       localStorage.getItem('reservationId') || rootState.dinein.reserverationId
     return Promise.resolve(order)
   },
-
+  injectWalkinData({ rootState, rootGetters }, order) {
+    if (rootGetters['location/isTokenManager']) {
+      let tokenNumber = localStorage.getItem('token_number')
+        ? localStorage.getItem('token_number')
+        : rootState.location.tokenNumber
+      order.token_number = tokenNumber
+    }
+    return Promise.resolve(order)
+  },
   preOrderHook({ rootState, dispatch }, { order, action }) {
     if (rootState.order.orderType.OTApi == CONSTANTS.ORDER_TYPE_CALL_CENTER) {
       return dispatch('injectCrmData', order)
@@ -265,7 +275,12 @@ const actions = {
     if (rootState.order.orderType.OTApi === CONSTANTS.ORDER_TYPE_DINE_IN) {
       return dispatch('injectDineinData', order)
     }
-
+    if (
+      rootState.order.orderType.OTApi === CONSTANTS.ORDER_TYPE_WALKIN &&
+      !rootState.sync.online
+    ) {
+      return dispatch('injectWalkinData', order)
+    }
     if (action === CONSTANTS.ORDER_STATUS_ON_HOLD) {
       return dispatch('injectHoldOrderData', order)
     }
@@ -322,6 +337,7 @@ const actions = {
       const actions = [
         'dine-in-place-order',
         'carhop-place-order',
+        'carhop-update-order',
         'dine-in-order-preview',
         'modify-backend-order',
         CONSTANTS.ORDER_STATUS_ON_HOLD,
@@ -451,6 +467,7 @@ const actions = {
         if (item.store_id) {
           orderItem.store_id = item.store_id
         }
+
         if (typeof item.kitchen_invoice !== 'undefined') {
           orderItem['kitchen_invoice'] = item.kitchen_invoice
         } else {
@@ -775,17 +792,29 @@ const actions = {
       '-' +
       rootState.order.startTime
     delete order.real_created_datetime
-    if (rootState.order.selectedOrder.item.cashier_id) {
-      order.cashier_id = rootState.order.selectedOrder.item.cashier_id
-    } else if (rootState.order.selectedOrder.item.order_history) {
-      const history = OrderHelper.lookup(
-        rootState.order.selectedOrder.item,
-        'order_history',
-        'name',
-        'ORDER_HISTORY_TYPE_RECORD_NEW'
-      )
-      if (history) {
-        order.cashier_id = history.user
+
+    //fix modify hold order
+    let selOrder = rootState.order.selectedOrder
+    if (selOrder) {
+      selOrder = selOrder.item
+    } else {
+      selOrder = rootState.order.newOrder
+    }
+
+    //while modifying order keep origin cashier id to idenfity orders later
+    if (selOrder) {
+      if (selOrder.cashier_id) {
+        order.cashier_id = selOrder.cashier_id
+      } else if (selOrder.order_history) {
+        const history = OrderHelper.lookup(
+          selOrder,
+          'order_history',
+          'name',
+          'ORDER_HISTORY_TYPE_RECORD_NEW'
+        )
+        if (history) {
+          order.cashier_id = history.user
+        }
       }
     }
     return Promise.resolve(order)
@@ -1088,18 +1117,25 @@ const actions = {
           .then(response => {
             if (response.data.status === 'ok') {
               let msgStr = rootGetters['location/_t'](
-                'Carhop order has been placed.'
+                'Carhop order has been Updated'
               )
 
-              //order paid
               commit(
                 'SET_ORDER_NUMBER',
                 rootState.order.selectedOrder.item.order_no
               )
-              commit(mutation.PRINT, true)
+              dispatch(
+                'setToken',
+                rootState.order.selectedOrder.item.token_number
+              ) //order paid
+              if (rootState.checkoutForm.action === 'pay' && !action) {
+                msgStr = rootGetters['location/_t'](
+                  'Carhop order has been Paid'
+                )
+                commit(mutation.PRINT, true)
+              }
               commit('order/CLEAR_SELECTED_ORDER', null, { root: true })
               resolve()
-
               commit(
                 'checkoutForm/SET_MSG',
                 { result: '', message: msgStr },
@@ -1107,6 +1143,13 @@ const actions = {
                   root: true,
                 }
               )
+
+              commit(mutation.SET_ROUTE, { name: 'CarhopOrders' })
+
+              commit('order/CLEAR_SELECTED_ORDER', null, { root: true })
+              // dispatch('reset', true)
+
+              resolve()
             } else {
               dispatch('handleSystemErrors', response).then(() => resolve())
             }
@@ -1150,7 +1193,7 @@ const actions = {
                 root: true,
               })
               commit('SET_ORDER_NUMBER', rootState.order.orderData.order_no)
-
+              dispatch('setToken', response.data.token_number)
               const msg = rootGetters['location/_t']('Order has been modified.')
               dispatch('setMessage', {
                 result: 'success',
@@ -1181,15 +1224,20 @@ const actions = {
       })
     })
   },
-
-  createWalkinOrder({ dispatch, commit, rootGetters }) {
+  setToken({ commit }, tokenNumber) {
+    if (typeof tokenNumber != 'undefined' && tokenNumber != '') {
+      commit('SET_TOKEN_NUMBER', tokenNumber)
+      localStorage.setItem('token_number', ++tokenNumber)
+    }
+  },
+  createWalkinOrder({ state, dispatch, commit, rootState, rootGetters }) {
     return new Promise(resolve => {
       OrderService.saveOrder(state.order)
         .then(response => {
           if (response.data.status === 'ok') {
             commit('order/SET_ORDER_ID', response.data.id, { root: true })
             commit('SET_ORDER_NUMBER', response.data.order_no)
-
+            dispatch('setToken', response.data.token_number)
             const msg = rootGetters['location/_t']('Order placed Successfully')
             dispatch('setMessage', {
               result: 'success',
@@ -1204,11 +1252,19 @@ const actions = {
           }
         })
         .catch(error => {
+          // eslint-disable-next-line no-console
+          console.log(error)
           dispatch('handleRejectedResponse', {
             response: error,
             offline: true,
           })
             .then(() => {
+              if (
+                rootGetters['location/isTokenManager'] &&
+                !rootState.sync.online
+              ) {
+                dispatch('setToken', state.order.token_number)
+              }
               commit(mutation.PRINT, true)
               resolve()
             })
@@ -1336,8 +1392,11 @@ const actions = {
         .catch(error => reject(error))
     })
   },
-  // eslint-disable-next-line no-unused-vars
-  createCarhopOrder({ dispatch, commit, rootGetters, state }, action) {
+  createCarhopOrder(
+    { dispatch, commit, rootGetters, state, rootState },
+    // eslint-disable-next-line no-unused-vars
+    action
+  ) {
     return new Promise(resolve => {
       OrderService.saveOrder(state.order)
         .then(response => {
@@ -1345,16 +1404,19 @@ const actions = {
             commit('order/SET_ORDER_ID', response.data.id, { root: true })
             commit('SET_ORDER_NUMBER', response.data.order_no)
             //we are not printing so reset manually here
-
-            const msg = rootGetters['location/_t'](
-              'Carhop Order has been placed'
-            )
+            dispatch('setToken', response.data.token_number)
+            let msg = rootGetters['location/_t']('Carhop Order has been placed')
             //Invoice APP API Call with Custom Request JSON
             dispatch('printingServer/printingServerInvoiceRaw', state.order, {
               root: true,
             })
-            dispatch('reset')
-
+            if (rootState.checkoutForm.action === 'pay') {
+              msg = rootGetters['location/_t']('Carhop Order has been Paid')
+              commit(mutation.PRINT, true)
+            } else {
+              dispatch('reset')
+            }
+            commit(mutation.SET_ROUTE, { name: 'CarhopOrders' })
             dispatch('setMessage', {
               result: 'success',
               msg: msg,
@@ -1368,10 +1430,11 @@ const actions = {
         .catch(error => {
           dispatch('handleRejectedResponse', {
             response: error,
-            offline: false,
+            offline: true,
           })
             .then(() => {
               resolve()
+              dispatch('reset')
             })
             .catch(() => resolve())
         })
@@ -1397,7 +1460,12 @@ const actions = {
     })
   },
   handleRejectedResponse({ dispatch }, { response, offline = false }) {
-    if (offline && response.message === 'Network Error') {
+    // eslint-disable-next-line no-console
+    console.log(response)
+    if (
+      offline &&
+      (response.message === 'Network Error' || response.match('Network Error'))
+    ) {
       return dispatch('handleNetworkError', response)
     }
     var err_msg = ''
@@ -1699,6 +1767,12 @@ const mutations = {
     state.orderNumber = orderNumber
     let order = { ...state.order }
     order.orderNumber = state.orderNumber
+    state.order = order
+  },
+  [mutation.SET_TOKEN_NUMBER](state, tokenNumber) {
+    state.tokenNumber = tokenNumber
+    let order = { ...state.order }
+    order.tokenNumber = state.tokenNumber
     state.order = order
   },
   [mutation.LOADING](state, loadingStatus) {

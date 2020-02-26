@@ -52,7 +52,7 @@
           {{ currency }} {{ item.value || 0 }}
         </div>
       </div>
-      <Popup />
+      <!-- <Popup /> -->
     </div>
     <div
       class="color-dashboard-background"
@@ -71,7 +71,7 @@
 /* global $, showModal  */
 import { mapGetters, mapState } from 'vuex'
 import bootstrap from '@/bootstrap'
-import Popup from './items/Popup'
+// import Popup from './items/Popup'
 import Scroll from '@/mixins/Scroll'
 // import btnBack from '../../../mobileComponents/mobileElements/btnBack'
 
@@ -82,7 +82,7 @@ export default {
   },
   mixins: [Scroll],
   components: {
-    Popup,
+    // Popup,
     // btnBack,
   },
   data() {
@@ -106,7 +106,7 @@ export default {
   watch: {
     items() {
       this.$nextTick(() => {
-        this.calculateScrolls()
+        this.calculateScrolls().catch(() => {})
       })
     },
     barcode(itemCode) {
@@ -124,15 +124,15 @@ export default {
   beforeUpdated() {},
   methods: {
     addToOrder(item) {
-      if (this.selectedOrder) {
-        if (
-          (this.orderType == 'carhop' || this.orderType.OTApi === 'carhop') &&
-          this.selectedOrder.item.order_status == 'in-progress' &&
-          this.isCarhop()
-        ) {
-          return
-        }
-      }
+      // if (this.selectedOrder) {
+      // if (
+      //   (this.orderType == 'carhop' || this.orderType.OTApi === 'carhop') &&
+      //   this.selectedOrder.item.order_status == 'in-progress' &&
+      //   !this.allowed(this.PERMS.MODIFY_ORDER)
+      // ) {
+      //   return
+      // }
+      // }
       if (this.splitBill) {
         return false
       }
@@ -283,7 +283,7 @@ export default {
 
     .food-menu-item {
       width: 100%;
-      height: 4em;
+      height: 4em !important;
       padding: 0 10px;
       margin: 0;
       display: grid;

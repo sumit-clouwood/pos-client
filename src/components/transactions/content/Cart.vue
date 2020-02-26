@@ -2,7 +2,7 @@
   <div>
     <button
       v-if="device == 'mobile' && transactionDetailView"
-      class="btn btn-success"
+      class="btn btn-success mobile-back-button"
       v-on:click="getReferPath()"
     >
       &lt; {{ _t('Back') }}
@@ -79,6 +79,9 @@ export default {
 @import '../../../assets/scss/mixins.scss';
 
 @include responsive(mobile) {
+  .mobile-back-button {
+    margin-left: 1rem;
+  }
   .main-orders {
     position: fixed;
     top: 0;
@@ -187,6 +190,8 @@ export default {
 
         &.active {
           margin-bottom: -10px;
+          background-color: white !important;
+          margin-bottom: 0rem;
         }
 
         .item {

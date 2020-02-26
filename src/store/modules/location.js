@@ -7,7 +7,7 @@ import db from '@/services/network/DB'
 import TimezoneService from '@/services/data/TimezoneService'
 import * as CONST from '@/constants'
 import router from '../../router'
-
+import moment from 'moment-timezone'
 /* global $ */
 // initial state
 const state = {
@@ -29,6 +29,7 @@ const state = {
   apiDate: '',
   terminalCode: null,
   timezones: [],
+  openHours: null,
 }
 
 // getters
@@ -59,6 +60,12 @@ const getters = {
         }
       }
       return getChildren.length
+    }
+    return false
+  },
+  isTokenManager: state => {
+    if (state.store) {
+      return state.store.token_manager
     }
     return false
   },
@@ -178,6 +185,15 @@ const actions = {
             commit(mutation.SET_BRAND, storedata.data.brand)
           }
 
+          let currentStore = storedata.data.store
+          if (currentStore) {
+            localStorage.setItem(
+              'starting_token',
+              currentStore.token_starting_number
+            )
+            commit('SET_OPEN_HOURS', currentStore.open_hours)
+          }
+
           commit(mutation.SET_PERMISSION, storedata.data.menu)
           commit(mutation.SET_LANGUAGE_DIRECTION, storedata.data.direction)
           commit(mutation.SET_TRASLATIONS, storedata.data.translations)
@@ -226,6 +242,14 @@ const actions = {
               if (timezoneStr) {
                 const timezone = timezoneStr.name.replace(/\s+(GMT|GTM).*/g, '')
                 commit(mutation.SET_TIMEZONE_STRING, timezone)
+                if (!localStorage.getItem('token_reset_at')) {
+                  localStorage.setItem(
+                    'token_reset_at',
+                    moment()
+                      .tz(state.timezoneString)
+                      .format('YYYY-MM-DD')
+                  )
+                }
               }
             }
           )
@@ -336,7 +360,6 @@ const actions = {
     document.body.classList.remove('body-rtl')
     document.body.classList.add('body-' + direction)*/
   },
-
   updateModalSelectionDelivery({ commit, rootState }, modalSelection) {
     commit(mutation.SET_MODAL, modalSelection)
     if (!rootState.customer.address && modalSelection != '#loyalty-payment') {
@@ -430,6 +453,9 @@ const mutations = {
   },
   [mutation.SET_DATE](state, dateAPI) {
     state.apiDate = dateAPI
+  },
+  [mutation.SET_OPEN_HOURS](state, openHours) {
+    state.openHours = openHours
   },
   [mutation.SET_TERMINAL_CODE](state, terminalCode) {
     state.terminalCode = terminalCode

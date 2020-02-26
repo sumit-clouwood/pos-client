@@ -43,7 +43,6 @@
             class="button-plus"
             data-toggle="modal"
             data-target="#POSOrderItemOptions"
-            @click="modifierHeights()"
           >
             <div
               class="button-plus-icon"
@@ -160,15 +159,15 @@ export default {
     ...mapActions('order', ['removeFromOrder', 'setActiveItem']),
 
     removeCurrentOrder(param) {
-      if (this.selectedOrder || this.orderId) {
-        if (
-          (this.orderType == 'carhop' || this.orderType.OTApi === 'carhop') &&
-          this.selectedOrder.item.order_status == 'in-progress' &&
-          this.isCarhop()
-        ) {
-          return
-        }
-      }
+      // if (this.selectedOrder || this.orderId) {
+      //   if (
+      //     (this.orderType == 'carhop' || this.orderType.OTApi === 'carhop') &&
+      //     this.selectedOrder.item.order_status == 'in-progress' &&
+      //     !this.allowed(this.PERMS.MODIFY_ORDER)
+      //   ) {
+      //     return
+      //   }
+      // }
       this.removeFromOrder(param)
       if (!this.items.length) {
         this.$store.dispatch('mainOrdersHendlerChange')
