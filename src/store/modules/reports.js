@@ -119,6 +119,9 @@ const mutations = {
   },
   [mutation.TIME_MODE](state, time_mode) {
     state.time_mode = time_mode
+    if (time_mode) {
+      state.totalPayments = 0
+    }
   },
   [mutation.SUPERVISOR_PASSWORD](state, supervisor_password) {
     state.supervisor_password = supervisor_password
