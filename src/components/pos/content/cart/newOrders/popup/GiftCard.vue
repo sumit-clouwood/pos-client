@@ -88,7 +88,7 @@ export default {
       this.msg = 'Fetching gift card...'
       this.error = null
       this.$store
-        .dispatch('checkoutForm/addGiftCardAmount', this.code)
+        .dispatch('checkoutForm/addGiftCardAmount', this.code.trim())
         .then(payable => {
           this.error = false
           this.$store.commit('checkoutForm/showPayBreak', true)
