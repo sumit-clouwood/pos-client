@@ -4,7 +4,8 @@ import * as CONST from '@/constants'
 import moment from 'moment-timezone'
 // import OrderHelper from '@/plugins/helpers/Order'
 import * as PERMS from '@/const/permissions'
-import workflow from '@/plugins/helpers/workflow'
+import DB from '@/services/network/DB'
+import workflow from '../../plugins/helpers/workflow'
 
 const state = {
   orders: {
@@ -140,24 +141,31 @@ const actions = {
     return new Promise((resolve, reject) => {
       if (loader) commit(mutation.LOADING, loader)
 
-      let bookings = []
-      workflow.getEntries().then(entries => {
-        /*localStorage.setItem('reservationId', false)*/
-        bookings = [
-          ...entries.filter(entry => entry.request.order_type === 'dinein'),
-        ]
-        DineInService.getAllBookedTables()
-          .then(response => {
-            bookings = [...bookings, response.data]
-            commit(mutation.BOOKED_TABLES, bookings)
+      /*localStorage.setItem('reservationId', false)*/
+      DineInService.getAllBookedTables()
+        .then(async response => {
+          let promises = []
+          //add booked tables data to the indexedDB, and serve all from there wether its online or offline
+          response.data.data.forEach(entry =>
+            promises.push(workflow.addEntry(entry))
+          )
 
+          //get back all the entries
+          await Promise.all(promises)
+
+          let dineInEntries = {}
+          workflow.getEntries().then(entries => {
+            dineInEntries.data = entries.filter(
+              entry => entry.request.order_type === 'dinein'
+            )
+            commit(mutation.BOOKED_TABLES, response.data)
             dispatch('getDineInArea').then(() => {
               return resolve()
             })
             if (loader) commit(mutation.LOADING, false)
           })
-          .catch(er => reject(er))
-      })
+        })
+        .catch(er => reject(er))
     })
   },
 

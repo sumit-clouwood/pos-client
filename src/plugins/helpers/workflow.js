@@ -82,11 +82,13 @@ export default {
   },
   async getEntries() {
     return new Promise((resolve, reject) => {
-      DB.getBucket(this.bucketName, 'readwrite').then(bucket =>
-        DB.fetch(bucket)
-          .then(data => resolve(data))
-          .catch(err => reject(err))
-      )
+      this.openDB().then(() => {
+        DB.getBucket(this.bucketName, 'readwrite').then(bucket =>
+          DB.fetch(bucket)
+            .then(data => resolve(data))
+            .catch(err => reject(err))
+        )
+      })
     })
   },
 }
