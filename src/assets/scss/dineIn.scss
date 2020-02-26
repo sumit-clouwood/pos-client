@@ -387,6 +387,10 @@ table#running-order {
       color: $white !important;
       padding: $px5;
       align-items: center;
+      @include responsive(mobile){
+        font-size: 1.2rem !important;
+        border-radius: 0px;
+      }
     }
   }
 
@@ -399,6 +403,10 @@ table#running-order {
       color: $white !important;
       padding: $px5;
       align-items: center;
+      @include responsive(mobile){
+        font-size: 1.2rem !important;
+        border-radius: 0px;
+      }
     }
   }
 
@@ -423,6 +431,10 @@ table#running-order {
       padding: $px5;
       align-items: center;
       text-transform: capitalize;
+      @include responsive(mobile){
+        font-size: 1.2rem !important;
+        border-radius: 0px;
+      }
     }
   }
 
@@ -866,12 +878,18 @@ div {
         color: #fff;
         padding: 3px 10px;
         border-radius: 4px;
+        @include responsive(mobile){
+          font-size: 1.2rem;
+        }
       }
     }
     .main-item {
       color: #3d3f43;
       font-weight: bold;
       font-size: 14px;
+      @include responsive(mobile){
+        font-size: 1.2rem;
+      }
     }
     .order-name {
       padding-top: $px5;

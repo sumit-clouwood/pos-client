@@ -80,42 +80,42 @@
             <td class="align-right">
               <div class="delivered-items-iocns">
                 <button
-                id="open-collect-money-modal"
-                role="button"
-                class="btn btn-success btn-large collect-driver-money-btn"
-                :driver-id="deliveryDriver"
-                total-orders="4"
-                cash="271.98"
-              >
-                <i class="fa fa-refresh fa"></i>
-                {{ _t('Collect Money') }}
-              </button>&nbsp;
+                  id="open-collect-money-modal"
+                  role="button"
+                  class="btn btn-success btn-large collect-driver-money-btn"
+                  :driver-id="deliveryDriver"
+                  total-orders="4"
+                  cash="271.98"
+                >
+                  <i class="fa fa-refresh fa"></i>
+                  {{ _t('Collect Money') }}</button
+                >&nbsp;
                 <a
-                :id="'refresh_data-' + driOrders.driverId"
-                href
-                class="btn btn-success btn-large btnRefreshDetails btn-data-refresh"
-                style="display: none;"
-              >
-                <i class="fa fa-refresh fa"></i>
-                {{ _t('Refresh Data') }} </a
-              >&nbsp;
+                  :id="'refresh_data-' + driOrders.driverId"
+                  href
+                  class="btn btn-success btn-large btnRefreshDetails btn-data-refresh"
+                  style="display: none;"
+                >
+                  <i class="fa fa-refresh fa"></i>
+                  {{ _t('Refresh Data') }} </a
+                >&nbsp;
                 <a
-                :id="'driver_details-' + driOrders.driverId"
-                role="button"
-                class="btn btn-info btn-large btnShowDetails btn-show-details-delivered"
-                @click="showOrders(driOrders.driverId)"
-              >
-                <i class="fa fa-eye" aria-hidden="true"></i>
-                <!--{{ _t('Show Details') }}-->
-              </a>
+                  :id="'driver_details-' + driOrders.driverId"
+                  role="button"
+                  class="btn btn-info btn-large btnShowDetails btn-show-details-delivered"
+                  @click="showOrders(driOrders.driverId)"
+                >
+                  <i class="fa fa-eye" aria-hidden="true"></i>
+                  <!--{{ _t('Show Details') }}-->
+                </a>
                 <a
-                :class="'driver_details_hide-' + driOrders.driverId"
-                role="button"
-                class="btn btn-info btn-large btnShowDetails btn-show-details"
-                style="display: none;"
-                @click="showOrders(driOrders.driverId)"
-                ><i class="fa fa-eye-slash" aria-hidden="true"></i>
-              </a>
+                  :class="'driver_details_hide-' + driOrders.driverId"
+                  role="button"
+                  class="btn btn-info btn-large btnShowDetails btn-show-details"
+                  style="display: none;"
+                  @click="showOrders(driOrders.driverId)"
+                  ><i class="fa fa-eye-slash" aria-hidden="true"></i>
+                </a>
               </div>
             </td>
           </tr>
