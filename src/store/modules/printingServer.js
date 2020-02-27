@@ -216,7 +216,7 @@ const actions = {
         generate_time: orderData.real_created_datetime,
         flash_message: 'Order Details',
         store_id: rootState.context.storeId,
-        token_manager: false,
+        token_manager: rootState.location.store.token_manager,
         windows_app: false,
       }
       let dt = rootState.auth.deviceType
