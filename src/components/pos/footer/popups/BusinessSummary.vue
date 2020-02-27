@@ -43,12 +43,12 @@
             >
               {{ store.name }}
             </h4>
-            <span class="date">{{ todayDate }}</span
+            <small class="date">{{ todayDate }}</small
             ><br />
-            <span class="date" style="text-transform: uppercase">
-              {{ todayTime }} </span
+            <small class="date" style="text-transform: uppercase">
+              {{ todayTime }} </small
             ><br />
-            <span>{{ user.name }}</span>
+            <small>{{ user.name }}</small>
           </div>
           <div class="business-summary-wrapper" style="text-align: center">
             <div class="table-responsive">
