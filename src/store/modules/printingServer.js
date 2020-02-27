@@ -226,7 +226,17 @@ const actions = {
         invoice => invoice
       )
       let orderTypeLabel = orderData.order_type + '_label'
-      orderData.order_no = orderData.orderNumber || orderData.order_no //Custom Order No to give appropriate field for Habib
+      // orderData.order_no = orderData.orderNumber || orderData.order_no //Custom Order No to give appropriate field for Habib
+      let orderNo = orderData.orderNumber || orderData.order_no //Custom Order No to give appropriate field for Habib
+      let dateTime = orderData.real_created_datetime
+        .toString()
+        .replace(/[\s-:]/g, '')
+      if (orderNo) {
+        orderData.order_no = orderNo
+      } else {
+        orderData.order_no = dateTime
+        orderData.orderNumbe = dateTime
+      }
       orderData.real_created_datetime = created_date
       orderData.created_at = null
       //Final JSON
