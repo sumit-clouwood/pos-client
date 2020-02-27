@@ -1,7 +1,7 @@
 <template>
   <div
     :class="['orders-menu-overlay', { active: !footerMenuHendler }]"
-    @click.self="footerMenuHendlerChange"
+    @click="footerMenuHendlerChange"
   >
     <div class="orders-menu">
       <li
