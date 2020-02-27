@@ -90,6 +90,7 @@ export default {
     }
     /* Implemented for multistore*/
     if (this.$route.name.match('iosApplication')) {
+      localStorage.setItem('IOSPrinters', '')
       let iosprinter = this.$route.params.iosprinter.split('=')[1]
       /*"iosprinter=abc+xyz+yelo"*/
       localStorage.setItem('IOSPrinters', JSON.stringify(iosprinter.split('+')))
