@@ -4,7 +4,7 @@
       'profile-sidebar-overlay',
       profileHendler ? 'active' : 'notActive',
     ]"
-    @click.self="profileHendlerChange"
+    @click="profileHendlerChange"
   >
     <div class="profile-sidebar">
       <div class="profile-sidebar-header">
@@ -16,12 +16,12 @@
       </div>
       <div class="profile-sidebar-body">
         <div class="profile-menu">
-          <div class="profile-menu-item">
-            <div
-              class="profile-menu-item-icon"
-              v-if="!isWaiter() && !isCarhop()"
-              @click="walkOrder()"
-            >
+          <div
+            class="profile-menu-item"
+            v-if="!isWaiter() && !isCarhop()"
+            @click="walkOrder()"
+          >
+            <div class="profile-menu-item-icon">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="14"
@@ -210,7 +210,10 @@
               </router-link>
             </div>
           </div>
-          <div class="profile-menu-item">
+          <div
+            class="profile-menu-item"
+            v-if="enabledModule('switchCashier') && !isWaiter() && !isCarhop()"
+          >
             <div class="profile-menu-item-icon">
               <svg
                 width="24"
