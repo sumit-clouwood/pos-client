@@ -1126,8 +1126,13 @@ const actions = {
               dispatch(
                 'setToken',
                 rootState.order.selectedOrder.item.token_number
-              )
-              commit(mutation.PRINT, true)
+              ) //order paid
+              if (rootState.checkoutForm.action === 'pay' && !action) {
+                msgStr = rootGetters['location/_t'](
+                  'Carhop order has been Paid'
+                )
+                commit(mutation.PRINT, true)
+              }
               commit('order/CLEAR_SELECTED_ORDER', null, { root: true })
               resolve()
               commit(

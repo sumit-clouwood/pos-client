@@ -45,7 +45,7 @@
                 <span class="in-progress">Running</span>
               </td>
               <td>
-                <div class="button-wrapper">
+                <div class="button-wrapper btn-align-row">
                   <router-link
                     v-if="canPay"
                     :to="'/carhop' + store + '/' + order._id"
@@ -229,6 +229,10 @@ export default {
 @import '@/assets/scss/pixels_rem.scss';
 @import '@/assets/scss/variables.scss';
 @import '@/assets/scss/mixins.scss';
+
+.btn-align-row {
+  grid-template-columns: max-content 1fr !important;
+}
 
 @include responsive(mobile) {
   .carhop-running-orders-wrapper {

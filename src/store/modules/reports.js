@@ -8,7 +8,7 @@ const state = {
   date_to: '2020-02-19',
   hour_from: 24,
   hour_to: 24,
-  time_mode: true, //true means taking store time, false means taking UTC time
+  time_mode: false, //true means taking store time, false means taking UTC time
   supervisor_password: '',
   passwordVerification: '',
   modalView: '#supervisor-password',
@@ -119,6 +119,9 @@ const mutations = {
   },
   [mutation.TIME_MODE](state, time_mode) {
     state.time_mode = time_mode
+    if (time_mode) {
+      state.totalPayments = 0
+    }
   },
   [mutation.SUPERVISOR_PASSWORD](state, supervisor_password) {
     state.supervisor_password = supervisor_password
