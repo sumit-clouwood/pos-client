@@ -136,6 +136,7 @@ export default {
                 this.updateLoading('modifiers')
 
                 this.store.commit('sync/loaded', true)
+                this.store.dispatch('payment/setTranslations').then(() => {})
                 resolve()
               })
             })

@@ -40,6 +40,7 @@
               type="button"
               class="btn btn-danger cancel-announce color-text-invert"
               data-dismiss="modal"
+              @click="hideModal('#gift-card-info')"
             >
               <span>-</span> Close
             </button>

@@ -58,7 +58,7 @@ function makeTransFormat(translations) {
 
 // actions
 const actions = {
-  async fetchAll({ commit, getters, rootGetters, rootState }) {
+  async fetchAll({ rootGetters, commit, getters }) {
     const paymentMethods = await PaymentService.fetchMethods()
 
     let methods = []
@@ -79,14 +79,14 @@ const actions = {
           default:
             methods.push(method)
         }
+        paymentMethods.data = methods
+        commit(mutation.SET_METHODS, paymentMethods)
+        //commit('checkoutForm/setMethod', state.methods.data[0], { root: true })
+        commit('checkoutForm/setMethod', getters.cash, { root: true })
       }
     })
-
-    paymentMethods.data = methods
-    commit(mutation.SET_METHODS, paymentMethods)
-    //commit('checkoutForm/setMethod', state.methods.data[0], { root: true })
-    commit('checkoutForm/setMethod', getters.cash, { root: true })
-
+  },
+  setTranslations({ commit, rootState }) {
     let allItems = []
     let allSurcharges = []
     let allModifiers = []
@@ -108,8 +108,8 @@ const actions = {
     if (rootState.discount.orderDiscounts) {
       allOrderDiscounts = makeTransFormat(rootState.discount.orderDiscounts)
     }
-    if (rootState.discount.itemDiscounts.data) {
-      allItemDiscounts = makeTransFormat(rootState.discount.itemDiscounts.data)
+    if (rootState.discount.itemDiscounts) {
+      allItemDiscounts = makeTransFormat(rootState.discount.itemDiscounts)
     }
     let translationsOnly = {
       brand_menu_items: allItems,
@@ -119,6 +119,8 @@ const actions = {
       brand_order_discounts: allOrderDiscounts,
       brand_payment_types: allPaymentTypes,
     }
+    // eslint-disable-next-line no-console
+    console.log(translationsOnly, 'translationsOnly')
     commit(mutation.APPINVOICEDATA, translationsOnly)
   },
 }
