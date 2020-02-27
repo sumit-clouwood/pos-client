@@ -394,8 +394,12 @@
     <Invoice />
     <OrderDetailsPopup />
     <InformationPopup :responseInformation="this.message" :title="this.title" />
-    <DineInCoverSelection />
-    <DineInTableSelection />
+    <DineInCoverSelection
+      v-if="brand.number_of_covers && covers && cartType !== 'hold'"
+    />
+    <DineInTableSelection
+      v-if="brand.move_table && availableTables && cartType !== 'hold'"
+    />
   </div>
 </template>
 
@@ -508,6 +512,7 @@ export default {
       'needSupervisorAccess',
     ]),
     ...mapState('location', ['brand']),
+    ...mapState('dinein', ['availableTables', 'covers']),
     ...mapState('sync', ['online']),
     ...mapGetters('location', ['formatPrice', '_t']),
 
