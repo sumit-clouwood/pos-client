@@ -24,7 +24,7 @@ export default {
       dbrequest.onblocked = function() {
         // Another connection is open, preventing the upgrade,
         // and it didn't close immediately.
-        reject('blocked')
+        reject({ idb: self.idb, event: 'blocked' })
       }
 
       dbrequest.onerror = function(event) {

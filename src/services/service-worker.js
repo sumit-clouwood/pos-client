@@ -11,6 +11,7 @@ var ORDER_DOCUMENT = 'order_post_requests'
 var LOG_DOCUMENT = 'log'
 var client = null
 var enabledConsole = false
+
 var notificationOptions = {
   body: '',
   icon: './img/icons/apple-icon.png',
@@ -239,6 +240,16 @@ var EventListener = {
       // if it is dm request then it should get DeliveryManger handler
 
       var handler = Factory.offlineHandler(clonedRequest)
+      try {
+        self.clients.get(event.clientId).then(thisClient => {
+          if (thisClient) {
+            client = thisClient
+          }
+        })
+      } catch (error) {
+        console.log(error)
+      }
+
       if (handler) {
         // attempt to send request normally
         event.respondWith(
@@ -252,24 +263,25 @@ var EventListener = {
                 'Network offline, saving request offline',
                 error
               )
-            handler
-              .addOfflineEvent(clonedRequest.url, Sync.formData)
-              .then(() => {
-                Sync.formData = null
-              })
+
+            return new Promise(resolve => {
+              handler
+                .addOfflineEvent(clonedRequest.url, Sync.formData)
+                .then(response => {
+                  Sync.formData = null
+                  const compositeResponse = new Response(
+                    JSON.stringify(response),
+                    {
+                      headers: { 'content-type': 'application/json' },
+                    }
+                  )
+
+                  resolve(compositeResponse)
+                })
+            })
           })
         )
       }
-
-      if (!event.clientId) {
-        return
-      }
-
-      self.clients.get(event.clientId).then(thisClient => {
-        if (thisClient) {
-          client = thisClient
-        }
-      })
     })
   },
 
@@ -308,12 +320,12 @@ var DB = {
 
   open: function(cb) {
     if (this.iDB) {
-      enabledConsole && console.log(1, 'sw:', 'IDB already opened')
+      console.log(1, 'sw:', 'IDB already opened')
       if (cb) {
         cb(this.iDB)
       }
     } else {
-      enabledConsole && console.log(1, 'sw:', 'opening database')
+      console.log(1, 'sw:', 'opening database')
       var indexedDBOpenRequest = indexedDB.open('dim-pos')
 
       indexedDBOpenRequest.onerror = function(error) {
@@ -583,6 +595,9 @@ var Factory = {
   offlineHandler(request) {
     switch (request.method) {
       case 'POST':
+        if (request.url.endsWith('/reservations/add')) {
+          return Dinein
+        }
         if (request.url.match('/orders/add')) {
           return Order
         }
@@ -937,6 +952,92 @@ var DeliveryManager = {
   sync() {
     enabledConsole && console.log('DM Synced')
     return Promise.resolve(1)
+  },
+}
+
+var Dinein = {
+  OBJECT_STORE: 'workflow_order',
+
+  createId(prefix = '', postfix = '') {
+    return prefix + +new Date() + postfix
+  },
+
+  addOfflineEvent: function(url, payload) {
+    if (url.endsWith('/reservations/add')) {
+      return this.addReservation(url, payload)
+    }
+  },
+
+  addReservation(url, payload) {
+    enabledConsole && console.log(1, 'sw:', payload)
+    return new Promise((resolve, reject) => {
+      // get object_store and save our payload inside it
+      DB.open(() => {
+        enabledConsole &&
+          console.log(1, 'sw:', 'db opened, adding offline order to indexeddb')
+
+        const id = this.createId()
+
+        const entry = {
+          _id: id,
+          step: 'reserved',
+          type: 'dinein',
+          keys: { bookingId: id },
+          status: 'offline',
+          request: {
+            url: url,
+            method: 'POST',
+            data: payload,
+          },
+          response: {
+            _id: id,
+            number: null,
+            start_date: payload.start_date,
+            start_time: payload.start_time,
+            end_time: '',
+            assigned_table_id: payload.assigned_table_id,
+            number_of_guests: payload.number_of_guests,
+            related_orders_ids: [],
+            status: 'reserved',
+            customers: [],
+            reservation_history: [],
+            assigned_to: payload.assigned_to,
+            created_by: payload.created_by,
+          },
+          startTime: id,
+          rootStep: '',
+        }
+
+        var request = DB.getBucket(this.OBJECT_STORE, 'readwrite').add(entry)
+        request.onsuccess = function(event) {
+          enabledConsole &&
+            console.log(
+              1,
+              'sw:',
+              'a new order request has been added to indexedb',
+              event
+            )
+          resolve({
+            status: 'ok',
+            id: id,
+            generate_time: id,
+            flash_message: ' Reservation Added',
+          })
+          //reset form data
+        }
+
+        request.onerror = function(error) {
+          console.error(1, 'sw:', "Request can't be send to index db", error)
+          Logger.log({
+            event_time: payload.real_created_datetime,
+            event_title: payload.balance_due,
+            event_type: 'sw:error_order_save_offline',
+            event_data: { request: payload, error: error },
+          })
+          reject(error)
+        }
+      })
+    })
   },
 }
 

@@ -185,9 +185,11 @@ const actions = {
           //serve from cache
           let dineInEntries = {}
           workflow.getEntries().then(entries => {
-            dineInEntries.data = entries.filter(
-              entry => entry.request.order_type === 'dinein'
-            )
+            dineInEntries.data = entries.map(entry => {
+              if (entry.step === 'reserved') {
+                return entry.response
+              }
+            })
             dineInEntries.count = dineInEntries.data.length
 
             commit(mutation.BOOKED_TABLES, dineInEntries)
@@ -498,9 +500,14 @@ const actions = {
       dispatch('newReservation', ...params)
     }
   },
-  newReservation({ commit, dispatch }, params) {
-    return new Promise((resolve, reject) => {
+  newReservation({ commit, dispatch, rootState }, params) {
+    return new Promise(async (resolve, reject) => {
+      //offline booking
+      params.assigned_to = rootState.auth.userDetails.item._id
+      params.created_by = rootState.auth.userDetails.item._id
+
       DineInService.reservationOperation(params, 'add')
+
         .then(response => {
           commit(mutation.RESERVATION_RESPONSE, response.data)
           dispatch('getCovers').then(() => {

@@ -56,7 +56,7 @@ export default {
 
         DB.getBucket(this.bucketName, 'readwrite')
           .then(bucket =>
-            DB.add(bucket, entry)
+            DB.put(bucket, entry)
               .then(() => resolve())
               .catch(err => reject(err))
           )

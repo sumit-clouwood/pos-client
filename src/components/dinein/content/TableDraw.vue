@@ -925,7 +925,10 @@ export default {
           $('#tooltipdata').show()
           this.addOrSplit =
             this.orderDetails.length > 0 ? 'Split Table' : 'Book Table'
-          if (this.brand.book_table || this.orderDetails.length) {
+          if (
+            (this.brand && this.brand.book_table) ||
+            this.orderDetails.length
+          ) {
             // let bookPlace = this.brand.book_table ? 'Place Order' : 'Book Table'
             let range = $('#range')
             let top = datum.table_position_coordinate.y + 20 || 0
@@ -973,10 +976,10 @@ export default {
               )
           } else {
             this.closeMyself()
-            if (this.brand.number_of_guests) {
+            if (this.brand && this.brand.number_of_guests) {
               $('#placeOrder').modal('show')
             } else {
-              this.newOrder(false, this.brand.book_table)
+              this.newOrder(false, this.brand && this.brand.book_table)
             }
           }
         })
