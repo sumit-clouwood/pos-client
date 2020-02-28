@@ -159,6 +159,7 @@ const actions = {
   //got through brand/store
   fetch({ state, commit, dispatch, rootState, rootGetters }) {
     dispatch('formatDate')
+    dispatch('auth/checkDevice', '', { root: true })
     return new Promise((resolve, reject) => {
       LocationService.getLocationData()
         .then(storedata => {
