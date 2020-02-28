@@ -239,7 +239,7 @@ const actions = {
         orderData.order_no = orderNo
       } else {
         orderData.order_no = dateTime
-        orderData.orderNumbe = dateTime
+        orderData.orderNumber = dateTime
       }
       orderData.real_created_datetime = created_date
       orderData.created_at = null
