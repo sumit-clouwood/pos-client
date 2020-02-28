@@ -96,13 +96,17 @@ const actions = {
         generate_time: orderData.real_created_datetime,
         flash_message: 'Order Details',
         store_id: rootState.context.storeId,
-        token_manager: false,
+        token_manager: rootState.location.store.token_manager,
         windows_app: false,
       }
       if (
         orderData.order_type == 'DINE-IN' ||
         orderData.order_type == 'dine_in'
       ) {
+        if (!table_no) {
+          table_no = rootState.dinein.selectedTableRservationData
+        }
+
         Object.assign(jsonResponse, { table_number: table_no })
         // jsonResponse.table_number = table_no
         // eslint-disable-next-line no-console
@@ -226,7 +230,17 @@ const actions = {
         invoice => invoice
       )
       let orderTypeLabel = orderData.order_type + '_label'
-      orderData.order_no = orderData.orderNumber || orderData.order_no //Custom Order No to give appropriate field for Habib
+      // orderData.order_no = orderData.orderNumber || orderData.order_no //Custom Order No to give appropriate field for Habib
+      let orderNo = orderData.orderNumber || orderData.order_no //Custom Order No to give appropriate field for Habib
+      let dateTime = orderData.real_created_datetime
+        .toString()
+        .replace(/[\s-:]/g, '')
+      if (orderNo) {
+        orderData.order_no = orderNo
+      } else {
+        orderData.order_no = dateTime
+        orderData.orderNumbe = dateTime
+      }
       orderData.real_created_datetime = created_date
       orderData.created_at = null
       //Final JSON
