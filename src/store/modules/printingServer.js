@@ -378,6 +378,9 @@ const mutations = {
   [mutation.CREATED_TIME](state, time) {
     state.createdDateTime.time = time
   },
+  [mutation.KITCHEN_RESPONSE](state, status) {
+    state.kitchenInvoiceResponse = status
+  },
   [mutation.KITCHENS](state, kitchens) {
     state.kitchens = kitchens
   },
