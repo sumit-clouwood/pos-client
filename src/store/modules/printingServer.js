@@ -103,6 +103,10 @@ const actions = {
         orderData.order_type == 'DINE-IN' ||
         orderData.order_type == 'dine_in'
       ) {
+        if (!table_no) {
+          table_no = rootState.dinein.selectedTableRservationData
+        }
+
         Object.assign(jsonResponse, { table_number: table_no })
         // jsonResponse.table_number = table_no
         // eslint-disable-next-line no-console
