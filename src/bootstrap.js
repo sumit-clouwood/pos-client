@@ -320,21 +320,30 @@ export default {
     this.store.commit('sync/setIdbVersion', 5)
     return 5
   },
+  async dataStore() {
+    await db.createBucket('store', { keyPath: 'key' }, bucket => {
+      bucket.createIndex('key', 'key', { unique: true })
+    })
+    this.store.commit('sync/setIdbVersion', 5)
+    return 5
+  },
 
   createBuckets(event, version) {
     const buckets = [
-      'authBucket',
-      'orderPostRequestBucket',
-      'eventsBucket',
-      'logBucket',
-      'orderWorkflowBucket',
+      ['authBucket'],
+      ['orderPostRequestBucket'],
+      ['eventsBucket'],
+      ['logBucket'],
+      ['dataStore', 'orderWorkflowBucket'],
     ]
 
     let promises = []
 
     for (let i = event.oldVersion; i < version; i++) {
-      console.log(i, 'creating bucket ', buckets[i])
-      promises.push(this[buckets[i]]())
+      for (const j in buckets[i]) {
+        console.log(i, j, 'creating bucket ', buckets[i][j])
+        promises.push(this[buckets[i][j]]())
+      }
     }
 
     return Promise.all(promises)

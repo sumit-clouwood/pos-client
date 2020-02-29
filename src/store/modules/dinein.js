@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import * as mutation from './dinein/mutation-types'
 import DineInService from '@/services/data/DineInService'
 import * as CONST from '@/constants'
@@ -83,6 +84,9 @@ const getters = {
     })
     return tableNumber
   },
+  getTableNumberById: state => tableId => {
+    return state.tablesOnArea.find(table => table._id === tableId)
+  },
   guestInBillItem: state => (item, guest) => {
     if (
       state.bills &&
@@ -136,68 +140,42 @@ const actions = {
         .catch(er => reject(er))
     })
   },
-  getBookedTables({ commit, dispatch }, loader = false) {
-    return new Promise(resolve => {
-      if (loader) commit(mutation.LOADING, loader)
 
+  getBookedTables({ commit, dispatch }, loader = false) {
+    return new Promise((resolve, reject) => {
+      if (loader) commit(mutation.LOADING, loader)
       /*localStorage.setItem('reservationId', false)*/
       DineInService.getAllBookedTables()
-        .then(async response => {
-          let promises = []
-          //add booked tables data to the indexedDB, and serve all from there wether its online or offline
-          //TODO: serve directly from the iDB and sync it in bg with server
-          response.data.data.forEach(booking => {
-            const entry = {
-              id: booking._id,
-              step: booking.status,
-              type: 'dinein',
-              keys: { reservationId: booking._id },
-              status: 'online',
-              request: {},
-              response: booking,
-              startTime: booking.start_date + ' ' + booking.start_time,
-              rootStep: '',
-            }
-            promises.push(workflow.addEntry(entry))
+        .then(response => {
+          workflow.storeData({
+            key: 'dinein_reservations',
+            data: response.data,
           })
-
-          //get back all the entries
-          await Promise.all(promises)
-
-          let dineInEntries = {}
-          workflow.getEntries().then(entries => {
-            dineInEntries.data = entries.map(entry => {
-              if (entry.step === 'reserved') {
-                return entry.response
-              }
-            })
-            dineInEntries.count = dineInEntries.data.length
-
-            commit(mutation.BOOKED_TABLES, dineInEntries)
-
-            dispatch('getDineInArea').then(() => {
-              return resolve()
-            })
-            if (loader) commit(mutation.LOADING, false)
+          commit(mutation.BOOKED_TABLES, response.data)
+          dispatch('getDineInArea').then(() => {
+            return resolve()
           })
+          if (loader) commit(mutation.LOADING, false)
         })
         .catch(() => {
-          //serve from cache
-          let dineInEntries = {}
-          workflow.getEntries().then(entries => {
-            dineInEntries.data = entries.map(entry => {
-              if (entry.step === 'reserved') {
-                return entry.response
+          workflow
+            .getData('dinein_reservations')
+            .then(store => {
+              if (store) {
+                commit(mutation.BOOKED_TABLES, store.data)
+                dispatch('getDineInArea')
+                  .then(() => {
+                    return resolve()
+                  })
+                  .catch(() => resolve())
+              } else {
+                reject()
               }
             })
-            dineInEntries.count = dineInEntries.data.length
-
-            commit(mutation.BOOKED_TABLES, dineInEntries)
-          })
+            .catch(error => reject(error))
         })
     })
   },
-
   seOrderData({ commit }, response) {
     let orderDetails = []
     let responseData = response.data.data
@@ -347,6 +325,7 @@ const actions = {
               order => order.assigned_table_id === table._id
             )
           }
+          console.log('table orders', orders)
 
           if (orders.length) {
             let tableArray = []
@@ -425,6 +404,7 @@ const actions = {
           // eslint-disable-next-line no-console
           // console.log(orderOnTable, 'order no  length')
           commit(mutation.ORDER_ON_TABLES, orderOnTable)
+          console.log('orders on table', orderOnTable)
         })
       }
       // eslint-disable-next-line no-console
@@ -500,11 +480,14 @@ const actions = {
       dispatch('newReservation', ...params)
     }
   },
-  newReservation({ commit, dispatch, rootState }, params) {
+  newReservation({ commit, dispatch, rootState, getters }, params) {
     return new Promise(async (resolve, reject) => {
       //offline booking
       params.assigned_to = rootState.auth.userDetails.item._id
       params.created_by = rootState.auth.userDetails.item._id
+      params.number = getters.getTableNumberById(
+        params.assigned_table_id
+      ).number
 
       DineInService.reservationOperation(params, 'add')
 

@@ -239,7 +239,6 @@ var EventListener = {
       //for example if it is order/add request then we should get order handler
       // if it is dm request then it should get DeliveryManger handler
 
-      var handler = Factory.offlineHandler(clonedRequest)
       try {
         self.clients.get(event.clientId).then(thisClient => {
           if (thisClient) {
@@ -249,6 +248,8 @@ var EventListener = {
       } catch (error) {
         console.log(error)
       }
+
+      var handler = Factory.offlineHandler(clonedRequest)
 
       if (handler) {
         // attempt to send request normally
@@ -589,7 +590,7 @@ var Sync = {
 
 var Factory = {
   syncHandlers() {
-    return [Order, DeliveryManager]
+    return [Order, DeliveryManager, Dinein]
   },
 
   offlineHandler(request) {
@@ -598,9 +599,14 @@ var Factory = {
         if (request.url.endsWith('/reservations/add')) {
           return Dinein
         }
+
         if (request.url.match('/orders/add')) {
+          if (Sync.formData.order_type === 'dine_in') {
+            return Dinein
+          }
           return Order
         }
+
         if (request.url.match('/deliveryManager/add')) {
           return DeliveryManager
         }
@@ -966,6 +972,10 @@ var Dinein = {
     if (url.endsWith('/reservations/add')) {
       return this.addReservation(url, payload)
     }
+
+    if (url.endsWith('/orders/add')) {
+      return this.placeOrder(url, payload)
+    }
   },
 
   addReservation(url, payload) {
@@ -982,7 +992,7 @@ var Dinein = {
           _id: id,
           step: 'reserved',
           type: 'dinein',
-          keys: { bookingId: id },
+          keys: { reservationId: id },
           status: 'offline',
           request: {
             url: url,
@@ -991,7 +1001,7 @@ var Dinein = {
           },
           response: {
             _id: id,
-            number: null,
+            number: payload.number,
             start_date: payload.start_date,
             start_time: payload.start_time,
             end_time: '',
@@ -1007,34 +1017,198 @@ var Dinein = {
           startTime: id,
           rootStep: '',
         }
+        // add workflow entry
+        DB.getBucket(this.OBJECT_STORE, 'readwrite').add(entry)
 
-        var request = DB.getBucket(this.OBJECT_STORE, 'readwrite').add(entry)
-        request.onsuccess = function(event) {
-          enabledConsole &&
-            console.log(
-              1,
-              'sw:',
-              'a new order request has been added to indexedb',
-              event
-            )
-          resolve({
-            status: 'ok',
-            id: id,
-            generate_time: id,
-            flash_message: ' Reservation Added',
-          })
-          //reset form data
+        //add to store data
+        var objectStore = DB.getBucket('store', 'readwrite')
+        var request = objectStore
+          .index('key')
+          .openCursor(IDBKeyRange.only('dinein_reservations'))
+        var records = []
+
+        //find data by key
+
+        request.onsuccess = async event => {
+          var cursor = event.target.result
+          if (cursor) {
+            //record exists
+            console.log('record already exists', cursor.value)
+            records.push(cursor.value)
+            cursor.continue()
+          } else {
+            console.log('no more results', records)
+            // no more results
+            if (records.length) {
+              //some records found
+              console.log('update existing record')
+              var record = records[0]
+              record.data.count++
+              record.data.data.push(entry.response)
+            } else {
+              //create new one
+              console.log('insert new record')
+              record = {
+                key: 'dinein_reservations',
+                data: {
+                  count: 1,
+                  page_lookups: {
+                    orders: {
+                      _id: {},
+                    },
+                  },
+                  data: [entry.response],
+                },
+              }
+            }
+            console.log('record', record)
+            var request = objectStore.put(record)
+
+            request.onsuccess = () => {
+              resolve({
+                status: 'ok',
+                id: id,
+                generate_time: id,
+                flash_message: ' Reservation Added',
+              })
+            }
+
+            request.onerror = error => {
+              console.error(
+                1,
+                'sw:',
+                "Request can't be send to index db",
+                error
+              )
+              reject(error)
+            }
+          }
+        }
+      })
+    })
+  },
+  placeOrder(url, payload) {
+    //id is the timestamp actually, first time id ll be empty so update it with time
+    let id = this.createId()
+    let rootId = payload.table_reservation_id
+    let keys = { reservationId: rootId, orderId: id }
+    //if order is being placed second time i.e updated, then key / steps remains same
+    let rootStep = 'reserved'
+    let step = 'placed'
+
+    //pay for order
+    if (payload.order_payments.length) {
+      //order id ll remain same for both cases pay/place
+      id = payload._id
+      rootStep = 'placed'
+      step = 'paid'
+      keys = { orderId: id }
+    }
+
+    enabledConsole && console.log(1, 'sw:', payload) //find
+
+    return new Promise((resolve, reject) => {
+      // get object_store and save our payload inside it
+      DB.open(() => {
+        enabledConsole &&
+          console.log(1, 'sw:', 'db opened, adding offline order to indexeddb')
+
+        const entry = {
+          _id: id,
+          step: step,
+          type: 'dinein',
+          keys: keys,
+          status: 'offline',
+          request: {
+            url: url,
+            method: 'POST',
+            data: payload,
+          },
+          response: {
+            _id: id,
+            number: payload.number,
+            start_date: payload.start_date,
+            start_time: payload.start_time,
+            end_time: '',
+            assigned_table_id: payload.assigned_table_id,
+            number_of_guests: payload.number_of_guests,
+            related_orders_ids: [],
+            status: 'reserved',
+            customers: [],
+            reservation_history: [],
+            assigned_to: payload.assigned_to,
+            created_by: payload.created_by,
+          },
+          startTime: id,
+          rootStep: rootStep,
         }
 
-        request.onerror = function(error) {
-          console.error(1, 'sw:', "Request can't be send to index db", error)
-          Logger.log({
-            event_time: payload.real_created_datetime,
-            event_title: payload.balance_due,
-            event_type: 'sw:error_order_save_offline',
-            event_data: { request: payload, error: error },
-          })
-          reject(error)
+        DB.getBucket(this.OBJECT_STORE, 'readwrite').add(entry)
+
+        //add to store data
+        var objectStore = DB.getBucket('store', 'readwrite')
+        var request = objectStore
+          .index('key')
+          .openCursor(IDBKeyRange.only('dinein_reservations'))
+        var records = []
+
+        //find data by key
+
+        request.onsuccess = async event => {
+          var cursor = event.target.result
+          if (cursor) {
+            //record exists
+            console.log('record already exists', cursor.value)
+            records.push(cursor.value)
+            cursor.continue()
+          } else {
+            console.log('no more results', records)
+            // no more results
+            if (records.length) {
+              //some records found
+              console.log('update existing record')
+              var record = records[0]
+
+              console.log('record', record)
+
+              record.data.data = record.data.data.map(booking => {
+                if (booking._id === payload.table_reservation_id) {
+                  booking.related_orders_ids = [id]
+                  booking.status = 'in-progress'
+                }
+                return booking
+              })
+
+              record.data.page_lookups.orders._id[id] = payload
+
+              var request = objectStore.put(record)
+
+              request.onsuccess = () => {
+                resolve({
+                  status: 'ok',
+                  id: id,
+                  order_no:
+                    payload.order_no ||
+                    payload.real_created_datetime
+                      .toString()
+                      .replace(/[\s-:]/g, ''),
+                  token_number: 0,
+                  generate_time: id,
+                  flash_message: ' Order Added',
+                })
+              }
+
+              request.onerror = error => {
+                console.error(
+                  1,
+                  'sw:',
+                  "Request can't be send to index db",
+                  error
+                )
+                reject(error)
+              }
+            }
+          }
         }
       })
     })

@@ -77,7 +77,7 @@ export default {
   },
 
   getAllBookedTables() {
-    return DataService.get(
+    return DataService.getLive(
       '/model/reservations?page_id=tables_reserved&page=1&limit=999999'
     )
   },
@@ -95,6 +95,7 @@ export default {
     if (action === 'add') {
       delete data.assigned_to
       delete data.created_by
+      delete data.number
     }
 
     return DataService.post(`/model/reservations/${action}`, data)

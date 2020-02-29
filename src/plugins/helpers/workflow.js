@@ -64,6 +64,32 @@ export default {
       })
     })
   },
+  async storeData({ key, data }) {
+    return new Promise((resolve, reject) => {
+      this.openDB().then(() => {
+        DB.getBucket('store', 'readwrite')
+          .then(bucket =>
+            DB.put(bucket, { key: key, data: data })
+              .then(() => resolve())
+              .catch(err => reject(err))
+          )
+          .catch(err => reject(err))
+      })
+    })
+  },
+  async getData(key) {
+    return new Promise((resolve, reject) => {
+      this.openDB().then(() => {
+        DB.getBucket('store', 'readwrite')
+          .then(bucket =>
+            DB.find(bucket, key)
+              .then(data => resolve(data))
+              .catch(err => reject(err))
+          )
+          .catch(err => reject(err))
+      })
+    })
+  },
 
   async removeEntry(id) {
     return new Promise((resolve, reject) => {
