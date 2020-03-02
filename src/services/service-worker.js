@@ -368,26 +368,31 @@ var DB = {
       }
     }
   },
-  find: (objectStore, index, key) => {
+  find: async (objectStore, index, key) => {
+    return new Promise((resolve, reject) => {
     var objectStore = DB.getBucket('workflow_order', 'readonly')
-        var request = objectStore.index(index).openCursor(IDBKeyRange.only(key))
-        var records = []
+      var request = objectStore.index(index).openCursor(IDBKeyRange.only(key))
+      var records = []
 
-        //find data by key
+      //find data by key
 
-        request.onsuccess = async event => {
-          var cursor = event.target.result
-          if (cursor) {
-            //record exists
-            console.log('record already exists', cursor.value)
-            records.push(cursor.value)
-            cursor.continue()
-          } else {
-            console.log('no more results', records)
-            // no more results
-            if (records.length) {
-              //some records found
-              var record = records[0]
+      request.onsuccess = async event => {
+        var cursor = event.target.result
+        if (cursor) {
+          //record exists
+          console.log('record already exists', cursor.value)
+          records.push(cursor.value)
+          cursor.continue()
+        } else {
+          console.log('no more results', records)
+          // no more results
+          if (records.length) {
+            //some records found
+            var record = records[0]
+          }
+        }
+      }
+    })
   }
 }
 
