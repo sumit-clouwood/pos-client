@@ -580,7 +580,12 @@ div.order-address {
     padding: 0.3125rem 0.625rem;
     overflow: auto; }
   .table-drivers-filter .driver-footer {
-    background-color: #CC3232;
+    background-color: #fff;
+    border-top: 1px solid #cc3232;
+    border-bottom: 1px solid #cc3232;
+    text-align: center;
+    padding-top: 4px;
+    padding-bottom: 4px;
     width: 100%;
     height: 100%;
     text-align: right;

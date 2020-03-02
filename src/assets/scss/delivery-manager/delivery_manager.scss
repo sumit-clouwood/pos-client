@@ -821,6 +821,12 @@ div.order-address {
 
   .driver-footer {
     background-color: $red;
+    background-color: #fff;
+    border-top: 1px solid $red;
+    border-bottom: 1px solid $red;
+    text-align: center;
+    padding-top: 4px;
+    padding-bottom: 4px;
     width: 100%;
     height: 100%;
     text-align: right;
