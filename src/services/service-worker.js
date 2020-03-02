@@ -267,7 +267,11 @@ var EventListener = {
 
             return new Promise(resolve => {
               handler
-                .addOfflineEvent(clonedRequest.url, Sync.formData)
+                .addOfflineEvent(
+                  clonedRequest.url,
+                  Sync.formData,
+                  clonedRequest.method
+                )
                 .then(response => {
                   Sync.formData = null
                   const compositeResponse = new Response(
@@ -364,6 +368,27 @@ var DB = {
       }
     }
   },
+  find: (objectStore, index, key) => {
+    var objectStore = DB.getBucket('workflow_order', 'readonly')
+        var request = objectStore.index(index).openCursor(IDBKeyRange.only(key))
+        var records = []
+
+        //find data by key
+
+        request.onsuccess = async event => {
+          var cursor = event.target.result
+          if (cursor) {
+            //record exists
+            console.log('record already exists', cursor.value)
+            records.push(cursor.value)
+            cursor.continue()
+          } else {
+            console.log('no more results', records)
+            // no more results
+            if (records.length) {
+              //some records found
+              var record = records[0]
+  }
 }
 
 var Sync = {
@@ -613,6 +638,9 @@ var Factory = {
 
         break
       case 'GET':
+        if (request.url.match('/model/orders/id/')) {
+          return WorkflowOrder
+        }
         break
     }
   },
@@ -1215,6 +1243,61 @@ var Dinein = {
   },
 }
 
+var WorkflowOrder = {
+  addOfflineEvent: async function(url, payload, method) {
+    return new Promise((resolve, reject) => {
+      if (method === 'GET') {
+        const id = url.replace(new RegExp('.*/id/'), '')
+        //search in workflow orders
+        var objectStore = DB.getBucket('workflow_order', 'readonly')
+        var request = objectStore.index('_id').openCursor(IDBKeyRange.only(id))
+        var records = []
+
+        //find data by key
+
+        request.onsuccess = async event => {
+          var cursor = event.target.result
+          if (cursor) {
+            //record exists
+            console.log('record already exists', cursor.value)
+            records.push(cursor.value)
+            cursor.continue()
+          } else {
+            console.log('no more results', records)
+            // no more results
+            if (records.length) {
+              //some records found
+              var record = records[0]
+              //get table number from the reservation request
+              //reservation: {reservationId: "1583129391094"} 
+              //order: keys: {reservationId: "1583129391094", orderId: "1583
+
+              const reservationKeys =  {reservationId: record.keys.reservationId}
+
+              resolve({
+                data: {
+                  collected_data: {
+                    status: 'In Progress',
+                    order_type: 'Dine In',
+                    store_name: 'Store Name 708',
+                    token_manager: true,
+                    table_number: '3A',
+                    customer = {},
+                    page_lookups: {},
+                    store_invoice_templates: {},
+                  },
+                  item: record.request.data,
+                },
+              })
+            } else {
+              reject()
+            }
+          }
+        }
+      }
+    })
+  },
+}
 if (workbox) {
   enabledConsole && console.log(1, 'sw:', 'workbox found ')
   setupCache()
