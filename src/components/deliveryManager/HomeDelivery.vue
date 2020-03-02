@@ -42,7 +42,7 @@
           <div class="table-drivers-filter">
             <div class="upper">
               <div class="select-driver" @click="activateDriveList">
-                {{ _t('Show Driver Details') }}
+                {{ _t('Select Driver') }}
               </div>
               <div class="autocomplete-container">
                 <div v-if="drivers" class="driver-container">
@@ -251,12 +251,12 @@ export default {
       this.$store.dispatch('deliveryManager/assignBucketToDriver').then(() => {
         if (this.$store.getters['auth/multistore']) {
           this.$store.commit('deliveryManager/SECTION', 'crm')
-          this.$store.dispatch('deliveryManager/updateDMOrderStatus', {
-            orderStatus: 'ready',
-            collected: 'no',
-            pageId: 'home_delivery_pick',
-          })
         }
+        this.$store.dispatch('deliveryManager/updateDMOrderStatus', {
+          orderStatus: 'ready',
+          collected: 'no',
+          pageId: 'home_delivery_pick',
+        })
       })
     },
     ...mapActions('deliveryManager', ['selectDriver', 'restoreOrders']),
