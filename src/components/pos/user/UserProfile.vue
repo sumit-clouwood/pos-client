@@ -14,26 +14,36 @@
         <span class="caption">{{ _t('Email') }}:</span>
         <span>{{ user.email }}</span>
 
-        <span class="caption">{{ _t('Created At') }}:</span>
-        <span>
+        <span v-if="user.created_at" class="caption"
+          >{{ _t('Created At') }}:</span
+        >
+        <span v-if="user.created_at">
           {{ toLocaleDateTimeString(user.created_at.date) }}
         </span>
 
-        <span class="caption">{{ _t('Last Updated At') }}:</span>
-        <span>
+        <span class="caption" v-if="user.updated_at"
+          >{{ _t('Last Updated At') }}:</span
+        >
+        <span v-if="user.updated_at">
           {{ toLocaleDateTimeString(user.updated_at.date) }}
         </span>
 
-        <span class="caption">{{ _t('Created By') }}:</span>
-        <span v-if="collectedData.created_at_name">
+        <span v-if="collectedData" class="caption"
+          >{{ _t('Created By') }}:</span
+        >
+        <span v-if="collectedData">
           {{ collectedData.created_at_name }}
           {{ collectedData.created_at_email }}
         </span>
-        <span v-else> - </span>
-        <span class="caption">{{ _t('Preferred Language') }}:</span>
-        <span>{{ collectedData.language_name }}</span>
+        <span v-if="user.preffered_language" class="caption"
+          >{{ _t('Preferred Language') }}:</span
+        >
+        <span v-if="user.preffered_language">{{
+          user.preffered_language
+        }}</span>
 
-        <span class="caption">{{ _t('User Type') }}:</span><span>Regular</span>
+        <span class="caption">{{ _t('User Type') }}: </span>
+        <span>{{ _t('Regular') }}</span>
       </div>
       <div class="buttons">
         <!-- TODO later, backlogged for now -->
@@ -67,7 +77,7 @@
     <div class="delimiter">&nbsp;</div>
     <div class="profile-brand-container">
       <div class="items">
-        <span class="caption">{{ _t('Associated Brand') }}:</span>
+        <span v-if="brands" class="caption">{{ _t('Associated Brand') }}:</span>
         <span v-if="brands">
           {{
             LookupData.getUserAssociatedDetails({
@@ -163,13 +173,20 @@ export default {
     ...mapState({
       user: state => state.auth.userDetails.item,
       role: state => state.auth.role,
-      collectedData: state => state.auth.userDetails.collected_data,
+      collectedData: state =>
+        state.auth.userDetails.collected_data
+          ? state.auth.userDetails.collected_data
+          : '',
       rootStore: state =>
-        state.auth.userDetails.collected_data.page_lookups.root_stores,
+        state.auth.userDetails.collected_data
+          ? state.auth.userDetails.collected_data.page_lookups.root_stores
+          : state.location.brandStores,
       rootBrandRoles: state =>
-        state.auth.userDetails.collected_data.page_lookups.root_brand_roles,
+        state.auth.userDetails.collected_data
+          ? state.auth.userDetails.collected_data.page_lookups.root_brand_roles
+          : '',
       brands: state =>
-        state.auth.userDetails
+        state.auth.userDetails.collected_data
           ? state.auth.userDetails.collected_data.page_lookups.brands
           : false,
     }),
