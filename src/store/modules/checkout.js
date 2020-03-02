@@ -1464,7 +1464,8 @@ const actions = {
     console.log(response)
     if (
       offline &&
-      (response.message === 'Network Error' || response.match('Network Error'))
+      (response.message === 'Network Error' ||
+        JSON.stringify(response).match('Network Error'))
     ) {
       return dispatch('handleNetworkError', response)
     }
