@@ -30,6 +30,7 @@ const state = {
   terminalCode: null,
   timezones: [],
   openHours: null,
+  brandStores: false,
 }
 
 // getters
@@ -459,6 +460,9 @@ const mutations = {
   },
   [mutation.SET_TERMINAL_CODE](state, terminalCode) {
     state.terminalCode = terminalCode
+  },
+  [mutation.SET_BRAND_STORES](state, brandStores) {
+    state.brandStores = brandStores
   },
 }
 
