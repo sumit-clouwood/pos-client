@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import * as mutation from './printingServer/mutation-type'
 // import OrderService from '@/services/data/OrderService'
 import PrintingServerService from '@/services/data/PrintingServerService'
@@ -12,6 +13,7 @@ const state = {
   createdDateTime: { date: '', time: '' },
   kitchenInvoiceResponse: true,
   orderData: false,
+  kitchens: '',
 }
 
 const actions = {
@@ -27,6 +29,134 @@ const actions = {
         })
         .catch(error => reject(error))
     })
+  },
+  printingSetup({ state, rootState, dispatch }, orderData) {
+    let printingServers = state.printingservers
+    let staff = rootState.auth.userDetails
+    let customerDetails = rootState.customer
+    let locationData = rootState.location
+    let customerId = orderData.customer
+    let delivery_area = {} //Delivery Area
+    let kitchen_menu_items = []
+    let jsonResponse = false
+    // eslint-disable-next-line no-console
+    console.log(orderData, 'orderData')
+    //Item according to Kitchens Sections
+    let kitchenSectionsItems = state.kitchenitems
+    if (kitchenSectionsItems.length) {
+      orderData.items.forEach(item => {
+        let itemKitchen = kitchenSectionsItems.find(
+          kitchenItem => kitchenItem._id === item.entity_id
+        )
+        if (itemKitchen) {
+          kitchen_menu_items.push({
+            _id: itemKitchen._id,
+            category: itemKitchen.category,
+            kitchen: itemKitchen.kitchen,
+          })
+        }
+      })
+    }
+    dispatch('convertDatetime', {
+      datetime: orderData.real_created_datetime,
+      format: 'Do MMMM YYYY',
+    })
+    dispatch('convertDatetime', {
+      datetime: orderData.real_created_datetime,
+      format: 'h:mm:ss A',
+    })
+    //Created Date
+    // let timezoneString = locationData.timezoneString
+    let created_date = state.createdDateTime.date
+    //Created Time
+    let created_time = state.createdDateTime.time
+    //Crm Module Permission
+    let crm_module_enabled = false
+    let cb = locationData.brand
+    for (var module of cb.enabled_modules) {
+      if (module == 'CRM') {
+        crm_module_enabled = true
+      }
+    }
+    if (!rootState.invoice.templates) {
+      return
+    }
+    //Invoice
+    let invoiceTemplate = rootState.invoice.templates.data.data.find(
+      invoice => invoice
+    )
+    let orderTypeLabel = orderData.order_type + '_label'
+    // orderData.order_no = orderData.orderNumber || orderData.order_no //Custom Order No to give appropriate field for Habib
+    let orderNo = orderData.orderNumber || orderData.order_no //Custom Order No to give appropriate field for Habib
+    let dateTime = orderData.real_created_datetime
+      .toString()
+      .replace(/[\s-:]/g, '')
+    if (orderNo) {
+      orderData.order_no = orderNo
+    } else {
+      orderData.order_no = dateTime
+      orderData.orderNumber = dateTime
+    }
+    orderData.real_created_datetime = created_date
+    orderData.created_at = null
+    //Final JSON
+    /*get selected table no*/
+
+    //Customer Data
+    if (customerId) {
+      if (orderData.order_delivery_area && customerDetails.deliveryAreas) {
+        delivery_area = Object.values(customerDetails.deliveryAreas).find(
+          delivery_area => delivery_area._id === orderData.order_delivery_area
+        )
+      }
+      //get customer name by customer id
+      dispatch('customer/fetchSelectedCustomer', customerId, {
+        root: true,
+      }).then(customerData => {
+        // eslint-disable-next-line no-console
+        // console.log(customerData, 'customercustomercustomercustomer')
+        dispatch('setInvoiceDetails', {
+          locationData,
+          orderData,
+          kitchen_menu_items,
+          staff,
+          customerData,
+          delivery_area,
+          invoiceTemplate,
+          orderTypeLabel,
+          created_date,
+          created_time,
+          crm_module_enabled,
+        }).then(response => {
+          jsonResponse = response
+          // eslint-disable-next-line no-console
+          console.log(
+            customerData,
+            'customercustomercustomercustomer',
+            jsonResponse
+          )
+          dispatch('orderDataMerging', { jsonResponse, printingServers })
+        })
+      })
+    } else {
+      let customerData = false //Customer Information
+      dispatch('setInvoiceDetails', {
+        locationData,
+        orderData,
+        kitchen_menu_items,
+        staff,
+        customerData,
+        delivery_area,
+        invoiceTemplate,
+        orderTypeLabel,
+        created_date,
+        created_time,
+        crm_module_enabled,
+      }).then(response => {
+        jsonResponse = response
+        dispatch('orderDataMerging', { jsonResponse, printingServers })
+      })
+    }
   },
   orderDataMerging({ rootState }, { jsonResponse, printingServers }) {
     let _order = {}
@@ -55,7 +185,7 @@ const actions = {
     }
   },
   setInvoiceDetails(
-    { rootState, dispatch },
+    { rootState, dispatch, state },
     {
       locationData,
       orderData,
@@ -96,23 +226,33 @@ const actions = {
         generate_time: orderData.real_created_datetime,
         flash_message: 'Order Details',
         store_id: rootState.context.storeId,
-        token_manager: false,
+        token_manager: rootState.location.store.token_manager,
         windows_app: false,
       }
+      let dt = rootState.auth.deviceType
+      let isIOS = dt.osType
       if (
         orderData.order_type == 'DINE-IN' ||
         orderData.order_type == 'dine_in'
       ) {
+        if (!table_no) {
+          table_no = rootState.dinein.selectedTableRservationData
+        }
+
         Object.assign(jsonResponse, { table_number: table_no })
         // jsonResponse.table_number = table_no
         // eslint-disable-next-line no-console
         console.log(jsonResponse, orderData, 'table number section')
       }
-      /*if (isIOS) {
+      if (isIOS) {
+        Object.assign(jsonResponse, { kitchens: state.kitchens })
         // eslint-disable-next-line no-console
         console.log(jsonResponse, 'ff')
-        localStorage.setItem('orderInvoiceColData', JSON.stringify(jsonResponse))
-      }*/
+        localStorage.setItem(
+          'orderInvoiceColData',
+          JSON.stringify(jsonResponse)
+        )
+      }
       if (customerData) {
         dispatch('customer/resetCustomer', true, { root: true }).then(() => {
           resolve(jsonResponse)
@@ -161,156 +301,47 @@ const actions = {
   },
 
   //Create A JSON Request to send in Local Server API for Generating Invoices from a software.
-  // printingServerInvoiceRaw({ state, rootState, dispatch }, orderData) {
-  printingServerInvoiceRaw({ state, rootState, dispatch }, orderData) {
-    // printingServerInvoiceRaw({}, orderData) {
+  printingServerInvoiceRaw({ rootState, dispatch }, orderData) {
     // eslint-disable-next-line no-console
     console.log('IN', rootState.checkout.paymentAction)
-    if (['dine-in-place-order'].includes(rootState.checkout.paymentAction)) {
+    let dt = rootState.auth.deviceType
+    let isIOS = dt.osType
+    if (
+      ['dine-in-place-order'].includes(rootState.checkout.paymentAction) &&
+      !isIOS
+    ) {
       return false
     }
     // eslint-disable-next-line no-console
-    console.log(orderData)
-    let printingServers = state.printingservers //Get All Printing Servers
+    console.log(isIOS, orderData)
+    if (isIOS) {
+      localStorage.setItem('orderInvoiceColData', '')
+      if (!dt.standalone && !dt.browserType) {
+        //This is  a uiwebview
+        const urlParams = new URLSearchParams(window.location.search)
+        urlParams.set('iosprint', '1')
+        window.location.search = urlParams
+      }
+    }
+    if (isIOS && orderData) {
+      dispatch('getKitchens').then(() => {
+        dispatch('printingSetup', orderData)
+      })
+    }
+
+    let printingServers = state.printingservers
     if (printingServers && orderData) {
-      let staff = rootState.auth.userDetails
-      let customerDetails = rootState.customer
-      let locationData = rootState.location
-      let customerId = orderData.customer
-      let delivery_area = {} //Delivery Area
-      let kitchen_menu_items = []
-      let jsonResponse = false
-
-      //Item according to Kitchens Sections
-      let kitchenSectionsItems = state.kitchenitems
-      if (kitchenSectionsItems.length) {
-        orderData.items.forEach(item => {
-          let itemKitchen = kitchenSectionsItems.find(
-            kitchenItem => kitchenItem._id === item.entity_id
-          )
-          if (itemKitchen) {
-            kitchen_menu_items.push({
-              _id: itemKitchen._id,
-              category: itemKitchen.category,
-              kitchen: itemKitchen.kitchen,
-            })
-          }
-        })
-      }
-      dispatch('convertDatetime', {
-        datetime: orderData.real_created_datetime,
-        format: 'Do MMMM YYYY',
-      })
-      dispatch('convertDatetime', {
-        datetime: orderData.real_created_datetime,
-        format: 'h:mm:ss A',
-      })
-      //Created Date
-      // let timezoneString = locationData.timezoneString
-      let created_date = state.createdDateTime.date
-      //Created Time
-      let created_time = state.createdDateTime.time
-      //Crm Module Permission
-      let crm_module_enabled = false
-      let cb = locationData.brand
-      for (var module of cb.enabled_modules) {
-        if (module == 'CRM') {
-          crm_module_enabled = true
-        }
-      }
-      if (!rootState.invoice.templates) {
-        return
-      }
-      //Invoice
-      let invoiceTemplate = rootState.invoice.templates.data.data.find(
-        invoice => invoice
-      )
-      let orderTypeLabel = orderData.order_type + '_label'
-      orderData.order_no = orderData.orderNumber || orderData.order_no //Custom Order No to give appropriate field for Habib
-      orderData.real_created_datetime = created_date
-      orderData.created_at = null
-      //Final JSON
-      /*get selected table no*/
-
-      //Customer Data
-      if (customerId) {
-        if (orderData.order_delivery_area && customerDetails.deliveryAreas) {
-          delivery_area = Object.values(customerDetails.deliveryAreas).find(
-            delivery_area => delivery_area._id === orderData.order_delivery_area
-          )
-        }
-        //get customer name by customer id
-        dispatch('customer/fetchSelectedCustomer', customerId, {
-          root: true,
-        }).then(customerData => {
-          // eslint-disable-next-line no-console
-          // console.log(customerData, 'customercustomercustomercustomer')
-          dispatch('setInvoiceDetails', {
-            locationData,
-            orderData,
-            kitchen_menu_items,
-            staff,
-            customerData,
-            delivery_area,
-            invoiceTemplate,
-            orderTypeLabel,
-            created_date,
-            created_time,
-            crm_module_enabled,
-          }).then(response => {
-            jsonResponse = response
-            // eslint-disable-next-line no-console
-            console.log(
-              customerData,
-              'customercustomercustomercustomer',
-              jsonResponse
-            )
-            dispatch('orderDataMerging', { jsonResponse, printingServers })
-          })
-        })
-      } else {
-        let customerData = false //Customer Information
-        dispatch('setInvoiceDetails', {
-          locationData,
-          orderData,
-          kitchen_menu_items,
-          staff,
-          customerData,
-          delivery_area,
-          invoiceTemplate,
-          orderTypeLabel,
-          created_date,
-          created_time,
-          crm_module_enabled,
-        }).then(response => {
-          jsonResponse = response
-          dispatch('orderDataMerging', { jsonResponse, printingServers })
-        })
-      }
-      // eslint-disable-next-line no-console
-      /*console.log(jsonResponse, 'checkResponce')
-      let decodedData = compressToBase64(JSON.stringify(jsonResponse))
-      // eslint-disable-next-line no-console
-      if (jsonResponse && rootState.dinein.kitchenPrint) {
-        printingServers.forEach(item => {
-          let APIURL = item.ip_address
-          dispatch('centeredPopup', {
-            url:
-              APIURL +
-              `/printorder?len=` +
-              decodedData.length +
-              `&data=` +
-              decodedData,
-            winName: 'Kitchen invoice printing',
-            w: '700',
-            h: '300',
-            scroll: 'yes ',
-          })
-        })
-      }*/
+      dispatch('printingSetup', orderData)
     }
   },
-
+  getKitchens({ commit }) {
+    return new Promise(resolve => {
+      PrintingServerService.kitchens().then(response => {
+        commit(mutation.KITCHENS, response.data)
+        resolve(response.data)
+      })
+    })
+  },
   // eslint-disable-next-line no-empty-pattern
   centeredPopup({ commit }, details) {
     // eslint-disable-next-line no-console
@@ -368,6 +399,9 @@ const mutations = {
   },
   [mutation.KITCHEN_RESPONSE](state, status) {
     state.kitchenInvoiceResponse = status
+  },
+  [mutation.KITCHENS](state, kitchens) {
+    state.kitchens = kitchens
   },
 }
 

@@ -121,7 +121,6 @@ export default {
         this.isPrint = true
         try {
           setTimeout(() => {
-            // Code Pane reflects in DIMS WEB APP window.PrintHandle.GetAgent() !== 'Dimspos.App'
             if (window.PrintHandle == null) {
               //this.$refs.iframe.contentWindow.print()
               let w = this.$refs.iframe.contentWindow
@@ -129,12 +128,14 @@ export default {
               w.print()
               this.iframe_body = ''
             }
+            // Code Pane reflects in DIMS WEB APP window.PrintHandle.GetAgent() !== 'Dimspos.App'
             // if (!this.$store.getters['checkout/complete']) {
             //   this.$store.dispatch('checkout/splitOrder').then(() => {})
             // }
-            //Invoice APP API Call with Custom Request JSON
-            console.log(this.paymentAction, 'paymentAction')
-            if (!['dine-in-order-preview'].includes(this.paymentAction)) {
+            if (
+              !['dine-in-order-preview'].includes(this.paymentAction) ||
+              this.$store.state.auth.deviceType.osType
+            ) {
               this.$store.dispatch(
                 'printingServer/printingServerInvoiceRaw',
                 orderData

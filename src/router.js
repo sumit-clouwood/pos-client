@@ -36,6 +36,16 @@ const router = new Router({
       component: Home,
     },
     {
+      path: '/:brand_id/:store_id/',
+      name: 'BrandHome',
+      component: Home,
+    },
+    {
+      path: '/:iosprinter',
+      name: 'iosApplication',
+      component: Home,
+    },
+    {
       path: '/cashier-login/*',
       name: 'cashierLogin',
       component: CashierLogin,

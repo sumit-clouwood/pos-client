@@ -24,6 +24,7 @@ const state = {
   role: null,
   cashierRoleId: false,
   offlinePinCode: null,
+  deviceType: false,
 }
 
 // getters
@@ -127,6 +128,22 @@ const actions = {
         })
         .catch(error => reject(error))
     })
+  },
+  checkDevice({ commit }) {
+    //Detect IOS device WebViews
+    let standalone = window.navigator.standalone,
+      userAgent = window.navigator.userAgent.toLowerCase(),
+      safari = /safari/.test(userAgent),
+      ios = /iphone|ipod|ipad/.test(userAgent)
+    let objDevice = {
+      userAgent: userAgent,
+      browserType: safari,
+      osType: ios,
+      standalone: standalone,
+    }
+    // eslint-disable-next-line no-console
+    console.log('objDevice', objDevice)
+    commit(mutation.DEVICE_TYPE, objDevice)
   },
   login({ commit, dispatch }, data) {
     return new Promise((resolve, reject) => {
@@ -387,6 +404,9 @@ const mutations = {
   },
   [mutation.SET_ROLE](state, role) {
     state.role = role
+  },
+  [mutation.DEVICE_TYPE](state, deviceType) {
+    state.deviceType = deviceType
   },
   setSearchKeyword(state, value) {
     state.searchKeyword = value

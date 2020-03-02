@@ -158,7 +158,11 @@ export default {
       }
     })
   },
-
+  /*if (this.lang && this.lang !== 'en-US') {
+      url += '&translations_needed=1&lang=' + this.lang
+    } else {
+      url += '&lang=' + this.lang
+  }*/
   getT(url, level) {
     url += '&translations_needed=1&lang=' + this.lang
     return this.get(url, level)

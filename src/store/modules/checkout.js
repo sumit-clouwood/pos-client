@@ -2,7 +2,7 @@ import OrderService from '@/services/data/OrderService'
 import * as mutation from './checkout/mutation-types'
 import Num from '@/plugins/helpers/Num.js'
 import * as CONSTANTS from '@/constants'
-import { compressToBase64 } from 'lz-string'
+// import { compressToBase64 } from 'lz-string'
 import OrderHelper from '@/plugins/helpers/Order'
 
 // initial state
@@ -1245,7 +1245,7 @@ const actions = {
             }).then(() => {
               resolve(response.data)
               commit(mutation.PRINT, true)
-              dispatch('iosWebviewPrintAction', { orderData: state.order })
+              // dispatch('iosWebviewPrintAction', { orderData: state.order })
             })
           } else {
             dispatch('handleSystemErrors', response).then(() => resolve())
@@ -1288,7 +1288,7 @@ const actions = {
             }).then(() => {
               resolve(response.data)
               commit(mutation.PRINT, true)
-              dispatch('iosWebviewPrintAction', { orderData: state.order })
+              // dispatch('iosWebviewPrintAction', { orderData: state.order })
             })
           } else {
             dispatch('handleSystemErrors', response).then(() => resolve())
@@ -1613,21 +1613,16 @@ const actions = {
     /*commit(mutation.SET_ORDER, order)
     dispatch('createOrder')*/
   },
-
   iosWebviewPrintAction({ rootState, dispatch }, { orderData }) {
-    //Detect IOS device WebViews
-    let standalone = window.navigator.standalone,
-      userAgent = window.navigator.userAgent.toLowerCase(),
-      safari = /safari/.test(userAgent),
-      ios = /iphone|ipod|ipad/.test(userAgent)
-
-    if (ios) {
+    localStorage.setItem('orderInvoiceColData', '')
+    let dt = rootState.auth.deviceType
+    if (dt.osType) {
       /*if (!standalone && safari) {
           window.location.href = 'print.me1'
         } else if (standalone && !safari) {
           window.location.href = 'print.me2'
         } else */
-      if (!standalone && !safari) {
+      if (!dt.standalone && !dt.browserType) {
         //This is  a uiwebview
         const urlParams = new URLSearchParams(window.location.search)
         urlParams.set('iosprint', '1')
@@ -1642,7 +1637,14 @@ const actions = {
       let customerData = [] //Customer Information
       let delivery_area = {} //Delivery Area
       let kitchen_menu_items = []
-
+      if (orderData.order_type == 'dine_in') {
+        // let table_no = rootState.dinein.selectedTable
+        //   ? rootState.dinein.selectedTable.number
+        //   : false
+        orderData.table_number = rootState.order.selectedOrder.table_number
+      }
+      // eslint-disable-next-line no-console
+      console.log(orderData, 'orderDataorderData')
       //Customer Data
       if (customerId) {
         //get customer name by customer id
@@ -1703,7 +1705,7 @@ const actions = {
         invoice => invoice
       )
       let orderTypeLabel = orderData.order_type + '_label'
-      orderData.order_no = orderData.orderNumber //Custom Order No to give appropriate field for Habib
+      orderData.order_no = orderData.order_no || orderData.orderNumber //Custom Order No to give appropriate field for Habib
       //Final JSON
       let jsonResponse = {
         status: 'ok',
@@ -1728,12 +1730,18 @@ const actions = {
         flash_message: 'Order Details',
         store_id: rootState.context.storeId,
       }
-      let x = JSON.stringify(jsonResponse)
+      let stringifyResponse = JSON.stringify(jsonResponse)
+      //Case: print order invoice data was added in Localstorage for IOS APP, IOS webview would get this value and will send information to native printer.
+      localStorage.setItem('orderInvoiceColData', stringifyResponse)
+
       // let b = new Buffer(x)
       // let stringifyResponse = b.toString('base64')
-      let decodedData = compressToBase64(x)
-      let url = `printorder?len=` + decodedData.length + `&data=` + decodedData
-      localStorage.setItem('orderKitchenInvoiceData', url) //This localstorage variable hold Kitchen invoice api request collection for IOS Webviews. IOS Webviews does not display default Browser Print Window.
+      // let decodedData = compressToBase64(stringifyResponse)
+      // let url = `printorder?len=` + decodedData.length + `&data=` + decodedData
+      localStorage.setItem(
+        'orderKitchenInvoiceData',
+        JSON.stringify(kitchen_menu_items)
+      ) //This localstorage variable hold Kitchen invoice api request collection for IOS Webviews. IOS Webviews does not display default Browser Print Window.
     }
   },
 }

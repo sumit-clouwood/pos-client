@@ -90,6 +90,13 @@ export default {
       })
     }
     /* Implemented for multistore*/
+    if (this.$route.name.match('iosApplication')) {
+      let iosprinter = this.$route.params.iosprinter.split('=')[1]
+      /*"iosprinter=abc+xyz+yelo"*/
+      localStorage.setItem('IOSPrinters', JSON.stringify(iosprinter.split('+')))
+      // eslint-disable-next-line no-console
+      console.log(localStorage.getItem('IOSPrinters'))
+    }
     if (this.$route.name.match('selectGroupForCrmOrder')) {
       this.customerId = this.$route.params.customer_id
       this.addressId = this.$route.params.address_id
