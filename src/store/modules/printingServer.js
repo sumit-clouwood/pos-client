@@ -304,11 +304,16 @@ const actions = {
   printingServerInvoiceRaw({ rootState, dispatch }, orderData) {
     // eslint-disable-next-line no-console
     console.log('IN', rootState.checkout.paymentAction)
-    if (['dine-in-place-order'].includes(rootState.checkout.paymentAction)) {
-      return false
-    }
     let dt = rootState.auth.deviceType
     let isIOS = dt.osType
+    if (
+      ['dine-in-place-order'].includes(rootState.checkout.paymentAction) &&
+      !isIOS
+    ) {
+      return false
+    }
+    // eslint-disable-next-line no-console
+    console.log(isIOS, orderData)
     if (isIOS) {
       localStorage.setItem('orderInvoiceColData', '')
       if (!dt.standalone && !dt.browserType) {
