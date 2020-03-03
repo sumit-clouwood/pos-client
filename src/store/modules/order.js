@@ -1450,6 +1450,9 @@ const actions = {
         customer: order.customer,
       }
       commit(mutation.SET_ORDER_DATA, orderData)
+      if (order.order_note) {
+        commit(mutation.SET_ORDER_NOTE, order.order_note)
+      }
       commit('newOrder', order)
 
       let existingItems = [...order.items]
