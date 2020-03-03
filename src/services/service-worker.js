@@ -368,9 +368,9 @@ var DB = {
       }
     }
   },
-  find: async (objectStore, index, key) => {
+  find: async (storeName, index, key) => {
     return new Promise((resolve, reject) => {
-    var objectStore = DB.getBucket('workflow_order', 'readonly')
+      var objectStore = DB.getBucket(storeName, 'readonly')
       var request = objectStore.index(index).openCursor(IDBKeyRange.only(key))
       var records = []
 
@@ -385,15 +385,12 @@ var DB = {
           cursor.continue()
         } else {
           console.log('no more results', records)
-          // no more results
-          if (records.length) {
-            //some records found
-            var record = records[0]
-          }
+          resolve(records)
         }
       }
+      request.onerror = error => reject(error)
     })
-  }
+  },
 }
 
 var Sync = {
@@ -1025,7 +1022,7 @@ var Dinein = {
           _id: id,
           step: 'reserved',
           type: 'dinein',
-          keys: { reservationId: id },
+          keys: JSON.stringify({ reservationId: id }),
           status: 'offline',
           request: {
             url: url,
@@ -1124,7 +1121,7 @@ var Dinein = {
     //id is the timestamp actually, first time id ll be empty so update it with time
     let id = this.createId()
     let rootId = payload.table_reservation_id
-    let keys = { reservationId: rootId, orderId: id }
+    let keys = JSON.stringify({ reservationId: rootId, orderId: id })
     //if order is being placed second time i.e updated, then key / steps remains same
     let rootStep = 'reserved'
     let step = 'placed'
@@ -1135,7 +1132,7 @@ var Dinein = {
       id = payload._id
       rootStep = 'placed'
       step = 'paid'
-      keys = { orderId: id }
+      keys = JSON.stringify({ orderId: id })
     }
 
     enabledConsole && console.log(1, 'sw:', payload) //find
@@ -1254,51 +1251,35 @@ var WorkflowOrder = {
       if (method === 'GET') {
         const id = url.replace(new RegExp('.*/id/'), '')
         //search in workflow orders
-        var objectStore = DB.getBucket('workflow_order', 'readonly')
-        var request = objectStore.index('_id').openCursor(IDBKeyRange.only(id))
-        var records = []
+        DB.find('workflow_order', '_id', id).then(records => {
+          var record = records[0]
+          //get table number from the reservation request
+          //reservation: {reservationId: "1583129391094"}
+          //order: keys: {reservationId: "1583129391094", orderId: "1583
+          console.log('record keys', record.keys)
+          const reservationKeys = JSON.stringify({
+            reservationId: JSON.parse(record.keys).reservationId,
+          })
 
-        //find data by key
+          console.log('reservation keys', reservationKeys)
 
-        request.onsuccess = async event => {
-          var cursor = event.target.result
-          if (cursor) {
-            //record exists
-            console.log('record already exists', cursor.value)
-            records.push(cursor.value)
-            cursor.continue()
-          } else {
-            console.log('no more results', records)
-            // no more results
-            if (records.length) {
-              //some records found
-              var record = records[0]
-              //get table number from the reservation request
-              //reservation: {reservationId: "1583129391094"} 
-              //order: keys: {reservationId: "1583129391094", orderId: "1583
-
-              const reservationKeys =  {reservationId: record.keys.reservationId}
-
+          DB.find('workflow_order', 'keys', reservationKeys)
+            .then(reservations => {
+              const reservation = reservations[0]
               resolve({
-                data: {
-                  collected_data: {
-                    status: 'In Progress',
-                    order_type: 'Dine In',
-                    store_name: 'Store Name 708',
-                    token_manager: true,
-                    table_number: '3A',
-                    customer = {},
-                    page_lookups: {},
-                    store_invoice_templates: {},
-                  },
-                  item: record.request.data,
+                collected_data: {
+                  status: 'In Progress',
+                  order_type: 'Dine In',
+                  table_number: reservation.request.data.number,
+                  customer: {},
+                  page_lookups: {},
+                  store_invoice_templates: {},
                 },
+                item: record.request.data,
               })
-            } else {
-              reject()
-            }
-          }
-        }
+            })
+            .catch(error => reject(error))
+        })
       }
     })
   },
