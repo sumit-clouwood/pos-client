@@ -368,9 +368,9 @@ var DB = {
       }
     }
   },
-  find: async (storeName, index, key) => {
+  find: async (storeName, index, key, mode = 'readonly') => {
     return new Promise((resolve, reject) => {
-      var objectStore = DB.getBucket(storeName, 'readonly')
+      var objectStore = DB.getBucket(storeName, mode)
       var request = objectStore.index(index).openCursor(IDBKeyRange.only(key))
       var records = []
 
@@ -385,7 +385,7 @@ var DB = {
           cursor.continue()
         } else {
           console.log('no more results', records)
-          resolve(records)
+          resolve({ records: records, objectStore: objectStore })
         }
       }
       request.onerror = error => reject(error)
@@ -1263,7 +1263,7 @@ var Dinein = {
       orderId: id,
     })
     return new Promise((resolve, reject) => {
-      DB.find('workflow_order', 'keys', reservationKeys).then(records => {
+      DB.find('workflow_order', 'keys', reservationKeys).then(({ records }) => {
         //replace the record here, probably need to replace request / response only
         let record = records[0]
 
@@ -1288,6 +1288,30 @@ var Dinein = {
             generate_time: +new Date(),
             flash_message: ' Order Updated',
           })
+
+          if (payload.order_payments && payload.order_payments.length) {
+            //remove entry from booked tables in store
+            console.log('removing entry from booked tables, and lookup')
+            DB.find('store', 'key', 'dinein_reservations', 'readwrite').then(
+              ({ records, objectStore }) => {
+                let record = records[0]
+
+                //remove current order from list as it is completed now
+                delete record.data.page_lookups.orders._id[id]
+                //remove order data too
+
+                record.data.data = record.data.data.filter(
+                  booking => booking._id !== payload.table_reservation_id
+                )
+
+                if (record.data.count) {
+                  record.data.count--
+                }
+
+                objectStore.put(record)
+              }
+            )
+          }
         }
 
         request.onerror = error => {
@@ -1304,7 +1328,7 @@ var WorkflowOrder = {
       if (method === 'GET') {
         const id = url.replace(new RegExp('.*/id/'), '')
         //search in workflow orders
-        DB.find('workflow_order', '_id', id).then(records => {
+        DB.find('workflow_order', '_id', id).then(({ records }) => {
           var record = records[0]
           //get table number from the reservation request
           //reservation: {reservationId: "1583129391094"}
@@ -1317,8 +1341,8 @@ var WorkflowOrder = {
           console.log('reservation keys', reservationKeys)
 
           DB.find('workflow_order', 'keys', reservationKeys)
-            .then(reservations => {
-              const reservation = reservations[0]
+            .then(({ records }) => {
+              const reservation = records[0]
               let order = record.request.data
               order._id = record._id
               order.order_number = order.real_created_datetime

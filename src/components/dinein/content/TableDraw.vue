@@ -22,7 +22,6 @@
                 </span>
               </div>
               <div class="m-1 table-order-content" v-if="orderDetails">
-                {{ orderDetails }}
                 <div
                   v-for="orderData in orderDetails"
                   :key="orderData.reservationId"
@@ -403,7 +402,7 @@ export default {
       // return this.current_time.format('Do MMMM YYYY')
     },
     getOrderNo(orderId) {
-      console.log(this.allBookedTables, 'orders')
+      //console.log(this.allBookedTables, 'orders')
       let order = this.allBookedTables.lookup.orders._id[orderId]
       // let customerName = order && order.customer != null ? order.customer : ''
       return order
@@ -415,7 +414,7 @@ export default {
         : ''
     },
     orderStatus(orderId) {
-      console.log(this.allBookedTables, 'orders status')
+      //console.log(this.allBookedTables, 'orders status')
       return this.allBookedTables.lookup.orders._id[orderId].order_status
     },
     hideTableDetails() {
@@ -538,7 +537,7 @@ export default {
       this.setTableProperties()
       this.drawViews()
       // eslint-disable-next-line no-console
-      console.log('f')
+      //console.log('f')
       // d3.selectAll('.dinein_table_parent').each(() => {})
     },
     setTableColour(selectedItem, data) {
@@ -889,13 +888,13 @@ export default {
           this.validationErrors = ''
           this.selectedTableD3 = all[index]
           this.selectedTableId = datum._id
-          console.log('table id', datum._id)
+          //console.log('table id', datum._id)
           this.orderDetails = this.orderOnTables.filter(
             order => order.tableId === datum._id
           )
-          console.log('order on all tables', this.orderOnTables)
-          console.log('order details for table', this.orderDetails)
-          console.log(datum, index, all, all[index])
+          // console.log('order on all tables', this.orderOnTables)
+          // console.log('order details for table', this.orderDetails)
+          // console.log(datum, index, all, all[index])
 
           this.setTableColour(all[index], datum)
           this.$store.commit(
@@ -933,11 +932,11 @@ export default {
           if (this.cssClass == 'restricted') return false
           // $('#tooltipdata').hide()
           $('#tooltipdata').show()
-          console.log(
-            'order details for table',
-            this.orderDetails,
-            this.orderDetails.length
-          )
+          // console.log(
+          //   'order details for table',
+          //   this.orderDetails,
+          //   this.orderDetails.length
+          // )
 
           this.addOrSplit =
             this.orderDetails.length > 0 ? 'Split Table' : 'Book Table'
@@ -963,7 +962,7 @@ export default {
               if (orderCount > 0) {
                 getWidth = 445 / 2
               }
-              console.log('order count', orderCount)
+              //console.log('order count', orderCount)
             }
             let left = posX - getWidth
 
