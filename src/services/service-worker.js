@@ -634,6 +634,13 @@ var Factory = {
           return Order
         }
 
+        if (request.url.endsWith('/update_order_items')) {
+          if (Sync.formData.order_type === 'dine_in') {
+            return Dinein
+          }
+          return Order
+        }
+
         if (request.url.match('/deliveryManager/add')) {
           return DeliveryManager
         }
@@ -999,6 +1006,10 @@ var Dinein = {
   },
 
   addOfflineEvent: function(url, payload) {
+    if (url.endsWith('/update_order_items')) {
+      return this.updateOrderItems(url, payload)
+    }
+
     if (url.endsWith('/reservations/add')) {
       return this.addReservation(url, payload)
     }
@@ -1243,6 +1254,48 @@ var Dinein = {
       })
     })
   },
+
+  updateOrderItems(url, payload) {
+    //update order in the workflow_order
+    const id = url.replace(new RegExp('.*/id/(\\w+)/update_order_items$'), '$1')
+    const reservationKeys = JSON.stringify({
+      reservationId: payload.table_reservation_id,
+      orderId: id,
+    })
+    return new Promise((resolve, reject) => {
+      DB.find('workflow_order', 'keys', reservationKeys).then(records => {
+        //replace the record here, probably need to replace request / response only
+        let record = records[0]
+
+        console.log(1, 'sw:', 'original add record', record)
+
+        //when updating there is no realcreated date time but we need it so get it form previous
+        payload.real_created_datetime =
+          record.request.data.real_created_datetime
+
+        record.request.data = payload
+        console.log(1, 'sw:', 'record now', record)
+
+        var request = DB.getBucket('workflow_order', 'readwrite').put(record)
+        request.onsuccess = () => {
+          resolve({
+            status: 'ok',
+            id: id,
+            order_no:
+              payload.order_no ||
+              payload.real_created_datetime.toString().replace(/[\s-:]/g, ''),
+            token_number: 0,
+            generate_time: +new Date(),
+            flash_message: ' Order Updated',
+          })
+        }
+
+        request.onerror = error => {
+          reject(error)
+        }
+      })
+    })
+  },
 }
 
 var WorkflowOrder = {
@@ -1266,6 +1319,12 @@ var WorkflowOrder = {
           DB.find('workflow_order', 'keys', reservationKeys)
             .then(reservations => {
               const reservation = reservations[0]
+              let order = record.request.data
+              order._id = record._id
+              order.order_number = order.real_created_datetime
+                .toString()
+                .replace(/[\s-:]/g, '')
+
               resolve({
                 collected_data: {
                   status: 'In Progress',
@@ -1275,7 +1334,7 @@ var WorkflowOrder = {
                   page_lookups: {},
                   store_invoice_templates: {},
                 },
-                item: record.request.data,
+                item: order,
               })
             })
             .catch(error => reject(error))

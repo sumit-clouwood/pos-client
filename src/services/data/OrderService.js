@@ -127,12 +127,23 @@ export default {
     return DataService.post(`/model/orders/id/${id}/modify_${type}order`, order)
   },
 
-  updateOrderItems(order, id, type) {
-    if (type) {
-      type += '_'
-    } else {
-      type = ''
+  updateOrderItems(order, id) {
+    let msg = {
+      form_data: order,
     }
+
+    try {
+      if ('serviceWorker' in navigator && 'SyncManager' in window) {
+        navigator.serviceWorker.controller.postMessage(msg)
+      } else {
+        console.log('service worker not found in app ')
+      }
+    } catch (e) {
+      console.log("Couldn't send msg to service worker in dev", e, msg)
+    }
+
+    //remove offline data
+    delete order.user
     return DataService.post(`/model/orders/id/${id}/update_order_items`, order)
   },
   invoiceAPI(order, apiurl) {
