@@ -139,6 +139,7 @@ export default {
                 this.store.dispatch('payment/setTranslations').then(() => {})
                 resolve()
               })
+              this.store.dispatch('printingServer/getKitchens').then(() => {})
             })
             .catch(error => reject(error))
         })

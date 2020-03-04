@@ -1245,7 +1245,7 @@ const actions = {
             }).then(() => {
               resolve(response.data)
               commit(mutation.PRINT, true)
-              // dispatch('iosWebviewPrintAction', { orderData: state.order })
+              dispatch('iosWebviewPrintAction', { orderData: state.order })
             })
           } else {
             dispatch('handleSystemErrors', response).then(() => resolve())
@@ -1288,7 +1288,7 @@ const actions = {
             }).then(() => {
               resolve(response.data)
               commit(mutation.PRINT, true)
-              // dispatch('iosWebviewPrintAction', { orderData: state.order })
+              dispatch('iosWebviewPrintAction', { orderData: state.order })
             })
           } else {
             dispatch('handleSystemErrors', response).then(() => resolve())
@@ -1617,7 +1617,8 @@ const actions = {
   iosWebviewPrintAction({ rootState, dispatch }, { orderData }) {
     localStorage.setItem('orderInvoiceColData', '')
     let dt = rootState.auth.deviceType
-    if (dt.osType) {
+    let isIOS = dt.osType
+    if (isIOS) {
       /*if (!standalone && safari) {
           window.location.href = 'print.me1'
         } else if (standalone && !safari) {

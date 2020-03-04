@@ -324,9 +324,7 @@ const actions = {
       }
     }
     if (isIOS && orderData) {
-      dispatch('getKitchens').then(() => {
-        dispatch('printingSetup', orderData)
-      })
+      dispatch('printingSetup', orderData)
     }
 
     let printingServers = state.printingservers
