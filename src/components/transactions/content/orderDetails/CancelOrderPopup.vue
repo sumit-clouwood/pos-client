@@ -176,7 +176,7 @@
         </div>
       </div>
     </div>
-    <InformationPopup :responseInformation="this.errorMessage" title="Alert" />
+    <InformationPopup :responseInformation="errorMessage" title="Alert" />
   </div>
 </template>
 
@@ -293,7 +293,6 @@ export default {
   },
 }
 function closeModal(modalName) {
-  this.errorMessage = ''
   $('body').removeClass('modal-open')
   $('#transparent-screen').css('display', 'none')
   $(modalName).modal('hide')

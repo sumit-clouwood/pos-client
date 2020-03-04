@@ -127,7 +127,7 @@
         </div>
       </div>
     </div>
-    <InformationPopup :responseInformation="this.errorMessage" title="Alert" />
+    <InformationPopup :responseInformation="errorMessage" title="Alert" />
   </div>
 </template>
 
