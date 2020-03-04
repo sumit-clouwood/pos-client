@@ -33,29 +33,15 @@ export default {
     })
   },
   createBucket(bucket, options, cb) {
-    return new Promise((resolve, reject) => {
-      const objectStore = this.idb.createObjectStore(
-        bucket,
-        options
-          ? options
-          : {
-              autoIncrement: true,
-              keyPath: 'id',
-            }
-      )
-
-      if (cb) {
-        cb(objectStore)
-      }
-
-      objectStore.transaction.oncomplete = function() {
-        resolve(objectStore)
-      }
-
-      objectStore.transaction.onerror = function(event) {
-        reject(event)
-      }
-    })
+    return this.idb.createObjectStore(
+      bucket,
+      options
+        ? options
+        : {
+            autoIncrement: true,
+            keyPath: 'id',
+          }
+    )
   },
   getBucket(bucketName, mode) {
     // retrieve our object storend

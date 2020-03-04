@@ -650,6 +650,17 @@ var Factory = {
         if (request.url.match('/model/orders/id/')) {
           return WorkflowOrder
         }
+
+        if (
+          request.url.match(
+            new RegExp(
+              '/model/reservations\\?page_id=(tables_reserved|running_orders)'
+            )
+          )
+        ) {
+          return Dinein
+        }
+
         break
     }
   },
@@ -1005,18 +1016,73 @@ var Dinein = {
     return prefix + +new Date() + postfix
   },
 
-  addOfflineEvent: function(url, payload) {
-    if (url.endsWith('/update_order_items')) {
-      return this.updateOrderItems(url, payload)
+  addOfflineEvent: function(url, payload, method) {
+    if (method === 'GET') {
+      return this.getOrders(url, payload)
+    } else {
+      if (url.endsWith('/update_order_items')) {
+        return this.updateOrderItems(url, payload)
+      }
+
+      if (url.endsWith('/reservations/add')) {
+        return this.addReservation(url, payload)
+      }
+
+      if (url.endsWith('/orders/add')) {
+        return this.placeOrder(url, payload)
+      }
+    }
+  },
+  // eslint-disable-next-line no-unused-vars
+  getOrders(url, payload) {
+    const res = url.match(
+      new RegExp(
+        '/model/reservations\\?page_id=(tables_reserved|running_orders)'
+      )
+    )
+    if (!res) {
+      return
     }
 
-    if (url.endsWith('/reservations/add')) {
-      return this.addReservation(url, payload)
-    }
+    return this.findOrders(res[1])
+  },
 
-    if (url.endsWith('/orders/add')) {
-      return this.placeOrder(url, payload)
-    }
+  async findOrders(action) {
+    return new Promise((resolve, reject) => {
+      let status = 'reserved'
+      if (action === 'running_orders') {
+        status = 'in-progress'
+      }
+      let response = {
+        data: {},
+        count: 0,
+        page_lookups: {
+          orders: [],
+        },
+      }
+      let orders = []
+
+      DB.find('store', 'key', 'dinein_reservations')
+        .then(({ records }) => {
+          console.log('records', records)
+          let record = records[0]
+          response.data = record.data.data.filter(order => {
+            if (order.status === status) {
+              order.related_orders_ids.forEach(orderId =>
+                orders.push(record.data.page_lookups.orders._id[orderId])
+              )
+
+              return true
+            }
+            return false
+          })
+          response.count = response.data.length
+          response.page_lookups.orders = orders
+
+          resolve(response)
+        })
+        .catch(error => reject(error))
+    })
   },
 
   addReservation(url, payload) {

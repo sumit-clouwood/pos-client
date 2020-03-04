@@ -325,7 +325,7 @@ const actions = {
               order => order.assigned_table_id === table._id
             )
           }
-          console.log('table orders', orders)
+          //console.log('table orders', orders)
 
           if (orders.length) {
             let tableArray = []
@@ -404,11 +404,11 @@ const actions = {
           // eslint-disable-next-line no-console
           // console.log(orderOnTable, 'order no  length')
           commit(mutation.ORDER_ON_TABLES, orderOnTable)
-          console.log('orders on table', orderOnTable)
+          //console.log('orders on table', orderOnTable)
         })
       }
       // eslint-disable-next-line no-console
-      console.log('order no item length', tableStatus)
+      //console.log('order no item length', tableStatus)
       commit(mutation.TABLE_STATUS, tableStatus)
       resolve()
     })

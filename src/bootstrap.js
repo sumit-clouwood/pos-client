@@ -212,7 +212,7 @@ export default {
   },
 
   setupDB(resolver = null) {
-    return new Promise((resolve, reject) => {
+    return new Promise(resolve => {
       const version = 5
       db.openDatabase(version)
         .then(({ idb, flag, event }) => {
@@ -220,15 +220,11 @@ export default {
           if (flag === 'upgrade') {
             console.log('creating buckets')
             this.createBuckets(event, version)
-              .then(() => {
-                console.log('buckets created')
-                this.store.commit('sync/setIdbVersion', version)
-                resolve(idb)
-                if (resolver) {
-                  resolver(idb)
-                }
-              })
-              .catch(error => reject(error))
+            resolve(idb)
+            console.log('buckets created')
+            if (resolver) {
+              resolver(idb)
+            }
           } else {
             resolve(idb)
           }
@@ -246,89 +242,81 @@ export default {
     })
   },
 
-  async authBucket() {
-    await db.createBucket('auth')
+  authBucket() {
+    db.createBucket('auth')
     this.store.commit('sync/setIdbVersion', 1)
-    return 1
+    console.log('auth bucket created')
   },
-  async orderPostRequestBucket() {
-    await db.createBucket(
-      'order_post_requests',
-      { keyPath: 'order_time' },
-      bucket => {
-        bucket.createIndex('order_time', 'order_time', { unique: true })
-      }
-    )
+  orderPostRequestBucket() {
+    const bucket = db.createBucket('order_post_requests', {
+      keyPath: 'order_time',
+    })
+    bucket.createIndex('order_time', 'order_time', { unique: true })
+
+    console.log('order post requests bucket created')
     this.store.commit('sync/setIdbVersion', 2)
-    return 2
   },
-  async eventsBucket() {
-    await db.createBucket('events', { keyPath: 'url' }, bucket => {
-      bucket.createIndex('url', 'url', { unique: true })
-    })
+  eventsBucket() {
+    const bucket = db.createBucket('events', { keyPath: 'url' })
+    bucket.createIndex('url', 'url', { unique: true })
+    console.log('events bucket created')
     this.store.commit('sync/setIdbVersion', 3)
-    return 3
   },
-  async logBucket() {
-    await db.createBucket(
-      'log',
-      {
-        autoIncrement: true,
-        keyPath: 'id',
-      },
-      bucket => {
-        bucket.createIndex('log_time', 'log_time', { unique: false })
-        bucket.createIndex('event_time', 'event_time', {
-          unique: false,
-        })
-        bucket.createIndex('event_type', 'event_type', {
-          unique: false,
-        })
-        bucket.createIndex('event_title', 'event_title', {
-          unique: false,
-        })
-        bucket.createIndex('event_data', 'event_data', {
-          unique: false,
-        })
-      }
-    )
-    this.store.commit('sync/setIdbVersion', 4)
-    return 4
-  },
-  async orderWorkflowBucket() {
-    await db.createBucket(
-      'workflow_order',
-      {
-        autoIncrement: true,
-        keyPath: '_id',
-      },
-      bucket => {
-        bucket.createIndex('_id', '_id', { unique: true })
-        bucket.createIndex('step', 'step', { unique: false })
-        bucket.createIndex('type', 'type', { unique: false })
-        bucket.createIndex('keys', 'keys', {
-          unique: false,
-        })
-        bucket.createIndex('status', 'status', {
-          unique: false,
-        })
-        bucket.createIndex('rootStep', 'rootStep', {
-          unique: false,
-        })
-      }
-    )
-    this.store.commit('sync/setIdbVersion', 5)
-    return 5
-  },
-  async dataStore() {
-    await db.createBucket('store', { keyPath: 'key' }, bucket => {
-      bucket.createIndex('key', 'key', { unique: true })
+  logBucket() {
+    const bucket = db.createBucket('log', {
+      autoIncrement: true,
+      keyPath: 'id',
     })
+    bucket.createIndex('log_time', 'log_time', { unique: false })
+    bucket.createIndex('event_time', 'event_time', {
+      unique: false,
+    })
+    bucket.createIndex('event_type', 'event_type', {
+      unique: false,
+    })
+    bucket.createIndex('event_title', 'event_title', {
+      unique: false,
+    })
+    bucket.createIndex('event_data', 'event_data', {
+      unique: false,
+    })
+
+    console.log('log bucket created')
+
+    this.store.commit('sync/setIdbVersion', 4)
+  },
+  orderWorkflowBucket() {
+    const bucket = db.createBucket('workflow_order', {
+      autoIncrement: true,
+      keyPath: '_id',
+    })
+
+    bucket.createIndex('_id', '_id', { unique: true })
+    bucket.createIndex('step', 'step', { unique: false })
+    bucket.createIndex('type', 'type', { unique: false })
+    bucket.createIndex('keys', 'keys', {
+      unique: false,
+    })
+    bucket.createIndex('status', 'status', {
+      unique: false,
+    })
+    bucket.createIndex('rootStep', 'rootStep', {
+      unique: false,
+    })
+
+    console.log('order workflow bucket created')
+
     this.store.commit('sync/setIdbVersion', 5)
-    return 5
+  },
+  dataStore() {
+    const bucket = db.createBucket('store', { keyPath: 'key' })
+    bucket.createIndex('key', 'key', { unique: true })
+    console.log('datastore bucket created')
+    this.store.commit('sync/setIdbVersion', 5)
   },
 
   createBuckets(event, version) {
+    //createbucket doesn't wait so don't need promise here
     const buckets = [
       ['authBucket'],
       ['orderPostRequestBucket'],
@@ -337,16 +325,11 @@ export default {
       ['dataStore', 'orderWorkflowBucket'],
     ]
 
-    let promises = []
-
     for (let i = event.oldVersion; i < version; i++) {
       for (const j in buckets[i]) {
-        console.log(i, j, 'creating bucket ', buckets[i][j])
-        promises.push(this[buckets[i][j]]())
+        this[buckets[i][j]]()
       }
     }
-
-    return Promise.all(promises)
   },
 
   setNetwork() {
