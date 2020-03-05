@@ -380,11 +380,9 @@ var DB = {
         var cursor = event.target.result
         if (cursor) {
           //record exists
-          console.log('record already exists', cursor.value)
           records.push(cursor.value)
           cursor.continue()
         } else {
-          console.log('no more results', records)
           resolve({ records: records, objectStore: objectStore })
         }
       }
@@ -1049,39 +1047,69 @@ var Dinein = {
 
   async findOrders(action) {
     return new Promise((resolve, reject) => {
-      let status = 'reserved'
+      let status = ['reserved', 'in-progress']
       if (action === 'running_orders') {
-        status = 'in-progress'
+        status = ['in-progress']
       }
+
       let response = {
         data: {},
         count: 0,
         page_lookups: {
-          orders: [],
+          orders: {},
+          dineinTables: {},
         },
       }
-      let orders = []
+      let orders = {
+        _id: {},
+      }
 
-      DB.find('store', 'key', 'dinein_reservations')
-        .then(({ records }) => {
-          console.log('records', records)
-          let record = records[0]
-          response.data = record.data.data.filter(order => {
-            if (order.status === status) {
-              order.related_orders_ids.forEach(orderId =>
-                orders.push(record.data.page_lookups.orders._id[orderId])
-              )
+      let dineinTables = {
+        _id: {},
+      }
 
-              return true
-            }
-            return false
+      //find in store and return only those orders whose status match
+      //like in-progress or reserved
+      DB.find('store', 'key', 'dinein_tables').then(({ records }) => {
+        console.log('tables', records)
+        const tables = records[0]
+
+        DB.find('store', 'key', 'dinein_reservations')
+          .then(({ records }) => {
+            console.log('dinein_reservations records', records)
+            let record = records[0]
+            //in case of reservation don't filter
+            //in case of running filter only in-progress
+            response.data = record.data.data.filter(order => {
+              if (status.includes(order.status)) {
+                //order matched
+                order.related_orders_ids.forEach(
+                  orderId =>
+                    (orders._id[orderId] =
+                      record.data.page_lookups.orders._id[orderId])
+                )
+
+                const table = tables.data.data.find(
+                  table => table._id === order.assigned_table_id
+                )
+                dineinTables._id[order.assigned_table_id] = table
+
+                return true
+              }
+              return false
+            })
+            response.count = response.data.length
+            //restore lookups
+            response.page_lookups = record.data.page_lookups
+            //update orders
+            response.page_lookups.orders = orders
+            //update dine in tables
+            response.page_lookups.dine_in_tables = dineinTables
+
+            resolve(response)
           })
-          response.count = response.data.length
-          response.page_lookups.orders = orders
-
-          resolve(response)
-        })
-        .catch(error => reject(error))
+          .catch(error => reject(error))
+      })
     })
   },
 
@@ -1120,6 +1148,7 @@ var Dinein = {
             reservation_history: [],
             assigned_to: payload.assigned_to,
             created_by: payload.created_by,
+            network: 'offline',
           },
           startTime: id,
           rootStep: '',
@@ -1282,9 +1311,16 @@ var Dinein = {
                 if (booking._id === payload.table_reservation_id) {
                   booking.related_orders_ids = [id]
                   booking.status = 'in-progress'
+                  booking.network = 'offline'
                 }
                 return booking
               })
+
+              payload.network = 'offline'
+              payload._id = id
+              payload.order_no = payload.real_created_datetime
+                .toString()
+                .replace(/[\s-:]/g, '')
 
               record.data.page_lookups.orders._id[id] = payload
 
@@ -1302,6 +1338,7 @@ var Dinein = {
                   token_number: 0,
                   generate_time: id,
                   flash_message: ' Order Added',
+                  network: 'offline',
                 })
               }
 
@@ -1399,12 +1436,9 @@ var WorkflowOrder = {
           //get table number from the reservation request
           //reservation: {reservationId: "1583129391094"}
           //order: keys: {reservationId: "1583129391094", orderId: "1583
-          console.log('record keys', record.keys)
           const reservationKeys = JSON.stringify({
             reservationId: JSON.parse(record.keys).reservationId,
           })
-
-          console.log('reservation keys', reservationKeys)
 
           DB.find('workflow_order', 'keys', reservationKeys)
             .then(({ records }) => {
