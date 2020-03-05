@@ -195,7 +195,7 @@ export default {
       showSelectedBehavior: '',
       supervisorPassword: '',
       errorMessage: '',
-      process: false,
+      processing: false,
     }
   },
   props: {
@@ -218,15 +218,14 @@ export default {
       $('#inventory-dropdown').hide()
     },
     cancelOrderAction: function(order) {
-      if (this.process) {
-        return
-      }
-      this.process = true
       if (this.showSelectedReason.length == 0) {
         this.errorMessage = 'Please select an inventory behavior'
-        this.process = false
         return false
       }
+      if (this.processing) {
+        return
+      }
+      this.processing = true
       let data = {
         cancel_reason: this.showSelectedReason,
         inventory_behavior: this.showSelectedBehavior,
@@ -295,7 +294,7 @@ export default {
           $('#information-popup').modal('show')
         })
         .finally(() => {
-          this.process = false
+          this.processing = false
         })
     },
     ...mapActions('order', ['updateOrderCancelAction']),
