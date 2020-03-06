@@ -1433,36 +1433,22 @@ var Dinein = {
         'offline',
         JSON.stringify({ reservationId: offlineReservationId }),
       ])
-        .then(({ records, objectStore }) => {
+        .then(({ records }) => {
           console.log('records to remap', records)
           const record = records[0]
           record.request.data.table_reservation_id = response.id
-          objectStore
-            .put(record)
-            .then(() => {
-              //sync it with server now
-              Sync.request(
-                record.request.url,
-                record.request.method,
-                record.request.data
-              )
-                .then(orderResponse => {
-                  console.log('order data synced as well')
-                  record.status = 'online'
-                  record.respone = orderResponse
-                  //save recard as online
-                  objectStore.put(record)
-                })
-                .catch(error => reject(error))
+          var objectStore = DB.getBucket('workflow_order', 'readwrite')
+          var request = objectStore.put(record)
 
-              resolve()
-            })
-            .catch(error => reject(error))
+          request.onsuccess = () => {
+            resolve()
+          }
+          request.onerror = error => reject(error)
         })
         .catch(error => reject(error))
     })
   },
-  async createOnlineReservation(record, objectStore) {
+  async createOnlineReservation(record) {
     const offlineReservationId = record._id
     return new Promise((resolve, reject) => {
       console.log('sync request')
@@ -1483,11 +1469,25 @@ var Dinein = {
             record.status = 'online'
             record.response = response
 
-            objectStore.put(record)
+            var objectStore = DB.getBucket('workflow_order', 'readwrite')
 
-            this.remapOrders(offlineReservationId, response)
-              .then(() => resolve())
-              .catch(error => reject(error))
+            try {
+              var updateRequest = objectStore.put(record)
+            } catch (e) {
+              console.log('Caught Exception:', e)
+            }
+
+            console.log('update request', updateRequest)
+
+            updateRequest.onsuccess = () => {
+              console.log('data updated')
+              this.remapOrders(offlineReservationId, response)
+                .then(() => resolve())
+                .catch(error => reject(error))
+            }
+            updateRequest.onerror = event => {
+              console.log('data updated failed', event)
+            }
           } else {
             reject(response)
           }
@@ -1504,20 +1504,55 @@ var Dinein = {
     return new Promise((resolve, reject) => {
       let promises = []
       DB.find('workflow_order', 'stepstatus', ['reserved', 'offline'])
-        .then(({ records, objectStore }) => {
+        .then(({ records }) => {
           console.log('reservations to sync', records)
           records.forEach(record => {
-            promises.push(this.createOnlineReservation(record, objectStore))
+            promises.push(this.createOnlineReservation(record))
           })
           Promise.all(promises)
             .then(() => {
               //now sync the orders
-              console.log('all sync done dine in')
-              resolve()
+              console.log('all reservation sync done dine in')
             })
             .catch(error => reject(error))
+            .finally(() => {
+              this.syncOrders()
+                .then(() => resolve())
+                .catch(error => reject(error))
+            })
         })
         .catch(error => reject(error))
+    })
+  },
+  async syncOrders() {
+    return new Promise((resolve, reject) => {
+      DB.find('workflow_order', 'stepstatus', ['placed', 'offline']).then(
+        ({ records }) => {
+          console.log('dinein order data to sync', records)
+          records.forEach(record => {
+            Sync.request(
+              record.request.url,
+              record.request.method,
+              record.request.data
+            )
+              .then(orderResponse => {
+                console.log('order data synced as well')
+                record.status = 'online'
+                record.respone = orderResponse
+                //save recard as online
+                var objectStore = DB.getBucket('workflow_order', 'readwrite')
+                var request = objectStore.put(record)
+                request.onsuccess = () => {
+                  resolve()
+                }
+                request.onerror = error => {
+                  reject(error)
+                }
+              })
+              .catch(error => reject(error))
+          })
+        }
+      )
     })
   },
 }
