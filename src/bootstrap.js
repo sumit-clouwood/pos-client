@@ -220,10 +220,15 @@ export default {
           if (flag === 'upgrade') {
             console.log('creating buckets')
             this.createBuckets(event, version)
-            resolve(idb)
-            console.log('buckets created')
-            if (resolver) {
-              resolver(idb)
+            var transaction = event.target.transaction
+            transaction.oncomplete = function(event) {
+              // Now store is available to be populated
+              resolve(idb)
+
+              if (resolver) {
+                resolver(idb)
+              }
+              console.log('buckets created', event)
             }
           } else {
             resolve(idb)
