@@ -152,15 +152,24 @@ const actions = {
           if (rootState.sync.online) {
             console.log('system online updating data')
             //workflow.getData, update it and then store it
-            workflow.getData('dinein_reservations').then(store => {
-              if (store) {
-                //get offline orders only
-              }
-              workflow.storeData({
-                key: 'dinein_reservations',
-                data: response.data,
-              })
+            // workflow.getData('dinein_reservations').then(store => {
+            //   if (store) {
+            //     //get offline orders only
+            //     response.data.data = [...response.data.data, ...store.data.data]
+            //     response.data.page_lookups.orders = {
+            //       ...response.data.page_lookups.orders,
+            //       ...store.data.page_lookups.orders,
+            //     }
+            //     response.data.page_lookups.dine_in_tables = {
+            //       ...response.data.page_lookups.dine_in_tables,
+            //       ...store.data.page_lookups.dine_in_tables,
+            //     }
+            //   }
+            workflow.storeData({
+              key: 'dinein_reservations',
+              data: response.data,
             })
+            // })
           }
           commit(mutation.BOOKED_TABLES, response.data)
           dispatch('getDineInArea').then(() => {

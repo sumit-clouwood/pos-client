@@ -525,8 +525,11 @@ var Sync = {
         })
     })
   },
-  request(requestUrl, method, payload) {
+  request(requestUrl, method, payload, unwantedData) {
     return new Promise((resolve, reject) => {
+      if (unwantedData && unwantedData.length) {
+        unwantedData.forEach(key => delete payload[key])
+      }
       enabledConsole &&
         console.log(
           1,
@@ -1229,17 +1232,8 @@ var Dinein = {
     let rootId = payload.table_reservation_id
     let keys = JSON.stringify({ reservationId: rootId, orderId: id })
     //if order is being placed second time i.e updated, then key / steps remains same
-    let rootStep = 'reserved'
+    let rootStep = JSON.stringify({ reservationId: rootId })
     let step = 'placed'
-
-    //pay for order
-    if (payload.order_payments.length) {
-      //order id ll remain same for both cases pay/place
-      id = payload._id
-      rootStep = 'placed'
-      step = 'paid'
-      keys = JSON.stringify({ orderId: id })
-    }
 
     enabledConsole && console.log(1, 'sw:', payload) //find
 
@@ -1358,7 +1352,7 @@ var Dinein = {
     })
   },
 
-  updateOrderItems(url, payload) {
+  async updateOrderItems(url, payload) {
     //update order in the workflow_order
     const id = url.replace(new RegExp('.*/id/(\\w+)/update_order_items$'), '$1')
     const reservationKeys = JSON.stringify({
@@ -1393,23 +1387,31 @@ var Dinein = {
           })
 
           if (payload.order_payments && payload.order_payments.length) {
-            //remove entry from booked tables in store
+            //remove entry from booked tables in store, dont remove it yet:)
             console.log('removing entry from booked tables, and lookup')
             DB.find('store', 'key', 'dinein_reservations', 'readwrite').then(
               ({ records, objectStore }) => {
                 let record = records[0]
 
-                //remove current order from list as it is completed now
-                delete record.data.page_lookups.orders._id[id]
-                //remove order data too
+                //mark order as finished
+                record.data.page_lookups.orders._id[id].order_status =
+                  'finished'
 
-                record.data.data = record.data.data.filter(
-                  booking => booking._id !== payload.table_reservation_id
-                )
+                //mark order as completed
+                record.data.data = record.data.data.map(booking => {
+                  if (booking._id === payload.table_reservation_id) {
+                    booking.reservation_status = 'finished'
+                  }
+                  return booking
+                })
+                //uncomment below to remove it from colleciton
+                // record.data.data = record.data.data.filter(
+                //   booking => booking._id !== payload.table_reservation_id
+                // )
 
-                if (record.data.count) {
-                  record.data.count--
-                }
+                // if (record.data.count) {
+                //   record.data.count--
+                // }
 
                 objectStore.put(record)
               }
@@ -1421,6 +1423,101 @@ var Dinein = {
           reject(error)
         }
       })
+    })
+  },
+  async remapOrders(offlineReservationId, response) {
+    return new Promise((resolve, reject) => {
+      console.log('remapping data')
+      DB.find('workflow_order', 'rootkeys', [
+        'placed',
+        'offline',
+        JSON.stringify({ reservationId: offlineReservationId }),
+      ])
+        .then(({ records, objectStore }) => {
+          console.log('records to remap', records)
+          const record = records[0]
+          record.request.data.table_reservation_id = response.id
+          objectStore
+            .put(record)
+            .then(() => {
+              //sync it with server now
+              Sync.request(
+                record.request.url,
+                record.request.method,
+                record.request.data
+              )
+                .then(orderResponse => {
+                  console.log('order data synced as well')
+                  record.status = 'online'
+                  record.respone = orderResponse
+                  //save recard as online
+                  objectStore.put(record)
+                })
+                .catch(error => reject(error))
+
+              resolve()
+            })
+            .catch(error => reject(error))
+        })
+        .catch(error => reject(error))
+    })
+  },
+  async createOnlineReservation(record, objectStore) {
+    const offlineReservationId = record._id
+    return new Promise((resolve, reject) => {
+      console.log('sync request')
+
+      //remove unecessary data
+
+      Sync.request(
+        record.request.url,
+        record.request.method,
+        record.request.data,
+        ['assigned_to', 'created_by', 'number']
+      )
+        .then(response => {
+          enabledConsole && console.log(1, 'sw:', 'server response', response)
+
+          if (response.status === 'ok') {
+            //change status to offline
+            record.status = 'online'
+            record.response = response
+
+            objectStore.put(record)
+
+            this.remapOrders(offlineReservationId, response)
+              .then(() => resolve())
+              .catch(error => reject(error))
+          } else {
+            reject(response)
+          }
+        })
+        .catch(error => reject(error))
+    })
+  },
+  async sync() {
+    //1. sync complete reservation/booking for those tables which are offline
+    //2. update the orders based on these reservation ids
+    //3. sync orders
+    //4. Remove orders from workflow which are completed
+    //TODO: DON'T remove orders just mark them completed once paid so we can complete them
+    return new Promise((resolve, reject) => {
+      let promises = []
+      DB.find('workflow_order', 'stepstatus', ['reserved', 'offline'])
+        .then(({ records, objectStore }) => {
+          console.log('reservations to sync', records)
+          records.forEach(record => {
+            promises.push(this.createOnlineReservation(record, objectStore))
+          })
+          Promise.all(promises)
+            .then(() => {
+              //now sync the orders
+              console.log('all sync done dine in')
+              resolve()
+            })
+            .catch(error => reject(error))
+        })
+        .catch(error => reject(error))
     })
   },
 }
