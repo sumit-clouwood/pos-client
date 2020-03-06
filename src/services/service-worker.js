@@ -1530,6 +1530,8 @@ var Dinein = {
         ({ records }) => {
           console.log('dinein order data to sync', records)
           records.forEach(record => {
+            record.request.data.order_mode = 'offline'
+
             Sync.request(
               record.request.url,
               record.request.method,
