@@ -1530,25 +1530,99 @@ var Dinein = {
         ({ records }) => {
           console.log('dinein order data to sync', records)
           records.forEach(record => {
-            record.request.data.order_mode = 'offline'
+            let payload = record.request.data
+            payload.order_mode = 'offline'
 
-            Sync.request(
-              record.request.url,
-              record.request.method,
-              record.request.data
-            )
+            Sync.request(record.request.url, record.request.method, payload)
               .then(orderResponse => {
-                console.log('order data synced as well')
-                record.status = 'online'
-                record.respone = orderResponse
-                //save recard as online
-                var objectStore = DB.getBucket('workflow_order', 'readwrite')
-                var request = objectStore.put(record)
-                request.onsuccess = () => {
-                  resolve()
-                }
-                request.onerror = error => {
-                  reject(error)
+                if (orderResponse.status === 'ok') {
+                  console.log('order data synced as well')
+                  record.status = 'online'
+                  record.respone = orderResponse
+                  //save recard as online
+                  var objectStore = DB.getBucket('workflow_order', 'readwrite')
+                  var request = objectStore.put(record)
+                  request.onsuccess = () => {
+                    let orderStatus = 'in-progress'
+                    //update main store
+                    if (
+                      record.request.data.order_payments &&
+                      record.request.data.order_payments.length
+                    ) {
+                      orderStatus = 'finished'
+                    }
+
+                    //replace in store
+                    //1. replace the assigned order ids inside reservation data
+                    //2. replace orders in lookup data
+
+                    DB.find('store', 'key', 'dinein_reservations')
+                      .then(({ records }) => {
+                        let reservationsRecord = records[0]
+                        console.log('workflow record', record)
+                        console.log('record to be updated', reservationsRecord)
+                        const keys = JSON.parse(record.keys)
+                        console.log('keys to be updated', keys)
+                        reservationsRecord.data.data = reservationsRecord.data.data.map(
+                          reservationData => {
+                            if (reservationData._id === keys.reservationId) {
+                              reservationData.related_orders_ids = reservationData.related_orders_ids.map(
+                                orderId => {
+                                  if (orderId === keys.orderId) {
+                                    let newOrder =
+                                      reservationsRecord.data.page_lookups
+                                        .orders._id[orderId]
+                                    newOrder.synced_offline = true
+
+                                    if (orderStatus === 'finished') {
+                                      newOrder.status = orderStatus
+                                      newOrder._id =
+                                        orderResponse.id || payload._id
+                                      newOrder.order_no =
+                                        orderResponse.order_no ||
+                                        payload.order_no
+                                    } else {
+                                      newOrder._id = orderResponse.id
+                                      newOrder.order_no = orderResponse.order_no
+                                    }
+
+                                    //remove old order and replace it by new one
+                                    delete reservationsRecord.data.page_lookups
+                                      .orders._id[orderId]
+
+                                    reservationsRecord.data.page_lookups.orders._id[
+                                      newOrder._id
+                                    ] = newOrder
+
+                                    orderId = newOrder._id
+                                    console.log(
+                                      'new OrderId and order to be replaced',
+                                      orderId,
+                                      newOrder
+                                    )
+                                  }
+                                  return orderId
+                                }
+                              )
+                            }
+                            return reservationData
+                          }
+                        )
+
+                        var objectStore = DB.getBucket('store', 'readwrite')
+                        var request = objectStore.put(reservationsRecord)
+                        request.onsuccess = () => {
+                          console.log('order synced back in store')
+                        }
+                      })
+                      .catch(error => console.log(error))
+                    resolve()
+                  }
+                  request.onerror = error => {
+                    reject(error)
+                  }
+                } else {
+                  reject(orderResponse)
                 }
               })
               .catch(error => reject(error))
