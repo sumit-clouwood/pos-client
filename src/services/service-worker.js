@@ -1517,8 +1517,9 @@ var Dinein = {
             .catch(error => reject(error))
             .finally(() => {
               this.syncOrders()
-                .then(() => resolve())
+                .then(() => {})
                 .catch(error => reject(error))
+                .finally(() => resolve())
             })
         })
         .catch(error => reject(error))
