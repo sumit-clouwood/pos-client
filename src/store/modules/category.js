@@ -83,12 +83,12 @@ const getters = {
   },
   items: (state, getters) => {
     if (state.searchTerm) {
+      const searchKey = state.searchTerm.toLowerCase()
       return getters.rawItems.filter(
         item =>
-          (item.barcode && item.barcode.match(state.searchTerm)) ||
-          (item.item_code && item.item_code.match(state.searchTerm)) ||
-          (item.name &&
-            item.name.toLowerCase().match(state.searchTerm.toLowerCase()))
+          (item.barcode && item.barcode.toLowerCase().match(searchKey)) ||
+          (item.item_code && item.item_code.toLowerCase().match(searchKey)) ||
+          (item.name && item.name.toLowerCase().match(searchKey))
       )
     }
     let items = []
