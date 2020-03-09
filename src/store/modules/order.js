@@ -796,7 +796,7 @@ const actions = {
           totalSurcharge = rootGetters['surcharge/surcharge']
           console.log('total surcharge', totalSurcharge)
           if (
-            orderDiscount.min_cart_value < subtotal &&
+            orderDiscount.min_cart_value <= subtotal &&
             orderDiscount.max_discount_value &&
             orderDiscount.max_discount_value < totalOrderDiscount
           ) {
@@ -913,7 +913,7 @@ const actions = {
           totalTax = getters.totalItemsTax + getters.totalModifiersTax
 
           if (
-            orderDiscount.min_cart_value < subtotal &&
+            orderDiscount.min_cart_value <= subtotal &&
             orderDiscount.max_discount_value &&
             orderDiscount.max_discount_value < totalOrderDiscount
           ) {
