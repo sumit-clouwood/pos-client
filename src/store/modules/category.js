@@ -205,6 +205,7 @@ const actions = {
 
   //get subcategories and items based on main category
   browse({ commit, getters, dispatch }, category) {
+    commit('updateSearchTerm', '')
     let subcategory = []
     commit(mutation.SET_CATEGORY, category)
     if (typeof getters.subcategories != 'undefined') {
@@ -221,6 +222,7 @@ const actions = {
     //reload the ui
   },
   getItems({ commit }, subcategory) {
+    commit('updateSearchTerm', '')
     commit(mutation.SET_SUBCATEGORY, subcategory)
   },
 }
