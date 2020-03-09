@@ -6,7 +6,6 @@ import * as CONSTANTS from '@/constants'
 const state = {
   categoryImagePath: '',
   subcategoryImagePath: '',
-  searchItemTerm: '',
   itemImagePath: '',
   category: {},
   categories: [],
@@ -21,7 +20,8 @@ const state = {
   item: null,
   taxData: [],
   taxAmount: {},
-  searchItems: {},
+  Items: {},
+  searchTerm: '',
   barcode: false,
 }
 
@@ -82,25 +82,28 @@ const getters = {
     )
   },
   items: (state, getters) => {
+    if (state.searchTerm) {
+      return getters.rawItems.filter(
+        item =>
+          (item.barcode && item.barcode.match(state.searchTerm)) ||
+          (item.item_code && item.item_code.match(state.searchTerm)) ||
+          (item.name && item.name.match(state.searchTerm))
+      )
+    }
     let items = []
     const categoryItems = getters.categoryItems
     const subcategoryItems = getters.subcategoryItems
-    if (state.searchItemTerm) {
-      items = state.searchItems
-    } else {
-      if (categoryItems.length) {
-        items = categoryItems
-      }
-      if (subcategoryItems.length) {
-        items = categoryItems.concat(subcategoryItems)
-      }
+    if (categoryItems.length) {
+      items = categoryItems
     }
+    if (subcategoryItems.length) {
+      items = categoryItems.concat(subcategoryItems)
+    }
+
     return items
   },
   itemByCode: (state, getters) => itemCode => {
-    return getters.items.find(
-      item => item.item_code === itemCode || item.barcode === itemCode
-    )
+    return getters.rawItems.find(item => item.barcode === itemCode)
   },
   findItem: state => (itemToFind, key, map) => {
     return state.items.find(item => item[map] === itemToFind[key])
@@ -198,19 +201,6 @@ const actions = {
       }
     })
   },
-  collectSearchItems({ commit, state }, searchTerm) {
-    let searchedItems = []
-    state.searchItemTerm = ''
-    if (searchTerm.length > 0) {
-      state.searchItemTerm = searchTerm
-      state.items.map(item => {
-        if (item.name.toLowerCase().indexOf(searchTerm.toLowerCase()) != -1) {
-          searchedItems.push(item)
-        }
-      })
-    }
-    commit(mutation.SET_SEARCH_ITEMS, { items: searchedItems })
-  },
 
   //get subcategories and items based on main category
   browse({ commit, getters, dispatch }, category) {
@@ -283,10 +273,13 @@ const mutations = {
   [mutation.SET_ITEM](state, item) {
     state.item = item
   },
+  updateSearchTerm(state, term) {
+    state.searchTerm = term
+  },
   [mutation.RESET](state) {
     state.categoryImagePath = ''
     state.subcategoryImagePath = ''
-    state.searchItemTerm = ''
+    state.searchTerm = ''
     state.itemImagePath = ''
     state.categories = []
     state.category = {}
@@ -298,16 +291,8 @@ const mutations = {
     state.items = []
     state.taxData = []
     state.taxAmount = {}
-    state.searchItems = {}
   },
-  [mutation.SET_SEARCH_ITEMS](state, items) {
-    if (items.items.length > 0) {
-      state.searchItems = items.items
-    } else {
-      state.searchItems = {}
-      state.item = null
-    }
-  },
+
   setBarcode(state, code) {
     state.barcode = code
   },
