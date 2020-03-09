@@ -131,7 +131,7 @@ const actions = {
     let standalone = window.navigator.standalone,
       userAgent = window.navigator.userAgent.toLowerCase(),
       safari = /safari/.test(userAgent),
-      ios = /iphone|ipod|ipad/.test(userAgent)
+      ios = /android|iphone|ipod|ipad/.test(userAgent)
     let objDevice = {
       userAgent: userAgent,
       browserType: safari,
