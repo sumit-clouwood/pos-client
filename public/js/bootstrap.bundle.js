@@ -4389,9 +4389,11 @@ var Modal = function ($$$1) {
 
     _proto.show = function show(relatedTarget) {
       var _this = this;
-
-      if (this._isTransitioning || this._isShown) {
-        return;
+      //fix tofeeq
+      if (0) {
+        if (this._isTransitioning || this._isShown) {
+          return;
+        }
       }
 
       if (Util.supportsTransitionEnd() && $$$1(this._element).hasClass(ClassName.FADE)) {
@@ -4443,9 +4445,11 @@ var Modal = function ($$$1) {
       if (event) {
         event.preventDefault();
       }
-
-      if (this._isTransitioning || !this._isShown) {
-        return;
+      //fix tofeeq
+      if (0) {
+        if (this._isTransitioning || !this._isShown) {
+          return;
+        }
       }
 
       var hideEvent = $$$1.Event(Event.HIDE);

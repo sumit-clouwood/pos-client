@@ -1248,7 +1248,7 @@ const actions = {
             }).then(() => {
               resolve(response.data)
               commit(mutation.PRINT, true)
-              dispatch('iosWebviewPrintAction', { orderData: state.order })
+              // dispatch('iosWebviewPrintAction', { orderData: state.order })
             })
           } else {
             dispatch('handleSystemErrors', response).then(() => resolve())
@@ -1292,7 +1292,7 @@ const actions = {
             }).then(() => {
               resolve(response.data)
               commit(mutation.PRINT, true)
-              dispatch('iosWebviewPrintAction', { orderData: state.order })
+              // dispatch('iosWebviewPrintAction', { orderData: state.order })
             })
           } else {
             dispatch('handleSystemErrors', response).then(() => resolve())

@@ -1290,9 +1290,8 @@ const actions = {
           break
       }
       await Promise.all(promises)
-      dispatch('setDiscounts', orderDetails).then(() => {
-        dispatch('addOrderToCart', orderDetails.item)
-      })
+
+      dispatch('addOrderToCart', orderDetails.item)
     })
   },
 
@@ -1460,8 +1459,12 @@ const actions = {
 
       console.log('items added to cart')
 
-      //if modifying from dine in then calculate totals once every order has been added, it ll be when all have been resolved
-      resolve()
+      //apply discounts here
+      dispatch('setDiscounts', order).finally(() => {
+        dispatch('surchargeCalculation').finally(() => {
+          resolve()
+        })
+      })
     })
   },
 
@@ -1494,9 +1497,7 @@ const actions = {
         response.data.collected_data.store_invoice_templates
       commit(mutation.SET_ORDER_DETAILS, orderDetails)
 
-      dispatch('setDiscounts', orderDetails).then(() => {
-        dispatch('addOrderToCart', orderDetails.item).then(() => {})
-      })
+      dispatch('addOrderToCart', orderDetails.item).then(() => {})
     })
   },
 
@@ -1538,15 +1539,12 @@ const actions = {
     })
     return orderData
   },
-  setDiscounts({ rootGetters, commit }, orderData) {
+  setDiscounts({ rootGetters, commit }, order) {
     return new Promise(resolve => {
       //set discounts here
       let discount = null
-      if (
-        orderData.item.order_discounts &&
-        orderData.item.order_discounts.length
-      ) {
-        orderData.item.order_discounts.forEach(orderDiscount => {
+      if (order.order_discounts && order.order_discounts.length) {
+        order.order_discounts.forEach(orderDiscount => {
           discount = rootGetters['discount/orderDiscount'](
             orderDiscount.entity_id
           )
@@ -1558,14 +1556,11 @@ const actions = {
           }
         })
       }
-      if (
-        orderData.item.item_discounts &&
-        orderData.item.item_discounts.length
-      ) {
+      if (order.item_discounts && order.item_discounts.length) {
         let item = {}
         let orderItem = {}
-        orderData.item.item_discounts.forEach(itemDiscount => {
-          orderItem = orderData.item.items.find(
+        order.item_discounts.forEach(itemDiscount => {
+          orderItem = order.items.find(
             item => item.no === itemDiscount.for_item
           )
           console.log(orderItem, 'orderItem', itemDiscount)
@@ -1599,7 +1594,6 @@ const actions = {
               commit('checkout/SPLIT_PAID', false, { root: true })
               commit(mutation.SET_SPLIT_BILL, false)
               commit(mutation.SET_SPLITTED, false)
-              dispatch('surchargeCalculation')
               resolve()
             })
             .catch(error => reject(error))
