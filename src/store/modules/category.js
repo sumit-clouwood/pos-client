@@ -87,7 +87,8 @@ const getters = {
         item =>
           (item.barcode && item.barcode.match(state.searchTerm)) ||
           (item.item_code && item.item_code.match(state.searchTerm)) ||
-          (item.name && item.name.match(state.searchTerm))
+          (item.name &&
+            item.name.toLowerCase().match(state.searchTerm.toLowerCase()))
       )
     }
     let items = []
