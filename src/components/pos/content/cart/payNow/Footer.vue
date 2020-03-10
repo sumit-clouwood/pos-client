@@ -42,7 +42,7 @@
 </template>
 
 <script>
-/* global $ showPaymentBreak */
+/* global $ showPaymentBreak showModal*/
 /* eslint-disable no-console */
 import { mapGetters, mapState } from 'vuex'
 import CheckoutMixin from '@/mixins/Checkout'
@@ -86,14 +86,19 @@ export default {
       })
     },
     pay() {
-      this.addAmount().then(payable => {
-        if (payable <= 0.1) {
-          this.doPayment(this.$store.state.order.orderType.OTApi)
-        } else {
-          //show payment breakdown
-          showPaymentBreak()
-        }
-      })
+      this.$store.commit('checkoutForm/paymentButton', 'done')
+      this.addAmount()
+        .then(payable => {
+          if (payable <= 0.1) {
+            this.doPayment(this.$store.state.order.orderType.OTApi)
+          } else {
+            //show payment breakdown
+            showPaymentBreak()
+          }
+        })
+        .catch(() => {
+          showModal('#amount-error')
+        })
       this.$store.dispatch('successfullHendlerChange')
       this.$store.dispatch('payNowCalcHendlerChange')
       this.$store.dispatch('paymentMethodsChange')

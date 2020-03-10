@@ -21,6 +21,8 @@ const state = {
   decimalExists: false,
   forceCash: false,
   processing: false,
+  paymentButton: 'add',
+  errorAmount: '',
 }
 
 // getters
@@ -58,11 +60,19 @@ const getters = {
 
 // actions
 const actions = {
-  validatePayment({ state, dispatch, getters, commit }) {
+  validatePayment({ state, dispatch, getters, rootGetters, commit }) {
+    const totalPayable = getters.orderTotal
+    const paid = getters.paid
+    const remaining = totalPayable - paid
+
     if (getters['payable'] <= 0.01) return Promise.resolve()
 
     if (!state.amount || parseFloat(state.amount) < 0.01) {
-      commit('SET_ERROR', 'Amount should be greater than 0.00')
+      commit(
+        'SET_ERROR',
+        rootGetters['location/_t']('Please add pending amount below to proceed')
+      )
+      commit('SET_ERROR_AMOUNT', remaining)
       return Promise.reject()
     } else {
       if (state.method.type == CONST.GIFT_CARD) {
@@ -198,19 +208,23 @@ const actions = {
     }
   },
 
-  validateCardPayment({ commit, getters }) {
+  validateCardPayment({ commit, getters, rootGetters }) {
     return new Promise((resolve, reject) => {
       const totalPayable = getters.orderTotal
       const paid = getters.paid
       const remaining = totalPayable - paid
       if (parseFloat(state.amount) <= 0) {
-        commit('SET_ERROR', 'Card payment should be greater than 0.00')
-        reject()
-      } else if (parseFloat(state.amount) - parseFloat(remaining) > 0.01) {
         commit(
           'SET_ERROR',
-          "Card payment can't be greater than " + Num.round(remaining)
+          rootGetters['location/_t'](
+            'Please add pending amount below to proceed'
+          )
         )
+        commit('SET_ERROR_AMOUNT', remaining)
+        reject()
+      } else if (parseFloat(state.amount) - parseFloat(remaining) > 0.01) {
+        commit('SET_ERROR', "Card payment can't be greater than below amount")
+        commit('SET_ERROR_AMOUNT', remaining)
         reject()
       } else {
         commit('SET_ERROR', false)
@@ -227,7 +241,8 @@ const actions = {
           commit('SET_ERROR', 'Loyalty can be used only ones in order')
         } else {
           let amount = isNaN(state.loyaltyAmount) ? 0 : state.loyaltyAmount
-          commit('SET_ERROR', 'You can add only ' + amount + ' loyalty amount.')
+          commit('SET_ERROR', 'You can add only below amount')
+          commit('SET_ERROR_AMOUNT', amount)
         }
         reject()
       } else {
@@ -242,13 +257,15 @@ const actions = {
       const remaining = totalPayable - paid
 
       if (parseFloat(state.amount) <= 0) {
-        commit('SET_ERROR', 'Gift Card payment should be greater than 0.00')
+        commit('SET_ERROR', 'Gift Card payment should be greater than')
+        commit('SET_ERROR_AMOUNT', 0)
         reject()
       } else if (parseFloat(state.amount) - parseFloat(remaining) > 0.01) {
         commit(
           'SET_ERROR',
-          "Gift Card payment can't be greater than " + Num.round(remaining)
+          "Gift Card payment can't be greater than below amount"
         )
+        commit('SET_ERROR_AMOUNT', remaining)
         reject()
       } else {
         commit('SET_ERROR', false)
@@ -256,8 +273,32 @@ const actions = {
       }
     })
   },
-  validateCashPayment() {
-    return Promise.resolve(1)
+  validateCashPayment({ state, getters, rootGetters, commit }) {
+    return new Promise((resolve, reject) => {
+      if (state.paymentButton === 'done') {
+        const totalPayable = getters.orderTotal
+        const paid = getters.paid
+        const remaining = totalPayable - paid
+        if (parseFloat(state.amount) <= 0) {
+          commit('SET_ERROR', 'Payment should be greater than 0.00')
+          reject()
+        } else if (parseFloat(state.amount) < totalPayable) {
+          commit(
+            'SET_ERROR',
+            rootGetters['location/_t'](
+              'Please add pending amount below to proceed'
+            )
+          )
+          commit('SET_ERROR_AMOUNT', remaining)
+          reject()
+        } else {
+          commit('SET_ERROR', false)
+          resolve()
+        }
+      } else {
+        resolve()
+      }
+    })
   },
 
   setAmount({ commit }, amount) {
@@ -548,6 +589,9 @@ const mutations = {
   setAction(state, action) {
     state.action = action
   },
+  paymentButton(state, action) {
+    state.paymentButton = action
+  },
   showCalc(state, flag) {
     state.showCalc = flag
   },
@@ -576,6 +620,9 @@ const mutations = {
 
   SET_PROCESSING(state, status) {
     state.processing = status
+  },
+  SET_ERROR_AMOUNT(state, errorAmount) {
+    state.errorAmount = errorAmount
   },
 
   RESET(state, status = 'complete') {
