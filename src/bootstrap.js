@@ -309,10 +309,12 @@ export default {
       unique: false,
     })
 
-    bucket.createIndex('rootkeys', ['step', 'status', 'rootStep'], {
+    bucket.createIndex('rootkeys', ['type', 'step', 'status', 'rootStep'], {
       unique: false,
     })
-    bucket.createIndex('stepstatus', ['step', 'status'], { unique: false })
+    bucket.createIndex('stepstatus', ['type', 'step', 'status'], {
+      unique: false,
+    })
 
     console.log('order workflow bucket created')
 
