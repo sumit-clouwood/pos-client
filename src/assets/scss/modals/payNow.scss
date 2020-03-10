@@ -32,7 +32,7 @@
       height: 100%;
 
       .modal-body {
-        padding: $px30;
+        padding: $px10 $px30 $px10 $px30;
         .color-dashboard-background {
           height: 100%;
           display: flex;
@@ -383,7 +383,7 @@
 
         .payment-screen-footer {
           overflow: hidden;
-          padding: $px20 0 $px20 0;
+          padding: $px10 0 $px10 0;
           display: grid;
           grid-template-columns: $px120 $px120 $px120 $px120;
           grid-gap: $px10;
@@ -491,7 +491,7 @@
     .modal-dialog {
       .modal-content {
         .modal-body {
-          padding: 20px;
+          padding: $px10 $px20 $px10 $px20;
           display: flex;
           flex-direction: column;
 
