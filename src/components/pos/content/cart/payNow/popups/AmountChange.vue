@@ -46,11 +46,16 @@ export default {
   computed: {
     ...mapState('location', ['currency']),
     ...mapGetters('location', ['formatPrice']),
-    ...mapState('checkout', ['changedAmount']),
+    ...mapState('checkout', ['changedAmount', 'orderCreationSource']),
     ...mapState('checkoutForm', ['msg']),
   },
   methods: {
     generateInvoice() {
+      if (this.orderCreationSource === 'splitOrder') {
+        this.$store.commit('checkout/ORDER_CREATION_SOURCE', false)
+        return false
+      }
+
       if (this.msg.result !== 'error') {
         this.$store.dispatch('checkout/generateInvoice')
         $('#pay-now').modal('hide')
