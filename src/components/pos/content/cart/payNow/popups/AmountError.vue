@@ -1,6 +1,11 @@
 <template>
   <!-- Amount change -->
-  <div class="modal fade" id="amount-error" role="dialog">
+  <div
+    class="modal fade"
+    id="amount-error"
+    role="dialog"
+    v-show="error && errorAmount"
+  >
     <div class="modal-dialog">
       <!-- Modal content-->
       <div class="modal-content color-dashboard-background">

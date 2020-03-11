@@ -73,6 +73,7 @@ const actions = {
         rootGetters['location/_t']('Please add pending amount below to proceed')
       )
       commit('SET_ERROR_AMOUNT', remaining)
+      commit('setAmount', remaining)
       return Promise.reject()
     } else {
       if (state.method.type == CONST.GIFT_CARD) {
@@ -80,11 +81,11 @@ const actions = {
       } else if (state.method.type == CONST.LOYALTY) {
         return dispatch('validateLoyaltyPayment')
       } else {
-        if (state.method.reference_code) {
+        if (state.method.type === 'cash') {
           //display reference popup
-          return dispatch('validateCardPayment')
-        } else {
           return dispatch('validateCashPayment')
+        } else {
+          return dispatch('validateCardPayment')
         }
       }
     }
@@ -92,6 +93,8 @@ const actions = {
 
   addAmount({ commit, getters, dispatch }) {
     return new Promise((resolve, reject) => {
+      commit('SET_ERROR', '')
+      commit('SET_ERROR_AMOUNT', '')
       dispatch('validatePayment')
         .then(() => {
           commit('SET_ERROR', false)
@@ -221,13 +224,17 @@ const actions = {
           )
         )
         commit('SET_ERROR_AMOUNT', remaining)
+        commit('setAmount', remaining)
         reject()
       } else if (parseFloat(state.amount) - parseFloat(remaining) > 0.01) {
-        commit('SET_ERROR', "Card payment can't be greater than below amount")
+        commit('SET_ERROR', "Payment can't be greater than below amount")
         commit('SET_ERROR_AMOUNT', remaining)
+        commit('setAmount', remaining)
         reject()
       } else {
-        commit('SET_ERROR', false)
+        commit('SET_ERROR', '')
+        commit('SET_ERROR_AMOUNT', '')
+
         resolve()
       }
     })
