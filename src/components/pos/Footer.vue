@@ -380,7 +380,8 @@
     <CustomerNote />
     <CustomerNotes />
     <CartAddEmail />
-    <CartAmountChange />
+    <CartAmountChange v-show="paymentError" />
+    <amount-error></amount-error>
     <ModificationPermissions v-if="needSupervisorAccess" />
 
     <CartPaymentMsg />
@@ -414,6 +415,7 @@ import CustomerCreate from '../pos/footer/popups/ManageCustomer/CustomerCreate'
 import CreateCustomerAddress from './footer/popups/ManageCustomer/CustomerAddress/CreateCustomerAddress'
 import CartAddEmail from '../pos/content/cart/payNow/popups/AddEmail'
 import CartAmountChange from '../pos/content/cart/payNow/popups/AmountChange'
+import AmountError from '../pos/content/cart/payNow/popups/AmountError'
 import CartPaymentMsg from '../pos/content/cart/payNow/popups/PaymentMsg'
 import CartTipAmount from '../pos/content/cart/payNow/popups/TipAmount'
 import CustomerInformation from './footer/popups/ManageCustomer/CustomerInformation'
@@ -462,6 +464,7 @@ export default {
     CustomerNotes,
     CartAddEmail,
     CartAmountChange,
+    AmountError,
     CartPaymentMsg,
     CartTipAmount,
     GiftCard,
@@ -505,6 +508,7 @@ export default {
 
     ...mapState({
       loyaltyCard: state => state.customer.loyalty.card,
+      paymentError: state => state.checkoutForm.error,
     }),
     ...mapState({ selectedCustomer: state => state.customer.customer.name }),
     ...mapGetters('auth', ['waiter', 'carhop']),
