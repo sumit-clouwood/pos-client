@@ -1460,6 +1460,11 @@ var Dinein = {
         //here we need to clear the reservation records from the workflow as well.
         //;)
         request.onsuccess = event => {
+          this.deleteOrderinStore(
+            entry,
+            'dinein_reservations'
+          ).finally(() => {})
+
           resolve(event)
         }
         request.onerror = error => {
