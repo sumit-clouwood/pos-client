@@ -640,7 +640,8 @@ var Factory = {
         }
 
         if (request.url.endsWith('/reservations/add')) {
-          if (Sync.formData.order_type === 'dine_in') {
+          //make sure its dine in order, reservations may used for other order typs in future
+          if (Sync.formData.assigned_table_id) {
             return Dinein
           }
         }
@@ -1077,7 +1078,7 @@ var Dinein = {
     return new Promise((resolve, reject) => {
       let status = ['reserved', 'in-progress']
       if (action === 'running_orders') {
-        status = ['in-progress']
+        status = ['in-progress', 'on-a-way']
       }
 
       let response = {
@@ -1098,45 +1099,47 @@ var Dinein = {
 
       //find in store and return only those orders whose status match
       //like in-progress or reserved
-      DB.find('store', 'key', 'dinein_tables').then(({ records }) => {
-        console.log('tables', records)
-        const tables = records[0]
+      DB.open(() => {
+        DB.find('store', 'key', 'dinein_tables').then(({ records }) => {
+          console.log('tables', records)
+          const tables = records[0]
 
-        DB.find('store', 'key', 'dinein_reservations')
-          .then(({ records }) => {
-            console.log('dinein_reservations records', records)
-            let record = records[0]
-            //in case of reservation don't filter
-            //in case of running filter only in-progress
-            response.data = record.data.data.filter(order => {
-              if (status.includes(order.status)) {
-                //order matched
-                order.related_orders_ids.forEach(
-                  orderId =>
-                    (orders._id[orderId] =
-                      record.data.page_lookups.orders._id[orderId])
-                )
+          DB.find('store', 'key', 'dinein_reservations')
+            .then(({ records }) => {
+              console.log('dinein_reservations records', records)
+              let record = records[0]
+              //in case of reservation don't filter
+              //in case of running filter only in-progress
+              response.data = record.data.data.filter(order => {
+                if (status.includes(order.status)) {
+                  //order matched
+                  order.related_orders_ids.forEach(
+                    orderId =>
+                      (orders._id[orderId] =
+                        record.data.page_lookups.orders._id[orderId])
+                  )
 
-                const table = tables.data.data.find(
-                  table => table._id === order.assigned_table_id
-                )
-                dineinTables._id[order.assigned_table_id] = table
+                  const table = tables.data.data.find(
+                    table => table._id === order.assigned_table_id
+                  )
+                  dineinTables._id[order.assigned_table_id] = table
 
-                return true
-              }
-              return false
+                  return true
+                }
+                return false
+              })
+              response.count = response.data.length
+              //restore lookups
+              response.page_lookups = record.data.page_lookups
+              //update orders
+              response.page_lookups.orders = orders
+              //update dine in tables
+              response.page_lookups.dine_in_tables = dineinTables
+
+              resolve(response)
             })
-            response.count = response.data.length
-            //restore lookups
-            response.page_lookups = record.data.page_lookups
-            //update orders
-            response.page_lookups.orders = orders
-            //update dine in tables
-            response.page_lookups.dine_in_tables = dineinTables
-
-            resolve(response)
-          })
-          .catch(error => reject(error))
+            .catch(error => reject(error))
+        })
       })
     })
   },
@@ -1408,6 +1411,13 @@ var Dinein = {
         let request = DB.getBucket(this.OBJECT_STORE, 'readwrite').add(entry)
 
         request.onsuccess = event => {
+          //update in workflow
+          this.updateOrderinStore(
+            entry,
+            'dinein_reservations',
+            'on-a-way',
+            'finished'
+          ).finally(() => {})
           resolve(event)
         }
         request.onerror = error => {
@@ -1901,6 +1911,7 @@ var Dinein = {
             storeRecord.data.data = storeRecord.data.data.map(booking => {
               if (booking._id === keys.reservationId) {
                 booking.reservation_status = reservationStatus
+                booking.status = reservationStatus
               }
               return booking
             })
