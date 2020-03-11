@@ -53,7 +53,9 @@ export default {
           }
         })
         .catch(() => {
-          showModal('#amount-error')
+          if (this.error) {
+            showModal('#amount-error')
+          }
         })
     },
     set(amount) {
