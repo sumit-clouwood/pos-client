@@ -38,6 +38,18 @@
                   active: selectedOrder && selectedOrder.item._id === order._id,
                 }"
               >
+                <span
+                  :style="{
+                    color:
+                      selectedOrder && selectedOrder.item._id === order._id
+                        ? 'white'
+                        : 'black',
+                    fontSize: '0.9rem',
+                    transform: 'rotate(-30deg)',
+                  }"
+                >
+                  {{ order.order_type | orderType }}
+                </span>
                 <div class="img_block">
                   <svg
                     width="30"
@@ -109,7 +121,7 @@
 import moment from 'moment-timezone'
 import Search from './Search'
 import { mapGetters, mapState } from 'vuex'
-
+import * as CONST from '@/constants'
 export default {
   name: 'Catalog',
   props: {
@@ -120,6 +132,16 @@ export default {
       todayDate: moment().format('dddd, LL'),
       interval: null,
     }
+  },
+  filters: {
+    orderType(orderType) {
+      if (orderType === CONST.ORDER_TYPE_CALL_CENTER) return 'Delivery'
+      if (orderType === CONST.ORDER_TYPE_DINE_IN) return 'Dine in'
+      if (orderType === CONST.ORDER_TYPE_CARHOP) return 'Carhop'
+      if (orderType === CONST.ORDER_TYPE_TAKEAWAY) return 'Takeaway'
+
+      return 'Walk in'
+    },
   },
   components: {
     Search,
