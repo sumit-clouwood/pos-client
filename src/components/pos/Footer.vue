@@ -380,7 +380,7 @@
     <CustomerNote />
     <CustomerNotes />
     <CartAddEmail />
-    <CartAmountChange v-show="paymentError" />
+    <CartAmountChange v-if="paymentError" />
     <amount-error></amount-error>
     <ModificationPermissions v-if="needSupervisorAccess" />
 

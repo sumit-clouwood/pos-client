@@ -97,7 +97,9 @@ export default {
           }
         })
         .catch(() => {
-          showModal('#amount-error')
+          if (this.error) {
+            showModal('#amount-error')
+          }
         })
       this.$store.dispatch('successfullHendlerChange')
       this.$store.dispatch('payNowCalcHendlerChange')
