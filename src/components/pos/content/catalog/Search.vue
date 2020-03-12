@@ -29,9 +29,7 @@
           autocomplete="off"
           class="search-field-input"
           :placeholder="_t('Start typing to get search results')"
-          v-model="searchItems"
-          @keyup="searchingItems()"
-          @keypress="$event.keyCode == 13 ? $event.preventDefault() : true"
+          v-model="searchTerm"
         />
         <div
           :class="[
@@ -83,16 +81,22 @@
 <script>
 /*Global $*/
 import { mapGetters } from 'vuex'
-import { bus } from '@/eventBus'
+
 export default {
   name: 'Search',
   props: {},
   data() {
-    return {
-      searchItems: '',
-    }
+    return {}
   },
   computed: {
+    searchTerm: {
+      get() {
+        return this.$store.state.category.searchTerm
+      },
+      set(value) {
+        this.$store.commit('category/updateSearchTerm', value)
+      },
+    },
     ...mapGetters('location', ['_t']),
     ...mapGetters([
       'searchHendler',
@@ -100,24 +104,9 @@ export default {
       'subCategoryHendler',
     ]),
   },
-  mounted() {
-    this.searchItems = ''
-    bus.$on('clear-search-input', payLoad => {
-      this.searchItems = payLoad
-      // this.$store.dispatch('category/fetchAll', this.$store.state.context.store)
-    })
-  },
+  mounted() {},
   methods: {
-    searchingItems() {
-      if (this.searchItems.trim().length >= 1) {
-        // eslint-disable-next-line no-undef
-        $('.breadcrumbs').hide()
-        this.$store.dispatch('category/collectSearchItems', this.searchItems)
-      }
-    },
-    // ...mapActions('category', ['collectSearchItems']),
     searchHendlerChange() {
-      this.searchItems = ''
       this.$store.dispatch('searchHendlerChange')
       this.$store.dispatch('CloseCategoryAndSubCategory')
     },

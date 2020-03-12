@@ -34,11 +34,6 @@
               <h2 class="color-text">{{ _t('Payment Method') }}</h2>
             </div>
             <PaymentMethods />
-            <div class="error" v-if="error">
-              <p class="text-danger color-warning">
-                {{ _t('Error') }}: {{ error }}
-              </p>
-            </div>
             <form>
               <div class="payment-input-block">
                 <input

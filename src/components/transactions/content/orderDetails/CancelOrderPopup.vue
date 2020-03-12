@@ -180,7 +180,7 @@
         </div>
       </div>
     </div>
-    <InformationPopup :responseInformation="this.errorMessage" title="Alert" />
+    <InformationPopup :responseInformation="errorMessage" title="Alert" />
   </div>
 </template>
 
@@ -199,6 +199,7 @@ export default {
       showSelectedBehavior: '',
       supervisorPassword: '',
       errorMessage: '',
+      processing: false,
     }
   },
   props: {
@@ -225,6 +226,10 @@ export default {
         this.errorMessage = 'Please select an inventory behavior'
         return false
       }
+      if (this.processing) {
+        return
+      }
+      this.processing = true
       let data = {
         cancel_reason: this.showSelectedReason,
         inventory_behavior: this.showSelectedBehavior,
@@ -292,12 +297,14 @@ export default {
           this.errorMessage = error
           $('#information-popup').modal('show')
         })
+        .finally(() => {
+          this.processing = false
+        })
     },
     ...mapActions('order', ['updateOrderCancelAction']),
   },
 }
 function closeModal(modalName) {
-  this.errorMessage = ''
   $('body').removeClass('modal-open')
   $('#transparent-screen').css('display', 'none')
   $(modalName).modal('hide')
