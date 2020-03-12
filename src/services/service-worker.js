@@ -1262,7 +1262,17 @@ var Dinein = {
     //if order is being placed second time i.e updated, then key / steps remains same
     let rootStep = JSON.stringify({ reservationId: rootId })
     let step = 'placed'
+    let orderStatus = 'in-progress'
 
+    //pay for order
+    if (payload.order_payments.length) {
+      //order id ll remain same for both cases pay/place
+      id = payload._id || id
+      rootStep = 'placed'
+      step = 'paid'
+      orderStatus = 'finished'
+      keys = JSON.stringify({ orderId: id })
+    }
     enabledConsole && console.log(1, 'sw:', payload) //find
 
     return new Promise((resolve, reject) => {
@@ -1343,7 +1353,7 @@ var Dinein = {
               payload.order_no = payload.real_created_datetime
                 .toString()
                 .replace(/[\s-:]/g, '')
-
+              payload.order_status = orderStatus
               record.data.page_lookups.orders._id[id] = payload
 
               var request = objectStore.put(record)
@@ -1388,13 +1398,13 @@ var Dinein = {
       DB.open(() => {
         enabledConsole &&
           console.log(1, 'sw:', 'db opened, adding offline order to indexeddb')
-
         const entry = {
           _id: id,
           step: 'on-a-way',
           type: 'dinein',
           keys: JSON.stringify({ reservationId: id }),
           status: 'offline',
+          rootStep: JSON.stringify({ reservationId: id }),
           request: {
             url: url,
             method: 'POST',
@@ -1443,6 +1453,7 @@ var Dinein = {
           type: 'dinein',
           keys: JSON.stringify({ reservationId: id }),
           status: 'offline',
+          rootStep: JSON.stringify({ reservationId: id }),
           request: {
             url: url,
             method: 'POST',
@@ -1627,7 +1638,6 @@ var Dinein = {
     return new Promise((resolve, reject) => {
       let promises = []
       //parallel sync
-      promises.push(this.syncOrderStatuses)
 
       DB.find('workflow_order', 'stepstatus', ['dinein', 'reserved', 'offline'])
         .then(({ records }) => {
@@ -1636,7 +1646,10 @@ var Dinein = {
             this.syncOrders()
               .then(() => {})
               .catch(error => reject(error))
-              .finally(() => resolve())
+              .finally(() => {
+                this.syncOrderStatuses()
+                resolve()
+              })
           } else {
             console.log('reservations to sync', records)
             records.forEach(record => {
@@ -1652,7 +1665,11 @@ var Dinein = {
                 this.syncOrders()
                   .then(() => {})
                   .catch(error => reject(error))
-                  .finally(() => resolve())
+                  .finally(() => {
+                    this.syncOrderStatuses().finally(() => {
+                      resolve()
+                    })
+                  })
               })
           }
         })
@@ -1786,10 +1803,12 @@ var Dinein = {
         } else {
           console.log('dinein order data to sync', records)
           records.forEach(record => {
-            let payload = record.request.data
+            let payload = record.request.data || {}
             payload.order_mode = 'offline'
-
-            Sync.request(record.request.url, record.request.method, payload)
+            const url = record.request.url.replace(
+              new RegExp('/id/(\\w+)/', '/id/' + record._id + '/')
+            )
+            Sync.request(url, record.request.method, payload)
               .then(orderResponse => {
                 if (orderResponse.status === 'ok') {
                   console.log('order data synced as well')
@@ -1839,10 +1858,12 @@ var Dinein = {
           //remove orders from workflow and store here
           console.log('dinein order data to sync', records)
           records.forEach(record => {
-            let payload = record.request.data
+            let payload = record.request.data || {}
             payload.order_mode = 'offline'
-
-            Sync.request(record.request.url, record.request.method, payload)
+            const url = record.request.url.replace(
+              new RegExp('/id/(\\w+)/', '/id/' + record._id + '/')
+            )
+            Sync.request(url, record.request.method, payload)
               .then(orderResponse => {
                 if (orderResponse.status === 'ok') {
                   console.log('order data synced as well')
@@ -1873,9 +1894,11 @@ var Dinein = {
   },
   async syncOrderStatuses() {
     return new Promise(resolve => {
-      let promises = []
-      promises.push(this.syncAboutToFinish(), this.syncCompleted())
-      Promise.all(promises).finally(resolve)
+      this.syncAboutToFinish().finally(() => {
+        this.syncCompleted().finally(() => {
+          resolve()
+        })
+      })
     })
   },
   //key: dinein_reservations
