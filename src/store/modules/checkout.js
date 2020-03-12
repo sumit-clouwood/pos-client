@@ -1462,7 +1462,11 @@ const actions = {
     let error = ''
     if (response.data.status == 'form_errors') {
       for (let i in response.data.form_errors) {
-        response.data.form_errors[i].forEach(err => (error += ' ' + err))
+        if (typeof response.data.form_errors[i] === 'string') {
+          error += ' ' + response.data.form_errors[i]
+        } else {
+          response.data.form_errors[i].forEach(err => (error += ' ' + err))
+        }
       }
     } else {
       error =
