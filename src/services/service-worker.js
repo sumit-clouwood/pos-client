@@ -389,10 +389,10 @@ var DB = {
       request.onerror = error => reject(error)
     })
   },
-  delete: async (storeName, index, key) => {
+  delete: async (storeName, key) => {
     return new Promise((resolve, reject) => {
       var objectStore = DB.getBucket(storeName, 'readwrite')
-      var request = objectStore.index(index).delete(IDBKeyRange.only(key))
+      var request = objectStore.delete(key)
       request.onsuccess = () => resolve()
       request.onerror = error => reject(error)
     })
@@ -1268,8 +1268,6 @@ var Dinein = {
     if (payload.order_payments.length) {
       //order id ll remain same for both cases pay/place
       id = payload._id || id
-      rootStep = 'placed'
-      step = 'paid'
       orderStatus = 'finished'
       keys = JSON.stringify({ orderId: id })
     }
@@ -1440,9 +1438,10 @@ var Dinein = {
   async reservationFinished(url, payload) {
     return new Promise((resolve, reject) => {
       const id = url.replace(
-        new RegExp('.*/id/(\\w+)/dine_in_about_to_finish$'),
+        new RegExp('.*/id/(\\w+)/dine_in_order_finished$'),
         '$1'
       )
+      console.log('id finished', id)
       DB.open(() => {
         enabledConsole &&
           console.log(1, 'sw:', 'db opened, adding offline order to indexeddb')
@@ -1471,9 +1470,11 @@ var Dinein = {
         //here we need to clear the reservation records from the workflow as well.
         //;)
         request.onsuccess = event => {
-          this.deleteOrderinStore(
+          this.updateOrderinStore(
             entry,
-            'dinein_reservations'
+            'dinein_reservations',
+            'waitsync',
+            'waitsync'
           ).finally(() => {})
 
           resolve(event)
@@ -1805,39 +1806,57 @@ var Dinein = {
           records.forEach(record => {
             let payload = record.request.data || {}
             payload.order_mode = 'offline'
-            const url = record.request.url.replace(
-              new RegExp('/id/(\\w+)/', '/id/' + record._id + '/')
-            )
-            Sync.request(url, record.request.method, payload)
-              .then(orderResponse => {
-                if (orderResponse.status === 'ok') {
-                  console.log('order data synced as well')
-                  record.status = 'online'
-                  record.respone = orderResponse
-                  //save recard as online
-                  var objectStore = DB.getBucket('workflow_order', 'readwrite')
-                  var request = objectStore.put(record)
-                  request.onsuccess = () => {
-                    //replace in store
-                    //1. replace the assigned order ids inside reservation data
-                    //2. replace orders in lookup data
 
-                    this.updateOrderinStore(
-                      record,
-                      'dinein_reservations',
-                      'on-a-way',
-                      'finished'
-                    ).finally(() => {})
-                  }
-                  request.onerror = error => {
-                    reject(error)
-                  }
-                } else {
-                  reject(orderResponse)
-                }
-              })
-              .catch(error => reject(error))
-              .finally(() => {})
+            //find actual reservation which was synced to get real id
+            DB.find('workflow_order', 'stepstatus', [
+              'dinein',
+              'reserved',
+              'online',
+            ]).then(({ records }) => {
+              if (records.length) {
+                const parentRecord = records.find(
+                  reservationRec => reservationRec._id === record._id
+                )
+                const url = record.request.url.replace(
+                  new RegExp('/id/(\\w+)/'),
+                  '/id/' + parentRecord.response.id + '/'
+                )
+
+                Sync.request(url, record.request.method, payload)
+                  .then(orderResponse => {
+                    if (orderResponse.status === 'ok') {
+                      console.log('order data synced as well')
+                      record.status = 'online'
+                      record.respone = orderResponse
+                      //save recard as online
+                      var objectStore = DB.getBucket(
+                        'workflow_order',
+                        'readwrite'
+                      )
+                      var request = objectStore.put(record)
+                      request.onsuccess = () => {
+                        //replace in store
+                        //1. replace the assigned order ids inside reservation data
+                        //2. replace orders in lookup data
+
+                        this.updateOrderinStore(
+                          record,
+                          'dinein_reservations',
+                          'on-a-way',
+                          'finished'
+                        ).finally(() => {})
+                      }
+                      request.onerror = error => {
+                        reject(error)
+                      }
+                    } else {
+                      reject(orderResponse)
+                    }
+                  })
+                  .catch(error => reject(error))
+                  .finally(() => {})
+              }
+            })
           })
           resolve()
         }
@@ -1860,32 +1879,54 @@ var Dinein = {
           records.forEach(record => {
             let payload = record.request.data || {}
             payload.order_mode = 'offline'
-            const url = record.request.url.replace(
-              new RegExp('/id/(\\w+)/', '/id/' + record._id + '/')
-            )
-            Sync.request(url, record.request.method, payload)
-              .then(orderResponse => {
-                if (orderResponse.status === 'ok') {
-                  console.log('order data synced as well')
-                  //delete it from workflow and store
-                  const request = DB.delete('workflow_order', '_id', record._id)
-                  request.onsuccess = () => {
-                    //delete from store in both lookups and the orders
 
-                    this.deleteOrderinStore(
-                      record,
-                      'dinein_reservations'
-                    ).finally(() => {})
-                  }
-                  request.onerror = error => {
-                    reject(error)
-                  }
-                } else {
-                  reject(orderResponse)
-                }
-              })
-              .catch(error => reject(error))
-              .finally(() => {})
+            //find actual reservation which was synced to get real id
+            DB.find('workflow_order', 'stepstatus', [
+              'dinein',
+              'reserved',
+              'online',
+            ]).then(({ records }) => {
+              if (records.length) {
+                const parentRecord = records.find(
+                  reservationRec => reservationRec._id === record._id
+                )
+                const url = record.request.url.replace(
+                  new RegExp('/id/(\\w+)/'),
+                  '/id/' + parentRecord.response.id + '/'
+                )
+
+                Sync.request(url, record.request.method, payload)
+                  .then(orderResponse => {
+                    if (orderResponse.status === 'ok') {
+                      console.log('order data finished synced as well')
+                      record.status = 'online'
+                      record.respone = orderResponse
+                      //save recard as online
+                      var objectStore = DB.getBucket(
+                        'workflow_order',
+                        'readwrite'
+                      )
+                      var request = objectStore.put(record)
+
+                      request.onsuccess = () => {
+                        //delete from store in both lookups and the orders
+
+                        this.deleteOrderinStore(
+                          record,
+                          'dinein_reservations'
+                        ).finally(() => {})
+                      }
+                      request.onerror = error => {
+                        reject(error)
+                      }
+                    } else {
+                      reject(orderResponse)
+                    }
+                  })
+                  .catch(error => reject(error))
+                  .finally(() => {})
+              }
+            })
           })
           resolve()
         }

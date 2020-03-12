@@ -292,7 +292,7 @@ export default {
   },
   orderWorkflowBucket() {
     const bucket = db.createBucket('workflow_order', {
-      keyPath: ['_id', 'type', 'step', 'status', 'rootStep'],
+      keyPath: ['_id', 'type', 'step'],
     })
 
     bucket.createIndex('_id', '_id', { unique: false })
@@ -311,7 +311,7 @@ export default {
     bucket.createIndex('rootkeys', ['type', 'step', 'status', 'rootStep'], {
       unique: false,
     })
-    bucket.createIndex('idkey', ['_id', 'type', 'step', 'status', 'rootStep'], {
+    bucket.createIndex('idkey', ['_id', 'type', 'step'], {
       unique: true,
     })
     bucket.createIndex('stepstatus', ['type', 'step', 'status'], {
