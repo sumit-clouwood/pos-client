@@ -1366,7 +1366,7 @@ var Dinein = {
 
               payload.network = 'offline'
               payload._id = id
-              payload.order_no = payload.real_created_datetime
+              payload.order_no = payload.orderTimeUTC
                 .toString()
                 .replace(/[\s-:]/g, '')
               payload.order_status = orderStatus
@@ -1380,9 +1380,7 @@ var Dinein = {
                   id: id,
                   order_no:
                     payload.order_no ||
-                    payload.real_created_datetime
-                      .toString()
-                      .replace(/[\s-:]/g, ''),
+                    payload.orderTimeUTC.toString().replace(/[\s-:]/g, ''),
                   token_number: 0,
                   generate_time: id,
                   flash_message: ' Order Added',
@@ -1514,65 +1512,76 @@ var Dinein = {
     return new Promise((resolve, reject) => {
       DB.find('workflow_order', 'keys', reservationKeys).then(({ records }) => {
         //replace the record here, probably need to replace request / response only
-        let record = records[0]
+        if (records.length) {
+          let record = records[0]
 
-        console.log(1, 'sw:', 'original add record', record)
+          console.log(1, 'sw:', 'original add record', record)
 
-        //when updating there is no realcreated date time but we need it so get it form previous
-        payload.real_created_datetime =
-          record.request.data.real_created_datetime
+          //when updating there is no realcreated date time but we need it so get it form previous
+          payload.real_created_datetime =
+            record.request.data.real_created_datetime
 
-        record.request.data = payload
-        console.log(1, 'sw:', 'record now', record)
+          record.request.data = payload
+          console.log(1, 'sw:', 'record now', record)
 
-        var request = DB.getBucket('workflow_order', 'readwrite').put(record)
-        request.onsuccess = () => {
-          resolve({
-            status: 'ok',
-            id: id,
-            order_no:
-              payload.order_no ||
-              payload.real_created_datetime.toString().replace(/[\s-:]/g, ''),
-            token_number: 0,
-            generate_time: +new Date(),
-            flash_message: ' Order Updated',
-          })
+          var request = DB.getBucket('workflow_order', 'readwrite').put(record)
+          request.onsuccess = () => {
+            resolve({
+              status: 'ok',
+              id: id,
+              order_no:
+                payload.order_no ||
+                payload.real_created_datetime.toString().replace(/[\s-:]/g, ''),
+              token_number: 0,
+              generate_time: +new Date(),
+              flash_message: ' Order Updated',
+            })
 
-          if (payload.order_payments && payload.order_payments.length) {
-            //remove entry from booked tables in store, dont remove it yet:)
-            console.log('removing entry from booked tables, and lookup')
-            DB.find('store', 'key', 'dinein_reservations', 'readwrite').then(
-              ({ records, objectStore }) => {
-                let record = records[0]
+            if (payload.order_payments && payload.order_payments.length) {
+              //remove entry from booked tables in store, dont remove it yet:)
+              console.log('removing entry from booked tables, and lookup')
+              DB.find('store', 'key', 'dinein_reservations', 'readwrite').then(
+                ({ records, objectStore }) => {
+                  let record = records[0]
 
-                //mark order as finished
-                record.data.page_lookups.orders._id[id].order_status =
-                  'finished'
+                  //mark order as finished
+                  record.data.page_lookups.orders._id[id].order_status =
+                    'finished'
 
-                //mark order as completed
-                record.data.data = record.data.data.map(booking => {
-                  if (booking._id === payload.table_reservation_id) {
-                    booking.reservation_status = 'finished'
-                  }
-                  return booking
-                })
-                //uncomment below to remove it from colleciton
-                // record.data.data = record.data.data.filter(
-                //   booking => booking._id !== payload.table_reservation_id
-                // )
+                  //mark order as completed
+                  record.data.data = record.data.data.map(booking => {
+                    if (booking._id === payload.table_reservation_id) {
+                      booking.reservation_status = 'finished'
+                    }
+                    return booking
+                  })
+                  //uncomment below to remove it from colleciton
+                  // record.data.data = record.data.data.filter(
+                  //   booking => booking._id !== payload.table_reservation_id
+                  // )
 
-                // if (record.data.count) {
-                //   record.data.count--
-                // }
+                  // if (record.data.count) {
+                  //   record.data.count--
+                  // }
 
-                objectStore.put(record)
-              }
-            )
+                  objectStore.put(record)
+                }
+              )
+            }
           }
-        }
 
-        request.onerror = error => {
-          reject(error)
+          request.onerror = error => {
+            reject(error)
+          }
+        } else {
+          //no order found in workflow that means it is from online data
+          //just store it in the workflow
+          this.placeOrder(url, payload)
+            .then(response => {
+              console.log('success')
+              resolve(response)
+            })
+            .catch(error => console.log(error))
         }
       })
     })
@@ -1720,6 +1729,8 @@ var Dinein = {
         records.forEach(record => {
           let payload = record.request.data
           payload.order_mode = 'offline'
+
+          delete payload.orderTimeUTC
 
           Sync.request(record.request.url, record.request.method, payload)
             .then(orderResponse => {
@@ -2167,46 +2178,72 @@ var WorkflowOrder = {
         const id = url.replace(new RegExp('.*/id/'), '')
         //search in workflow orders
         DB.find('workflow_order', '_id', id).then(({ records }) => {
-          var record = records[0]
-          //get table number from the reservation request
-          //reservation: {reservationId: "1583129391094"}
-          //order: keys: {reservationId: "1583129391094", orderId: "1583
+          if (records.length) {
+            var record = records[0]
+            //get table number from the reservation request
+            //reservation: {reservationId: "1583129391094"}
+            //order: keys: {reservationId: "1583129391094", orderId: "1583
 
-          let keys = {
-            reservationId: JSON.parse(record.keys).reservationId,
-          }
-          if (record.step === 'placed') {
-            keys['orderId'] = record._id
-          }
-          const reservationKeys = JSON.stringify(keys)
+            let keys = {
+              reservationId: JSON.parse(record.keys).reservationId,
+            }
+            if (record.step === 'placed') {
+              keys['orderId'] = record._id
+            }
+            const reservationKeys = JSON.stringify(keys)
 
-          DB.find('workflow_order', 'keys', reservationKeys)
-            .then(({ records }) => {
-              if (!records.length) {
-                console.log('Error, unable to fetch the record')
-                resolve()
-                return false
-              }
-              const reservation = records[0]
-              let order = record.request.data
-              order._id = record._id
-              order.order_number = order.real_created_datetime
-                .toString()
-                .replace(/[\s-:]/g, '')
+            DB.find('workflow_order', 'keys', reservationKeys)
+              .then(({ records }) => {
+                if (!records.length) {
+                  console.log('Error, unable to fetch the record')
+                  resolve()
+                  return false
+                }
+                const reservation = records[0]
+                let order = record.request.data
+                order._id = record._id
+                order.order_number = order.real_created_datetime
+                  .toString()
+                  .replace(/[\s-:]/g, '')
 
-              resolve({
-                collected_data: {
-                  status: 'In Progress',
-                  order_type: 'Dine In',
-                  table_number: reservation.request.data.number,
-                  customer: {},
-                  page_lookups: {},
-                  store_invoice_templates: {},
-                },
-                item: order,
+                resolve({
+                  collected_data: {
+                    status: 'In Progress',
+                    order_type: 'Dine In',
+                    table_number: reservation.request.data.number,
+                    customer: {},
+                    page_lookups: {},
+                    store_invoice_templates: {},
+                  },
+                  item: order,
+                })
               })
-            })
-            .catch(error => reject(error))
+              .catch(error => reject(error))
+          } else {
+            //no record found in workflow, that means order was placed online but needs to update in offline
+            //store must have required data, search id in store
+            DB.find('store', 'key', 'dinein_reservations').then(
+              ({ records }) => {
+                console.log('dinein_reservations records', records)
+                let record = records[0]
+                //in case of reservation don't filter
+                //in case of running filter only in-progress
+                if (
+                  typeof record.data.page_lookups.orders._id[id] !== 'undefined'
+                ) {
+                  //find reservation
+                  const order = record.data.page_lookups.orders._id[id]
+                  const reservation = record.data.data.find(reservation =>
+                    reservation.related_orders_ids.includes(id)
+                  )
+                  resolve({
+                    collected_data: reservation,
+                    item: order,
+                  })
+                }
+              }
+            )
+          }
         })
       }
     })

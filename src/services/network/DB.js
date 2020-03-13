@@ -32,7 +32,7 @@ export default {
       }
     })
   },
-  createBucket(bucket, options, cb) {
+  createBucket(bucket, options) {
     return this.idb.createObjectStore(
       bucket,
       options

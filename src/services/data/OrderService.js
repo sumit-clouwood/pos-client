@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 import DataService from '@/services/DataService'
 import Logger from '@/services/network/Logger'
+import DateTime from '@/mixins/DateTime.js'
 
 export default {
   saveOrder(data) {
@@ -127,9 +128,14 @@ export default {
     return DataService.post(`/model/orders/id/${id}/modify_${type}order`, order)
   },
 
+  getOrderTimeUTC() {
+    return { orderTimeUTC: DateTime.getUTCDateTime() }
+  },
+
   updateOrderItems(order, id) {
+    const orderTimeUTC = this.getOrderTimeUTC()
     let msg = {
-      form_data: order,
+      form_data: { ...order, ...orderTimeUTC },
     }
 
     try {
