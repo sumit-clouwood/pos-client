@@ -136,6 +136,7 @@ const actions = {
       safari = /safari/.test(userAgent),
       // ios = /android|iphone|ipod|ipad/.test(userAgent)
       ios =
+        /android|iPad|iPhone|iPod/.test(userAgent) ||
         /android|iPad|iPhone|iPod/.test(navigator.platform) ||
         (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)
     let objDevice = {
@@ -143,6 +144,8 @@ const actions = {
       browserType: safari,
       osType: ios,
       standalone: standalone,
+      platform: navigator.platform,
+      maxTouchPoints: navigator.maxTouchPoints,
     }
     // eslint-disable-next-line no-console
     console.log('objDevice', objDevice)
