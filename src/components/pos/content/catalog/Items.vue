@@ -40,7 +40,7 @@
           class="item-details-icon"
           @click.stop="showDetails(item)"
         >
-          <img style="padding: 5px;" src="img/icons/maximize.svg" />
+          <img style="padding: 3px;" src="img/icons/maximize.svg" />
         </div>
         <img
           v-if="item.image != ''"
@@ -267,9 +267,9 @@ export default {
   top: 0px;
   left: 0px;
   z-index: 999;
-  height: 4.5rem;
+  height: 3.6rem;
   width: 100%;
-  clip-path: polygon(0px 0px, 0px 100%, 50% 0px);
+  clip-path: polygon(0px 0px, 0px 100%, 45% 0px);
   background: rgba(220, 220, 220, 0.9);
 }
 

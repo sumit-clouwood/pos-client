@@ -12,48 +12,46 @@
   >
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content color-dashboard-background">
-        <div
-          class="modal-header"
-          style="background-color: #f2f2f2  !important;"
-        >
-          <button
-            type="button"
-            class="close"
-            style="text-align:end;
-            padding-right:1rem;
-            color:black;
-            font-size:2rem;
-          "
-            data-dismiss="modal"
-            aria-label="Close"
-          >
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
         <div class="modal-body">
           <div
             class="image-container"
             v-if="currentItem && currentItem.image !== ''"
           >
-            <div style="align-self: center;">
-              <img
-                style="width: 100%; height:250px; border-radius: 12px;"
-                :src="currentImageUrl"
-                @error="imageLoadError"
-              />
-              <!-- <div
-                :style="{ backgroundImage: `url(${currentImageUrl})` }"
-              ></div> -->
-            </div>
+            <button
+              type="button"
+              class="close"
+              style="text-align:end;
+            padding-right:1rem;
+            color:black;
+            font-size:2rem;
+          "
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+            <img
+              style="width: 100%; height:450px; border-radius: 10px;"
+              :src="currentImageUrl"
+              :alt="currentItem.name"
+              @error="imageLoadError"
+            />
           </div>
           <div class="content-container">
-            <div class="item-one-line">
+            <div class="item-one-line item-name-price-container">
               <div class="item-name font-weight-bold">
-                {{ _t(currentItem.name) }}
+                {{ dt(currentItem) }}
+              </div>
+              <div class="item-price">
+                {{ currency }} {{ currentItem.value }}
               </div>
             </div>
-            <div class="item-one-line" v-if="currentItem.description">
-              <div>{{ currentItem.description || '' }}</div>
+            <div
+              class="item-description item-one-line"
+              v-if="currentItem.description"
+              :style="{ textAlign: alignText }"
+            >
+              {{ dt(currentItem, 'description') || '' }}
             </div>
             <modifiers-content v-if="hasModifiers" />
             <div class="modal-footer">
@@ -63,9 +61,6 @@
                 @click.prevent="addToOrder(currentItem)"
               >
                 {{ _t('ADD TO CART') }}
-                <div style="color: yellow;">
-                  {{ currency }} {{ currentItem.value }}
-                </div>
               </button>
             </div>
           </div>
@@ -99,6 +94,7 @@ export default {
   data() {
     return {
       currentImagePath: '',
+      alignText: 'left !important',
     }
   },
   watch: {
@@ -106,6 +102,7 @@ export default {
       if (newVal) {
         this.$nextTick(() => {
           this.filterImage()
+          this.alignTextProperly()
         })
       }
     },
@@ -124,6 +121,21 @@ export default {
   },
 
   methods: {
+    alignTextProperly() {
+      if (
+        this.$store.state.location.locale === 'ar-AE' &&
+        this.currentItem.description
+      ) {
+        if (
+          this.dt(this.currentItem, 'description') !==
+          this.currentItem.description
+        ) {
+          this.alignText = 'right !important'
+        } else {
+          this.alignText = 'left !important'
+        }
+      }
+    },
     filterImage() {
       const imageUrl = this.currentItem.image
       if (this.currentItem && imageUrl) {
@@ -202,7 +214,11 @@ export default {
 @import '@/assets/scss/mixins.scss';
 #item-details-popup {
   .modal-dialog {
-    max-width: 600px;
+    ::-webkit-scrollbar {
+      width: 0rem !important;
+      height: 0.625rem !important;
+    }
+    max-width: 650px;
     border-radius: 5px !important;
     .close {
       line-height: normal;
@@ -235,14 +251,35 @@ export default {
         grid-template-columns: 1fr;
         margin: 0.7rem 0rem;
         text-align: center;
+        .item-name-price-container {
+          grid-template-columns: 5fr 1fr;
+        }
+        .item-price {
+          color: crimson;
+          font-size: 1.5rem;
+          font-weight: 600;
+        }
         .item-name {
-          font-size: 20px;
+          font-size: 2rem;
           margin-top: 1rem;
         }
+      }
+      .item-description {
+        width: 90%;
+        font-size: 1.2rem;
+        color: black;
+        margin: auto !important;
+        padding-bottom: 1rem;
       }
       #modifiers-popup {
         max-height: 300px;
         overflow-y: auto;
+        border-top: 0.5px solid rgba(165, 42, 42, 0.3);
+        .modal-body {
+          width: 90% !important;
+          margin: auto !important;
+          border-radius: 5px !important;
+        }
       }
     }
     // .image-container {
@@ -253,13 +290,14 @@ export default {
       padding: 0px;
       display: grid;
       grid-template-columns: 1fr !important;
+      height: auto;
       button {
         width: 100%;
         border-radius: 0px;
       }
       .add-to-cart-btn {
-        grid-template-columns: 1fr 1fr !important;
-        border-radius: 0 0 12px 12px;
+        height: 3rem;
+        border-radius: 0 0 0.7rem 0.7rem;
         font-size: 16px;
       }
     }
