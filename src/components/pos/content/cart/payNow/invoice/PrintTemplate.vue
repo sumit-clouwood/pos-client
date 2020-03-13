@@ -511,6 +511,9 @@ export default {
       if (this.dataBeingLoaded) {
         return null
       }
+      if (!this.print) {
+        return this.order_to_print
+      }
       let order = { ...this.order_to_print }
       order.items = this.loadFromCollection(
         order.items,
