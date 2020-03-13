@@ -253,6 +253,8 @@ const actions = {
           JSON.stringify(jsonResponse)
         )
       }
+      // eslint-disable-next-line no-console
+      console.log('orderInvoiceColData', JSON.stringify(jsonResponse))
       if (customerData) {
         dispatch('customer/resetCustomer', true, { root: true }).then(() => {
           resolve(jsonResponse)
