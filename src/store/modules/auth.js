@@ -146,7 +146,7 @@ const actions = {
     }
     // eslint-disable-next-line no-console
     console.log('objDevice', objDevice)
-    localStorage.setItem('objDevice', objDevice)
+    localStorage.setItem('objDevice', JSON.stringify(objDevice))
     commit(mutation.DEVICE_TYPE, objDevice)
   },
   login({ commit, dispatch }, data) {
