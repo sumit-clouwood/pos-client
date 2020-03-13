@@ -134,7 +134,10 @@ const actions = {
     let standalone = window.navigator.standalone,
       userAgent = window.navigator.userAgent.toLowerCase(),
       safari = /safari/.test(userAgent),
-      ios = /android|iphone|ipod|ipad/.test(userAgent)
+      // ios = /android|iphone|ipod|ipad/.test(userAgent)
+      ios =
+        /android|iPad|iPhone|iPod/.test(navigator.platform) ||
+        (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)
     let objDevice = {
       userAgent: userAgent,
       browserType: safari,
@@ -143,6 +146,7 @@ const actions = {
     }
     // eslint-disable-next-line no-console
     console.log('objDevice', objDevice)
+    localStorage.setItem('objDevice', objDevice)
     commit(mutation.DEVICE_TYPE, objDevice)
   },
   login({ commit, dispatch }, data) {
