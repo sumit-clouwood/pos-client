@@ -317,6 +317,9 @@ export default {
     bucket.createIndex('stepstatus', ['type', 'step', 'status'], {
       unique: false,
     })
+    bucket.createIndex('idstepstatus', ['_id', 'type', 'step', 'status'], {
+      unique: false,
+    })
 
     console.log('order workflow bucket created')
 

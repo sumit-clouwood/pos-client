@@ -368,6 +368,24 @@ var DB = {
       }
     }
   },
+  cursor: async (storeName, index, key, mode = 'readonly', callback) => {
+    return new Promise((resolve, reject) => {
+      var objectStore = DB.getBucket(storeName, mode)
+      var request = objectStore.index(index).openCursor(IDBKeyRange.only(key))
+      request.onsuccess = async event => {
+        var cursor = event.target.result
+        if (cursor) {
+          //record exists
+          callback(objectStore, cursor).then(() => {
+            cursor.continue()
+          })
+        } else {
+          resolve()
+        }
+      }
+      request.onerror = error => reject(error)
+    })
+  },
   find: async (storeName, index, key, mode = 'readonly') => {
     return new Promise((resolve, reject) => {
       var objectStore = DB.getBucket(storeName, mode)
@@ -1631,6 +1649,15 @@ var Dinein = {
     })
   },
   async sync() {
+    return new Promise(resolve => {
+      this._sync().finally(() => {
+        resolve()
+        //delete synced records
+        this.deleteSynced()
+      })
+    })
+  },
+  async _sync() {
     //1. sync complete reservation/booking for those tables which are offline
     //2. update the orders based on these reservation ids
     //3. sync orders
@@ -2057,6 +2084,78 @@ var Dinein = {
           }
         })
         .catch(error => console.log(error))
+    })
+  },
+  async deleteSynced() {
+    //delete from workflow which are online
+    //1. get which are finished step: finished, status: "online"
+    //2. get reservation where step = reserved and _id from step 1
+    //3. remove every thing where _id = _id from step 1
+    //4. get related order ids from reservation and delete where id from them
+    return new Promise(resolve => {
+      let finishedReservations = []
+      let reservations = []
+
+      DB.cursor(
+        'workflow_order',
+        'stepstatus',
+        ['dinein', 'finished', 'online'],
+        'readwrite',
+        (objectStore, cursor) => {
+          return new Promise(resolve => {
+            finishedReservations.push(cursor.value)
+            objectStore.delete(cursor.primaryKey)
+            resolve()
+          })
+        }
+      ).then(() => {
+        console.log('finished reservations', finishedReservations)
+        finishedReservations.forEach(finishedReservation => {
+          DB.cursor(
+            'workflow_order',
+            'idstepstatus',
+            [finishedReservation._id, 'dinein', 'reserved', 'online'],
+            'readwrite',
+            (objectStore, cursor) => {
+              return new Promise(resolve => {
+                reservations.push(cursor.value)
+                objectStore.delete(cursor.primaryKey)
+                resolve()
+              })
+            }
+          ).then(() => {
+            console.log('base reservations', reservations)
+            DB.cursor(
+              'workflow_order',
+              '_id',
+              finishedReservation._id,
+              'readwrite',
+              (objectStore, cursor) => {
+                return new Promise(resolve => {
+                  objectStore.delete(cursor.primaryKey)
+                  resolve()
+                })
+              }
+            ).then(() => {
+              reservations.forEach(reservation => {
+                DB.cursor(
+                  'workflow_order',
+                  'rootStep',
+                  reservation.keys,
+                  'readwrite',
+                  (objectStore, cursor) => {
+                    return new Promise(resolve => {
+                      objectStore.delete(cursor.primaryKey)
+                      resolve()
+                    })
+                  }
+                )
+              })
+              resolve()
+            })
+          })
+        })
+      })
     })
   },
 }
