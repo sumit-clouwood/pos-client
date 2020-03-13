@@ -1851,49 +1851,52 @@ var Dinein = {
               'reserved',
               'online',
             ]).then(({ records }) => {
+              let url = ''
               if (records.length) {
                 const parentRecord = records.find(
                   reservationRec => reservationRec._id === record._id
                 )
-                const url = record.request.url.replace(
+                url = record.request.url.replace(
                   new RegExp('/id/(\\w+)/'),
                   '/id/' + parentRecord.response.id + '/'
                 )
-
-                Sync.request(url, record.request.method, payload)
-                  .then(orderResponse => {
-                    if (orderResponse.status === 'ok') {
-                      console.log('order data synced as well')
-                      record.status = 'online'
-                      record.respone = orderResponse
-                      //save recard as online
-                      var objectStore = DB.getBucket(
-                        'workflow_order',
-                        'readwrite'
-                      )
-                      var request = objectStore.put(record)
-                      request.onsuccess = () => {
-                        //replace in store
-                        //1. replace the assigned order ids inside reservation data
-                        //2. replace orders in lookup data
-
-                        this.updateOrderinStore(
-                          record,
-                          'dinein_reservations',
-                          'on-a-way',
-                          'finished'
-                        ).finally(() => {})
-                      }
-                      request.onerror = error => {
-                        reject(error)
-                      }
-                    } else {
-                      reject(orderResponse)
-                    }
-                  })
-                  .catch(error => reject(error))
-                  .finally(() => {})
+              } else {
+                //record was placed online get reservation
+                url = record.request.url
               }
+              Sync.request(url, record.request.method, payload)
+                .then(orderResponse => {
+                  if (orderResponse.status === 'ok') {
+                    console.log('order data synced as well')
+                    record.status = 'online'
+                    record.respone = orderResponse
+                    //save recard as online
+                    var objectStore = DB.getBucket(
+                      'workflow_order',
+                      'readwrite'
+                    )
+                    var request = objectStore.put(record)
+                    request.onsuccess = () => {
+                      //replace in store
+                      //1. replace the assigned order ids inside reservation data
+                      //2. replace orders in lookup data
+
+                      this.updateOrderinStore(
+                        record,
+                        'dinein_reservations',
+                        'on-a-way',
+                        'finished'
+                      ).finally(() => {})
+                    }
+                    request.onerror = error => {
+                      reject(error)
+                    }
+                  } else {
+                    reject(orderResponse)
+                  }
+                })
+                .catch(error => reject(error))
+                .finally(() => {})
             })
           })
           resolve()
@@ -1924,46 +1927,51 @@ var Dinein = {
               'reserved',
               'online',
             ]).then(({ records }) => {
+              let url = ''
               if (records.length) {
                 const parentRecord = records.find(
                   reservationRec => reservationRec._id === record._id
                 )
-                const url = record.request.url.replace(
+                url = record.request.url.replace(
                   new RegExp('/id/(\\w+)/'),
                   '/id/' + parentRecord.response.id + '/'
                 )
-
-                Sync.request(url, record.request.method, payload)
-                  .then(orderResponse => {
-                    if (orderResponse.status === 'ok') {
-                      console.log('order data finished synced as well')
-                      record.status = 'online'
-                      record.respone = orderResponse
-                      //save recard as online
-                      var objectStore = DB.getBucket(
-                        'workflow_order',
-                        'readwrite'
-                      )
-                      var request = objectStore.put(record)
-
-                      request.onsuccess = () => {
-                        //delete from store in both lookups and the orders
-
-                        this.deleteOrderinStore(
-                          record,
-                          'dinein_reservations'
-                        ).finally(() => {})
-                      }
-                      request.onerror = error => {
-                        reject(error)
-                      }
-                    } else {
-                      reject(orderResponse)
-                    }
-                  })
-                  .catch(error => reject(error))
-                  .finally(() => {})
+              } else {
+                //order was online
+                //finish it in offline
+                url = record.request.url
               }
+
+              Sync.request(url, record.request.method, payload)
+                .then(orderResponse => {
+                  if (orderResponse.status === 'ok') {
+                    console.log('order data finished synced as well')
+                    record.status = 'online'
+                    record.respone = orderResponse
+                    //save recard as online
+                    var objectStore = DB.getBucket(
+                      'workflow_order',
+                      'readwrite'
+                    )
+                    var request = objectStore.put(record)
+
+                    request.onsuccess = () => {
+                      //delete from store in both lookups and the orders
+
+                      this.deleteOrderinStore(
+                        record,
+                        'dinein_reservations'
+                      ).finally(() => {})
+                    }
+                    request.onerror = error => {
+                      reject(error)
+                    }
+                  } else {
+                    reject(orderResponse)
+                  }
+                })
+                .catch(error => reject(error))
+                .finally(() => {})
             })
           })
           resolve()

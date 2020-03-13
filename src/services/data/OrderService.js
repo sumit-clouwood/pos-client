@@ -5,8 +5,9 @@ import DateTime from '@/mixins/DateTime.js'
 
 export default {
   saveOrder(data) {
+    const orderTimeUTC = this.getOrderTimeUTC()
     let msg = {
-      form_data: data,
+      form_data: { ...data, ...orderTimeUTC },
     }
 
     try {
