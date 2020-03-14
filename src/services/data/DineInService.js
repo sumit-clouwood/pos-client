@@ -87,7 +87,11 @@ export default {
       form_data: data,
     }
 
-    if ('serviceWorker' in navigator && 'SyncManager' in window) {
+    if (
+      'serviceWorker' in navigator &&
+      'SyncManager' in window &&
+      navigator.serviceWorker.controller
+    ) {
       navigator.serviceWorker.controller.postMessage(msg)
     }
 

@@ -52,6 +52,7 @@ const state = {
   inventoryBehavior: ['waste', 'return'],
   needSupervisorAccess: false,
   newOrder: null,
+  alert: {},
 }
 
 // getters
@@ -1993,6 +1994,13 @@ const mutations = {
   },
   newOrder(state, order) {
     state.newOrder = order
+  },
+  setAlert(state, { type, title, msg }) {
+    state.alert = {
+      type: type,
+      title: title,
+      msg: msg,
+    }
   },
 
   [mutation.NEED_SUPERVISOR_ACCESS](state, status) {
