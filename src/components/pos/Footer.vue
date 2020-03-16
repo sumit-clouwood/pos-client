@@ -401,6 +401,7 @@
     <DineInTableSelection
       v-if="brand.move_table && availableTables && cartType !== 'hold'"
     />
+    <alert-popup></alert-popup>
   </div>
 </template>
 
@@ -436,6 +437,7 @@ import Loyalty from '../pos/content/cart/newOrders/popup/Loyalty.vue'
 import OnlineOrderDetails from './header/popups/OnlineOrderDetails'
 import OrderDetailsPopup from '@/components/pos/content/OrderDetailPopup'
 import InformationPopup from '@/components/pos/content/InformationPopup'
+import AlertPopup from '@/components/pos/content/Alert'
 import ModificationPermissions from '@/components/pos/content/orderDetails/ModificationPermissions'
 import DineinBtn from './footer/buttons/cart/dinein'
 import CrmBtn from './footer/buttons/cart/crm'
@@ -484,6 +486,7 @@ export default {
     Invoice,
     OrderDetailsPopup,
     InformationPopup,
+    AlertPopup,
     ModificationPermissions,
     DineinBtn,
     CrmBtn,

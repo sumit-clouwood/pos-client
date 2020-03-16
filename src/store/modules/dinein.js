@@ -1,9 +1,11 @@
+/* eslint-disable no-console */
 import * as mutation from './dinein/mutation-types'
 import DineInService from '@/services/data/DineInService'
 import * as CONST from '@/constants'
 import moment from 'moment-timezone'
 // import OrderHelper from '@/plugins/helpers/Order'
 import * as PERMS from '@/const/permissions'
+import workflow from '../../plugins/helpers/workflow'
 
 const state = {
   orders: {
@@ -83,6 +85,9 @@ const getters = {
     })
     return tableNumber
   },
+  getTableNumberById: state => tableId => {
+    return state.tablesOnArea.find(table => table._id === tableId)
+  },
   guestInBillItem: state => (item, guest) => {
     if (
       state.bills &&
@@ -136,22 +141,63 @@ const actions = {
         .catch(er => reject(er))
     })
   },
-  getBookedTables({ commit, dispatch }, loader = false) {
+
+  getBookedTables({ commit, dispatch, rootState }, loader = false) {
     return new Promise((resolve, reject) => {
       if (loader) commit(mutation.LOADING, loader)
       /*localStorage.setItem('reservationId', false)*/
       DineInService.getAllBookedTables()
         .then(response => {
+          //if online restore latest data from server but keep unsynced orders
+          //to do: filter to get offline only and then add new from the server
+          if (rootState.sync.online) {
+            console.log('system online updating data')
+            //workflow.getData, update it and then store it
+            // workflow.getData('dinein_reservations').then(store => {
+            //   if (store) {
+            //     //get offline orders only
+            //     response.data.data = [...response.data.data, ...store.data.data]
+            //     response.data.page_lookups.orders = {
+            //       ...response.data.page_lookups.orders,
+            //       ...store.data.page_lookups.orders,
+            //     }
+            //     response.data.page_lookups.dine_in_tables = {
+            //       ...response.data.page_lookups.dine_in_tables,
+            //       ...store.data.page_lookups.dine_in_tables,
+            //     }
+            //   }
+            workflow.storeData({
+              key: 'dinein_reservations',
+              data: response.data,
+            })
+            // })
+          }
           commit(mutation.BOOKED_TABLES, response.data)
           dispatch('getDineInArea').then(() => {
             return resolve()
           })
           if (loader) commit(mutation.LOADING, false)
         })
-        .catch(er => reject(er))
+        .catch(() => {
+          //ll never reach here after new update
+          workflow
+            .getData('dinein_reservations')
+            .then(store => {
+              if (store) {
+                commit(mutation.BOOKED_TABLES, store.data)
+                dispatch('getDineInArea')
+                  .then(() => {
+                    return resolve()
+                  })
+                  .catch(() => resolve())
+              } else {
+                reject()
+              }
+            })
+            .catch(error => reject(error))
+        })
     })
   },
-
   seOrderData({ commit }, response) {
     let orderDetails = []
     let responseData = response.data.data
@@ -249,10 +295,18 @@ const actions = {
       })
     })
   },
-  getDineInTables({ commit, dispatch }) {
+  getDineInTables({ commit, dispatch, rootState }) {
     return new Promise((resolve, reject) => {
       DineInService.dineTables()
         .then(response => {
+          if (rootState.sync.online) {
+            console.log('system online storing tables data')
+            workflow.storeData({
+              key: 'dinein_tables',
+              data: response.data,
+            })
+          }
+
           commit(mutation.DINE_IN_TABLES, response.data)
           commit(mutation.PAGE_LOOKUP, response.data.page_lookups)
           dispatch('getAvailableTables')
@@ -300,6 +354,7 @@ const actions = {
               order => order.assigned_table_id === table._id
             )
           }
+          //console.log('table orders', orders)
 
           if (orders.length) {
             let tableArray = []
@@ -378,10 +433,11 @@ const actions = {
           // eslint-disable-next-line no-console
           // console.log(orderOnTable, 'order no  length')
           commit(mutation.ORDER_ON_TABLES, orderOnTable)
+          //console.log('orders on table', orderOnTable)
         })
       }
       // eslint-disable-next-line no-console
-      console.log('order no item length', tableStatus)
+      //console.log('order no item length', tableStatus)
       commit(mutation.TABLE_STATUS, tableStatus)
       resolve()
     })
@@ -453,9 +509,17 @@ const actions = {
       dispatch('newReservation', ...params)
     }
   },
-  newReservation({ commit, dispatch }, params) {
-    return new Promise((resolve, reject) => {
+  newReservation({ commit, dispatch, rootState, getters }, params) {
+    return new Promise(async (resolve, reject) => {
+      //offline booking
+      params.assigned_to = rootState.auth.userDetails.item._id
+      params.created_by = rootState.auth.userDetails.item._id
+      params.number = getters.getTableNumberById(
+        params.assigned_table_id
+      ).number
+
       DineInService.reservationOperation(params, 'add')
+
         .then(response => {
           commit(mutation.RESERVATION_RESPONSE, response.data)
           dispatch('getCovers').then(() => {
