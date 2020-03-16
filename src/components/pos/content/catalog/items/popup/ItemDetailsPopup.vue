@@ -17,6 +17,14 @@
             class="image-container"
             v-if="currentItem && currentItem.image !== ''"
           >
+            <img
+              style="width: 100%; height:100%;"
+              :src="currentImageUrl"
+              :alt="currentItem.name"
+              @error="imageLoadError"
+            />
+          </div>
+          <div class="content-container">
             <button
               type="button"
               class="close"
@@ -30,14 +38,6 @@
             >
               <span aria-hidden="true">&times;</span>
             </button>
-            <img
-              style="width: 100%; height:450px; border-radius: 10px;"
-              :src="currentImageUrl"
-              :alt="currentItem.name"
-              @error="imageLoadError"
-            />
-          </div>
-          <div class="content-container">
             <div class="item-one-line item-name-price-container">
               <div class="item-name font-weight-bold">
                 {{ dt(currentItem) }}
@@ -99,16 +99,17 @@ export default {
   },
   watch: {
     currentItem(newVal) {
-      if (newVal) {
+      if (!$.isEmptyObject(newVal)) {
         this.$nextTick(() => {
-          this.filterImage()
+          this.getImage()
           this.alignTextProperly()
+          this.assignModifiers()
         })
       }
     },
   },
   computed: {
-    ...mapState('location', ['currency']),
+    ...mapState('location', ['currency', 'availableLanguages']),
     ...mapGetters('location', ['_t']),
     ...mapState('order', ['splitBill']),
     ...mapGetters(['foodMenuHendler', 'bascketItems']),
@@ -119,34 +120,35 @@ export default {
       return this.$store.getters['modifier/hasModifiers'](this.currentItem)
     },
   },
-
   methods: {
     alignTextProperly() {
-      if (
-        this.$store.state.location.locale === 'ar-AE' &&
-        this.currentItem.description
-      ) {
+      let language = this.availableLanguages.find(
+        lang => lang.code === this.$store.state.location.locale
+      )
+      if (language && this.currentItem.description) {
         if (
           this.dt(this.currentItem, 'description') !==
           this.currentItem.description
         ) {
-          this.alignText = 'right !important'
+          if (language.direction === 'rtl') this.alignText = 'right !important'
+          else this.alignText = 'left !important'
         } else {
           this.alignText = 'left !important'
         }
       }
     },
-    filterImage() {
+    getImage() {
       const imageUrl = this.currentItem.image
       if (this.currentItem && imageUrl) {
-        if (this.hasModifiers) {
-          this.$store.dispatch(
-            'modifier/assignModifiersToItem',
-            this.currentItem
-          )
-        }
         let url = imageUrl.split('menu/')
         this.currentImagePath = url[0] + 'menu/large/' + url[1]
+      }
+    },
+    assignModifiers() {
+      if (this.hasModifiers) {
+        $('#modifiers-popup .modifier-option-radio').prop('checked', false)
+        this.$store.dispatch('modifier/assignModifiersToItem', this.currentItem)
+        this.$store.commit('orderForm/clearSelection')
       }
     },
     addToOrder(item) {
@@ -161,28 +163,19 @@ export default {
 
       this.$store.commit('order/SET_CART_TYPE', 'new')
       this.$store.dispatch('order/startOrder')
-      $('#POSItemOptions .modifier-option-radio').prop('checked', false)
       $('.food-menu-item').removeClass('active')
       $(this).addClass('active')
-      let cat = this.$store.getters['category/categories'].filter(
-        data => data._id === item.category
-      )
-      let subcat = this.$store.getters['category/subcategories'].filter(
-        data => data._id === item.sub_category
-      )
-      if (typeof cat !== 'undefined') {
-        // this.$store.commit('category/SET_CATEGORY', cat[0])
-      }
-      if (typeof subcat !== 'undefined') {
-        // this.$store.commit('category/SET_SUBCATEGORY', subcat[0])
-      }
+
       this.$store.commit('category/SET_ITEM', item)
       this.$store.commit('checkoutForm/showCalc', true)
       this.$store.commit('orderForm/updateQuantity', 1)
       if (this.hasModifiers) {
         this.$store
           .dispatch('order/addModifierOrder')
-          .then()
+          .then(() => {
+            this.$emit('resetCurrentItem', {})
+            hideModal('#item-details-popup')
+          })
           .catch()
       } else {
         if (item.open_item === true) {
@@ -199,7 +192,6 @@ export default {
       } else {
         this.bascketItems.find(x => x.name === item.name).count++
       }
-      hideModal('#item-details-popup')
     },
     imageLoadError() {
       this.currentImagePath = this.currentItem.image
@@ -217,23 +209,24 @@ export default {
     ::-webkit-scrollbar {
       width: 0rem !important;
       height: 0.625rem !important;
+      .modal-content {
+        border-radius: 2rem;
+      }
     }
-    max-width: 650px;
+    max-width: 90vw !important;
     border-radius: 5px !important;
     .close {
       line-height: normal;
       opacity: 1;
     }
-    .modal-header {
-      padding: 0 1.875rem;
-      margin: 0px;
-      border: none;
-    }
     .modal-body {
+      border-radius: 2rem;
       padding: 0.5rem !important;
-      padding-bottom: 0px !important;
       background-color: #f2f2f2 !important;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
     }
+
     .positemoption_body {
       padding: 0 1.875rem !important;
     }
@@ -243,9 +236,7 @@ export default {
     .content-container {
       width: 100%;
       background-color: white;
-      border-radius: 12px;
       position: relative;
-      top: -17px;
       .item-one-line {
         display: grid;
         grid-template-columns: 1fr;
@@ -272,9 +263,10 @@ export default {
         padding-bottom: 1rem;
       }
       #modifiers-popup {
-        max-height: 300px;
+        max-height: 350px;
         overflow-y: auto;
         border-top: 0.5px solid rgba(165, 42, 42, 0.3);
+        border-bottom: 0.5px solid rgba(165, 42, 42, 0.3);
         .modal-body {
           width: 90% !important;
           margin: auto !important;
@@ -282,10 +274,6 @@ export default {
         }
       }
     }
-    // .image-container {
-    //   display: flex;
-    //   flex-flow: column;
-    // }
     .modal-footer {
       padding: 0px;
       display: grid;
@@ -296,9 +284,10 @@ export default {
         border-radius: 0px;
       }
       .add-to-cart-btn {
-        height: 3rem;
-        border-radius: 0 0 0.7rem 0.7rem;
+        height: 4rem;
         font-size: 16px;
+        position: absolute;
+        bottom: 0px;
       }
     }
   }
