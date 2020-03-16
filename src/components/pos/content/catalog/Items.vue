@@ -59,7 +59,10 @@
           {{ currency }} {{ item.value || 0 }}
         </div>
       </div>
-      <item-details-popup :currentItem="currentItem" />
+      <item-details-popup
+        :currentItem="currentItem"
+        @resetCurrentItem="resetCurrentItem"
+      />
 
       <!-- <Popup /> -->
     </div>
@@ -135,6 +138,9 @@ export default {
   updated() {},
   beforeUpdated() {},
   methods: {
+    resetCurrentItem(payLoad) {
+      this.currentItem = payLoad
+    },
     showDetails(item) {
       this.currentItem = item
       showModal('#item-details-popup')
