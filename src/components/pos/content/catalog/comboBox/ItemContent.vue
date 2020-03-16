@@ -1,36 +1,10 @@
 <template>
-  <div class="modal-body color-dashboard-background grid_combo_left">
+  <div class="modal-body color-dashboard-background grid_combo_item_content">
     <div value="Chilli Garlic Shrimp" class="food-menu-item">
       <img
         class="food-menu-item-img"
         src="https://s3.amazonaws.com/broc-test/5d9f2254d355b82f1543bd82/menu/5e6a67b053b4b.png"
         alt="Chilli Garlic Shrimp"
-      />
-      <div class="food-menu-item-text color-text">
-        Chilli Garlic Shrimp
-      </div>
-      <div class="food-menu-item-price">
-        AED 70.35
-      </div>
-    </div>
-    <div value="Chilli Garlic Shrimp" class="food-menu-item">
-      <img
-        src="https://s3.amazonaws.com/broc-test/5d9f2254d355b82f1543bd82/menu/5e6a67b053b4b.png"
-        alt="Chilli Garlic Shrimp"
-        class="food-menu-item-img"
-      />
-      <div class="food-menu-item-text color-text">
-        Chilli Garlic Shrimp
-      </div>
-      <div class="food-menu-item-price">
-        AED 70.35
-      </div>
-    </div>
-    <div value="Chilli Garlic Shrimp" class="food-menu-item">
-      <img
-        src="https://s3.amazonaws.com/broc-test/5d9f2254d355b82f1543bd82/menu/5e6a67b053b4b.png"
-        alt="Chilli Garlic Shrimp"
-        class="food-menu-item-img"
       />
       <div class="food-menu-item-text color-text">
         Chilli Garlic Shrimp
@@ -43,7 +17,9 @@
 </template>
 
 <script>
-export default {}
+export default {
+  name: 'ItemContent',
+}
 </script>
 
 <style lang="scss" scoped>
