@@ -22,7 +22,7 @@
 </template>
 
 <script>
-/* global $*/
+/* global $ showModal*/
 import CheckoutMixin from '@/mixins/Checkout'
 import { mapState, mapGetters } from 'vuex'
 export default {
@@ -43,13 +43,20 @@ export default {
   methods: {
     addAmount() {
       $('#payment-breakdown').show()
+      this.$store.commit('checkoutForm/paymentButton', 'add')
       this.$store.commit('checkoutForm/setAction', 'add')
 
-      this._addAmount().then(payable => {
-        if (payable <= 0.1) {
-          this.doPayment(this.$store.state.order.orderType.OTApi)
-        }
-      })
+      this._addAmount()
+        .then(payable => {
+          if (payable <= 0.1) {
+            this.doPayment(this.$store.state.order.orderType.OTApi)
+          }
+        })
+        .catch(() => {
+          if (this.error) {
+            showModal('#amount-error')
+          }
+        })
     },
     set(amount) {
       this.$store.commit('checkoutForm/SET_PROCESSING', false)
