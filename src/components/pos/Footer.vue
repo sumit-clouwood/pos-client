@@ -394,6 +394,7 @@
     <Invoice />
     <OrderDetailsPopup />
     <InformationPopup :responseInformation="this.message" :title="this.title" />
+    <combox-box></combox-box>
   </div>
 </template>
 
@@ -436,6 +437,7 @@ import WalkinBtn from './footer/buttons/cart/walkin'
 import CarhopBtn from './footer/buttons/cart/carhop'
 import openItemButton from '@/components/pos/openItem/button'
 import openItem from '@/components/pos/openItem/item'
+import ComboxBox from '@/components/pos/content/catalog/comboBox/ComboBox'
 
 import * as CONST from '@/constants'
 
@@ -482,6 +484,7 @@ export default {
     CarhopBtn,
     openItemButton,
     openItem,
+    ComboxBox,
   },
   data() {
     return {
