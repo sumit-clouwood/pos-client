@@ -100,12 +100,12 @@ export default {
 
       this.$store
         .dispatch('order/addOpenItem', {
-          item: this.$store.state.category.item,
-          data: this.vitem,
+          item: {},
+          data: { ...this.item, type: 'genericOpenItem' },
         })
         .then(() => {
           hideModal('#open-item')
-          this.vitem = {}
+          this.item = {}
         })
     },
   },
