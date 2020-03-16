@@ -776,7 +776,17 @@ var Order = {
             event_type: 'sw:order_save_offline',
             event_data: payload,
           })
-          resolve()
+          const time = +new Date()
+          resolve({
+            status: 'ok',
+            id: time,
+            order_no: payload.real_created_datetime
+              .toString()
+              .replace(/[\s-:]/g, ''),
+            token_number: 0,
+            generate_time: time,
+            flash_message: ' Order Added',
+          })
           //reset form data
         }
         request.onerror = function(error) {
@@ -912,7 +922,10 @@ var Order = {
       var method = savedRequest.method
       var requestUrl = savedRequest.url
       var payload = savedRequest.payload
+
       delete payload.user
+      delete payload.orderTimeUTC
+
       if (payload.order_type !== 'call_center') {
         payload.referral = ''
       }
