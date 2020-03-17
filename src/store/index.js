@@ -29,6 +29,7 @@ import deliveryManager from './modules/deliveryManager'
 import mobile from './mobile'
 import dinein from './modules/dinein'
 import carhop from './modules/carhop'
+import comboItems from './modules/comboItems'
 import Datetime from 'vue-datetime'
 import VueHtmlToPaper from 'vue-html-to-paper'
 
@@ -85,6 +86,7 @@ const store = new Vuex.Store({
     carhop,
     reports,
     dineinReservation,
+    comboItems,
   },
   strict: false,
   //plugins: debug ? [createLogger()] : [],
