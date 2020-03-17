@@ -99,16 +99,18 @@ const actions = {
     }
     let dt = rootState.auth.deviceType
     let isIOS = dt.osType
-    if (isIOS && orderData.referral) {
-      let referralId = orderData.referral
-      let brandReferrals = JSON.parse(localStorage.getItem('brand_referrals'))
-      var filteredArr = brandReferrals.filter(function(itm) {
-        return itm._id === referralId
-        // return [referralId].indexOf(itm._id) > -1
-      })
+    if (isIOS) {
       let orderReferral = {}
-      if (filteredArr.length) {
-        orderReferral = filteredArr[0]
+      if (orderData.referral) {
+        let referralId = orderData.referral
+        let brandReferrals = JSON.parse(localStorage.getItem('brand_referrals'))
+        var filteredArr = brandReferrals.filter(function(itm) {
+          return itm._id === referralId
+          // return [referralId].indexOf(itm._id) > -1
+        })
+        if (filteredArr.length) {
+          orderReferral = filteredArr[0]
+        }
       }
       orderData.order_referral = orderReferral
     }
