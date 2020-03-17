@@ -213,7 +213,7 @@ export default {
       width: 0rem !important;
       height: 0.625rem !important;
     }
-    max-width: calc(100vw - 15rem);
+    max-width: 90vw !important;
     .close {
       line-height: normal;
       opacity: 1;
@@ -277,13 +277,12 @@ export default {
       padding: 0px;
       display: grid;
       grid-template-columns: 1fr !important;
-      height: auto;
+      height: 4rem;
       button {
         width: 100%;
         border-radius: 0px;
       }
       .add-to-cart-btn {
-        height: 4rem;
         font-size: 16px;
         position: absolute;
         bottom: 0px;
