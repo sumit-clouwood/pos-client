@@ -181,7 +181,9 @@ export default {
         if (item.open_item === true) {
           showModal('#open-item')
         } else {
-          this.$store.dispatch('order/addToOrder', item)
+          this.$store.dispatch('order/addToOrder', item).then(() => {
+            hideModal('#item-details-popup')
+          })
         }
       }
 
