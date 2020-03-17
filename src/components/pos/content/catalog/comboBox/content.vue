@@ -38,6 +38,9 @@ export default {
 
 .modal-body.color-dashboard-background.grid_combo_left {
   grid-template-columns: 1fr;
+  max-height: 415px;
+  overflow: hidden;
+  overflow-y: auto;
 }
 
 .modal-body.color-dashboard-background.grid_combo_item_content .food-menu-item {

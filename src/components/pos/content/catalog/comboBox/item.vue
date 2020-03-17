@@ -1,42 +1,59 @@
 <template>
   <div class="modal-body color-dashboard-background grid_combo_left">
-    <div value="Chilli Garlic Shrimp" class="food-menu-item">
-      <img
-        class="food-menu-item-img"
-        src="https://s3.amazonaws.com/broc-test/5d9f2254d355b82f1543bd82/menu/5e6a67b053b4b.png"
-        alt="Chilli Garlic Shrimp"
-      />
-      <div class="food-menu-item-text color-text">
-        Chilli Garlic Shrimp
+    <div class="food-menu_container">
+      <div class="food-menu_title">
+        <p class="food_title">
+          Pizza Selection
+        </p>
+        <i
+          data-v-446e20ea=""
+          aria-hidden="true"
+          class="fa fa-check food-item-checked"
+        ></i>
       </div>
-      <div class="food-menu-item-price">
-        AED 70.35
+
+      <div class="food-menu_title">
+        <p class="food_title">
+          Pasta Selection
+        </p>
+        <i
+          data-v-446e20ea=""
+          aria-hidden="true"
+          class="fa fa-check food-item-checked"
+        ></i>
       </div>
-    </div>
-    <div value="Chilli Garlic Shrimp" class="food-menu-item">
-      <img
-        src="https://s3.amazonaws.com/broc-test/5d9f2254d355b82f1543bd82/menu/5e6a67b053b4b.png"
-        alt="Chilli Garlic Shrimp"
-        class="food-menu-item-img"
-      />
-      <div class="food-menu-item-text color-text">
-        Chilli Garlic Shrimp
+
+      <div class="food-menu_title">
+        <p class="food_title">
+          Cold Drink Section
+        </p>
+        <i
+          data-v-446e20ea=""
+          aria-hidden="true"
+          class="fa fa-check food-item-checked"
+        ></i>
       </div>
-      <div class="food-menu-item-price">
-        AED 70.35
+
+      <div class="food-menu_title">
+        <p class="food_title">
+          Pizza Selection
+        </p>
+        <i
+          data-v-446e20ea=""
+          aria-hidden="true"
+          class="fa fa-check food-item-checked"
+        ></i>
       </div>
-    </div>
-    <div value="Chilli Garlic Shrimp" class="food-menu-item">
-      <img
-        src="https://s3.amazonaws.com/broc-test/5d9f2254d355b82f1543bd82/menu/5e6a67b053b4b.png"
-        alt="Chilli Garlic Shrimp"
-        class="food-menu-item-img"
-      />
-      <div class="food-menu-item-text color-text">
-        Chilli Garlic Shrimp
-      </div>
-      <div class="food-menu-item-price">
-        AED 70.35
+
+      <div class="food-menu_title">
+        <p class="food_title">
+          Bread Selection
+        </p>
+        <i
+          data-v-446e20ea=""
+          aria-hidden="true"
+          class="fa fa-check food-item-checked"
+        ></i>
       </div>
     </div>
   </div>
@@ -80,5 +97,32 @@ export default {}
       font-weight: 600;
     }
   }
+}
+.food-menu_container {
+  display: grid;
+  grid-template-rows: 1fr;
+  grid-row-gap: 10px;
+  position: relative;
+}
+.food-menu_title {
+  position: relative;
+  height: 65px;
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  align-items: center;
+  background-color: #afafaf;
+  color: white;
+  border-radius: 4px;
+}
+i.fa.fa-check.food-item-checked {
+  position: absolute;
+  right: 0px;
+  top: 0px;
+  color: white;
+  background: #5056ca;
+  padding: 3px;
+  border-radius: 3px;
+  font-weight: 300;
 }
 </style>

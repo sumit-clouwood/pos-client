@@ -17,6 +17,7 @@ export default {
 
 <style lang="scss" scoped>
 .modal-dialog {
-  max-width: 600px;
+  /*max-width: 600px;*/
+  max-width: 800px;
 }
 </style>
