@@ -46,11 +46,6 @@ export default {
 .modal-body.color-dashboard-background.grid_combo_item_content .food-menu-item {
   max-height: unset;
 }
-
-.modal-body.color-dashboard-background.grid_combo_item_content {
-  padding: 0;
-}
-
 .modal-body.color-dashboard-background.grid_combo_left {
   padding: 25px 10px !important;
 }

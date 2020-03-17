@@ -2,7 +2,7 @@
   <div class="modal-body color-dashboard-background grid_combo_left">
     <div class="food-menu_container" v-if="comboItemsList">
       <div
-        class="food-menu_title"
+        class="food-menu_title active_left_combo"
         v-for="(item, index) in comboItemsList.combo_items"
         :key="index"
       >
@@ -71,21 +71,25 @@ export default {
 }
 .food-menu_title {
   position: relative;
+  cursor: pointer;
   height: 65px;
   display: flex;
   justify-content: center;
   text-align: center;
   align-items: center;
-  background-color: #afafaf;
+  background-color: #9c9c9c;
   color: white;
   border-radius: 4px;
+}
+.food-menu_title.active_left_combo {
+  background-color: #5056ca;
 }
 i.fa.fa-check.food-item-checked {
   position: absolute;
   right: 0px;
   top: 0px;
   color: white;
-  background: #5056ca;
+  background: #434343;
   padding: 3px;
   border-radius: 3px;
   font-weight: 300;
