@@ -138,9 +138,8 @@ export default {
       }
     },
     getImage() {
-      const imageUrl = this.currentItem.image
-      if (this.currentItem && imageUrl) {
-        let url = imageUrl.split('menu/')
+      if (this.currentItem && this.currentItem.image) {
+        let url = this.currentItem.image.split('menu/')
         this.currentImagePath = url[0] + 'menu/large/' + url[1]
       }
     },
