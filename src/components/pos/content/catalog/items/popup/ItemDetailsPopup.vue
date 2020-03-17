@@ -213,7 +213,7 @@ export default {
       width: 0rem !important;
       height: 0.625rem !important;
     }
-    max-width: calc(100vw - 6rem);
+    max-width: calc(100vw - 15rem);
     .close {
       line-height: normal;
       opacity: 1;
@@ -288,6 +288,12 @@ export default {
         position: absolute;
         bottom: 0px;
         z-index: 999;
+      }
+      .add-to-cart-btn::before {
+        font-family: fontAwesome;
+        content: '\f217\00a0';
+        font-size: 1.6rem;
+        margin-right: 1rem;
       }
     }
   }
