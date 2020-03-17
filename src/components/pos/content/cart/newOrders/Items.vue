@@ -39,6 +39,7 @@
             v-bind:item="item"
             v-if="item.modifiable"
           />
+          <ComboItems v-else />
           <div
             class="button-plus"
             data-toggle="modal"
@@ -77,6 +78,7 @@
 
 <script>
 import Modifiers from './items/Modifiers.vue'
+import ComboItems from './items/ComboItems.vue'
 import Preloader from '@/components/util/Preloader'
 
 import { mapState, mapActions, mapGetters } from 'vuex'
@@ -177,6 +179,7 @@ export default {
   components: {
     Modifiers,
     Preloader,
+    ComboItems,
   },
 }
 </script>
