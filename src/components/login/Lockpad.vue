@@ -120,7 +120,10 @@ export default {
             localStorage.setItem('offline_mode_login', false)
           })
           .catch(error => {
-            if (error.message === 'Network Error') {
+            if (
+              error.message === 'Network Error' ||
+              JSON.stringify(error.message).match('Network Error')
+            ) {
               this.loginOffline()
             } else {
               this.error = error
