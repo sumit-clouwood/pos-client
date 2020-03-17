@@ -81,14 +81,6 @@ export default {
     }
   },
   computed: {
-    vlocale: {
-      get() {
-        return this.$store.state.location.locale
-      },
-      set(val) {
-        return this.$store.commit('location/SET_LOCALE', val)
-      },
-    },
     ...mapGetters('context', ['store']),
     ...mapState('location', ['availableLanguages', 'language']),
     ...mapGetters('location', ['_t', 'permitted']),

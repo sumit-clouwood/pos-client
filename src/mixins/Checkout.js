@@ -20,17 +20,22 @@ export default {
               reject()
             } else {
               //cash payments
-              this.addPayment().then(payable => resolve(payable))
+              this.addPayment()
+                .then(payable => resolve(payable))
+                .catch(error => reject(error))
             }
           })
           .catch(() => reject())
       })
     },
     addPayment() {
-      return new Promise(resolve => {
-        this.$store.dispatch('checkoutForm/addAmount').then(payable => {
-          resolve(payable)
-        })
+      return new Promise((resolve, reject) => {
+        this.$store
+          .dispatch('checkoutForm/addAmount')
+          .then(payable => {
+            resolve(payable)
+          })
+          .catch(error => reject(error))
       })
     },
     doPayment(action) {

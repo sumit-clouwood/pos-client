@@ -21,6 +21,7 @@ const state = {
   paymentAction: '',
   splitPaid: false,
   route: null,
+  orderCreationSource: '',
 }
 
 // getters
@@ -94,7 +95,6 @@ const getters = {
 
 // actions
 const actions = {
-  setRoutes() {},
   validatePayment({ rootState, rootGetters, commit }, action) {
     const totalPayable = rootGetters['checkoutForm/orderTotal']
     commit(mutation.SET_PAYABLE_AMOUNT, totalPayable)
@@ -415,12 +415,27 @@ const actions = {
     //if (order.delivery_surcharge) {
     order.delivery_surcharge = Num.round(order.delivery_surcharge).toFixed(2)
     //}
+
+    /*
+    Note: if coming from split order, means order was paid partially and 
+    for remaining items a new order is being created, but this new 
+    order should be silent, it should retain the previous change amount
+    otherwise it ll be overwritten with empty 
+    for split order actually two order calls ll be placed, first one ll 
+    not contain route split order and otherone (creating new order) ll have
+    route split order, ignore it
+    */
+
     let changedAmount =
       totalPaid - (orderData.balanceDue + parseFloat(order.tip_amount))
     if (changedAmount < 0) {
       changedAmount = 0
     }
-    commit(mutation.SET_CHANGED_AMOUNT, changedAmount)
+    if (state.orderCreationSource === 'splitOrder') {
+      //to do
+    } else {
+      commit(mutation.SET_CHANGED_AMOUNT, changedAmount)
+    }
 
     order.amount_changed = Num.round(changedAmount).toFixed(2)
 
@@ -451,6 +466,11 @@ const actions = {
       }
 
       if (item) {
+        if (typeof item.no !== 'undefined' && item.no > -1) {
+          item['kitchen_invoice'] = 0
+        } else {
+          item['kitchen_invoice'] = 1
+        }
         let orderItem = {
           name: item.name,
           entity_id: item._id,
@@ -462,17 +482,13 @@ const actions = {
           qty: item.quantity,
           note: item.note,
           originalItem: item,
+          kitchen_invoice: item['kitchen_invoice'],
         }
         //add store id with item if available
         if (item.store_id) {
           orderItem.store_id = item.store_id
         }
 
-        if (typeof item.kitchen_invoice !== 'undefined') {
-          orderItem['kitchen_invoice'] = item.kitchen_invoice
-        } else {
-          orderItem['kitchen_invoice'] = 0
-        }
         if (item.measurement_unit) {
           orderItem.measurement_unit = item.measurement_unit
         }
@@ -720,6 +736,7 @@ const actions = {
                     dispatch('paymentsHook', {
                       order: order,
                       action: action,
+                      data: data,
                     }).then(order => {
                       //remove unwanted data
                       order.items = order.items.map(item => {
@@ -1369,6 +1386,7 @@ const actions = {
 
     //provide previously selected covers
     commit('dinein/SET_COVER', data.selectedCovers, { root: true })
+    commit('ORDER_CREATION_SOURCE', 'splitOrder')
 
     return new Promise((resolve, reject) => {
       dispatch('pay', {
@@ -1445,7 +1463,11 @@ const actions = {
     let error = ''
     if (response.data.status == 'form_errors') {
       for (let i in response.data.form_errors) {
-        response.data.form_errors[i].forEach(err => (error += ' ' + err))
+        if (typeof response.data.form_errors[i] === 'string') {
+          error += ' ' + response.data.form_errors[i]
+        } else {
+          response.data.form_errors[i].forEach(err => (error += ' ' + err))
+        }
       }
     } else {
       error =
@@ -1464,7 +1486,8 @@ const actions = {
     console.log(response)
     if (
       offline &&
-      (response.message === 'Network Error' || response.match('Network Error'))
+      (response.message === 'Network Error' ||
+        JSON.stringify(response).match('Network Error'))
     ) {
       return dispatch('handleNetworkError', response)
     }
@@ -1616,7 +1639,8 @@ const actions = {
   iosWebviewPrintAction({ rootState, dispatch }, { orderData }) {
     localStorage.setItem('orderInvoiceColData', '')
     let dt = rootState.auth.deviceType
-    if (dt.osType) {
+    let isIOS = dt.osType
+    if (isIOS) {
       /*if (!standalone && safari) {
           window.location.href = 'print.me1'
         } else if (standalone && !safari) {
@@ -1806,6 +1830,9 @@ const mutations = {
   },
   [mutation.SET_ROUTE](state, route) {
     state.route = route
+  },
+  ['ORDER_CREATION_SOURCE'](state, route) {
+    state.orderCreationSource = route
   },
   [mutation.RESET](state, full = true) {
     state.paidAmount = 0

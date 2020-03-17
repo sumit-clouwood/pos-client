@@ -337,6 +337,10 @@ const actions = {
   referrals({ commit }) {
     LocationService.getReferrals().then(response => {
       commit(mutation.SET_REFERRALS, response.data.data)
+      localStorage.setItem(
+        'brand_referrals',
+        JSON.stringify(response.data.data)
+      )
     })
   },
 

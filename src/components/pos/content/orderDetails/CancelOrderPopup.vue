@@ -127,7 +127,7 @@
         </div>
       </div>
     </div>
-    <InformationPopup :responseInformation="this.errorMessage" title="Alert" />
+    <InformationPopup :responseInformation="errorMessage" title="Alert" />
   </div>
 </template>
 
@@ -143,6 +143,7 @@ export default {
       showSelectedBehavior: '',
       supervisorPassword: '',
       errorMessage: '',
+      processing: false,
     }
   },
   components: {
@@ -175,6 +176,12 @@ export default {
         this.errorMessage = 'Please select an inventory behavior'
         return false
       }
+
+      if (this.processing) {
+        return
+      }
+      this.processing = true
+
       let data = {
         cancel_reason: this.showSelectedReason,
         inventory_behavior: this.showSelectedBehavior,
@@ -214,6 +221,9 @@ export default {
         .catch(response => {
           this.errorMessage = response
           $('#information-popup').modal('show')
+        })
+        .finally(() => {
+          this.processing = false
         })
     },
     ...mapActions('order', ['selectedOrderDetails', 'updateOrderCancelAction']),
