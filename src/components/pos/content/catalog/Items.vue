@@ -36,7 +36,7 @@
         ref="entityItem"
       >
         <div
-          v-if="item.image != ''"
+          v-if="item.image != '' && isEnabled"
           class="item-details-icon"
           @click.stop="showDetails(item)"
         >
@@ -82,6 +82,7 @@
 <script>
 /* global $, showModal  */
 import { mapGetters, mapState } from 'vuex'
+import * as CONST from '@/constants'
 import bootstrap from '@/bootstrap'
 import ItemDetailsPopup from './items/popup/ItemDetailsPopup'
 // import Popup from './items/Popup'
@@ -117,6 +118,9 @@ export default {
     ...mapGetters('category', ['items', 'itemByCode']),
     ...mapGetters('modifier', ['hasModifiers']),
     ...mapGetters(['foodMenuHendler', 'bascketItems']),
+    isEnabled() {
+      return this.$store.getters['modules/enabled'](CONST.MODULE_DINE_IN_MENU)
+    },
   },
   watch: {
     items() {
