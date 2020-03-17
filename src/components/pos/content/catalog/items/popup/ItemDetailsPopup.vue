@@ -138,9 +138,8 @@ export default {
       }
     },
     getImage() {
-      const imageUrl = this.currentItem.image
-      if (this.currentItem && imageUrl) {
-        let url = imageUrl.split('menu/')
+      if (this.currentItem && this.currentItem.image) {
+        let url = this.currentItem.image.split('menu/')
         this.currentImagePath = url[0] + 'menu/large/' + url[1]
       }
     },
@@ -181,7 +180,9 @@ export default {
         if (item.open_item === true) {
           showModal('#open-item')
         } else {
-          this.$store.dispatch('order/addToOrder', item)
+          this.$store.dispatch('order/addToOrder', item).then(() => {
+            hideModal('#item-details-popup')
+          })
         }
       }
 
@@ -205,22 +206,20 @@ export default {
 @import '@/assets/scss/variables.scss';
 @import '@/assets/scss/mixins.scss';
 #item-details-popup {
+  @include responsive(mobile) {
+    display: none !important;
+  }
   .modal-dialog {
     ::-webkit-scrollbar {
       width: 0rem !important;
       height: 0.625rem !important;
-      .modal-content {
-        border-radius: 2rem;
-      }
     }
     max-width: 90vw !important;
-    border-radius: 5px !important;
     .close {
       line-height: normal;
       opacity: 1;
     }
     .modal-body {
-      border-radius: 2rem;
       padding: 0.5rem !important;
       background-color: #f2f2f2 !important;
       display: grid;
@@ -230,13 +229,12 @@ export default {
     .positemoption_body {
       padding: 0 1.875rem !important;
     }
-    @include responsive(mobile) {
-      display: none !important;
-    }
+
     .content-container {
       width: 100%;
       background-color: white;
       position: relative;
+      border-left: 0.5px solid rgba(0, 0, 0, 0.3);
       .item-one-line {
         display: grid;
         grid-template-columns: 1fr;
@@ -288,6 +286,13 @@ export default {
         font-size: 16px;
         position: absolute;
         bottom: 0px;
+        z-index: 999;
+      }
+      .add-to-cart-btn::before {
+        font-family: fontAwesome;
+        content: '\f217\00a0';
+        font-size: 1.6rem;
+        margin-right: 1rem;
       }
     }
   }
