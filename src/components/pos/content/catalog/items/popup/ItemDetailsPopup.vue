@@ -207,22 +207,18 @@ export default {
 @import '@/assets/scss/variables.scss';
 @import '@/assets/scss/mixins.scss';
 #item-details-popup {
+  overflow: hidden;
   .modal-dialog {
     ::-webkit-scrollbar {
       width: 0rem !important;
       height: 0.625rem !important;
-      .modal-content {
-        border-radius: 2rem;
-      }
     }
-    max-width: 90vw !important;
-    border-radius: 5px !important;
+    max-width: calc(100vw - 6rem);
     .close {
       line-height: normal;
       opacity: 1;
     }
     .modal-body {
-      border-radius: 2rem;
       padding: 0.5rem !important;
       background-color: #f2f2f2 !important;
       display: grid;
@@ -239,6 +235,7 @@ export default {
       width: 100%;
       background-color: white;
       position: relative;
+      border-left: 0.5px solid rgba(0, 0, 0, 0.3);
       .item-one-line {
         display: grid;
         grid-template-columns: 1fr;
@@ -290,6 +287,7 @@ export default {
         font-size: 16px;
         position: absolute;
         bottom: 0px;
+        z-index: 999;
       }
     }
   }
