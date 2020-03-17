@@ -1,41 +1,31 @@
 <template>
   <div class="modal-body color-dashboard-background grid_combo_left">
-    <div class="food-menu_container">
-      <div class="food-menu_title active_left_combo">
-        <p class="food_title">
-          Pizza Selection
-        </p>
-      </div>
-
-      <div class="food-menu_title">
-        <p class="food_title">
-          Pasta Selection
-        </p>
-      </div>
-
-      <div class="food-menu_title">
-        <p class="food_title">
-          Cold Drink Section
-        </p>
-      </div>
-
-      <div class="food-menu_title">
-        <p class="food_title">
-          Pizza Selection
-        </p>
-      </div>
-
-      <div class="food-menu_title">
-        <p class="food_title">
-          Bread Selection
-        </p>
+    <div class="food-menu_container" v-if="comboItemsList">
+      <div
+        class="food-menu_title active_left_combo"
+        v-for="(item, index) in comboItemsList.combo_items"
+        :key="index"
+      >
+        <p class="food_title">{{ item.name }}</p>
+        <i
+          data-v-446e20ea=""
+          aria-hidden="true"
+          class="fa fa-check food-item-checked"
+        ></i>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-export default {}
+import { mapGetters, mapState } from 'vuex'
+export default {
+  name: 'Items',
+  computed: {
+    ...mapState('comboItems', ['comboItemsList']),
+    ...mapGetters('location', ['_t']),
+  },
+}
 </script>
 
 <style lang="scss" scoped>
