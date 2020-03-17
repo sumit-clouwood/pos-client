@@ -1,59 +1,34 @@
 <template>
   <div class="modal-body color-dashboard-background grid_combo_left">
     <div class="food-menu_container">
-      <div class="food-menu_title">
+      <div class="food-menu_title active_left_combo">
         <p class="food_title">
           Pizza Selection
         </p>
-        <i
-          data-v-446e20ea=""
-          aria-hidden="true"
-          class="fa fa-check food-item-checked"
-        ></i>
       </div>
 
       <div class="food-menu_title">
         <p class="food_title">
           Pasta Selection
         </p>
-        <i
-          data-v-446e20ea=""
-          aria-hidden="true"
-          class="fa fa-check food-item-checked"
-        ></i>
       </div>
 
       <div class="food-menu_title">
         <p class="food_title">
           Cold Drink Section
         </p>
-        <i
-          data-v-446e20ea=""
-          aria-hidden="true"
-          class="fa fa-check food-item-checked"
-        ></i>
       </div>
 
       <div class="food-menu_title">
         <p class="food_title">
           Pizza Selection
         </p>
-        <i
-          data-v-446e20ea=""
-          aria-hidden="true"
-          class="fa fa-check food-item-checked"
-        ></i>
       </div>
 
       <div class="food-menu_title">
         <p class="food_title">
           Bread Selection
         </p>
-        <i
-          data-v-446e20ea=""
-          aria-hidden="true"
-          class="fa fa-check food-item-checked"
-        ></i>
       </div>
     </div>
   </div>
@@ -106,21 +81,25 @@ export default {}
 }
 .food-menu_title {
   position: relative;
+  cursor: pointer;
   height: 65px;
   display: flex;
   justify-content: center;
   text-align: center;
   align-items: center;
-  background-color: #afafaf;
+  background-color: #9c9c9c;
   color: white;
   border-radius: 4px;
+}
+.food-menu_title.active_left_combo {
+  background-color: #5056ca;
 }
 i.fa.fa-check.food-item-checked {
   position: absolute;
   right: 0px;
   top: 0px;
   color: white;
-  background: #5056ca;
+  background: #434343;
   padding: 3px;
   border-radius: 3px;
   font-weight: 300;

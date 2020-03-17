@@ -14,7 +14,14 @@
     <!--</div>-->
     <!--</div>-->
 
-    <div value="Chilli Garlic Shrimp" class="foodbox_container">
+    <div
+      value="Chilli Garlic Shrimp"
+      class="foodbox_container active_right_combo"
+    >
+      <i
+        class="fa fa-check item-selected-check right_icon"
+        aria-hidden="true"
+      ></i>
       <div class="food-item-box">
         <img
           src="https://s3.amazonaws.com/broc-test/5d9f2254d355b82f1543bd82/menu/5e6a67b053b4b.png"
@@ -30,10 +37,6 @@
           AED 70.35 AED 60.55
         </div>
         <div class="food-box-icon">
-          <i
-            class="fa fa-check item-selected-check right_icon"
-            aria-hidden="true"
-          ></i>
           <i class="fa fa-plus-circle addtocart-icon" aria-hidden="true"></i>
         </div>
       </div>
@@ -230,9 +233,11 @@ export default {
   }
 }
 .foodbox_container {
+  position: relative;
   border: solid;
-  border-color: #d7dce2a1;
+  border-color: #5056ca5e;
   width: 100%;
+  border-radius: 5px;
 }
 .food-item-box {
   display: grid;
@@ -244,14 +249,18 @@ export default {
   border-radius: 5px;
 }
 .food-item-box > div {
-  margin: 5px 0 0 10px;
+  margin: 4px 0 0px 0px;
 }
 i.fa.fa-check.item-selected-check {
-  color: green;
-  position: relative;
-  top: -77px;
-  left: 37px;
-  font-size: 22px;
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: #5056ca;
+  color: white;
+  padding: 3px;
+  font-weight: 300;
+  border-radius: 4px;
+  font-size: 12px;
 }
 .addtocart-icon {
   text-align: center;
@@ -264,7 +273,7 @@ i.fa.fa-check.item-selected-check {
 
 .foodbox_price_cntr {
   display: grid;
-  grid-template-columns: 2fr 1fr;
+  grid-template-columns: 3fr 1fr;
   padding: 0px 5px;
   align-items: center;
 }
@@ -275,5 +284,17 @@ i.fa.fa-check.item-selected-check {
   max-height: 590px;
   overflow: hidden;
   overflow-y: auto;
+  padding: 25px 10px !important;
+}
+.grid_parent_combo .food-box-icon {
+  text-align: right;
+}
+
+.foodbox_container .item-selected-check.right_icon {
+  display: none;
+}
+
+.foodbox_container.active_right_combo .item-selected-check.right_icon {
+  display: block;
 }
 </style>
