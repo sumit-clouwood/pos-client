@@ -1837,15 +1837,17 @@ const mutations = {
   },
 
   [mutation.UPDATE_ITEM_QUANTITY](state, quantity) {
-    const index = state.item.orderIndex
-    state.item.quantity = quantity
+    if (state.item.editMode) {
+      const index = state.item.orderIndex
+      state.item.quantity = quantity
 
-    state.items = state.items.map(item => {
-      if (item.orderIndex == index) {
-        item.quantity = quantity
-      }
-      return item
-    })
+      state.items = state.items.map(item => {
+        if (item.orderIndex == index) {
+          item.quantity = quantity
+        }
+        return item
+      })
+    }
   },
   [mutation.UPDATE_ITEMS](state, items) {
     state.items = items
