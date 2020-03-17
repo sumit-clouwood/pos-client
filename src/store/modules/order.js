@@ -1840,10 +1840,11 @@ const mutations = {
     if (state.item.editMode) {
       const index = state.item.orderIndex
       state.item.quantity = quantity
-
+      state.item.editMode = false
       state.items = state.items.map(item => {
         if (item.orderIndex == index) {
           item.quantity = quantity
+          item.editMode = false
         }
         return item
       })
@@ -1992,6 +1993,12 @@ const mutations = {
   },
   newOrder(state, order) {
     state.newOrder = order
+  },
+
+  setEditMode(state, mode) {
+    if (state.item) {
+      state.item.editMode = mode
+    }
   },
 
   [mutation.NEED_SUPERVISOR_ACCESS](state, status) {
