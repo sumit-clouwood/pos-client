@@ -97,6 +97,23 @@ const actions = {
       orderData.order_no = dateTime
       orderData.orderNumber = dateTime
     }
+    let dt = rootState.auth.deviceType
+    let isIOS = dt.osType
+    if (isIOS) {
+      let orderReferral = {}
+      if (orderData.referral) {
+        let referralId = orderData.referral
+        let brandReferrals = JSON.parse(localStorage.getItem('brand_referrals'))
+        var filteredArr = brandReferrals.filter(function(itm) {
+          return itm._id === referralId
+          // return [referralId].indexOf(itm._id) > -1
+        })
+        if (filteredArr.length) {
+          orderReferral = filteredArr[0]
+        }
+      }
+      orderData.order_referral = orderReferral
+    }
     orderData.real_created_datetime = created_date
     orderData.created_at = null
     //Final JSON
