@@ -206,7 +206,9 @@ export default {
 @import '@/assets/scss/variables.scss';
 @import '@/assets/scss/mixins.scss';
 #item-details-popup {
-  overflow: hidden;
+  @include responsive(mobile) {
+    display: none !important;
+  }
   .modal-dialog {
     ::-webkit-scrollbar {
       width: 0rem !important;
@@ -227,9 +229,7 @@ export default {
     .positemoption_body {
       padding: 0 1.875rem !important;
     }
-    @include responsive(mobile) {
-      display: none !important;
-    }
+
     .content-container {
       width: 100%;
       background-color: white;
