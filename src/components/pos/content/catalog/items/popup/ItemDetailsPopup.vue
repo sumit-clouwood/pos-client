@@ -276,12 +276,13 @@ export default {
       padding: 0px;
       display: grid;
       grid-template-columns: 1fr !important;
-      height: 4rem;
+      height: auto;
       button {
         width: 100%;
         border-radius: 0px;
       }
       .add-to-cart-btn {
+        height: 4rem;
         font-size: 16px;
         position: absolute;
         bottom: 0px;
