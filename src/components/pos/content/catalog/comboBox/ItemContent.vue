@@ -1,33 +1,5 @@
 <template>
   <div class="modal-body color-dashboard-background grid_combo_item_content">
-    <!--<div
-      value="Chilli Garlic Shrimp"
-      class="foodbox_container active_right_combo"
-    >
-      <i
-        class="fa fa-check item-selected-check right_icon"
-        aria-hidden="true"
-      ></i>
-      <div class="food-item-box">
-        <img
-          src="https://s3.amazonaws.com/broc-test/5d9f2254d355b82f1543bd82/menu/5e6a67b053b4b.png"
-          alt="Chilli Garlic Shrimp"
-          class="food-menu-item-img"
-        />
-        <div class="food-menu-item-text color-text">
-          Chilli Garlic Shrimp
-        </div>
-      </div>
-      <div class="foodbox_price_cntr">
-        <div class="food-menu-item-price">
-          AED 70.35 AED 60.55
-        </div>
-        <div class="food-box-icon">
-          <i class="fa fa-plus-circle addtocart-icon" aria-hidden="true"></i>
-        </div>
-      </div>
-    </div>-->
-
     <div
       class="foodbox_container"
       :class="{ active_right_combo: activeItems.includes(index) }"
@@ -75,13 +47,7 @@
                 />
               </svg>
             </div>
-            <!--<img-->
-            <!--src="img/pos/plus-icon.png"-->
-            <!--alt="plus"-->
-            <!--@click="setActiveItem({ orderItem: item, index: index })"-->
-            <!--/>-->
           </div>
-          <!--<i class="fa fa-plus-circle addtocart-icon" aria-hidden="true"></i>-->
         </div>
       </div>
     </div>
@@ -103,10 +69,13 @@ export default {
   },
   methods: {
     ...mapActions('order', ['setActiveItem']),
-    setActiveItems(index) {
-      this.activeItems.push(index)
-      // eslint-disable-next-line no-console
-      console.log(this.activeItems)
+    setActiveItems(element) {
+      let itemIndex = this.activeItems.indexOf(element)
+      if (itemIndex > -1) {
+        this.activeItems.splice(itemIndex, 1)
+      } else {
+        this.activeItems.push(element)
+      }
     },
   },
 }
