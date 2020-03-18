@@ -65,15 +65,6 @@ export default {
       activeItems: [],
     }
   },
-  // watch: {
-  //   subItems(newVal, oldVal) {
-  //     if (newVal != oldVal) {
-  //       this.$nextTick(() => {
-  //         this.activeItems = []
-  //       })
-  //     }
-  //   },
-  // },
   computed: {
     ...mapState('comboItems', ['subItems']),
     ...mapGetters('location', ['formatPrice', '_t']),
