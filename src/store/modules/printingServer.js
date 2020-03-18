@@ -337,6 +337,10 @@ const actions = {
         //This is  a uiwebview
         const urlParams = new URLSearchParams(window.location.search)
         urlParams.set('iosprint', '1')
+        localStorage.setItem(
+          'initiateWebView',
+          Math.floor(Math.random() * 100 + 1)
+        )
         window.location.search = urlParams
       }
     }
