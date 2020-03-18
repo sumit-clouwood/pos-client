@@ -2,10 +2,12 @@
   <div class="modal-body color-dashboard-background grid_combo_item_content">
     <div
       class="foodbox_container"
-      :class="{ active_right_combo: activeItems.includes(index) }"
       v-for="(item, index) in subItems"
+      :class="{
+        active_right_combo: activeItems.includes(item._id),
+      }"
       :key="index"
-      @click="setActiveItems(index)"
+      @click="setActiveItems(item._id)"
     >
       <div class="food-item-box">
         <img :src="item.image" alt v-if="item.image != ''" />
@@ -63,6 +65,15 @@ export default {
       activeItems: [],
     }
   },
+  // watch: {
+  //   subItems(newVal, oldVal) {
+  //     if (newVal != oldVal) {
+  //       this.$nextTick(() => {
+  //         this.activeItems = []
+  //       })
+  //     }
+  //   },
+  // },
   computed: {
     ...mapState('comboItems', ['subItems']),
     ...mapGetters('location', ['formatPrice', '_t']),
