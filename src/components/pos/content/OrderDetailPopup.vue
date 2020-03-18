@@ -195,6 +195,12 @@ export default {
     ...mapActions('customer', ['fetchSelectedCustomer']),
     ...mapActions('deliveryManager', ['printInvoice']),
     printInvoiceDisableKitchenPrint(details) {
+      //Detect if Reprinted or not.
+      if (details.templateId) {
+        details.order.item.isReprint = 1
+      } else {
+        details.order.item.isReprint = 0
+      }
       if (window.PrintHandle == null) {
         this.printInvoice(details)
       } else {

@@ -217,6 +217,9 @@ const actions = {
       crm_module_enabled,
     }
   ) {
+    //Added new field for detecting reprint or new order for IOS and Android App.
+    orderData.isReprint =
+      typeof orderData.isReprint != 'undefined' ? orderData.isReprint : 0
     // eslint-disable-next-line no-console
     console.log(locationData, 'locationData', customerData)
     return new Promise(resolve => {
