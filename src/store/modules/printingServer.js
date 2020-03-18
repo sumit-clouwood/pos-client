@@ -330,18 +330,18 @@ const actions = {
       return false
     }
     // eslint-disable-next-line no-console
-    console.log(isIOS, orderData)
+    console.log(isIOS, JSON.stringify(orderData))
     if (isIOS) {
       localStorage.setItem('orderInvoiceColData', '')
-      if (!dt.standalone && !dt.browserType) {
+      /*if (!dt.standalone && !dt.browserType) */ {
         //This is  a uiwebview
         const urlParams = new URLSearchParams(window.location.search)
         urlParams.set('iosprint', '1')
+        window.location.search = urlParams
         localStorage.setItem(
           'initiateWebView',
           Math.floor(Math.random() * 100 + 1)
         )
-        window.location.search = urlParams
       }
     }
     if (isIOS && orderData) {
