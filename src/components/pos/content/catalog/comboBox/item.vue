@@ -97,6 +97,10 @@ export default {
   color: white;
   border-radius: 4px;
 }
+.food-menu_title:hover {
+  box-shadow: #666bcfa1 0px 1px 12px;
+  transition: all 0.3s ease-in-out;
+}
 .food-menu_title.active_left_combo {
   background-color: #5056ca;
 }
@@ -109,5 +113,24 @@ i.fa.fa-check.food-item-checked {
   padding: 3px;
   border-radius: 3px;
   font-weight: 300;
+}
+@media only screen and (max-width: 600px) and (min-width: 320px) {
+  .food-menu_container {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow: hidden;
+    overflow-x: auto;
+  }
+  .modal-body.color-dashboard-background.grid_combo_left {
+    height: 80px !important;
+    padding: 0px !important;
+    align-items: center;
+    min-height: unset !important;
+    max-height: unset !important;
+  }
+  .food-menu_title {
+    margin-right: 10px;
+    min-width: 100px !important;
+  }
 }
 </style>

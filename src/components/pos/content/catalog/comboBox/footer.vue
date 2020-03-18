@@ -1,6 +1,7 @@
 <template>
   <div class="modal-footer">
     <div class="btn-announce">
+      <p class="combobox_error_msg">You can select max three Items.</p>
       <button
         type="button"
         class="btn btn-success btn-default "
@@ -28,4 +29,10 @@ export default {
 }
 </script>
 
-<style></style>
+<style>
+.combobox_error_msg {
+  color: #cc3232;
+  font-size: 18px;
+  max-width: 600px;
+}
+</style>
