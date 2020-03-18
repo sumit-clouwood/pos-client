@@ -66,6 +66,14 @@ export default {
       activeItems: [],
     }
   },
+  watch: {
+    subItems() {
+      this.$nextTick(() => {
+        this.activeItems = []
+        this.activeItems.push(this.subItems[0]._id)
+      })
+    },
+  },
   computed: {
     ...mapState('comboItems', ['subItems']),
     ...mapGetters('location', ['formatPrice', '_t']),

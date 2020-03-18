@@ -9,11 +9,6 @@
         @click="setActiveItem(index, item)"
       >
         <p class="food_title">{{ item.name }}</p>
-        <!--<i
-          data-v-446e20ea=""
-          aria-hidden="true"
-          class="fa fa-check food-item-checked"
-        ></i>-->
       </div>
     </div>
   </div>
@@ -28,6 +23,13 @@ export default {
     }
   },
   name: 'Items',
+  watch: {
+    comboItemsList() {
+      this.$nextTick(() => {
+        this.activeItem = 0
+      })
+    },
+  },
   computed: {
     ...mapState('comboItems', ['comboItemsList']),
     ...mapGetters('location', ['_t']),
