@@ -73,6 +73,7 @@ import { mapGetters, mapState } from 'vuex'
 import bootstrap from '@/bootstrap'
 // import Popup from './items/Popup'
 import Scroll from '@/mixins/Scroll'
+import * as CONST from '@/constants'
 // import btnBack from '../../../mobileComponents/mobileElements/btnBack'
 
 export default {
@@ -139,18 +140,6 @@ export default {
       $('#POSItemOptions .modifier-option-radio').prop('checked', false)
       $('.food-menu-item').removeClass('active')
       $(this).addClass('active')
-      let cat = this.$store.getters['category/categories'].filter(
-        data => data._id === item.category
-      )
-      let subcat = this.$store.getters['category/subcategories'].filter(
-        data => data._id === item.sub_category
-      )
-      if (typeof cat !== 'undefined') {
-        // this.$store.commit('category/SET_CATEGORY', cat[0])
-      }
-      if (typeof subcat !== 'undefined') {
-        // this.$store.commit('category/SET_SUBCATEGORY', subcat[0])
-      }
       this.$store.commit('category/SET_ITEM', item)
       this.$store.commit('checkoutForm/showCalc', true)
       this.$store.commit('orderForm/updateQuantity', 1)
@@ -176,16 +165,7 @@ export default {
       }
     },
     addToOrder(item) {
-      // if (this.selectedOrder) {
-      // if (
-      //   (this.orderType == 'carhop' || this.orderType.OTApi === 'carhop') &&
-      //   this.selectedOrder.item.order_status == 'in-progress' &&
-      //   !this.allowed(this.PERMS.MODIFY_ORDER)
-      // ) {
-      //   return
-      // }
-
-      if (item.item_type === 'combo_item') {
+      if (item.item_type === CONST.COMBO_ITEM_TYPE) {
         // eslint-disable-next-line no-console
         console.log('combo_item', item)
         this.$store.commit('comboItems/SET_COMBO_ITEMS', item)
