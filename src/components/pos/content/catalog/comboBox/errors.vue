@@ -1,17 +1,16 @@
 <template>
   <div>
-    <p v-if="errorMessage" class="combobox_error_msg">
-      You can select max three Items.
+    <p v-show="errorMessage" class="combobox_error_msg">
+      {{ errorMessage }}
     </p>
   </div>
 </template>
 
 <script>
+import { mapState } from 'vuex'
 export default {
-  data() {
-    return {
-      errorMessage: true,
-    }
+  computed: {
+    ...mapState('comboItems', ['errorMessage']),
   },
 }
 </script>

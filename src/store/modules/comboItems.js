@@ -4,6 +4,7 @@ const state = {
   comboItemsList: false,
   selectedItemContainer: false,
   subItems: false,
+  errorMessage: '',
 }
 
 const actions = {
@@ -25,6 +26,12 @@ const getters = {
     }
     return ''
   },
+  limitOfSelectingItems: state => {
+    if (state.selectedItemContainer) {
+      return state.selectedItemContainer.qty
+    }
+    return 1
+  },
 }
 
 const mutations = {
@@ -36,6 +43,9 @@ const mutations = {
   },
   [mutation.SUB_ITEM_LIST](state, subItems) {
     state.subItems = subItems
+  },
+  [mutation.SET_ERROR_MESSAGE](state, errorMessage) {
+    state.errorMessage = errorMessage
   },
 }
 

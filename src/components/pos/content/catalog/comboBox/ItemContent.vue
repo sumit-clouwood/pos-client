@@ -71,21 +71,36 @@ export default {
       this.$nextTick(() => {
         this.activeItems = []
         this.activeItems.push(this.subItems[0]._id)
+        this.$store.commit('comboItems/SET_ERROR_MESSAGE', '')
       })
     },
   },
   computed: {
     ...mapState('comboItems', ['subItems']),
     ...mapGetters('location', ['formatPrice', '_t']),
+    ...mapGetters('comboItems', ['limitOfSelectingItems']),
   },
   methods: {
     ...mapActions('order', ['setActiveItem']),
     setActiveItems(element) {
+      let selectedLength = this.subItems.filter(item =>
+        this.activeItems.includes(item._id)
+      ).length
+      // eslint-disable-next-line no-console
+      console.log(selectedLength, this.limitOfSelectingItems)
+
       let itemIndex = this.activeItems.indexOf(element)
       if (itemIndex > -1) {
         this.activeItems.splice(itemIndex, 1)
       } else {
-        this.activeItems.push(element)
+        if (selectedLength != this.limitOfSelectingItems) {
+          this.activeItems.push(element)
+        } else {
+          this.$store.commit(
+            'comboItems/SET_ERROR_MESSAGE',
+            `You can Select only ${this.limitOfSelectingItems} item (s)`
+          )
+        }
       }
     },
     setModifiersForItem(item) {
