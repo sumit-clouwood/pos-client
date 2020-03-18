@@ -12,12 +12,29 @@
     display: inline-block;
   }
 }
-
+@media all and (device-width: 768px) and (device-height: 1024px) and (orientation:portrait) {
+  .footer {
+    margin-top: -50px; /* your css rules for ipad landscape */
+  }
+}
+@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) {
+  .footer {
+    margin-top: -17px; /* your css rules for ipad landscape */
+  }
+  .main-orders {
+    height: calc(100vh - 14.0625rem);
+  }
+  .navigation .navigation-avatar {
+    margin-top: -40px;
+  }
+  .navigation .slider-btn {
+    margin-top: -23px;
+  }
+}
 .footer {
   border-top: 1px solid $gray-middle;
   display: grid;
   grid-template-columns: 65% 35%;
-
   .footer-slider {
     border-right: 1px solid $gray-middle;
     position: relative;
