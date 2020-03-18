@@ -6,7 +6,14 @@ const state = {
 
 const actions = {}
 
-const getters = {}
+const getters = {
+  comboItemName: state => {
+    if (state.comboItemsList) {
+      return state.comboItemsList.name
+    }
+    return ''
+  },
+}
 
 const mutations = {
   [mutation.SET_COMBO_ITEMS](state, comboItems) {
