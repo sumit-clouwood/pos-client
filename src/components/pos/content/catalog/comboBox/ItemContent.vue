@@ -63,10 +63,11 @@ export default {
   data() {
     return {
       activeItems: [],
+      activeCountList: [],
     }
   },
   computed: {
-    ...mapState('comboItems', ['subItems']),
+    ...mapState('comboItems', ['subItems', 'selectedItemContainer']),
     ...mapGetters('location', ['formatPrice', '_t']),
   },
   methods: {
@@ -78,6 +79,23 @@ export default {
       } else {
         this.activeItems.push(element)
       }
+      let selectItemId = this.selectedItemContainer._id.$oid
+      /*let activeItemCount = {
+        activeItem: selectItemId,
+        activeSubItem: this.activeItems,
+      }*/
+      let indexSubItem = this.activeCountList.indexOf(selectItemId)
+      alert(indexSubItem)
+      if (indexSubItem < 1) {
+        this.activeItems = []
+      }
+      this.activeCountList[selectItemId] = this.activeItems
+      // eslint-disable-next-line no-console
+      console.log(
+        this.selectedItemContainer,
+        this.activeItems,
+        this.activeCountList
+      )
     },
   },
 }
