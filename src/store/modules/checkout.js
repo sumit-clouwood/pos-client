@@ -477,6 +477,8 @@ const actions = {
           qty: item.quantity,
           note: item.note,
           originalItem: item,
+          type: item.item_type,
+          for_combo: item.item_type === 'combo_item' ? item.orderIndex : false,
         }
         //add store id with item if available
         if (item.store_id) {
@@ -1103,6 +1105,8 @@ const actions = {
           price: item.netPrice,
           qty: item.quantity,
           originalItem: item,
+          type: item.item_type,
+          for_combo: item.item_type === 'combo_item' ? item.orderIndex : false,
         })
       }
     })
