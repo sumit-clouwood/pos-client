@@ -49,7 +49,7 @@
       </div>
       <div class="foodbox_price_cntr">
         <div class="food-menu-item-price">
-          {{ formatPrice(item.value) }}
+          <strong>{{ formatPrice(item.value) }}</strong>
         </div>
         <div class="food-box-icon">
           <i
@@ -139,6 +139,7 @@ export default {
     .food-menu-item-text {
       font-size: 1.1rem;
       text-align: center;
+      word-break: break-word;
     }
     .food-menu-item-price {
       text-align: center;
@@ -154,6 +155,9 @@ export default {
   border-color: #5056ca5e;
   width: 100%;
   border-radius: 5px;
+  min-height: 106px !important;
+  max-height: 106px !important;
+  max-width: 177px !important;
 }
 .food-item-box {
   display: grid;
@@ -161,6 +165,7 @@ export default {
 }
 .food-item-box img {
   max-height: 35px;
+  min-height: 35px;
   margin: 10px;
   border-radius: 5px;
 }
@@ -201,7 +206,12 @@ i.fa.fa-check.item-selected-check {
   overflow: hidden;
   overflow-y: auto;
   padding: 25px 10px !important;
+  padding-top: 0px !important;
   border-left: 1px solid #e3e7f2;
+  min-height: 237px;
+  max-height: 350px;
+  overflow: hidden;
+  overflow-y: auto;
 }
 .grid_parent_combo .food-box-icon {
   text-align: right;
@@ -212,6 +222,17 @@ i.fa.fa-check.item-selected-check {
 
 .foodbox_container.active_right_combo .item-selected-check.right_icon {
   display: block;
+}
+.food-menu-item-text.color-text {
+  max-height: 35px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 17px !important;
+  word-break: normal;
+  padding-right: 15px;
 }
 @media only screen and (max-width: 600px) and (min-width: 320px) {
   .grid_parent_combo {

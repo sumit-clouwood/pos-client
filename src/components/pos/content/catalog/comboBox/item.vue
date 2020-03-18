@@ -97,6 +97,10 @@ export default {
   color: white;
   border-radius: 4px;
 }
+.food-menu_title:hover {
+  box-shadow: #666bcfa1 0px 1px 12px;
+  transition: all 0.3s ease-in-out;
+}
 .food-menu_title.active_left_combo {
   background-color: #5056ca;
 }
