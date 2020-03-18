@@ -7,11 +7,11 @@
         :key="index"
       >
         <p class="food_title">{{ item.name }}</p>
-        <i
+        <!--<i
           data-v-446e20ea=""
           aria-hidden="true"
           class="fa fa-check food-item-checked"
-        ></i>
+        ></i>-->
       </div>
     </div>
   </div>
