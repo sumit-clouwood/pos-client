@@ -285,16 +285,22 @@ i.fa.fa-check.item-selected-check {
   overflow: hidden;
   overflow-y: auto;
   padding: 25px 10px !important;
+  border-left: 1px solid #e3e7f2;
 }
 .grid_parent_combo .food-box-icon {
   text-align: right;
 }
-
 .foodbox_container .item-selected-check.right_icon {
   display: none;
 }
 
 .foodbox_container.active_right_combo .item-selected-check.right_icon {
   display: block;
+}
+@media only screen and (max-width: 600px) and (min-width: 320px) {
+  .grid_parent_combo {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
 }
 </style>

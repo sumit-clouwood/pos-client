@@ -94,4 +94,23 @@ i.fa.fa-check.food-item-checked {
   border-radius: 3px;
   font-weight: 300;
 }
+@media only screen and (max-width: 600px) and (min-width: 320px) {
+  .food-menu_container {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow: hidden;
+    overflow-x: auto;
+  }
+  .modal-body.color-dashboard-background.grid_combo_left {
+    height: 80px !important;
+    padding: 0px !important;
+    align-items: center;
+    min-height: unset !important;
+    max-height: unset !important;
+  }
+  .food-menu_title {
+    margin-right: 10px;
+    min-width: 100px !important;
+  }
+}
 </style>

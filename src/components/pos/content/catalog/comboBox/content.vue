@@ -49,4 +49,10 @@ export default {
 .modal-body.color-dashboard-background.grid_combo_left {
   padding: 25px 10px !important;
 }
+@media only screen and (max-width: 600px) and (min-width: 320px) {
+  .grid_parent_combo {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+}
 </style>
