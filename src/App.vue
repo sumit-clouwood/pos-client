@@ -63,8 +63,9 @@ export default {
   mounted() {
     DataService.setStore(this.$store)
     this.setup()
-    const timeout =
-      process.env.NODE_ENV === 'production' ? 1000 * 60 * 5 : 1000 * 10
+    const timeout = window.location.href.match('local')
+      ? 1000 * 30
+      : 1000 * 60 * 5
     setInterval(() => {
       if ('serviceWorker' in navigator) {
         navigator.serviceWorker.ready.then(registration => {

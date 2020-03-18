@@ -52,8 +52,6 @@ export default {
     ...mapGetters('auth', ['carhop', 'waiter']),
   },
   mounted() {
-    this.$store.dispatch('dinein/fetchAll')
-
     let getBody = $('body')
     getBody.removeAttr('class')
     getBody.attr('class', 'fixed-nav sticky-footer dm-manager')
