@@ -2,9 +2,11 @@
   <div class="modal-body color-dashboard-background grid_combo_left">
     <div class="food-menu_container" v-if="comboItemsList">
       <div
-        class="food-menu_title active_left_combo"
+        class="food-menu_title"
         v-for="(item, index) in comboItemsList.combo_items"
+        :class="{ active_left_combo: index === activeItem }"
         :key="index"
+        @click="setActiveItem(index, item)"
       >
         <p class="food_title">{{ item.name }}</p>
         <!--<i
@@ -20,10 +22,24 @@
 <script>
 import { mapGetters, mapState } from 'vuex'
 export default {
+  data() {
+    return {
+      activeItem: 0,
+    }
+  },
   name: 'Items',
   computed: {
     ...mapState('comboItems', ['comboItemsList']),
     ...mapGetters('location', ['_t']),
+  },
+  methods: {
+    setActiveItem(itemIndex, itemList) {
+      this.activeItem = itemIndex
+      this.$store.commit('comboItems/SET_SELECTED_ITEM_DATA', itemList)
+      this.$store.dispatch('comboItems/findItemById')
+      // eslint-disable-next-line no-console
+      console.log(itemList)
+    },
   },
 }
 </script>
