@@ -26,6 +26,12 @@ export default {
       `/model/users?no_limit=true&byColumn=0&brand_role=${roleId}`
     )
   },
+  getStoreUsers(pageId, level, roleId) {
+    return DataService.get(
+      `/model/brand_users?page_id=${pageId}&query=&no_limit=true&byColumn=0&brand_role=${roleId}&undefined=`,
+      level
+    )
+  },
 
   pinlogin(data) {
     return new Promise((resolve, reject) => {
@@ -36,7 +42,7 @@ export default {
           return resolve(response)
         })
         .catch(response => {
-          return reject(response.response.data.error)
+          return reject(response)
         })
     })
   },
