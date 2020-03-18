@@ -169,6 +169,11 @@ export default {
         // eslint-disable-next-line no-console
         console.log('combo_item', item)
         this.$store.commit('comboItems/SET_COMBO_ITEMS', item)
+        this.$store.commit(
+          'comboItems/SET_SELECTED_ITEM_DATA',
+          item.combo_items[0]
+        )
+        this.$store.dispatch('comboItems/findItemById')
         showModal('#combox-box-popup')
       } else {
         return this.fetchItemsAddOrder(item)

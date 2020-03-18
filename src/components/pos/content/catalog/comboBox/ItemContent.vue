@@ -37,7 +37,7 @@
           >
             <div
               class="button-plus-icon"
-              @click="setActiveItem({ orderItem: item, index: index })"
+              @click.stop="setModifiersForItem(item)"
             >
               <svg
                 class="color-text"
@@ -57,6 +57,7 @@
 </template>
 
 <script>
+/* global $, showModal */
 import { mapActions, mapGetters, mapState } from 'vuex'
 export default {
   name: 'ItemContent',
@@ -77,6 +78,14 @@ export default {
         this.activeItems.splice(itemIndex, 1)
       } else {
         this.activeItems.push(element)
+      }
+    },
+    setModifiersForItem(item) {
+      if (this.$store.getters['modifier/hasModifiers'](item)) {
+        $('#POSItemOptions .modifier-option-radio').prop('checked', false)
+        this.$store.dispatch('modifier/assignModifiersToItem', item)
+        this.$store.commit('orderForm/clearSelection')
+        showModal('#POSItemOptions')
       }
     },
   },
