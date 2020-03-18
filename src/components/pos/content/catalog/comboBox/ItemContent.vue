@@ -1,20 +1,6 @@
 <template>
   <div class="modal-body color-dashboard-background grid_combo_item_content">
-    <!--<div value="Chilli Garlic Shrimp" class="food-menu-item">-->
-    <!--<img-->
-    <!--class="food-menu-item-img"-->
-    <!--src="https://s3.amazonaws.com/broc-test/5d9f2254d355b82f1543bd82/menu/5e6a67b053b4b.png"-->
-    <!--alt="Chilli Garlic Shrimp"-->
-    <!--/>-->
-    <!--<div class="food-menu-item-text color-text">-->
-    <!--Chilli Garlic Shrimp-->
-    <!--</div>-->
-    <!--<div class="food-menu-item-price">-->
-    <!--AED 70.35-->
-    <!--</div>-->
-    <!--</div>-->
-
-    <div
+    <!--<div
       value="Chilli Garlic Shrimp"
       class="foodbox_container active_right_combo"
     >
@@ -40,150 +26,62 @@
           <i class="fa fa-plus-circle addtocart-icon" aria-hidden="true"></i>
         </div>
       </div>
-    </div>
+    </div>-->
 
-    <div value="Chilli Garlic Shrimp" class="foodbox_container">
+    <div
+      class="foodbox_container"
+      :class="{ active_right_combo: activeItems.includes(index) }"
+      v-for="(item, index) in subItems"
+      :key="index"
+      @click="setActiveItems(index)"
+    >
       <div class="food-item-box">
+        <img :src="item.image" alt v-if="item.image != ''" />
         <img
-          src="https://s3.amazonaws.com/broc-test/5d9f2254d355b82f1543bd82/menu/5e6a67b053b4b.png"
-          alt="Chilli Garlic Shrimp"
-          class="food-menu-item-img"
+          v-else
+          :style="{
+            background: item.image == '' ? item.item_color : '',
+          }"
         />
         <div class="food-menu-item-text color-text">
-          Chilli Garlic Shrimp
+          {{ dt(item) }}
         </div>
       </div>
       <div class="foodbox_price_cntr">
         <div class="food-menu-item-price">
-          AED 70.35 AED 60.55
+          {{ formatPrice(item.value) }}
         </div>
         <div class="food-box-icon">
           <i
             class="fa fa-check item-selected-check right_icon"
             aria-hidden="true"
           ></i>
-          <i class="fa fa-plus-circle addtocart-icon" aria-hidden="true"></i>
-        </div>
-      </div>
-    </div>
-
-    <div value="Chilli Garlic Shrimp" class="foodbox_container">
-      <div class="food-item-box">
-        <img
-          src="https://s3.amazonaws.com/broc-test/5d9f2254d355b82f1543bd82/menu/5e6a67b053b4b.png"
-          alt="Chilli Garlic Shrimp"
-          class="food-menu-item-img"
-        />
-        <div class="food-menu-item-text color-text">
-          Chilli Garlic Shrimp
-        </div>
-      </div>
-      <div class="foodbox_price_cntr">
-        <div class="food-menu-item-price">
-          AED 70.35 AED 60.55
-        </div>
-        <div class="food-box-icon">
-          <i
-            class="fa fa-check item-selected-check right_icon"
-            aria-hidden="true"
-          ></i>
-          <i class="fa fa-plus-circle addtocart-icon" aria-hidden="true"></i>
-        </div>
-      </div>
-    </div>
-    <div value="Chilli Garlic Shrimp" class="foodbox_container">
-      <div class="food-item-box">
-        <img
-          src="https://s3.amazonaws.com/broc-test/5d9f2254d355b82f1543bd82/menu/5e6a67b053b4b.png"
-          alt="Chilli Garlic Shrimp"
-          class="food-menu-item-img"
-        />
-        <div class="food-menu-item-text color-text">
-          Chilli Garlic Shrimp
-        </div>
-      </div>
-      <div class="foodbox_price_cntr">
-        <div class="food-menu-item-price">
-          AED 70.35 AED 60.55
-        </div>
-        <div class="food-box-icon">
-          <i
-            class="fa fa-check item-selected-check right_icon"
-            aria-hidden="true"
-          ></i>
-          <i class="fa fa-plus-circle addtocart-icon" aria-hidden="true"></i>
-        </div>
-      </div>
-    </div>
-    <div value="Chilli Garlic Shrimp" class="foodbox_container">
-      <div class="food-item-box">
-        <img
-          src="https://s3.amazonaws.com/broc-test/5d9f2254d355b82f1543bd82/menu/5e6a67b053b4b.png"
-          alt="Chilli Garlic Shrimp"
-          class="food-menu-item-img"
-        />
-        <div class="food-menu-item-text color-text">
-          Chilli Garlic Shrimp
-        </div>
-      </div>
-      <div class="foodbox_price_cntr">
-        <div class="food-menu-item-price">
-          AED 70.35 AED 60.55
-        </div>
-        <div class="food-box-icon">
-          <i
-            class="fa fa-check item-selected-check right_icon"
-            aria-hidden="true"
-          ></i>
-          <i class="fa fa-plus-circle addtocart-icon" aria-hidden="true"></i>
-        </div>
-      </div>
-    </div>
-    <div value="Chilli Garlic Shrimp" class="foodbox_container">
-      <div class="food-item-box">
-        <img
-          src="https://s3.amazonaws.com/broc-test/5d9f2254d355b82f1543bd82/menu/5e6a67b053b4b.png"
-          alt="Chilli Garlic Shrimp"
-          class="food-menu-item-img"
-        />
-        <div class="food-menu-item-text color-text">
-          Chilli Garlic Shrimp
-        </div>
-      </div>
-      <div class="foodbox_price_cntr">
-        <div class="food-menu-item-price">
-          AED 70.35 AED 60.55
-        </div>
-        <div class="food-box-icon">
-          <i
-            class="fa fa-check item-selected-check right_icon"
-            aria-hidden="true"
-          ></i>
-          <i class="fa fa-plus-circle addtocart-icon" aria-hidden="true"></i>
-        </div>
-      </div>
-    </div>
-    <div value="Chilli Garlic Shrimp" class="foodbox_container">
-      <div class="food-item-box">
-        <img
-          src="https://s3.amazonaws.com/broc-test/5d9f2254d355b82f1543bd82/menu/5e6a67b053b4b.png"
-          alt="Chilli Garlic Shrimp"
-          class="food-menu-item-img"
-        />
-        <div class="food-menu-item-text color-text">
-          Chilli Garlic Shrimp
-        </div>
-      </div>
-      <div class="foodbox_price_cntr">
-        <div class="food-menu-item-price">
-          AED 70.35 AED 60.55
-        </div>
-        <div class="food-box-icon">
-          <i
-            class="fa fa-check item-selected-check right_icon"
-            aria-hidden="true"
-          ></i>
-          <i class="fa fa-plus-circle addtocart-icon" aria-hidden="true"></i>
+          <div
+            class="button-plus"
+            data-toggle="modal"
+            data-target="#POSOrderItemOptions"
+          >
+            <div
+              class="button-plus-icon"
+              @click="setActiveItem({ orderItem: item, index: index })"
+            >
+              <svg
+                class="color-text"
+                viewBox="0 0 15 15"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M8.40002 6.3999V1.3999C8.40002 1.13469 8.29467 0.880332 8.10713 0.692796C7.9196 0.505259 7.66524 0.399902 7.40002 0.399902C7.13481 0.399902 6.88045 0.505259 6.69292 0.692796C6.50538 0.880332 6.40002 1.13469 6.40002 1.3999V6.3999H1.40002C1.13481 6.3999 0.880454 6.50526 0.692918 6.6928C0.505381 6.88033 0.400024 7.13469 0.400024 7.3999C0.400024 7.66512 0.505381 7.91947 0.692918 8.10701C0.880454 8.29455 1.13481 8.3999 1.40002 8.3999H6.40002V13.3999C6.40002 13.6651 6.50538 13.9195 6.69292 14.107C6.88045 14.2945 7.13481 14.3999 7.40002 14.3999C7.66524 14.3999 7.9196 14.2945 8.10713 14.107C8.29467 13.9195 8.40002 13.6651 8.40002 13.3999V8.3999H13.4C13.6652 8.3999 13.9196 8.29455 14.1071 8.10701C14.2947 7.91947 14.4 7.66512 14.4 7.3999C14.4 7.13469 14.2947 6.88033 14.1071 6.6928C13.9196 6.50526 13.6652 6.3999 13.4 6.3999H8.40002Z"
+                />
+              </svg>
+            </div>
+            <!--<img-->
+            <!--src="img/pos/plus-icon.png"-->
+            <!--alt="plus"-->
+            <!--@click="setActiveItem({ orderItem: item, index: index })"-->
+            <!--/>-->
+          </div>
+          <!--<i class="fa fa-plus-circle addtocart-icon" aria-hidden="true"></i>-->
         </div>
       </div>
     </div>
@@ -191,8 +89,26 @@
 </template>
 
 <script>
+import { mapActions, mapGetters, mapState } from 'vuex'
 export default {
   name: 'ItemContent',
+  data() {
+    return {
+      activeItems: [],
+    }
+  },
+  computed: {
+    ...mapState('comboItems', ['subItems']),
+    ...mapGetters('location', ['formatPrice', '_t']),
+  },
+  methods: {
+    ...mapActions('order', ['setActiveItem']),
+    setActiveItems(index) {
+      this.activeItems.push(index)
+      // eslint-disable-next-line no-console
+      console.log(this.activeItems)
+    },
+  },
 }
 </script>
 
