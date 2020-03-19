@@ -106,15 +106,19 @@ const actions = {
       dispatch(orderStatus.pageId, loader)
     }
   },
-  async fetchAll({ dispatch, commit }) {
-    commit(mutation.LOADING, true)
+  async fetchAll({ dispatch, commit }, data) {
+    if (!data || !data.silent) {
+      commit(mutation.LOADING, true)
+    }
     await Promise.all([
       dispatch('getDineInTables'),
       dispatch('getCovers'),
       dispatch('getBookedTables', false),
       // dispatch('getDineInArea'),
     ])
-    commit(mutation.LOADING, false)
+    if (!data || !data.silent) {
+      commit(mutation.LOADING, false)
+    }
   },
   getDineInOrders({ dispatch }) {
     dispatch('getBookedTables')

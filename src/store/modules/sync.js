@@ -34,7 +34,7 @@ const actions = {
   offlineSync({ commit, dispatch }, status) {
     commit('updateOfflineSync', status)
     if (status === 'done') {
-      dispatch('dinein/fetchAll', null, { root: true })
+      dispatch('dinein/fetchAll', { silent: true }, { root: true })
     }
   },
 }

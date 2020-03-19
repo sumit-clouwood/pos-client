@@ -1112,7 +1112,10 @@ var Dinein = {
         request.onsuccess = async event => {
           var cursor = event.target.result
           if (cursor) {
-            if (cursor.value.type === 'dinein') {
+            if (
+              cursor.value.type === 'dinein' &&
+              cursor.value.status === 'offline'
+            ) {
               data.push(cursor.value)
             }
             cursor.continue()
