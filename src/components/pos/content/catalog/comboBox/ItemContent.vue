@@ -4,10 +4,22 @@
       class="foodbox_container"
       v-for="(item, index) in subItems"
       :class="{
-        active_right_combo: activeItems.includes(item),
+        active_right_combo: activeItems.includes(
+          JSON.stringify({
+            container: selectedItemContainer._id.$oid,
+            item: item,
+          })
+        ),
       }"
       :key="index"
-      @click="setActiveItems(item)"
+      @click="
+        setActiveItems(
+          JSON.stringify({
+            container: selectedItemContainer._id.$oid,
+            item: item,
+          })
+        )
+      "
     >
       <div class="food-item-box">
         <img :src="item.image" alt v-if="item.image != ''" />
@@ -57,7 +69,8 @@
 </template>
 
 <script>
-/* global $, showModal */
+/* global $, showModal, hideModal */
+/*   eslint-disable no-console */
 import { mapActions, mapGetters, mapState } from 'vuex'
 export default {
   name: 'ItemContent',
@@ -68,15 +81,20 @@ export default {
     }
   },
   watch: {
-    subItems() {
-      this.$nextTick(() => {
-        if (!this.selectedItems.length) {
-          this.activeItems = []
-          this.activeItems.push(this.subItems[0])
-          this.$store.commit('comboItems/SET_ERROR_MESSAGE', '')
-        }
-        this.commitErrorMessage('')
-      })
+    subItems(newVal, oldVal) {
+      if (newVal != oldVal) {
+        this.$nextTick(() => {
+          if (!this.selectedItems.length) {
+            this.activeItems.push(
+              JSON.stringify({
+                container: this.selectedItemContainer._id.$oid,
+                item: this.subItems[0],
+              })
+            )
+          }
+          this.commitErrorMessage('')
+        })
+      }
     },
   },
   computed: {
@@ -84,7 +102,14 @@ export default {
     ...mapGetters('location', ['formatPrice', '_t']),
     ...mapGetters('comboItems', ['limitOfSelectingItems']),
     selectedItems() {
-      return this.subItems.filter(item => this.activeItems.includes(item))
+      return this.subItems.filter(item =>
+        this.activeItems.includes(
+          JSON.stringify({
+            container: this.selectedItemContainer._id.$oid,
+            item: item,
+          })
+        )
+      )
     },
   },
   methods: {
@@ -99,9 +124,19 @@ export default {
         if (selectedLength != this.limitOfSelectingItems) {
           this.commitErrorMessage('')
           this.activeItems.push(element)
+          let parsedItem = JSON.parse(element)['item']
+          this.setModifiersForItem(parsedItem)
+          if (
+            this.$store.getters['modifier/itemMandatoryGroups'](parsedItem._id)
+              .length > 0
+          ) {
+            showModal('#POSItemOptions')
+          } else {
+            hideModal('#POSItemOptions')
+          }
         } else {
           this.commitErrorMessage(
-            `You can Select only ${this.limitOfSelectingItems} item (s)`
+            `You can select only ${this.limitOfSelectingItems} item (s)`
           )
         }
       }
