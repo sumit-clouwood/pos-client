@@ -84,20 +84,20 @@ export default {
 .food-menu_container {
   display: grid;
   grid-template-rows: 1fr;
-  grid-row-gap: 10px;
+  grid-row-gap: 0.625rem;
   position: relative;
 }
 .food-menu_title {
   position: relative;
   cursor: pointer;
-  height: 65px;
+  height: 4.063rem;
   display: flex;
   justify-content: center;
   text-align: center;
   align-items: center;
   background-color: #9c9c9c;
   color: white;
-  border-radius: 4px;
+  border-radius: 0.25rem;
 }
 .food-menu_title:hover {
   box-shadow: #666bcfa1 0px 1px 12px;
@@ -112,8 +112,8 @@ i.fa.fa-check.food-item-checked {
   top: 0px;
   color: white;
   background: #434343;
-  padding: 3px;
-  border-radius: 3px;
+  padding: 0.188rem;
+  border-radius: 0.188rem;
   font-weight: 300;
 }
 @media only screen and (max-width: 600px) and (min-width: 320px) {
@@ -129,11 +129,12 @@ i.fa.fa-check.food-item-checked {
     align-items: center;
     min-height: unset !important;
     max-height: unset !important;
-    margin-bottom: 15px;
+    margin-bottom: 0.938rem;
   }
   .food-menu_title {
-    margin-right: 10px;
-    min-width: 100px !important;
+    margin-right: 0.625rem;
+    width: 4.375rem;
+    max-width: 4.375rem;
   }
 }
 </style>

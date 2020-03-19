@@ -27,3 +27,10 @@ export default {
   },
 }
 </script>
+<style scoped>
+@media only screen and (max-width: 600px) and (min-width: 320px) {
+  .btn-announce {
+    margin: 0 auto;
+  }
+}
+</style>
