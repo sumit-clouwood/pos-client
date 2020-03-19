@@ -37,7 +37,7 @@
           >
             <div
               class="button-plus-icon"
-              @click="setActiveItem({ orderItem: item, index: index })"
+              @click.stop="setModifiersForItem(item)"
             >
               <svg
                 class="color-text"
@@ -57,6 +57,7 @@
 </template>
 
 <script>
+/* global $, showModal */
 import { mapActions, mapGetters, mapState } from 'vuex'
 export default {
   name: 'ItemContent',
@@ -66,18 +67,49 @@ export default {
       activeCountList: [],
     }
   },
+  watch: {
+    subItems() {
+      this.$nextTick(() => {
+        this.activeItems = []
+        this.activeItems.push(this.subItems[0]._id)
+        this.$store.commit('comboItems/SET_ERROR_MESSAGE', '')
+      })
+    },
+  },
   computed: {
     ...mapState('comboItems', ['subItems', 'selectedItemContainer']),
     ...mapGetters('location', ['formatPrice', '_t']),
+    ...mapGetters('comboItems', ['limitOfSelectingItems']),
   },
   methods: {
     ...mapActions('order', ['setActiveItem']),
     setActiveItems(element) {
+      let selectedLength = this.subItems.filter(item =>
+        this.activeItems.includes(item._id)
+      ).length
+      // eslint-disable-next-line no-console
+      console.log(selectedLength, this.limitOfSelectingItems)
+
       let itemIndex = this.activeItems.indexOf(element)
       if (itemIndex > -1) {
         this.activeItems.splice(itemIndex, 1)
       } else {
-        this.activeItems.push(element)
+        if (selectedLength != this.limitOfSelectingItems) {
+          this.activeItems.push(element)
+        } else {
+          this.$store.commit(
+            'comboItems/SET_ERROR_MESSAGE',
+            `You can Select only ${this.limitOfSelectingItems} item (s)`
+          )
+        }
+      }
+    },
+    setModifiersForItem(item) {
+      if (this.$store.getters['modifier/hasModifiers'](item)) {
+        $('#POSItemOptions .modifier-option-radio').prop('checked', false)
+        this.$store.dispatch('modifier/assignModifiersToItem', item)
+        this.$store.commit('orderForm/clearSelection')
+        showModal('#POSItemOptions')
       }
       let selectItemId = this.selectedItemContainer._id.$oid
       /*let activeItemCount = {
@@ -155,6 +187,8 @@ export default {
 .food-item-box img {
   max-height: 35px;
   min-height: 35px;
+  min-width: 35px;
+  max-width: 35px;
   margin: 10px;
   border-radius: 5px;
 }
@@ -222,6 +256,7 @@ i.fa.fa-check.item-selected-check {
   line-height: 17px !important;
   word-break: normal;
   padding-right: 15px;
+  margin-top: 10px;
 }
 @media only screen and (max-width: 600px) and (min-width: 320px) {
   .grid_parent_combo {

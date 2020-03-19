@@ -5,6 +5,7 @@
       <Item />
       <ItemContent />
     </div>
+    <Errors />
     <Footer />
   </div>
 </template>
@@ -14,12 +15,15 @@ import Footer from './footer'
 import Header from './header'
 import Item from './item'
 import ItemContent from './ItemContent'
+import Errors from './errors'
+
 export default {
   components: {
     Footer,
     Header,
     Item,
     ItemContent,
+    Errors,
   },
 }
 </script>
