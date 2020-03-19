@@ -74,6 +74,7 @@ export default {
           this.activeItems.push(this.subItems[0])
           this.$store.commit('comboItems/SET_ERROR_MESSAGE', '')
         }
+        this.commitErrorMessage('')
       })
     },
   },
