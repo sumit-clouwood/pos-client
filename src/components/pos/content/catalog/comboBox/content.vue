@@ -43,9 +43,12 @@ export default {
 
 .modal-body.color-dashboard-background.grid_combo_left {
   grid-template-columns: 1fr;
-  max-height: 415px;
+  max-height: 350px;
   overflow: hidden;
   overflow-y: auto;
+}
+.modal-body.color-dashboard-background.grid_combo_left::-webkit-scrollbar {
+  display: none;
 }
 
 .modal-body.color-dashboard-background.grid_combo_item_content .food-menu-item {
