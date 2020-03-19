@@ -4,10 +4,10 @@
       class="foodbox_container"
       v-for="(item, index) in subItems"
       :class="{
-        active_right_combo: activeItems.includes(item._id),
+        active_right_combo: activeItems.includes(item),
       }"
       :key="index"
-      @click="setActiveItems(item._id)"
+      @click="setActiveItems(item)"
     >
       <div class="food-item-box">
         <img :src="item.image" alt v-if="item.image != ''" />
@@ -69,9 +69,11 @@ export default {
   watch: {
     subItems() {
       this.$nextTick(() => {
-        this.activeItems = []
-        this.activeItems.push(this.subItems[0]._id)
-        this.$store.commit('comboItems/SET_ERROR_MESSAGE', '')
+        if (!this.selectedItems.length) {
+          this.activeItems = []
+          this.activeItems.push(this.subItems[0])
+          this.$store.commit('comboItems/SET_ERROR_MESSAGE', '')
+        }
       })
     },
   },
@@ -79,25 +81,24 @@ export default {
     ...mapState('comboItems', ['subItems']),
     ...mapGetters('location', ['formatPrice', '_t']),
     ...mapGetters('comboItems', ['limitOfSelectingItems']),
+    selectedItems() {
+      return this.subItems.filter(item => this.activeItems.includes(item))
+    },
   },
   methods: {
     ...mapActions('order', ['setActiveItem']),
     setActiveItems(element) {
-      let selectedLength = this.subItems.filter(item =>
-        this.activeItems.includes(item._id)
-      ).length
-      // eslint-disable-next-line no-console
-      console.log(selectedLength, this.limitOfSelectingItems)
-
+      let selectedLength = this.selectedItems.length
       let itemIndex = this.activeItems.indexOf(element)
       if (itemIndex > -1) {
         this.activeItems.splice(itemIndex, 1)
+        this.commitErrorMessage('')
       } else {
         if (selectedLength != this.limitOfSelectingItems) {
+          this.commitErrorMessage('')
           this.activeItems.push(element)
         } else {
-          this.$store.commit(
-            'comboItems/SET_ERROR_MESSAGE',
+          this.commitErrorMessage(
             `You can Select only ${this.limitOfSelectingItems} item (s)`
           )
         }
@@ -110,6 +111,9 @@ export default {
         this.$store.commit('orderForm/clearSelection')
         showModal('#POSItemOptions')
       }
+    },
+    commitErrorMessage(message) {
+      this.$store.commit('comboItems/SET_ERROR_MESSAGE', message)
     },
   },
 }
