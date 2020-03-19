@@ -97,6 +97,23 @@ const actions = {
       orderData.order_no = dateTime
       orderData.orderNumber = dateTime
     }
+    let dt = rootState.auth.deviceType
+    let isIOS = dt.osType
+    if (isIOS) {
+      let orderReferral = {}
+      if (orderData.referral) {
+        let referralId = orderData.referral
+        let brandReferrals = JSON.parse(localStorage.getItem('brand_referrals'))
+        var filteredArr = brandReferrals.filter(function(itm) {
+          return itm._id === referralId
+          // return [referralId].indexOf(itm._id) > -1
+        })
+        if (filteredArr.length) {
+          orderReferral = filteredArr[0]
+        }
+      }
+      orderData.order_referral = orderReferral
+    }
     orderData.real_created_datetime = created_date
     orderData.created_at = null
     //Final JSON
@@ -200,6 +217,14 @@ const actions = {
       crm_module_enabled,
     }
   ) {
+    let dt = rootState.auth.deviceType
+    let isIOS = dt.osType
+    if (isIOS) {
+      //Added new field for detecting reprint or new order for IOS and Android App.
+      orderData.isReprint =
+        typeof orderData.isReprint != 'undefined' ? orderData.isReprint : 0
+    }
+
     // eslint-disable-next-line no-console
     console.log(locationData, 'locationData', customerData)
     return new Promise(resolve => {
@@ -229,8 +254,6 @@ const actions = {
         token_manager: rootState.location.store.token_manager,
         windows_app: false,
       }
-      let dt = rootState.auth.deviceType
-      let isIOS = dt.osType
       if (
         orderData.order_type == 'DINE-IN' ||
         orderData.order_type == 'dine_in'
@@ -313,7 +336,7 @@ const actions = {
       return false
     }
     // eslint-disable-next-line no-console
-    console.log(isIOS, orderData)
+    console.log(isIOS, JSON.stringify(orderData))
     if (isIOS) {
       localStorage.setItem('orderInvoiceColData', '')
       if (!dt.standalone && !dt.browserType) {
@@ -322,6 +345,10 @@ const actions = {
         urlParams.set('iosprint', '1')
         window.location.search = urlParams
       }
+      localStorage.setItem(
+        'initiateWebView',
+        Math.floor(Math.random() * 100 + 1)
+      )
     }
     if (isIOS && orderData) {
       dispatch('printingSetup', orderData)
