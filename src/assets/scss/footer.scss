@@ -20,10 +20,13 @@
     height: calc(100vh - 14.0625rem);
   }
   .navigation .navigation-avatar {
-    margin-top: -40px;
+    //margin-top: -0px;
   }
   .navigation .slider-btn {
-    margin-top: -23px;
+    //margin-top: -20px;
+  }
+  .navigation {
+    grid-template-rows: 5.3125rem .95fr 3.75rem 6.25rem;
   }
 }
 .footer {
