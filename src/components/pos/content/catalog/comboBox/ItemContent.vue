@@ -173,6 +173,8 @@ export default {
 .food-item-box img {
   max-height: 35px;
   min-height: 35px;
+  min-width: 35px;
+  max-width: 35px;
   margin: 10px;
   border-radius: 5px;
 }
@@ -240,6 +242,7 @@ i.fa.fa-check.item-selected-check {
   line-height: 17px !important;
   word-break: normal;
   padding-right: 15px;
+  margin-top: 10px;
 }
 @media only screen and (max-width: 600px) and (min-width: 320px) {
   .grid_parent_combo {
