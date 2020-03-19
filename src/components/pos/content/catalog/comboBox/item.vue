@@ -36,11 +36,11 @@ export default {
   },
   methods: {
     setActiveItem(itemIndex, itemList) {
-      this.activeItem = itemIndex
-      this.$store.commit('comboItems/SET_SELECTED_ITEM_DATA', itemList)
-      this.$store.dispatch('comboItems/findItemById')
-      // eslint-disable-next-line no-console
-      console.log(itemList)
+      if (this.activeItem != itemIndex) {
+        this.activeItem = itemIndex
+        this.$store.commit('comboItems/SET_SELECTED_ITEM_DATA', itemList)
+        this.$store.dispatch('comboItems/findItemById')
+      }
     },
   },
 }
