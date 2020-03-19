@@ -482,12 +482,12 @@ const actions = {
           qty: item.quantity,
           note: item.note,
           originalItem: item,
+          kitchen_invoice: item['kitchen_invoice'],
           type: item.item_type,
           for_combo:
             item.item_type === CONSTANTS.COMBO_ITEM_TYPE
               ? item.orderIndex
               : false,
-          kitchen_invoice: item['kitchen_invoice'],
         }
         //add store id with item if available
         if (item.store_id) {
