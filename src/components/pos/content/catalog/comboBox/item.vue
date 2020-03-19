@@ -129,6 +129,7 @@ i.fa.fa-check.food-item-checked {
     align-items: center;
     min-height: unset !important;
     max-height: unset !important;
+    margin-bottom: 15px;
   }
   .food-menu_title {
     margin-right: 10px;

@@ -154,6 +154,7 @@ export default {
 }
 .foodbox_container {
   position: relative;
+  cursor: pointer;
   border: solid;
   border-color: #5056ca5e;
   width: 100%;
@@ -240,10 +241,27 @@ i.fa.fa-check.item-selected-check {
   padding-right: 15px;
   margin-top: 10px;
 }
+.grid_combo_item_content::-webkit-scrollbar {
+  display: none;
+}
 @media only screen and (max-width: 600px) and (min-width: 320px) {
   .grid_parent_combo {
     display: grid;
     grid-template-columns: 1fr;
+  }
+  .modal-body[data-v-446e20ea] {
+    display: grid;
+    grid-template-columns: repeat(2, 2fr);
+    grid-column-gap: 15px;
+    row-gap: 1rem;
+  }
+  .modal-body.color-dashboard-background.grid_combo_item_content {
+    border-top: 1px solid #e3e7f2;
+    min-height: 265px !important;
+    max-height: 265px !important;
+    height: 265px !important;
+    overflow: hidden;
+    overflow-y: auto;
   }
 }
 </style>
