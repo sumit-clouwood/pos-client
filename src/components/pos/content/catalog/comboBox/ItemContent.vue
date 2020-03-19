@@ -69,7 +69,7 @@
 </template>
 
 <script>
-/* global $, showModal */
+/* global $, showModal, hideModal */
 /*   eslint-disable no-console */
 import { mapActions, mapGetters, mapState } from 'vuex'
 export default {
@@ -124,9 +124,19 @@ export default {
         if (selectedLength != this.limitOfSelectingItems) {
           this.commitErrorMessage('')
           this.activeItems.push(element)
+          let parsedItem = JSON.parse(element)['item']
+          this.setModifiersForItem(parsedItem)
+          if (
+            this.$store.getters['modifier/itemMandatoryGroups'](parsedItem._id)
+              .length > 0
+          ) {
+            showModal('#POSItemOptions')
+          } else {
+            hideModal('#POSItemOptions')
+          }
         } else {
           this.commitErrorMessage(
-            `You can Select only ${this.limitOfSelectingItems} item (s)`
+            `You can select only ${this.limitOfSelectingItems} item (s)`
           )
         }
       }
