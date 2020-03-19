@@ -88,6 +88,7 @@ export default {
           this.store.dispatch('tax/openItemTaxes')
           this.store.dispatch('surcharge/fetchAll').then(() => {})
           this.store.dispatch('discount/fetchAll').then(() => {})
+          this.store.dispatch('dinein/fetchAll')
 
           this.store
             .dispatch('category/fetchAll')
