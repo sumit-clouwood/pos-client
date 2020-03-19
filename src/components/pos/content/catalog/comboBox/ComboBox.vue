@@ -22,4 +22,8 @@ export default {
 .combox_p {
   z-index: 999;
 }
+div#combox-box-popup {
+  padding-left: 0px !important;
+  padding-right: 0.938rem;
+}
 </style>
