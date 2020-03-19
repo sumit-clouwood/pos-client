@@ -111,13 +111,13 @@ export default {
         this.$store.commit('orderForm/clearSelection')
         showModal('#POSItemOptions')
       }
-      let selectItemId = this.selectedItemContainer._id.$oid
-      /*let activeItemCount = {
+      /*let selectItemId = this.selectedItemContainer._id.$oid
+      /!*let activeItemCount = {
         activeItem: selectItemId,
         activeSubItem: this.activeItems,
-      }*/
+      }*!/
       let indexSubItem = this.activeCountList.indexOf(selectItemId)
-      alert(indexSubItem)
+      // alert(indexSubItem)
       if (indexSubItem < 1) {
         this.activeItems = []
       }
@@ -127,7 +127,7 @@ export default {
         this.selectedItemContainer,
         this.activeItems,
         this.activeCountList
-      )
+      )*/
     },
   },
 }
