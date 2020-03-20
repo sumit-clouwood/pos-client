@@ -389,6 +389,9 @@ export default {
         } else {
           //console.log(this.syncInterval, ' not passed yet')
         }
+      } else {
+        //system gone offline
+        this.store.dispatch('sync/offlineSync', false)
       }
     })
   },

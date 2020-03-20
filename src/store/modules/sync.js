@@ -1,5 +1,6 @@
 // initial state
 import * as CONST from '@/constants'
+import { dispatch } from 'd3'
 const state = {
   //date: '2019-02-06',
   compress: false,
@@ -12,6 +13,8 @@ const state = {
   cacheFirst: false,
   backgroundSync: false,
   lastFetch: 0,
+  offlineSync: false,
+
   modules: {
     store: CONST.LOADING_STATUS_LOADING,
     catalog: CONST.LOADING_STATUS_LOADING,
@@ -42,7 +45,14 @@ const getters = {
 }
 
 // actions
-const actions = {}
+const actions = {
+  offlineSync({ commit, dispatch }, status) {
+    commit('updateOfflineSync', status)
+    if (status === 'done') {
+      dispatch('dinein/fetchAll', { silent: true }, { root: true })
+    }
+  },
+}
 
 // mutations
 const mutations = {
@@ -84,6 +94,9 @@ const mutations = {
   },
   lastFetch(state) {
     state.lastFetch = new Date().getTime()
+  },
+  updateOfflineSync(state, status) {
+    state.offlineSync = status
   },
 }
 

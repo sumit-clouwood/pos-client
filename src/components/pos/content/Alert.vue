@@ -12,7 +12,7 @@
         <div class="modal-body" :class="alertClass">
           <div class="amount-change-wrap">
             <div class="alert" role="alert">
-              {{ _t(alert.msg) }}
+              <h5 class="text-capitalize">{{ _t(alert.msg) }}</h5>
             </div>
           </div>
         </div>
@@ -45,23 +45,23 @@ export default {
     ...mapState('order', ['alert']),
     alertClass() {
       let sub = ''
-      switch (this.alert.type) {
-        case 'error':
-          sub = 'alert-danger'
-          break
-        case 'done':
-          sub = 'alert-success'
-          break
-        case 'fade':
-          sub = 'alert-secondary'
-          break
-        case 'alert':
-          sub = 'alert-warning'
-          break
-        default:
-          //case 'info'
-          'alert-primary'
-      }
+      // switch (this.alert.type) {
+      //   case 'error':
+      //     sub = 'alert-danger'
+      //     break
+      //   case 'done':
+      //     sub = 'alert-success'
+      //     break
+      //   case 'fade':
+      //     sub = 'alert-secondary'
+      //     break
+      //   case 'alert':
+      //     sub = 'alert-warning'
+      //     break
+      //   default:
+      //     //case 'info'
+      //     'alert-primary'
+      // }
       return sub
     },
   },

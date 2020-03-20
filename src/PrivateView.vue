@@ -135,6 +135,11 @@ export default {
               }, 100)
             })
           }
+          if (event.data.msg === 'sync') {
+            if (event.data.data.status === 'done') {
+              this.$store.dispatch('sync/offlineSync', event.data.data.status)
+            }
+          }
         })
       }, 3000)
     },

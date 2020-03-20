@@ -254,37 +254,66 @@ var EventListener = {
       if (handler) {
         // attempt to send request normally
         event.respondWith(
-          fetch(clonedRequest).catch(function(error) {
-            // only save post requests in browser, if an error occurs, GET FROM MSG WE SEND EARLIER
-            //we saved form_data global var from msg
-            enabledConsole &&
-              console.log(
-                1,
-                'sw:',
-                'Network offline, saving request offline',
-                error
-              )
+          fetch(clonedRequest)
+            .then(data => {
+              if (!handler.intercept) {
+                return Promise.resolve(data)
+              }
 
-            return new Promise(resolve => {
-              handler
-                .addOfflineEvent(
-                  clonedRequest.url,
-                  Sync.formData,
-                  clonedRequest.method
-                )
-                .then(response => {
-                  Sync.formData = null
-                  const compositeResponse = new Response(
-                    JSON.stringify(response),
-                    {
-                      headers: { 'content-type': 'application/json' },
-                    }
-                  )
-
-                  resolve(compositeResponse)
+              return new Promise(resolve => {
+                data.json().then(serverResponse => {
+                  DB.open(() => {
+                    handler
+                      .intercept(
+                        clonedRequest.url,
+                        serverResponse,
+                        Sync.formData,
+                        clonedRequest.method
+                      )
+                      .then(response => {
+                        const compositeResponse = new Response(
+                          JSON.stringify(response),
+                          {
+                            headers: { 'content-type': 'application/json' },
+                          }
+                        )
+                        resolve(compositeResponse)
+                      })
+                  })
                 })
+              })
             })
-          })
+            .catch(function(error) {
+              // only save post requests in browser, if an error occurs, GET FROM MSG WE SEND EARLIER
+              //we saved form_data global var from msg
+              enabledConsole &&
+                console.log(
+                  1,
+                  'sw:',
+                  'Network offline, saving request offline',
+                  error
+                )
+
+              return new Promise(resolve => {
+                handler
+                  .addOfflineEvent(
+                    clonedRequest.url,
+                    Sync.formData,
+                    clonedRequest.method
+                  )
+                  .then(response => {
+                    Sync.formData = null
+                    const compositeResponse = new Response(
+                      JSON.stringify(response),
+                      {
+                        headers: { 'content-type': 'application/json' },
+                      }
+                    )
+
+                    resolve(compositeResponse)
+                  })
+              })
+            })
         )
       }
     })
@@ -455,6 +484,10 @@ var Sync = {
             'sync inprocess',
             Sync.inprocess
           )
+        client.postMessage({
+          msg: 'sync',
+          data: { status: 'done' },
+        })
         resolve()
       } catch (error) {
         Sync.inprocess = false
@@ -1066,6 +1099,52 @@ var Dinein = {
     return prefix + +new Date() + postfix
   },
 
+  intercept: function(url, serverResponse, payload, method) {
+    return new Promise(resolve => {
+      if (method === 'GET') {
+        console.log('intercepting data')
+        //first check in workflow if it contains any dine in data
+        //if found data then return response from cache
+        //othwersie just return it from server
+
+        const request = DB.getBucket('workflow_order').openCursor()
+        let data = []
+        request.onsuccess = async event => {
+          var cursor = event.target.result
+          if (cursor) {
+            if (
+              cursor.value.type === 'dinein' &&
+              cursor.value.status === 'offline'
+            ) {
+              data.push(cursor.value)
+            }
+            cursor.continue()
+          } else {
+            if (data.length) {
+              console.log(
+                'data found in workflow, send response from offline cache'
+              )
+              //data found in offline to be synced, just send response from offline cache
+              this.getOrders(url, payload)
+                .then(data => resolve(data))
+                .catch(() => resolve(serverResponse))
+            } else {
+              console.log(
+                'data not found in workflow, send response from server'
+              )
+              resolve(serverResponse)
+            }
+          }
+          request.onerror = () => {
+            resolve(serverResponse)
+          }
+        }
+      } else {
+        console.log('do not catch, send response from server')
+        resolve(serverResponse)
+      }
+    })
+  },
   addOfflineEvent: function(url, payload, method) {
     if (method === 'GET') {
       return this.getOrders(url, payload)
@@ -1139,35 +1218,38 @@ var Dinein = {
             .then(({ records }) => {
               console.log('dinein_reservations records', records)
               let record = records[0]
-              //in case of reservation don't filter
-              //in case of running filter only in-progress
-              response.data = record.data.data.filter(order => {
-                if (status.includes(order.status)) {
-                  //order matched
-                  order.related_orders_ids.forEach(
-                    orderId =>
-                      (orders._id[orderId] =
-                        record.data.page_lookups.orders._id[orderId])
-                  )
+              if (record.data && record.data.data) {
+                //in case of reservation don't filter
+                //in case of running filter only in-progress
+                response.data = record.data.data.filter(order => {
+                  if (status.includes(order.status)) {
+                    //order matched
+                    order.related_orders_ids.forEach(
+                      orderId =>
+                        (orders._id[orderId] =
+                          record.data.page_lookups.orders._id[orderId])
+                    )
 
-                  const table = tables.data.data.find(
-                    table => table._id === order.assigned_table_id
-                  )
-                  dineinTables._id[order.assigned_table_id] = table
+                    const table = tables.data.data.find(
+                      table => table._id === order.assigned_table_id
+                    )
+                    dineinTables._id[order.assigned_table_id] = table
 
-                  return true
-                }
-                return false
-              })
-              response.count = response.data.length
-              //restore lookups
-              response.page_lookups = record.data.page_lookups
-              //update orders
-              response.page_lookups.orders = orders
-              //update dine in tables
-              response.page_lookups.dine_in_tables = dineinTables
-
-              resolve(response)
+                    return true
+                  }
+                  return false
+                })
+                response.count = response.data.length
+                //restore lookups
+                response.page_lookups = record.data.page_lookups
+                //update orders
+                response.page_lookups.orders = orders
+                //update dine in tables
+                response.page_lookups.dine_in_tables = dineinTables
+                resolve(response)
+              } else {
+                reject()
+              }
             })
             .catch(error => reject(error))
         })
