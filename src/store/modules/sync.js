@@ -1,6 +1,6 @@
 // initial state
 import * as CONST from '@/constants'
-import { dispatch } from 'd3'
+
 const state = {
   //date: '2019-02-06',
   compress: false,
