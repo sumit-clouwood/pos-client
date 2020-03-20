@@ -5,6 +5,7 @@ const state = {
   selectedItemContainer: false,
   subItems: false,
   errorMessage: '',
+  activeComboItems: {},
 }
 
 const actions = {
@@ -55,6 +56,11 @@ const mutations = {
   },
   [mutation.SET_ERROR_MESSAGE](state, errorMessage) {
     state.errorMessage = errorMessage
+  },
+  [mutation.ACTIVE_COMBO_ITEMS](state, activeComboItems) {
+    state.activeComboItems = activeComboItems
+    // eslint-disable-next-line no-console
+    console.log(state.activeComboItems, 'state.activeComboItems')
   },
 }
 

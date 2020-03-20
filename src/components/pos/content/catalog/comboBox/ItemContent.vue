@@ -85,7 +85,11 @@ export default {
     },
   },
   computed: {
-    ...mapState('comboItems', ['subItems', 'selectedItemContainer']),
+    ...mapState('comboItems', [
+      'subItems',
+      'selectedItemContainer',
+      'activeComboItems',
+    ]),
     ...mapGetters('location', ['formatPrice', '_t']),
     ...mapGetters('comboItems', ['limitOfSelectingItems']),
   },
@@ -135,7 +139,10 @@ export default {
           )
         }
       }
-      console.log(this.activeItems)
+      this.$store.commit('comboItems/ACTIVE_COMBO_ITEMS', this.activeItem, {
+        root: true,
+      })
+      console.log(this.activeItems, 'this.activeItems')
     },
     setModifiersForItem(item) {
       // if (this.$store.getters['modifier/hasModifiers'](item)) {
