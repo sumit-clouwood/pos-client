@@ -142,12 +142,12 @@ export default {
       }
     },
     setModifiersForItem(item) {
-      if (this.$store.getters['modifier/hasModifiers'](item)) {
-        $('#POSItemOptions .modifier-option-radio').prop('checked', false)
-        this.$store.dispatch('modifier/assignModifiersToItem', item)
-        this.$store.commit('orderForm/clearSelection')
-        showModal('#POSItemOptions')
-      }
+      // if (this.$store.getters['modifier/hasModifiers'](item)) {
+      $('#POSItemOptions .modifier-option-radio').prop('checked', false)
+      this.$store.dispatch('modifier/assignModifiersToItem', item)
+      this.$store.commit('orderForm/clearSelection')
+      showModal('#POSItemOptions')
+      // }
       /*let selectItemId = this.selectedItemContainer._id.$oid
       /!*let activeItemCount = {
         activeItem: selectItemId,
