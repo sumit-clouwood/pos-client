@@ -217,6 +217,14 @@ const actions = {
       crm_module_enabled,
     }
   ) {
+    let dt = rootState.auth.deviceType
+    let isIOS = dt.osType
+    if (isIOS) {
+      //Added new field for detecting reprint or new order for IOS and Android App.
+      orderData.isReprint =
+        typeof orderData.isReprint != 'undefined' ? orderData.isReprint : 0
+    }
+
     // eslint-disable-next-line no-console
     console.log(locationData, 'locationData', customerData)
     return new Promise(resolve => {
@@ -246,8 +254,6 @@ const actions = {
         token_manager: rootState.location.store.token_manager,
         windows_app: false,
       }
-      let dt = rootState.auth.deviceType
-      let isIOS = dt.osType
       if (
         orderData.order_type == 'DINE-IN' ||
         orderData.order_type == 'dine_in'
@@ -333,16 +339,16 @@ const actions = {
     console.log(isIOS, JSON.stringify(orderData))
     if (isIOS) {
       localStorage.setItem('orderInvoiceColData', '')
-      /*if (!dt.standalone && !dt.browserType) */ {
+      if (!dt.standalone && !dt.browserType) {
         //This is  a uiwebview
         const urlParams = new URLSearchParams(window.location.search)
         urlParams.set('iosprint', '1')
         window.location.search = urlParams
-        localStorage.setItem(
-          'initiateWebView',
-          Math.floor(Math.random() * 100 + 1)
-        )
       }
+      localStorage.setItem(
+        'initiateWebView',
+        Math.floor(Math.random() * 100 + 1)
+      )
     }
     if (isIOS && orderData) {
       dispatch('printingSetup', orderData)
