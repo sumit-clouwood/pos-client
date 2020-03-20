@@ -8,13 +8,22 @@ const state = {
 }
 
 const actions = {
-  findItemById({ state, rootState, commit }) {
+  findItemById({ state, rootState, rootGetters, commit }) {
     let items = []
     rootState.category.items.forEach(item => {
       if (state.selectedItemContainer.for_items.includes(item._id)) {
         items.push(item)
       }
     })
+    if (rootGetters['auth/multistore']) {
+      let multistoreItems =
+        rootState.category.multistoreItems[rootState.context.storeId]
+      multistoreItems.forEach(item => {
+        if (state.selectedItemContainer.for_items.includes(item._id)) {
+          items.push(item)
+        }
+      })
+    }
     commit(mutation.SUB_ITEM_LIST, items)
   },
 }
