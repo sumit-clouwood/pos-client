@@ -310,8 +310,11 @@ const actions = {
         .finally(() => commit('SET_PROCESSING', false))
     })
   },
-  printInvoice({ commit }, { templateId, order }) {
+  printInvoice({ commit, rootState }, { templateId, order }) {
+    let dt = rootState.auth.deviceType
+    let isIOS = dt.osType
     commit('invoice/SET_TEMPLATE_ID', templateId, { root: true })
+    if (isIOS) order.item.isReprint = 1
     commit('checkout/SET_ORDER', order.item, { root: true })
     if (order.table_number) {
       //set table no to show on invoice, only dinein order ll have it
