@@ -169,12 +169,12 @@ export default {
               })
           }
         } else {
-          validationError = {
-            status: 'flash_message',
-            flash_message: this._t('Please select a cover.'),
-          }
-          this.$store.commit('customer/SET_RESPONSE_MESSAGES', validationError)
-          $('#information-popup').modal('show')
+          this.$store.commit('order/setAlert', {
+            type: 'alert',
+            title: 'Dine-in Covers!',
+            msg: 'Please select a cover for new item.',
+          })
+          $('#alert-popup').modal('show')
         }
       } else {
         validationError = {
