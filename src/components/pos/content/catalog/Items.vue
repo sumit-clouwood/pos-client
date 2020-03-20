@@ -158,6 +158,7 @@ export default {
       if (this.splitBill) {
         return false
       }
+      this.$store.commit('order/setEditMode', false)
       this.$store.commit('order/RESET_SPLIT_BILL')
       //load data only when new order is starting
       if (!this.$store.state.order.items.length) {

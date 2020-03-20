@@ -466,6 +466,11 @@ const actions = {
       }
 
       if (item) {
+        if (typeof item.no !== 'undefined' && item.no > -1) {
+          item['kitchen_invoice'] = 0
+        } else {
+          item['kitchen_invoice'] = 1
+        }
         let orderItem = {
           name: item.name,
           entity_id: item._id,
@@ -477,17 +482,13 @@ const actions = {
           qty: item.quantity,
           note: item.note,
           originalItem: item,
+          kitchen_invoice: item['kitchen_invoice'],
         }
         //add store id with item if available
         if (item.store_id) {
           orderItem.store_id = item.store_id
         }
 
-        if (typeof item.kitchen_invoice !== 'undefined') {
-          orderItem['kitchen_invoice'] = item.kitchen_invoice
-        } else {
-          orderItem['kitchen_invoice'] = 0
-        }
         if (item.measurement_unit) {
           orderItem.measurement_unit = item.measurement_unit
         }
@@ -1150,6 +1151,14 @@ const actions = {
                 )
                 commit(mutation.PRINT, true)
               }
+              //Invoice APP API Call with Custom Request JSON
+              dispatch(
+                  'printingServer/printingServerInvoiceRaw',
+                  rootState.order.selectedOrder.item,
+                  {
+                    root: true,
+                  }
+              )
               commit('order/CLEAR_SELECTED_ORDER', null, { root: true })
               resolve()
               commit(
