@@ -307,7 +307,7 @@ i.fa.fa-check.item-selected-check {
     display: grid;
     grid-template-columns: 1fr;
   }
-  .modal-body[data-v-446e20ea] {
+  .modal-body {
     display: grid;
     grid-template-columns: repeat(2, 2fr);
     grid-column-gap: 0.938rem;
