@@ -5,6 +5,7 @@ const state = {
   selectedItemContainer: false,
   subItems: false,
   errorMessage: '',
+  activeComboItems: {},
 }
 
 const actions = {
@@ -29,6 +30,17 @@ const actions = {
 }
 
 const getters = {
+  getItemIds: state => {
+    let items = []
+    if (state.comboItemsList) {
+      state.comboItemsList.combo_items.map(item => {
+        let currentItemObject = {}
+        currentItemObject[item._id.$oid] = []
+        items.push(currentItemObject)
+      })
+    }
+    return items
+  },
   comboItemName: state => {
     if (state.comboItemsList) {
       return state.comboItemsList.name
@@ -82,6 +94,11 @@ const mutations = {
   },
   [mutation.SET_ERROR_MESSAGE](state, errorMessage) {
     state.errorMessage = errorMessage
+  },
+  [mutation.ACTIVE_COMBO_ITEMS](state, activeComboItems) {
+    state.activeComboItems = activeComboItems
+    // eslint-disable-next-line no-console
+    console.log(state.activeComboItems, 'state.activeComboItems')
   },
 }
 

@@ -4,7 +4,7 @@
       class="foodbox_container"
       v-for="(item, index) in subItems"
       :class="{
-        active_right_combo: isActiveItem(item),
+        active_right_combo: isActiveItem(item._id),
       }"
       :key="index"
       @click="setActiveItems(item)"
@@ -65,7 +65,6 @@ export default {
   data() {
     return {
       activeItems: [],
-      activeCountList: [],
     }
   },
   watch: {
@@ -85,22 +84,33 @@ export default {
     },
   },
   computed: {
-    ...mapState('comboItems', ['subItems', 'selectedItemContainer']),
+    ...mapState('comboItems', [
+      'subItems',
+      'selectedItemContainer',
+      'activeComboItems',
+    ]),
     ...mapGetters('location', ['formatPrice', '_t']),
     ...mapGetters('comboItems', ['limitOfSelectingItems']),
   },
   methods: {
-    isActiveItem(item) {
-      console.log(this.activeItems[this.selectedItemContainer._id.$oid])
+    isActiveItem(itemId) {
+      let activeItem = false
+      console.log(this.activeItems, 'this.activeItemsthis.activeItems')
       if (
         typeof this.activeItems[this.selectedItemContainer._id.$oid] !=
         'undefined'
       ) {
-        return this.activeItems[this.selectedItemContainer._id.$oid].find(
-          isActive => isActive._id == item._id
+        activeItem = this.activeItems[this.selectedItemContainer._id.$oid].find(
+          isActiveItam => {
+            console.log(isActiveItam)
+            if (isActiveItam._id === itemId) {
+              return true
+            }
+          }
         )
       }
-      return false
+      console.log(activeItem, 'activeItem')
+      return activeItem
     },
     ...mapActions('order', ['setActiveItem']),
     setActiveItems(item) {
@@ -135,7 +145,10 @@ export default {
           )
         }
       }
-      console.log(this.activeItems)
+      this.$store.commit('comboItems/ACTIVE_COMBO_ITEMS', this.activeItem, {
+        root: true,
+      })
+      console.log(this.activeItems, 'this.activeItems')
     },
     setModifiersForItem(item) {
       // if (this.$store.getters['modifier/hasModifiers'](item)) {
@@ -144,23 +157,6 @@ export default {
       this.$store.commit('orderForm/clearSelection')
       showModal('#POSItemOptions')
       // }
-      /*let selectItemId = this.selectedItemContainer._id.$oid
-      /!*let activeItemCount = {
-        activeItem: selectItemId,
-        activeSubItem: this.activeItems,
-      }*!/
-      let indexSubItem = this.activeCountList.indexOf(selectItemId)
-      // alert(indexSubItem)
-      if (indexSubItem < 1) {
-        this.activeItems = []
-      }
-      this.activeCountList[selectItemId] = this.activeItems
-      // eslint-disable-next-line no-console
-      console.log(
-        this.selectedItemContainer,
-        this.activeItems,
-        this.activeCountList
-      )*/
     },
     commitErrorMessage(message) {
       this.$store.commit('comboItems/SET_ERROR_MESSAGE', message)
