@@ -5,6 +5,7 @@
         type="button"
         class="btn btn-success btn-default "
         data-dismiss="modal"
+        @click="addComboItemCart"
       >
         {{ _t('Add to Order') }}
       </button>
@@ -12,6 +13,7 @@
         type="button"
         class="btn btn-danger cancel-announce"
         data-dismiss="modal"
+        @click="emptyComboSelection"
       >
         {{ _t('Cancel') }}
       </button>
@@ -20,10 +22,27 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 export default {
   computed: {
     ...mapGetters('location', ['_t']),
+    ...mapState('comboItems', ['comboItemsList', 'activeComboItems']),
+  },
+  data() {
+    return {
+      comboItem: [],
+    }
+  },
+  methods: {
+    addComboItemCart() {
+      this.comboItem[this.comboItemsList._id] = this.activeComboItems
+      // eslint-disable-next-line no-console
+      console.log(this.comboItem)
+    },
+    emptyComboSelection() {
+      this.comboItem[this.comboItemsList] = false
+      this.$store.commit('comboItems/ACTIVE_COMBO_ITEMS', false)
+    },
   },
 }
 </script>
