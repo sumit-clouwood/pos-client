@@ -4,22 +4,10 @@
       class="foodbox_container"
       v-for="(item, index) in subItems"
       :class="{
-        active_right_combo: activeItems.includes(
-          JSON.stringify({
-            container: selectedItemContainer._id.$oid,
-            item: item,
-          })
-        ),
+        active_right_combo: isActiveItem(item),
       }"
       :key="index"
-      @click="
-        setActiveItems(
-          JSON.stringify({
-            container: selectedItemContainer._id.$oid,
-            item: item,
-          })
-        )
-      "
+      @click="setActiveItems(item)"
     >
       <div class="food-item-box">
         <img :src="item.image" alt v-if="item.image != ''" />
@@ -84,13 +72,12 @@ export default {
     subItems(newVal, oldVal) {
       if (newVal != oldVal) {
         this.$nextTick(() => {
-          if (!this.selectedItems.length) {
-            this.activeItems.push(
-              JSON.stringify({
-                container: this.selectedItemContainer._id.$oid,
-                item: this.subItems[0],
-              })
-            )
+          let itemsLength =
+            this.activeItems[this.selectedItemContainer._id.$oid] || []
+          if (!itemsLength.length) {
+            this.activeItems[this.selectedItemContainer._id.$oid] = [
+              this.subItems[0],
+            ]
           }
           this.commitErrorMessage('')
         })
@@ -101,33 +88,41 @@ export default {
     ...mapState('comboItems', ['subItems', 'selectedItemContainer']),
     ...mapGetters('location', ['formatPrice', '_t']),
     ...mapGetters('comboItems', ['limitOfSelectingItems']),
-    selectedItems() {
-      return this.subItems.filter(item =>
-        this.activeItems.includes(
-          JSON.stringify({
-            container: this.selectedItemContainer._id.$oid,
-            item: item,
-          })
-        )
-      )
-    },
   },
   methods: {
+    isActiveItem(item) {
+      console.log(this.activeItems[this.selectedItemContainer._id.$oid])
+      if (
+        typeof this.activeItems[this.selectedItemContainer._id.$oid] !=
+        'undefined'
+      ) {
+        return this.activeItems[this.selectedItemContainer._id.$oid].find(
+          isActive => isActive._id == item._id
+        )
+      }
+      return false
+    },
     ...mapActions('order', ['setActiveItem']),
-    setActiveItems(element) {
-      let selectedLength = this.selectedItems.length
-      let itemIndex = this.activeItems.indexOf(element)
-      if (itemIndex > -1) {
-        this.activeItems.splice(itemIndex, 1)
+    setActiveItems(item) {
+      let selectedItemId = this.selectedItemContainer._id.$oid
+      let itemIndex = this.activeItems[selectedItemId].find(
+        activatedItem => activatedItem._id === item._id
+      )
+      let selectedLength = this.activeItems[selectedItemId].length
+      alert(selectedLength)
+      console.log(itemIndex, Object.values(this.activeItems[selectedItemId]))
+      if (itemIndex) {
+        let indexSubItem = this.activeItems[selectedItemId].indexOf(itemIndex)
+        this.activeItems[selectedItemId].splice(indexSubItem, 1)
         this.commitErrorMessage('')
       } else {
         if (selectedLength != this.limitOfSelectingItems) {
           this.commitErrorMessage('')
-          this.activeItems.push(element)
-          let parsedItem = JSON.parse(element)['item']
-          this.setModifiersForItem(parsedItem)
+          this.activeItems[selectedItemId].push(item)
+          // let parsedItem = JSON.parse(element)['item']
+          this.setModifiersForItem(item)
           if (
-            this.$store.getters['modifier/itemMandatoryGroups'](parsedItem._id)
+            this.$store.getters['modifier/itemMandatoryGroups'](item._id)
               .length > 0
           ) {
             showModal('#POSItemOptions')
@@ -140,6 +135,7 @@ export default {
           )
         }
       }
+      console.log(this.activeItems)
     },
     setModifiersForItem(item) {
       // if (this.$store.getters['modifier/hasModifiers'](item)) {
