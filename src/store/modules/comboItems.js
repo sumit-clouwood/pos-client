@@ -41,6 +41,33 @@ const getters = {
     }
     return 1
   },
+  getItemIds: state => {
+    let items = []
+    if (state.comboItemsList) {
+      state.comboItemsList.combo_items.map(item => {
+        let currentItemObject = {}
+        currentItemObject[item._id.$oid] = []
+        items.push(currentItemObject)
+      })
+    }
+    return items
+  },
+  /*
+  [
+      {
+        itemId:[
+        {item1},
+        {item2}
+      ]
+    },
+      itemId:[
+        {
+          {item1},
+          {item2}
+        }
+      ]
+  ]
+  */
 }
 
 const mutations = {
