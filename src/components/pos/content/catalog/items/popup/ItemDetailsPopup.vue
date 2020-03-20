@@ -35,6 +35,7 @@
           "
               data-dismiss="modal"
               aria-label="Close"
+              @click.prevent="$emit('resetCurrentItem', {})"
             >
               <span aria-hidden="true">&times;</span>
             </button>

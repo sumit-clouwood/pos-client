@@ -1150,6 +1150,14 @@ const actions = {
                 )
                 commit(mutation.PRINT, true)
               }
+              //Invoice APP API Call with Custom Request JSON
+              dispatch(
+                'printingServer/printingServerInvoiceRaw',
+                rootState.order.selectedOrder.item,
+                {
+                  root: true,
+                }
+              )
               commit('order/CLEAR_SELECTED_ORDER', null, { root: true })
               resolve()
               commit(

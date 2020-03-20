@@ -13,12 +13,30 @@
     display: inline-block;
   }
 }
-
+@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) {
+  .footer {
+    margin-top: -17px; /* your css rules for ipad landscape */
+  }
+  .main-orders {
+    height: calc(100vh - 14.0625rem);
+  }
+  .navigation .navigation-avatar {
+    //margin-top: -0px;
+  }
+  .navigation .slider-btn {
+    //margin-top: -20px;
+  }
+  .navigation {
+    grid-template-rows: 5.3125rem .95fr 3.75rem 6.25rem;
+  }
+  .header .header-main .header-main-right .setting-dropdown ul.dine-footer-navmenu {
+    bottom: 20px;
+  }
+}
 .footer {
   border-top: 1px solid $gray-middle;
   display: grid;
   grid-template-columns: 65% 35%;
-
   .footer-slider {
     border-right: 1px solid $gray-middle;
     position: relative;
