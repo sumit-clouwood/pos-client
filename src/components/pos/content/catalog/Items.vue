@@ -35,6 +35,13 @@
         @click.prevent="addToOrder(item)"
         ref="entityItem"
       >
+        <div
+          v-if="item.image != '' && isEnabled"
+          class="item-details-icon"
+          @click.stop="showDetails(item)"
+        >
+          <img style="padding: 3px;" src="img/icons/maximize.svg" />
+        </div>
         <img
           v-if="item.image != ''"
           class="food-menu-item-img"
@@ -52,6 +59,11 @@
           {{ currency }} {{ item.value || 0 }}
         </div>
       </div>
+      <item-details-popup
+        :currentItem="currentItem"
+        @resetCurrentItem="resetCurrentItem"
+      />
+
       <!-- <Popup /> -->
     </div>
     <div
@@ -70,7 +82,9 @@
 <script>
 /* global $, showModal  */
 import { mapGetters, mapState } from 'vuex'
+import * as CONST from '@/constants'
 import bootstrap from '@/bootstrap'
+import ItemDetailsPopup from './items/popup/ItemDetailsPopup'
 // import Popup from './items/Popup'
 import Scroll from '@/mixins/Scroll'
 // import btnBack from '../../../mobileComponents/mobileElements/btnBack'
@@ -84,6 +98,7 @@ export default {
   components: {
     // Popup,
     // btnBack,
+    ItemDetailsPopup,
   },
   data() {
     return {
@@ -91,6 +106,7 @@ export default {
       entity: 'entityItem',
       margin: 17.5,
       keepEntitiesInScroll: 0,
+      currentItem: {},
     }
   },
   computed: {
@@ -102,6 +118,9 @@ export default {
     ...mapGetters('category', ['items', 'itemByCode']),
     ...mapGetters('modifier', ['hasModifiers']),
     ...mapGetters(['foodMenuHendler', 'bascketItems']),
+    isEnabled() {
+      return this.$store.getters['modules/enabled'](CONST.MODULE_DINE_IN_MENU)
+    },
   },
   watch: {
     items() {
@@ -123,6 +142,13 @@ export default {
   updated() {},
   beforeUpdated() {},
   methods: {
+    resetCurrentItem(payLoad) {
+      this.currentItem = payLoad
+    },
+    showDetails(item) {
+      this.currentItem = item
+      showModal('#item-details-popup')
+    },
     addToOrder(item) {
       // if (this.selectedOrder) {
       // if (
@@ -238,14 +264,24 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-@import '../../../../assets/scss/pixels_rem.scss';
-@import '../../../../assets/scss/variables.scss';
-@import '../../../../assets/scss/mixins.scss';
+@import '@/assets/scss/pixels_rem.scss';
+@import '@/assets/scss/variables.scss';
+@import '@/assets/scss/mixins.scss';
 
 .pos-item-bg {
   img {
     max-width: 146px;
   }
+}
+.item-details-icon {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  z-index: 999;
+  height: 3.6rem;
+  width: 100%;
+  clip-path: polygon(0px 0px, 0px 100%, 45% 0px);
+  background: rgba(220, 220, 220, 0.9);
 }
 
 @include responsive(mobile) {
@@ -297,7 +333,9 @@ export default {
       padding-right: 20px;
       background: #fafafa;
       transition: 0.1s ease-out;
-
+      .item-details-icon {
+        display: none;
+      }
       &:not(.color-dashboard-background) {
         // padding-left: 85px;
         padding-right: 0;

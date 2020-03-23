@@ -42,9 +42,9 @@
 </template>
 
 <script>
-import { mapGetters, mapState } from 'vuex'
+import { mapGetters, mapState, mapActions } from 'vuex'
 import Progress from '@/components/util/Progress'
-
+import md5 from 'js-md5'
 export default {
   name: 'Lockpad',
   data() {
@@ -62,6 +62,8 @@ export default {
   computed: {
     ...mapGetters('context', ['store']),
     ...mapState('context', ['brandId', 'storeId']),
+    ...mapState('sync', ['online']),
+    ...mapActions('auth', ['filterUserInOffline']),
   },
   components: { Progress },
   methods: {
@@ -74,20 +76,16 @@ export default {
         this.pincode = this.pincode.substr(0, this.pincode.length - 1)
       }
     },
-    login() {
-      if (!this.pincode) {
-        return false
-      }
-
-      this.processing = true
+    loginOffline() {
       this.$store
-        .dispatch('auth/pinlogin', {
-          pincode: this.pincode,
-          brand: this.brand_id,
-          store: this.store_id,
-        })
-        .then(() => {
-          this.$router.replace({ name: 'Home' })
+        .dispatch('auth/filterUserInOffline', md5(this.pincode))
+        .then(user => {
+          if (user) {
+            this.$router.replace({ name: 'Home' })
+            localStorage.setItem('offline_mode_login', true)
+            this.$store.commit('auth/SET_OFFLINE_PIN', this.pincode)
+            this.$store.commit('sync/status', false)
+          }
         })
         .catch(error => {
           this.error = error
@@ -100,6 +98,45 @@ export default {
         .finally(() => {
           this.processing = false
         })
+    },
+    login() {
+      if (!this.pincode) {
+        return false
+      }
+
+      this.processing = true
+      if (!this.online) {
+        this.loginOffline()
+      } else {
+        this.$store
+          .dispatch('auth/pinlogin', {
+            pincode: this.pincode,
+            brand: this.brand_id,
+            store: this.store_id,
+          })
+          .then(() => {
+            this.$router.replace({ name: 'Home' })
+            localStorage.setItem('offline_mode_login', false)
+          })
+          .catch(error => {
+            if (
+              error.message === 'Network Error' ||
+              JSON.stringify(error.message).match('Network Error')
+            ) {
+              this.loginOffline()
+            } else {
+              this.error = error.response.data.error
+              this.showError = true
+              this.pincode = ''
+              setTimeout(() => {
+                this.showError = false
+              }, 3000)
+            }
+          })
+          .finally(() => {
+            this.processing = false
+          })
+      }
     },
   },
 

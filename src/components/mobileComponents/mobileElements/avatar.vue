@@ -34,13 +34,6 @@ export default {
     // }),
     ...mapState({
       user: state => state.auth.userDetails.item,
-      collectedData: state => state.auth.userDetails.collected_data,
-      rootStore: state =>
-        state.auth.userDetails.collected_data.page_lookups.root_stores,
-      //rootBrandRoles: state =>
-      //  state.auth.userDetails.collected_data.page_lookups.root_brand_roles,
-      brands: state =>
-        state.auth.userDetails.collected_data.page_lookups.brands,
     }),
   },
 }
