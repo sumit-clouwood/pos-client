@@ -91,45 +91,59 @@ export default {
     ]),
     ...mapGetters('location', ['formatPrice', '_t']),
     ...mapGetters('comboItems', ['limitOfSelectingItems']),
+    selectedContainerId() {
+      return this.selectedItemContainer._id.$oid
+    },
+    // ...mapGetters({
+    //   activeItems: ['comboItems/getItemIds'],
+    // }),
   },
   methods: {
     isActiveItem(itemId) {
       let activeItem = false
-      console.log(this.activeItems, 'this.activeItemsthis.activeItems')
-      if (
-        typeof this.activeItems[this.selectedItemContainer._id.$oid] !=
-        'undefined'
-      ) {
-        activeItem = this.activeItems[this.selectedItemContainer._id.$oid].find(
-          isActiveItam => {
-            console.log(isActiveItam)
-            if (isActiveItam._id === itemId) {
-              return true
+      let selectedContainerId = this.selectedContainerId
+      if (typeof this.activeItems[selectedContainerId] != 'undefined') {
+        this.activeItems[selectedContainerId].forEach(element => {
+          if (element) {
+            if (element._id === itemId) {
+              if (!activeItem) activeItem = true
             }
           }
-        )
+        })
       }
-      console.log(activeItem, 'activeItem')
       return activeItem
     },
     ...mapActions('order', ['setActiveItem']),
     setActiveItems(item) {
-      let selectedItemId = this.selectedItemContainer._id.$oid
-      let itemIndex = this.activeItems[selectedItemId].find(
-        activatedItem => activatedItem._id === item._id
-      )
-      let selectedLength = this.activeItems[selectedItemId].length
-      alert(selectedLength)
-      console.log(itemIndex, Object.values(this.activeItems[selectedItemId]))
-      if (itemIndex) {
-        let indexSubItem = this.activeItems[selectedItemId].indexOf(itemIndex)
-        this.activeItems[selectedItemId].splice(indexSubItem, 1)
+      // let activeItemsWithIds = this.activeItems
+
+      let selectedContainerId = this.selectedContainerId
+      let itemIndex = -1
+      let selectedLength = 0
+      // activeItemsWithIds.forEach(element => {
+      //   if (Object.keys(element)[0] === selectedContainerId) {
+      //     Object.entries(element).forEach(currentItem => [
+      //       currentItem[1].push(item),
+      //     ])
+      //   }
+      // })
+      // console.log('Active Items are: ', activeItemsWithIds)
+      if (this.activeItems.length > 0) {
+        itemIndex = this.activeItems[selectedContainerId].find(
+          activatedItem => activatedItem._id === item._id
+        )
+        selectedLength = this.activeItems[selectedContainerId].length
+      }
+      if (itemIndex > -1) {
+        let indexSubItem = this.activeItems[selectedContainerId].indexOf(
+          itemIndex
+        )
+        this.activeItems[selectedContainerId].splice(indexSubItem, 1)
         this.commitErrorMessage('')
       } else {
         if (selectedLength != this.limitOfSelectingItems) {
           this.commitErrorMessage('')
-          this.activeItems[selectedItemId].push(item)
-          // let parsedItem = JSON.parse(element)['item']
+          this.activeItems[selectedContainerId].push(item)
           this.setModifiersForItem(item)
           if (
             this.$store.getters['modifier/itemMandatoryGroups'](item._id)
@@ -145,7 +159,7 @@ export default {
           )
         }
       }
-      this.$store.commit('comboItems/ACTIVE_COMBO_ITEMS', this.activeItem, {
+      this.$store.commit('comboItems/ACTIVE_COMBO_ITEMS', this.activeItems, {
         root: true,
       })
       console.log(this.activeItems, 'this.activeItems')
