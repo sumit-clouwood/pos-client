@@ -338,6 +338,12 @@ const getters = {
 
 // actions
 const actions = {
+  setPrinterConfigurationKey() {
+    //This is  a uiwebview
+    const urlParams = new URLSearchParams(window.location.search)
+    urlParams.set('printersetting', Math.floor(Math.random() * 100 + 1))
+    window.location.search = urlParams
+  },
   addNoteToItem({ commit }, note) {
     let item = { ...state.item }
     item.note = note
