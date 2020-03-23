@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="modifiers-popup">
     <div
       class="modifier-top-arrow food-arrow"
       @click="scroll('down')"

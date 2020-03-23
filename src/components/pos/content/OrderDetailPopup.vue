@@ -194,12 +194,16 @@ export default {
   methods: {
     ...mapActions('customer', ['fetchSelectedCustomer']),
     ...mapActions('deliveryManager', ['printInvoice']),
-    printInvoiceDisableKitchenPrint(details) {
-      //Detect if Reprinted or not.
-      if (details.templateId) {
-        details.order.item.isReprint = 1
-      } else {
-        details.order.item.isReprint = 0
+    printInvoiceDisableKitchenPrint(details, rootState) {
+      let dt = rootState.auth.deviceType
+      let isIOS = dt.osType
+      if (isIOS) {
+        //Detect if Reprinted or not.
+        if (details.templateId) {
+          details.order.item.isReprint = 1
+        } else {
+          details.order.item.isReprint = 0
+        }
       }
       if (window.PrintHandle == null) {
         this.printInvoice(details)

@@ -78,6 +78,9 @@
                 name="alternate-phone-from"
                 v-model="newCustomerDetails.alternative_phone"
               />
+              <span class="validation-error" v-if="errors.alternative_phone">{{
+                errors.alternative_phone
+              }}</span>
             </div>
           </div>
           <div class="col-md-6 right-form">
@@ -212,6 +215,7 @@
 </template>
 
 <script>
+/* eslint-disable max-len */
 import { mapState, mapGetters } from 'vuex'
 import { Datetime } from 'vue-datetime'
 import { CoolSelect } from 'vue-cool-select'
@@ -337,6 +341,10 @@ export default {
           this._t('Mobile number') + ' ' + this._t('is required')
         this.errors.count = 1
       }
+      const phone_regex = new RegExp(
+        // eslint-disable-next-line no-useless-escape
+        /^(?:(?:\(?(?:00|\+)([1-4]\d\d|[1-9]\d?)\)?)?[\-\.\ \\\/]?)?((?:\(?\d{1,}\)?[\-\.\ \\\/]?){0,})(?:[\-\.\ \\\/]?(?:#|ext\.?|extension|x)[\-\.\ \\\/]?(\d+))?$/
+      )
       if (
         this.newCustomerDetails.phone_number &&
         $.trim(this.newCustomerDetails.phone_number).length < 10
@@ -347,6 +355,19 @@ export default {
           this._t('length should be 10 or more characters')
         this.errors.count = 1
       }
+
+      if (
+        this.newCustomerDetails.alternative_phone &&
+        ($.trim(this.newCustomerDetails.alternative_phone).length < 10 ||
+          !this.newCustomerDetails.alternative_phone.match(phone_regex))
+      ) {
+        this.errors.alternative_phone =
+          this._t('Alternate Mobile number') +
+          ' ' +
+          this._t('should be correct format and more than 10 chars')
+        this.errors.count = 1
+      }
+
       if (this.customer_title !== 'Edit' && this.loyalty !== true) {
         if (!this.selectedDeliveryArea) {
           this.errors.delivery_area_id = this._t('Delivery area required')
