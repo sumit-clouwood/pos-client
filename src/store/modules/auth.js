@@ -323,42 +323,46 @@ const actions = {
   },
   // eslint-disable-next-line no-unused-vars
   filterUserInOffline({ state, commit, dispatch, rootGetters }, encryptedPin) {
-    let user = { item: false }
-    user.item = state.storeUsers.filter(user => {
-      return user.e_swipe_card === encryptedPin
-    })[0]
-    if (user.item) {
-      commit(mutation.USER_DETAILS, user)
-      dispatch('setCurrentRole')
-      let randomToken =
-        Math.random()
-          .toString(36)
-          .slice(2)
-          .toUpperCase() +
-        Math.random()
-          .toString(36)
-          .slice(2)
-      localStorage.setItem('token', randomToken)
-      commit(mutation.SET_TOKEN, randomToken)
+    return new Promise((resolve, reject) => {
+      let user = { item: false }
+      user.item = state.storeUsers.filter(user => {
+        return user.e_swipe_card === encryptedPin
+      })[0]
+      if (!user.item) {
+        reject('Incorrect credentials')
+      } else {
+        commit(mutation.USER_DETAILS, user)
+        dispatch('setCurrentRole')
+        let randomToken =
+          Math.random()
+            .toString(36)
+            .slice(2)
+            .toUpperCase() +
+          Math.random()
+            .toString(36)
+            .slice(2)
+        localStorage.setItem('token', randomToken)
+        commit(mutation.SET_TOKEN, randomToken)
 
-      if (
-        localStorage.getItem('brand_id') &&
-        localStorage.getItem('store_id')
-      ) {
-        commit('context/SET_BRAND_ID', localStorage.getItem('brand_id'), {
-          root: true,
+        if (
+          localStorage.getItem('brand_id') &&
+          localStorage.getItem('store_id')
+        ) {
+          commit('context/SET_BRAND_ID', localStorage.getItem('brand_id'), {
+            root: true,
+          })
+          commit('context/SET_STORE_ID', localStorage.getItem('store_id'), {
+            root: true,
+          })
+        }
+
+        DataService.setContext({
+          brand: rootGetters['context/brand'],
+          store: rootGetters['context/store'],
         })
-        commit('context/SET_STORE_ID', localStorage.getItem('store_id'), {
-          root: true,
-        })
+        resolve(user)
       }
-
-      DataService.setContext({
-        brand: rootGetters['context/brand'],
-        store: rootGetters['context/store'],
-      })
-    }
-    return user
+    })
   },
   setCurrentRole({ state, commit }) {
     const currentRole = state.rolePermissions.find(
