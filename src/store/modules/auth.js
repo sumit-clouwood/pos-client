@@ -329,7 +329,7 @@ const actions = {
         return user.e_swipe_card === encryptedPin
       })[0]
       if (!user.item) {
-        reject('Incorrect credentials')
+        reject('Invalid user credentials')
       } else {
         commit(mutation.USER_DETAILS, user)
         dispatch('setCurrentRole')
