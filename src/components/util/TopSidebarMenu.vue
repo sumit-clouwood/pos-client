@@ -505,7 +505,7 @@ export default {
     ...mapGetters('location', ['_t', 'permitted']),
   },
   methods: {
-    ...mapActions('order', ['setPrinterConfigurationKey']),
+    ...mapActions('invoice', ['setPrinterConfigurationKey']),
     baseurl(link) {
       /*DeliveryManager, Dinein*/
       let replaceURI = ''
