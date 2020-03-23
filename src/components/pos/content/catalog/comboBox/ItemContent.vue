@@ -4,7 +4,7 @@
       class="foodbox_container"
       v-for="(item, index) in subItems"
       :class="{
-        active_right_combo: isActiveItem(item._id),
+        active_right_combo: activeOnClick.includes(item._id),
       }"
       :key="index"
       @click="setActiveItems(item)"
@@ -65,6 +65,7 @@ export default {
   data() {
     return {
       activeItems: [],
+      activeOnClick: [],
     }
   },
   watch: {
@@ -108,30 +109,35 @@ export default {
           }
         })
       }
+      console.log(itemId, activeItem, 'activeItem')
       return activeItem
     },
     ...mapActions('order', ['setActiveItem']),
     setActiveItems(item) {
-      let selectedContainerId = this.selectedContainerId
-      let itemIndex = -1
-      let selectedLength = 0
-      if (this.activeItems.length > 0) {
-        itemIndex = this.activeItems[selectedContainerId].find(
-          activatedItem => activatedItem._id === item._id
-        )
-        selectedLength = this.activeItems[selectedContainerId].length
-      }
-      if (itemIndex > -1) {
+      let selectedContainerId = this.selectedItemContainer._id.$oid
+      let itemIndex = this.activeItems[selectedContainerId].find(
+        activatedItem => activatedItem._id === item._id
+      )
+      let selectedLength = this.activeItems[selectedContainerId].length
+      console.log(
+        itemIndex,
+        Object.values(this.activeItems[selectedContainerId])
+      )
+      if (itemIndex) {
         let indexSubItem = this.activeItems[selectedContainerId].indexOf(
           itemIndex
         )
         this.activeItems[selectedContainerId].splice(indexSubItem, 1)
+        this.activeOnClick.splice(this.activeOnClick.indexOf(item._id), 1)
         this.commitErrorMessage('')
       } else {
         if (selectedLength != this.limitOfSelectingItems) {
           this.commitErrorMessage('')
           this.activeItems[selectedContainerId].push(item)
           this.setModifiersForItem(item)
+          this.activeOnClick.push(item._id)
+          this.isActiveItem(item._id)
+
           if (
             this.$store.getters['modifier/itemMandatoryGroups'](item._id)
               .length > 0
