@@ -78,6 +78,7 @@ export default {
             this.activeItems[this.selectedItemContainer._id.$oid] = [
               this.subItems[0],
             ]
+            this.activeOnClick.push(this.subItems[0]._id)
           }
           this.commitErrorMessage('')
         })
