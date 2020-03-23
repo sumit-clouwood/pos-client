@@ -962,7 +962,6 @@ const actions = {
               dispatch('reset', resetFull)
             } else {
               commit(mutation.PRINT, true)
-              dispatch('iosWebviewPrintAction', { orderData: state.order })
             }
             dispatch('setMessage', {
               result: 'success',
@@ -1059,7 +1058,6 @@ const actions = {
                 }
 
                 commit(mutation.PRINT, true)
-                dispatch('iosWebviewPrintAction', { orderData: state.order })
                 resolve()
               }
 
@@ -1152,7 +1150,6 @@ const actions = {
                   'Carhop order has been Paid'
                 )
                 commit(mutation.PRINT, true)
-                dispatch('iosWebviewPrintAction', { orderData: response.data })
               }
               //Invoice APP API Call with Custom Request JSON
               dispatch(
@@ -1294,7 +1291,6 @@ const actions = {
                 dispatch('setToken', state.order.token_number)
               }
               commit(mutation.PRINT, true)
-              dispatch('iosWebviewPrintAction', { orderData: state.order })
               resolve()
             })
             .catch(() => resolve())
@@ -1443,7 +1439,6 @@ const actions = {
             if (rootState.checkoutForm.action === 'pay') {
               msg = rootGetters['location/_t']('Carhop Order has been Paid')
               commit(mutation.PRINT, true)
-              dispatch('iosWebviewPrintAction', { orderData: state.order })
             } else {
               dispatch('reset')
             }
@@ -1678,10 +1673,7 @@ const actions = {
         // let table_no = rootState.dinein.selectedTable
         //   ? rootState.dinein.selectedTable.number
         //   : false
-        // orderData.table_number = rootState.order.selectedOrder.table_number
-        orderData.table_number = rootState.dinein.selectedTable
-          ? rootState.dinein.selectedTable.number
-          : false
+        orderData.table_number = rootState.order.selectedOrder.table_number
       }
       // eslint-disable-next-line no-console
       console.log(orderData, 'orderDataorderData')
@@ -1770,8 +1762,6 @@ const actions = {
         flash_message: 'Order Details',
         store_id: rootState.context.storeId,
       }
-      // eslint-disable-next-line
-      console.log('POST ORDER PLACED' , JSON.stringify(jsonResponse))
       let stringifyResponse = JSON.stringify(jsonResponse)
       //Case: print order invoice data was added in Localstorage for IOS APP, IOS webview would get this value and will send information to native printer.
       localStorage.setItem('orderInvoiceColData', stringifyResponse)
