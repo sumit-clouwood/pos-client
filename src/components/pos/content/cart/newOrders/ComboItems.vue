@@ -13,6 +13,9 @@
 
         <div class="main-orders-list-item-title color-text">
           <div class="orders-name">
+            <button class="toggle_btn" @click="showCombo()">
+              <i class="fa fa-chevron-down" aria-hidden="true"></i>
+            </button>
             {{ dt(item) }}
           </div>
           <div class="orders-amount">
@@ -32,7 +35,26 @@
         >
           <div v-html="formatItemDiscount(item)"></div>
         </div>
-
+        <div id="sub_dsc" class="sub_container">
+          <div class="subdescription_container">
+            <div
+              class="product_sub_description main-orders-list-item-subtitle color-text-invert item-exclude"
+            >
+              Pizza Combo Offer x 2
+            </div>
+            <div class="sub_description_price">
+              + NZD 60.00
+            </div>
+          </div>
+          <div class="sub_des_catagary">
+            <div class="sub_more_description">
+              pizza with extra cheese / cold drinks / franchise / Momos and more
+            </div>
+            <div class="sub_more_description_price">
+              + NZD 15.00
+            </div>
+          </div>
+        </div>
         <div class="main-orders-list-item-buttons">
           <Modifiers
             v-bind:modifiers="item.modifiers"
@@ -158,8 +180,9 @@ export default {
     ...mapActions('category', ['getItems']),
     ...mapActions('order', ['removeFromOrder', 'setActiveItem']),
     showCombo() {
-      $('p').toggle(200)
-      $('i', this).toggleClass('fa fa fa-chevron-down fa-chevron-right ')
+      $('#sub_dsc').slideToggle(200)
+      //      $('i', this).toggleClass('fa fa fa-chevron-down fa-chevron-right ')
+      $('.orders-name i').toggleClass('fa fa fa-chevron-down fa-chevron-right ')
     },
     removeCurrentOrder(param) {
       // if (this.selectedOrder || this.orderId) {
@@ -194,6 +217,42 @@ export default {
     padding-bottom: 0;
     margin-top: 0;
     margin-bottom: 0;
+  }
+}
+button.toggle_btn {
+  min-width: 22px;
+  max-width: 22px;
+  color: #565252;
+  border: 0px;
+}
+.sub_container {
+  margin-bottom: 0.625rem;
+  .subdescription_container {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    .sub_description_price {
+      font-size: 14px;
+    }
+    .product_sub_description {
+      margin-bottom: 0px !important;
+    }
+  }
+}
+.sub_des_catagary {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  .sub_more_description {
+    font-size: 14px;
+    font-style: italic;
+    color: gray;
+    padding-left: 0.87rem;
+    word-break: break-all;
+    padding: 0px 0.87rem;
+  }
+  .sub_more_description_price {
+    font-size: 14px;
+    /*font-style: italic;*/
+    color: gray;
   }
 }
 .button-plus-icon {
