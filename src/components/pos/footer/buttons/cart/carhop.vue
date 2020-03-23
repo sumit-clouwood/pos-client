@@ -93,3 +93,16 @@ export default {
   },
 }
 </script>
+
+<style lang="scss" scoped>
+@import '@/assets/scss/mixins.scss';
+.carhop-cart-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  @include responsive(mobile) {
+    grid-gap: 10px !important;
+    font-size: 15px;
+    font-weight: 500;
+  }
+}
+</style>

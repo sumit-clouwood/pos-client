@@ -34,3 +34,21 @@ export default {
   },
 }
 </script>
+
+<style lang="scss" scoped>
+@import '@/assets/scss/mixins.scss';
+.pay-button {
+  @include responsive(mobile) {
+    background-color: #5ea000;
+    text-align: center;
+    color: white;
+    font-size: 15px;
+    font-weight: 500;
+  }
+  svg {
+    @include responsive(mobile) {
+      padding-top: 1px;
+    }
+  }
+}
+</style>

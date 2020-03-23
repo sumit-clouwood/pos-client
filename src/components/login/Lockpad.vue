@@ -126,7 +126,7 @@ export default {
             ) {
               this.loginOffline()
             } else {
-              this.error = error
+              this.error = 'invalid user credentials'
               this.showError = true
               this.pincode = ''
               setTimeout(() => {
