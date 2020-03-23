@@ -20,8 +20,10 @@ const state = {
   brandAccessType: false,
   availableStoreGroups: false,
   storeGroupId: false,
-
+  storeUsers: [],
   role: null,
+  cashierRoleId: false,
+  offlinePinCode: null,
 }
 
 // getters
@@ -215,7 +217,7 @@ const actions = {
       commit('order/RESET', true, { root: true })
       commit('checkout/RESET', true, { root: true })
       commit('context/RESET', null, { root: true })
-      commit('customer/RESET', null, { root: true })
+      commit('customer/RESET', {}, { root: true })
       commit('sync/reset', {}, { root: true })
       commit('location/RESET', true, { root: true })
       commit('holdOrders/RESET', true, { root: true })
@@ -247,11 +249,9 @@ const actions = {
         AuthService.userDetails(userId).then(response => {
           commit(mutation.USER_DETAILS, response.data)
 
-          dispatch('fetchRoles').then(roles => {
-            const currentRole = roles.find(
-              role => role._id === state.userDetails.item.brand_role
-            )
-            commit(mutation.SET_ROLE, currentRole)
+          dispatch('fetchRoles').then(() => {
+            dispatch('setCurrentRole')
+            dispatch('fetchAllStoreUsers')
           })
 
           dispatch('announcement/fetchAll', response.data, {
@@ -269,6 +269,10 @@ const actions = {
       AuthService.getRoles().then(rolesPermissions => {
         resolve(rolesPermissions.data.data)
         commit(mutation.SET_ROLE_DETAILS, rolesPermissions.data.data)
+        let cashier = rolesPermissions.data.data.find(
+          value => value.name === 'Cashier'
+        )
+        commit('SET_CASHIER_ROLE_ID', cashier._id)
         const roles = getters.getRoleByPermission(PERMS.WAITER)
         roles.forEach(role => {
           AuthService.getUsers(role._id).then(users => {
@@ -277,6 +281,66 @@ const actions = {
         })
       })
     })
+  },
+  fetchAllStoreUsers({ state, commit }) {
+    return new Promise(resolve => {
+      AuthService.getStoreUsers(
+        'brand_users_main_tbl',
+        true,
+        state.cashierRoleId
+      ).then(response => {
+        resolve(response)
+        commit('SET_STORE_USERS', response.data.data)
+        commit('location/SET_BRAND_STORES', response.data.page_lookups.stores, {
+          root: true,
+        })
+      })
+    })
+  },
+  // eslint-disable-next-line no-unused-vars
+  filterUserInOffline({ state, commit, dispatch, rootGetters }, encryptedPin) {
+    let user = { item: false }
+    user.item = state.storeUsers.filter(user => {
+      return user.e_swipe_card === encryptedPin
+    })[0]
+    if (user.item) {
+      commit(mutation.USER_DETAILS, user)
+      dispatch('setCurrentRole')
+      let randomToken =
+        Math.random()
+          .toString(36)
+          .slice(2)
+          .toUpperCase() +
+        Math.random()
+          .toString(36)
+          .slice(2)
+      localStorage.setItem('token', randomToken)
+      commit(mutation.SET_TOKEN, randomToken)
+
+      if (
+        localStorage.getItem('brand_id') &&
+        localStorage.getItem('store_id')
+      ) {
+        commit('context/SET_BRAND_ID', localStorage.getItem('brand_id'), {
+          root: true,
+        })
+        commit('context/SET_STORE_ID', localStorage.getItem('store_id'), {
+          root: true,
+        })
+      }
+
+      DataService.setContext({
+        brand: rootGetters['context/brand'],
+        store: rootGetters['context/store'],
+      })
+    }
+    return user
+  },
+  setCurrentRole({ state, commit }) {
+    const currentRole = state.rolePermissions.find(
+      role => role._id === state.userDetails.item.brand_role
+    )
+    commit(mutation.SET_ROLE, currentRole)
   },
 }
 
@@ -306,8 +370,14 @@ const mutations = {
   },
   [mutation.USER_DETAILS](state, userDetails) {
     state.userDetails = userDetails
-    state.brandAccessType = state.userDetails.item.brand_access_type
-    state.storeGroup = state.userDetails.item.store_group
+    if (
+      userDetails.item &&
+      userDetails.item.brand_access_type &&
+      userDetails.item.store_group
+    ) {
+      state.brandAccessType = state.userDetails.item.brand_access_type
+      state.storeGroup = state.userDetails.item.store_group
+    }
   },
   [mutation.ADD_WAITERS](state, waiters) {
     state.waiters = [...state.waiters, ...waiters]
@@ -328,6 +398,15 @@ const mutations = {
     state.rolePermissions = null
     state.userDetails = false
     state.permissions = false
+  },
+  [mutation.SET_STORE_USERS](state, storeUsers) {
+    state.storeUsers = storeUsers
+  },
+  [mutation.SET_CASHIER_ROLE_ID](state, cashierRoleId) {
+    state.cashierRoleId = cashierRoleId
+  },
+  [mutation.SET_OFFLINE_PIN](state, offlinePinCode) {
+    state.offlinePinCode = offlinePinCode
   },
 }
 

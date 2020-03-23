@@ -14,18 +14,24 @@
         <span class="caption">{{ _t('Email') }}:</span>
         <span>{{ user.email }}</span>
 
-        <span class="caption">{{ _t('Created At') }}:</span>
-        <span>
+        <span v-if="user.created_at" class="caption"
+          >{{ _t('Created At') }}:</span
+        >
+        <span v-if="user.created_at">
           {{ toLocaleDateTimeString(user.created_at.date) }}
         </span>
 
-        <span class="caption">{{ _t('Last Updated At') }}:</span>
-        <span>
+        <span class="caption" v-if="user.updated_at"
+          >{{ _t('Last Updated At') }}:</span
+        >
+        <span v-if="user.updated_at">
           {{ toLocaleDateTimeString(user.updated_at.date) }}
         </span>
 
-        <span class="caption">{{ _t('Created By') }}:</span>
-        <span v-if="collectedData.created_at_name">
+        <span v-if="collectedData" class="caption"
+          >{{ _t('Created By') }}:</span
+        >
+        <span v-if="collectedData">
           {{ collectedData.created_at_name }}
           {{ collectedData.created_at_email }}
         </span>
