@@ -94,9 +94,6 @@ export default {
     selectedContainerId() {
       return this.selectedItemContainer._id.$oid
     },
-    // ...mapGetters({
-    //   activeItems: ['comboItems/getItemIds'],
-    // }),
   },
   methods: {
     isActiveItem(itemId) {
@@ -115,19 +112,9 @@ export default {
     },
     ...mapActions('order', ['setActiveItem']),
     setActiveItems(item) {
-      // let activeItemsWithIds = this.activeItems
-
       let selectedContainerId = this.selectedContainerId
       let itemIndex = -1
       let selectedLength = 0
-      // activeItemsWithIds.forEach(element => {
-      //   if (Object.keys(element)[0] === selectedContainerId) {
-      //     Object.entries(element).forEach(currentItem => [
-      //       currentItem[1].push(item),
-      //     ])
-      //   }
-      // })
-      // console.log('Active Items are: ', activeItemsWithIds)
       if (this.activeItems.length > 0) {
         itemIndex = this.activeItems[selectedContainerId].find(
           activatedItem => activatedItem._id === item._id

@@ -30,17 +30,6 @@ const actions = {
 }
 
 const getters = {
-  getItemIds: state => {
-    let items = []
-    if (state.comboItemsList) {
-      state.comboItemsList.combo_items.map(item => {
-        let currentItemObject = {}
-        currentItemObject[item._id.$oid] = []
-        items.push(currentItemObject)
-      })
-    }
-    return items
-  },
   comboItemName: state => {
     if (state.comboItemsList) {
       return state.comboItemsList.name
@@ -53,22 +42,6 @@ const getters = {
     }
     return 1
   },
-  /*
-  [
-      {
-        itemId:[
-        {item1},
-        {item2}
-      ]
-    },
-      itemId:[
-        {
-          {item1},
-          {item2}
-        }
-      ]
-  ]
-  */
 }
 
 const mutations = {
