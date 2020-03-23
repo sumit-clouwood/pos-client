@@ -194,8 +194,8 @@ export default {
   methods: {
     ...mapActions('customer', ['fetchSelectedCustomer']),
     ...mapActions('deliveryManager', ['printInvoice']),
-    printInvoiceDisableKitchenPrint(details, rootState) {
-      let dt = rootState.auth.deviceType
+    printInvoiceDisableKitchenPrint(details) {
+      let dt = this.$store.state.auth.deviceType
       let isIOS = dt.osType
       if (isIOS) {
         //Detect if Reprinted or not.
