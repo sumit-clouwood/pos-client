@@ -44,7 +44,7 @@
               type="button"
               class="btn btn-danger cancel-announce color-text-invert"
               data-dismiss="modal"
-              @click="hideModal('#gift-card-info')"
+              @click="closeModal('#gift-card-info')"
             >
               <span>{{ _t('Close') }}</span>
             </button>
@@ -56,6 +56,7 @@
   </div>
 </template>
 <script>
+/* global hideModal */
 import { mapState, mapGetters } from 'vuex'
 export default {
   name: 'GiftCardInfo',
@@ -63,6 +64,11 @@ export default {
     ...mapState('giftcard', ['giftcard']),
     ...mapState('checkoutForm', ['giftAmount']),
     ...mapGetters('location', ['formatPrice', '_t']),
+  },
+  methods: {
+    closeModal(modalName) {
+      hideModal(modalName)
+    },
   },
 }
 </script>
