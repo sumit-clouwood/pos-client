@@ -100,7 +100,7 @@
 <script>
 import Modifiers from './items/Modifiers.vue'
 import Preloader from '@/components/util/Preloader'
-
+import * as CONST from '@/constants'
 import { mapState, mapActions, mapGetters } from 'vuex'
 import Discount from '@/mixins/Discount'
 import { bus } from '@/eventBus'
@@ -162,7 +162,7 @@ export default {
     items(newVal, oldVal) {
       if (newVal != oldVal) {
         this.$nextTick(() => {
-          this.isCombo = this.newCartItem.item_type === 'combo_item'
+          this.isCombo = this.newCartItem.item_type === CONST.COMBO_ITEM_TYPE
           this.calculateScrolls()
             .then(() => {
               bus.$emit('showScrollCartUp', this.showScrollUp)
