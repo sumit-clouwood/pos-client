@@ -605,6 +605,16 @@ const actions = {
     return Promise.resolve(order)
   },
 
+  injectCarHopItemsData(order) {
+    if (typeof order.items !== 'undefined') {
+      order.items = order.items.map(oitem => {
+        oitem.kitchen_invoice = 1
+        return oitem
+      })
+    }
+    return Promise.resolve(order)
+  },
+
   orderItemsHook({ rootState, dispatch }, order) {
     if (rootState.order.orderType.OTApi === CONSTANTS.ORDER_TYPE_DINE_IN) {
       return dispatch('injectDineInItemsData', order)
@@ -1122,7 +1132,40 @@ const actions = {
       })
     }
   },
-  // eslint-disable-next-line no-unused-vars
+
+  createModifyOrderItemListCarHop({ rootState, state, dispatch }) {
+    let newItems = []
+    rootState.order.items.forEach(item => {
+      if (typeof item.no === 'undefined') {
+        newItems.push({
+          name: item.name,
+          entity_id: item._id,
+          no: item.orderIndex,
+          status: 'in-progress',
+          //itemTax.undiscountedTax is without modifiers
+          tax: item.tax,
+          price: item.netPrice,
+          qty: item.quantity,
+          originalItem: item,
+        })
+      }
+    })
+    if (newItems.length) {
+      let order = state.order
+      order.items = newItems
+
+      dispatch('injectCarHopItemsData', order).then(order => {
+        order.items = order.items.map(item => {
+          delete item.originalItem
+          return item
+        })
+        dispatch('printingServer/printingServerInvoiceRaw', order, {
+          root: true,
+        })
+      })
+    }
+  },
+
   modifyCarhopOrder({ dispatch, rootState, rootGetters, commit }, action) {
     return new Promise(resolve => {
       dispatch('getModifyOrder').then(order => {
@@ -1151,14 +1194,10 @@ const actions = {
                 )
                 commit(mutation.PRINT, true)
               }
-              //Invoice APP API Call with Custom Request JSON
-              dispatch(
-                'printingServer/printingServerInvoiceRaw',
-                rootState.order.selectedOrder.item,
-                {
-                  root: true,
-                }
-              )
+
+              if (rootState.checkoutForm.action === 'add') {
+                dispatch('createModifyOrderItemListCarHop')
+              }
               commit('order/CLEAR_SELECTED_ORDER', null, { root: true })
               resolve()
               commit(
