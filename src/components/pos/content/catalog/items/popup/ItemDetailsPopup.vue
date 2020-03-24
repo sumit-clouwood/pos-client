@@ -48,7 +48,7 @@
           "
               data-dismiss="modal"
               aria-label="Close"
-              @click.prevent="$emit('resetCurrentItem', {})"
+              @click.prevent="resetPopup()"
             >
               <span aria-hidden="true">&times;</span>
             </button>
@@ -57,7 +57,7 @@
                 {{ dt(currentItem) }}
               </div>
               <div class="item-price">
-                {{ currency }} {{ currentItem.value }}
+                {{ formatPrice(currentItem.value * quantity) }}
               </div>
             </div>
             <div
@@ -66,6 +66,9 @@
               :style="{ textAlign: alignText }"
             >
               {{ dt(currentItem, 'description') || '' }}
+            </div>
+            <div class="qunatity">
+              <Quantity />
             </div>
             <modifiers-content v-if="hasModifiers" />
             <div class="modal-footer">
@@ -91,10 +94,12 @@ import bootstrap from '@/bootstrap'
 import ModifiersContent from '@/components/pos/content/catalog/items/popup/Content.vue'
 import Scroll from '@/mixins/Scroll'
 // import Preloader from '@/components/util/Preloader'
+import Quantity from '@/components/pos/content/catalog/items/popup/header/Quantity.vue'
 export default {
   name: 'ItemDetailsPopup',
   components: {
     ModifiersContent,
+    Quantity,
     // Preloader,
   },
   mixins: [Scroll],
@@ -130,10 +135,11 @@ export default {
     },
   },
   computed: {
-    ...mapState('location', ['currency', 'availableLanguages']),
-    ...mapGetters('location', ['_t']),
+    ...mapState('location', ['availableLanguages']),
+    ...mapGetters('location', ['formatPrice', '_t']),
     ...mapState('order', ['splitBill']),
     ...mapGetters(['foodMenuHendler', 'bascketItems']),
+    ...mapGetters('orderForm', ['quantity']),
     currentImageUrl() {
       return this.currentImagePath
     },
@@ -188,13 +194,14 @@ export default {
 
       this.$store.commit('category/SET_ITEM', item)
       this.$store.commit('checkoutForm/showCalc', true)
-      this.$store.commit('orderForm/updateQuantity', 1)
+      this.setQuantity(this.quantity)
       if (this.hasModifiers) {
         this.$store
           .dispatch('order/addModifierOrder')
           .then(() => {
             this.$emit('resetCurrentItem', {})
             hideModal('#item-details-popup')
+            this.setQuantity(1)
           })
           .catch()
       } else {
@@ -217,6 +224,13 @@ export default {
     },
     imageLoadError() {
       this.currentImagePath = this.currentItem.image
+    },
+    setQuantity(quantity) {
+      this.$store.commit('orderForm/updateQuantity', quantity)
+    },
+    resetPopup() {
+      this.$emit('resetCurrentItem', {})
+      this.setQuantity(1)
     },
   },
 }
@@ -317,5 +331,48 @@ export default {
       }
     }
   }
+}
+</style>
+
+<style>
+.qunatity {
+  width: 90%;
+  margin: 0.5rem auto;
+  margin-bottom: 2rem;
+}
+.qunatity .quantity-component {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+}
+.qunatity .quantity-component .lbl-quantity {
+  font-size: 1.2rem !important;
+  color: black !important;
+}
+.qunatity .quantity-component .inputs-wrapper {
+  display: flex !important;
+  justify-content: flex-end !important;
+}
+.qunatity .quantity-component .inputs-wrapper .qtyminus,
+.qunatity .quantity-component .inputs-wrapper .qtyplus,
+.qunatity .quantity-component .inputs-wrapper .value-qty {
+  width: 2rem;
+  border: 1px solid #e3e7f2;
+  border-radius: 0px;
+}
+.qunatity .quantity-component .inputs-wrapper .qty {
+  width: 3rem;
+}
+.qunatity .quantity-component .inputs-wrapper .btn-set-quantity button {
+  color: #fff;
+  background: #5056ca;
+  border-radius: 3px;
+  height: 2.5rem;
+  width: 8.75rem;
+  border: 0 none;
+  margin: auto;
+  margin-left: 2rem;
+}
+.qunatity .quantity-component .inputs-wrapper .POSItemOptions_quantity_inputs {
+  width: 7.1875rem;
 }
 </style>
