@@ -11,12 +11,25 @@
     data-backdrop="static"
   >
     <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content color-dashboard-background">
-        <div class="modal-body">
+      <div
+        class="modal-content color-dashboard-background"
+        :style="{
+          width: currentItem.image == '' ? '70%' : '100%',
+          margin: currentItem.image == '' ? 'auto' : 'none',
+        }"
+      >
+        <div
+          class="modal-body"
+          :style="{
+            gridTemplateColumns: currentItem.image == '' ? '1fr' : '1fr 1fr',
+            minHeight: currentItem.image == '' ? '20rem' : 'none',
+          }"
+        >
           <div
             class="image-container"
             v-if="currentItem && currentItem.image !== ''"
           >
+            <!-- <Preloader v-if="loading" /> -->
             <img
               style="width: 100%; height:100%;"
               :src="currentImageUrl"
@@ -77,10 +90,12 @@ import { mapState, mapGetters } from 'vuex'
 import bootstrap from '@/bootstrap'
 import ModifiersContent from '@/components/pos/content/catalog/items/popup/Content.vue'
 import Scroll from '@/mixins/Scroll'
+// import Preloader from '@/components/util/Preloader'
 export default {
   name: 'ItemDetailsPopup',
   components: {
     ModifiersContent,
+    // Preloader,
   },
   mixins: [Scroll],
   props: {
@@ -96,15 +111,20 @@ export default {
     return {
       currentImagePath: '',
       alignText: 'left !important',
+      // loading: true,
     }
   },
   watch: {
     currentItem(newVal) {
       if (!$.isEmptyObject(newVal)) {
         this.$nextTick(() => {
+          // this.loading = true
           this.getImage()
           this.alignTextProperly()
           this.assignModifiers()
+          // setTimeout(() => {
+          //   this.loading = false
+          // }, 1500)
         })
       }
     },
@@ -277,7 +297,7 @@ export default {
       padding: 0px;
       display: grid;
       grid-template-columns: 1fr !important;
-      height: auto;
+      height: 3rem;
       button {
         width: 100%;
         border-radius: 0px;
