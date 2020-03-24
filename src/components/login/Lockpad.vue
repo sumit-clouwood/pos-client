@@ -45,7 +45,6 @@
 import { mapGetters, mapState, mapActions } from 'vuex'
 import Progress from '@/components/util/Progress'
 import md5 from 'js-md5'
-
 export default {
   name: 'Lockpad',
   data() {
@@ -78,8 +77,6 @@ export default {
       }
     },
     loginOffline() {
-      // eslint-disable-next-line no-console
-      console.log(md5(this.pincode))
       this.$store
         .dispatch('auth/filterUserInOffline', md5(this.pincode))
         .then(user => {
@@ -128,7 +125,7 @@ export default {
             ) {
               this.loginOffline()
             } else {
-              this.error = error
+              this.error = error.response.data.error
               this.showError = true
               this.pincode = ''
               setTimeout(() => {

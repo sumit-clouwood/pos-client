@@ -35,17 +35,21 @@
           {{ collectedData.created_at_name }}
           {{ collectedData.created_at_email }}
         </span>
-        <span v-else> - </span>
-        <span class="caption">{{ _t('Preferred Language') }}:</span>
-        <span>{{ collectedData.language_name }}</span>
+        <span v-if="user.preffered_language" class="caption"
+          >{{ _t('Preferred Language') }}:</span
+        >
+        <span v-if="user.preffered_language">{{
+          user.preffered_language
+        }}</span>
 
-        <span class="caption">{{ _t('User Type') }}:</span><span>Regular</span>
+        <span class="caption">{{ _t('User Type') }}: </span>
+        <span>{{ _t('Regular') }}</span>
       </div>
     </div>
     <div class="delimiter">&nbsp;</div>
     <div class="profile-brand-container">
       <div class="items">
-        <span class="caption">{{ _t('Associated Brand') }}:</span>
+        <span v-if="brands" class="caption">{{ _t('Associated Brand') }}:</span>
         <span v-if="brands">
           {{
             LookupData.getUserAssociatedDetails({
@@ -130,13 +134,20 @@ export default {
     ...mapState({
       user: state => state.auth.userDetails.item,
       role: state => state.auth.role,
-      collectedData: state => state.auth.userDetails.collected_data,
+      collectedData: state =>
+        state.auth.userDetails.collected_data
+          ? state.auth.userDetails.collected_data
+          : '',
       rootStore: state =>
-        state.auth.userDetails.collected_data.page_lookups.root_stores,
+        state.auth.userDetails.collected_data
+          ? state.auth.userDetails.collected_data.page_lookups.root_stores
+          : state.location.brandStores,
       rootBrandRoles: state =>
-        state.auth.userDetails.collected_data.page_lookups.root_brand_roles,
+        state.auth.userDetails.collected_data
+          ? state.auth.userDetails.collected_data.page_lookups.root_brand_roles
+          : '',
       brands: state =>
-        state.auth.userDetails
+        state.auth.userDetails.collected_data
           ? state.auth.userDetails.collected_data.page_lookups.brands
           : false,
     }),
