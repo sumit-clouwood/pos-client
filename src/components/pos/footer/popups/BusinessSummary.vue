@@ -43,10 +43,12 @@
             >
               {{ store.name }}
             </h4>
-            <small class="date" style="text-transform: uppercase"
-              >{{ todayDate }} <br />
-              {{ todayTime }}</small
-            >
+            <small class="date">{{ todayDate }}</small
+            ><br />
+            <small class="date" style="text-transform: uppercase">
+              {{ todayTime }} </small
+            ><br />
+            <small>{{ user.name }}</small>
           </div>
           <div class="business-summary-wrapper" style="text-align: center">
             <div class="table-responsive">
@@ -448,7 +450,7 @@
                       border-left: 1px dashed #000;
                       text-align: left;padding: 0.3rem;"
                     >
-                      {{ _t('Carhop') }}
+                      {{ _t('Unfinished Carhop Orders') }}
                     </td>
                     <td
                       style="padding-left: 10px;
@@ -524,7 +526,7 @@ export default {
   data() {
     return {
       timeMode: this.time_mode,
-      todayDate: moment().format('L'),
+      todayDate: moment().format('Do MMMM YYYY'),
       todayTime: moment().format('h:mm:ss a'),
     }
   },
@@ -532,6 +534,7 @@ export default {
     ...mapGetters('location', ['_t', 'formatPrice']),
     ...mapState('reports', ['BSData', 'totalPayments', 'time_mode']),
     ...mapState('location', ['store']),
+    ...mapState({ user: state => state.auth.userDetails.item }),
   },
   methods: {
     getBSStoreTime() {

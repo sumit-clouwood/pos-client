@@ -35,6 +35,13 @@
         @click.prevent="addToOrder(item)"
         ref="entityItem"
       >
+        <div
+          v-if="isEnabled"
+          class="item-details-icon"
+          @click.stop="showDetails(item)"
+        >
+          <img style="padding: 3px;" src="img/maximize.svg" />
+        </div>
         <img
           v-if="item.image != ''"
           class="food-menu-item-img"
@@ -52,6 +59,11 @@
           {{ currency }} {{ item.value || 0 }}
         </div>
       </div>
+      <item-details-popup
+        :currentItem="currentItem"
+        @resetCurrentItem="resetCurrentItem"
+      />
+
       <!-- <Popup /> -->
     </div>
     <div
@@ -70,11 +82,12 @@
 <script>
 /* global $, showModal  */
 import { mapGetters, mapState } from 'vuex'
-// import bootstrap from '@/bootstrap'
+import * as CONST from '@/constants'
+import bootstrap from '@/bootstrap'
+import ItemDetailsPopup from './items/popup/ItemDetailsPopup'
 // import Popup from './items/Popup'
 import Scroll from '@/mixins/Scroll'
 import Cart from '@/mixins/Cart'
-import * as CONST from '@/constants'
 // import btnBack from '../../../mobileComponents/mobileElements/btnBack'
 
 export default {
@@ -86,6 +99,7 @@ export default {
   components: {
     // Popup,
     // btnBack,
+    ItemDetailsPopup,
   },
   data() {
     return {
@@ -93,6 +107,7 @@ export default {
       entity: 'entityItem',
       margin: 17.5,
       keepEntitiesInScroll: 0,
+      currentItem: {},
     }
   },
   computed: {
@@ -104,6 +119,9 @@ export default {
     ...mapGetters('category', ['items', 'itemByCode']),
     ...mapGetters('modifier', ['hasModifiers']),
     ...mapGetters(['foodMenuHendler']),
+    isEnabled() {
+      return this.$store.getters['modules/enabled'](CONST.MODULE_DINE_IN_MENU)
+    },
   },
   watch: {
     items() {
@@ -125,47 +143,13 @@ export default {
   updated() {},
   beforeUpdated() {},
   methods: {
-    // fetchItemsAddOrder(item) {
-    //   if (this.splitBill) {
-    //     return false
-    //   }
-    //   this.$store.commit('order/setEditMode', false)
-    //   this.$store.commit('order/RESET_SPLIT_BILL')
-    //   //load data only when new order is starting
-    //   if (!this.$store.state.order.items.length) {
-    //     this.$store.commit('sync/reload', true)
-    //     bootstrap.loadUI('orderStart').then(() => {})
-    //   }
-    //
-    //   this.$store.commit('order/SET_CART_TYPE', 'new')
-    //   this.$store.dispatch('order/startOrder')
-    //   $('#POSItemOptions .modifier-option-radio').prop('checked', false)
-    //   $('.food-menu-item').removeClass('active')
-    //   $(this).addClass('active')
-    //   this.$store.commit('category/SET_ITEM', item)
-    //   this.$store.commit('checkoutForm/showCalc', true)
-    //   this.$store.commit('orderForm/updateQuantity', 1)
-    //   if (this.$store.getters['modifier/hasModifiers'](item)) {
-    //     this.$store.dispatch('modifier/assignModifiersToItem', item)
-    //     this.$store.commit('orderForm/clearSelection')
-    //     //handle open item inside popup
-    //     showModal('#POSItemOptions')
-    //   } else {
-    //     if (item.open_item === true) {
-    //       //show popup for open item
-    //       showModal('#open-item')
-    //     } else {
-    //       this.$store.dispatch('order/addToOrder', item)
-    //     }
-    //   }
-    //   this.$store.dispatch('addItemFood', item)
-    //
-    //   if (!this.bascketItems.find(x => x.name === item.name)) {
-    //     this.bascketItems.push({ name: item.name, count: 1, class: 'active' })
-    //   } else {
-    //     this.bascketItems.find(x => x.name === item.name).count++
-    //   }
-    // },
+    resetCurrentItem(payLoad) {
+      this.currentItem = payLoad
+    },
+    showDetails(item) {
+      this.currentItem = item
+      showModal('#item-details-popup')
+    },
     addToOrder(item) {
       if (item.item_type === CONST.COMBO_ITEM_TYPE) {
         // eslint-disable-next-line no-console
@@ -234,14 +218,24 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-@import '../../../../assets/scss/pixels_rem.scss';
-@import '../../../../assets/scss/variables.scss';
-@import '../../../../assets/scss/mixins.scss';
+@import '@/assets/scss/pixels_rem.scss';
+@import '@/assets/scss/variables.scss';
+@import '@/assets/scss/mixins.scss';
 
 .pos-item-bg {
   img {
     max-width: 146px;
   }
+}
+.item-details-icon {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  z-index: 999;
+  height: 3.6rem;
+  width: 100%;
+  clip-path: polygon(0px 0px, 0px 100%, 45% 0px);
+  background: rgba(220, 220, 220, 0.9);
 }
 
 @include responsive(mobile) {
@@ -293,7 +287,9 @@ export default {
       padding-right: 20px;
       background: #fafafa;
       transition: 0.1s ease-out;
-
+      .item-details-icon {
+        display: none;
+      }
       &:not(.color-dashboard-background) {
         // padding-left: 85px;
         padding-right: 0;

@@ -19,7 +19,7 @@
       </div>
     </div>
     <div v-else>
-      <div style="grid-template-columns: 1fr 1fr; display: grid;">
+      <div class="dinein-cart-buttons">
         <div class="button">
           <div class="template-btn">
             <div class="pay-now">
@@ -41,6 +41,7 @@
 <script>
 /* global $, clickPayNow showModal */
 import { mapGetters, mapState } from 'vuex'
+import CheckoutMixin from '@/mixins/Checkout'
 import pay from './common/pay'
 import save from './common/save'
 
@@ -50,6 +51,7 @@ export default {
     pay,
     save,
   },
+  mixins: [CheckoutMixin],
   data() {
     return {
       checkCover: true,
@@ -91,7 +93,11 @@ export default {
         this.orderType.OTApi !== 'dine_in' ||
         !this.brand.number_of_covers
       ) {
-        clickPayNow()
+        if (this.$store.state.mobile.device === 'mobile') {
+          this.$store.dispatch('paymentMethodsChange')
+        } else {
+          clickPayNow()
+        }
       } else {
         validationError = {
           status: 'flash_message',
@@ -121,19 +127,7 @@ export default {
           if (this.needSupervisorAccess) {
             showModal('#modificationReason')
           } else {
-            if (this.processing) {
-              // eslint-disable-next-line no-console
-              console.log('dual footer click')
-              return false
-            }
-
-            this.$store.dispatch('order/startOrder')
-            this.$store.commit('checkoutForm/SET_PROCESSING', true)
-
-            $('#payment-msg').modal('show')
-
-            this.$store
-              .dispatch('checkout/pay', { action: 'dine-in-place-order' })
+            this.executePayment({ action: 'dine-in-place-order' })
               .then(() => {
                 if (this.$store.getters['checkout/complete']) {
                   //Reset Cart and set states and redirect to dine in.
@@ -189,3 +183,16 @@ export default {
   },
 }
 </script>
+
+<style lang="scss" scoped>
+@import '@/assets/scss/mixins.scss';
+.dinein-cart-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  @include responsive(mobile) {
+    grid-gap: 10px !important;
+    font-size: 15px;
+    font-weight: 500;
+  }
+}
+</style>

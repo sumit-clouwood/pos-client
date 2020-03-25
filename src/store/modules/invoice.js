@@ -78,7 +78,12 @@ const actions = {
     const templates = await InvoiceService.fetchTemplates()
     commit('SET_PRINT_TEMPLATES', templates)
   },
-
+  setPrinterConfigurationKey() {
+    //This is  a uiwebview
+    const urlParams = new URLSearchParams(window.location.search)
+    urlParams.set('printersetting', Math.floor(Math.random() * 100 + 1))
+    window.location.search = urlParams
+  },
   setTemplateId({ commit }, templateId) {
     commit(mutation.SET_TEMPLATE_ID, templateId)
   },
