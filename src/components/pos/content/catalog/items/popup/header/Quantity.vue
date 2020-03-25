@@ -6,7 +6,7 @@
       {{ _t('Quantity') }}
     </label>
     <div class="POSItemOptions_quantity_wrapper inputs-wrapper">
-      <template v-if="show()">
+      <template v-if="show">
         <div class="POSItemOptions_quantity_inputs">
           <button
             class="qtyminus value-qty color-text-invert"
@@ -16,6 +16,7 @@
           </button>
           <input
             v-model.number="quantity"
+            @keypress="filterInput"
             min="1"
             class="qty color-text-invert"
           />
@@ -84,6 +85,12 @@ export default {
         'order/updateQuantity',
         this.$store.getters['orderForm/quantity']
       )
+    },
+    filterInput($event) {
+      const keyCode = $event.keyCode ? $event.keyCode : $event.which
+      if (keyCode < 48 || keyCode > 57) {
+        $event.preventDefault()
+      }
     },
   },
 }
