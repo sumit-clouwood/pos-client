@@ -41,6 +41,7 @@
 <script>
 /* global $, clickPayNow showModal */
 import { mapGetters, mapState } from 'vuex'
+import CheckoutMixin from '@/mixins/Checkout'
 import pay from './common/pay'
 import save from './common/save'
 
@@ -50,6 +51,7 @@ export default {
     pay,
     save,
   },
+  mixins: [CheckoutMixin],
   data() {
     return {
       checkCover: true,
@@ -121,19 +123,7 @@ export default {
           if (this.needSupervisorAccess) {
             showModal('#modificationReason')
           } else {
-            if (this.processing) {
-              // eslint-disable-next-line no-console
-              console.log('dual footer click')
-              return false
-            }
-
-            this.$store.dispatch('order/startOrder')
-            this.$store.commit('checkoutForm/SET_PROCESSING', true)
-
-            $('#payment-msg').modal('show')
-
-            this.$store
-              .dispatch('checkout/pay', { action: 'dine-in-place-order' })
+            this.executePayment({ action: 'dine-in-place-order' })
               .then(() => {
                 if (this.$store.getters['checkout/complete']) {
                   //Reset Cart and set states and redirect to dine in.
