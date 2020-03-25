@@ -83,7 +83,6 @@
 /* global $, showModal  */
 import { mapGetters, mapState } from 'vuex'
 import * as CONST from '@/constants'
-import bootstrap from '@/bootstrap'
 import ItemDetailsPopup from './items/popup/ItemDetailsPopup'
 // import Popup from './items/Popup'
 import Scroll from '@/mixins/Scroll'
