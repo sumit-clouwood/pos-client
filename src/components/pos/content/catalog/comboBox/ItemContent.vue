@@ -79,6 +79,11 @@ export default {
               this.subItems[0],
             ]
             this.activeOnClick.push(this.subItems[0]._id)
+            this.$store.commit(
+              'comboItems/ACTIVE_COMBO_ITEMS',
+              this.activeItems,
+              { root: true }
+            )
           }
           this.commitErrorMessage('')
         })
@@ -132,9 +137,6 @@ export default {
       } else {
         if (selectedLength != this.limitOfSelectingItems) {
           this.commitErrorMessage('')
-          // this.setModifiersForItem(item)
-          let modifierItem = this.$store.state.order.item
-          console.log(modifierItem)
           this.activeItems[selectedContainerId].push(item)
           this.activeOnClick.push(item._id)
           this.isActiveItem(item._id)
@@ -172,13 +174,6 @@ export default {
           multistore: this.multistore ? this.storeId : false,
         })
       }
-      this.$store
-        .dispatch('order/addModifierOrder')
-        .then(() => {
-          alert('ff')
-        })
-        .catch()
-      // this.$store.commit('orderForm/clearSelection')
       showModal('#POSItemOptions')
       // }
     },

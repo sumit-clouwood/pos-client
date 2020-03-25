@@ -70,7 +70,7 @@ const mutations = {
     console.log(state.activeComboItems, 'state.activeComboItems')
   },
   [mutation.SET_MODIFIERS](state, setModifiersItem) {
-    state.setModifiersItem.push(setModifiersItem)
+    state.setModifiersItem.push({ ...setModifiersItem })
   },
 }
 
