@@ -1043,6 +1043,9 @@ const actions = {
                 resolve()
               } else {
                 //order paid
+                msgStr = rootGetters['location/_t'](
+                  'Dinein order has been Paid.'
+                )
                 const selectedCovers = rootState.dinein.selectedCover
                 commit(
                   'SET_ORDER_NUMBER',
