@@ -16,9 +16,10 @@
           </button>
           <input
             v-model.number="quantity"
-            @keypress="filterInput"
+            @paste.prevent
             min="1"
             class="qty color-text-invert"
+            @keypress="filterInput"
           />
           <button
             class="qtyplus value-qty color-text-invert"
