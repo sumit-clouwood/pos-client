@@ -6,7 +6,7 @@ const state = {
   subItems: false,
   errorMessage: '',
   activeComboItems: {},
-  setModifiersItem: {},
+  setModifiersItem: [],
 }
 
 const actions = {

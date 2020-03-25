@@ -656,7 +656,7 @@ const actions = {
           if (!rootState.comboItems.comboItemsList) {
             commit(mutation.ADD_ORDER_ITEM_WITH_MODIFIERS, state.item)
           } else {
-            dispatch('comboItems/setModifiers', state.item)
+            dispatch('comboItems/setModifiers', state.item, { root: true })
           }
         } else {
           //edit mode
