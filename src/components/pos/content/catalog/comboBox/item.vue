@@ -105,6 +105,7 @@ export default {
 }
 .food-menu_title.active_left_combo {
   background-color: #5056ca;
+  border-right: 1rem solid red;
 }
 i.fa.fa-check.food-item-checked {
   position: absolute;
@@ -117,11 +118,16 @@ i.fa.fa-check.food-item-checked {
   font-weight: 300;
 }
 @media only screen and (max-width: 600px) and (min-width: 320px) {
+  .food-menu_title.active_left_combo {
+    background-color: #5056ca;
+    border-right: none;
+  }
   .food-menu_container {
-    display: flex;
-    flex-wrap: nowrap;
-    overflow: hidden;
-    overflow-x: auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 10px;
+    // overflow: hidden;
+    // overflow-x: auto;
   }
   .modal-body.color-dashboard-background.grid_combo_left {
     height: 80px !important;
@@ -132,9 +138,10 @@ i.fa.fa-check.food-item-checked {
     margin-bottom: 0.938rem;
   }
   .food-menu_title {
-    margin-right: 0.625rem;
-    width: 4.375rem;
-    max-width: 4.375rem;
+    // margin-right: 0.625rem;
+    // width: 4.375rem;
+    // max-width: 4.375rem;
+    width: 100%;
   }
 }
 </style>

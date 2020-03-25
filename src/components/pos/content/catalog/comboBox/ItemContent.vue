@@ -235,7 +235,11 @@ export default {
   border-radius: 5px;
   min-height: 6.625rem !important;
   max-height: 6.625rem !important;
-  max-width: 11.063rem !important;
+  // max-width: 11.063rem !important;
+  @include responsive(mobile) {
+    max-height: 100% !important;
+    max-width: 100% !important;
+  }
 }
 .food-item-box {
   display: grid;
