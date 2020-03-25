@@ -36,11 +36,11 @@
         ref="entityItem"
       >
         <div
-          v-if="item.image != '' && isEnabled"
+          v-if="isEnabled"
           class="item-details-icon"
           @click.stop="showDetails(item)"
         >
-          <img style="padding: 3px;" src="img/icons/maximize.svg" />
+          <img style="padding: 3px;" src="img/maximize.svg" />
         </div>
         <img
           v-if="item.image != ''"
