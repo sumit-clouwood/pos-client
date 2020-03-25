@@ -653,7 +653,11 @@ const actions = {
             quantity = rootState.orderForm.quantity || 1
           }
           commit(mutation.SET_QUANTITY, quantity)
-          commit(mutation.ADD_ORDER_ITEM_WITH_MODIFIERS, state.item)
+          if (!rootState.comboItems.comboItemsList) {
+            commit(mutation.ADD_ORDER_ITEM_WITH_MODIFIERS, state.item)
+          } else {
+            dispatch('comboItems/setModifiers', state.item)
+          }
         } else {
           //edit mode
           //if the signature was different then modify modifiers,
@@ -667,7 +671,6 @@ const actions = {
             item: state.item,
           })
         }
-
         dispatch('postCartItem').then(() => {
           console.log('item modifer added to cart', state.item)
           resolve()

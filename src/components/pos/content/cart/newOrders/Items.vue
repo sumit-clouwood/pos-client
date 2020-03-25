@@ -13,7 +13,11 @@
 
         <div class="main-orders-list-item-title color-text">
           <div class="orders-name">
-            <button v-if="isCombo" class="toggle_btn" @click="showCombo()">
+            <button
+              v-if="item.item_type === CONST.COMBO_ITEM_TYPE"
+              class="toggle_btn"
+              @click="showCombo()"
+            >
               <i class="fa fa-chevron-down" aria-hidden="true"></i>
             </button>
             {{ dt(item) }}
@@ -35,23 +39,32 @@
         >
           <div v-html="formatItemDiscount(item)"></div>
         </div>
-        <div id="sub_dsc" class="sub_container" v-if="isCombo">
-          <div class="subdescription_container">
-            <div
-              class="product_sub_description main-orders-list-item-subtitle color-text-invert item-exclude"
-            >
-              Pizza Combo Offer x 2
-            </div>
-            <div class="sub_description_price">
-              + NZD 60.00
-            </div>
-          </div>
-          <div class="sub_des_catagary">
-            <div class="sub_more_description">
-              pizza with extra cheese / cold drinks / franchise / Momos and more
-            </div>
-            <div class="sub_more_description_price">
-              + NZD 15.00
+        <div
+          id="sub_dsc"
+          class="sub_container"
+          v-if="item.item_type === CONST.COMBO_ITEM_TYPE"
+        >
+          <div v-for="(combo, index) in item.combo_selected_items" :key="index">
+            <div v-for="cmbItm in combo" :key="cmbItm._id">
+              <div class="subdescription_container">
+                <div
+                  class="product_sub_description main-orders-list-item-subtitle color-text-invert item-exclude"
+                >
+                  {{ cmbItm.name }} x 2
+                </div>
+                <!--<div class="sub_description_price">
+                  + NZD 60.00
+                </div>-->
+              </div>
+              <div class="sub_des_catagary">
+                <div class="sub_more_description">
+                  pizza with extra cheese / cold drinks / franchise / Momos and
+                  more
+                </div>
+                <div class="sub_more_description_price">
+                  + NZD 15.00
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -100,7 +113,6 @@
 <script>
 import Modifiers from './items/Modifiers.vue'
 import Preloader from '@/components/util/Preloader'
-import * as CONST from '@/constants'
 import { mapState, mapActions, mapGetters } from 'vuex'
 import Discount from '@/mixins/Discount'
 import { bus } from '@/eventBus'
@@ -115,16 +127,12 @@ export default {
       entity: 'entityCartItem',
       margin: 4.375,
       keepEntitiesInScroll: 0,
-      isCombo: false,
     }
   },
   mixins: [Discount, Scroll],
   computed: {
     ...mapState({
       currentItem: state => state.order.item._id,
-    }),
-    ...mapState({
-      newCartItem: state => state.order.item,
     }),
     ...mapState('order', ['orderType', 'selectedOrder', 'orderId']),
     ...mapGetters('category', ['subcategoryImage']),
@@ -162,7 +170,6 @@ export default {
     items(newVal, oldVal) {
       if (newVal != oldVal) {
         this.$nextTick(() => {
-          this.isCombo = this.newCartItem.item_type === CONST.COMBO_ITEM_TYPE
           this.calculateScrolls()
             .then(() => {
               bus.$emit('showScrollCartUp', this.showScrollUp)

@@ -23,11 +23,18 @@
 
 <script>
 import { mapGetters, mapState } from 'vuex'
+import Cart from '@/mixins/Cart'
+
 export default {
   computed: {
     ...mapGetters('location', ['_t']),
-    ...mapState('comboItems', ['comboItemsList', 'activeComboItems']),
+    ...mapState('comboItems', [
+      'comboItemsList',
+      'activeComboItems',
+      'setModifiersItem',
+    ]),
   },
+  mixins: [Cart],
   data() {
     return {
       comboItem: [],
@@ -35,9 +42,21 @@ export default {
   },
   methods: {
     addComboItemCart() {
-      this.comboItem[this.comboItemsList._id] = this.activeComboItems
+      let item = {
+        ...this.comboItemsList,
+        combo_selected_items: this.activeComboItems,
+      }
+
+      // this.comboItem[this.comboItemsList._id] = this.activeComboItems
+      // this.comboItem[this.comboItemsList._id] = this.activeComboItems
       // eslint-disable-next-line no-console
-      console.log(this.comboItem)
+      console.log(
+        item,
+        this.activeComboItems,
+        this.setModifiersItem,
+        'this.setModifiersItem'
+      )
+      this.itemsAddToCart(item)
     },
     emptyComboSelection() {
       this.comboItem[this.comboItemsList] = false

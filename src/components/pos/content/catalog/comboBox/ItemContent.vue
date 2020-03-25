@@ -64,7 +64,7 @@ export default {
   name: 'ItemContent',
   data() {
     return {
-      activeItems: [],
+      activeItems: {},
       activeOnClick: [],
     }
   },
@@ -91,7 +91,10 @@ export default {
       'selectedItemContainer',
       'activeComboItems',
     ]),
+    ...mapState('context', ['storeId']),
     ...mapGetters('location', ['formatPrice', '_t']),
+    ...mapGetters('modifier', ['stateItemModifiers', 'modifiers']),
+    ...mapGetters('auth', ['multistore']),
     ...mapGetters('comboItems', ['limitOfSelectingItems']),
     selectedContainerId() {
       return this.selectedItemContainer._id.$oid
@@ -110,7 +113,6 @@ export default {
           }
         })
       }
-      console.log(itemId, activeItem, 'activeItem')
       return activeItem
     },
     ...mapActions('order', ['setActiveItem']),
@@ -120,10 +122,6 @@ export default {
         activatedItem => activatedItem._id === item._id
       )
       let selectedLength = this.activeItems[selectedContainerId].length
-      console.log(
-        itemIndex,
-        Object.values(this.activeItems[selectedContainerId])
-      )
       if (itemIndex) {
         let indexSubItem = this.activeItems[selectedContainerId].indexOf(
           itemIndex
@@ -134,11 +132,12 @@ export default {
       } else {
         if (selectedLength != this.limitOfSelectingItems) {
           this.commitErrorMessage('')
+          // this.setModifiersForItem(item)
+          let modifierItem = this.$store.state.order.item
+          console.log(modifierItem)
           this.activeItems[selectedContainerId].push(item)
-          this.setModifiersForItem(item)
           this.activeOnClick.push(item._id)
           this.isActiveItem(item._id)
-
           if (
             this.$store.getters['modifier/itemMandatoryGroups'](item._id)
               .length > 0
@@ -156,13 +155,30 @@ export default {
       this.$store.commit('comboItems/ACTIVE_COMBO_ITEMS', this.activeItems, {
         root: true,
       })
-      console.log(this.activeItems, 'this.activeItems')
     },
     setModifiersForItem(item) {
       // if (this.$store.getters['modifier/hasModifiers'](item)) {
+      this.$store.commit('modifier/SET_ITEM', item)
       $('#POSItemOptions .modifier-option-radio').prop('checked', false)
-      this.$store.dispatch('modifier/assignModifiersToItem', item)
-      this.$store.commit('orderForm/clearSelection')
+      // this.$store.dispatch('modifier/assignModifiersToItem', item)
+      if (!this.stateItemModifiers.find(obj => obj.itemId == item._id)) {
+        //use updated modifiers
+        const modifiers = this.modifiers(item)
+
+        this.$store.commit('modifier/SET_ITEM_MODIFIERS', {
+          itemId: item._id,
+          modifiers: modifiers,
+          item: item,
+          multistore: this.multistore ? this.storeId : false,
+        })
+      }
+      this.$store
+        .dispatch('order/addModifierOrder')
+        .then(() => {
+          alert('ff')
+        })
+        .catch()
+      // this.$store.commit('orderForm/clearSelection')
       showModal('#POSItemOptions')
       // }
     },

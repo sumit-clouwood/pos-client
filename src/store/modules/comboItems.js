@@ -6,6 +6,7 @@ const state = {
   subItems: false,
   errorMessage: '',
   activeComboItems: {},
+  setModifiersItem: {},
 }
 
 const actions = {
@@ -26,6 +27,12 @@ const actions = {
       })
     }
     commit(mutation.SUB_ITEM_LIST, items)
+  },
+  setModifiers({ commit }, item) {
+    return new Promise(resolve => {
+      commit(mutation.SET_MODIFIERS, item)
+      resolve()
+    })
   },
 }
 
@@ -61,6 +68,9 @@ const mutations = {
     state.activeComboItems = activeComboItems
     // eslint-disable-next-line no-console
     console.log(state.activeComboItems, 'state.activeComboItems')
+  },
+  [mutation.SET_MODIFIERS](state, setModifiersItem) {
+    state.setModifiersItem.push(setModifiersItem)
   },
 }
 
