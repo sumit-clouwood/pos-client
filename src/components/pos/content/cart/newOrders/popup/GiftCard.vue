@@ -103,6 +103,7 @@ export default {
                 hideModal('#Gift-card-payemnt')
                 this.executePayment(this.$store.state.order.orderType.OTApi)
                   .then(() => {
+                    this.code = ''
                     showModal('#gift-card-info')
                   })
                   .catch(() => {
