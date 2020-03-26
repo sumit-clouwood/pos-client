@@ -1651,36 +1651,43 @@ const actions = {
     }
 
     commit('SET_PROCESSING', true)
-    if (actionTrigger === 'addToDriverBucket') {
-      dispatch('deliveryManager/addOrderToDriverBucket', order, {
-        root: true,
-      })
-        .then(() => {})
-        .catch(() => {})
-        .finally(() => commit('SET_PROCESSING', false))
-    } else {
-      let data = { driver: state.selectedDriver }
-
-      OrderService.updateOrderAction(order._id, actionTrigger, data)
-        .then(response => {
-          if (response.status == 200) {
-            switch (orderType) {
-              case 'hold':
-                dispatch('holdOrders/remove', order, { root: true })
-                break
-              case 'call_center':
-              case 'takeaway':
-                dispatch(
-                  'deliveryManager/fetchDMOrderDetail',
-                  {},
-                  { root: true }
-                )
-                break
-            }
-          }
+    return new Promise((resolve, reject) => {
+      if (actionTrigger === 'addToDriverBucket') {
+        dispatch('deliveryManager/addOrderToDriverBucket', order, {
+          root: true,
         })
-        .finally(() => commit('SET_PROCESSING', false))
-    }
+          .then(() => {})
+          .catch(() => {})
+          .finally(() => commit('SET_PROCESSING', false))
+      } else {
+        let data = { driver: state.selectedDriver }
+
+        OrderService.updateOrderAction(order._id, actionTrigger, data)
+          .then(response => {
+            if (response.status == 200) {
+              switch (orderType) {
+                case 'hold':
+                  dispatch('holdOrders/remove', order, { root: true })
+                  break
+                case 'call_center':
+                case 'takeaway':
+                  dispatch(
+                    'deliveryManager/fetchDMOrderDetail',
+                    {},
+                    { root: true }
+                  )
+                  break
+              }
+            }
+            if (response.data.status === 'fail') {
+              reject(response)
+            }
+            resolve(response)
+          })
+          .catch(er => reject(er))
+          .finally(() => commit('SET_PROCESSING', false))
+      }
+    })
   },
   updateOrderCancelAction(
     { dispatch, commit },
