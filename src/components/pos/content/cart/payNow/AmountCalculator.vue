@@ -44,7 +44,7 @@ export default {
     addAmount() {
       $('#payment-breakdown').show()
       this.$store.commit('checkoutForm/paymentButton', 'add')
-      this.$store.commit('checkoutForm/setAction', 'pay')
+      this.$store.commit('checkoutForm/setAction', 'add')
 
       this._addAmount()
         .then(payable => {
