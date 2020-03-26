@@ -653,7 +653,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import '../../../../../assets/scss/variables';
+@import '@/assets/scss/variables';
 
 .num_guests {
   display: grid;
@@ -756,7 +756,7 @@ export default {
 }
 div#NewReservation label {
   color: #a4a4a4;
-  font-size: 14px;
+  font-size: $px16;
   font-weight: normal;
 }
 
@@ -810,10 +810,10 @@ div#NewReservation .num_guests .btn-secondary label {
   justify-content: center;
 }
 .next {
-  width: 40px !important;
+  width: 20px !important;
 }
 .prev {
-  width: 40px !important;
+  width: 20px !important;
 }
 .pre .SCDayNum {
   width: 80px;

@@ -11,7 +11,7 @@
   <div v-else>
     <div
       v-if="orderSource != 'backend'"
-      style="grid-template-columns: 1fr 1fr; display: grid;"
+      style="grid-template-columns: 1fr 1fr; display: grid; column-gap: 10px;"
     >
       <div class="button">
         <div class="template-btn">

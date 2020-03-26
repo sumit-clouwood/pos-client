@@ -62,19 +62,29 @@
       >
         <i class="fa fa-times" aria-hidden="true"></i>
       </div>
-      <div class="btn-chatge" @click="buttonChargeAction()">
+      <carhop v-show="orderType.OTApi === 'carhop'" />
+      <dinein v-show="orderType.OTApi === 'dine_in'" />
+      <crm v-show="orderType.OTApi === 'call_center'" />
+      <div
+        v-show="orderType.OTApi === 'walk_in' || orderType.OTApi === 'takeaway'"
+        class="btn-charge"
+        @click="buttonChargeAction()"
+      >
         <div
-          class="btn-chatge-amount"
+          class="btn-charge-amount"
           v-show="orderType.OTApi !== 'call_center'"
         >
           {{ formatPrice(orderTotal || 0) }}
         </div>
         <div
-          class="btn-chatge-title"
+          class="btn-charge-title"
           v-show="orderType.OTApi !== 'call_center'"
         >
           CHARGE
         </div>
+      </div>
+      <!--
+        <div>
         <li
           v-show="orderType.OTApi === 'call_center'"
           class="footer-slider-list-item color-secondary"
@@ -86,7 +96,7 @@
             role="button"
             @click="setOrderType({ OTview: 'Delivery', OTApi: 'call_center' })"
           >
-            <!--<img src="images/footer-images/d_2.png" alt="customer">-->
+            <img src="images/footer-images/d_2.png" alt="customer">
             <svg
               style="width: 0.65em;"
               aria-hidden="true"
@@ -108,21 +118,34 @@
             <span>{{ _t('Send to Delivery') }}</span>
           </a>
         </li>
-      </div>
+      </div>-->
     </div>
-    <div class="btn-next" @click="footerBtnMethod">Next</div>
-    <div class="btn-next btn-next-s" @click="footerBtnMethodS">Next</div>
-    <div class="btn-Cancel" @click="methodCardHendlerChange">Cancel</div>
+
+    <div class="btn-next" @click="footerBtnMethod">{{ _t('Next') }}</div>
+    <div class="btn-next btn-next-s" @click="footerBtnMethodS">
+      {{ _t('Next') }}
+    </div>
+    <div class="btn-Cancel" @click="methodCardHendlerChange">
+      {{ _t('Cancel') }}
+    </div>
     <div class="qr-voucher-code">
-      <div class="title">Voucher code</div>
+      <div class="title">{{ _t('Voucher') + ' ' + _t('code') }}</div>
       <input type="text" placeholder="Enter voucher code" />
     </div>
   </div>
 </template>
 <script>
+/* global $ */
 import { mapState, mapGetters } from 'vuex'
-
+import carhop from '@/components/pos/footer/buttons/cart/carhop.vue'
+import dinein from '@/components/pos/footer/buttons/cart/dinein.vue'
+import crm from '@/components/pos/footer/buttons/cart/crm.vue'
 export default {
+  components: {
+    carhop,
+    crm,
+    dinein,
+  },
   props: ['param'],
   data() {
     return {
@@ -227,13 +250,13 @@ export default {
 }
 </script>
 <style lang="scss">
-@import '../../assets/scss/variables.scss';
-@import '../../assets/scss/mixins.scss';
+@import '@/assets/scss/variables.scss';
+@import '@/assets/scss/mixins.scss';
 
 @include responsive(mobile) {
   .mobile-footer {
     padding: 10px 20px;
-    display: flex;
+    display: flex !important;
     align-items: center;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     z-index: 1;
@@ -280,7 +303,7 @@ export default {
       -webkit-box-align: center;
       -ms-flex-align: center;
       align-items: center;
-      background-color: #64C434;
+      background-color: #64c434;
       letter-spacing: 1px;
       border-radius: 3px;
       padding: 0 25px;
@@ -295,250 +318,248 @@ export default {
         color: #fff;
         width: 100%;
         font-size: 1.25em;
-        background-color: #64C434;
+        background-color: #64c434;
         height: 50px;
         display: flex;
         justify-content: center;
         align-items: center;
       }
-}
+    }
 
-.main-orders-buttons {
-display: grid;
-grid-template-columns: max-content 1fr;
-grid-gap: 20px;
-display: none;
-width: 100%;
-
-.btn-menu {
-  width: 50px;
-  height: 50px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: $btn-border-radius;
-  background-color: $btn-bg-black;
-  display: none;
-
-  &.active {
-    display: flex;
-  }
-}
-
-.btn-menu-close {
-  width: 50px;
-  height: 50px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: $btn-border-radius;
-  background-color: $red;
-  color: #fff !important;
-  display: none;
-
-  &.active {
-    display: flex;
-    color: #fff;
-  }
-}
-
-.btn-chatge {
-  display: grid;
-  align-items: center;
-  background-color: $green-middle;
-  border-radius: $btn-border-radius;
-  height: 50px;
-  color: #fff;
-  justify-content: center;
-  text-align: center;
-  padding: 5px;
-  &.send {
-    display: grid;
-    grid-template-columns: 1fr;
-    align-items: stretch;
-    justify-content: stretch;
-    width: 100%;
-    li {
+    .main-orders-buttons {
+      display: grid;
+      grid-template-columns: max-content 1fr;
+      grid-gap: 20px;
+      display: none;
       width: 100%;
-      height: 100%;
-      display: flex;
-      align-items: center;
-      a {
+
+      .btn-menu {
+        width: 50px;
+        height: 50px;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 14px;
-        width: 100%;
-        svg {
-          margin-right: 10px;
+        border-radius: $btn-border-radius;
+        background-color: $btn-bg-black;
+        display: none;
+
+        &.active {
+          display: flex;
+          height: auto;
+        }
+      }
+
+      .btn-menu-close {
+        width: 50px;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: $btn-border-radius;
+        background-color: $red;
+        color: #fff !important;
+        display: none;
+
+        &.active {
+          display: flex;
+          color: #fff;
+        }
+      }
+
+      .btn-charge {
+        display: grid;
+        align-items: center;
+        background-color: $green-middle;
+        border-radius: $btn-border-radius;
+        height: 50px;
+        color: #fff;
+        justify-content: center;
+        text-align: center;
+        padding: 5px;
+        &.send {
+          display: grid;
+          grid-template-columns: 1fr;
+          align-items: stretch;
+          justify-content: stretch;
+          width: 100%;
+          li {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            a {
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              font-size: 14px;
+              width: 100%;
+              svg {
+                margin-right: 10px;
+              }
+            }
+          }
+        }
+
+        .btn-charge-amount {
+          margin-bottom: -5px;
+
+          strong {
+            letter-spacing: 1px;
+          }
         }
       }
     }
-  }
 
-  .btn-chatge-amount {
-    margin-bottom: -5px;
-
-    strong {
+    .btn-next {
+      width: 100%;
+      height: 50px;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: $green-middle;
       letter-spacing: 1px;
+      border-radius: $btn-border-radius;
+      padding: 0 25px;
+    }
+
+    .btn-Cancel {
+      display: none;
+    }
+
+    .qr-voucher-code {
+      display: none;
+      width: 100%;
+
+      .title {
+        font-size: 16px;
+        font-weight: 600;
+        margin-bottom: 10px;
+      }
+
+      input {
+        height: 50px;
+        width: 100%;
+        border-radius: $btn-border-radius;
+        border: 2px solid $gray-middle;
+        padding: 0 20px;
+
+        &:focus {
+          outline: 0;
+        }
+      }
+    }
+
+    $green: #5ea000;
+
+    .animate {
+      -webkit-animation: itemAdd 0.6s;
+    }
+
+    .animate-out {
+      -webkit-animation: itemAdd 0.6s;
+      -webkit-animation-direction: reverse;
+    }
+
+    .cart-button {
+      background-color: $green;
+      display: inline-block;
+      width: 45px;
+      height: 35px;
+      border-radius: 2px;
+      text-align: center;
+      position: absolute;
+      z-index: 1;
+      top: 0;
+      right: 0;
+    }
+
+    .total {
+      font-family: 'proxima-nova-soft', sans-serif;
+      font-style: normal;
+      font-weight: 400;
+      display: inline-block;
+      margin-right: 5px;
+      height: 35px;
+      font-size: 21px;
+      color: $green;
+      padding-top: 5px;
+      text-align: right;
+      position: absolute;
+      right: 50px;
+      top: 0;
+    }
+
+    @-webkit-keyframes itemAdd {
+      0% {
+        opacity: 0;
+      }
+      20% {
+        opacity: 1;
+      }
+      70% {
+        opacity: 1;
+        top: 10px;
+      }
+      100% {
+        opacity: 0;
+        top: 10px;
+      }
+    }
+
+    button {
+      border: none;
+      background-color: white;
+      color: #515151;
+      font-size: 16px;
+      padding: 5px 10px;
+      height: 40px;
+      border: 2px solid #d7d7d7;
+      border-radius: 2px;
+      display: block;
+      clear: both;
+      margin-top: 20px;
+    }
+
+    .ball {
+      content: '';
+      height: 10px;
+      width: 10px;
+      background-color: orange;
+      top: -10px;
+      left: 65px;
+      z-index: 101;
+      position: absolute;
+      opacity: 0;
+      border-radius: 1px;
+    }
+
+    svg {
+      fill: white;
+    }
+
+    .shake {
+      -webkit-animation: cartShake 0.3s;
+      -webkit-animation-delay: 200ms;
+    }
+
+    @-webkit-keyframes cartShake {
+      0% {
+        transform: rotate(0deg);
+      }
+      50% {
+        transform: rotate(0deg);
+      }
+      70% {
+        transform: rotate(-10deg);
+      }
+      90% {
+        transform: rotate(10deg);
+      }
+      100% {
+        transform: rotate(0deg);
+      }
     }
   }
-}
-}
-
-.btn-next {
-width: 100%;
-height: 50px;
-color: #fff;
-display: flex;
-align-items: center;
-justify-content: center;
-background-color: $green-middle;
-letter-spacing: 1px;
-border-radius: $btn-border-radius;
-padding: 0 25px;
-}
-
-.btn-Cancel {
-display: none;
-}
-
-.qr-voucher-code {
-display: none;
-width: 100%;
-
-.title {
-  font-size: 16px;
-  font-weight: 600;
-  margin-bottom: 10px;
-}
-
-input {
-  height: 50px;
-  width: 100%;
-  border-radius: $btn-border-radius;
-  border: 2px solid $gray-middle;
-  padding: 0 20px;
-
-  &:focus {
-    outline: 0;
-  }
-}
-}
-
-$green: #5ea000;
-
-.animate {
--webkit-animation: itemAdd .6s;
-}
-
-.animate-out {
--webkit-animation: itemAdd .6s;
--webkit-animation-direction: reverse;
-}
-
-.cart-button {
-background-color: $green;
-display: inline-block;
-width: 45px;
-height: 35px;
-border-radius: 2px;
-text-align: center;
-position: absolute;
-z-index: 1;
-top: 0;
-right: 0;
-}
-
-.total {
-font-family: "proxima-nova-soft",sans-serif;
-font-style: normal;
-font-weight: 400;
-display: inline-block;
-margin-right: 5px;
-height: 35px;
-font-size: 21px;
-color: $green;
-padding-top: 5px;
-text-align: right;
-position: absolute;
-right: 50px;
-top: 0;
-
-}
-
-@-webkit-keyframes itemAdd {
-0% {
-  opacity: 0;
-}
-20% {
-  opacity: 1;
-}
-70% {
-  opacity: 1;
-  top: 10px;
-}
-100% {
-  opacity: 0;
-  top: 10px;
-
-}
-}
-
-button {
-border: none;
-background-color: white;
-color: #515151;
-font-size: 16px;
-padding: 5px 10px;
-height: 40px;
-border: 2px solid #d7d7d7;
-border-radius: 2px;
-display: block;
-clear: both;
-margin-top: 20px;
-}
-
-.ball {
-content: "";
-height: 10px;
-width: 10px;
-background-color: orange;
-top: -10px;
-left: 65px;
-z-index: 101;
-position: absolute;
-opacity: 0;
-border-radius: 1px;
-
-}
-
-svg {
-fill: white;
-}
-
-.shake {
--webkit-animation: cartShake .3s;
--webkit-animation-delay: 200ms;
-}
-
-@-webkit-keyframes cartShake {
-0% {
-  transform: rotate(0deg);
-}
-50% {
-  transform: rotate(0deg);
-}
-70% {
-  transform: rotate(-10deg);
-}
-90% {
-  transform: rotate(10deg);
-}
-100% {
-  transform: rotate(0deg);
-}
-}
-}
 }
 </style>

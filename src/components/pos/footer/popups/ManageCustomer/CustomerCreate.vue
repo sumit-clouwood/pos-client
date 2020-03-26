@@ -142,9 +142,9 @@ export default {
 }
 </script>
 <style lang="scss">
-@import '../../../../../assets/scss/pixels_rem.scss';
-@import '../../../../../assets/scss/variables.scss';
-@import '../../../../../assets/scss/mixins.scss';
+@import '@/assets/scss/pixels_rem.scss';
+@import '@/assets/scss/variables.scss';
+@import '@/assets/scss/mixins.scss';
 
 @include responsive(mobile) {
   #post_announcement {
@@ -188,7 +188,7 @@ export default {
         form {
           overflow-y: auto;
           overflow-x: hidden;
-          width: 100vw;
+          width: 95vw !important;
         }
 
         .modal-body {
@@ -207,6 +207,10 @@ export default {
 
         .modal-footer {
           z-index: 1;
+          min-height: 0px !important;
+          .btn-announce {
+            margin-bottom: 0px !important;
+          }
         }
       }
     }

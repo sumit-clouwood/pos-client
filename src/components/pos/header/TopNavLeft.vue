@@ -3,9 +3,9 @@
     <HeaderOrderType />
     <div class="header-main-left-time color-main color-text-invert">
       <a role="button" class="color-text-invert">
+        <DateTimeVue />
         <span class="time">{{ todayTime }}</span>
-        <span>{{ todayDate }}</span></a
-      >
+      </a>
     </div>
   </div>
 </template>
@@ -14,12 +14,14 @@
 /* eslint-disable no-console */
 import moment from 'moment-timezone'
 import HeaderOrderType from './HeaderOrderType'
+import DateTimeVue from '@/components/util/DateTimeVue'
 
 export default {
   name: 'NavSidebar',
   props: {},
   components: {
     HeaderOrderType,
+    DateTimeVue,
   },
   data() {
     return {

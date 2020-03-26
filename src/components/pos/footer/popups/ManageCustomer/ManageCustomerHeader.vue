@@ -10,6 +10,7 @@
         :placeholder="_t('Search') + ' ' + _t('customer')"
         v-model="searchTerms"
         @keyup="searchCustomer()"
+        @keypress="$event.keyCode == 13 ? $event.preventDefault() : true"
       />
     </form>
   </div>

@@ -78,7 +78,6 @@
 <script>
 import Modifiers from './items/Modifiers.vue'
 import Preloader from '@/components/util/Preloader'
-
 import { mapState, mapActions, mapGetters } from 'vuex'
 import Discount from '@/mixins/Discount'
 import { bus } from '@/eventBus'
@@ -173,6 +172,9 @@ export default {
         this.$store.dispatch('mainOrdersHendlerChange')
       }
     },
+    modifierHeights() {
+      bus.$emit('modifier-heights')
+    },
   },
   components: {
     Modifiers,
@@ -181,9 +183,9 @@ export default {
 }
 </script>
 <style lang="scss">
-@import '../../../../../assets/scss/pixels_rem.scss';
-@import '../../../../../assets/scss/variables.scss';
-@import '../../../../../assets/scss/mixins.scss';
+@import '@/assets/scss/pixels_rem.scss';
+@import '@/assets/scss/variables.scss';
+@import '@/assets/scss/mixins.scss';
 .main-orders-list-item {
   .storename {
     font-size: 9px;

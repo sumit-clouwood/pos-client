@@ -7,7 +7,7 @@
     aria-labelledby="nav-home-tab"
   >
     <div class="order-receipt color-dashboard-background">
-      <div class="order-note">
+      <div class="order-note" v-if="orderDetails.order_note">
         {{ orderDetails.order_note }}
       </div>
       <div class="items-container">
@@ -313,5 +313,10 @@ export default {
   padding-top: 0;
   border-top: 0;
   padding-left: 1.875rem;
+}
+.receipt-table {
+  max-height: 240px;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 </style>

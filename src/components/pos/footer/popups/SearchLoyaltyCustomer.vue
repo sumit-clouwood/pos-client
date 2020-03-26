@@ -64,7 +64,7 @@
                   class="pull-right p-0"
                   :class="customer.active ? 'text-success' : 'text-danger'"
                 >
-                  {{ customer.active ? 'Activated' : 'Deactivated' }}
+                  {{ customer.active ? _t('Activated') : _t('Deactivated') }}
                 </span>
               </span>
             </div>
@@ -79,26 +79,25 @@
           >
             {{ _t('Create New Customer') }}
           </div>
-          <div class="btn-announce">
-            <button
-              type="button"
-              class="btn btn-danger cancel-announce color-text-invert color-button"
-              data-dismiss="modal"
-              @click="loyaltyHendlerChange"
-            >
-              {{ _t('Cancel') }}
-            </button>
-            <button
-              @click="addLoyalty"
-              class="btn btn-success btn-large color-text-invert color-main"
-              type="button"
-              id="save-note"
-            >
-              {{ _t('Select') }}
-            </button>
-          </div>
-          <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
+          <button
+            @click="addLoyalty"
+            class="btn btn-success btn-large color-text-invert color-main"
+            type="button"
+            id="save-note"
+          >
+            {{ _t('Select') }}
+          </button>
+          <button
+            type="button"
+            class="btn btn-danger cancel-announce color-text-invert color-button"
+            data-dismiss="modal"
+            @click="loyaltyHendlerChange"
+          >
+            {{ _t('Cancel') }}
+          </button>
         </div>
+
+        <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
       </div>
     </div>
   </div>
@@ -191,6 +190,9 @@ export default {
 </script>
 <!-- eslint-disable max-len -->
 <style scoped lang="scss">
+@import '@/assets/scss/pixels_rem.scss';
+@import '@/assets/scss/variables.scss';
+@import '@/assets/scss/mixins.scss';
 .dropdown {
   position: relative;
 }
@@ -202,6 +204,10 @@ export default {
 .dropdown-content {
   display: block;
   position: absolute;
+  @include responsive(mobile) {
+    position: static;
+    max-height: 100px !important;
+  }
   background-color: #f6f6f6;
   width: 100%;
   overflow: auto;
@@ -227,17 +233,17 @@ export default {
 .btnSuccess {
   color: #fff;
   height: 47px;
+  height: 3.125rem;
   border-radius: 0px 5px 5px 0px;
+}
+.cancel-announce,
+#save-note {
+  height: 3.125rem;
 }
 
 .dropdown span:hover {
   background-color: #ddd;
 }
-</style>
-<style lang="scss">
-@import '../../../../assets/scss/pixels_rem.scss';
-@import '../../../../assets/scss/variables.scss';
-@import '../../../../assets/scss/mixins.scss';
 
 @include responsive(mobile) {
   .loyalty {
@@ -246,13 +252,13 @@ export default {
   }
   #search-loyalty-customer {
     border: none;
+    overflow: hidden;
     .modal-dialog {
       border: none;
       .modal-content {
         border: none;
         /*top: auto;*/
         .modal-header {
-          height: 80px;
           background-color: #fff;
           display: grid !important;
           align-items: center;
@@ -280,6 +286,10 @@ export default {
         }
 
         .modal-footer {
+          padding: 5px !important;
+          display: grid;
+          grid-template-columns: 1fr;
+          grid-row-gap: 10px;
           .cursor-pointer {
             background-color: $green-middle;
             height: 50px;
@@ -288,7 +298,9 @@ export default {
             display: grid;
             align-items: center;
             justify-content: center;
-            width: 100%;
+            text-align: center;
+            width: 50vh;
+            grid-template-columns: 1fr;
           }
 
           .btn-announce {
@@ -311,6 +323,16 @@ export default {
         }
       }
     }
+  }
+  .cancel-announce,
+  .cursor-pointer,
+  #save-note {
+    height: 40px !important;
+    font-size: 1rem !important;
+    margin-right: 0px !important;
+    width: 90% !important;
+    margin-left: 5% !important;
+    margin-right: 5% !important;
   }
 }
 </style>

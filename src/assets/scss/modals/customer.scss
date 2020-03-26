@@ -243,11 +243,11 @@
               margin-bottom: 10px;
 
               > input {
-                width: 100%;
+                width: 95%;
               }
 
               > select {
-                width: 100%;
+                width: 95%;
               }
 
               > label {
@@ -269,11 +269,11 @@
               margin-bottom: 10px;
 
               > input {
-                width: 100%;
+                width: 95%;
               }
 
               > select {
-                width: 100%;
+                width: 95%;
               }
 
               > label {
@@ -286,11 +286,11 @@
                 padding: 0;
 
                 .vdatetime {
-                  width: 100%;
+                  width: 95%;
 
                   input {
                     margin: 0;
-                    width: 100%;
+                    width: 95%;
                   }
                 }
               }
@@ -319,6 +319,8 @@
       border-left: 1px solid #ddd;
 
       .modal-content {
+        width: 95vw !important;
+        margin: auto;
         .modal-header {
           border-radius: 0;
           padding: 10px 20px;
@@ -333,7 +335,7 @@
 
           .add-note-area {
             input {
-              width: 100%;
+              width: 95%;
             }
           }
 

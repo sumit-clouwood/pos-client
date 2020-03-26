@@ -225,10 +225,10 @@ export default {
     padding-right: 10px
 </style>
 <style lang="scss" scoped>
-@import '../../../assets/scss/responsive_table.scss';
-@import '../../../assets/scss/pixels_rem.scss';
-@import '../../../assets/scss/variables.scss';
-@import '../../../assets/scss/mixins.scss';
+@import '@/assets/scss/responsive_table.scss';
+@import '@/assets/scss/pixels_rem.scss';
+@import '@/assets/scss/variables.scss';
+@import '@/assets/scss/mixins.scss';
 
 .btn-align-row {
   grid-template-columns: max-content 1fr !important;
@@ -238,7 +238,6 @@ export default {
   .carhop-running-orders-wrapper {
     padding: 10px;
     font-size: 0.75rem;
-    width: 50vh;
   }
   .order-number,
   .item-name {
@@ -251,7 +250,7 @@ export default {
       overflow-y: scroll;
       &::-webkit-scrollbar {
         width: 0.625rem;
-        height: 0.625rem;
+        height: 0.625rem !important;
       }
     }
   }

@@ -30,7 +30,8 @@
           class="search-field-input"
           :placeholder="_t('Search or scan for items')"
           v-model="searchTransactions"
-          @keyup="searchingItems(searchTransactions)"
+          @keyup="searchingItems()"
+          @keypress="$event.keyCode == 13 ? $event.preventDefault() : true"
         />
       </div>
     </form>
@@ -50,9 +51,7 @@
 </template>
 
 <script>
-/*Global $*/
 import { mapGetters } from 'vuex'
-
 export default {
   name: 'Search',
   props: {},
@@ -73,11 +72,13 @@ export default {
     this.searchTransactions = ''
   },
   methods: {
-    searchingItems(searchTransactions) {
-      this.$store.dispatch(
-        'transactionOrders/setTransactionOrders',
-        searchTransactions
-      )
+    searchingItems() {
+      if (this.searchTransactions.trim().length >= 1) {
+        this.$store.dispatch(
+          'transactionOrders/setTransactionOrders',
+          this.searchTransactions
+        )
+      }
     },
     searchHendlerChange() {
       this.$store.dispatch('searchHendlerChange')
@@ -86,9 +87,9 @@ export default {
 }
 </script>
 <style lang="scss">
-@import '../../../assets/scss/pixels_rem.scss';
-@import '../../../assets/scss/variables.scss';
-@import '../../../assets/scss/mixins.scss';
+@import '@/assets/scss/pixels_rem.scss';
+@import '@/assets/scss/variables.scss';
+@import '@/assets/scss/mixins.scss';
 
 .transaction-orders .search-field-icon.home {
   display: none;
@@ -99,7 +100,7 @@ export default {
     margin-top: 0;
     border-radius: 0;
     border: none;
-    grid-template-columns: 65px 1fr 65px;
+    grid-template-columns: 65px 1fr 65px !important;
     align-items: stretch;
     height: 100%;
 

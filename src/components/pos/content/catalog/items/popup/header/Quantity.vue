@@ -1,11 +1,13 @@
 <template>
-  <div class="POSItemOptions_quantity color-dashboard-background">
+  <div
+    class="POSItemOptions_quantity color-dashboard-background quantity-wrapper pos-quantity-wrapper"
+  >
     <label class="POSItemOptions_label color-text-invert">{{
       _t('Quantity')
     }}</label>
-    <div class="POSItemOptions_quantity_wrapper">
+    <div class="POSItemOptions_quantity_wrapper postItem-wrapper">
       <template v-if="show()">
-        <div class="POSItemOptions_quantity_inputs">
+        <div class="POSItemOptions_quantity_inputs item-count-wrapper">
           <button
             class="qtyminus value-qty color-text-invert"
             @click="updateFormQuantity('-')"
@@ -26,7 +28,7 @@
         </div>
         <div class="POSItemOptions_quantity_submit">
           <button @click="updateItemQty()" class="color-main color-text-invert">
-            <img src="img/pos/right.png" alt="check" /> Set Quantity
+            <img src="img/pos/right.png" alt="check" /> {{ _t('Set Quantity') }}
           </button>
         </div>
       </template>
@@ -96,6 +98,8 @@ export default {
 }
 </style>
 <style lang="scss" scoped>
+@import '@/assets/scss/header';
+@import '@/assets/scss/mixins.scss';
 .POSItemOptions
   .modal-dialog
   .modal-content
@@ -109,6 +113,36 @@ export default {
     .POSItemOptions_quantity_submit {
       margin-left: 1em;
     }
+  }
+}
+
+@include responsive(mobile) {
+  .POSItemOptions_quantity_inputs {
+    width: 50px !important;
+  }
+  .quantity-wrapper {
+    position: relative !important;
+    display: flex !important;
+    left: 0 !important;
+    right: 0 !important;
+    padding-left: 8px !important;
+  }
+
+  .item-count-wrapper {
+    margin-left: 1rem;
+    margin-right: 1rem;
+  }
+  .postItem-wrapper {
+    flex-flow: nowrap !important;
+  }
+
+  .POSItemOptions_quantity {
+    display: grid !important;
+    grid-template-columns: 2fr 2fr 2fr;
+    padding: 4px;
+  }
+  .pos-quantity-wrapper {
+    display: flex !important;
   }
 }
 </style>

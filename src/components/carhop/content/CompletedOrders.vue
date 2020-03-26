@@ -163,15 +163,14 @@ export default {
     color: #7ac241
 </style>
 <style lang="scss" scoped>
-@import '../../../assets/scss/responsive_table.scss';
-@import '../../../assets/scss/pixels_rem.scss';
-@import '../../../assets/scss/variables.scss';
-@import '../../../assets/scss/mixins.scss';
+@import '@/assets/scss/responsive_table.scss';
+@import '@/assets/scss/pixels_rem.scss';
+@import '@/assets/scss/variables.scss';
+@import '@/assets/scss/mixins.scss';
 @include responsive(mobile) {
   .carhop-completed-orders-wrapper {
     padding: 10px;
     font-size: 0.75rem;
-    width: 50vh;
   }
   .carhop-completed-orders-wrapper tr {
     overflow-y: scroll;
@@ -180,7 +179,7 @@ export default {
       overflow-y: scroll;
       &::-webkit-scrollbar {
         width: 0.625rem;
-        height: 0.625rem;
+        height: 0.625rem !important;
       }
     }
   }

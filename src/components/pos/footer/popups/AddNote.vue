@@ -85,14 +85,15 @@ export default {
   },
 }
 </script>
-<style lang="scss">
-@import '../../../../assets/scss/pixels_rem.scss';
-@import '../../../../assets/scss/variables.scss';
-@import '../../../../assets/scss/mixins.scss';
+<style lang="scss" scoped>
+@import '@/assets/scss/pixels_rem.scss';
+@import '@/assets/scss/variables.scss';
+@import '@/assets/scss/mixins.scss';
 
 @include responsive(mobile) {
   #add-note {
     .modal-dialog {
+      margin: 0px !important;
       .modal-content {
         .modal-header {
           padding: 20px;
@@ -119,6 +120,7 @@ export default {
             button,
             #save-note {
               height: 50px;
+              width: 100% !important;
             }
           }
         }
