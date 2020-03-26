@@ -1,7 +1,7 @@
 <template>
   <div
     :class="['orders-menu-overlay', { active: !footerMenuHendler }]"
-    @click="footerMenuHendlerChange"
+    @click.stop="footerMenuHendlerChange"
   >
     <div class="orders-menu">
       <li
@@ -41,7 +41,7 @@
       <div
         class="footer-slider-list-item footer-slider-list-item-open-orders"
         id="hold-order-box"
-        @click="viewHoldOrders"
+        @click.stop="viewHoldOrders"
       >
         <svg
           width="24"

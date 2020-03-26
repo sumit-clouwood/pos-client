@@ -389,6 +389,7 @@
       </ul>
     </ul>
     <PrinterSettings v-if="isDimsPosApp()" />
+
     <BusinessSummary />
     <SupervisorPasswordView />
   </ul>

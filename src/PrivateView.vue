@@ -49,6 +49,8 @@ other components are nested within.
         </ul>
       </div>
       <router-view v-else />
+      <!-- <BusinessSummary />
+      <SupervisorPasswordView /> -->
     </div>
   </div>
 </template>
@@ -61,11 +63,16 @@ import bootstrap from '@/bootstrap'
 import Preloader from '@/components/util/Preloader'
 import { mapState, mapGetters } from 'vuex'
 import moment from 'moment-timezone'
+// import BusinessSummary from '@/components/pos/footer/popups/BusinessSummary.vue'
+// import SupervisorPasswordView from '@/components/util/SupervisorPassword.vue'
+
 export default {
   name: 'PrivateView',
   props: {},
   components: {
     Preloader,
+    // BusinessSummary,
+    // SupervisorPasswordView,
   },
   mixins: [Cookie, ResizeMixin],
   data: function() {
