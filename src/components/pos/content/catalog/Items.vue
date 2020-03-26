@@ -36,7 +36,7 @@
         ref="entityItem"
       >
         <div
-          v-if="item.image != '' && isEnabled"
+          v-if="isEnabled"
           class="item-details-icon"
           @click.stop="showDetails(item)"
         >
