@@ -203,6 +203,8 @@ export default {
   overflow-y: scroll;
   &::-webkit-scrollbar {
     background-color: rgb(233, 233, 233);
+    width: 0.625rem;
+    height: 0.625rem;
   }
 }
 .showpropermsg .text-danger {
