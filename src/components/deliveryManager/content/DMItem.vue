@@ -156,7 +156,11 @@
     <h5 v-else class="center-block text-center pt-5">
       {{ _t('No Orders Found') }}
     </h5>
-    <InformationPopup :responseInformation="err" title="fdfdfdfdf" />
+    <InformationPopup
+      :response-information="err"
+      title="Error"
+      :activated-class="'text-danger'"
+    />
   </div>
 </template>
 
@@ -165,7 +169,7 @@ import { mapState, mapActions, mapGetters } from 'vuex'
 import DateTime from '@/mixins/DateTime'
 import InformationPopup from '@/components/pos/content/InformationPopup'
 
-/* global showModal */
+/* global $ */
 export default {
   name: 'DMItem',
   data() {
@@ -206,13 +210,8 @@ export default {
       this.updateOrderAction(data)
         .then(() => {})
         .catch(er => {
-          /*this.$store.commit('order/setAlert', {
-            type: 'alert',
-            title: er.data.error,
-            msg: er.data.error,
-          })*/
           this.err = er.data.error
-          showModal('#information-popup')
+          $('.information-popup').modal('show')
           // eslint-disable-next-line no-console
           console.log(er, 'fdfdfdfdfdfd', this.alert)
         })
