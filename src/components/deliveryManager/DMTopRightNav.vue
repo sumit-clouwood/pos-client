@@ -218,6 +218,7 @@ export default {
         this.$store.dispatch('deliveryManager/updateDMOrderStatus', orderStatus)
         deliveryTabs(orderStatus.dataRelated)
       }
+      this.dmCloseBtn()
     },
     showBookingBtn() {
       $('.dm-btn-footer-wrapper').addClass('active')
