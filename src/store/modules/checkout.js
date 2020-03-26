@@ -258,6 +258,7 @@ const actions = {
       localStorage.getItem('reservationId') || rootState.dinein.reserverationId
     return Promise.resolve(order)
   },
+
   injectWalkinData({ rootState, rootGetters }, order) {
     if (rootGetters['location/isTokenManager']) {
       let tokenNumber = localStorage.getItem('token_number')
@@ -267,6 +268,7 @@ const actions = {
     }
     return Promise.resolve(order)
   },
+
   preOrderHook({ rootState, dispatch }, { order, action }) {
     if (rootState.order.orderType.OTApi == CONSTANTS.ORDER_TYPE_CALL_CENTER) {
       return dispatch('injectCrmData', order)
@@ -610,7 +612,9 @@ const actions = {
     return Promise.resolve(order)
   },
 
-  injectCarHopItemsData(order) {
+  injectCarHopItemsData({ state }, order) {
+    // eslint-disable-next-line no-console
+    console.log(state.order)
     if (typeof order.items !== 'undefined') {
       order.items = order.items.map(oitem => {
         oitem.kitchen_invoice = 1

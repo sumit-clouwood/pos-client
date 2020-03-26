@@ -276,6 +276,8 @@ const actions = {
           JSON.stringify(jsonResponse)
         )
       }
+      //Temp- later remove once IOS KOT App delivers.
+      localStorage.setItem('orderInvoiceColData', JSON.stringify(jsonResponse))
       if (customerData) {
         dispatch('customer/resetCustomer', true, { root: true }).then(() => {
           resolve(jsonResponse)
