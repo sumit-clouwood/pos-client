@@ -217,12 +217,18 @@
                 </div>
                 <div class="col-md-6">
                   <div class="form-group">
-                    <label>{{ _t('Last Name') }}</label>
+                    <label
+                      >{{ _t('Last Name')
+                      }}<span class="text-danger">*</span></label
+                    >
                     <input
                       type="text"
                       class="form-control txt-box"
                       v-model="reservationInformation.guest_lname"
                     />
+                    <span class="text-danger">{{
+                      errorCheck('guest_lname')
+                    }}</span>
                   </div>
                 </div>
               </div>
@@ -497,11 +503,15 @@ export default {
       console.log(this.reservationInformation)
       if (!er.guest_phone) {
         // this.errors.guest_phone = 'Please enter valid phone number'
-        this.errors = { guest_phone: ['Phone is required'] }
+        this.errors = { guest_phone: ['Phone number is required'] }
         this.errorsCount = 1
       } else if (!er.guest_fname) {
         // this.errors.guest_fname = 'Please enter valid name.'
         this.errors = { guest_fname: ['Name is required'] }
+        this.errorsCount = 1
+      } else if (!er.guest_lname) {
+        // this.errors.guest_fname = 'Please enter valid name.'
+        this.errors = { guest_lname: ['Last name is required'] }
         this.errorsCount = 1
       }
       // eslint-disable-next-line no-debugger
