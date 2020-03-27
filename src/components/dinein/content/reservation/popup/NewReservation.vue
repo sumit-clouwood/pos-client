@@ -164,7 +164,10 @@
               <div class="row">
                 <div class="col-md-6">
                   <div class="form-group">
-                    <label>Phone</label>
+                    <label
+                      >{{ _t('Phone') }}
+                      <span class="text-danger">*</span></label
+                    >
                     <div class="input-group">
                       <span class="lbl-txt-box">{{ brand.country }}</span>
                       <input
@@ -185,7 +188,7 @@
                 </div>
                 <div class="col-md-6">
                   <div class="form-group">
-                    <label>Email</label>
+                    <label>{{ _t('Email') }}</label>
                     <input
                       type="email"
                       class="form-control txt-box"
@@ -198,17 +201,23 @@
                 </div>
                 <div class="col-md-6">
                   <div class="form-group">
-                    <label>First Name</label>
+                    <label
+                      >{{ _t('First Name') }}
+                      <span class="text-danger">*</span></label
+                    >
                     <input
                       type="text"
                       class="form-control txt-box"
                       v-model="reservationInformation.guest_fname"
                     />
+                    <span class="text-danger">{{
+                      errorCheck('guest_fname')
+                    }}</span>
                   </div>
                 </div>
                 <div class="col-md-6">
                   <div class="form-group">
-                    <label>Last Name</label>
+                    <label>{{ _t('Last Name') }}</label>
                     <input
                       type="text"
                       class="form-control txt-box"
@@ -219,7 +228,7 @@
               </div>
               <div class="row lh-30">
                 <div class="col-md-12">
-                  <label>Guest History</label>
+                  <label>{{ _t('Guest History') }}</label>
                   <div class="scroll-history">
                     <table class="table table-bordered">
                       <tbody v-if="userHistory">
@@ -237,7 +246,7 @@
                       </tbody>
                       <tbody v-else>
                         <tr>
-                          <td>No history found</td>
+                          <td>{{ _t('No history found') }}</td>
                         </tr>
                       </tbody>
                     </table>
@@ -402,6 +411,7 @@ export default {
       settings: '',
       selectedTags: [],
       errors: false,
+      errorsCount: 0,
     }
   },
   methods: {
@@ -460,11 +470,30 @@ export default {
         'dineinReservation/getUTCDate'
       ](this.selectedDate)
     },
+    checkForm: function() {
+      this.errors = {}
+      this.errorsCount = 0
+      let er = this.reservationInformation
+      // eslint-disable-next-line no-console
+      console.log(this.reservationInformation)
+      if (!er.guest_phone) {
+        // this.errors.guest_phone = 'Please enter valid phone number'
+        this.errors = { guest_phone: ['Phone is required'] }
+        this.errorsCount = 1
+      } else if (!er.guest_fname) {
+        // this.errors.guest_fname = 'Please enter valid name.'
+        this.errors = { guest_fname: ['Name is required'] }
+        this.errorsCount = 1
+      }
+      // eslint-disable-next-line no-debugger
+      // debugger
+    },
     addNewReservation: function() {
       this.setStartDate()
+      this.checkForm()
       this.reservationInformation.assigned_table_id =
         this.selectedTable.table_id || ''
-
+      if (this.errorsCount) return false
       this.$store
         .dispatch('dinein/newReservation', this.reservationInformation, {
           root: true,
@@ -482,6 +511,8 @@ export default {
     },
     updateReservation: function() {
       this.setStartDate()
+      this.checkForm()
+      if (this.errorsCount) return false
       let id = this.reservationInformation._id
       delete this.reservationInformation._id
       delete this.reservationInformation.number
