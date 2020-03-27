@@ -62,7 +62,7 @@
               </div>
               <div class="form-group pt-2">
                 <label>
-                  Available Time Slots
+                  {{ _t('Available Time Slots') }}
                   <span class="text-danger"
                     >* {{ errorCheck('start_time') }}</span
                   >
@@ -412,6 +412,7 @@ export default {
       selectedTags: [],
       errors: false,
       errorsCount: 0,
+      hoursCalculation: {},
     }
   },
   methods: {
@@ -426,14 +427,31 @@ export default {
     getInterval() {
       let startTime = 0
       let closedTime = 0
-      let interval = this.timeConvert(this.store.reservation_interval)
+      let interval = this.timeConvert(
+        this.store.reservation_interval,
+        'reservation_interval'
+      )
       if (this.store.open_hours.all_day_long) {
         startTime = 0
         closedTime = 24 * 60
       } else {
-        startTime = this.timeConvert(this.store.open_hours.opens_at)
-        closedTime = this.timeConvert(this.store.open_hours.closes_at)
+        startTime = this.timeConvert(this.store.open_hours.opens_at, 'opens_at')
+        closedTime = this.timeConvert(
+          this.store.open_hours.closes_at,
+          'closes_at'
+        )
       }
+      /* below section added if time starts from morning 10AM to next day 4AM etc..*/
+      let openAt = parseInt(this.hoursCalculation['opens_at'])
+      let closedAt = parseInt(this.hoursCalculation['closes_at'])
+      if (openAt >= closedAt) {
+        let timeSplit = this.store.open_hours.closes_at.split(':')
+        let calcTime = openAt + closedAt + 12 + (12 - openAt)
+        // startTime += openAt
+        closedTime = calcTime * 60 + parseInt(timeSplit[1])
+      }
+      // eslint-disable-next-line no-console
+      console.log(startTime, closedTime, 'closedTime')
       let time_slots = []
       let occupied = null
       let hh = 0,
@@ -447,12 +465,12 @@ export default {
       for (i; startTime < closedTime; i++) {
         hh = Math.floor(startTime / 60) // getting hours of day in 0-24 format
         mm = startTime % 60 // getting minutes of the hour in 0-55 format
+        let setAP =
+          typeof ap[Math.floor(hh / 12)] === 'undefined'
+            ? 'AM'
+            : ap[Math.floor(hh / 12)]
         var timeSlot =
-          ('0' + (hh % 12)).slice(-2) +
-          ':' +
-          ('0' + mm).slice(-2) +
-          ' ' +
-          ap[Math.floor(hh / 12)]
+          ('0' + (hh % 12)).slice(-2) + ':' + ('0' + mm).slice(-2) + ' ' + setAP
         occupied = this.tableBookedStatus.includes(timeSlot)
         time_slots.push({ time: timeSlot, occupied: occupied }) // pushing data in array in [00:00 - 12:00 AM/PM format]
         startTime = startTime + interval
@@ -461,8 +479,9 @@ export default {
       console.log(time_slots, 'time_slots', this.tableBookedStatus)
       this.time_slots = time_slots
     },
-    timeConvert(time, separator = ':') {
+    timeConvert(time, timeKnown, separator = ':') {
       let timeSplit = time.split(separator)
+      this.hoursCalculation[timeKnown] = timeSplit[0]
       return parseInt(timeSplit[0]) * 60 + parseInt(timeSplit[1])
     },
     setStartDate: function() {
