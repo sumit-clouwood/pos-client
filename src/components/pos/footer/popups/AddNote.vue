@@ -25,19 +25,19 @@
         <div class="modal-footer">
           <div class="btn-announce">
             <button
-              type="button"
-              class="btn btn-danger cancel-announce color-button"
-              data-dismiss="modal"
-            >
-              {{ _t('Cancel') }}
-            </button>
-            <button
               @click="addNoteOrder(orderNote)"
               class="btn btn-success btn-large color-main "
               type="button"
               id="save-note"
             >
               {{ _t('Save') }}
+            </button>
+            <button
+              type="button"
+              class="btn btn-danger cancel-announce color-button"
+              data-dismiss="modal"
+            >
+              {{ _t('Cancel') }}
             </button>
           </div>
           <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->

@@ -71,30 +71,34 @@
           </div>
         </form>
         <div class="modal-footer">
-          <div
-            data-toggle="modal"
-            data-dismiss="modal"
-            class="cursor-pointer blue-middle color-text-invert"
-            @click="loyaltyAddCustomer('#customer')"
-          >
-            {{ _t('Create New Customer') }}
+          <div class="btn-announce">
+            <div
+              data-toggle="modal"
+              data-dismiss="modal"
+              class="cursor-pointer blue-middle color-text-invert"
+              @click="loyaltyAddCustomer('#customer')"
+            >
+              {{ _t('Create Customer') }}
+            </div>
+            <div class="btn-loyalty">
+              <button
+                @click="addLoyalty"
+                class="btn btn-success btn-large color-text-invert color-main"
+                type="button"
+                id="save-note"
+              >
+                {{ _t('Select') }}
+              </button>
+              <button
+                type="button"
+                class="btn btn-danger cancel-announce color-text-invert color-button"
+                data-dismiss="modal"
+                @click="loyaltyHendlerChange"
+              >
+                {{ _t('Cancel') }}
+              </button>
+            </div>
           </div>
-          <button
-            @click="addLoyalty"
-            class="btn btn-success btn-large color-text-invert color-main"
-            type="button"
-            id="save-note"
-          >
-            {{ _t('Select') }}
-          </button>
-          <button
-            type="button"
-            class="btn btn-danger cancel-announce color-text-invert color-button"
-            data-dismiss="modal"
-            @click="loyaltyHendlerChange"
-          >
-            {{ _t('Cancel') }}
-          </button>
         </div>
 
         <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
@@ -245,6 +249,11 @@ export default {
   background-color: #ddd;
 }
 
+.cursor-pointer {
+  margin-right: 1.5rem;
+  font-size: 1rem;
+}
+
 @include responsive(mobile) {
   .loyalty {
     background-color: transparent !important;
@@ -281,6 +290,7 @@ export default {
               /*margin-top: 20px;*/
               outline: none;
               margin-bottom: 0;
+              width: 96% !important;
             }
           }
         }
@@ -292,33 +302,18 @@ export default {
           grid-row-gap: 10px;
           .cursor-pointer {
             background-color: $green-middle;
-            height: 50px;
             color: #fff;
             border-radius: 3px;
             display: grid;
             align-items: center;
             justify-content: center;
             text-align: center;
-            width: 50vh;
-            grid-template-columns: 1fr;
+            height: 50px !important;
+            margin-right: 0px !important;
           }
-
           .btn-announce {
-            .btn-danger {
-              width: 0;
-              height: 0 !important;
-              border: none;
-              position: absolute;
-              top: 32px;
-              right: 40px;
-
-              &:after {
-                content: '✖';
-                position: absolute;
-                right: -10px;
-                color: #444;
-              }
-            }
+            width: 90% !important;
+            margin: auto;
           }
         }
       }
@@ -327,12 +322,12 @@ export default {
   .cancel-announce,
   .cursor-pointer,
   #save-note {
-    height: 40px !important;
     font-size: 1rem !important;
-    margin-right: 0px !important;
-    width: 90% !important;
-    margin-left: 5% !important;
-    margin-right: 5% !important;
+  }
+  .btn-loyalty {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr) !important;
+    column-gap: 0.5rem;
   }
 }
 </style>
