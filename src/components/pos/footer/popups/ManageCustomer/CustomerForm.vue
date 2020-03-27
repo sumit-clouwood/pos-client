@@ -486,6 +486,12 @@ export default {
   .getAreaId {
     width: 100% !important;
   }
+  .delivery-area-name {
+    /deep/ .IZ-select__menu {
+      z-index: 999;
+    }
+  }
+
   .dropdown-content {
     margin: 0 !important;
     border: none !important;
