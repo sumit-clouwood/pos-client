@@ -158,7 +158,7 @@
     </h5>
     <InformationPopup
       :response-information="err"
-      title="Error"
+      title="Information"
       :activated-class="'text-danger'"
     />
   </div>
