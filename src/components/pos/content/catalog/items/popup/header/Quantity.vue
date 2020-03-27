@@ -2,10 +2,12 @@
   <div
     class="POSItemOptions_quantity color-dashboard-background quantity-wrapper pos-quantity-wrapper quantity-component"
   >
-    <label class="POSItemOptions_label color-text-invert">{{
+    <label class="POSItemOptions_label color-text-invert lbl-quantity">{{
       _t('Quantity')
     }}</label>
-    <div class="POSItemOptions_quantity_wrapper postItem-wrapper">
+    <div
+      class="POSItemOptions_quantity_wrapper postItem-wrapper inputs-wrapper"
+    >
       <template v-if="show()">
         <div class="POSItemOptions_quantity_inputs item-count-wrapper">
           <button

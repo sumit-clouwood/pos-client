@@ -334,45 +334,45 @@ export default {
 }
 </style>
 
-<style>
+<style lang="scss" scoped>
 .qunatity {
   width: 90%;
   margin: 0.5rem auto;
   margin-bottom: 2rem;
-}
-.qunatity .quantity-component {
-  display: grid;
-  grid-template-columns: 1fr 2fr;
-}
-.qunatity .quantity-component .lbl-quantity {
-  font-size: 1.2rem !important;
-  color: black !important;
-}
-.qunatity .quantity-component .inputs-wrapper {
-  display: flex !important;
-  justify-content: flex-end !important;
-}
-.qunatity .quantity-component .inputs-wrapper .qtyminus,
-.qunatity .quantity-component .inputs-wrapper .qtyplus,
-.qunatity .quantity-component .inputs-wrapper .value-qty {
-  width: 2rem;
-  border: 1px solid #e3e7f2;
-  border-radius: 0px;
-}
-.qunatity .quantity-component .inputs-wrapper .qty {
-  width: 3rem;
-}
-.qunatity .quantity-component .inputs-wrapper .btn-set-quantity button {
-  color: #fff;
-  background: #5056ca;
-  border-radius: 3px;
-  height: 2.5rem;
-  width: 8.75rem;
-  border: 0 none;
-  margin: auto;
-  margin-left: 2rem;
-}
-.qunatity .quantity-component .inputs-wrapper .POSItemOptions_quantity_inputs {
-  width: 7.1875rem;
+  /deep/ .quantity-component {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    /deep/ .lbl-quantity {
+      font-size: 1.2rem !important;
+      color: black !important;
+    }
+    /deep/ .inputs-wrapper {
+      display: flex !important;
+      justify-content: flex-end !important;
+      .qtyminus,
+      .qtyplus,
+      .value-qty {
+        width: 2rem;
+        border: 1px solid #e3e7f2;
+        border-radius: 0px;
+      }
+      .qty {
+        width: 3rem;
+      }
+      .btn-set-quantity button {
+        color: #fff;
+        background: #5056ca;
+        border-radius: 3px;
+        height: 2.5rem;
+        width: 8.75rem;
+        border: 0 none;
+        margin: auto;
+        margin-left: 2rem;
+      }
+      .POSItemOptions_quantity_inputs {
+        width: 7.1875rem;
+      }
+    }
+  }
 }
 </style>
