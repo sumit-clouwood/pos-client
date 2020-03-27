@@ -352,12 +352,8 @@ const actions = {
         Math.floor(Math.random() * 100 + 1)
       )
     }
-    if (isIOS && orderData) {
-      dispatch('printingSetup', orderData)
-    }
-
     let printingServers = state.printingservers
-    if (printingServers && orderData) {
+    if ((printingServers || isIOS) && orderData) {
       dispatch('printingSetup', orderData)
     }
   },

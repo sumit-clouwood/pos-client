@@ -135,8 +135,8 @@ const actions = {
       userAgent = window.navigator.userAgent.toLowerCase(),
       safari = /safari/.test(userAgent),
       ios = /dims_kot_app/.test(userAgent)
-      // ios = /android|iphone|ipod|ipad/.test(userAgent)
-      /*ios =
+    // ios = /android|iphone|ipod|ipad/.test(userAgent)
+    /*ios =
         /android|iPad|iPhone|iPod/.test(userAgent) ||
         /android|iPad|iPhone|iPod/.test(navigator.platform) ||
         (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)*/
