@@ -121,7 +121,7 @@ export default {
               bottom: 0;
               right: 0;
               left: 0;
-              padding: 0.75vh;
+              padding: 0.75px;
               box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
               width: 100%;
               background-color: #fff;

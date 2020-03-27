@@ -81,15 +81,19 @@ export default {
   padding-bottom: 24px;
   border-bottom: 1px solid #e3e7f2;
 }
-.positemoption_body::-webkit-scrollbar {
-  width: 0;
-}
 .positemoption_body {
   scroll-behavior: smooth;
+  &::-webkit-scrollbar {
+    width: 0;
+  }
+
+  @include responsive(mobile) {
+    padding-left: 5px !important;
+  }
 }
 
-@include responsive(mobile) {
-  .modal-body {
+.modal-body {
+  @include responsive(mobile) {
     min-height: 0 !important;
   }
 }

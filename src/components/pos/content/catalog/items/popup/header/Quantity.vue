@@ -152,5 +152,11 @@ export default {
   .pos-quantity-wrapper {
     display: flex !important;
   }
+  .POSItemOptions_quantity_submit {
+    @include responsive(mobile) {
+      width: 7.75rem !important;
+      font-size: 1rem !important;
+    }
+  }
 }
 </style>

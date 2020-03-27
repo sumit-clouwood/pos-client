@@ -256,6 +256,7 @@ export default {
           height: 100%;
           @include responsive(mobile) {
             text-align: center;
+            padding: 5px !important;
           }
           input {
             display: none;
