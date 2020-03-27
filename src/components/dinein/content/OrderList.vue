@@ -462,12 +462,12 @@ export default {
 button#dropdownMenuButton {
   width: 100%;
   @include responsive(mobile) {
-    font-size: 1.2rem;
+    font-size: 1rem;
   }
 }
 .dinefor-paynow {
   @include responsive(mobile) {
-    font-size: 1.2rem;
+    font-size: 1rem;
   }
 }
 button#dropdownMenuButton svg {
@@ -498,7 +498,7 @@ button#dropdownMenuButton svg {
       button {
         width: 100%;
         margin: auto;
-        font-size: 1.3rem;
+        font-size: 1.1rem;
       }
     }
   }
@@ -506,7 +506,7 @@ button#dropdownMenuButton svg {
     button {
       width: 100%;
       margin: auto;
-      font-size: 1.3rem;
+      font-size: 1.1rem;
     }
   }
   .dine-order-amt,
@@ -514,7 +514,7 @@ button#dropdownMenuButton svg {
     border: none !important;
   }
   .dine-order-amt {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
   }
   .order-time-det {
     padding: 0px;
