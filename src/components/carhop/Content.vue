@@ -76,6 +76,11 @@ export default {
 
     .dropdown-menu.show {
       top: inherit !important;
+      @include responsive(mobile) {
+        top: 0px !important;
+        // right: 0px !important;
+        // left: auto !important;
+      }
     }
   }
 
