@@ -398,7 +398,6 @@
 /* global $ */
 import { mapState, mapGetters, mapActions } from 'vuex'
 import AuthService from '@/services/data/AuthService'
-import bootstrap from '@/bootstrap'
 //import SwitchStore from '@/components/commonButtons/SwitchStore'
 import SupervisorPasswordView from './SupervisorPassword'
 import avatar from '@/components/mobileComponents/mobileElements/avatar'
@@ -464,18 +463,11 @@ export default {
         ) + this.$store.getters['context/brand']
       )
     },
-    moveDineSection() {
-      this.$router.push('/dine-in' + this.store)
-      $('.setting-dropdown').css('display', 'none')
-    },
     enabledModule(option) {
       switch (option) {
         case 'switchCashier':
           return true
       }
-    },
-    iconCode: function(iconCode) {
-      this.iconCodeSelection = iconCode
     },
     walkOrder() {
       this.$router.push(this.store)
@@ -488,11 +480,6 @@ export default {
       this.$router.push(this.store + '/transactions')
     },
     ...mapActions('auth', ['logout']),
-    changeLanguage(locale) {
-      // const language = this.languages.find(lang => lang.code === this.vlocale).code
-      bootstrap.loadUI(this.$store)
-      this.$store.dispatch('location/changeLanguage', locale)
-    },
     openConfigLinks() {
       $('.setting-dropdown').show()
       $('.setting-dropdown').addClass('animated slideInRight')
@@ -517,15 +504,6 @@ export default {
       } else {
         this.onlineOrdersCount = this.latestOnlineOrders
       }
-    },
-    showBookingBtn() {
-      $('.dine-btn-menu').addClass('active')
-      $('.btn-menu-close ').addClass('active')
-      $('.dine-in-wrapper').toggleClass('overlay')
-    },
-    dineCloseBtn() {
-      $('.dine-btn-menu').removeClass('active')
-      $('.btn-menu-close ').removeClass('active')
     },
     logoutCashier() {
       localStorage.setItem('token', '')

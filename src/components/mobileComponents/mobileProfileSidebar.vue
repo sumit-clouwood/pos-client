@@ -405,12 +405,10 @@
   </div>
 </template>
 <script>
-/* global $ */
 import { mapGetters, mapActions, mapState } from 'vuex'
 import avatar from './mobileElements/avatar.vue'
 import dateTime from './mobileElements/dateTime.vue'
 import onlineCounter from './mobileElements/onlineCounter.vue'
-import bootstrap from '@/bootstrap'
 
 export default {
   components: {
@@ -481,18 +479,11 @@ export default {
         ) + this.$store.getters['context/brand']
       )
     },
-    moveDineSection() {
-      this.$router.push('/dine-in' + this.store)
-      $('.setting-dropdown').css('display', 'none')
-    },
     enabledModule(option) {
       switch (option) {
         case 'switchCashier':
           return true
       }
-    },
-    iconCode: function(iconCode) {
-      this.iconCodeSelection = iconCode
     },
     walkOrder() {
       this.$router.push(this.store)
@@ -503,45 +494,6 @@ export default {
     },
     moveTransactionSection() {
       this.$router.push(this.store + '/transactions')
-    },
-    changeLanguage(locale) {
-      // const language = this.languages.find(lang => lang.code === this.vlocale).code
-      bootstrap.loadUI(this.$store)
-      this.$store.dispatch('location/changeLanguage', locale)
-    },
-    openConfigLinks() {
-      $('.setting-dropdown').show()
-      $('.setting-dropdown').addClass('animated slideInRight')
-      //posConfigLinks()
-    },
-    closeConfigLinks() {
-      $('.setting-dropdown').addClass('animated slideInLeft')
-      $('.setting-dropdown').removeClass('animated slideInRight')
-    },
-    onlineOrders() {
-      if (this.latestOnlineOrders == 0) {
-        if (
-          localStorage.getItem('onlineOrders') != 'undefined' &&
-          JSON.parse(localStorage.getItem('onlineOrders')) != null
-        ) {
-          this.onlineOrdersCount = JSON.parse(
-            localStorage.getItem('onlineOrders')
-          ).length
-        } else {
-          this.onlineOrdersCount = 0
-        }
-      } else {
-        this.onlineOrdersCount = this.latestOnlineOrders
-      }
-    },
-    showBookingBtn() {
-      $('.dine-btn-menu').addClass('active')
-      $('.btn-menu-close ').addClass('active')
-      $('.dine-in-wrapper').toggleClass('overlay')
-    },
-    dineCloseBtn() {
-      $('.dine-btn-menu').removeClass('active')
-      $('.btn-menu-close ').removeClass('active')
     },
   },
 }
@@ -584,7 +536,7 @@ export default {
   .profile-sidebar {
     transition: 0.7s ease-out;
     z-index: 11;
-    width: 85%;
+    width: 70%;
     background-color: #fff;
     position: absolute;
     top: 0;

@@ -304,6 +304,7 @@ export default {
     padding: 4px;
     border-top: 1px solid gray;
     overflow-x: scroll !important;
+    z-index: 1;
   }
   .carhop-running-orders-wrapper .carhop-running-orders {
     height: calc(100vh - 150px);
@@ -317,6 +318,7 @@ export default {
   }
   .button-wrapper {
     width: max-content;
+    margin-left: 0px !important;
   }
   .button-wrapper > a span.dinefor-paynow {
     margin-left: 0;

@@ -77,7 +77,11 @@ export default {
   },
   methods: {
     payNow() {
-      clickPayNow()
+      if (this.$store.state.mobile.device === 'mobile') {
+        this.$store.dispatch('paymentMethodsChange')
+      } else {
+        clickPayNow()
+      }
     },
     placeCarhop() {
       if (this.items.length === 0) {
