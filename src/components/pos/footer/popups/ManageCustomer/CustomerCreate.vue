@@ -21,20 +21,20 @@
           <div class="modal-footer">
             <div class="btn-announce">
               <button
-                type="button"
-                class="btn btn-danger cancel-announce color-button"
-                data-dismiss="modal"
-                id="close-customer"
-              >
-                {{ _t('Cancel') }}
-              </button>
-              <button
                 class="btn btn-success btn-large color-main"
                 type="button"
                 id="post_announcement"
                 v-on:click="customerAction(customer_title)"
               >
                 {{ _t('Save') }}
+              </button>
+              <button
+                type="button"
+                class="btn btn-danger cancel-announce color-button"
+                data-dismiss="modal"
+                id="close-customer"
+              >
+                {{ _t('Cancel') }}
               </button>
             </div>
             <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
