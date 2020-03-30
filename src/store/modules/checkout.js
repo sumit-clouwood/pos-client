@@ -1202,8 +1202,45 @@ const actions = {
                 commit(mutation.PRINT, true)
               }
 
-              if (rootState.checkoutForm.action === 'add') {
-                dispatch('createModifyOrderItemListCarHop')
+              let dt = rootState.auth.deviceType
+              let isIOS = dt.osType
+              if (isIOS) {
+                if (rootState.checkoutForm.action === 'add') {
+                  dispatch('createModifyOrderItemListCarHop')
+                }
+              } else {
+                let newItems = []
+                rootState.order.items.forEach(item => {
+                  /*if (typeof item.no === 'undefined')*/ {
+                    newItems.push({
+                      name: item.name,
+                      entity_id: item._id,
+                      no: item.orderIndex,
+                      status: 'in-progress',
+                      //itemTax.undiscountedTax is without modifiers
+                      tax: item.tax,
+                      price: item.netPrice,
+                      qty: item.quantity,
+                      originalItem: item,
+                    })
+                  }
+                })
+                if (newItems.length) {
+                  rootState.order.selectedOrder.item.items = newItems.map(
+                    item => {
+                      delete item.originalItem
+                      return item
+                    }
+                  )
+                }
+                //Invoice APP API Call with Custom Request JSON
+                dispatch(
+                  'printingServer/printingServerInvoiceRaw',
+                  rootState.order.selectedOrder.item,
+                  {
+                    root: true,
+                  }
+                )
               }
               commit('order/CLEAR_SELECTED_ORDER', null, { root: true })
               resolve()
