@@ -87,7 +87,7 @@ export default {
     },
     pay() {
       this.$store.commit('checkoutForm/paymentButton', 'done')
-      this.$store.commit('checkoutForm/setAction', 'add')
+      this.$store.commit('checkoutForm/setAction', 'pay')
       this.addAmount()
         .then(payable => {
           if (payable <= 0.1) {
