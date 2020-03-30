@@ -153,6 +153,7 @@ export default {
       if (item.item_type === CONST.COMBO_ITEM_TYPE) {
         // eslint-disable-next-line no-console
         console.log('combo_item', item)
+        this.$store.commit('comboItems/ACTIVE_COMBO_ITEMS', {}, { root: true })
         this.$store.commit('comboItems/SET_COMBO_ITEMS', item)
         this.$store.commit(
           'comboItems/SET_SELECTED_ITEM_DATA',

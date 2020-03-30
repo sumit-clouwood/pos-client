@@ -69,21 +69,11 @@ export default {
     }
   },
   watch: {
-    subItems(newVal, oldVal) {
+    activeComboItems(newVal, oldVal) {
       if (newVal != oldVal) {
         this.$nextTick(() => {
-          let itemsLength =
-            this.activeItems[this.selectedItemContainer._id.$oid] || []
-          if (!itemsLength.length) {
-            this.activeItems[this.selectedItemContainer._id.$oid] = [
-              this.subItems[0],
-            ]
-            this.activeOnClick.push(this.subItems[0]._id)
-            this.$store.commit(
-              'comboItems/ACTIVE_COMBO_ITEMS',
-              this.activeItems,
-              { root: true }
-            )
+          if (Object.keys(this.activeComboItems).length === 0) {
+            this.activeOnClick = []
           }
           this.commitErrorMessage('')
         })
@@ -123,10 +113,22 @@ export default {
     ...mapActions('order', ['setActiveItem']),
     setActiveItems(item) {
       let selectedContainerId = this.selectedItemContainer._id.$oid
-      let itemIndex = this.activeItems[selectedContainerId].find(
-        activatedItem => activatedItem._id === item._id
-      )
-      let selectedLength = this.activeItems[selectedContainerId].length
+      if (Object.keys(this.activeComboItems).length === 0) {
+        console.log(this.activeComboItems)
+        this.activeItems = {}
+        this.activeItems[selectedContainerId] = []
+      }
+      let itemIndex = false
+      let selectedLength = 0
+      if (typeof this.activeItems[selectedContainerId] != 'undefined') {
+        itemIndex = this.activeItems[selectedContainerId].find(
+          activatedItem => activatedItem._id === item._id
+        )
+        selectedLength = this.activeItems[selectedContainerId].length
+      } else {
+        this.activeItems[selectedContainerId] = []
+      }
+
       if (itemIndex) {
         let indexSubItem = this.activeItems[selectedContainerId].indexOf(
           itemIndex
@@ -159,6 +161,7 @@ export default {
       })
     },
     setModifiersForItem(item) {
+      this.setActiveItems(item)
       // if (this.$store.getters['modifier/hasModifiers'](item)) {
       this.$store.commit('modifier/SET_ITEM', item)
       $('#POSItemOptions .modifier-option-radio').prop('checked', false)

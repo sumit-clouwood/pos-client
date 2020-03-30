@@ -42,20 +42,28 @@ export default {
   },
   methods: {
     addComboItemCart() {
+      let activeItemModifiers = []
+      // eslint-disable-next-line no-unused-vars
+      for (let [key, value] of Object.entries(this.activeComboItems)) {
+        value.map(activeItem => {
+          let activeChecker = this.setModifiersItem.find(
+            mItem => mItem._id === activeItem._id
+          )
+          if (activeChecker) {
+            activeItemModifiers.push(activeChecker)
+          } else {
+            activeItemModifiers.push(activeItem)
+          }
+        })
+      }
       let item = {
         ...this.comboItemsList,
-        combo_selected_items: this.activeComboItems,
+        combo_selected_items: activeItemModifiers,
       }
-
-      // this.comboItem[this.comboItemsList._id] = this.activeComboItems
-      // this.comboItem[this.comboItemsList._id] = this.activeComboItems
       // eslint-disable-next-line no-console
-      console.log(
-        this.activeComboItems,
-        this.setModifiersItem,
-        'this.setModifiersItem'
-      )
+      console.log(activeItemModifiers, 'filtered data')
       this.itemsAddToCart(item)
+      this.$store.commit('comboItems/ACTIVE_COMBO_ITEMS', {}, { root: true })
     },
     emptyComboSelection() {
       this.comboItem[this.comboItemsList] = false

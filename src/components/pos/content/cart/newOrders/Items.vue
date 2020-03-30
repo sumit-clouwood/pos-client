@@ -44,27 +44,30 @@
           class="sub_container"
           v-if="item.item_type === CONST.COMBO_ITEM_TYPE"
         >
-          <div v-for="(combo, index) in item.combo_selected_items" :key="index">
-            <div v-for="cmbItm in combo" :key="cmbItm._id">
-              <div class="subdescription_container">
-                <div
-                  class="product_sub_description main-orders-list-item-subtitle color-text-invert item-exclude"
-                >
-                  {{ cmbItm.name }} x 2
-                </div>
-                <!--<div class="sub_description_price">
+          <div
+            v-for="(cmbItm, index) in item.combo_selected_items"
+            :key="index"
+          >
+            <div class="subdescription_container">
+              <div
+                class="product_sub_description main-orders-list-item-subtitle color-text-invert item-exclude"
+              >
+                {{ cmbItm.name }} x {{ cmbItm.quantity || 1 }}
+              </div>
+              <!--<div class="sub_description_price">
                   + NZD 60.00
                 </div>-->
+            </div>
+            <div class="sub_des_catagary">
+              <div class="sub_more_description" v-if="cmbItm.modifiable">
+                <Modifiers
+                  v-bind:modifiers="cmbItm.modifiers"
+                  v-bind:item="cmbItm"
+                />
               </div>
-              <div class="sub_des_catagary">
-                <div class="sub_more_description">
-                  pizza with extra cheese / cold drinks / franchise / Momos and
-                  more
-                </div>
-                <div class="sub_more_description_price">
-                  + NZD 15.00
-                </div>
-              </div>
+              <!--<div class="sub_more_description_price">
+                + NZD 15.00
+              </div>-->
             </div>
           </div>
         </div>

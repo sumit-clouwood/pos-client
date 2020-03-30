@@ -24,14 +24,14 @@ export default {
   },
   name: 'Items',
   watch: {
-    comboItemsList() {
+    activeComboItems() {
       this.$nextTick(() => {
         this.activeItem = 0
       })
     },
   },
   computed: {
-    ...mapState('comboItems', ['comboItemsList']),
+    ...mapState('comboItems', ['comboItemsList', 'activeComboItems']),
     ...mapGetters('location', ['_t']),
   },
   methods: {
