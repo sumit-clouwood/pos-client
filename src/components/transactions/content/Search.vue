@@ -23,17 +23,16 @@
       </svg>
     </div>
     <form>
-      <div :class="['input-wrapper', { active: searchHendler }]">
-        <input
-          type="text"
-          autocomplete="off"
-          class="search-field-input"
-          :placeholder="_t('Search or scan for items')"
-          v-model="searchTransactions"
-          @keyup="searchingItems()"
-          @keypress="$event.keyCode == 13 ? $event.preventDefault() : true"
-        />
-      </div>
+      <input
+        type="text"
+        autocomplete="off"
+        class="search-field-input"
+        :class="['input-wrapper', { active: searchHendler }]"
+        :placeholder="_t('Search or scan for items')"
+        v-model="searchTransactions"
+        @keyup="searchingItems()"
+        @keypress="$event.keyCode == 13 ? $event.preventDefault() : true"
+      />
     </form>
     <div class="search-field-icon home">
       <svg
@@ -78,10 +77,26 @@ export default {
           'transactionOrders/setTransactionOrders',
           this.searchTransactions
         )
+      } else {
+        this.fetchOrders()
       }
     },
     searchHendlerChange() {
       this.$store.dispatch('searchHendlerChange')
+    },
+    fetchOrders() {
+      let scope = this
+      this.$store
+        .dispatch('transactionOrders/getTransactionOrders')
+        .then(function() {
+          scope.$store.dispatch(
+            'transactionOrders/selectFirstTransactionOrder',
+            {
+              root: true,
+            }
+          )
+          scope.$store.dispatch('transactionDetail')
+        })
     },
   },
 }
