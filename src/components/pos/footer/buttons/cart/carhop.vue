@@ -86,6 +86,7 @@ export default {
       let action = 'carhop-place-order'
       if (this.selectedOrder && this.orderSource != 'backend') {
         action = 'carhop-update-order'
+        this.$store.commit('checkoutForm/setAction', 'add')
       }
 
       this.executePayment({ action: action })
