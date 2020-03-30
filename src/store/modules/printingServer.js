@@ -340,7 +340,6 @@ const actions = {
     // eslint-disable-next-line no-console
     console.log(isIOS, JSON.stringify(orderData))
     if (isIOS) {
-      localStorage.setItem('orderInvoiceColData', '')
       // if (!dt.standalone && !dt.browserType) {
       //This is  a uiwebview
       const urlParams = new URLSearchParams(window.location.search)
@@ -355,6 +354,7 @@ const actions = {
           'detectPageRedir',
           Math.floor(Math.random() * 100 + 1)
       )
+      localStorage.setItem('orderInvoiceColData', '')
     }
     let printingServers = state.printingservers
     if ((printingServers || isIOS) && orderData) {
