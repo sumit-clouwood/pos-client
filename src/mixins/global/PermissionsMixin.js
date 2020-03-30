@@ -47,5 +47,9 @@ Vue.mixin({
       }
       return false
     },
+    isDimsKotApp() {
+      let dt = store.state.auth.deviceType
+      return dt.osType
+    },
   },
 })

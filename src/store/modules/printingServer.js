@@ -276,6 +276,8 @@ const actions = {
           JSON.stringify(jsonResponse)
         )
       }
+      //Temp- later remove once IOS KOT App delivers.
+      localStorage.setItem('orderInvoiceColData', JSON.stringify(jsonResponse))
       if (customerData) {
         dispatch('customer/resetCustomer', true, { root: true }).then(() => {
           resolve(jsonResponse)
@@ -339,23 +341,19 @@ const actions = {
     console.log(isIOS, JSON.stringify(orderData))
     if (isIOS) {
       localStorage.setItem('orderInvoiceColData', '')
-      if (!dt.standalone && !dt.browserType) {
-        //This is  a uiwebview
-        const urlParams = new URLSearchParams(window.location.search)
-        urlParams.set('iosprint', '1')
-        window.location.search = urlParams
-      }
+      // if (!dt.standalone && !dt.browserType) {
+      //This is  a uiwebview
+      const urlParams = new URLSearchParams(window.location.search)
+      urlParams.set('iosprint', '1')
+      window.location.search = urlParams
+      // }
       localStorage.setItem(
         'initiateWebView',
         Math.floor(Math.random() * 100 + 1)
       )
     }
-    if (isIOS && orderData) {
-      dispatch('printingSetup', orderData)
-    }
-
     let printingServers = state.printingservers
-    if (printingServers && orderData) {
+    if ((printingServers || isIOS) && orderData) {
       dispatch('printingSetup', orderData)
     }
   },

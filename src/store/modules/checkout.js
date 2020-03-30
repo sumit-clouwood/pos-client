@@ -258,6 +258,7 @@ const actions = {
       localStorage.getItem('reservationId') || rootState.dinein.reserverationId
     return Promise.resolve(order)
   },
+
   injectWalkinData({ rootState, rootGetters }, order) {
     if (rootGetters['location/isTokenManager']) {
       let tokenNumber = localStorage.getItem('token_number')
@@ -267,6 +268,7 @@ const actions = {
     }
     return Promise.resolve(order)
   },
+
   preOrderHook({ rootState, dispatch }, { order, action }) {
     if (rootState.order.orderType.OTApi == CONSTANTS.ORDER_TYPE_CALL_CENTER) {
       return dispatch('injectCrmData', order)
@@ -602,6 +604,18 @@ const actions = {
       return oitem
     })
     order.covers = orderCovers
+    return Promise.resolve(order)
+  },
+
+  injectCarHopItemsData({ state }, order) {
+    // eslint-disable-next-line no-console
+    console.log(state.order)
+    if (typeof order.items !== 'undefined') {
+      order.items = order.items.map(oitem => {
+        oitem.kitchen_invoice = 1
+        return oitem
+      })
+    }
     return Promise.resolve(order)
   },
 
@@ -962,7 +976,6 @@ const actions = {
               dispatch('reset', resetFull)
             } else {
               commit(mutation.PRINT, true)
-              dispatch('iosWebviewPrintAction', { orderData: state.order })
             }
             dispatch('setMessage', {
               result: 'success',
@@ -1030,6 +1043,9 @@ const actions = {
                 resolve()
               } else {
                 //order paid
+                msgStr = rootGetters['location/_t'](
+                  'Dinein order has been Paid.'
+                )
                 const selectedCovers = rootState.dinein.selectedCover
                 commit(
                   'SET_ORDER_NUMBER',
@@ -1059,7 +1075,6 @@ const actions = {
                 }
 
                 commit(mutation.PRINT, true)
-                dispatch('iosWebviewPrintAction', { orderData: state.order })
                 resolve()
               }
 
@@ -1124,7 +1139,40 @@ const actions = {
       })
     }
   },
-  // eslint-disable-next-line no-unused-vars
+
+  createModifyOrderItemListCarHop({ rootState, state, dispatch }) {
+    let newItems = []
+    rootState.order.items.forEach(item => {
+      if (typeof item.no === 'undefined') {
+        newItems.push({
+          name: item.name,
+          entity_id: item._id,
+          no: item.orderIndex,
+          status: 'in-progress',
+          //itemTax.undiscountedTax is without modifiers
+          tax: item.tax,
+          price: item.netPrice,
+          qty: item.quantity,
+          originalItem: item,
+        })
+      }
+    })
+    if (newItems.length) {
+      let order = state.order
+      order.items = newItems
+
+      dispatch('injectCarHopItemsData', order).then(order => {
+        order.items = order.items.map(item => {
+          delete item.originalItem
+          return item
+        })
+        dispatch('printingServer/printingServerInvoiceRaw', order, {
+          root: true,
+        })
+      })
+    }
+  },
+
   modifyCarhopOrder({ dispatch, rootState, rootGetters, commit }, action) {
     return new Promise(resolve => {
       dispatch('getModifyOrder').then(order => {
@@ -1152,16 +1200,11 @@ const actions = {
                   'Carhop order has been Paid'
                 )
                 commit(mutation.PRINT, true)
-                dispatch('iosWebviewPrintAction', { orderData: response.data })
               }
-              //Invoice APP API Call with Custom Request JSON
-              dispatch(
-                'printingServer/printingServerInvoiceRaw',
-                rootState.order.selectedOrder.item,
-                {
-                  root: true,
-                }
-              )
+
+              if (rootState.checkoutForm.action === 'add') {
+                dispatch('createModifyOrderItemListCarHop')
+              }
               commit('order/CLEAR_SELECTED_ORDER', null, { root: true })
               resolve()
               commit(
@@ -1294,7 +1337,6 @@ const actions = {
                 dispatch('setToken', state.order.token_number)
               }
               commit(mutation.PRINT, true)
-              dispatch('iosWebviewPrintAction', { orderData: state.order })
               resolve()
             })
             .catch(() => resolve())
@@ -1443,7 +1485,6 @@ const actions = {
             if (rootState.checkoutForm.action === 'pay') {
               msg = rootGetters['location/_t']('Carhop Order has been Paid')
               commit(mutation.PRINT, true)
-              dispatch('iosWebviewPrintAction', { orderData: state.order })
             } else {
               dispatch('reset')
             }
@@ -1678,10 +1719,7 @@ const actions = {
         // let table_no = rootState.dinein.selectedTable
         //   ? rootState.dinein.selectedTable.number
         //   : false
-        // orderData.table_number = rootState.order.selectedOrder.table_number
-        orderData.table_number = rootState.dinein.selectedTable
-          ? rootState.dinein.selectedTable.number
-          : false
+        orderData.table_number = rootState.order.selectedOrder.table_number
       }
       // eslint-disable-next-line no-console
       console.log(orderData, 'orderDataorderData')
@@ -1770,8 +1808,6 @@ const actions = {
         flash_message: 'Order Details',
         store_id: rootState.context.storeId,
       }
-      // eslint-disable-next-line
-      console.log('POST ORDER PLACED' , JSON.stringify(jsonResponse))
       let stringifyResponse = JSON.stringify(jsonResponse)
       //Case: print order invoice data was added in Localstorage for IOS APP, IOS webview would get this value and will send information to native printer.
       localStorage.setItem('orderInvoiceColData', stringifyResponse)

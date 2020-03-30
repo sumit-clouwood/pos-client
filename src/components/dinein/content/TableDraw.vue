@@ -259,6 +259,7 @@ import DateTime from '@/mixins/DateTime'
 // import Status from '../../mobileComponents/mobileElements/status'
 import * as PERMS from '@/const/permissions'
 import OrderHelper from '@/plugins/helpers/Order'
+import moment from 'moment-timezone'
 
 export default {
   name: 'TableDraw',
@@ -396,8 +397,9 @@ export default {
       // return this.current_time.format('h:mm A')
     },
     created_date(date) {
-      return this.convertDatetime(date, this.timezoneString, 'Do MMMM YYYY')
+      // return this.convertDatetime(date, this.timezoneString, 'Do MMMM YYYY')
       // return this.current_time.format('Do MMMM YYYY')
+      return moment(date).format('Do MMMM, YYYY')
     },
     getOrderNo(orderId) {
       let order = this.allBookedTables.lookup.orders._id[orderId]
