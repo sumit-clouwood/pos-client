@@ -499,8 +499,6 @@ export default {
       this.errors = {}
       this.errorsCount = 0
       let er = this.reservationInformation
-      // eslint-disable-next-line no-console
-      console.log(this.reservationInformation)
       if (!er.guest_phone) {
         // this.errors.guest_phone = 'Please enter valid phone number'
         this.errors = { guest_phone: ['Phone number is required'] }
