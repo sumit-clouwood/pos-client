@@ -351,8 +351,11 @@ const actions = {
         'initiateWebView',
         Math.floor(Math.random() * 100 + 1)
       )
+      localStorage.setItem(
+          'detectPageRedir',
+          Math.floor(Math.random() * 100 + 1)
+      )
     }
-    alert()
     let printingServers = state.printingservers
     if ((printingServers || isIOS) && orderData) {
       dispatch('printingSetup', orderData)
