@@ -311,7 +311,7 @@ export default {
       padding: 0px;
       display: grid;
       grid-template-columns: 1fr !important;
-      height: 3rem;
+      height: 4rem;
       button {
         width: 100%;
         border-radius: 0px;
