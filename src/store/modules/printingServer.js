@@ -74,7 +74,7 @@ const actions = {
     let crm_module_enabled = false
     let cb = locationData.brand
     for (var module of cb.enabled_modules) {
-      if (module == 'CRM') {
+      if (module === 'CRM') {
         crm_module_enabled = true
       }
     }
@@ -255,8 +255,8 @@ const actions = {
         windows_app: false,
       }
       if (
-        orderData.order_type == 'DINE-IN' ||
-        orderData.order_type == 'dine_in'
+        orderData.order_type === 'DINE-IN' ||
+        orderData.order_type === 'dine_in'
       ) {
         if (!table_no) {
           table_no = rootState.dinein.selectedTableRservationData
@@ -352,6 +352,7 @@ const actions = {
         Math.floor(Math.random() * 100 + 1)
       )
     }
+    alert()
     let printingServers = state.printingservers
     if ((printingServers || isIOS) && orderData) {
       dispatch('printingSetup', orderData)
