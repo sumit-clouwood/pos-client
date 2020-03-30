@@ -351,8 +351,8 @@ const actions = {
         Math.floor(Math.random() * 100 + 1)
       )
       localStorage.setItem(
-          'detectPageRedir',
-          Math.floor(Math.random() * 100 + 1)
+        'detectPageRedir',
+        Math.floor(Math.random() * 100 + 1)
       )
       localStorage.setItem('orderInvoiceColData', '')
     }
