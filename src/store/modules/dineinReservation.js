@@ -21,7 +21,11 @@ const getters = {
     let date = new Date(selectedDate)
     let day =
       date.getUTCDate() < 10 ? '0' + date.getUTCDate() : date.getUTCDate()
-    return date.getUTCFullYear() + '-' + (date.getUTCMonth() + 1) + '-' + day
+    let setMonth =
+      date.getUTCMonth() + 1 < 10
+        ? '0' + (date.getUTCMonth() + 1)
+        : date.getUTCMonth() + 1
+    return date.getUTCFullYear() + '-' + setMonth + '-' + day
   },
 }
 
