@@ -111,7 +111,7 @@ export default {
       return activeItem
     },
     ...mapActions('order', ['setActiveItem']),
-    setActiveItems(item) {
+    setActiveItems(item, modifiersBtn = false) {
       let selectedContainerId = this.selectedItemContainer._id.$oid
       if (Object.keys(this.activeComboItems).length === 0) {
         console.log(this.activeComboItems)
@@ -134,7 +134,8 @@ export default {
           itemIndex
         )
         this.activeItems[selectedContainerId].splice(indexSubItem, 1)
-        this.activeOnClick.splice(this.activeOnClick.indexOf(item._id), 1)
+        if (!modifiersBtn)
+          this.activeOnClick.splice(this.activeOnClick.indexOf(item._id), 1)
         this.commitErrorMessage('')
       } else {
         if (selectedLength != this.limitOfSelectingItems) {
@@ -161,7 +162,7 @@ export default {
       })
     },
     setModifiersForItem(item) {
-      this.setActiveItems(item)
+      this.setActiveItems(item, true)
       // if (this.$store.getters['modifier/hasModifiers'](item)) {
       this.$store.commit('modifier/SET_ITEM', item)
       $('#POSItemOptions .modifier-option-radio').prop('checked', false)
