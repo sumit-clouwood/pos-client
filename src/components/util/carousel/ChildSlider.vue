@@ -1,5 +1,5 @@
 <template>
-  <div class="carousel-container" ref="carousel" v-if="!show">
+  <div class="carousel-container" ref="carousel">
     <div class="carousel">
       <transition name="slider">
         <ul
@@ -8,79 +8,44 @@
           @mousemove="doDrag"
           @mouseup="stopDrag"
         >
-          <template v-if="!groupedMethods">
-            <li
-              v-for="(slide, key) in slides"
-              :key="key"
-              :class="{ active: key == currentSlide }"
+          <li
+            :style="{
+              width: slideWidth + 'px',
+            }"
+            @click="$emit('back')"
+          >
+            <div
+              class="slide"
               :style="{
-                width: slideWidth + 'px',
+                width: slideWidth - 10 + 'px',
               }"
-              @click.stop="selectSlide({ index: key, slide: slide })"
             >
-              <div
-                class="slide"
-                :style="{
-                  width: slideWidth - 10 + 'px',
-                }"
-              >
-                <img :src="slide.icon" />
-                <label class="shorten-sentence" :title="slide.name">
-                  {{ slide.name }}
-                </label>
-              </div>
-            </li>
-          </template>
-          <template v-else>
-            <template
-              v-for="[currentKey, value] of Object.entries(groupedMethods)"
+              <img src="img/icons/backarrow.svg" />
+              <label class="shorten-sentence" title="Back">
+                Back
+              </label>
+            </div>
+          </li>
+          <li
+            v-for="(slide, key) in slides"
+            :key="key"
+            :style="{
+              width: slideWidth + 'px',
+            }"
+            @click.stop="selectSlide({ index: key, slide: slide })"
+          >
+            <div
+              class="slide"
+              :style="{
+                width: slideWidth - 10 + 'px',
+              }"
             >
-              <li
-                v-if="value.length === 1"
-                :key="currentKey"
-                :class="{ active: currentKey == currentSlide }"
-                :style="{
-                  width: slideWidth + 'px',
-                }"
-              >
-                <div
-                  @click.stop="
-                    selectSlide({ index: currentKey, slide: value[0] })
-                  "
-                  class="slide"
-                  :style="{
-                    width: slideWidth - 10 + 'px',
-                  }"
-                >
-                  <img :src="value[0].icon" />
-                  <label class="shorten-sentence" :title="value[0].name">
-                    {{ value[0].name }}
-                  </label>
-                </div>
-              </li>
-              <li
-                v-else
-                :key="currentKey"
-                :class="{ active: currentKey == currentSlide }"
-                :style="{
-                  width: slideWidth + 'px',
-                }"
-              >
-                <div
-                  class="slide"
-                  :style="{
-                    width: slideWidth - 10 + 'px',
-                  }"
-                  @click="showChildSlides({ show, value, currentKey })"
-                >
-                  <img :src="value[0].icon" />
-                  <label class="shorten-sentence" :title="currentKey">
-                    {{ currentKey }}
-                  </label>
-                </div>
-              </li>
-            </template>
-          </template>
+              <img :src="slide.icon" />
+              <label class="shorten-sentence" :title="slide.name">
+                {{ slide.name }}
+              </label>
+            </div>
+          </li>
         </ul>
       </transition>
     </div>
@@ -98,29 +63,18 @@
       </ul>
     </div>
   </div>
-  <child-slider
-    v-else
-    ref="paymentmethods"
-    :slides="selectedValue"
-    :perPage="4"
-    :width="456"
-    :currentKey="currentKey"
-    @selected-slide="selectSlide"
-    @back="show = !show"
-  ></child-slider>
 </template>
 <script>
-import { mapState } from 'vuex'
-import ChildSlider from './carousel/ChildSlider'
 export default {
-  name: 'Carousel',
-  components: {
-    ChildSlider,
-  },
+  name: 'ChildSlider',
   props: {
     slides: [Array, Object],
     perPage: Number,
     width: Number,
+    currentKey: {
+      type: String,
+      default: 'card',
+    },
   },
   data() {
     return {
@@ -130,46 +84,27 @@ export default {
       dragging: false,
       dragX: '',
       dragY: '',
-      show: false,
-      selectedValue: [],
-      currentKey: '',
     }
   },
   computed: {
     totalPages() {
-      if (this.groupedMethods) {
-        let totalLength = Object.keys(this.groupedMethods).length || 6
-        return Math.ceil(totalLength / this.perPage)
-      }
-      return Math.ceil(this.slides.length / this.perPage)
+      return Math.ceil((this.slides.length + 1) / this.perPage)
     },
     slideWidth() {
       return this.width / this.perPage
     },
-    ...mapState('payment', ['groupedMethods']),
   },
   methods: {
-    showChildSlides(payLoad) {
-      this.show = !payLoad.show
-      this.selectedValue = payLoad.value
-      this.currentKey = payLoad.currentKey
-    },
     // eslint-disable-next-line no-unused-vars
     selectSlide({ index, slide }) {
       this.currentSlide = index
-      this.$emit('click', { index: index, slide: slide })
-      this.show = false
+      this.$emit('selected-slide', { index: this.currentKey, slide: slide })
     },
     movePage(page) {
       let toMove = (page - 1) * this.perPage * this.slideWidth
       if (page == this.totalPages) {
-        let slidesToAdjust = 0
-        if (this.groupedMethods) {
-          slidesToAdjust =
-            Object.keys(this.groupedMethods).length % this.perPage
-        } else {
-          slidesToAdjust = this.slides.length % this.perPage
-        }
+        //We're adding 1 in total length Because we are showing back button
+        const slidesToAdjust = (this.slides.length + 1) % this.perPage
         if (slidesToAdjust > 0) {
           //that means last page has less slides than no of per page
           const missingSlies = this.perPage - slidesToAdjust
@@ -179,7 +114,6 @@ export default {
 
       this.positionX = -toMove
       this.currentPage = page
-      this.show = false
     },
     startDrag(event) {
       event = event || window.event
@@ -307,11 +241,113 @@ export default {
             color: black
             -webkit-font-smoothing: antialiased
 </style>
-<style lang="scss">
-@import '../../assets/scss/pixels_rem.scss';
-@import '../../assets/scss/variables.scss';
-@import '../../assets/scss/mixins.scss';
+<style lang="scss" scoped>
+@import '@/assets/scss/pixels_rem.scss';
+@import '@/assets/scss/variables.scss';
+@import '@/assets/scss/mixins.scss';
+.carousel-container {
+  .carousel {
+    transform: translate3d(0, 0, 0);
+    position: relative;
+    display: block;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
 
+    ul {
+      opacity: 1;
+      width: 2200px;
+      transition: transform 0.9s ease-in-out;
+    }
+
+    li {
+      display: inline-block;
+      text-align: center;
+      min-height: 1px;
+      height: 100%;
+    }
+
+    .slide {
+      border-radius: 3px;
+      background-color: #ffffff;
+      border: solid 1px #dbdfe9;
+      cursor: pointer;
+      justify-content: center;
+      padding: 4px;
+    }
+
+    &.active {
+      .slide {
+        border: solid 2px #5056ca;
+      }
+    }
+
+    img {
+      width: 46px;
+      height: 46px;
+      display: block;
+      margin: 0 auto;
+      border-style: none;
+    }
+
+    label {
+      display: block;
+      cursor: pointer;
+    }
+
+    .paging {
+      display: block;
+      justify-content: center;
+
+      ul {
+        width: 100%;
+        padding: 0;
+        margin: 0;
+        list-style: none;
+        text-align: center;
+      }
+
+      li {
+        display: inline-block;
+        margin-right: 10px;
+      }
+
+      button {
+        font-size: 0;
+        line-height: 0;
+        display: block;
+        width: 20px;
+        height: 20px;
+        padding: 5px;
+        cursor: pointer;
+        color: transparent;
+        border: 0;
+        outline: none;
+        background: transparent;
+      }
+
+      &.active {
+        &:before {
+          opacity: 0.75;
+        }
+
+        &:before {
+          font-size: 28px;
+          line-height: 20px;
+          top: 0;
+          left: 0;
+          width: 20px;
+          height: 20px;
+          content: '•';
+          text-align: center;
+          opacity: 0.25;
+          color: black;
+          -webkit-font-smoothing: antialiased;
+        }
+      }
+    }
+  }
+}
 @include responsive(mobile) {
   .mobile-payment-methods .pay-body #payment-method {
     > div {
