@@ -1,5 +1,5 @@
 <template>
-  <div class="dropdown" :id="'dropdown' + currentKey" v-show="show">
+  <div class="dropdown" :id="'dropdown' + currentKey">
     <div class="dropdown-menu" :id="'dropdownMenuButton' + currentKey">
       <div
         v-for="(method, key) in value"

@@ -108,7 +108,7 @@
       :show="show"
       :value="selectedValue"
       @select-slide="selectSlide"
-      @close="show = !show"
+      @close="show = false"
     ></drop-down>
   </div>
 </template>
@@ -161,6 +161,7 @@ export default {
     selectSlide({ index, slide }) {
       this.currentSlide = index
       this.$emit('click', { index: index, slide: slide })
+      this.show = false
     },
     setActive(index) {
       this.currentSlide = index
