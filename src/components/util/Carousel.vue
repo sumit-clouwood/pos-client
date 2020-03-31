@@ -8,27 +8,83 @@
           @mousemove="doDrag"
           @mouseup="stopDrag"
         >
-          <li
-            v-for="(slide, key) in slides"
-            :key="key"
-            :class="{ active: key == currentSlide }"
-            :style="{
-              width: slideWidth + 'px',
-            }"
-            @click.stop=";[selectSlide({ index: key, slide: slide })]"
-          >
-            <div
-              class="slide"
+          <template v-if="!groupedMethods">
+            <li
+              v-for="(slide, key) in slides"
+              :key="key"
+              :class="{ active: key == currentSlide }"
               :style="{
-                width: slideWidth - 10 + 'px',
+                width: slideWidth + 'px',
               }"
+              @click.stop="selectSlide({ index: key, slide: slide })"
             >
-              <img :src="slide.icon" />
-              <label class="shorten-sentence" :title="slide.name">
-                {{ slide.name }}
-              </label>
-            </div>
-          </li>
+              <div
+                class="slide"
+                :style="{
+                  width: slideWidth - 10 + 'px',
+                }"
+              >
+                <img :src="slide.icon" />
+                <label class="shorten-sentence" :title="slide.name">
+                  {{ slide.name }}
+                </label>
+              </div>
+            </li>
+          </template>
+          <template v-else>
+            <template
+              v-for="[currentKey, value] of Object.entries(groupedMethods)"
+            >
+              <li
+                v-if="value.length === 1"
+                :key="currentKey"
+                :class="{ active: currentKey == currentSlide }"
+                :style="{
+                  width: slideWidth + 'px',
+                }"
+              >
+                <div
+                  @click.stop="
+                    selectSlide({ index: currentKey, slide: value[0] })
+                  "
+                  class="slide"
+                  :style="{
+                    width: slideWidth - 10 + 'px',
+                  }"
+                >
+                  <img :src="value[0].icon" />
+                  <label class="shorten-sentence" :title="value[0].name">
+                    {{ value[0].name }}
+                  </label>
+                </div>
+              </li>
+              <li
+                v-else
+                :key="currentKey"
+                :class="{ active: currentKey == currentSlide }"
+                :style="{
+                  width: slideWidth + 'px',
+                }"
+              >
+                <div
+                  class="slide"
+                  :id="'dropdownMenuButton' + currentKey"
+                  :data-toggle="'dropdown' + currentKey"
+                  aria-haspopup="true"
+                  aria-expanded="false"
+                  :style="{
+                    width: slideWidth - 10 + 'px',
+                  }"
+                  @click="showDropDown({ show, value, currentKey })"
+                >
+                  <img :src="value[0].icon" />
+                  <label class="shorten-sentence" :title="currentKey">
+                    {{ currentKey }}
+                  </label>
+                </div>
+              </li>
+            </template>
+          </template>
         </ul>
       </transition>
     </div>
@@ -45,13 +101,27 @@
         </li>
       </ul>
     </div>
+    <drop-down
+      v-if="show"
+      :key="currentKey"
+      :current-key="currentKey"
+      :show="show"
+      :value="selectedValue"
+      @select-slide="selectSlide"
+      @close="show = !show"
+    ></drop-down>
   </div>
 </template>
 <script>
+import DropDown from './form/DropDown'
+import { mapState } from 'vuex'
 export default {
   name: 'Carousel',
+  components: {
+    DropDown,
+  },
   props: {
-    slides: Array,
+    slides: [Array, Object],
     perPage: Number,
     width: Number,
   },
@@ -63,20 +133,30 @@ export default {
       dragging: false,
       dragX: '',
       dragY: '',
+      show: false,
+      selectedValue: [],
+      currentKey: '',
     }
   },
   computed: {
     totalPages() {
+      if (this.groupedMethods) {
+        let totalLength = Object.keys(this.groupedMethods).length || 6
+        return Math.ceil(totalLength / this.perPage)
+      }
       return Math.ceil(this.slides.length / this.perPage)
     },
     slideWidth() {
       return this.width / this.perPage
     },
-  },
-  mounted() {
-    window.addEventListener('mouseup', this.stopDrag)
+    ...mapState('payment', ['groupedMethods']),
   },
   methods: {
+    showDropDown(payLoad) {
+      this.show = !payLoad.show
+      this.selectedValue = payLoad.value
+      this.currentKey = payLoad.currentKey
+    },
     // eslint-disable-next-line no-unused-vars
     selectSlide({ index, slide }) {
       this.currentSlide = index
@@ -102,6 +182,7 @@ export default {
 
       this.positionX = -toMove
       this.currentPage = page
+      this.show = false
     },
     startDrag(event) {
       event = event || window.event

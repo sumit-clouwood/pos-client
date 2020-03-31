@@ -1,3 +1,4 @@
 export const SET_METHODS = 'SET_METHODS'
 export const RESET = 'RESET'
 export const APPINVOICEDATA = 'APPINVOICEDATA'
+export const SET_GROUPED_METHODS = 'SET_GROUPED_METHODS'

@@ -6,6 +6,7 @@ import * as CONST from '@/constants'
 const state = {
   methods: {},
   appInvoiceData: {},
+  groupedMethods: {},
 }
 
 // getters
@@ -60,8 +61,18 @@ function makeTransFormat(translations) {
 const actions = {
   async fetchAll({ rootGetters, commit, getters }) {
     const paymentMethods = await PaymentService.fetchMethods()
-
+    let payMethod = paymentMethods.data.data
     let methods = []
+    let groupedMethods = payMethod.reduce((accumulator, currentmethod) => {
+      const key = currentmethod['type']
+      if (!accumulator[key]) {
+        accumulator[key] = []
+      }
+      //Push only enabled payment types
+      if (currentmethod.item_status) accumulator[key].push(currentmethod)
+      return accumulator
+    }, {})
+    commit(mutation.SET_GROUPED_METHODS, groupedMethods)
     paymentMethods.data.data.forEach(method => {
       if (method.item_status) {
         switch (method.type) {
@@ -135,6 +146,9 @@ const mutations = {
   },
   [mutation.RESET](state) {
     state.methods = {}
+  },
+  [mutation.SET_GROUPED_METHODS](state, groupedMethods) {
+    state.groupedMethods = groupedMethods
   },
 }
 
