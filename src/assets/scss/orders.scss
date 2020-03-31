@@ -44,6 +44,10 @@
       letter-spacing: $px1;
       position: relative;
       border: $px1 dashed $header-gray-light;
+      @include responsive(mobile) {
+        width: 95%;
+        margin: auto;
+      }
       > span {
         position: absolute;
         top: -$px12;
@@ -101,8 +105,8 @@
           background-color: $blue-dark;
         }
       }
-      .cartBottomBtn{
-        i{
+      .cartBottomBtn {
+        i {
           vertical-align: middle;
         }
       }
@@ -113,7 +117,7 @@
     overflow: auto;
     position: relative;
     padding-right: 0;
-    &::-webkit-scrollbar{
+    &::-webkit-scrollbar {
       width: 0;
     }
 
@@ -174,7 +178,6 @@
           align-items: center;
         }
       }
-      
     }
 
     .wrappers-order-block {
@@ -323,7 +326,7 @@
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         display: block;
       }
-      .btn-next{
+      .btn-next {
         display: inline;
       }
     }

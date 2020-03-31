@@ -76,14 +76,19 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-@import '../../../../../../assets/scss/pixels_rem.scss';
-@import '../../../../../../assets/scss/variables.scss';
-@import '../../../../../../assets/scss/mixins.scss';
+@import '@/assets/scss/pixels_rem.scss';
+@import '@/assets/scss/variables.scss';
+@import '@/assets/scss/mixins.scss';
 
 .POSItemOptions {
   .modal-body {
     height: auto !important;
     max-height: 460px;
+  }
+  .modal-footer {
+    .btn-announce {
+      grid-template-columns: 1fr 1fr !important;
+    }
   }
 }
 </style>

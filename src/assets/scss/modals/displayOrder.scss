@@ -1,4 +1,5 @@
 @import '../variables.scss';
+@import '../mixins.scss';
 
 #display-order {
   .slick-dots {
@@ -233,7 +234,7 @@
             }
 
             .cu-loyality-points {
-              overflow: hidden;
+              overflow: scroll;
               margin: 0 auto;
               display: grid;
               grid-template-columns: max-content 1fr;
@@ -510,6 +511,7 @@
 
       .modal-footer {
         padding-top: 0;
+        border-top: 2px solid grey;
       }
     }
   }
@@ -829,6 +831,9 @@ label.container-radio-btn img {
   margin-right: $px10;
   width: $px35;
   height: $px35;
+  @include responsive(mobile) {
+    margin: auto;
+  }
 }
 
 button:focus {
@@ -853,6 +858,9 @@ button:focus {
 
 button#gift-card-btn {
   width: $px105;
+  @include responsive(mobile) {
+    width: auto !important;
+  }
 }
 
 .gift-card-details-wrap > div.gift-card-detail {

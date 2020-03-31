@@ -15,7 +15,7 @@
         ><!--<span><img src="images/referal-down.png"></span>-->
         <p v-if="errors !== ''" class="errors text-danger">{{ errors }}</p>
         <p v-if="msg" class="text-info">{{ msg }}</p>
-        <div class="dropdown-menu" v-if="getReferrals">
+        <div id="referralDropdown" class="dropdown-menu" v-if="getReferrals">
           <a
             class="dropdown-item color-text cursor-pointer"
             :class="{ active: referral._id === orderReferralId }"
@@ -34,7 +34,7 @@
           </a>
         </div>
         <div class="dropdown-menu color-text-invert" v-if="!getReferrals">
-          Nothing found
+          {{ _t('Nothing found') }}
         </div>
       </div>
       <datetime
@@ -139,6 +139,7 @@ export default {
         this.errors = `Minimum order values should be ${minOrderValue} for selected delivery address`
       } else {
         if (this.needSupervisorAccess) {
+          this.$store.commit('order/SET_REFERRAL', this.changedReferral)
           showModal('#modificationReason')
         } else {
           $('#confirm_announcement').prop('disabled', true)
@@ -194,6 +195,18 @@ export default {
 }
 </script>
 <style lang="scss">
+@import '@/assets/scss/pixels_rem.scss';
+@import '@/assets/scss/variables.scss';
+@import '@/assets/scss/mixins.scss';
+#referralDropdown {
+  max-height: 15vh;
+  overflow-y: scroll;
+  &::-webkit-scrollbar {
+    background-color: rgb(233, 233, 233);
+    width: 0.625rem;
+    height: 0.625rem;
+  }
+}
 .showpropermsg .text-danger {
   display: initial;
   padding: 6px;
@@ -210,22 +223,34 @@ export default {
   }
 }
 
-@import '../../../../../assets/scss/pixels_rem.scss';
-@import '../../../../../assets/scss/variables.scss';
-@import '../../../../../assets/scss/mixins.scss';
-
 @include responsive(mobile) {
   #order-confirmation {
-    .vdatetime > input {
-      width: 100%;
+    .modal-footer {
+      width: auto !important;
+      .referal {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-gap: 10px;
+      }
+      .vdatetime > input {
+        width: 95% !important;
+        margin-left: 0px !important;
+      }
+      .showpropermsg .text-danger {
+        position: absolute;
+        left: 23%;
+        top: 13%;
+      }
     }
-    .referal {
-      position: relative;
-    }
-    .showpropermsg .text-danger {
-      position: absolute;
-      left: 23%;
-      top: 13%;
+    .btn-announce {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      width: auto;
+      grid-gap: 10px;
+      .btn-danger {
+        width: auto !important;
+        margin-left: 0.625rem !important;
+      }
     }
   }
 }

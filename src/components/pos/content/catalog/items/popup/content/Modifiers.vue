@@ -187,9 +187,9 @@ export default {
 }
 </script>
 <style lang="scss">
-@import '../../../../../../../assets/scss/pixels_rem.scss';
-@import '../../../../../../../assets/scss/variables.scss';
-@import '../../../../../../../assets/scss/mixins.scss';
+@import '@/assets/scss/pixels_rem.scss';
+@import '@/assets/scss/variables.scss';
+@import '@/assets/scss/mixins.scss';
 
 .POSItemOption {
   .POSItemOptions_type {
@@ -225,6 +225,10 @@ export default {
     margin-top: $px30;
     display: grid;
     grid-template-columns: repeat(auto-fill, 150px);
+    @include responsive(mobile) {
+      grid-template-columns: 1fr 1fr;
+      font-size: 1rem;
+    }
     grid-gap: 10px;
     position: relative;
     .text-danger {
@@ -250,6 +254,10 @@ export default {
           position: relative;
           width: 100%;
           height: 100%;
+          @include responsive(mobile) {
+            text-align: center;
+            padding: 5px !important;
+          }
           input {
             display: none;
 

@@ -61,6 +61,7 @@ import bootstrap from '@/bootstrap'
 import Preloader from '@/components/util/Preloader'
 import { mapState, mapGetters } from 'vuex'
 import moment from 'moment-timezone'
+
 export default {
   name: 'PrivateView',
   props: {},

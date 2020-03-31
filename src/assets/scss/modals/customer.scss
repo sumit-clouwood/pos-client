@@ -112,6 +112,9 @@
           > div {
             margin-bottom: $px25;
             position: relative;
+            @include responsive(mobile){
+              width: 100% !important;
+            }
 
             input {
               width: $px315;
@@ -120,6 +123,9 @@
               background-color: #ffffff;
               border: solid 1px #e4e7eb;
               padding: $px10;
+              @include responsive(mobile){
+                width: 100% !important;
+              }
             }
 
             select {
@@ -144,6 +150,9 @@
               letter-spacing: 0.5px;
               color: #72777c;
               vertical-align: middle;
+              @include responsive(mobile){
+                width: 100% !important;
+              }
             }
           }
 
@@ -214,6 +223,7 @@
 
           .divide-block {
             padding: 0;
+            width: 95% !important;
 
             h5 {
               margin: 0;
@@ -238,6 +248,7 @@
 
           .left-form {
             padding: 0;
+            max-width: 100% !important;
 
             > div {
               margin-bottom: 10px;
@@ -264,12 +275,13 @@
 
           .right-form {
             padding: 0;
+            max-width: 100% !important;
 
             > div {
               margin-bottom: 10px;
 
               > input {
-                width: 100%;
+                width: 100% !important;
               }
 
               > select {
@@ -284,14 +296,25 @@
             .customer-group {
               .right-shift {
                 padding: 0;
+                max-width: 100% !important;
 
                 .vdatetime {
-                  width: 100%;
+                  width: 100% !important;
+                  display: block !important;
 
                   input {
                     margin: 0;
                     width: 100%;
                   }
+                }
+              }
+              .vdatetime {
+                width: 100% !important;
+                display: block !important;
+
+                input {
+                  margin: 0;
+                  width: 100%;
                 }
               }
             }
@@ -319,6 +342,8 @@
       border-left: 1px solid #ddd;
 
       .modal-content {
+        width: 95vw !important;
+        margin: auto;
         .modal-header {
           border-radius: 0;
           padding: 10px 20px;
@@ -333,7 +358,7 @@
 
           .add-note-area {
             input {
-              width: 100%;
+              width: 95%;
             }
           }
 
