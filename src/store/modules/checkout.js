@@ -525,7 +525,7 @@ const actions = {
         //itemTax.undiscountedTax is without modifiers
         tax: item.tax,
         price: item.netPrice,
-        qty: item.quantity,
+        qty: item.quantity || 1,
         note: item.note,
         originalItem: item,
         kitchen_invoice: item['kitchen_invoice'],

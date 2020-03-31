@@ -40,7 +40,7 @@ export default {
   data() {
     return {
       comboItem: [],
-      for_combo: 0,
+      for_combo: 1,
       totalItemQty: 0,
       error: false,
     }

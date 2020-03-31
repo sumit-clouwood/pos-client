@@ -162,7 +162,7 @@ export default {
       })
     },
     setModifiersForItem(item) {
-      this.setActiveItems(item, true)
+      this.setActiveItems(item, false)
       // if (this.$store.getters['modifier/hasModifiers'](item)) {
       this.$store.commit('modifier/SET_ITEM', item)
       $('#POSItemOptions .modifier-option-radio').prop('checked', false)
