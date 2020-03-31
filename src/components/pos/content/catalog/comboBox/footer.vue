@@ -48,9 +48,8 @@ export default {
   methods: {
     addComboItemCart() {
       let activeItemModifiers = []
-      // eslint-disable-next-line no-console
-      console.log(this.comboItemsList, 'this.activeComboItems')
       this.validateNumberOfItems()
+      let itemQty = 0
 
       // eslint-disable-next-line no-unused-vars
       for (let [key, value] of Object.entries(this.activeComboItems)) {
@@ -60,10 +59,12 @@ export default {
           )
           if (activeChecker) {
             activeChecker.for_combo = this.for_combo
+            itemQty += parseInt(activeChecker.quantity)
             // eslint-disable-next-line no-console
             console.log(activeChecker, 'activeChecker')
             activeItemModifiers.push(activeChecker)
           } else {
+            itemQty += 1
             activeItem.for_combo = this.for_combo
             // eslint-disable-next-line no-console
             console.log(activeItem, 'activeItem')
@@ -71,16 +72,12 @@ export default {
           }
         })
       }
-      if (this.totalItemQty > parseInt(activeItemModifiers.length)) {
+      if (this.totalItemQty > itemQty) {
         this.error =
-          'Please select ' +
-          (this.totalItemQty - parseInt(activeItemModifiers.length)) +
-          ' more item'
-      } else if (this.totalItemQty < parseInt(activeItemModifiers.length)) {
+          'Please select ' + (this.totalItemQty - itemQty) + ' more item'
+      } else if (this.totalItemQty < itemQty) {
         this.error =
-          'Please remove any ' +
-          (parseInt(activeItemModifiers.length) - this.totalItemQty) +
-          ' items'
+          'Please remove any ' + (itemQty - this.totalItemQty) + ' items'
       } else {
         this.error = false
       }
