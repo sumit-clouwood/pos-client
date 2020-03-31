@@ -115,6 +115,13 @@ export default {
       this.positionX = -toMove
       this.currentPage = page
     },
+    setActive(index) {
+      this.currentSlide = index
+      if (index < this.perPage) {
+        //move to slide one
+        this.movePage(1)
+      }
+    },
     startDrag(event) {
       event = event || window.event
       event.preventDefault()
