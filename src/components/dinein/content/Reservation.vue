@@ -203,7 +203,7 @@ export default {
   methods: {
     customerName(reservation) {
       return reservation.guest_fname.length
-        ? reservation.guest_fname + ' ' + reservation.guest_lname
+        ? reservation.guest_fname + ' ' + (reservation.guest_lname || '')
         : 'Anonymous'
     },
     newReservation() {
