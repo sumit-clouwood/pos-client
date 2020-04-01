@@ -57,6 +57,39 @@ function makeTransFormat(translations) {
   return modifiedTrans
 }
 
+function getAggregatorMethods(aggregatorMethods) {
+  let groups = []
+  groups = aggregatorMethods.filter(method => method.group === true)
+
+  return aggregatorMethods.reduce((accumulator, currentmethod) => {
+    let key = currentmethod._id
+
+    if (currentmethod.group) {
+      //No need to do anything with group
+      groups.push(currentmethod)
+      return accumulator
+    } else if (!currentmethod.group && currentmethod.payment_type_group) {
+      // if currentmethod is not a group and have a payment type group
+      let group = groups.find(
+        group => group._id === currentmethod.payment_type_group
+      )
+      key = group.name
+      if (!accumulator[key]) {
+        accumulator[key] = []
+      }
+    } else {
+      // it means this method is not a part of any program/group
+      key = currentmethod.name
+      if (!accumulator[key]) {
+        accumulator[key] = []
+      }
+    }
+
+    accumulator[key].push(currentmethod)
+    return accumulator
+  }, {})
+}
+
 // actions
 const actions = {
   async fetchAll({ rootGetters, commit, getters }) {
@@ -71,6 +104,9 @@ const actions = {
       accumulator[key].push(currentmethod)
       return accumulator
     }, {})
+    groupedMethods['aggregator'] = getAggregatorMethods(
+      groupedMethods['aggregator']
+    )
     commit(mutation.SET_GROUPED_METHODS, groupedMethods)
     paymentMethods.data.data.forEach(method => {
       if (method.item_status) {
