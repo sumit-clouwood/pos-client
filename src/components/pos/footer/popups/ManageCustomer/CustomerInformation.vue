@@ -7,7 +7,10 @@
         <Preloader v-if="customerLoading" />
         <div v-else class="modal-body manage-customer-wrap">
           <div class="crm-details-wrap">
-            <div id="order-profile" class="profile-order order-profile-wrapper">
+            <div
+              id="order-profile"
+              class="profile-order order-profile-wrapper "
+            >
               <CustomerProfile />
               <CustomerDeliveryAddress />
               <div class="cu-loyality-points">

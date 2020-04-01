@@ -283,15 +283,10 @@ export default {
               width: 100%;
             }
             .btn-danger {
-              // position: absolute;
-              // top: 28px;
-              // right: 40px;
-              // width: 0;
-              // height: 0 !important;
               border: none;
               &:after {
                 font-size: 16px;
-                // content: '✖';
+
                 color: #444;
                 position: absolute;
                 right: -10px;

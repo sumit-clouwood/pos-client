@@ -51,6 +51,11 @@ export default {
           if (payable <= 0.1) {
             this.doPayment(this.$store.state.order.orderType.OTApi)
           }
+          if (this.$store.state.mobile.device === 'mobile') {
+            this.$store.dispatch('payNowCalcHendlerChange')
+            this.$store.dispatch('paymentMethodsChange')
+            this.$store.dispatch('mainOrdersHendlerChange')
+          }
         })
         .catch(() => {
           if (this.error) {

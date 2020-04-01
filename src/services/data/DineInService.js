@@ -1,5 +1,6 @@
 import DataService from '@/services/DataService'
 import DateTime from '@/mixins/DateTime'
+
 export default {
   dineInRunningOrders(page, limit, userId) {
     return DataService.get(
@@ -76,12 +77,31 @@ export default {
   },
 
   getAllBookedTables() {
-    return DataService.get(
+    return DataService.getLive(
       '/model/reservations?page_id=tables_reserved&page=1&limit=999999'
     )
   },
-  reservationOperation(data, action) {
+  async reservationOperation(data, action) {
     // action: add, move_waiting_to_reservation
+    let msg = {
+      form_data: data,
+    }
+
+    if (
+      'serviceWorker' in navigator &&
+      'SyncManager' in window &&
+      navigator.serviceWorker.controller
+    ) {
+      navigator.serviceWorker.controller.postMessage(msg)
+    }
+
+    //remove offline data
+    if (action === 'add') {
+      delete data.assigned_to
+      delete data.created_by
+      delete data.number
+    }
+
     return DataService.post(`/model/reservations/${action}`, data)
   },
   bookings(page, limit, UTC_Date) {

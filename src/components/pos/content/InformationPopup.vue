@@ -61,7 +61,7 @@ import { mapGetters } from 'vuex'
 export default {
   name: 'InformationPopup',
   props: {
-    responseInformation: String,
+    responseInformation: [String, Object],
     title: String,
     activatedClass: String,
   },

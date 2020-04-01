@@ -105,6 +105,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '@/assets/scss/pixels_rem.scss';
+@import '@/assets/scss/variables.scss';
 @import '@/assets/scss/mixins.scss';
 
 @include responsive(mobile) {
@@ -123,7 +125,7 @@ export default {
         }
         #available-tables {
           width: 90%;
-          margin: auto;
+          margin-left: auto;
           .table-status-container {
             grid-template-columns: 1fr 1fr !important;
           }

@@ -60,7 +60,6 @@
     </div>
   </div>
 </template>
-
 <script>
 /* global hideModal */
 import { mapGetters, mapState } from 'vuex'
@@ -81,19 +80,15 @@ export default {
   methods: {
     addToCart() {
       this.errors = {}
-
       if (!this.item.name) {
         this.errors.name = this._t('Please provide item name')
       }
-
       if (!this.item.value) {
         this.errors.value = this._t('Please provide item price')
       }
-
       if (Object.keys(this.errors).length !== 0) {
         return false
       }
-
       this.$store
         .dispatch('order/addOpenItem', {
           item: {},

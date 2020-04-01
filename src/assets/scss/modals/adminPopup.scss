@@ -4,12 +4,6 @@
 #admin-popup{
   .modal-dialog{
     .modal-content{
-      // .modal-header{
-
-      // }
-      // .modal-body{
-
-      // }
       .modal-footer{
         padding: $px30;
       }
@@ -25,7 +19,7 @@ button.btn.btn-danger.cancel-announce {
    @include responsive(mobile){
     width: auto !important;
   }
-}
+ }
 
  button.btn.btn-danger.cancel-announce > span {
    padding-right: $px10;

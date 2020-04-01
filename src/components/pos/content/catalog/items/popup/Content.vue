@@ -97,6 +97,15 @@ export default {
     min-height: 0 !important;
   }
 }
+.positemoption_body {
+  scroll-behavior: smooth;
+}
+
+@include responsive(mobile) {
+  .modal-body {
+    min-height: 0 !important;
+  }
+}
 </style>
 <style lang="sass" scoped>
 .positemoption_body

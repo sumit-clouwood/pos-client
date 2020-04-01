@@ -1,12 +1,6 @@
 import Vue from 'vue'
 import store from '@/store'
-import * as Permissions from '@/Permissions'
 Vue.mixin({
-  data() {
-    return {
-      PERMISSIONS: Permissions,
-    }
-  },
   methods: {
     isWaiter() {
       return store.getters['auth/waiter']

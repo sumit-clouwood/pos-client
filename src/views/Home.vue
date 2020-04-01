@@ -52,7 +52,6 @@ export default {
     },
   },
   mounted() {
-    // alert('opening page')
     let vh = window.innerHeight * 0.01
     // Then we set the value in the --vh custom property to the root of the document
     document.documentElement.style.setProperty('--vh', `${vh}px`)
@@ -91,6 +90,7 @@ export default {
     }
     /* Implemented for multistore*/
     if (this.$route.name.match('iosApplication')) {
+      localStorage.setItem('IOSPrinters', '')
       let iosprinter = this.$route.params.iosprinter.split('=')[1]
       /*"iosprinter=abc+xyz+yelo"*/
       localStorage.setItem('IOSPrinters', JSON.stringify(iosprinter.split('+')))

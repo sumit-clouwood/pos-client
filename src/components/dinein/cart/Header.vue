@@ -139,6 +139,9 @@ export default {
       myStyle: {
         backgroundColor: '#fff',
       },
+      cartItemHeight: 0,
+      cartHeight: 0,
+      cartInitHeight: 0,
     }
   },
   mounted() {

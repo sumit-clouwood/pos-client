@@ -253,6 +253,8 @@
 </template>
 <script>
 /* global $ */
+/* eslint-disable no-console */
+
 import { mapGetters, mapState, mapActions } from 'vuex'
 import * as d3 from 'd3'
 import TableStatus from './TableStatus'
@@ -408,6 +410,7 @@ export default {
       return moment(date).format('Do MMMM, YYYY')
     },
     getOrderNo(orderId) {
+      //console.log(this.allBookedTables, 'orders')
       let order = this.allBookedTables.lookup.orders._id[orderId]
       // let customerName = order && order.customer != null ? order.customer : ''
       return order
@@ -419,6 +422,7 @@ export default {
         : ''
     },
     orderStatus(orderId) {
+      //console.log(this.allBookedTables, 'orders status')
       return this.allBookedTables.lookup.orders._id[orderId].order_status
     },
     hideTableDetails() {
@@ -541,7 +545,7 @@ export default {
       this.setTableProperties()
       this.drawViews()
       // eslint-disable-next-line no-console
-      console.log('f')
+      //console.log('f')
       // d3.selectAll('.dinein_table_parent').each(() => {})
     },
     setTableColour(selectedItem, data) {
@@ -828,8 +832,8 @@ export default {
         // .attr('fill', '#fff')
 
         this.setTableColour(a[i], data)
-        d3.select(a[i]).on('click', function(d, i, a) {
-          dis.showOptions(d, i, a)
+        d3.select(a[i]).on('click', function(data, index, all) {
+          dis.showOptions(data, index, all)
         })
         let nodeDims = d3
           .select(a[i])
@@ -880,7 +884,7 @@ export default {
         .node()
         .getBoundingClientRect()
     },
-    showOptions(datum, i, a) {
+    showOptions(datum, index, all) {
       this.$store
         .dispatch('dinein/getBookedTables', false, { root: true })
         .then(() => {
@@ -890,12 +894,17 @@ export default {
           this.selectedTableData = datum
           this.guests = 1
           this.validationErrors = ''
-          this.selectedTableD3 = a[i]
+          this.selectedTableD3 = all[index]
           this.selectedTableId = datum._id
+          //console.log('table id', datum._id)
           this.orderDetails = this.orderOnTables.filter(
             order => order.tableId === datum._id
           )
-          this.setTableColour(a[i], datum)
+          // console.log('order on all tables', this.orderOnTables)
+          // console.log('order details for table', this.orderDetails)
+          // console.log(datum, index, all, all[index])
+
+          this.setTableColour(all[index], datum)
           this.$store.commit(
             'dinein/CURRENT_TABLE_RESERVATION',
             this.orderDetails
@@ -931,9 +940,18 @@ export default {
           if (this.cssClass == 'restricted') return false
           // $('#tooltipdata').hide()
           $('#tooltipdata').show()
+          // console.log(
+          //   'order details for table',
+          //   this.orderDetails,
+          //   this.orderDetails.length
+          // )
+
           this.addOrSplit =
             this.orderDetails.length > 0 ? 'Split Table' : 'Book Table'
-          if (this.brand.book_table || this.orderDetails.length) {
+          if (
+            (this.brand && this.brand.book_table) ||
+            this.orderDetails.length
+          ) {
             // let bookPlace = this.brand.book_table ? 'Place Order' : 'Book Table'
             let range = $('#range')
             let top = datum.table_position_coordinate.y + 20 || 0
@@ -952,6 +970,7 @@ export default {
               if (orderCount > 0) {
                 getWidth = 445 / 2
               }
+              //console.log('order count', orderCount)
             }
             let left = posX - getWidth
 
@@ -981,10 +1000,10 @@ export default {
               )
           } else {
             this.closeMyself()
-            if (this.brand.number_of_guests) {
+            if (this.brand && this.brand.number_of_guests) {
               $('#placeOrder').modal('show')
             } else {
-              this.newOrder(false, this.brand.book_table)
+              this.newOrder(false, this.brand && this.brand.book_table)
             }
           }
         })

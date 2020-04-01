@@ -107,7 +107,9 @@
           </tr>
           <template v-for="(item, key) in order.items">
             <tr :key="'item' + key">
-              <td class="first-col" valign="top">{{ item.qty }}</td>
+              <td class="first-col" valign="top">
+                {{ item.qty }} {{ measurement_unit(item) }}
+              </td>
               <td>
                 <div class="food-title">
                   {{ translate_item(item) }}
@@ -617,6 +619,12 @@ export default {
         }
       }
       return results.join(' / ')
+    },
+    measurement_unit(item) {
+      if (item.measurement_unit) {
+        return item.measurement_unit
+      }
+      return ''
     },
     discount_total(discount) {
       if (discount.type === 'fixed_price') {

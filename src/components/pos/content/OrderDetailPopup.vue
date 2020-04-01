@@ -103,22 +103,7 @@
               </div>
             </div>
           </button>
-          <!-- <button
-            v-if="
-              allowed(PERMISSIONS.MODIFY_ORDER) &&
-                typeof selectedOrder.item !== 'undefined' &&
-                !multistore &&
-                selectedOrder.item.order_type !== 'dine_in'
-            "
-            type="button"
-            class="button text-button btn btn-success color-main color-text-invert"
-            @click="modifyOrder(selectedOrder.item)"
-          >
-            <div class="button-content-container">
-              <div class="button-icon-container"></div>
-              <div class="button-caption">{{ _t('Modify Order') }}</div>
-            </div>
-          </button> -->
+
           <button
             v-if="selectedOrder.customer"
             type="button"
@@ -157,8 +142,6 @@
 </template>
 
 <script>
-/* global $ */
-
 import { mapState, mapGetters, mapActions } from 'vuex'
 
 import Invoice from '@/components/pos/content/cart/payNow/Invoice'

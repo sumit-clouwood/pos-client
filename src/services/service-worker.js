@@ -3,7 +3,7 @@
 /* eslint-disable no-console */
 //appVersion has production build number . staging build number . int build number . bugfix
 //Reason: fixed msg 13
-var appVersion = '7.9.34.22'
+var appVersion = '7.9.34.19'
 
 var clientUrl = ''
 
@@ -11,6 +11,7 @@ var ORDER_DOCUMENT = 'order_post_requests'
 var LOG_DOCUMENT = 'log'
 var client = null
 var enabledConsole = false
+
 var notificationOptions = {
   body: '',
   icon: './img/icons/apple-icon.png',
@@ -238,38 +239,83 @@ var EventListener = {
       //for example if it is order/add request then we should get order handler
       // if it is dm request then it should get DeliveryManger handler
 
+      try {
+        self.clients.get(event.clientId).then(thisClient => {
+          if (thisClient) {
+            client = thisClient
+          }
+        })
+      } catch (error) {
+        console.log(error)
+      }
+
       var handler = Factory.offlineHandler(clonedRequest)
+
       if (handler) {
         // attempt to send request normally
         event.respondWith(
-          fetch(clonedRequest).catch(function(error) {
-            // only save post requests in browser, if an error occurs, GET FROM MSG WE SEND EARLIER
-            //we saved form_data global var from msg
-            enabledConsole &&
-              console.log(
-                1,
-                'sw:',
-                'Network offline, saving request offline',
-                error
-              )
-            handler
-              .addOfflineEvent(clonedRequest.url, Sync.formData)
-              .then(() => {
-                Sync.formData = null
+          fetch(clonedRequest)
+            .then(data => {
+              if (!handler.intercept) {
+                return Promise.resolve(data)
+              }
+
+              return new Promise(resolve => {
+                data.json().then(serverResponse => {
+                  DB.open(() => {
+                    handler
+                      .intercept(
+                        clonedRequest.url,
+                        serverResponse,
+                        Sync.formData,
+                        clonedRequest.method
+                      )
+                      .then(response => {
+                        const compositeResponse = new Response(
+                          JSON.stringify(response),
+                          {
+                            headers: { 'content-type': 'application/json' },
+                          }
+                        )
+                        resolve(compositeResponse)
+                      })
+                  })
+                })
               })
-          })
+            })
+            .catch(function(error) {
+              // only save post requests in browser, if an error occurs, GET FROM MSG WE SEND EARLIER
+              //we saved form_data global var from msg
+              enabledConsole &&
+                console.log(
+                  1,
+                  'sw:',
+                  'Network offline, saving request offline',
+                  error
+                )
+
+              return new Promise(resolve => {
+                handler
+                  .addOfflineEvent(
+                    clonedRequest.url,
+                    Sync.formData,
+                    clonedRequest.method
+                  )
+                  .then(response => {
+                    Sync.formData = null
+                    const compositeResponse = new Response(
+                      JSON.stringify(response),
+                      {
+                        headers: { 'content-type': 'application/json' },
+                      }
+                    )
+
+                    resolve(compositeResponse)
+                  })
+              })
+            })
         )
       }
-
-      if (!event.clientId) {
-        return
-      }
-
-      self.clients.get(event.clientId).then(thisClient => {
-        if (thisClient) {
-          client = thisClient
-        }
-      })
     })
   },
 
@@ -351,6 +397,53 @@ var DB = {
       }
     }
   },
+  cursor: async (storeName, index, key, mode = 'readonly', callback) => {
+    return new Promise((resolve, reject) => {
+      var objectStore = DB.getBucket(storeName, mode)
+      var request = objectStore.index(index).openCursor(IDBKeyRange.only(key))
+      request.onsuccess = async event => {
+        var cursor = event.target.result
+        if (cursor) {
+          //record exists
+          callback(objectStore, cursor).then(() => {
+            cursor.continue()
+          })
+        } else {
+          resolve()
+        }
+      }
+      request.onerror = error => reject(error)
+    })
+  },
+  find: async (storeName, index, key, mode = 'readonly') => {
+    return new Promise((resolve, reject) => {
+      var objectStore = DB.getBucket(storeName, mode)
+      var request = objectStore.index(index).openCursor(IDBKeyRange.only(key))
+      var records = []
+
+      //find data by key
+
+      request.onsuccess = async event => {
+        var cursor = event.target.result
+        if (cursor) {
+          //record exists
+          records.push(cursor.value)
+          cursor.continue()
+        } else {
+          resolve({ records: records, objectStore: objectStore })
+        }
+      }
+      request.onerror = error => reject(error)
+    })
+  },
+  delete: async (storeName, key) => {
+    return new Promise((resolve, reject) => {
+      var objectStore = DB.getBucket(storeName, 'readwrite')
+      var request = objectStore.delete(key)
+      request.onsuccess = () => resolve()
+      request.onerror = error => reject(error)
+    })
+  },
 }
 
 var Sync = {
@@ -391,6 +484,10 @@ var Sync = {
             'sync inprocess',
             Sync.inprocess
           )
+        client.postMessage({
+          msg: 'sync',
+          data: { status: 'done' },
+        })
         resolve()
       } catch (error) {
         Sync.inprocess = false
@@ -487,8 +584,11 @@ var Sync = {
         })
     })
   },
-  request(requestUrl, method, payload) {
+  request(requestUrl, method, payload, unwantedData) {
     return new Promise((resolve, reject) => {
+      if (unwantedData && unwantedData.length) {
+        unwantedData.forEach(key => delete payload[key])
+      }
       enabledConsole &&
         console.log(
           1,
@@ -577,21 +677,60 @@ var Sync = {
 
 var Factory = {
   syncHandlers() {
-    return [Order, DeliveryManager]
+    return [Order, DeliveryManager, Dinein]
   },
 
   offlineHandler(request) {
     switch (request.method) {
       case 'POST':
+        if (
+          request.url.endsWith('/dine_in_about_to_finish') ||
+          request.url.endsWith('/dine_in_order_finished')
+        ) {
+          return Dinein
+        }
+
+        if (request.url.endsWith('/reservations/add')) {
+          //make sure its dine in order, reservations may used for other order typs in future
+          if (Sync.formData.assigned_table_id) {
+            return Dinein
+          }
+        }
+
         if (request.url.match('/orders/add')) {
+          if (Sync.formData.order_type === 'dine_in') {
+            return Dinein
+          }
           return Order
         }
+
+        if (request.url.endsWith('/update_order_items')) {
+          if (Sync.formData.order_type === 'dine_in') {
+            return Dinein
+          }
+          return Order
+        }
+
         if (request.url.match('/deliveryManager/add')) {
           return DeliveryManager
         }
 
         break
       case 'GET':
+        if (request.url.match('/model/orders/id/')) {
+          return WorkflowOrder
+        }
+
+        if (
+          request.url.match(
+            new RegExp(
+              '/model/reservations\\?page_id=(tables_reserved|running_orders)'
+            )
+          )
+        ) {
+          return Dinein
+        }
+
         break
     }
   },
@@ -670,7 +809,17 @@ var Order = {
             event_type: 'sw:order_save_offline',
             event_data: payload,
           })
-          resolve()
+          const time = +new Date()
+          resolve({
+            status: 'ok',
+            id: time,
+            order_no: payload.real_created_datetime
+              .toString()
+              .replace(/[\s-:]/g, ''),
+            token_number: 0,
+            generate_time: time,
+            flash_message: ' Order Added',
+          })
           //reset form data
         }
         request.onerror = function(error) {
@@ -806,7 +955,10 @@ var Order = {
       var method = savedRequest.method
       var requestUrl = savedRequest.url
       var payload = savedRequest.payload
+
       delete payload.user
+      delete payload.orderTimeUTC
+
       if (payload.order_type !== 'call_center') {
         payload.referral = ''
       }
@@ -940,6 +1092,1266 @@ var DeliveryManager = {
   },
 }
 
+var Dinein = {
+  OBJECT_STORE: 'workflow_order',
+
+  createId(prefix = '', postfix = '') {
+    return prefix + +new Date() + postfix
+  },
+
+  intercept: function(url, serverResponse, payload, method) {
+    return new Promise(resolve => {
+      if (method === 'GET') {
+        console.log('intercepting data')
+        //first check in workflow if it contains any dine in data
+        //if found data then return response from cache
+        //othwersie just return it from server
+
+        const request = DB.getBucket('workflow_order').openCursor()
+        let data = []
+        request.onsuccess = async event => {
+          var cursor = event.target.result
+          if (cursor) {
+            if (
+              cursor.value.type === 'dinein' &&
+              cursor.value.status === 'offline'
+            ) {
+              data.push(cursor.value)
+            }
+            cursor.continue()
+          } else {
+            if (data.length) {
+              console.log(
+                'data found in workflow, send response from offline cache'
+              )
+              //data found in offline to be synced, just send response from offline cache
+              this.getOrders(url, payload)
+                .then(data => resolve(data))
+                .catch(() => resolve(serverResponse))
+            } else {
+              console.log(
+                'data not found in workflow, send response from server'
+              )
+              resolve(serverResponse)
+            }
+          }
+          request.onerror = () => {
+            resolve(serverResponse)
+          }
+        }
+      } else {
+        console.log('do not catch, send response from server')
+        resolve(serverResponse)
+      }
+    })
+  },
+  addOfflineEvent: function(url, payload, method) {
+    if (method === 'GET') {
+      return this.getOrders(url, payload)
+    } else {
+      if (url.endsWith('/update_order_items')) {
+        return this.updateOrderItems(url, payload)
+      }
+
+      if (url.endsWith('/dine_in_about_to_finish')) {
+        return this.reservationAboutToFinish(url, payload)
+      }
+
+      if (url.endsWith('/dine_in_order_finished')) {
+        return this.reservationFinished(url, payload)
+      }
+
+      if (url.endsWith('/reservations/add')) {
+        return this.addReservation(url, payload)
+      }
+
+      if (url.endsWith('/orders/add')) {
+        return this.placeOrder(url, payload)
+      }
+    }
+  },
+  // eslint-disable-next-line no-unused-vars
+  getOrders(url, payload) {
+    const res = url.match(
+      new RegExp(
+        '/model/reservations\\?page_id=(tables_reserved|running_orders)'
+      )
+    )
+    if (!res) {
+      return
+    }
+
+    return this.findOrders(res[1])
+  },
+
+  async findOrders(action) {
+    return new Promise((resolve, reject) => {
+      let status = ['reserved', 'in-progress']
+      if (action === 'running_orders') {
+        status = ['in-progress', 'on-a-way']
+      }
+
+      let response = {
+        data: {},
+        count: 0,
+        page_lookups: {
+          orders: {},
+          dineinTables: {},
+        },
+      }
+      let orders = {
+        _id: {},
+      }
+
+      let dineinTables = {
+        _id: {},
+      }
+
+      //find in store and return only those orders whose status match
+      //like in-progress or reserved
+      DB.open(() => {
+        DB.find('store', 'key', 'dinein_tables').then(({ records }) => {
+          console.log('tables', records)
+          const tables = records[0]
+
+          DB.find('store', 'key', 'dinein_reservations')
+            .then(({ records }) => {
+              console.log('dinein_reservations records', records)
+              let record = records[0]
+              if (record.data && record.data.data) {
+                //in case of reservation don't filter
+                //in case of running filter only in-progress
+                response.data = record.data.data.filter(order => {
+                  if (status.includes(order.status)) {
+                    //order matched
+                    order.related_orders_ids.forEach(
+                      orderId =>
+                        (orders._id[orderId] =
+                          record.data.page_lookups.orders._id[orderId])
+                    )
+
+                    const table = tables.data.data.find(
+                      table => table._id === order.assigned_table_id
+                    )
+                    dineinTables._id[order.assigned_table_id] = table
+
+                    return true
+                  }
+                  return false
+                })
+                response.count = response.data.length
+                //restore lookups
+                response.page_lookups = record.data.page_lookups
+                //update orders
+                response.page_lookups.orders = orders
+                //update dine in tables
+                response.page_lookups.dine_in_tables = dineinTables
+                resolve(response)
+              } else {
+                reject()
+              }
+            })
+            .catch(error => reject(error))
+        })
+      })
+    })
+  },
+
+  addReservation(url, payload) {
+    enabledConsole && console.log(1, 'sw:', payload)
+    return new Promise((resolve, reject) => {
+      // get object_store and save our payload inside it
+      DB.open(() => {
+        enabledConsole &&
+          console.log(1, 'sw:', 'db opened, adding offline order to indexeddb')
+
+        const id = this.createId()
+
+        const entry = {
+          _id: id,
+          step: 'reserved',
+          type: 'dinein',
+          keys: JSON.stringify({ reservationId: id }),
+          status: 'offline',
+          request: {
+            url: url,
+            method: 'POST',
+            data: payload,
+          },
+          response: {
+            _id: id,
+            number: payload.number,
+            start_date: payload.start_date,
+            start_time: payload.start_time,
+            end_time: '',
+            assigned_table_id: payload.assigned_table_id,
+            number_of_guests: payload.number_of_guests,
+            related_orders_ids: [],
+            status: 'reserved',
+            customers: [],
+            reservation_history: [],
+            assigned_to: payload.assigned_to,
+            created_by: payload.created_by,
+            network: 'offline',
+          },
+          startTime: id,
+          rootStep: '',
+        }
+        // add workflow entry
+        DB.getBucket(this.OBJECT_STORE, 'readwrite').add(entry)
+
+        //add to store data
+        var objectStore = DB.getBucket('store', 'readwrite')
+        var request = objectStore
+          .index('key')
+          .openCursor(IDBKeyRange.only('dinein_reservations'))
+        var records = []
+
+        //find data by key
+
+        request.onsuccess = async event => {
+          var cursor = event.target.result
+          if (cursor) {
+            //record exists
+            console.log('record already exists', cursor.value)
+            records.push(cursor.value)
+            cursor.continue()
+          } else {
+            console.log('no more results', records)
+            // no more results
+            if (records.length) {
+              //some records found
+              console.log('update existing record')
+              var record = records[0]
+              record.data.count++
+              record.data.data.push(entry.response)
+            } else {
+              //create new one
+              console.log('insert new record')
+              record = {
+                key: 'dinein_reservations',
+                data: {
+                  count: 1,
+                  page_lookups: {
+                    orders: {
+                      _id: {},
+                    },
+                  },
+                  data: [entry.response],
+                },
+              }
+            }
+            console.log('record', record)
+            var request = objectStore.put(record)
+
+            request.onsuccess = () => {
+              resolve({
+                status: 'ok',
+                id: id,
+                generate_time: id,
+                flash_message: ' Reservation Added',
+              })
+            }
+
+            request.onerror = error => {
+              console.error(
+                1,
+                'sw:',
+                "Request can't be send to index db",
+                error
+              )
+              reject(error)
+            }
+          }
+        }
+      })
+    })
+  },
+  placeOrder(url, payload) {
+    //id is the timestamp actually, first time id ll be empty so update it with time
+    let id = this.createId()
+    let rootId = payload.table_reservation_id
+    let keys = JSON.stringify({ reservationId: rootId, orderId: id })
+    //if order is being placed second time i.e updated, then key / steps remains same
+    let rootStep = JSON.stringify({ reservationId: rootId })
+    let step = 'placed'
+    let orderStatus = 'in-progress'
+
+    //pay for order
+    if (payload.order_payments.length) {
+      //order id ll remain same for both cases pay/place
+      id = payload._id || id
+      orderStatus = 'finished'
+      keys = JSON.stringify({ orderId: id })
+    }
+    enabledConsole && console.log(1, 'sw:', payload) //find
+
+    return new Promise((resolve, reject) => {
+      // get object_store and save our payload inside it
+      DB.open(() => {
+        enabledConsole &&
+          console.log(1, 'sw:', 'db opened, adding offline order to indexeddb')
+
+        const entry = {
+          _id: id,
+          step: step,
+          type: 'dinein',
+          keys: keys,
+          status: 'offline',
+          request: {
+            url: url,
+            method: 'POST',
+            data: payload,
+          },
+          response: {
+            _id: id,
+            number: payload.number,
+            start_date: payload.start_date,
+            start_time: payload.start_time,
+            end_time: '',
+            assigned_table_id: payload.assigned_table_id,
+            number_of_guests: payload.number_of_guests,
+            related_orders_ids: [],
+            status: 'reserved',
+            customers: [],
+            reservation_history: [],
+            assigned_to: payload.assigned_to,
+            created_by: payload.created_by,
+          },
+          startTime: id,
+          rootStep: rootStep,
+        }
+
+        DB.getBucket(this.OBJECT_STORE, 'readwrite').add(entry)
+
+        //add to store data
+        var objectStore = DB.getBucket('store', 'readwrite')
+        var request = objectStore
+          .index('key')
+          .openCursor(IDBKeyRange.only('dinein_reservations'))
+        var records = []
+
+        //find data by key
+
+        request.onsuccess = async event => {
+          var cursor = event.target.result
+          if (cursor) {
+            //record exists
+            console.log('record already exists', cursor.value)
+            records.push(cursor.value)
+            cursor.continue()
+          } else {
+            console.log('no more results', records)
+            // no more results
+            if (records.length) {
+              //some records found
+              console.log('update existing record')
+              var record = records[0]
+
+              console.log('record', record)
+
+              record.data.data = record.data.data.map(booking => {
+                if (booking._id === payload.table_reservation_id) {
+                  booking.related_orders_ids = [id]
+                  booking.status = 'in-progress'
+                  booking.network = 'offline'
+                }
+                return booking
+              })
+
+              payload.network = 'offline'
+              payload._id = id
+              payload.order_no = payload.orderTimeUTC
+                .toString()
+                .replace(/[\s-:]/g, '')
+              payload.order_status = orderStatus
+              record.data.page_lookups.orders._id[id] = payload
+
+              var request = objectStore.put(record)
+
+              request.onsuccess = () => {
+                resolve({
+                  status: 'ok',
+                  id: id,
+                  order_no:
+                    payload.order_no ||
+                    payload.orderTimeUTC.toString().replace(/[\s-:]/g, ''),
+                  token_number: 0,
+                  generate_time: id,
+                  flash_message: ' Order Added',
+                  network: 'offline',
+                })
+              }
+
+              request.onerror = error => {
+                console.error(
+                  1,
+                  'sw:',
+                  "Request can't be send to index db",
+                  error
+                )
+                reject(error)
+              }
+            }
+          }
+        }
+      })
+    })
+  },
+  async reservationAboutToFinish(url, payload) {
+    return new Promise((resolve, reject) => {
+      const id = url.replace(
+        new RegExp('.*/id/(\\w+)/dine_in_about_to_finish$'),
+        '$1'
+      )
+      DB.open(() => {
+        enabledConsole &&
+          console.log(1, 'sw:', 'db opened, adding offline order to indexeddb')
+        const entry = {
+          _id: id,
+          step: 'on-a-way',
+          type: 'dinein',
+          keys: JSON.stringify({ reservationId: id }),
+          status: 'offline',
+          rootStep: JSON.stringify({ reservationId: id }),
+          request: {
+            url: url,
+            method: 'POST',
+            data: payload,
+          },
+          response: {
+            _id: id,
+            status: 'ok',
+            generate_time: +new Date(),
+            flash_message: 'Order will complete soon.',
+          },
+        }
+
+        let request = DB.getBucket(this.OBJECT_STORE, 'readwrite').add(entry)
+
+        request.onsuccess = event => {
+          //update in workflow
+          this.updateOrderinStore(
+            entry,
+            'dinein_reservations',
+            'on-a-way',
+            'finished'
+          ).finally(() => {})
+          resolve(event)
+        }
+        request.onerror = error => {
+          console.error(1, 'sw:', 'Request can not be send to index db', error)
+          reject(error)
+        }
+      })
+    })
+  },
+  async reservationFinished(url, payload) {
+    return new Promise((resolve, reject) => {
+      const id = url.replace(
+        new RegExp('.*/id/(\\w+)/dine_in_order_finished$'),
+        '$1'
+      )
+      console.log('id finished', id)
+      DB.open(() => {
+        enabledConsole &&
+          console.log(1, 'sw:', 'db opened, adding offline order to indexeddb')
+
+        const entry = {
+          _id: id,
+          step: 'finished',
+          type: 'dinein',
+          keys: JSON.stringify({ reservationId: id }),
+          status: 'offline',
+          rootStep: JSON.stringify({ reservationId: id }),
+          request: {
+            url: url,
+            method: 'POST',
+            data: payload,
+          },
+          response: {
+            _id: id,
+            status: 'ok',
+            generate_time: +new Date(),
+            flash_message: 'Order Completed',
+          },
+        }
+
+        let request = DB.getBucket(this.OBJECT_STORE, 'readwrite').add(entry)
+        //here we need to clear the reservation records from the workflow as well.
+        //;)
+        request.onsuccess = event => {
+          this.updateOrderinStore(
+            entry,
+            'dinein_reservations',
+            'waitsync',
+            'waitsync'
+          ).finally(() => {})
+
+          resolve(event)
+        }
+        request.onerror = error => {
+          console.error(1, 'sw:', 'Request can not be send to index db', error)
+          reject(error)
+        }
+      })
+    })
+  },
+  async updateOrderItems(url, payload) {
+    //update order in the workflow_order
+    const id = url.replace(new RegExp('.*/id/(\\w+)/update_order_items$'), '$1')
+    const reservationKeys = JSON.stringify({
+      reservationId: payload.table_reservation_id,
+      orderId: id,
+    })
+    return new Promise((resolve, reject) => {
+      DB.find('workflow_order', 'keys', reservationKeys).then(({ records }) => {
+        //replace the record here, probably need to replace request / response only
+        if (records.length) {
+          let record = records[0]
+
+          console.log(1, 'sw:', 'original add record', record)
+
+          //when updating there is no realcreated date time but we need it so get it form previous
+          payload.real_created_datetime =
+            record.request.data.real_created_datetime
+
+          record.request.data = payload
+          console.log(1, 'sw:', 'record now', record)
+
+          var request = DB.getBucket('workflow_order', 'readwrite').put(record)
+          request.onsuccess = () => {
+            resolve({
+              status: 'ok',
+              id: id,
+              order_no:
+                payload.order_no ||
+                payload.real_created_datetime.toString().replace(/[\s-:]/g, ''),
+              token_number: 0,
+              generate_time: +new Date(),
+              flash_message: ' Order Updated',
+            })
+
+            if (payload.order_payments && payload.order_payments.length) {
+              //remove entry from booked tables in store, dont remove it yet:)
+              console.log('removing entry from booked tables, and lookup')
+              DB.find('store', 'key', 'dinein_reservations', 'readwrite').then(
+                ({ records, objectStore }) => {
+                  let record = records[0]
+
+                  //mark order as finished
+                  record.data.page_lookups.orders._id[id].order_status =
+                    'finished'
+
+                  //mark order as completed
+                  record.data.data = record.data.data.map(booking => {
+                    if (booking._id === payload.table_reservation_id) {
+                      booking.reservation_status = 'finished'
+                    }
+                    return booking
+                  })
+                  //uncomment below to remove it from colleciton
+                  // record.data.data = record.data.data.filter(
+                  //   booking => booking._id !== payload.table_reservation_id
+                  // )
+
+                  // if (record.data.count) {
+                  //   record.data.count--
+                  // }
+
+                  objectStore.put(record)
+                }
+              )
+            }
+          }
+
+          request.onerror = error => {
+            reject(error)
+          }
+        } else {
+          //no order found in workflow that means it is from online data
+          //just store it in the workflow
+          this.placeOrder(url, payload)
+            .then(response => {
+              console.log('success')
+              resolve(response)
+            })
+            .catch(error => console.log(error))
+        }
+      })
+    })
+  },
+  async remapOrders(offlineReservationId, response) {
+    return new Promise((resolve, reject) => {
+      console.log('remapping data')
+      DB.find('workflow_order', 'rootkeys', [
+        'dinein',
+        'placed',
+        'offline',
+        JSON.stringify({ reservationId: offlineReservationId }),
+      ])
+        .then(({ records }) => {
+          console.log('records to remap', records)
+          const record = records[0]
+          record.request.data.table_reservation_id = response.id
+          var objectStore = DB.getBucket('workflow_order', 'readwrite')
+          var request = objectStore.put(record)
+
+          request.onsuccess = () => {
+            resolve()
+          }
+          request.onerror = error => reject(error)
+        })
+        .catch(error => reject(error))
+    })
+  },
+  async createOnlineReservation(record) {
+    const offlineReservationId = record._id
+    return new Promise((resolve, reject) => {
+      console.log('sync request')
+
+      //remove unecessary data
+
+      Sync.request(
+        record.request.url,
+        record.request.method,
+        record.request.data,
+        ['assigned_to', 'created_by', 'number']
+      )
+        .then(response => {
+          enabledConsole && console.log(1, 'sw:', 'server response', response)
+
+          if (response.status === 'ok') {
+            //change status to offline
+            record.status = 'online'
+            record.response = response
+
+            var objectStore = DB.getBucket('workflow_order', 'readwrite')
+
+            try {
+              var updateRequest = objectStore.put(record)
+            } catch (e) {
+              console.log('Caught Exception:', e)
+            }
+
+            console.log('update request', updateRequest)
+
+            updateRequest.onsuccess = () => {
+              console.log('data updated')
+              this.remapOrders(offlineReservationId, response)
+                .then(() => resolve())
+                .catch(error => reject(error))
+            }
+            updateRequest.onerror = event => {
+              console.log('data updated failed', event)
+            }
+          } else {
+            reject(response)
+          }
+        })
+        .catch(error => reject(error))
+    })
+  },
+  async sync() {
+    return new Promise(resolve => {
+      this._sync().finally(() => {
+        resolve()
+        //delete synced records
+        this.deleteSynced()
+      })
+    })
+  },
+  async _sync() {
+    //1. sync complete reservation/booking for those tables which are offline
+    //2. update the orders based on these reservation ids
+    //3. sync orders
+    //4. Remove orders from workflow which are completed
+    //TODO: DON'T remove orders just mark them completed once paid so we can complete them
+    return new Promise((resolve, reject) => {
+      let promises = []
+      //parallel sync
+
+      DB.find('workflow_order', 'stepstatus', ['dinein', 'reserved', 'offline'])
+        .then(({ records }) => {
+          if (!records.length) {
+            console.log('no orders to sync', records)
+            this.syncOrders()
+              .then(() => {})
+              .catch(error => reject(error))
+              .finally(() => {
+                this.syncOrderStatuses()
+                resolve()
+              })
+          } else {
+            console.log('reservations to sync', records)
+            records.forEach(record => {
+              promises.push(this.createOnlineReservation(record))
+            })
+            Promise.all(promises)
+              .then(() => {
+                //now sync the orders
+                console.log('all reservation sync done dine in')
+              })
+              .catch(error => reject(error))
+              .finally(() => {
+                this.syncOrders()
+                  .then(() => {})
+                  .catch(error => reject(error))
+                  .finally(() => {
+                    this.syncOrderStatuses().finally(() => {
+                      resolve()
+                    })
+                  })
+              })
+          }
+        })
+        .catch(error => reject(error))
+    })
+  },
+  async syncOrders() {
+    return new Promise((resolve, reject) => {
+      DB.find('workflow_order', 'stepstatus', [
+        'dinein',
+        'placed',
+        'offline',
+      ]).then(({ records }) => {
+        if (!records.length) {
+          console.log('nothing to sync')
+          resolve()
+          return false
+        }
+        console.log('dinein order data to sync', records)
+        records.forEach(record => {
+          let payload = record.request.data
+          payload.order_mode = 'offline'
+
+          delete payload.orderTimeUTC
+
+          Sync.request(record.request.url, record.request.method, payload)
+            .then(orderResponse => {
+              if (orderResponse.status === 'ok') {
+                console.log('order data synced as well')
+                record.status = 'online'
+                record.respone = orderResponse
+                //save recard as online
+                var objectStore = DB.getBucket('workflow_order', 'readwrite')
+                var request = objectStore.put(record)
+                request.onsuccess = () => {
+                  let orderStatus = 'in-progress'
+                  //update main store
+                  if (
+                    record.request.data.order_payments &&
+                    record.request.data.order_payments.length
+                  ) {
+                    orderStatus = 'finished'
+                  }
+
+                  //replace in store
+                  //1. replace the assigned order ids inside reservation data
+                  //2. replace orders in lookup data
+
+                  DB.find('store', 'key', 'dinein_reservations')
+                    .then(({ records }) => {
+                      let reservationsRecord = records[0]
+                      console.log('workflow record', record)
+                      console.log('record to be updated', reservationsRecord)
+                      const keys = JSON.parse(record.keys)
+                      console.log('keys to be updated', keys)
+                      reservationsRecord.data.data = reservationsRecord.data.data.map(
+                        reservationData => {
+                          if (reservationData._id === keys.reservationId) {
+                            reservationData.related_orders_ids = reservationData.related_orders_ids.map(
+                              orderId => {
+                                if (orderId === keys.orderId) {
+                                  let newOrder =
+                                    reservationsRecord.data.page_lookups.orders
+                                      ._id[orderId]
+                                  newOrder.synced_offline = true
+
+                                  if (orderStatus === 'finished') {
+                                    newOrder.status = orderStatus
+                                    newOrder._id =
+                                      orderResponse.id || payload._id
+                                    newOrder.order_no =
+                                      orderResponse.order_no || payload.order_no
+                                  } else {
+                                    newOrder._id = orderResponse.id
+                                    newOrder.order_no = orderResponse.order_no
+                                  }
+
+                                  //remove old order and replace it by new one
+                                  delete reservationsRecord.data.page_lookups
+                                    .orders._id[orderId]
+
+                                  reservationsRecord.data.page_lookups.orders._id[
+                                    newOrder._id
+                                  ] = newOrder
+
+                                  orderId = newOrder._id
+                                  console.log(
+                                    'new OrderId and order to be replaced',
+                                    orderId,
+                                    newOrder
+                                  )
+                                }
+                                return orderId
+                              }
+                            )
+                          }
+                          return reservationData
+                        }
+                      )
+
+                      var objectStore = DB.getBucket('store', 'readwrite')
+                      var request = objectStore.put(reservationsRecord)
+                      request.onsuccess = () => {
+                        console.log('order synced back in store')
+                      }
+                    })
+                    .catch(error => console.log(error))
+                  resolve()
+                }
+                request.onerror = error => {
+                  reject(error)
+                }
+              } else {
+                reject(orderResponse)
+              }
+            })
+            .catch(error => reject(error))
+            .finally(() => resolve())
+        })
+      })
+    })
+  },
+  async syncAboutToFinish() {
+    return new Promise((resolve, reject) => {
+      DB.find('workflow_order', 'stepstatus', [
+        'dinein',
+        'on-a-way',
+        'offline',
+      ]).then(({ records }) => {
+        if (!records.length) {
+          console.log('nothing to sync')
+          resolve()
+        } else {
+          console.log('dinein order data to sync', records)
+          records.forEach(record => {
+            let payload = record.request.data || {}
+            payload.order_mode = 'offline'
+
+            //find actual reservation which was synced to get real id
+            DB.find('workflow_order', 'stepstatus', [
+              'dinein',
+              'reserved',
+              'online',
+            ]).then(({ records }) => {
+              let url = ''
+              if (records.length) {
+                const parentRecord = records.find(
+                  reservationRec => reservationRec._id === record._id
+                )
+                url = record.request.url.replace(
+                  new RegExp('/id/(\\w+)/'),
+                  '/id/' + parentRecord.response.id + '/'
+                )
+              } else {
+                //record was placed online get reservation
+                url = record.request.url
+              }
+              Sync.request(url, record.request.method, payload)
+                .then(orderResponse => {
+                  if (orderResponse.status === 'ok') {
+                    console.log('order data synced as well')
+                    record.status = 'online'
+                    record.respone = orderResponse
+                    //save recard as online
+                    var objectStore = DB.getBucket(
+                      'workflow_order',
+                      'readwrite'
+                    )
+                    var request = objectStore.put(record)
+                    request.onsuccess = () => {
+                      //replace in store
+                      //1. replace the assigned order ids inside reservation data
+                      //2. replace orders in lookup data
+
+                      this.updateOrderinStore(
+                        record,
+                        'dinein_reservations',
+                        'on-a-way',
+                        'finished'
+                      ).finally(() => {})
+                    }
+                    request.onerror = error => {
+                      reject(error)
+                    }
+                  } else {
+                    reject(orderResponse)
+                  }
+                })
+                .catch(error => reject(error))
+                .finally(() => {})
+            })
+          })
+          resolve()
+        }
+      })
+    })
+  },
+  async syncCompleted() {
+    return new Promise((resolve, reject) => {
+      DB.find('workflow_order', 'stepstatus', [
+        'dinein',
+        'finished',
+        'offline',
+      ]).then(({ records }) => {
+        if (!records.length) {
+          console.log('nothing to sync')
+          resolve()
+        } else {
+          //remove orders from workflow and store here
+          console.log('dinein order data to sync', records)
+          records.forEach(record => {
+            let payload = record.request.data || {}
+            payload.order_mode = 'offline'
+
+            //find actual reservation which was synced to get real id
+            DB.find('workflow_order', 'stepstatus', [
+              'dinein',
+              'reserved',
+              'online',
+            ]).then(({ records }) => {
+              let url = ''
+              if (records.length) {
+                const parentRecord = records.find(
+                  reservationRec => reservationRec._id === record._id
+                )
+                url = record.request.url.replace(
+                  new RegExp('/id/(\\w+)/'),
+                  '/id/' + parentRecord.response.id + '/'
+                )
+              } else {
+                //order was online
+                //finish it in offline
+                url = record.request.url
+              }
+
+              Sync.request(url, record.request.method, payload)
+                .then(orderResponse => {
+                  if (orderResponse.status === 'ok') {
+                    console.log('order data finished synced as well')
+                    record.status = 'online'
+                    record.respone = orderResponse
+                    //save recard as online
+                    var objectStore = DB.getBucket(
+                      'workflow_order',
+                      'readwrite'
+                    )
+                    var request = objectStore.put(record)
+
+                    request.onsuccess = () => {
+                      //delete from store in both lookups and the orders
+
+                      this.deleteOrderinStore(
+                        record,
+                        'dinein_reservations'
+                      ).finally(() => {})
+                    }
+                    request.onerror = error => {
+                      reject(error)
+                    }
+                  } else {
+                    reject(orderResponse)
+                  }
+                })
+                .catch(error => reject(error))
+                .finally(() => {})
+            })
+          })
+          resolve()
+        }
+      })
+    })
+  },
+  async syncOrderStatuses() {
+    return new Promise(resolve => {
+      this.syncAboutToFinish().finally(() => {
+        this.syncCompleted().finally(() => {
+          resolve()
+        })
+      })
+    })
+  },
+  //key: dinein_reservations
+  updateOrderinStore(workflowRecord, storeKey, reservationStatus, orderStatus) {
+    const keys = JSON.parse(workflowRecord.keys)
+    //in case of reservation there should be no orderId only reservation id
+    //example reservation is being completed
+    console.log('keys to be updated', keys)
+
+    return new Promise((resolve, reject) => {
+      DB.find('store', 'key', storeKey, 'readwrite')
+        .then(({ records, objectStore }) => {
+          if (!records.length) {
+            resolve()
+          } else {
+            let storeRecord = records[0]
+
+            let orderIds = []
+            //mark order as finished
+            if (keys.orderId) {
+              orderIds.push(keys.orderId)
+            } else {
+              //find all orders in that reservation and find keys
+              storeRecord.data.data.forEach(booking => {
+                if (booking._id === keys.reservationId) {
+                  orderIds = booking.related_orders_ids
+                }
+              })
+            }
+            //update Lookuo
+            orderIds.forEach(orderId => {
+              storeRecord.data.page_lookups.orders._id[
+                orderId
+              ].order_status = orderStatus
+            })
+
+            //mark order as completed
+            storeRecord.data.data = storeRecord.data.data.map(booking => {
+              if (booking._id === keys.reservationId) {
+                booking.reservation_status = reservationStatus
+                booking.status = reservationStatus
+              }
+              return booking
+            })
+
+            var request = objectStore.put(storeRecord)
+
+            request.onsuccess = event => {
+              resolve(event)
+            }
+            request.onerror = error => {
+              console.error(
+                1,
+                'sw:',
+                'Request can not be send to index db',
+                error
+              )
+              reject(error)
+            }
+          }
+        })
+        .catch(error => console.log(error))
+    })
+  },
+  deleteOrderinStore(workflowRecord, storeKey) {
+    const keys = JSON.parse(workflowRecord.keys)
+    //in case of reservation there should be no orderId only reservation id
+    //example reservation is being completed
+    console.log('keys to be deleted', keys)
+
+    return new Promise((resolve, reject) => {
+      DB.find('store', 'key', storeKey, 'readwrite')
+        .then(({ records, objectStore }) => {
+          if (!records.length) {
+            resolve()
+          } else {
+            let storeRecord = records[0]
+
+            let orderIds = []
+            //mark order as finished
+            if (keys.orderId) {
+              orderIds.push(keys.orderId)
+            } else {
+              //find all orders in that reservation and find keys
+              storeRecord.data.data.forEach(booking => {
+                if (booking._id === keys.reservationId) {
+                  orderIds = booking.related_orders_ids
+                }
+              })
+            }
+            //delete from lookups
+            orderIds.forEach(orderId => {
+              delete storeRecord.data.page_lookups.orders._id[orderId]
+            })
+
+            //delete from orders data
+            storeRecord.data.data = storeRecord.data.data.map(
+              booking => booking._id !== keys.reservationId
+            )
+
+            var request = objectStore.put(storeRecord)
+
+            request.onsuccess = event => {
+              resolve(event)
+            }
+            request.onerror = error => {
+              console.error(
+                1,
+                'sw:',
+                'Request can not be send to index db',
+                error
+              )
+              reject(error)
+            }
+          }
+        })
+        .catch(error => console.log(error))
+    })
+  },
+  async deleteSynced() {
+    //delete from workflow which are online
+    //1. get which are finished step: finished, status: "online"
+    //2. get reservation where step = reserved and _id from step 1
+    //3. remove every thing where _id = _id from step 1
+    //4. get related order ids from reservation and delete where id from them
+    return new Promise(resolve => {
+      let finishedReservations = []
+      let reservations = []
+
+      DB.cursor(
+        'workflow_order',
+        'stepstatus',
+        ['dinein', 'finished', 'online'],
+        'readwrite',
+        (objectStore, cursor) => {
+          return new Promise(resolve => {
+            finishedReservations.push(cursor.value)
+            objectStore.delete(cursor.primaryKey)
+            resolve()
+          })
+        }
+      ).then(() => {
+        console.log('finished reservations', finishedReservations)
+        finishedReservations.forEach(finishedReservation => {
+          DB.cursor(
+            'workflow_order',
+            'idstepstatus',
+            [finishedReservation._id, 'dinein', 'reserved', 'online'],
+            'readwrite',
+            (objectStore, cursor) => {
+              return new Promise(resolve => {
+                reservations.push(cursor.value)
+                objectStore.delete(cursor.primaryKey)
+                resolve()
+              })
+            }
+          ).then(() => {
+            console.log('base reservations', reservations)
+            DB.cursor(
+              'workflow_order',
+              '_id',
+              finishedReservation._id,
+              'readwrite',
+              (objectStore, cursor) => {
+                return new Promise(resolve => {
+                  objectStore.delete(cursor.primaryKey)
+                  resolve()
+                })
+              }
+            ).then(() => {
+              reservations.forEach(reservation => {
+                DB.cursor(
+                  'workflow_order',
+                  'rootStep',
+                  reservation.keys,
+                  'readwrite',
+                  (objectStore, cursor) => {
+                    return new Promise(resolve => {
+                      objectStore.delete(cursor.primaryKey)
+                      resolve()
+                    })
+                  }
+                )
+              })
+              resolve()
+            })
+          })
+        })
+      })
+    })
+  },
+}
+
+var WorkflowOrder = {
+  addOfflineEvent: async function(url, payload, method) {
+    return new Promise((resolve, reject) => {
+      if (method === 'GET') {
+        const id = url.replace(new RegExp('.*/id/'), '')
+        //search in workflow orders
+        DB.find('workflow_order', '_id', id).then(({ records }) => {
+          if (records.length) {
+            var record = records[0]
+            //get table number from the reservation request
+            //reservation: {reservationId: "1583129391094"}
+            //order: keys: {reservationId: "1583129391094", orderId: "1583
+
+            let keys = {
+              reservationId: JSON.parse(record.keys).reservationId,
+            }
+            if (record.step === 'placed') {
+              keys['orderId'] = record._id
+            }
+            const reservationKeys = JSON.stringify(keys)
+
+            DB.find('workflow_order', 'keys', reservationKeys)
+              .then(({ records }) => {
+                if (!records.length) {
+                  console.log('Error, unable to fetch the record')
+                  resolve()
+                  return false
+                }
+                const reservation = records[0]
+                let order = record.request.data
+                order._id = record._id
+                order.order_number = order.real_created_datetime
+                  .toString()
+                  .replace(/[\s-:]/g, '')
+
+                resolve({
+                  collected_data: {
+                    status: 'In Progress',
+                    order_type: 'Dine In',
+                    table_number: reservation.request.data.number,
+                    customer: {},
+                    page_lookups: {},
+                    store_invoice_templates: {},
+                  },
+                  item: order,
+                })
+              })
+              .catch(error => reject(error))
+          } else {
+            //no record found in workflow, that means order was placed online but needs to update in offline
+            //store must have required data, search id in store
+            DB.find('store', 'key', 'dinein_reservations').then(
+              ({ records }) => {
+                console.log('dinein_reservations records', records)
+                let record = records[0]
+                //in case of reservation don't filter
+                //in case of running filter only in-progress
+                if (
+                  typeof record.data.page_lookups.orders._id[id] !== 'undefined'
+                ) {
+                  //find reservation
+                  const order = record.data.page_lookups.orders._id[id]
+                  const reservation = record.data.data.find(reservation =>
+                    reservation.related_orders_ids.includes(id)
+                  )
+                  resolve({
+                    collected_data: reservation,
+                    item: order,
+                  })
+                }
+              }
+            )
+          }
+        })
+      }
+    })
+  },
+}
 if (workbox) {
   enabledConsole && console.log(1, 'sw:', 'workbox found ')
   setupCache()

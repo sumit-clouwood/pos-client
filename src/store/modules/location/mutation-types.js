@@ -16,6 +16,7 @@ export const RESET = 'RESET'
 export const SET_DATE = 'SET_DATE'
 export const SET_TERMINAL_CODE = 'SET_TERMINAL_CODE'
 export const SET_TIMEZONES = 'SET_TIMEZONES'
+export const SET_MEASUREMENT_UNITS = 'SET_MEASUREMENT_UNITS'
 
 export const SET_MODAL = 'SET_MODAL'
 export const SET_OPEN_HOURS = 'SET_OPEN_HOURS'

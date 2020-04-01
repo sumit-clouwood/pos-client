@@ -133,6 +133,7 @@ export default {
   },
   methods: {
     loyaltyHendlerChange() {
+      this.searchTerm = ''
       this.$store.dispatch('loyaltyHendlerChange')
     },
     loyaltyAddCustomer: function(target) {
@@ -151,6 +152,7 @@ export default {
         $('#search-loyalty-customer').modal('toggle')
         this.loyaltyHendlerChange()
         this.fetchSelectedCustomer(this.customerId)
+        this.searchTerm = ''
       } else {
         this.searchCustomerErr = 'Please Select Customer'
       }
@@ -168,7 +170,8 @@ export default {
     },
     search() {
       clearTimeout(this.inputTimer)
-      if (this.searchTerm.length >= 2) {
+
+      if (this.searchTerm.trim().length >= 1) {
         $('#searchLoader').attr('style', 'display:block')
         this.inputTimer = setTimeout(() => {
           $('#myDropdown').toggle()
@@ -178,7 +181,6 @@ export default {
               this.searchCustomerErr = ''
               $('#searchLoader').hide()
               $('#myDropdown').toggle()
-              this.$store.dispatch('customer/fetchAllCustomers')
             })
             .catch(() => {
               $('#searchLoader').hide()
@@ -186,6 +188,8 @@ export default {
               this.$store.dispatch('customer/fetchAllCustomers')
             })
         }, 500)
+      } else {
+        this.$store.dispatch('customer/fetchAllCustomers')
       }
     },
     ...mapActions('customer', ['fetchSelectedCustomer', 'addCustomer']),

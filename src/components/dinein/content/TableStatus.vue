@@ -8,7 +8,7 @@
         </li>
         <li id="available-soon-seat">
           <span>{{ tableStatus.availableSoonCount }}</span
-          >{{ _t('Available Soon') }}
+          >{{ _t('Available&nbsp;Soon') }}
         </li>
         <li id="available-seat">
           <span>{{ getAvailableTableCount(tableStatus) }}</span

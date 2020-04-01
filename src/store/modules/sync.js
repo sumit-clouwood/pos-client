@@ -1,5 +1,6 @@
 // initial state
 import * as CONST from '@/constants'
+
 const state = {
   //date: '2019-02-06',
   compress: false,
@@ -11,6 +12,8 @@ const state = {
   appUpdateNotification: false,
   cacheFirst: false,
   backgroundSync: false,
+  lastFetch: 0,
+  offlineSync: false,
 
   modules: {
     store: CONST.LOADING_STATUS_LOADING,
@@ -25,10 +28,31 @@ const state = {
 }
 
 // getters
-const getters = {}
+const getters = {
+  lastFetch: state => fmt => {
+    const seconds = (new Date().getTime() - state.lastFetch) / 1000
+    switch (fmt) {
+      case 'm':
+        return seconds / 60
+      case 'h':
+        return seconds / 60 / 60
+      case 'd':
+        return seconds / 60 / 60 / 24
+      default:
+        return seconds
+    }
+  },
+}
 
 // actions
-const actions = {}
+const actions = {
+  offlineSync({ commit, dispatch }, status) {
+    commit('updateOfflineSync', status)
+    if (status === 'done') {
+      dispatch('dinein/fetchAll', { silent: true }, { root: true })
+    }
+  },
+}
 
 // mutations
 const mutations = {
@@ -67,6 +91,12 @@ const mutations = {
     state.modules.store = CONST.LOADING_STATUS_LOADING
     state.modules.catalog = CONST.LOADING_STATUS_LOADING
     state.modules.modifiers = CONST.LOADING_STATUS_LOADING
+  },
+  lastFetch(state) {
+    state.lastFetch = new Date().getTime()
+  },
+  updateOfflineSync(state, status) {
+    state.offlineSync = status
   },
 }
 

@@ -140,7 +140,6 @@ export default {
         this.$store.dispatch('customer/reset')
       }
       this.selectedOrderType = newVal
-
       if (newVal.OTApi !== oldVal.OTApi) {
         //don't know what is this ???
         /*

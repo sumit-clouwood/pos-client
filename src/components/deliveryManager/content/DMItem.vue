@@ -56,7 +56,7 @@
                     <button
                       v-else
                       @click="
-                        updateOrderAction({
+                        updateOrder({
                           order: order,
                           orderType: order.order_type,
                           actionTrigger: actionDetails.action,
@@ -156,20 +156,31 @@
     <h5 v-else class="center-block text-center pt-5">
       {{ _t('No Orders Found') }}
     </h5>
+    <InformationPopup
+      :response-information="err"
+      title="Information"
+      :activated-class="'text-danger'"
+    />
   </div>
 </template>
 
 <script>
 import { mapState, mapActions, mapGetters } from 'vuex'
 import DateTime from '@/mixins/DateTime'
+import InformationPopup from '@/components/pos/content/InformationPopup'
 
+/* global $ */
 export default {
   name: 'DMItem',
   data() {
     return {
       orderCount: 2,
       dateTime: '',
+      err: null,
     }
+  },
+  components: {
+    InformationPopup,
   },
   props: {
     actionDetails: Object,
@@ -181,6 +192,7 @@ export default {
     ...mapState({
       orderStatus: state => state.deliveryManager.deliveryOrderStatus,
     }),
+    ...mapState('order', ['alert']),
     ...mapState({
       branch: state => state.deliveryManager.availableStores,
     }),
@@ -194,6 +206,14 @@ export default {
   },
   methods: {
     ...mapActions('deliveryManager', ['showOrderDetails']),
+    updateOrder(data) {
+      this.updateOrderAction(data)
+        .then(() => {})
+        .catch(er => {
+          this.err = er.data.error
+          $('.information-popup').modal('show')
+        })
+    },
     ...mapActions('order', ['selectedOrderDetails', 'updateOrderAction']),
   },
 }

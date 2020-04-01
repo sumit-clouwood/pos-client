@@ -83,7 +83,6 @@ export default {
   },
   methods: {
     getAllPrinters() {
-      // alert('1')
       if (window.PrintHandle != null) {
         window.PrintHandle.GetAllPrinters(function(data) {
           let dataObj = JSON.parse(data)
