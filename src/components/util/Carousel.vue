@@ -73,7 +73,7 @@
                   }"
                   @click="showChildSlides({ show, value, currentKey })"
                 >
-                  <img :src="value[0].icon" />
+                  <img :src="imagePath(currentKey)" />
                   <label class="shorten-sentence" :title="currentKey">
                     {{ currentKey }}
                   </label>
@@ -149,6 +149,9 @@ export default {
     ...mapState('payment', ['groupedMethods']),
   },
   methods: {
+    imagePath(key) {
+      return 'img/icons/svgs/' + key + '.svg'
+    },
     showChildSlides(payLoad) {
       this.show = !payLoad.show
       this.selectedValue = payLoad.value
