@@ -7,6 +7,7 @@ const state = {
   methods: {},
   appInvoiceData: {},
   groupedMethods: {},
+  aggregatorGroups: [],
 }
 
 // getters
@@ -58,36 +59,37 @@ function makeTransFormat(translations) {
 }
 
 function getAggregatorMethods(aggregatorMethods) {
-  let groups = []
-  groups = aggregatorMethods.filter(method => method.group === true)
+  let groups = aggregatorMethods.filter(method => method.group === true)
 
-  return aggregatorMethods.reduce((accumulator, currentmethod) => {
-    let key = currentmethod._id
+  let aggregateMethods = aggregatorMethods.reduce(
+    (accumulator, currentmethod) => {
+      let key = currentmethod._id
 
-    if (currentmethod.group) {
-      //No need to do anything with group
-      groups.push(currentmethod)
+      if (currentmethod.group) {
+        return accumulator
+      } else if (!currentmethod.group && currentmethod.payment_type_group) {
+        // if currentmethod is not a group and have a payment type group
+        let group = groups.find(
+          group => group._id === currentmethod.payment_type_group
+        )
+        key = group.name
+        if (!accumulator[key]) {
+          accumulator[key] = []
+        }
+      } else {
+        // it means this method is not a part of any program/group
+        key = currentmethod.name
+        if (!accumulator[key]) {
+          accumulator[key] = []
+        }
+      }
+
+      accumulator[key].push(currentmethod)
       return accumulator
-    } else if (!currentmethod.group && currentmethod.payment_type_group) {
-      // if currentmethod is not a group and have a payment type group
-      let group = groups.find(
-        group => group._id === currentmethod.payment_type_group
-      )
-      key = group.name
-      if (!accumulator[key]) {
-        accumulator[key] = []
-      }
-    } else {
-      // it means this method is not a part of any program/group
-      key = currentmethod.name
-      if (!accumulator[key]) {
-        accumulator[key] = []
-      }
-    }
-
-    accumulator[key].push(currentmethod)
-    return accumulator
-  }, {})
+    },
+    {}
+  )
+  return { groups, aggregateMethods }
 }
 
 // actions
@@ -104,9 +106,9 @@ const actions = {
       accumulator[key].push(currentmethod)
       return accumulator
     }, {})
-    groupedMethods['aggregator'] = getAggregatorMethods(
-      groupedMethods['aggregator']
-    )
+    let aggregateMethods = getAggregatorMethods(groupedMethods['aggregator'])
+    groupedMethods['aggregator'] = aggregateMethods['aggregateMethods']
+    commit(mutation.SET_AGGREGATE_GROUPS, aggregateMethods['groups'])
     commit(mutation.SET_GROUPED_METHODS, groupedMethods)
     paymentMethods.data.data.forEach(method => {
       if (method.item_status) {
@@ -184,6 +186,9 @@ const mutations = {
   },
   [mutation.SET_GROUPED_METHODS](state, groupedMethods) {
     state.groupedMethods = groupedMethods
+  },
+  [mutation.SET_AGGREGATE_GROUPS](state, aggregatorGroups) {
+    state.aggregatorGroups = aggregatorGroups
   },
 }
 
