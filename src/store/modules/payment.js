@@ -36,6 +36,11 @@ const getters = {
 
     return images
   },
+  findAggregateGroup: state => groupId => {
+    if (!state.aggregatorGroups) return {}
+
+    return state.aggregatorGroups.find(group => group._id === groupId)
+  },
 }
 
 function makeTransFormat(translations) {
