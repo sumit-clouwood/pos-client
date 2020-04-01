@@ -50,7 +50,8 @@ export default {
       let activeItemModifiers = []
       this.validateNumberOfItems()
       let itemQty = 0
-
+      // eslint-disable-next-line no-console
+      console.log(this.comboItemsList.combo_items, 'this.comboItemsList')
       // eslint-disable-next-line no-unused-vars
       for (let [key, value] of Object.entries(this.activeComboItems)) {
         value.map(activeItem => {
@@ -66,9 +67,10 @@ export default {
           } else {
             itemQty += 1
             activeItem.for_combo = this.for_combo
+            let item = this.updateItemPrice(activeItem)
             // eslint-disable-next-line no-console
-            console.log(activeItem, 'activeItem')
-            activeItemModifiers.push(activeItem)
+            console.log(activeItem, 'activeItem', item)
+            activeItemModifiers.push(item)
           }
         })
       }
@@ -104,6 +106,9 @@ export default {
     emptyComboSelection() {
       this.comboItem[this.comboItemsList] = false
       this.$store.commit('comboItems/ACTIVE_COMBO_ITEMS', false)
+    },
+    updateItemPrice(addedItem) {
+      return this.$store.getters['comboItems/updateItemPriceTax'](addedItem)
     },
   },
 }

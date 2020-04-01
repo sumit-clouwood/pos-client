@@ -1,4 +1,5 @@
 import * as mutation from './combo/mutation-types'
+import Num from '@/plugins/helpers/Num.js'
 
 const state = {
   comboItemsList: false,
@@ -48,6 +49,48 @@ const getters = {
       return state.selectedItemContainer.qty
     }
     return 1
+  },
+  getItemPrice: (state, getters, rootState) => item => {
+    let priceAvailability = item.price_availability
+    let storeId = rootState.context.storeId
+    let price = priceAvailability.stores.find(store => store.param === storeId)
+    // eslint-disable-next-line no-console
+    console.log(price, 'price')
+    return price.value || 0
+  },
+  setItemPrice: (state, getters) => addedItem => {
+    let itemPrice = 0
+    state.comboItemsList.combo_items.forEach(item => {
+      if (item.for_items.includes(addedItem._id)) {
+        let itemTotalPrice = getters.getItemPrice(item)
+        itemPrice = parseInt(itemTotalPrice) / item.qty
+        // eslint-disable-next-line no-console
+        // console.log(itemDividedPrice, 'itemTotalPrice', itemTotalPrice)
+        // return itemDividedPrice
+      }
+    })
+    return itemPrice
+  },
+  updateItemPriceTax: (state, getters, rootState, rootGetters) => item => {
+    item.value = getters.setItemPrice(item)
+    item.grossPrice = rootGetters['order/grossPrice'](item)
+    item.netPrice = rootGetters['order/netPrice'](item)
+    // item.grossPrice = rootGetters['order/itemGrossPrice'](item)
+    // item.netPrice = rootGetters['order/itemNetPrice'](item)
+    item.tax = Num.round(item.grossPrice - item.netPrice)
+    // eslint-disable-next-line no-console
+    console.log(item, 'updateItemPriceTax')
+    return item
+    /*activeItem.tax = this.$store
+      .dispatch(
+        'order/prepareItemTax',
+        {
+          item: activeItem,
+          type: null,
+        },
+        { root: true }
+      )
+      .then(item => item.tax)*/
   },
 }
 
