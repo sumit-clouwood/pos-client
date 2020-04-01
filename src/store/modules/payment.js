@@ -68,8 +68,7 @@ const actions = {
       if (!accumulator[key]) {
         accumulator[key] = []
       }
-      //Push only enabled payment types
-      if (currentmethod.item_status) accumulator[key].push(currentmethod)
+      accumulator[key].push(currentmethod)
       return accumulator
     }, {})
     commit(mutation.SET_GROUPED_METHODS, groupedMethods)
