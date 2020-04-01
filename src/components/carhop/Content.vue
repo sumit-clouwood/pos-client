@@ -63,8 +63,8 @@ export default {
 }
 </script>
 <style lang="scss">
-@import '../../assets/scss/variables.scss';
-@import '../../assets/scss/mixins.scss';
+@import '@/assets/scss/variables.scss';
+@import '@/assets/scss/mixins.scss';
 
 .orders {
   .carhop-running-orders-wrapper {
@@ -76,6 +76,11 @@ export default {
 
     .dropdown-menu.show {
       top: inherit !important;
+      @include responsive(mobile) {
+        top: 0px !important;
+        // right: 0px !important;
+        // left: auto !important;
+      }
     }
   }
 
@@ -89,6 +94,7 @@ export default {
     color: #fff;
     cursor: pointer;
     vertical-align: middle;
+    height: 100% !important;
     > svg {
       margin-right: $px2;
       vertical-align: middle;
@@ -113,6 +119,9 @@ export default {
     display: inline-block;
     padding: $px4 $px10;
     font-size: $px16;
+    @include responsive(mobile) {
+      font-size: 12px;
+    }
     line-height: 1.8;
   }
   .finished {
@@ -158,6 +167,6 @@ export default {
   width: 100%;
   padding-left: 0;
   padding-right: 0;
-  margin-right: 1em;
+  margin-right: 5px;
 }
 </style>

@@ -47,12 +47,18 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-danger" data-dismiss="modal">
-            {{ _t('Close') }}
-          </button>
-          <button type="button" class="btn btn-success" @click="setPassword()">
-            {{ _t('Submit') }}
-          </button>
+          <div class="btn-announce">
+            <button
+              type="button"
+              class="btn btn-success"
+              @click="setPassword()"
+            >
+              {{ _t('Submit') }}
+            </button>
+            <button type="button" class="btn btn-danger" data-dismiss="modal">
+              {{ _t('Close') }}
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -103,15 +109,13 @@ export default {
 }
 </script>
 
-<style lang="scss">
-@import '../../assets/scss/pixels_rem.scss';
-@import '../../assets/scss/variables.scss';
-@import '../../assets/scss/mixins.scss';
+<style lang="scss" scoped>
+@import '@/assets/scss/pixels_rem.scss';
+@import '@/assets/scss/variables.scss';
+@import '@/assets/scss/mixins.scss';
 
-#modificationReason {
+#supervisor-password {
   .modal-dialog {
-    /*margin: 0;*/
-
     .modal-content {
       .modal-header {
         height: 80px;
@@ -125,14 +129,14 @@ export default {
 }
 
 @include responsive(mobile) {
-  #modificationReason {
+  #supervisor-password {
+    position: fixed !important;
     .modal-dialog {
       .modal-content {
         .modal-header {
           box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
           border: none;
         }
-
         .modal-footer {
           padding: 20px;
           box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);

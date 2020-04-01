@@ -136,7 +136,7 @@
       .modal-dialog,
       .modal-header {
         @include responsive(mobile) {
-          max-width: 97%;
+          max-width: 100%;
         }
       }
       .modal-dialog {

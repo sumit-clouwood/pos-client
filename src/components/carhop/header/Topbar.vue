@@ -1,7 +1,7 @@
 <template>
   <div class="header-main-right color-dashboard-background">
     <template v-if="$route.name === 'userDetails'">
-      <h2 class="title">Your Profile</h2>
+      <h2 class="title">{{ _t('Your Profile') }}</h2>
     </template>
     <template v-else>
       <button

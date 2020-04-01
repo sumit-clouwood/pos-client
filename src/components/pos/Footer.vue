@@ -394,6 +394,12 @@
     <Invoice />
     <OrderDetailsPopup />
     <InformationPopup :responseInformation="this.message" :title="this.title" />
+    <DineInCoverSelection
+      v-if="brand.number_of_covers && covers && cartType !== 'hold'"
+    />
+    <DineInTableSelection
+      v-if="brand.move_table && availableTables && cartType !== 'hold'"
+    />
   </div>
 </template>
 
@@ -436,6 +442,8 @@ import WalkinBtn from './footer/buttons/cart/walkin'
 import CarhopBtn from './footer/buttons/cart/carhop'
 import openItemButton from '@/components/pos/openItem/button'
 import openItem from '@/components/pos/openItem/item'
+import DineInTableSelection from '@/components/dinein/cart/popup/DineInTableSelection'
+import DineInCoverSelection from '@/components/dinein/cart/popup/DineInCoverSelection.vue'
 
 import * as CONST from '@/constants'
 
@@ -482,6 +490,8 @@ export default {
     CarhopBtn,
     openItemButton,
     openItem,
+    DineInTableSelection,
+    DineInCoverSelection,
   },
   data() {
     return {
@@ -503,6 +513,7 @@ export default {
       'needSupervisorAccess',
     ]),
     ...mapState('location', ['brand']),
+    ...mapState('dinein', ['availableTables', 'covers']),
     ...mapState('sync', ['online']),
     ...mapGetters('location', ['formatPrice', '_t']),
 

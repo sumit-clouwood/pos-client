@@ -83,7 +83,9 @@
                       {{ created_date(orderData.startDate) }},
                       {{ created_time(orderData.startTime) }}
                     </div>
-                    <div class="order-details-with-action">
+                    <div
+                      class="order-details-with-action table-draw-order-details"
+                    >
                       <div
                         class="table-popup bg-success font-weight-bold"
                         @click="newOrder(orderData.reservationId, true)"
@@ -149,29 +151,31 @@
             {{ cancelReservationMsg }}
           </div>
           <div class="modal-footer">
-            <button
-              type="button"
-              id="confirm"
-              v-if="!moveReservation"
-              class="btn btn-success"
-              data-dismiss="modal"
-              @click="confirmCancelReservation()"
-            >
-              {{ _t('Ok') }}
-            </button>
-            <button
-              v-if="moveReservation"
-              type="button"
-              id="running_order"
-              class="btn btn-success"
-              data-dismiss="modal"
-              @click="moveRunningOrder()"
-            >
-              {{ _t('Running Orders') }}
-            </button>
-            <button type="button" class="btn btn-danger" data-dismiss="modal">
-              {{ _t('Close') }}
-            </button>
+            <div class="btn-announce">
+              <button
+                type="button"
+                id="confirm"
+                v-if="!moveReservation"
+                class="btn btn-success"
+                data-dismiss="modal"
+                @click="confirmCancelReservation()"
+              >
+                {{ _t('Ok') }}
+              </button>
+              <button
+                v-if="moveReservation"
+                type="button"
+                id="running_order"
+                class="btn btn-success"
+                data-dismiss="modal"
+                @click="moveRunningOrder()"
+              >
+                {{ _t('Running Orders') }}
+              </button>
+              <button type="button" class="btn btn-danger" data-dismiss="modal">
+                {{ _t('Close') }}
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -226,19 +230,21 @@
             >
               {{ _t('Place order') }}
             </button>-->
-            <button
-              type="button"
-              id="BookedTable"
-              class="btn btn-success"
-              data-dismiss="modal"
-              @click="newOrder(false, brand.book_table)"
-            >
-              {{ _t(addOrSplit) }}
-            </button>
+            <div class="btn-announce">
+              <button
+                type="button"
+                id="BookedTable"
+                class="btn btn-success"
+                data-dismiss="modal"
+                @click="newOrder(false, brand.book_table)"
+              >
+                {{ _t(addOrSplit) }}
+              </button>
 
-            <button type="button" class="btn btn-danger" data-dismiss="modal">
-              {{ _t('Close') }}
-            </button>
+              <button type="button" class="btn btn-danger" data-dismiss="modal">
+                {{ _t('Close') }}
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -1365,6 +1371,9 @@ export default {
 }
 </style>
 <style lang="scss" scoped>
+@import '@/assets/scss/header';
+@import '@/assets/scss/mixins.scss';
+
 .m-1 {
   &.buttons {
     span {
@@ -1375,11 +1384,35 @@ export default {
     }
   }
 }
+
+@include responsive(mobile) {
+  .modal .modal-dialog .modal-content {
+    width: 95% !important;
+  }
+  .modal-dialog {
+    margin-top: 2rem !important;
+  }
+  .modal-open .modal {
+    overflow: hidden !important;
+  }
+  .modal-footer {
+    .btn-announce {
+      display: grid !important;
+      grid-template-columns: 1fr !important;
+      width: 100% !important;
+      grid-row-gap: 10px !important;
+    }
+  }
+}
 </style>
 <style lang="scss">
+@import '@/assets/scss/mixins.scss';
 #switchWaiter {
   .modal-dialog {
     max-width: 60% !important;
+    @include responsive(mobile) {
+      max-width: 90% !important;
+    }
   }
 }
 </style>

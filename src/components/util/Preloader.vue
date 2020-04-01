@@ -16,9 +16,9 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-@import '../../assets/scss/pixels_rem.scss';
-@import '../../assets/scss/variables.scss';
-@import '../../assets/scss/mixins.scss';
+@import '@/assets/scss/pixels_rem.scss';
+@import '@/assets/scss/variables.scss';
+@import '@/assets/scss/mixins.scss';
 
 .preloader {
   text-align: center;

@@ -1,13 +1,15 @@
 <template>
   <div
-    class="POSItemOptions_quantity color-dashboard-background quantity-component"
+    class="POSItemOptions_quantity color-dashboard-background quantity-wrapper pos-quantity-wrapper quantity-component"
   >
-    <label class="POSItemOptions_label color-text-invert lbl-quantity">
-      {{ _t('Quantity') }}
-    </label>
-    <div class="POSItemOptions_quantity_wrapper inputs-wrapper">
-      <template v-if="show">
-        <div class="POSItemOptions_quantity_inputs">
+    <label class="POSItemOptions_label color-text-invert lbl-quantity">{{
+      _t('Quantity')
+    }}</label>
+    <div
+      class="POSItemOptions_quantity_wrapper postItem-wrapper inputs-wrapper"
+    >
+      <template v-if="show()">
+        <div class="POSItemOptions_quantity_inputs item-count-wrapper">
           <button
             class="qtyminus value-qty color-text-invert"
             @click="updateFormQuantity('-')"
@@ -30,7 +32,7 @@
         </div>
         <div class="POSItemOptions_quantity_submit btn-set-quantity">
           <button @click="updateItemQty()" class="color-main color-text-invert">
-            <img src="img/pos/right.png" alt="check" /> Set Quantity
+            <img src="img/pos/right.png" alt="check" /> {{ _t('Set Quantity') }}
           </button>
         </div>
       </template>
@@ -106,6 +108,8 @@ export default {
 }
 </style>
 <style lang="scss" scoped>
+@import '@/assets/scss/header';
+@import '@/assets/scss/mixins.scss';
 .POSItemOptions
   .modal-dialog
   .modal-content
@@ -118,6 +122,42 @@ export default {
     justify-content: space-between;
     .POSItemOptions_quantity_submit {
       margin-left: 1em;
+    }
+  }
+}
+
+@include responsive(mobile) {
+  .POSItemOptions_quantity_inputs {
+    width: 50px !important;
+  }
+  .quantity-wrapper {
+    position: relative !important;
+    display: flex !important;
+    left: 0 !important;
+    right: 0 !important;
+    padding-left: 8px !important;
+  }
+
+  .item-count-wrapper {
+    margin-left: 1rem;
+    margin-right: 1rem;
+  }
+  .postItem-wrapper {
+    flex-flow: nowrap !important;
+  }
+
+  .POSItemOptions_quantity {
+    display: grid !important;
+    grid-template-columns: 2fr 2fr 2fr;
+    padding: 4px;
+  }
+  .pos-quantity-wrapper {
+    display: flex !important;
+  }
+  .POSItemOptions_quantity_submit {
+    @include responsive(mobile) {
+      width: 7.75rem !important;
+      font-size: 1rem !important;
     }
   }
 }

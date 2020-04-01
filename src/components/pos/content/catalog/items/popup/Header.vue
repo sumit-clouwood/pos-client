@@ -24,3 +24,12 @@ export default {
   },
 }
 </script>
+
+<style lang="scss">
+@import '@/assets/scss/mixins.scss';
+@include responsive(mobile) {
+  .modal-header {
+    background-color: #d7dce2;
+  }
+}
+</style>

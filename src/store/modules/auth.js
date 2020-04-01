@@ -230,6 +230,61 @@ const actions = {
       }
     })
   },
+  changePassword({ state, commit }, data) {
+    return new Promise((resolve, reject) => {
+      DataService.post(
+        `/model/users/id/${state.userDetails.item._id}/change_pass_action_self`,
+        data,
+        false
+      )
+        .then(resp => {
+          if (resp.data.form_errors) {
+            reject(resp.data.form_errors)
+          }
+
+          AuthService.userDetails(state.userDetails.item._id)
+            .then(response => {
+              commit(mutation.USER_DETAILS, response.data)
+              resolve(response)
+            })
+            .catch(error => reject(error))
+        })
+        .catch(error => reject(error))
+    })
+  },
+  changeNameEmail({ state, commit }, data) {
+    return new Promise((resolve, reject) => {
+      DataService.post(
+        `/model/users/id/${state.userDetails.item._id}/change_name_email_action_self`,
+        data,
+        false
+      )
+        .then(resp => {
+          if (resp.data.form_errors) {
+            reject(resp.data.form_errors)
+          }
+
+          AuthService.userDetails(state.userDetails.item._id)
+            .then(response => {
+              commit(mutation.USER_DETAILS, response.data)
+              resolve(response)
+            })
+            .catch(error => reject(error))
+        })
+        .catch(error => reject(error))
+    })
+  },
+  changeAvatar({ state }, data) {
+    return new Promise((resolve, reject) => {
+      DataService.post(
+        `/model/users/id/${state.userDetails.item._id}/change_avatar_self`,
+        data,
+        false
+      )
+        .then(response => resolve(response))
+        .catch(error => reject(error))
+    })
+  },
   logout({ commit }, msg) {
     return new Promise(resolve => {
       localStorage.setItem('token', '')

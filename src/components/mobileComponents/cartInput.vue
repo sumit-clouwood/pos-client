@@ -88,8 +88,8 @@ export default {
 </script>
 
 <style lang="scss">
-@import '../../assets/scss/variables.scss';
-@import '../../assets/scss/mixins.scss';
+@import '@/assets/scss/variables.scss';
+@import '@/assets/scss/mixins.scss';
 
 .cart-input {
   position: fixed;

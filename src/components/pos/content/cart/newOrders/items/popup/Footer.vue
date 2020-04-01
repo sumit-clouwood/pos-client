@@ -1,11 +1,11 @@
 <template>
   <div class="modal-footer">
     <div class="btn-announce">
+      <ModifyItemModifiersButton v-if="show('modifiers')" />
       <note-button v-if="show('note')"></note-button>
       <DiscountButton v-if="show('discount')" />
       <!-- <RemoveDiscountButton /> -->
       <RemoveTaxButton v-if="show('removeTax')" />
-      <ModifyItemModifiersButton v-if="show('modifiers')" />
       <button v-else type="button" class="btn btn-danger" data-dismiss="modal">
         {{ _t('Close') }}
       </button>

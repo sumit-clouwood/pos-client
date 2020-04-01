@@ -50,7 +50,7 @@
                       "
                     >
                       <span class="select-driver-caption assign_driver">
-                        Select driver
+                        {{ _t('Select driver') }}
                       </span>
                     </span>
                     <button
@@ -114,10 +114,19 @@
                 </div>
               </div>
               <div class="order-footer">
-                <p class="color-text">
-                  <!--<span class="timeago elapsedTime delManTime" title=""></span>-->
+                <!--<span class="timeago elapsedTime delManTime" title=""></span>-->
+
+                <div class="runningtimes">
+                  <div class="order-address" v-if="order.order_building">
+                    <div class="order-delivery-area">
+                      {{ order.order_flat_number }}, {{ order.order_building }},
+                      {{ order.order_street }},
+                      {{ order.order_city }}
+                    </div>
+                  </div>
                   <span
-                    class="customtime left"
+                    style="font-size: 0.9rem; justify-content:center;"
+                    v-else
                     :id="
                       'createdOrder-' +
                         convertDatetime(
@@ -126,27 +135,17 @@
                           'YYYY-MM-DD HH:mm:ss'
                         )
                     "
-                    style="display: none"
-                  ></span>
-                  <input
-                    type="hidden"
-                    id="storerunningtime"
-                    :value="
-                      convertDatetime(
-                        order.real_created_datetime,
-                        timezoneString,
-                        'YYYY-MM-DD HH:mm:ss'
+                    >{{
+                      orderTimer(
+                        convertDatetime(
+                          order.real_created_datetime,
+                          timezoneString,
+                          'YYYY-MM-DD HH:mm:ss'
+                        ),
+                        timezoneString
                       )
-                    "
-                  />
-                </p>
-                <div class="runningtimes">
-                  <div class="order-delivery-area"></div>
-                  <div class="order-address">
-                    {{ order.order_flat_number }}, {{ order.order_building }},
-                    {{ order.order_street }},
-                    {{ order.order_city }}
-                  </div>
+                    }}</span
+                  >
                 </div>
               </div>
             </div>
@@ -169,6 +168,7 @@ export default {
   data() {
     return {
       orderCount: 2,
+      dateTime: '',
     }
   },
   props: {
@@ -186,9 +186,22 @@ export default {
     }),
     ...mapGetters('deliveryManager', ['orders']),
   },
+  updated() {
+    clearInterval(this.orderTime)
+  },
+  destroyed() {
+    clearInterval(this.orderTime)
+  },
   methods: {
     ...mapActions('deliveryManager', ['showOrderDetails']),
     ...mapActions('order', ['selectedOrderDetails', 'updateOrderAction']),
   },
 }
 </script>
+
+<style lang="scss" scoped>
+.order-delivery-area {
+  width: 95% !important;
+  margin: auto;
+}
+</style>
