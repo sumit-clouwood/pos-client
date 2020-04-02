@@ -12,8 +12,7 @@
             </div>
           </div>
           <div class="button-block">
-            <div class="top-menu-container">
-            </div>
+            <div class="top-menu-container"></div>
           </div>
           <div class="header-content-display">
             <div class="change-location btns-wrapper">
