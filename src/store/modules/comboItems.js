@@ -70,11 +70,13 @@ const getters = {
     let price = priceAvailability.stores.find(
       store => store.param === currentStore._id
     )
+    //If item price not found in stores, then check in countries
     if (!price) {
       price = priceAvailability.countries.find(
         store => store.param === currentStore.country
       )
     }
+    //TODO: Find item price from city as wells
     return price ? price.value : 0
   },
   setItemPrice: (state, getters) => addedItem => {
