@@ -24,5 +24,12 @@ export default {
       this.errorMessage = errorMessage
     },
   },
+  mounted() {
+    setTimeout(() => {
+      // eslint-disable-next-line no-console
+      console.log('called')
+      this.errorMessage = false
+    }, 5000)
+  },
 }
 </script>
