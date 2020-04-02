@@ -7,7 +7,7 @@ export default {
   data() {
     return {
       currentPage: 1,
-      currentSlide: 0,
+      currentSlide: 'cash',
       positionX: 0,
       dragging: false,
       dragX: '',
