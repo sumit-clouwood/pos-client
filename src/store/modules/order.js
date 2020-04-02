@@ -642,7 +642,7 @@ const actions = {
         })
 
         commit(mutation.ADD_MODIFIERS_DATA_TO_ITEM, modifierData)
-
+        const limitOfCombo = rootGetters['comboItems/limitOfSelectingItems']
         if (!item.editMode) {
           let quantity = 0
           //coming through hold orders
@@ -652,7 +652,16 @@ const actions = {
           if (!quantity) {
             quantity = rootState.orderForm.quantity || 1
           }
-          commit(mutation.SET_QUANTITY, quantity)
+          if (!rootState.comboItems.comboItemsList) {
+            commit(mutation.SET_QUANTITY, quantity)
+          } else {
+            if (quantity <= limitOfCombo) {
+              commit(mutation.SET_QUANTITY, quantity)
+            } else {
+              reject(`Item quantity can't be greater than ${limitOfCombo}`)
+              return false
+            }
+          }
           if (!rootState.comboItems.comboItemsList) {
             commit(mutation.ADD_ORDER_ITEM_WITH_MODIFIERS, state.item)
           } else {
@@ -664,7 +673,17 @@ const actions = {
           //as we are creating new item and attached modifiers again so its better to just
           //replace that item in state with existing item
 
-          const quantity = rootState.orderForm.quantity || 1
+          let quantity = rootState.orderForm.quantity || 1
+          if (!rootState.comboItems.comboItemsList) {
+            commit(mutation.SET_QUANTITY, quantity)
+          } else {
+            if (quantity <= limitOfCombo) {
+              commit(mutation.SET_QUANTITY, quantity)
+            } else {
+              reject(`Item quantity can't be greater than ${limitOfCombo}`)
+              return false
+            }
+          }
           commit(mutation.SET_QUANTITY, quantity)
 
           commit(mutation.REPLACE_ORDER_ITEM, {
