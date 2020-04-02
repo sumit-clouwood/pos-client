@@ -485,6 +485,8 @@ const actions = {
           note: item.note,
           originalItem: item,
           kitchen_invoice: item['kitchen_invoice'],
+          type: 'regular',
+          for_combo: false,
         }
         //add store id with item if available
         if (item.store_id) {
