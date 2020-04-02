@@ -66,9 +66,16 @@ const getters = {
   },
   getItemPrice: (state, getters, rootState) => item => {
     let priceAvailability = item.price_availability
-    let storeId = rootState.context.storeId
-    let price = priceAvailability.stores.find(store => store.param === storeId)
-    return price.value || 0
+    let currentStore = rootState.location.store
+    let price = priceAvailability.stores.find(
+      store => store.param === currentStore._id
+    )
+    if (!price) {
+      price = priceAvailability.countries.find(
+        store => store.param === currentStore.country
+      )
+    }
+    return price ? price.value : 0
   },
   setItemPrice: (state, getters) => addedItem => {
     let itemPrice = 0

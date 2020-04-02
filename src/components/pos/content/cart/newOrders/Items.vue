@@ -12,11 +12,11 @@
         </div>
 
         <div class="main-orders-list-item-title color-text">
-          <div class="orders-name">
+          <div :class="'orders-name' + item.orderIndex">
             <button
               v-if="item.item_type === CONST.COMBO_ITEM_TYPE"
               class="toggle_btn"
-              @click="showCombo()"
+              @click="showCombo(item.orderIndex)"
             >
               <i class="fa fa-chevron-down" aria-hidden="true"></i>
             </button>
@@ -40,7 +40,7 @@
           <div v-html="formatItemDiscount(item)"></div>
         </div>
         <div
-          id="sub_dsc"
+          :id="'sub_dsc' + item.orderIndex"
           class="sub_container"
           v-if="item.item_type === CONST.COMBO_ITEM_TYPE"
         >
@@ -194,21 +194,16 @@ export default {
   methods: {
     ...mapActions('category', ['getItems']),
     ...mapActions('order', ['removeFromOrder', 'setActiveItem']),
-    showCombo() {
-      $('#sub_dsc').slideToggle(200)._id
-      //      $('i', this).toggleClass('fa fa fa-chevron-down fa-chevron-right ')
-      $('.orders-name i').toggleClass('fa fa fa-chevron-down fa-chevron-right ')
+    showCombo(orderIndex) {
+      let idSelector = '#sub_dsc' + orderIndex
+      let classSelector = '.orders-name' + orderIndex
+
+      $(`${idSelector}`).slideToggle(200)
+      $(`${classSelector} i`).toggleClass(
+        'fa fa fa-chevron-down fa-chevron-right '
+      )
     },
     removeCurrentOrder(param) {
-      // if (this.selectedOrder || this.orderId) {
-      //   if (
-      //     (this.orderType == 'carhop' || this.orderType.OTApi === 'carhop') &&
-      //     this.selectedOrder.item.order_status == 'in-progress' &&
-      //     !this.allowed(this.PERMS.MODIFY_ORDER)
-      //   ) {
-      //     return
-      //   }
-      // }
       this.removeFromOrder(param)
       if (!this.items.length) {
         this.$store.dispatch('mainOrdersHendlerChange')
