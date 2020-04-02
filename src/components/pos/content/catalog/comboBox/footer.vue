@@ -34,13 +34,13 @@ export default {
       'comboItemsList',
       'activeComboItems',
       'setModifiersItem',
+      'forCombo',
     ]),
   },
   mixins: [Cart],
   data() {
     return {
       comboItem: [],
-      for_combo: 1,
       totalItemQty: 0,
       error: false,
     }
@@ -59,7 +59,6 @@ export default {
             mItem => mItem._id === activeItem._id
           )
           if (activeChecker) {
-            activeChecker.for_combo = this.for_combo
             itemQty += parseInt(activeChecker.quantity)
             // eslint-disable-next-line no-console
             console.log(activeChecker, 'activeChecker')
@@ -67,7 +66,6 @@ export default {
             activeItemModifiers.push(item)
           } else {
             itemQty += 1
-            activeItem.for_combo = this.for_combo
             // eslint-disable-next-line no-console
             console.log(activeItem, 'activeItem', item)
             let item = this.updateItemPrice(activeItem)
@@ -88,13 +86,12 @@ export default {
         let item = {
           ...this.comboItemsList,
           combo_selected_items: activeItemModifiers,
-          for_combo: this.for_combo,
+          for_combo: this.forCombo,
         }
         // eslint-disable-next-line no-console
         console.log(activeItemModifiers, 'filtered data')
         this.itemsAddToCart(item)
         this.$store.commit('comboItems/ACTIVE_COMBO_ITEMS', {}, { root: true })
-        this.for_combo++
         hideModal('#combox-box-popup')
       }
     },
@@ -110,6 +107,11 @@ export default {
     },
     updateItemPrice(addedItem) {
       this.$store.dispatch('comboItems/updateOrderIndex')
+      let totalItemInCart =
+        parseInt(this.$store.getters['order/orderIndex']) || 1
+      this.$store.commit('comboItems/SET_FOR_COMBO', totalItemInCart, {
+        root: true,
+      })
       return this.$store.getters['comboItems/updateItemPriceTax'](addedItem)
     },
   },

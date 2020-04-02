@@ -55,7 +55,7 @@ const getters = {
     }
 
     order.items.forEach(item => {
-      if (!item.for_combo) {
+      if (item.for_combo === false) {
         data.subTotal += Num.round(Num.round(item.price) * Num.round(item.qty))
         data.totalTax += Num.round(Num.round(item.tax) * Num.round(item.qty))
       }
@@ -1736,6 +1736,7 @@ const actions = {
     dispatch('surcharge/reset', {}, { root: true })
     if (full && getters.complete) {
       dispatch('order/reset', {}, { root: true })
+      dispatch('comboItems/reset', {}, { root: true })
       dispatch('customer/reset', true, { root: true })
       dispatch('location/reset', {}, { root: true })
     }
