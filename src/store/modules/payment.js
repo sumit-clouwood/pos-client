@@ -16,7 +16,7 @@ const getters = {
   },
   cash: state => {
     let method = ''
-    if (state.methods.length) {
+    if (state.methods) {
       method = Object.entries(state.methods).find(
         method => method[0] === CONST.CASH
       )
