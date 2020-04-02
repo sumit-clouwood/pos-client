@@ -8,6 +8,7 @@ const state = {
   errorMessage: '',
   activeComboItems: {},
   setModifiersItem: [],
+  orderIndex: 0,
 }
 
 const actions = {
@@ -34,6 +35,10 @@ const actions = {
       commit(mutation.SET_MODIFIERS, item)
       resolve()
     })
+  },
+  updateOrderIndex({ commit, rootGetters, state }) {
+    let orderIndex = rootGetters['order/orderIndex'] + state.orderIndex
+    commit(mutation.SET_ORDER_INDEX, orderIndex)
   },
 }
 
@@ -72,7 +77,10 @@ const getters = {
     return itemPrice
   },
   updateItemPriceTax: (state, getters, rootState, rootGetters) => item => {
-    item.value = getters.setItemPrice(item)
+    let qty = item.quantity || 1
+    item.orderIndex = state.orderIndex
+    item.tax_sum = state.comboItemsList.tax_sum
+    item.value = parseInt(getters.setItemPrice(item)) * qty
     item.grossPrice = rootGetters['order/grossPrice'](item)
     item.netPrice = rootGetters['order/netPrice'](item)
     // item.grossPrice = rootGetters['order/itemGrossPrice'](item)
@@ -114,6 +122,9 @@ const mutations = {
   },
   [mutation.SET_MODIFIERS](state, setModifiersItem) {
     state.setModifiersItem.push({ ...setModifiersItem })
+  },
+  [mutation.SET_ORDER_INDEX](state, orderIndex) {
+    state.orderIndex = orderIndex + 1
   },
 }
 

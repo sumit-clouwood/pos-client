@@ -55,8 +55,10 @@ const getters = {
     }
 
     order.items.forEach(item => {
-      data.subTotal += Num.round(Num.round(item.price) * Num.round(item.qty))
-      data.totalTax += Num.round(Num.round(item.tax) * Num.round(item.qty))
+      if (!item.for_combo) {
+        data.subTotal += Num.round(Num.round(item.price) * Num.round(item.qty))
+        data.totalTax += Num.round(Num.round(item.tax) * Num.round(item.qty))
+      }
     })
 
     order.item_modifiers.forEach(modifier => {
@@ -453,7 +455,7 @@ const actions = {
         forCombo = oitem.for_combo
         // eslint-disable-next-line no-console
         console.log(oitem, 'oitem,')
-        dispatch('orderItemPayload', { order, oitem, action, forCombo })
+        dispatch('orderItemPayload', { order, oitem, action })
         oitem.combo_selected_items.forEach(oitem => {
           dispatch('orderItemPayload', { order, oitem, action, forCombo })
         })

@@ -63,13 +63,14 @@ export default {
             itemQty += parseInt(activeChecker.quantity)
             // eslint-disable-next-line no-console
             console.log(activeChecker, 'activeChecker')
-            activeItemModifiers.push(activeChecker)
+            let item = this.updateItemPrice(activeChecker)
+            activeItemModifiers.push(item)
           } else {
             itemQty += 1
             activeItem.for_combo = this.for_combo
-            let item = this.updateItemPrice(activeItem)
             // eslint-disable-next-line no-console
             console.log(activeItem, 'activeItem', item)
+            let item = this.updateItemPrice(activeItem)
             activeItemModifiers.push(item)
           }
         })
@@ -108,6 +109,7 @@ export default {
       this.$store.commit('comboItems/ACTIVE_COMBO_ITEMS', false)
     },
     updateItemPrice(addedItem) {
+      this.$store.dispatch('comboItems/updateOrderIndex')
       return this.$store.getters['comboItems/updateItemPriceTax'](addedItem)
     },
   },
