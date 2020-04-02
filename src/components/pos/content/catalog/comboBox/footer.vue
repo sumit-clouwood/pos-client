@@ -107,11 +107,15 @@ export default {
     },
     updateItemPrice(addedItem) {
       this.$store.dispatch('comboItems/updateOrderIndex')
-      let totalItemInCart =
-        parseInt(this.$store.getters['order/orderIndex']) || 1
-      this.$store.commit('comboItems/SET_FOR_COMBO', totalItemInCart, {
-        root: true,
-      })
+      /*let totalItemInCart =
+        parseInt(this.$store.getters['order/orderIndex']) || 1*/
+      this.$store.commit(
+        'comboItems/SET_FOR_COMBO',
+        this.$store.getters['order/orderIndex'],
+        {
+          root: true,
+        }
+      )
       return this.$store.getters['comboItems/updateItemPriceTax'](addedItem)
     },
   },

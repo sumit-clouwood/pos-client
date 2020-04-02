@@ -130,11 +130,12 @@ const mutations = {
     state.orderIndex = orderIndex + 1
   },
   [mutation.SET_FOR_COMBO](state, comboItemIndex) {
-    state.forCombo = comboItemIndex
+    state.forCombo = comboItemIndex || 1
     // state.forCombo = state.forCombo + 1
   },
   [mutation.RESET](state) {
-    state.forCombo = 1
+    state.forCombo = 0
+    state.orderIndex = 0
   },
 }
 
