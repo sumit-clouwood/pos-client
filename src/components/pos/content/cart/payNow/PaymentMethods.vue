@@ -34,11 +34,7 @@ export default {
   watch: {
     forceCash(newVal) {
       if (newVal) {
-        this.$refs.paymentmethods.setActive(
-          Object.entries(this.methods).findIndex(
-            method => method.name === 'Cash'
-          )
-        )
+        this.$refs.paymentmethods.setActive(CONSTANTS.CASH)
         this.$store.commit('checkoutForm/forceCash', false)
       }
     },
