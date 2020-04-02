@@ -579,15 +579,27 @@ export default {
       }
 
       return orderEntities.map(entity => {
-        data.forEach(item => {
-          if (entity[key] === item[map]) {
-            keysToLoad.forEach(index => {
-              if (item[index]) {
-                entity[index] = item[index]
-              }
-            })
-          }
-        })
+        if (data instanceof Array) {
+          data.forEach(item => {
+            if (entity[key] === item[map]) {
+              keysToLoad.forEach(index => {
+                if (item[index]) {
+                  entity[index] = item[index]
+                }
+              })
+            }
+          })
+        } else {
+          Object.entries(data).forEach(item => {
+            if (entity[key] === item[map]) {
+              keysToLoad.forEach(index => {
+                if (item[index]) {
+                  entity[index] = item[index]
+                }
+              })
+            }
+          })
+        }
         return entity
       })
     },

@@ -6,37 +6,30 @@ import * as CONST from '@/constants'
 const state = {
   methods: {},
   appInvoiceData: {},
-  groupedMethods: {},
   aggregatorGroups: [],
 }
 
 // getters
 const getters = {
   methods: state => {
-    return state.methods.data ? state.methods.data : []
+    return state.methods ? state.methods : []
   },
   cash: state => {
     let method = ''
-    if (state.groupedMethods) {
-      method = Object.entries(state.groupedMethods).find(
-        method => method[0] === 'cash'
+    if (state.methods.length) {
+      method = Object.entries(state.methods).find(
+        method => method[0] === CONST.CASH
       )
       return method[1][0]
     }
-    if (typeof state.methods.data != 'undefined') {
-      method = state.methods.data.find(method => method.type === 'cash')
-      if (!method) {
-        method = state.methods.data.find(method => method.name.match(/cash/i))
-      }
-    }
-    return method
+    return []
   },
 
   getImages: (state, getters) => {
     //for caching
     let images = []
 
-    getters.methods.forEach(method => {
+    Object.entries(getters.methods).forEach(method => {
       images.push(method.icon)
     })
 
@@ -108,42 +101,30 @@ const actions = {
   async fetchAll({ rootGetters, commit, getters }) {
     const paymentMethods = await PaymentService.fetchMethods()
     let payMethod = paymentMethods.data.data
-    let methods = []
-    let groupedMethods = payMethod.reduce((accumulator, currentmethod) => {
+    let methods = payMethod.reduce((accumulator, currentmethod) => {
       const key = currentmethod['type']
       if (!accumulator[key]) {
         accumulator[key] = []
       }
-      accumulator[key].push(currentmethod)
+      if (currentmethod.type === CONST.MODULE_LOYALTY) {
+        if (rootGetters['modules/enabled'](CONST.MODULE_LOYALTY)) {
+          accumulator[key].push(currentmethod)
+        }
+      } else if (currentmethod.type === CONST.MODULE_GIFT_CARDS) {
+        if (rootGetters['modules/enabled'](CONST.MODULE_GIFT_CARDS)) {
+          accumulator[key].push(currentmethod)
+        }
+      } else {
+        accumulator[key].push(currentmethod)
+      }
       return accumulator
     }, {})
-    let aggregateMethods = getAggregatorMethods(groupedMethods['aggregator'])
-    groupedMethods['aggregator'] = [aggregateMethods['aggregateMethods']]
-    commit(mutation.SET_AGGREGATE_GROUPS, aggregateMethods['groups'])
-    commit(mutation.SET_GROUPED_METHODS, groupedMethods)
-    paymentMethods.data.data.forEach(method => {
-      if (method.item_status) {
-        switch (method.type) {
-          case CONST.GIFT_CARD:
-            if (rootGetters['modules/enabled'](CONST.MODULE_GIFT_CARDS)) {
-              methods.push(method)
-            }
-            break
-          case CONST.LOYALTY:
-            if (rootGetters['modules/enabled'](CONST.MODULE_LOYALTY)) {
-              methods.push(method)
-            }
-            break
+    let aggregateMethods = getAggregatorMethods(methods[CONST.AGGREGATOR])
+    methods[CONST.AGGREGATOR] = [aggregateMethods['aggregateMethods']]
 
-          default:
-            methods.push(method)
-        }
-        paymentMethods.data = methods
-        commit(mutation.SET_METHODS, paymentMethods)
-        //commit('checkoutForm/setMethod', state.methods.data[0], { root: true })
-        commit('checkoutForm/setMethod', getters.cash, { root: true })
-      }
-    })
+    commit(mutation.SET_AGGREGATE_GROUPS, aggregateMethods['groups'])
+    commit(mutation.SET_METHODS, methods)
+    commit('checkoutForm/setMethod', getters.cash, { root: true })
   },
   setTranslations({ commit, rootState }) {
     let allItems = []
@@ -194,9 +175,6 @@ const mutations = {
   },
   [mutation.RESET](state) {
     state.methods = {}
-  },
-  [mutation.SET_GROUPED_METHODS](state, groupedMethods) {
-    state.groupedMethods = groupedMethods
   },
   [mutation.SET_AGGREGATE_GROUPS](state, aggregatorGroups) {
     state.aggregatorGroups = aggregatorGroups

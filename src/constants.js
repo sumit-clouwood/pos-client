@@ -31,6 +31,8 @@ export const ORDER_SYSTEM_STATUS_MODIFIED = 'modified'
 
 export const LOYALTY = 'loyalty'
 export const GIFT_CARD = 'gift_card'
+export const AGGREGATOR = 'aggregator'
+export const CASH = 'cash'
 
 /* MODULE RELATED CONSTENTS */
 
