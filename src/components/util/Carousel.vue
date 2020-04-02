@@ -1,5 +1,9 @@
 <template>
-  <div class="carousel-container" ref="carousel" v-if="!show">
+  <div
+    class="carousel-container"
+    ref="carousel"
+    v-if="!show && !showAggregator"
+  >
     <div class="carousel">
       <transition name="slider">
         <ul
@@ -8,15 +12,15 @@
           @mousemove="doDrag"
           @mouseup="stopDrag"
         >
-          <template v-if="!groupedMethods">
+          <template>
             <li
-              v-for="(slide, key) in slides"
-              :key="key"
-              :class="{ active: key == currentSlide }"
+              v-if="
+                selectedValue.length && selectedValue[0].type === 'aggregator'
+              "
               :style="{
                 width: slideWidth + 'px',
               }"
-              @click.stop="selectSlide({ index: key, slide: slide })"
+              @click="close()"
             >
               <div
                 class="slide"
@@ -24,19 +28,37 @@
                   width: slideWidth - 10 + 'px',
                 }"
               >
-                <img :src="slide.icon" />
-                <label class="shorten-sentence" :title="slide.name">
-                  {{ slide.name }}
+                <img src="img/icons/backarrow.svg" />
+                <label class="shorten-sentence" title="Back">
+                  Back
                 </label>
               </div>
             </li>
-          </template>
-          <template v-else>
-            <template
-              v-for="[currentKey, value] of Object.entries(groupedMethods)"
-            >
+            <template v-for="[currentKey, value] of Object.entries(slides)">
               <li
-                v-if="value.length === 1"
+                v-if="currentKey === 'aggregator'"
+                :key="currentKey"
+                :class="{ active: currentKey == currentSlide }"
+                :style="{
+                  width: slideWidth + 'px',
+                }"
+              >
+                <div
+                  class="slide"
+                  :style="{
+                    width: slideWidth - 10 + 'px',
+                  }"
+                  @click="reCallSelf({ showAggregator, value })"
+                >
+                  <img :src="imagePath(currentKey, value)" />
+                  <label class="shorten-sentence" :title="currentKey">
+                    {{ currentKey }}
+                  </label>
+                </div>
+              </li>
+
+              <li
+                v-else-if="value.length === 1"
                 :key="currentKey"
                 :class="{ active: currentKey == currentSlide }"
                 :style="{
@@ -73,7 +95,13 @@
                   }"
                   @click="showChildSlides({ show, value, currentKey })"
                 >
-                  <img :src="imagePath(currentKey)" />
+                  <img
+                    :src="
+                      value[0].type != 'aggregator'
+                        ? imagePath(currentKey)
+                        : fetchImage(value[0])
+                    "
+                  />
                   <label class="shorten-sentence" :title="currentKey">
                     {{ currentKey }}
                   </label>
@@ -98,6 +126,14 @@
       </ul>
     </div>
   </div>
+  <carousel
+    v-else-if="!show && showAggregator"
+    ref="paymentmethods"
+    :slides="aggregatorValues"
+    :perPage="4"
+    :width="456"
+    @click="selectSlide"
+  ></carousel>
   <child-slider
     v-else
     ref="paymentmethods"
@@ -110,43 +146,22 @@
   ></child-slider>
 </template>
 <script>
-import { mapState } from 'vuex'
 import ChildSlider from './carousel/ChildSlider'
+import PaymentMethodsMixin from '@/mixins/PaymentMethods'
 export default {
   name: 'Carousel',
+  mixins: [PaymentMethodsMixin],
   components: {
     ChildSlider,
   },
-  props: {
-    slides: [Array, Object],
-    perPage: Number,
-    width: Number,
-  },
   data() {
     return {
-      currentPage: 1,
-      currentSlide: 0,
-      positionX: 0,
-      dragging: false,
-      dragX: '',
-      dragY: '',
       show: false,
       selectedValue: [],
       currentKey: '',
+      showAggregator: false,
+      aggregatorValues: {},
     }
-  },
-  computed: {
-    totalPages() {
-      if (this.groupedMethods) {
-        let totalLength = Object.keys(this.groupedMethods).length || 6
-        return Math.ceil(totalLength / this.perPage)
-      }
-      return Math.ceil(this.slides.length / this.perPage)
-    },
-    slideWidth() {
-      return this.width / this.perPage
-    },
-    ...mapState('payment', ['groupedMethods']),
   },
   methods: {
     imagePath(key) {
@@ -154,6 +169,7 @@ export default {
     },
     showChildSlides(payLoad) {
       this.show = !payLoad.show
+      this.showAggregator = false
       this.selectedValue = payLoad.value
       this.currentKey = payLoad.currentKey
     },
@@ -162,166 +178,130 @@ export default {
       this.currentSlide = index
       this.$emit('click', { index: index, slide: slide })
       this.show = false
+      this.showAggregator = false
     },
-    setActive(index) {
-      this.currentSlide = index
-      if (index < this.perPage) {
-        //move to slide one
-        this.movePage(1)
-      }
+    fetchImage(method) {
+      return this.$store.getters['payment/findAggregateGroup'](
+        method.payment_type_group
+      )['icon']
     },
-    movePage(page) {
-      let toMove = (page - 1) * this.perPage * this.slideWidth
-      if (page == this.totalPages) {
-        let slidesToAdjust = 0
-        if (this.groupedMethods) {
-          slidesToAdjust =
-            Object.keys(this.groupedMethods).length % this.perPage
-        } else {
-          slidesToAdjust = this.slides.length % this.perPage
-        }
-        if (slidesToAdjust > 0) {
-          //that means last page has less slides than no of per page
-          const missingSlies = this.perPage - slidesToAdjust
-          toMove -= missingSlies * this.slideWidth
-        }
-      }
-
-      this.positionX = -toMove
-      this.currentPage = page
+    reCallSelf(payLoad) {
       this.show = false
+      this.showAggregator = true
+      this.aggregatorValues = payLoad.value[0]
     },
-    startDrag(event) {
-      event = event || window.event
-      event.preventDefault()
-      this.dragging = true
-      this.x = this.y = 0
-    },
-    stopDrag(event) {
-      event = event || window.event
-      event.preventDefault()
-      this.dragging = false
-      this.x = this.y = ''
-      document.onmouseup = null
-      document.onmousemove = null
-    },
-    doDrag(event) {
-      event = event || window.event
-      event.preventDefault()
-      if (this.dragging) {
-        if (event.clientX > this.x) {
-          //drag to right
-          if (this.currentPage - 1 >= 1) {
-            this.movePage(this.currentPage - 1)
-          }
-        } else if (event.clientX < this.x) {
-          //drag to left
-          if (this.currentPage + 1 <= this.totalPages) {
-            this.movePage(this.currentPage + 1)
-          }
-        }
-        this.x = event.clientX
-        this.y = event.clientY
-      }
+    close() {
+      this.currentSlide = ''
+      this.$emit('click', { index: '', slide: {} })
+      this.show = false
+      this.showAggregator = false
     },
   },
 }
 </script>
-<style lang="sass" scoped>
-.carousel-container
-  .carousel
-    transform: translate3d(0, 0, 0)
-    position: relative
-    display: block
-    overflow: hidden
-    margin: 0
-    padding: 0
-
-    ul
-      opacity: 1
-      width: 2200px
-      transition: transform 0.9s ease-in-out
-
-      li
-        display: inline-block
-        text-align: center
-        min-height: 1px
-        height: 100%
-
-        .slide
-          border-radius: 3px
-          background-color: #ffffff
-          border: solid 1px #dbdfe9
-          cursor: pointer
-          justify-content: center
-          padding: 4px
-
-        &.active
-          .slide
-            border: solid 2px #5056ca
-
-        img
-          width: 46px
-          height: 46px
-          display: block
-          margin: 0 auto
-          vertical-align: middle
-          border-style: none
-
-        label
-          display: block
-          cursor: pointer
-
-  .paging
-    display: block
-    justify-content: center
-
-    ul
-      width: 100%
-      padding: 0
-      margin: 0
-      list-style: none
-      text-align: center
-
-      li
-        display: inline-block
-        margin-right: 10px
-
-        button
-          font-size: 0
-          line-height: 0
-          display: block
-          width: 20px
-          height: 20px
-          padding: 5px
-          cursor: pointer
-          color: transparent
-          border: 0
-          outline: none
-          background: transparent
-
-          &.active
-            &:before
-              opacity: .75;
-
-          &:before
-            font-size: 28px
-            line-height: 20px
-            top: 0
-            left: 0
-            width: 20px
-            height: 20px
-            content: '•'
-            text-align: center
-            opacity: .25
-            color: black
-            -webkit-font-smoothing: antialiased
-</style>
 <style lang="scss">
 @import '../../assets/scss/pixels_rem.scss';
 @import '../../assets/scss/variables.scss';
 @import '../../assets/scss/mixins.scss';
+.carousel-container {
+  .carousel {
+    transform: translate3d(0, 0, 0);
+    position: relative;
+    display: block;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
 
+    ul {
+      opacity: 1;
+      width: 2200px;
+      transition: transform 0.9s ease-in-out;
+
+      li {
+        display: inline-block;
+        text-align: center;
+        min-height: 1px;
+        height: 100%;
+
+        .slide {
+          border-radius: 3px;
+          background-color: #ffffff;
+          border: solid 1px #dbdfe9;
+          cursor: pointer;
+          justify-content: center;
+          padding: 4px;
+        }
+
+        &.active {
+          .slide {
+            border: solid 2px #5056ca;
+          }
+        }
+        img {
+          width: 46px;
+          height: 46px;
+          display: block;
+          margin: 0 auto;
+          border-style: none;
+        }
+
+        label {
+          display: block;
+          cursor: pointer;
+        }
+      }
+    }
+  }
+  .paging {
+    display: block;
+    justify-content: center;
+
+    ul {
+      width: 100%;
+      padding: 0;
+      margin: 0;
+      list-style: none;
+      text-align: center;
+
+      li {
+        display: inline-block;
+        margin-right: 10px;
+        button {
+          font-size: 0;
+          line-height: 0;
+          display: block;
+          width: 20px;
+          height: 20px;
+          padding: 5px;
+          cursor: pointer;
+          color: transparent;
+          border: 0;
+          outline: none;
+          background: transparent;
+
+          &.active {
+            &:before {
+              opacity: 0.75;
+            }
+          }
+          &:before {
+            font-size: 28px;
+            line-height: 20px;
+            top: 0;
+            left: 0;
+            width: 20px;
+            height: 20px;
+            content: '•';
+            text-align: center;
+            opacity: 0.25;
+            color: black;
+            -webkit-font-smoothing: antialiased;
+          }
+        }
+      }
+    }
+  }
+}
 @include responsive(mobile) {
   .mobile-payment-methods .pay-body #payment-method {
     > div {

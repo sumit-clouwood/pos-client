@@ -65,12 +65,11 @@
   </div>
 </template>
 <script>
+import PaymentMethodsMixin from '@/mixins/PaymentMethods'
 export default {
   name: 'ChildSlider',
+  mixins: [PaymentMethodsMixin],
   props: {
-    slides: [Array, Object],
-    perPage: Number,
-    width: Number,
     currentKey: {
       type: String,
       default: 'card',
@@ -115,139 +114,9 @@ export default {
       this.positionX = -toMove
       this.currentPage = page
     },
-    setActive(index) {
-      this.currentSlide = index
-      if (index < this.perPage) {
-        //move to slide one
-        this.movePage(1)
-      }
-    },
-    startDrag(event) {
-      event = event || window.event
-      event.preventDefault()
-      this.dragging = true
-      this.x = this.y = 0
-    },
-    stopDrag(event) {
-      event = event || window.event
-      event.preventDefault()
-      this.dragging = false
-      this.x = this.y = ''
-      document.onmouseup = null
-      document.onmousemove = null
-    },
-    doDrag(event) {
-      event = event || window.event
-      event.preventDefault()
-      if (this.dragging) {
-        if (event.clientX > this.x) {
-          //drag to right
-          if (this.currentPage - 1 >= 1) {
-            this.movePage(this.currentPage - 1)
-          }
-        } else if (event.clientX < this.x) {
-          //drag to left
-          if (this.currentPage + 1 <= this.totalPages) {
-            this.movePage(this.currentPage + 1)
-          }
-        }
-        this.x = event.clientX
-        this.y = event.clientY
-      }
-    },
   },
 }
 </script>
-<style lang="sass" scoped>
-.carousel-container
-  .carousel
-    transform: translate3d(0, 0, 0)
-    position: relative
-    display: block
-    overflow: hidden
-    margin: 0
-    padding: 0
-
-    ul
-      opacity: 1
-      width: 2200px
-      transition: transform 0.9s ease-in-out
-
-      li
-        display: inline-block
-        text-align: center
-        min-height: 1px
-        height: 100%
-
-        .slide
-          border-radius: 3px
-          background-color: #ffffff
-          border: solid 1px #dbdfe9
-          cursor: pointer
-          justify-content: center
-          padding: 4px
-
-        &.active
-          .slide
-            border: solid 2px #5056ca
-
-        img
-          width: 46px
-          height: 46px
-          display: block
-          margin: 0 auto
-          vertical-align: middle
-          border-style: none
-
-        label
-          display: block
-          cursor: pointer
-
-  .paging
-    display: block
-    justify-content: center
-
-    ul
-      width: 100%
-      padding: 0
-      margin: 0
-      list-style: none
-      text-align: center
-
-      li
-        display: inline-block
-        margin-right: 10px
-
-        button
-          font-size: 0
-          line-height: 0
-          display: block
-          width: 20px
-          height: 20px
-          padding: 5px
-          cursor: pointer
-          color: transparent
-          border: 0
-          outline: none
-          background: transparent
-
-          &.active
-            &:before
-              opacity: .75;
-
-          &:before
-            font-size: 28px
-            line-height: 20px
-            top: 0
-            left: 0
-            width: 20px
-            height: 20px
-            content: '•'
-            text-align: center
-            opacity: .25
-            color: black
-            -webkit-font-smoothing: antialiased
-</style>
 <style lang="scss" scoped>
 @import '@/assets/scss/pixels_rem.scss';
 @import '@/assets/scss/variables.scss';
@@ -265,91 +134,87 @@ export default {
       opacity: 1;
       width: 2200px;
       transition: transform 0.9s ease-in-out;
-    }
 
-    li {
-      display: inline-block;
-      text-align: center;
-      min-height: 1px;
-      height: 100%;
-    }
-
-    .slide {
-      border-radius: 3px;
-      background-color: #ffffff;
-      border: solid 1px #dbdfe9;
-      cursor: pointer;
-      justify-content: center;
-      padding: 4px;
-    }
-
-    &.active {
-      .slide {
-        border: solid 2px #5056ca;
-      }
-    }
-
-    img {
-      width: 46px;
-      height: 46px;
-      display: block;
-      margin: 0 auto;
-      border-style: none;
-    }
-
-    label {
-      display: block;
-      cursor: pointer;
-    }
-
-    .paging {
-      display: block;
-      justify-content: center;
-
-      ul {
-        width: 100%;
-        padding: 0;
-        margin: 0;
-        list-style: none;
+      li {
+        display: inline-block;
         text-align: center;
+        min-height: 1px;
+        height: 100%;
+
+        .slide {
+          border-radius: 3px;
+          background-color: #ffffff;
+          border: solid 1px #dbdfe9;
+          cursor: pointer;
+          justify-content: center;
+          padding: 4px;
+        }
+
+        &.active {
+          .slide {
+            border: solid 2px #5056ca;
+          }
+        }
+        img {
+          width: 46px;
+          height: 46px;
+          display: block;
+          margin: 0 auto;
+          border-style: none;
+        }
+
+        label {
+          display: block;
+          cursor: pointer;
+        }
       }
+    }
+  }
+  .paging {
+    display: block;
+    justify-content: center;
+
+    ul {
+      width: 100%;
+      padding: 0;
+      margin: 0;
+      list-style: none;
+      text-align: center;
 
       li {
         display: inline-block;
         margin-right: 10px;
-      }
-
-      button {
-        font-size: 0;
-        line-height: 0;
-        display: block;
-        width: 20px;
-        height: 20px;
-        padding: 5px;
-        cursor: pointer;
-        color: transparent;
-        border: 0;
-        outline: none;
-        background: transparent;
-      }
-
-      &.active {
-        &:before {
-          opacity: 0.75;
-        }
-
-        &:before {
-          font-size: 28px;
-          line-height: 20px;
-          top: 0;
-          left: 0;
+        button {
+          font-size: 0;
+          line-height: 0;
+          display: block;
           width: 20px;
           height: 20px;
-          content: '•';
-          text-align: center;
-          opacity: 0.25;
-          color: black;
-          -webkit-font-smoothing: antialiased;
+          padding: 5px;
+          cursor: pointer;
+          color: transparent;
+          border: 0;
+          outline: none;
+          background: transparent;
+
+          &.active {
+            &:before {
+              opacity: 0.75;
+            }
+          }
+          &:before {
+            font-size: 28px;
+            line-height: 20px;
+            top: 0;
+            left: 0;
+            width: 20px;
+            height: 20px;
+            content: '•';
+            text-align: center;
+            opacity: 0.25;
+            color: black;
+            -webkit-font-smoothing: antialiased;
+          }
         }
       }
     }

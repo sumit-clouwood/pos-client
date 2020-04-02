@@ -17,6 +17,12 @@ const getters = {
   },
   cash: state => {
     let method = ''
+    if (state.groupedMethods) {
+      method = Object.entries(state.groupedMethods).find(
+        method => method[0] === 'cash'
+      )
+      return method[1][0]
+    }
     if (typeof state.methods.data != 'undefined') {
       method = state.methods.data.find(method => method.type === 'cash')
       if (!method) {
@@ -112,7 +118,7 @@ const actions = {
       return accumulator
     }, {})
     let aggregateMethods = getAggregatorMethods(groupedMethods['aggregator'])
-    groupedMethods['aggregator'] = aggregateMethods['aggregateMethods']
+    groupedMethods['aggregator'] = [aggregateMethods['aggregateMethods']]
     commit(mutation.SET_AGGREGATE_GROUPS, aggregateMethods['groups'])
     commit(mutation.SET_GROUPED_METHODS, groupedMethods)
     paymentMethods.data.data.forEach(method => {

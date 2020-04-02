@@ -3,7 +3,7 @@
     <div id="payment-method" :class="{ activePayMethod: !payNowCalcHendler }">
       <carousel
         ref="paymentmethods"
-        :slides="pmethods"
+        :slides="groupedMethods"
         :perPage="4"
         :width="456"
         @click="selectMethod"
@@ -35,7 +35,9 @@ export default {
     forceCash(newVal) {
       if (newVal) {
         this.$refs.paymentmethods.setActive(
-          this.pmethods.findIndex(pm => pm.name === 'Cash')
+          Object.entries(this.groupedMethods).findIndex(
+            method => method.name === 'Cash'
+          )
         )
         this.$store.commit('checkoutForm/forceCash', false)
       }
@@ -58,6 +60,7 @@ export default {
       pmethods: 'payment/methods',
       payable: 'checkoutForm/payable',
     }),
+    ...mapState('payment', ['groupedMethods']),
   },
 
   methods: {
