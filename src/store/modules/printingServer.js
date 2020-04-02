@@ -350,10 +350,6 @@ const actions = {
         'initiateWebView',
         Math.floor(Math.random() * 100 + 1)
       )
-      localStorage.setItem(
-        'detectPageRedir',
-        Math.floor(Math.random() * 100 + 1)
-      )
       localStorage.setItem('orderInvoiceColData', '')
     }
     let printingServers = state.printingservers
@@ -361,10 +357,15 @@ const actions = {
       dispatch('printingSetup', orderData)
     }
   },
-  getKitchens({ commit }) {
+  getKitchens({ commit, rootState }) {
     return new Promise(resolve => {
       PrintingServerService.kitchens().then(response => {
         commit(mutation.KITCHENS, response.data)
+        let dt = rootState.auth.deviceType
+        let isIOS = dt.osType
+        if (isIOS) {
+          localStorage.setItem('kitchen_data', JSON.stringify(state.kitchens))
+        }
         resolve(response.data)
       })
     })
