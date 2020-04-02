@@ -4,7 +4,9 @@
       class="foodbox_container"
       v-for="(item, index) in subItems"
       :class="{
-        active_right_combo: activeOnClick.includes(item._id),
+        active_right_combo: activeOnClick.includes(
+          item._id + selectedContainerId
+        ),
       }"
       :key="index"
       @click="setActiveItems(item)"
@@ -135,13 +137,16 @@ export default {
         )
         this.activeItems[selectedContainerId].splice(indexSubItem, 1)
         if (!modifiersBtn)
-          this.activeOnClick.splice(this.activeOnClick.indexOf(item._id), 1)
+          this.activeOnClick.splice(
+            this.activeOnClick.indexOf(item._id + selectedContainerId),
+            1
+          )
         this.commitErrorMessage('')
       } else {
         if (selectedLength != this.limitOfSelectingItems) {
           this.commitErrorMessage('')
           this.activeItems[selectedContainerId].push(item)
-          this.activeOnClick.push(item._id)
+          this.activeOnClick.push(item._id + selectedContainerId)
           this.isActiveItem(item._id)
           if (
             this.$store.getters['modifier/itemMandatoryGroups'](item._id)
