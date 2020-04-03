@@ -63,37 +63,40 @@ function makeTransFormat(translations) {
 }
 
 function getAggregatorMethods(aggregatorMethods) {
-  let groups = aggregatorMethods.filter(method => method.group === true)
+  if (typeof aggregatorMethods != undefined) {
+    let groups = aggregatorMethods.filter(method => method.group === true)
 
-  let aggregateMethods = aggregatorMethods.reduce(
-    (accumulator, currentmethod) => {
-      let key = currentmethod._id
+    let aggregateMethods = aggregatorMethods.reduce(
+      (accumulator, currentmethod) => {
+        let key = currentmethod._id
 
-      if (currentmethod.group) {
+        if (currentmethod.group) {
+          return accumulator
+        } else if (!currentmethod.group && currentmethod.payment_type_group) {
+          // if currentmethod is not a group and have a payment type group
+          let group = groups.find(
+            group => group._id === currentmethod.payment_type_group
+          )
+          key = group.name
+          if (!accumulator[key]) {
+            accumulator[key] = []
+          }
+        } else {
+          // it means this method is not a part of any program/group
+          key = currentmethod.name
+          if (!accumulator[key]) {
+            accumulator[key] = []
+          }
+        }
+
+        accumulator[key].push(currentmethod)
         return accumulator
-      } else if (!currentmethod.group && currentmethod.payment_type_group) {
-        // if currentmethod is not a group and have a payment type group
-        let group = groups.find(
-          group => group._id === currentmethod.payment_type_group
-        )
-        key = group.name
-        if (!accumulator[key]) {
-          accumulator[key] = []
-        }
-      } else {
-        // it means this method is not a part of any program/group
-        key = currentmethod.name
-        if (!accumulator[key]) {
-          accumulator[key] = []
-        }
-      }
-
-      accumulator[key].push(currentmethod)
-      return accumulator
-    },
-    {}
-  )
-  return { groups, aggregateMethods }
+      },
+      {}
+    )
+    return { groups, aggregateMethods }
+  }
+  return { groups: {}, aggregateMethods: {} }
 }
 
 // actions
@@ -119,10 +122,11 @@ const actions = {
       }
       return accumulator
     }, {})
-    let aggregateMethods = getAggregatorMethods(methods[CONST.AGGREGATOR])
-    methods[CONST.AGGREGATOR] = [aggregateMethods['aggregateMethods']]
-
-    commit(mutation.SET_AGGREGATE_GROUPS, aggregateMethods['groups'])
+    if (methods[CONST.AGGREGATOR]) {
+      let aggregateMethods = getAggregatorMethods(methods[CONST.AGGREGATOR])
+      methods[CONST.AGGREGATOR] = [aggregateMethods['aggregateMethods']]
+      commit(mutation.SET_AGGREGATE_GROUPS, aggregateMethods['groups'])
+    }
     commit(mutation.SET_METHODS, methods)
     commit('checkoutForm/setMethod', getters.cash, { root: true })
   },

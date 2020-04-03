@@ -75,8 +75,8 @@
                   }"
                 >
                   <img :src="value[0].icon" />
-                  <label class="shorten-sentence" :title="value[0].name">
-                    {{ value[0].name }}
+                  <label class="shorten-sentence" :title="dt(value[0])">
+                    {{ dt(value[0]) }}
                   </label>
                 </div>
               </li>
@@ -175,7 +175,11 @@ export default {
     },
     // eslint-disable-next-line no-unused-vars
     selectSlide({ index, slide }) {
-      this.currentSlide = index
+      if (slide.type === 'aggregator') {
+        this.currentSlide = 'aggregator'
+      } else {
+        this.currentSlide = index
+      }
       this.$emit('click', { index: index, slide: slide })
       this.show = false
       this.showAggregator = false

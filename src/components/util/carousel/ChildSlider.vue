@@ -41,8 +41,8 @@
               }"
             >
               <img :src="slide.icon" />
-              <label class="shorten-sentence" :title="slide.name">
-                {{ slide.name }}
+              <label class="shorten-sentence" :title="dt(slide)">
+                {{ dt(slide) }}
               </label>
             </div>
           </li>

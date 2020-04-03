@@ -477,6 +477,8 @@ const actions = {
           qty: item.quantity,
           note: item.note,
           originalItem: item,
+          type: 'regular',
+          for_combo: false,
         }
         //add store id with item if available
         if (item.store_id) {
