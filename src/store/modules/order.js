@@ -723,6 +723,10 @@ const actions = {
     } else {
       //cart is empty remove the discounts
       dispatch('checkout/reset', null, { root: true })
+      //If cart is empty, reset items, order index and other things as well
+      dispatch('reset', true)
+      // Reset combo items store when cart is empty
+      dispatch('comboItems/reset', null, { root: true })
     }
   },
 

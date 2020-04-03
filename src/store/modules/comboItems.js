@@ -9,7 +9,7 @@ const state = {
   activeComboItems: {},
   setModifiersItem: [],
   orderIndex: 0,
-  forCombo: 1,
+  forCombo: 0, // set this to 0 initially
   selectedContainerLength: 0,
   modifingItem: false,
 }
@@ -41,8 +41,8 @@ const actions = {
   },
   updateOrderIndex({ commit, rootGetters, state }) {
     let orderIndex = state.orderIndex
-    if (state.orderIndex === 0) {
-      orderIndex = rootGetters['order/orderIndex'] + state.orderIndex
+    if (orderIndex === 0) {
+      orderIndex = parseInt(rootGetters['order/orderIndex']) + orderIndex
     }
     // eslint-disable-next-line no-console
     console.log(orderIndex, 'orderIndex', rootGetters['order/orderIndex'])
@@ -196,11 +196,18 @@ const mutations = {
   },
   [mutation.SET_FOR_COMBO](state, comboItemIndex) {
     state.forCombo = comboItemIndex
-    // state.forCombo = state.forCombo + 1
   },
   [mutation.RESET](state) {
-    state.forCombo = 0
+    state.comboItemsList = false
+    state.selectedItemContainer = false
+    state.subItems = false
+    state.errorMessage = ''
+    state.activeComboItems = {}
+    state.setModifiersItem = []
     state.orderIndex = 0
+    state.forCombo = 0
+    state.selectedContainerLength = 0
+    state.modifingItem = false
   },
   [mutation.CONTAINER_SELECTED_LENGTH](state, selectedContainerLength) {
     state.selectedContainerLength = selectedContainerLength
