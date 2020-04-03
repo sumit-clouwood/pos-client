@@ -44,21 +44,44 @@ const getters = {
 
 function makeTransFormat(translations) {
   let modifiedTrans = []
-  translations.find(data => {
-    let modifiedTransFinal = []
-    if (typeof data.translations_dict != 'undefined') {
-      Object.entries(data.translations_dict.name).forEach(trans => {
-        if (trans.length) {
-          let arr = { language: trans[0], value: trans[1] }
-          modifiedTransFinal.push(arr)
-        }
-      })
-      modifiedTrans.push({
-        _id: data._id,
-        translations_dict: { name: modifiedTransFinal },
-      })
-    }
-  })
+  if (Array.isArray(translations)) {
+    translations.find(data => {
+      let modifiedTransFinal = []
+      if (typeof data.translations_dict != 'undefined') {
+        Object.entries(data.translations_dict.name).forEach(trans => {
+          if (trans.length) {
+            let arr = { language: trans[0], value: trans[1] }
+            modifiedTransFinal.push(arr)
+          }
+        })
+        modifiedTrans.push({
+          _id: data._id,
+          translations_dict: { name: modifiedTransFinal },
+        })
+      }
+    })
+  } else {
+    Object.entries(translations).find(data => {
+      let modifiedTransFinal = []
+      if (Array.isArray(data)) {
+        data[1].forEach(item => {
+          if (typeof item.translations_dict != 'undefined') {
+            Object.entries(item.translations_dict.name).forEach(trans => {
+              if (trans.length) {
+                let arr = { language: trans[0], value: trans[1] }
+                modifiedTransFinal.push(arr)
+              }
+            })
+            modifiedTrans.push({
+              _id: item._id,
+              translations_dict: { name: modifiedTransFinal },
+            })
+          }
+        })
+      }
+    })
+  }
+
   return modifiedTrans
 }
 
@@ -146,8 +169,8 @@ const actions = {
     if (rootState.modifier.modifiers) {
       allModifiers = makeTransFormat(rootState.modifier.modifiers)
     }
-    if (state.methods.data) {
-      allPaymentTypes = makeTransFormat(state.methods.data)
+    if (state.methods) {
+      allPaymentTypes = makeTransFormat(state.methods)
     }
     if (rootState.discount.orderDiscounts) {
       allOrderDiscounts = makeTransFormat(rootState.discount.orderDiscounts)

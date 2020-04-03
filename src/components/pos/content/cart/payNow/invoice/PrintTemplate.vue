@@ -591,10 +591,14 @@ export default {
           })
         } else {
           Object.entries(data).forEach(item => {
-            if (entity[key] === item[map]) {
-              keysToLoad.forEach(index => {
-                if (item[index]) {
-                  entity[index] = item[index]
+            if (Array.isArray(item)) {
+              item[1].forEach(singleItem => {
+                if (entity[key] === singleItem[map]) {
+                  keysToLoad.forEach(index => {
+                    if (singleItem[index]) {
+                      entity[index] = singleItem[index]
+                    }
+                  })
                 }
               })
             }
