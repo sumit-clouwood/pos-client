@@ -10,6 +10,8 @@ const state = {
   setModifiersItem: [],
   orderIndex: 0,
   forCombo: 1,
+  selectedContainerLength: 0,
+  modifingItem: false,
 }
 
 const actions = {
@@ -199,6 +201,12 @@ const mutations = {
   [mutation.RESET](state) {
     state.forCombo = 0
     state.orderIndex = 0
+  },
+  [mutation.CONTAINER_SELECTED_LENGTH](state, selectedContainerLength) {
+    state.selectedContainerLength = selectedContainerLength
+  },
+  [mutation.MODIFING_SELECTED_ITEM](state, modifingItem) {
+    state.modifingItem = modifingItem
   },
 }
 

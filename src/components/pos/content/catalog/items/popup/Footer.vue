@@ -24,5 +24,10 @@ export default {
       this.errorMessage = errorMessage
     },
   },
+  mounted() {
+    setTimeout(() => {
+      this.errorMessage = false
+    }, 3000)
+  },
 }
 </script>
