@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/no-use-v-if-with-v-for -->
 <template>
   <div
     v-if="orderDetails"
@@ -44,7 +45,92 @@
           </thead>
           <tbody>
             <template v-for="(item, key) in orderDetails.items">
-              <tr :key="'item' + key">
+              <tr v-if="item.type == 'combo_item'" :key="key">
+                <td
+                  style="width: 250px;"
+                  class="color-tables-background color-text"
+                >
+                  <div>{{ item.name }}</div>
+
+                  <template
+                    v-for="(combo_item, cmbKey) in orderDetails.items"
+                    v-if="combo_item.for_combo === item.no"
+                  >
+                    <div :key="cmbKey">
+                      <div class="combo-items">
+                        {{ combo_item.qty }}
+                        <span> {{ combo_item.name }}</span>
+                      </div>
+                      <div
+                        class="discount"
+                        v-if="orderDetails.item_discounts.length"
+                      >
+                        {{
+                          getItemSubsets({
+                            subset: orderDetails.item_discounts,
+                            itemId: item.no,
+                            selector: 'item_discounts',
+                          })
+                        }}
+                        <div
+                          v-for="(discount, index) in filterComboItemDiscounts(
+                            orderDetails.item_discounts,
+                            combo_item.for_item
+                          )"
+                          :key="index"
+                        >
+                          <span v-if="item.no === discount.for_item">
+                            {{ discount.name }} -
+                            {{ formatPrice(discount.price) }}
+                          </span>
+                        </div>
+                      </div>
+                      <div
+                        class="modifier"
+                        v-if="orderDetails.item_modifiers.length"
+                      >
+                        {{
+                          getItemSubsets({
+                            subset: orderDetails.item_modifiers,
+                            itemId: item.no,
+                            selector: 'item_modifiers',
+                          })
+                        }}
+                        <div
+                          v-for="(modifier, key) in orderDetails.item_modifiers"
+                          :key="key"
+                        >
+                          <span v-if="modifier.for_item == item.no">
+                            <span v-if="modifier.qty > 0"
+                              >+{{ modifier.qty }}</span
+                            >
+                            {{ modifier.name }}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </template>
+                </td>
+                <td
+                  style="width: 150px;"
+                  class="base-price color-tables-background color-text"
+                >
+                  {{ formatPrice(item.price) }}
+                </td>
+                <td class="qty color-tables-background color-text">
+                  {{ item.qty }}
+                </td>
+                <td class="price color-tables-background color-text">
+                  {{ getTotalPrice(item) }}
+                </td>
+              </tr>
+              <tr
+                :key="'item' + key"
+                v-if="
+                  item.type != 'combo_item' &&
+                    (item.for_combo === false || item.for_combo == null)
+                "
+              >
                 <td
                   style="width: 250px;"
                   class="color-tables-background color-text"
@@ -211,6 +297,12 @@ export default {
     },
   },
   methods: {
+    filterComboItemModifiers(itemModifiers, forComboItem) {
+      return itemModifiers.filter(itemModifier => itemModifier === forComboItem)
+    },
+    filterComboItemDiscounts(itemDiscounts, forComboItem) {
+      return itemDiscounts.filter(itemDiscount => itemDiscount === forComboItem)
+    },
     getTotalPrice: function(item) {
       return this.formatPrice(
         item.price * item.qty +
@@ -259,6 +351,17 @@ export default {
 </script>
 
 <style scoped lang="scss">
+@import '@/assets/scss/pixels_rem.scss';
+@import '@/assets/scss/variables.scss';
+@import '@/assets/scss/mixins.scss';
+.combo-items {
+  font-size: 0.7rem;
+  padding-left: $px30;
+}
+.combo-items-modifier {
+  font-size: 0.7rem;
+  padding-left: $px60;
+}
 .items-container {
   max-height: 282px;
   overflow: auto;
