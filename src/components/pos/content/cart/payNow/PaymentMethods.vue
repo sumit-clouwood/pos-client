@@ -13,7 +13,7 @@
 </template>
 
 <script>
-/* global showModal */
+/* global $, showModal */
 import { mapActions, mapGetters, mapState } from 'vuex'
 import * as CONSTANTS from '@/constants'
 import Carousel from '@/components/util/Carousel.vue'
@@ -63,7 +63,8 @@ export default {
     selectMethod({ index, slide }) {
       //const event = window.event
       //event.preventDefault()
-      this.setMethod(slide)
+      if (!$.isEmptyObject(slide)) this.setMethod(slide)
+      else this.$store.commit('checkoutForm/forceCash', true)
       this.methodCardHendlerChange(slide.priority)
 
       if (this.$store.getters['checkoutForm/payable'] > 0) {

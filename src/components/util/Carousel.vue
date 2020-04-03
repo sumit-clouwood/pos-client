@@ -13,28 +13,27 @@
           @mouseup="stopDrag"
         >
           <template>
-            <li
-              v-if="
-                selectedValue.length && selectedValue[0].type === 'aggregator'
-              "
-              :style="{
-                width: slideWidth + 'px',
-              }"
-              @click="close()"
-            >
-              <div
-                class="slide"
-                :style="{
-                  width: slideWidth - 10 + 'px',
-                }"
-              >
-                <img src="img/icons/backarrow.svg" />
-                <label class="shorten-sentence" title="Back">
-                  Back
-                </label>
-              </div>
-            </li>
             <template v-for="[currentKey, value] of Object.entries(slides)">
+              <li
+                v-if="isAggregatorChild(value)"
+                :style="{
+                  width: slideWidth + 'px',
+                }"
+                @click="close()"
+                :key="currentKey + 'aggregator'"
+              >
+                <div
+                  class="slide"
+                  :style="{
+                    width: slideWidth - 10 + 'px',
+                  }"
+                >
+                  <img src="img/icons/backarrow.svg" />
+                  <label class="shorten-sentence" title="Back">
+                    Back
+                  </label>
+                </div>
+              </li>
               <li
                 v-if="currentKey === 'aggregator'"
                 :key="currentKey"
@@ -148,6 +147,7 @@
 <script>
 import ChildSlider from './carousel/ChildSlider'
 import PaymentMethodsMixin from '@/mixins/PaymentMethods'
+import * as CONST from '@/constants'
 export default {
   name: 'Carousel',
   mixins: [PaymentMethodsMixin],
@@ -163,6 +163,26 @@ export default {
       aggregatorValues: {},
     }
   },
+  computed: {
+    totalPages() {
+      let length = 0
+
+      if (this.slides instanceof Object) {
+        length = Object.keys(this.slides).length
+        if (Array.isArray(this.slides[1])) {
+          if (this.slides[1]['type'] === CONST.AGGREGATOR) length = length + 1
+        } else {
+          length = length + 1
+        }
+        return Math.ceil(length / this.perPage)
+      }
+      length = this.slides.length
+      if (this.aggregatorChild) {
+        length = length + 1
+      }
+      return Math.ceil(length / this.perPage)
+    },
+  },
   methods: {
     imagePath(key) {
       return 'img/icons/svgs/' + key + '.svg'
@@ -175,8 +195,8 @@ export default {
     },
     // eslint-disable-next-line no-unused-vars
     selectSlide({ index, slide }) {
-      if (slide.type === 'aggregator') {
-        this.currentSlide = 'aggregator'
+      if (slide.type === CONST.AGGREGATOR) {
+        this.currentSlide = CONST.AGGREGATOR
       } else {
         this.currentSlide = index
       }
@@ -189,16 +209,52 @@ export default {
         method.payment_type_group
       )['icon']
     },
+    movePage(page) {
+      let toMove = (page - 1) * this.perPage * this.slideWidth
+      if (page == this.totalPages) {
+        let slidesToAdjust = 0
+        if (!Array.isArray(this.slides)) {
+          let length = Object.keys(this.slides).length
+          if (Array.isArray(this.slides[1])) {
+            if (this.slides[1]['type'] === CONST.AGGREGATOR) {
+              length = length + 1
+            }
+          } else {
+            length = length + 1
+          }
+
+          slidesToAdjust = length % this.perPage
+        } else {
+          slidesToAdjust = this.slides.length % this.perPage
+        }
+        if (slidesToAdjust > 0) {
+          //that means last page has less slides than no of per page
+          const missingSlies = this.perPage - slidesToAdjust
+          toMove -= missingSlies * this.slideWidth
+        }
+      }
+      this.positionX = -toMove
+      this.currentPage = page
+      this.show = false
+    },
     reCallSelf(payLoad) {
+      this.currentSlide = CONST.AGGREGATOR
       this.show = false
       this.showAggregator = true
       this.aggregatorValues = payLoad.value[0]
     },
     close() {
-      this.currentSlide = ''
+      this.currentSlide = CONST.AGGREGATOR
       this.$emit('click', { index: '', slide: {} })
       this.show = false
       this.showAggregator = false
+    },
+    isAggregatorChild(value) {
+      let aggregatorChild =
+        (value.length === 1 && value.type === CONST.AGGREGATOR) ||
+        (value.length > 1 && value[0].type === CONST.AGGREGATOR)
+      this.aggregatorChild = aggregatorChild
+      return aggregatorChild
     },
   },
 }

@@ -12,16 +12,10 @@ export default {
       dragging: false,
       dragX: '',
       dragY: '',
+      aggregatorChild: false,
     }
   },
   computed: {
-    totalPages() {
-      if (this.slides instanceof Object) {
-        let totalLength = Object.keys(this.slides).length || 6
-        return Math.ceil(totalLength / this.perPage)
-      }
-      return Math.ceil(this.slides.length / this.perPage)
-    },
     slideWidth() {
       return this.width / this.perPage
     },
@@ -41,25 +35,6 @@ export default {
       return this.$store.getters['payment/findAggregateGroup'](
         method.payment_type_group
       )['icon']
-    },
-    movePage(page) {
-      let toMove = (page - 1) * this.perPage * this.slideWidth
-      if (page == this.totalPages) {
-        let slidesToAdjust = 0
-        if (this.slides instanceof Object) {
-          slidesToAdjust = Object.keys(this.slides).length % this.perPage
-        } else {
-          slidesToAdjust = this.slides.length % this.perPage
-        }
-        if (slidesToAdjust > 0) {
-          //that means last page has less slides than no of per page
-          const missingSlies = this.perPage - slidesToAdjust
-          toMove -= missingSlies * this.slideWidth
-        }
-      }
-      this.positionX = -toMove
-      this.currentPage = page
-      this.show = false
     },
     startDrag(event) {
       event = event || window.event
