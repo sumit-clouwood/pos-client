@@ -86,19 +86,73 @@ const getters = {
     state.comboItemsList.combo_items.forEach(item => {
       if (item.for_items.includes(addedItem._id)) {
         let itemTotalPrice = getters.getItemPrice(item)
+        /*getters.fixDecimalValue({
+          itemTotalPrice: itemTotalPrice,
+          item: item,
+        })*/
         itemPrice = parseInt(itemTotalPrice) / item.qty
       }
     })
     return itemPrice
   },
-  updateItemPriceTax: (state, getters, rootState, rootGetters) => item => {
-    let qty = item.quantity || 1
+  priceSettlement: (state, getters, rootState) => activeItemModifiers => {
+    let subItemNetPrice = 0
+    let subItemTax = 0
+    let pickItemforPriceSettelment = false
+    activeItemModifiers.forEach(item => {
+      subItemNetPrice += item.netPrice
+      subItemTax += item.tax
+      pickItemforPriceSettelment = item
+    })
+    let setMainItem = getters.updateItemPriceTax({ ...state.comboItemsList })
     // eslint-disable-next-line no-console
-    console.log(state.comboItemsList, 'comboItemsListcomboItemsList')
-    item.orderIndex = state.orderIndex
-    item.for_combo = state.forCombo
-    item.tax_sum = state.comboItemsList.tax_sum
-    item.value = parseInt(getters.setItemPrice(item)) * qty
+    console.log(
+      rootState.order.item,
+      'rootState',
+      setMainItem,
+      state.comboItemsList
+    )
+    if (subItemNetPrice < setMainItem.netPrice) {
+      activeItemModifiers.splice(
+        activeItemModifiers.indexOf(pickItemforPriceSettelment),
+        1
+      )
+
+      let differencePrice = setMainItem.netPrice - subItemNetPrice
+      let differenceTax = setMainItem.tax - subItemTax
+      pickItemforPriceSettelment.netPrice = Num.round(
+        pickItemforPriceSettelment.netPrice + differencePrice
+      )
+      pickItemforPriceSettelment.tax = Num.round(
+        pickItemforPriceSettelment.tax + differenceTax
+      )
+      /*if (subItemTax < setMainItem.tax) {
+        pickItemforPriceSettelment.tax = Num.round(
+            pickItemforPriceSettelment.tax + differenceTax
+        )
+      } else {
+        pickItemforPriceSettelment.tax = Num.round(
+          pickItemforPriceSettelment.tax - differenceTax
+        )
+      }*/
+      activeItemModifiers.push(pickItemforPriceSettelment)
+      // eslint-disable-next-line no-console
+      console.log(pickItemforPriceSettelment, 'getOneItem', activeItemModifiers)
+    }
+    return activeItemModifiers
+  },
+  updateItemPriceTax: (state, getters, rootState, rootGetters) => item => {
+    if (item.item_type !== 'combo_item') {
+      let qty = item.quantity || 1
+      // eslint-disable-next-line no-console
+      // console.log(state.comboItemsList, 'comboItemsListcomboItemsList')
+      item.orderIndex = state.orderIndex
+      item.for_combo = state.forCombo
+      item.tax_sum = state.comboItemsList.tax_sum
+      item.value = parseFloat(getters.setItemPrice(item)) * qty
+    } else {
+      // item.value = parseInt(getters.setItemPrice(item))
+    }
     item.grossPrice = rootGetters['order/grossPrice'](item)
     item.netPrice = rootGetters['order/netPrice'](item)
     // item.grossPrice = rootGetters['order/itemGrossPrice'](item)
@@ -141,7 +195,7 @@ const mutations = {
     state.orderIndex = orderIndex + 1
   },
   [mutation.SET_FOR_COMBO](state, comboItemIndex) {
-    state.forCombo = comboItemIndex || 1
+    state.forCombo = comboItemIndex
     // state.forCombo = state.forCombo + 1
   },
   [mutation.RESET](state) {

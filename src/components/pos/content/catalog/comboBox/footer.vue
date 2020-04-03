@@ -82,14 +82,17 @@ export default {
       } else {
         this.error = false
       }
+      let itemPriceSettlement = this.$store.getters[
+        'comboItems/priceSettlement'
+      ](activeItemModifiers)
       if (!this.error) {
         let item = {
           ...this.comboItemsList,
-          combo_selected_items: activeItemModifiers,
+          combo_selected_items: itemPriceSettlement,
           for_combo: this.forCombo,
         }
         // eslint-disable-next-line no-console
-        console.log(activeItemModifiers, 'filtered data')
+        console.log(activeItemModifiers, 'filtered data', itemPriceSettlement)
         this.itemsAddToCart(item)
         this.$store.commit('comboItems/ACTIVE_COMBO_ITEMS', {}, { root: true })
         hideModal('#combox-box-popup')
