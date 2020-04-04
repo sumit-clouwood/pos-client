@@ -85,10 +85,5 @@ export default {
     height: auto !important;
     max-height: 460px;
   }
-  .modal-footer {
-    .btn-announce {
-      grid-template-columns: 1fr 1fr !important;
-    }
-  }
 }
 </style>
