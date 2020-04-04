@@ -271,23 +271,30 @@ export default {
   },
 }
 </script>
-<style scoped lang="css">
-.home_delivery_pick .refresh_button button {
-  width: 40px;
-  height: 38px;
-  border: medium none;
-  background: #5056ca;
-  border-radius: 4px;
-  color: #fff;
+<style scoped lang="scss">
+#my-dropdown {
+  width: 100% !important;
+  max-height: 7rem;
 }
-.home_delivery_pick .refresh_button {
-  position: absolute;
-  right: 5px;
-  text-align: right;
-  display: block;
-  margin-top: 0.3125rem;
+.driver-footer {
+  padding: 1.125rem;
 }
 .home_delivery_pick {
   position: relative;
+  .refresh_button {
+    position: absolute;
+    right: 5px;
+    text-align: right;
+    display: block;
+    margin-top: 0.3125rem;
+    button {
+      width: 40px;
+      height: 38px;
+      border: medium none;
+      background: #5056ca;
+      border-radius: 4px;
+      color: #fff;
+    }
+  }
 }
 </style>
