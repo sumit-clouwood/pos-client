@@ -234,6 +234,8 @@ export default {
     border-top: 1px solid gray;
     overflow-x: scroll !important;
     z-index: 1;
+    background: ghostwhite !important;
+    opacity: 1 !important;
   }
   .carhop-completed-orders-wrapper .carhop-completed-orders {
     height: calc(100vh - 150px);

@@ -32,10 +32,7 @@
                   :key="item.no"
                   class="item-name"
                 >
-                  <span>
-                    {{ item.name }} ({{ item.qty }})
-                    <span v-if="item.no + 1 !== order.items.length">,</span>
-                  </span>
+                  <span> {{ item.name }} ({{ item.qty }}) </span>
                 </div>
               </td>
               <td class="font-weight-bold">
@@ -307,6 +304,8 @@ export default {
     border-top: 1px solid gray;
     overflow-x: scroll !important;
     z-index: 1;
+    background: ghostwhite !important;
+    opacity: 1 !important;
   }
   .carhop-running-orders-wrapper .carhop-running-orders {
     height: calc(100vh - 150px);
