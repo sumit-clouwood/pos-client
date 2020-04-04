@@ -206,7 +206,9 @@ export default {
     ...mapGetters('auth', ['waiter', 'carhop']),
 
     canPay() {
-      return !this.carhop && !this.waiter
+      const isCarhop = this.carhop
+      const isWaiter = this.waiter
+      return !isCarhop && !isWaiter
     },
     page: {
       get() {

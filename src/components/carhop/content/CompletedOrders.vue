@@ -65,7 +65,7 @@
                       {{ _t('Print') }}
                     </button>
                     <div
-                      class="dropdown-menu"
+                      class="dropdown-menu dropdown-menu-right animate slideIn"
                       aria-labelledby="dropdownMenuButton"
                     >
                       <a

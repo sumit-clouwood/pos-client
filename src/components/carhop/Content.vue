@@ -57,7 +57,7 @@ export default {
       this.$store.dispatch('carhop/initFetch', false)
     }, 1000 * 20)
   },
-  destroyed() {
+  beforeDestroy() {
     clearInterval(this.interval)
   },
 }
@@ -78,12 +78,17 @@ export default {
       top: inherit !important;
       @include responsive(mobile) {
         top: 0px !important;
-        // right: 0px !important;
-        // left: auto !important;
       }
     }
   }
-
+  .carhop-completed-orders {
+    .dropdown-menu.show {
+      top: inherit !important;
+      @include responsive(mobile) {
+        top: 0px !important;
+      }
+    }
+  }
   span.dinefor-paynow {
     width: 100%;
     border-radius: 0.25rem;
