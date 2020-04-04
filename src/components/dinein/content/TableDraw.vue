@@ -141,7 +141,7 @@
     </div>
     <!-- Modal confirm -->
     <div class="modal" id="confirmModal" style="display: none; z-index: 1050;">
-      <div class="modal-dialog">
+      <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header customer-header">
             <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
@@ -181,7 +181,7 @@
       </div>
     </div>
     <div class="modal" id="placeOrder" style="display: none; z-index: 1050;">
-      <div class="modal-dialog">
+      <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header customer-header">
             <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->

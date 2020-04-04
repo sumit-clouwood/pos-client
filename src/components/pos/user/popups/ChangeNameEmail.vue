@@ -5,7 +5,7 @@
     role="dialog"
     data-keyboard="false"
   >
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
       <!-- Modal content-->
       <div class="modal-content">
         <div class="modal-header" style="background-color: rgb(245, 245, 245)">

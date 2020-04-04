@@ -1,6 +1,6 @@
 <template>
   <div class="modal fade" id="NewReservation">
-    <div class="modal-dialog" style="max-width: 80%">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 80%">
       <div class="modal-content">
         <!-- Modal Header -->
         <!--<div class="modal-header">

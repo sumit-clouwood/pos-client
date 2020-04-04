@@ -1,6 +1,6 @@
 <template>
   <div class="modal fade" id="popup-item-note" role="dialog">
-    <div class="modal-dialog modal-body-wrapper">
+    <div class="modal-dialog modal-dialog-centered modal-body-wrapper">
       <div class="modal-content color-dashboard-background">
         <div class="modal-header customer-header color-secondary">
           <h4 class="customer-title color-text-invert">

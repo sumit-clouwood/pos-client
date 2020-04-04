@@ -1,7 +1,7 @@
 <template>
   <!-- Tip amount -->
   <div class="modal fade" id="tip-amount" role="dialog">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
       <!-- Modal content-->
       <div
         class="modal-content color-dashboard-background  modal-content-wrapper"

@@ -116,7 +116,7 @@
         id="confirmReservation"
         style="display: none; z-index: 1050;"
       >
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-dialog-centered">
           <div class="modal-content">
             <div class="modal-header customer-header">
               <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->

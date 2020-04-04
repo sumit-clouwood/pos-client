@@ -1,7 +1,10 @@
 <template>
   <!-- order confrmation  -->
   <div class="modal fade" id="order-confirmation" role="dialog">
-    <div class="modal-dialog" :class="{ 'error-dialog': !cartItems }">
+    <div
+      class="modal-dialog modal-dialog-centered"
+      :class="{ 'error-dialog': !cartItems }"
+    >
       <!-- Modal content-->
       <div class="modal-content color-dashboard-background" v-if="cartItems">
         <SendToDeliveryHeader />

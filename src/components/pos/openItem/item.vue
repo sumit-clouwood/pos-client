@@ -1,6 +1,6 @@
 <template>
   <div class="modal fade" id="open-item" role="dialog">
-    <div class="modal-dialog">
+    <div class="modal-dialog  modal-dialog-centered">
       <div class="modal-content color-dashboard-background">
         <div class="modal-header customer-header color-secondary">
           <h4 class="customer-title color-text-invert">
