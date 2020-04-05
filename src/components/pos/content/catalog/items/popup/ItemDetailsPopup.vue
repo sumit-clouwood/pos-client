@@ -131,6 +131,8 @@ export default {
           //   this.loading = false
           // }, 1500)
         })
+      } else {
+        this.currentImagePath = ''
       }
     },
   },
@@ -210,6 +212,7 @@ export default {
         } else {
           this.$store.dispatch('order/addToOrder', item).then(() => {
             hideModal('#item-details-popup')
+            this.resetPopup()
           })
         }
       }
