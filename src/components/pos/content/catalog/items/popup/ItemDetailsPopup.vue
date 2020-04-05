@@ -35,7 +35,7 @@
               style="width: 100%; height:100%;"
               :src="currentImageUrl"
               :alt="currentItem.name"
-              @error="imageLoadError"
+              @error="currentImagePath = currentItem.image"
             />
           </div>
           <div class="content-container">
@@ -285,9 +285,6 @@ export default {
       } else {
         this.bascketItems.find(x => x.name === item.name).count++
       }
-    },
-    imageLoadError() {
-      this.currentImagePath = this.currentItem.image
     },
     setQuantity(quantity) {
       this.$store.commit('orderForm/updateQuantity', quantity)
