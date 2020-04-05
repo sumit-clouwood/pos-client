@@ -29,8 +29,9 @@
             class="image-container"
             v-if="currentItem && currentItem.image !== ''"
           >
-            <!-- <Preloader v-if="loading" /> -->
+            <Preloader v-if="loading" />
             <img
+              v-show="!loading"
               style="width: 100%; height:100%;"
               :src="currentImageUrl"
               :alt="currentItem.name"
@@ -53,8 +54,25 @@
               <span aria-hidden="true">&times;</span>
             </button>
             <div class="item-one-line item-name-price-container">
-              <div class="item-name font-weight-bold">
-                {{ dt(currentItem) }}
+              <div
+                style="display: flex; 
+                  justify-content:space-between; 
+                  padding-top:1rem;"
+              >
+                <!-- :style="{ color: isFirstItem() ? 'grey' : 'unset' }" -->
+                <div
+                  style="font-size: 3rem;"
+                  @click="previousItem(currentItem)"
+                >
+                  <i class="fa fa-arrow-circle-left"></i>
+                </div>
+                <div class="item-name font-weight-bold">
+                  {{ dt(currentItem) }}
+                </div>
+                <!-- :style="{ color: isLastItem() ? 'grey' : 'unset' }" -->
+                <div style="font-size: 3rem;" @click="nextItem(currentItem)">
+                  <i class="fa fa-arrow-circle-right"></i>
+                </div>
               </div>
               <div class="item-price">
                 {{ formatPrice(currentItem.value * quantity) }}
@@ -93,14 +111,14 @@ import { mapState, mapGetters } from 'vuex'
 import bootstrap from '@/bootstrap'
 import ModifiersContent from '@/components/pos/content/catalog/items/popup/Content.vue'
 import Scroll from '@/mixins/Scroll'
-// import Preloader from '@/components/util/Preloader'
+import Preloader from '@/components/util/Preloader'
 import Quantity from '@/components/pos/content/catalog/items/popup/header/Quantity.vue'
 export default {
   name: 'ItemDetailsPopup',
   components: {
     ModifiersContent,
     Quantity,
-    // Preloader,
+    Preloader,
   },
   mixins: [Scroll],
   props: {
@@ -116,23 +134,22 @@ export default {
     return {
       currentImagePath: '',
       alignText: 'left !important',
-      // loading: true,
+      loading: true,
     }
   },
   watch: {
     currentItem(newVal) {
       if (!$.isEmptyObject(newVal)) {
+        this.loading = true
+        this.currentImagePath = ''
         this.$nextTick(() => {
-          // this.loading = true
           this.getImage()
           this.alignTextProperly()
           this.assignModifiers()
-          // setTimeout(() => {
-          //   this.loading = false
-          // }, 1500)
+          setTimeout(() => {
+            this.loading = false
+          }, 300)
         })
-      } else {
-        this.currentImagePath = ''
       }
     },
   },
@@ -142,14 +159,58 @@ export default {
     ...mapState('order', ['splitBill']),
     ...mapGetters(['foodMenuHendler', 'bascketItems']),
     ...mapGetters('orderForm', ['quantity']),
+    ...mapGetters('category', ['items']),
     currentImageUrl() {
       return this.currentImagePath
     },
     hasModifiers() {
       return this.$store.getters['modifier/hasModifiers'](this.currentItem)
     },
+    lengthOfTotalItems() {
+      return this.items.length
+    },
   },
   methods: {
+    isFirstItem() {
+      const index = this.items.indexOf(this.currentItem)
+      if (index != -1 && index === 0) {
+        return true
+      }
+      return false
+    },
+    isLastItem() {
+      const index = this.items.indexOf(this.currentItem)
+      if (index != -1 && index + 1 == this.lengthOfTotalItems) {
+        return true
+      }
+      return false
+    },
+    nextItem(currentItem) {
+      // if (this.isLastItem()) {
+      //   return false
+      // }
+      const currentItemIndex = this.items.indexOf(currentItem)
+      const totalItemsLength = this.lengthOfTotalItems
+      if (currentItemIndex != -1 && currentItemIndex < totalItemsLength) {
+        this.currentItem = this.items[currentItemIndex + 1]
+      }
+      if (currentItemIndex != -1 && currentItemIndex == totalItemsLength - 1) {
+        this.currentItem = this.items[0]
+      }
+    },
+    previousItem(currentItem) {
+      // if (this.isFirstItem()) {
+      //   return false
+      // }
+      const currentItemIndex = this.items.indexOf(currentItem)
+      const totalItemsLength = this.lengthOfTotalItems
+      if (currentItemIndex != -1 && currentItemIndex > 0) {
+        this.currentItem = this.items[currentItemIndex - 1]
+      }
+      if (currentItemIndex == 0) {
+        this.currentItem = this.items[totalItemsLength - 1]
+      }
+    },
     alignTextProperly() {
       let language = this.availableLanguages.find(
         lang => lang.code === this.$store.state.location.locale

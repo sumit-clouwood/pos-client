@@ -60,7 +60,6 @@
         </div>
       </div>
       <item-details-popup
-        v-if="currentItem"
         :currentItem="currentItem"
         @resetCurrentItem="resetCurrentItem"
       />
