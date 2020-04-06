@@ -152,6 +152,9 @@ export default {
             this.$store.getters['modifier/itemMandatoryGroups'](item._id)
               .length > 0
           ) {
+            $('#POSItemOptions .modifier-option-radio').prop('checked', false)
+            this.$store.dispatch('modifier/assignModifiersToItem', item)
+            this.$store.commit('orderForm/clearSelection')
             showModal('#POSItemOptions')
           } else {
             hideModal('#POSItemOptions')
