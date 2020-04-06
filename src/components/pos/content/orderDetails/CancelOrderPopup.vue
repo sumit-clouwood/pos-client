@@ -243,6 +243,10 @@ export default {
   .modal-dialog {
     /*margin: 0;*/
   }
+  #cancellation-dropdown,
+  #inventory-dropdown {
+    width: 100% !important;
+  }
 }
 
 #cancellationReason {
