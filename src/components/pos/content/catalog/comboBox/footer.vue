@@ -74,11 +74,13 @@ export default {
         })
       }
       if (this.totalItemQty > itemQty) {
-        this.error =
-          'Please select ' + (this.totalItemQty - itemQty) + ' more item'
+        this.error = `Please select ${this.totalItemQty - itemQty} more item${
+          this.totalItemQty - itemQty > 1 ? 's' : ''
+        }`
       } else if (this.totalItemQty < itemQty) {
-        this.error =
-          'Please remove any ' + (itemQty - this.totalItemQty) + ' items'
+        this.error = `Please remove any ${itemQty - this.totalItemQty} item${
+          itemQty - this.totalItemQty > 1 ? 's' : ''
+        }`
       } else {
         this.error = false
       }
