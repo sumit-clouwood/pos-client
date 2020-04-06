@@ -10,6 +10,21 @@ export default {
     ...mapGetters(['bascketItems']),
   },
   methods: {
+    setModifiers(item, showModifierPopup = true) {
+      if (this.$store.getters['modifier/hasModifiers'](item)) {
+        this.$store.dispatch('modifier/assignModifiersToItem', item)
+        this.$store.commit('orderForm/clearSelection')
+        //handle open item inside popup
+        if (showModifierPopup) showModal('#POSItemOptions')
+      } else {
+        if (item.open_item === true) {
+          //show popup for open item
+          showModal('#open-item')
+        } else {
+          this.$store.dispatch('order/addToOrder', item)
+        }
+      }
+    },
     itemsAddToCart(item) {
       if (this.splitBill) {
         return false
@@ -31,19 +46,14 @@ export default {
       this.$store.commit('checkoutForm/showCalc', true)
       this.$store.commit('orderForm/updateQuantity', 1)
       if (item.item_type !== CONST.COMBO_ITEM_TYPE) {
-        if (this.$store.getters['modifier/hasModifiers'](item)) {
-          this.$store.dispatch('modifier/assignModifiersToItem', item)
-          this.$store.commit('orderForm/clearSelection')
-          //handle open item inside popup
-          showModal('#POSItemOptions')
-        }
+        this.setModifiers(item)
       } else {
-        if (item.open_item === true) {
-          //show popup for open item
-          showModal('#open-item')
-        } else {
-          this.$store.dispatch('order/addToOrder', item)
-        }
+        // this.$store.dispatch('modifier/assignModifiersToItem', item)
+        // this.$store.commit('orderForm/clearSelection')
+        this.$store.dispatch('order/addToOrder', item)
+        /*item.combo_selected_items.forEach(combo_item => {
+          this.setModifiers(combo_item, false)
+        })*/
       }
       this.$store.dispatch('addItemFood', item)
 
