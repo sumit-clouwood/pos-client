@@ -1,7 +1,7 @@
 <template>
   <!-- Dining option Model -->
   <div class="modal fade" id="dining-option" role="dialog">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
       <!-- Modal content-->
       <div class="modal-content color-dashboard-background">
         <div class="modal-header customer-header color-secondary">

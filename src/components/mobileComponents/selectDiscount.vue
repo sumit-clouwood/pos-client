@@ -39,7 +39,7 @@ export default {
     right: -100vw;
     bottom: 0;
     z-index: 1060;
-    background-color: #fff;
+    background-color: transparent;
 
     &.active {
       right: 0;

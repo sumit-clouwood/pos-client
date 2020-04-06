@@ -1,6 +1,6 @@
 <template>
   <div class="modal fade" id="switchWaiter" role="dialog">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
       <!-- Modal content-->
       <div class="modal-content color-dashboard-background">
         <div class="modal-header customer-header color-secondary">
@@ -122,10 +122,10 @@ export default {
         .modal-body {
           padding-left: 0px !important;
           padding-right: 0px !important;
+          width: 90%;
         }
         #available-tables {
-          width: 90%;
-          margin-left: auto;
+          width: 100%;
           .table-status-container {
             grid-template-columns: 1fr 1fr !important;
           }

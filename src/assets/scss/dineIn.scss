@@ -950,6 +950,7 @@ div {
     .modal-dialog {
       max-width: 96% !important;
       .modal-content {
+        max-height: 70vh;
         .modal-body {
           overflow: auto;
         }
@@ -957,7 +958,7 @@ div {
     }
   }
   .fixed-reservation {
-    width: 95vw;
+    width: 100%;
     height: calc(100vh - 10.8rem);
     .pos-reservation-table {
       overflow: auto;

@@ -536,7 +536,7 @@ export default {
   .profile-sidebar {
     transition: 0.7s ease-out;
     z-index: 11;
-    width: 70%;
+    width: 75%;
     background-color: #fff;
     position: absolute;
     top: 0;
@@ -555,7 +555,7 @@ export default {
       padding: 30.5px 20px;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
       @include responsive(mobile) {
-        padding: 30.5px 10px;
+        padding: 1.3125rem 0.7rem;
       }
       .btn-close {
         font-size: 18px;
@@ -564,7 +564,7 @@ export default {
         @include responsive(mobile) {
           font-size: 25px;
           position: absolute;
-          top: 29px;
+          top: 20px;
           right: 5px;
         }
       }
@@ -614,6 +614,7 @@ export default {
             }
             @include responsive(mobile) {
               height: 60%;
+              font-size: 0.9rem;
             }
           }
 

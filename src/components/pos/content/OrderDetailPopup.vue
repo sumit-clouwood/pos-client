@@ -7,7 +7,7 @@
     aria-hidden="true"
     id="orderDetailsPopup"
   >
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
       <div class="dialog-body modal-content color-dashboard-background">
         <div class="modal-header mobile">
           <h3 class="modal-title">{{ _t('Order Detail') }}</h3>
@@ -115,7 +115,7 @@
                 class="button-caption"
                 data-toggle="modal"
                 data-target="#display-order"
-                @click="fetchSelectedCustomer(selectedOrder.customer._id)"
+                @click="fetchCustomer(selectedOrder.customer._id)"
               >
                 {{ _t('Open Past Orders') }}
               </div>
@@ -142,6 +142,7 @@
 </template>
 
 <script>
+/* global hideModal */
 import { mapState, mapGetters, mapActions } from 'vuex'
 
 import Invoice from '@/components/pos/content/cart/payNow/Invoice'
@@ -179,6 +180,10 @@ export default {
   methods: {
     ...mapActions('customer', ['fetchSelectedCustomer']),
     ...mapActions('deliveryManager', ['printInvoice']),
+    fetchCustomer(customerId) {
+      hideModal('#orderDetailsPopup')
+      this.fetchSelectedCustomer(customerId)
+    },
     printInvoiceDisableKitchenPrint(details) {
       let dt = this.$store.state.auth.deviceType
       let isIOS = dt.osType

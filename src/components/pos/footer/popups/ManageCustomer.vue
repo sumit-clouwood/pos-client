@@ -1,7 +1,7 @@
 <template>
   <!-- Manage Customers -->
   <div class="modal fade" id="manage-customer" role="dialog">
-    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-centered">
       <!-- Modal content-->
       <div class="modal-content color-dashboard-background">
         <div class="modal-header customer-header color-secondary">
