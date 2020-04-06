@@ -98,11 +98,11 @@ const getters = {
   priceSettlement: (state, getters, rootState) => activeItemModifiers => {
     let subItemNetPrice = 0
     let subItemTax = 0
-    let pickItemforPriceSettelment = false
+    let pickItemPriceSettlement = false
     activeItemModifiers.forEach(item => {
       subItemNetPrice += item.netPrice
       subItemTax += item.tax
-      pickItemforPriceSettelment = item
+      pickItemPriceSettlement = item
     })
     let setMainItem = getters.updateItemPriceTax({ ...state.comboItemsList })
     // eslint-disable-next-line no-console
@@ -114,17 +114,17 @@ const getters = {
     )
     if (subItemNetPrice < setMainItem.netPrice) {
       activeItemModifiers.splice(
-        activeItemModifiers.indexOf(pickItemforPriceSettelment),
+        activeItemModifiers.indexOf(pickItemPriceSettlement),
         1
       )
 
       let differencePrice = setMainItem.netPrice - subItemNetPrice
       let differenceTax = setMainItem.tax - subItemTax
-      pickItemforPriceSettelment.netPrice = Num.round(
-        pickItemforPriceSettelment.netPrice + differencePrice
+      pickItemPriceSettlement.netPrice = Num.round(
+        pickItemPriceSettlement.netPrice + differencePrice
       )
-      pickItemforPriceSettelment.tax = Num.round(
-        pickItemforPriceSettelment.tax + differenceTax
+      pickItemPriceSettlement.tax = Num.round(
+        pickItemPriceSettlement.tax + differenceTax
       )
       /*if (subItemTax < setMainItem.tax) {
         pickItemforPriceSettelment.tax = Num.round(
@@ -135,9 +135,9 @@ const getters = {
           pickItemforPriceSettelment.tax - differenceTax
         )
       }*/
-      activeItemModifiers.push(pickItemforPriceSettelment)
+      activeItemModifiers.push(pickItemPriceSettlement)
       // eslint-disable-next-line no-console
-      console.log(pickItemforPriceSettelment, 'getOneItem', activeItemModifiers)
+      console.log(pickItemPriceSettlement, 'getOneItem', activeItemModifiers)
     }
     return activeItemModifiers
   },
