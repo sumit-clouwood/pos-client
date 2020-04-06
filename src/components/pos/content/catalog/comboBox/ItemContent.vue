@@ -148,14 +148,12 @@ export default {
           this.activeItems[selectedContainerId].push(item)
           this.activeOnClick.push(item._id + selectedContainerId)
           this.isActiveItem(item._id)
-          if (
-            this.$store.getters['modifier/itemMandatoryGroups'](item._id)
-              .length > 0
-          ) {
-            $('#POSItemOptions .modifier-option-radio').prop('checked', false)
+          if (this.$store.getters['modifier/hasModifiers'](item)) {
+            /*$('#POSItemOptions .modifier-option-radio').prop('checked', false)
             this.$store.dispatch('modifier/assignModifiersToItem', item)
             this.$store.commit('orderForm/clearSelection')
-            showModal('#POSItemOptions')
+            showModal('#POSItemOptions')*/
+            this.setModifiersForItem(item, false)
           } else {
             hideModal('#POSItemOptions')
           }
@@ -169,8 +167,8 @@ export default {
         root: true,
       })
     },
-    setModifiersForItem(item) {
-      this.setActiveItems(item, false)
+    setModifiersForItem(item, shouldCheckActiveItem = true) {
+      if (shouldCheckActiveItem) this.setActiveItems(item, false)
       // if (this.$store.getters['modifier/hasModifiers'](item)) {
       this.$store.commit('modifier/SET_ITEM', item)
       $('#POSItemOptions .modifier-option-radio').prop('checked', false)
