@@ -111,7 +111,12 @@
         </div>
         <div class="modal-footer">
           <div class="btn-announce">
-            <button type="button" class="btn btn-danger" data-dismiss="modal">
+            <button
+              type="button"
+              class="btn btn-danger"
+              data-dismiss="modal"
+              @click="clearOrder()"
+            >
               {{ _t('Close') }}
             </button>
             <button
@@ -162,6 +167,11 @@ export default {
     ...mapGetters('context', ['store']),
   },
   methods: {
+    clearOrder() {
+      this.$store.commit('order/CLEAR_SELECTED_ORDER', null, {
+        root: true,
+      })
+    },
     selectedReason: function(reason) {
       this.showSelectedReason = reason.name
       $('.dropdown-content').hide()
