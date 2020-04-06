@@ -22,11 +22,6 @@
         <div class="food-menu-item-text color-text">
           {{ dt(item) }}
         </div>
-      </div>
-      <div class="foodbox_price_cntr">
-        <div class="food-menu-item-price">
-          <strong>{{ formatPrice(item.value) }}</strong>
-        </div>
         <div class="food-box-icon">
           <i
             class="fa fa-check item-selected-check right_icon"
@@ -54,6 +49,11 @@
           </div>
         </div>
       </div>
+      <!--<div class="foodbox_price_cntr">
+        &lt;!&ndash;<div class="food-menu-item-price">
+          &lt;!&ndash;<strong>{{ formatPrice(item.value) }}</strong>&ndash;&gt;
+        </div>&ndash;&gt;
+      </div>-->
     </div>
   </div>
 </template>
@@ -199,7 +199,7 @@ export default {
 .modal-body {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  grid-column-gap: 0.938rem;
+  grid-column-gap: 0.138rem;
   row-gap: 1rem;
   .food-menu-item {
     min-width: 95%;
@@ -237,8 +237,8 @@ export default {
   border-color: #5056ca5e;
   width: 100%;
   border-radius: 5px;
-  min-height: 6.625rem !important;
-  max-height: 6.625rem !important;
+  min-height: 5.625rem !important;
+  max-height: 5.625rem !important;
   // max-width: 11.063rem !important;
   @include responsive(mobile) {
     max-height: 100% !important;
@@ -247,7 +247,7 @@ export default {
 }
 .food-item-box {
   display: grid;
-  grid-template-columns: 0.5fr 1.5fr;
+  grid-template-columns: 0.5fr 1.5fr auto;
 }
 .food-item-box img {
   max-height: 2.188rem;
@@ -258,7 +258,7 @@ export default {
   border-radius: 0.313rem;
 }
 .food-item-box > div {
-  margin: 0.25rem 0 0px 0px;
+  margin: 3.25rem 0.025rem 0px 0px;
 }
 i.fa.fa-check.item-selected-check {
   position: absolute;
@@ -290,9 +290,7 @@ i.fa.fa-check.item-selected-check {
   box-shadow: #5056ca42 0px 0.063rem 0.75rem;
 }
 .modal-body.color-dashboard-background.grid_combo_item_content {
-  max-height: 36.875rem;
   overflow: hidden;
-  overflow-y: auto;
   padding: 1.563rem 0.625rem !important;
   padding-top: 0px !important;
   border-left: 1px solid #e3e7f2;

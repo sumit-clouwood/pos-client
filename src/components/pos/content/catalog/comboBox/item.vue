@@ -105,7 +105,7 @@ export default {
 }
 .food-menu_title.active_left_combo {
   background-color: #5056ca;
-  border-right: 1rem solid red;
+  /*border-right: 1rem solid red;*/
 }
 i.fa.fa-check.food-item-checked {
   position: absolute;
