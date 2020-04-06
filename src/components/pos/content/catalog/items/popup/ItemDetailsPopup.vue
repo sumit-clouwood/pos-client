@@ -64,7 +64,7 @@
               >
                 <!-- :style="{ color: isFirstItem() ? 'grey' : 'unset' }" -->
                 <div
-                  style="font-size: 3rem;"
+                  class="navigation-icons"
                   @click="previousItem(currentItem)"
                 >
                   <i class="fa fa-arrow-circle-left"></i>
@@ -73,7 +73,7 @@
                   {{ dt(currentItem) }}
                 </div>
                 <!-- :style="{ color: isLastItem() ? 'grey' : 'unset' }" -->
-                <div style="font-size: 3rem;" @click="nextItem(currentItem)">
+                <div class="navigation-icons" @click="nextItem(currentItem)">
                   <i class="fa fa-arrow-circle-right"></i>
                 </div>
               </div>
@@ -321,6 +321,9 @@ export default {
     .close {
       line-height: normal;
       opacity: 1;
+      :hover {
+        color: red;
+      }
     }
     .modal-body {
       padding: 0.5rem !important;
@@ -349,8 +352,10 @@ export default {
       .item-one-line {
         display: grid;
         grid-template-columns: 1fr;
-        margin: 0.7rem 0rem;
+        // margin: 0.7rem 0rem;
         text-align: center;
+        width: 90% !important;
+        margin: auto !important;
         .item-name-price-container {
           grid-template-columns: 5fr 1fr;
         }
@@ -361,14 +366,20 @@ export default {
         }
         .item-name {
           font-size: 2rem;
-          margin-top: 1rem;
+          // margin-top: 1rem;
+        }
+        .navigation-icons {
+          font-size: 2.5rem;
+          :hover {
+            color: #5056ca;
+            cursor: pointer;
+          }
         }
       }
       .item-description {
-        width: 90%;
+        width: 100%;
         font-size: 1.2rem;
         color: black;
-        margin: auto !important;
         padding-bottom: 1rem;
       }
       #modifiers-popup {
@@ -419,9 +430,9 @@ export default {
   margin-bottom: 2rem;
   /deep/ .quantity-component {
     display: grid;
-    grid-template-columns: 38% 62%;
+    grid-template-columns: 37% 60%;
     /deep/ .lbl-quantity {
-      font-size: 1.2rem !important;
+      font-size: 1.3rem !important;
       color: black !important;
     }
     /deep/ .inputs-wrapper {
@@ -445,7 +456,7 @@ export default {
         width: 8.75rem;
         border: 0 none;
         margin: auto;
-        margin-left: 2rem;
+        font-size: 1.1rem !important;
       }
       .POSItemOptions_quantity_inputs {
         width: 7.1875rem;
