@@ -36,6 +36,7 @@
               :src="currentImageUrl"
               :alt="currentItem.name"
               @error="currentImagePath = currentItem.image"
+              @load="loading = false"
             />
           </div>
           <div class="content-container">
@@ -152,9 +153,6 @@ export default {
           this.getImage()
           this.alignTextProperly()
           this.assignModifiers()
-          setTimeout(() => {
-            this.loading = false
-          }, 300)
         })
       }
     },
@@ -421,14 +419,14 @@ export default {
   margin-bottom: 2rem;
   /deep/ .quantity-component {
     display: grid;
-    grid-template-columns: 1fr 2fr;
+    grid-template-columns: 38% 62%;
     /deep/ .lbl-quantity {
       font-size: 1.2rem !important;
       color: black !important;
     }
     /deep/ .inputs-wrapper {
       display: flex !important;
-      justify-content: flex-end !important;
+      justify-content: space-between !important;
       .qtyminus,
       .qtyplus,
       .value-qty {
