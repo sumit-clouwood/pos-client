@@ -4,7 +4,7 @@ import Num from '@/plugins/helpers/Num.js'
 import * as CONSTANTS from '@/constants'
 // import { compressToBase64 } from 'lz-string'
 import OrderHelper from '@/plugins/helpers/Order'
-
+/* eslint-disable */
 // initial state
 const state = {
   order: false,
@@ -542,72 +542,77 @@ const actions = {
       if (item.measurement_unit) {
         orderItem.measurement_unit = item.measurement_unit
       }
+      order.items.push(orderItem)
 
       //we are sending item price and modifier prices separtely but sending
       //item discount as total of both discounts
-
-      if (item.discount) {
-        let itemDiscountedTax = Num.round(
-          rootGetters['order/itemTaxDiscount'](item)
-        )
-
-        if (item.discountedNetPrice) {
-          const modifiersTax = rootGetters['order/itemModifiersTax'](item)
-          itemDiscountedTax = item.tax + modifiersTax - item.discountedTax
-        }
-
-        const modifiersDiscountedTax = Num.round(
-          rootGetters['order/itemModifierTaxDiscount'](item)
-        )
-
-        let itemDiscount = item.discount
-        itemDiscount.itemId = item._id
-        itemDiscount.itemNo = item.orderIndex
-        itemDiscount.quantity = item.quantity
-
-        if (item.store_id) {
-          itemDiscount.store_id = item.store_id
-        }
-        //undiscountedTax is without modifiers
-
-        if (item.discountedNetPrice) {
-          //don't round fixed discount calculations
-          itemDiscount.tax = itemDiscountedTax + modifiersDiscountedTax
-        } else {
-          itemDiscount.tax = Num.round(
-            itemDiscountedTax + modifiersDiscountedTax
+      // eslint-disable-next-line no-console
+      console.log(item.discount, item, 'item.discount')
+      if (orderItem.for_combo === false) {
+        if (item.discount) {
+          let itemDiscountedTax = Num.round(
+              rootGetters['order/itemTaxDiscount'](item)
           )
+
+          if (item.discountedNetPrice) {
+            const modifiersTax = rootGetters['order/itemModifiersTax'](item)
+            itemDiscountedTax = item.tax + modifiersTax - item.discountedTax
+          }
+
+          const modifiersDiscountedTax = Num.round(
+              rootGetters['order/itemModifierTaxDiscount'](item)
+          )
+
+          let itemDiscount = item.discount
+          itemDiscount.itemId = item._id
+          itemDiscount.itemNo = item.orderIndex
+          itemDiscount.quantity = item.quantity
+
+          if (item.store_id) {
+            itemDiscount.store_id = item.store_id
+          }
+          //undiscountedTax is without modifiers
+
+          if (item.discountedNetPrice) {
+            //don't round fixed discount calculations
+            itemDiscount.tax = itemDiscountedTax + modifiersDiscountedTax
+          } else {
+            itemDiscount.tax = Num.round(
+                itemDiscountedTax + modifiersDiscountedTax
+            )
+          }
+          itemDiscount.price =
+              rootGetters['order/itemNetDiscount'](item) +
+              rootGetters['order/itemModifierDiscount'](item)
+          item_discounts.push(itemDiscount)
+          // eslint-disable-next-line no-console
+          console.log(item.discount, item, 'item.discount')
         }
-        itemDiscount.price =
-          rootGetters['order/itemNetDiscount'](item) +
-          rootGetters['order/itemModifierDiscount'](item)
-        item_discounts.push(itemDiscount)
+        if (item.modifiersData && item.modifiersData.length) {
+          item.modifiersData.forEach(modifier => {
+            let modifierEntity = {
+              entity_id: modifier.modifierId,
+              for_item: item.orderIndex,
+              price: modifier.price,
+              tax: modifier.tax,
+              name: modifier.name,
+              qty: item.quantity,
+              type: modifier.type,
+            }
+            if (modifier.store_id) {
+              modifierEntity.store_id = modifier.store_id
+            }
+            itemModifiers.push(modifierEntity)
+          })
+          //get all modifiers by modifier ids attached to item
+        }
+        let orderItemsPayload = {
+          item_discounts: item_discounts,
+          itemModifiers: itemModifiers,
+          order: order,
+        }
+        commit(mutation.ORDER_ITEM, orderItemsPayload)
       }
-      if (item.modifiersData && item.modifiersData.length) {
-        item.modifiersData.forEach(modifier => {
-          let modifierEntity = {
-            entity_id: modifier.modifierId,
-            for_item: item.orderIndex,
-            price: modifier.price,
-            tax: modifier.tax,
-            name: modifier.name,
-            qty: item.quantity,
-            type: modifier.type,
-          }
-          if (modifier.store_id) {
-            modifierEntity.store_id = modifier.store_id
-          }
-          itemModifiers.push(modifierEntity)
-        })
-        //get all modifiers by modifier ids attached to item
-      }
-      order.items.push(orderItem)
-      let orderItemsPayload = {
-        item_discounts: item_discounts,
-        itemModifiers: itemModifiers,
-        order: order,
-      }
-      commit(mutation.ORDER_ITEM, orderItemsPayload)
     }
   },
   injectDineInItemsData({ rootState }, order) {
