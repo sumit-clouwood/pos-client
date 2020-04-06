@@ -532,14 +532,21 @@ const mutations = {
         })
       }
       if (isPaymentAcceptble) {
-        state.payments.push({
+        let paymentObject = {
           amount: amount,
           method: method,
-          cardId: state.loyaltyCard._id ? state.loyaltyCard._id : null,
-          code: state.loyaltyCard.loyalty_card_code
+          cardId: null,
+          code: null,
+        }
+        if (method.type === CONST.LOYALTY) {
+          paymentObject.cardId = state.loyaltyCard._id
+            ? state.loyaltyCard._id
+            : null
+          paymentObject.code = state.loyaltyCard.loyalty_card_code
             ? state.loyaltyCard.loyalty_card_code
-            : null,
-        })
+            : null
+        }
+        state.payments.push(paymentObject)
       }
     }
   },

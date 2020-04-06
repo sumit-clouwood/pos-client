@@ -3,7 +3,7 @@
     <div id="payment-method" :class="{ activePayMethod: !payNowCalcHendler }">
       <carousel
         ref="paymentmethods"
-        :slides="pmethods"
+        :slides="methods"
         :perPage="4"
         :width="456"
         @click="selectMethod"
@@ -13,7 +13,7 @@
 </template>
 
 <script>
-/* global showModal */
+/* global $, showModal */
 import { mapActions, mapGetters, mapState } from 'vuex'
 import * as CONSTANTS from '@/constants'
 import Carousel from '@/components/util/Carousel.vue'
@@ -34,9 +34,7 @@ export default {
   watch: {
     forceCash(newVal) {
       if (newVal) {
-        this.$refs.paymentmethods.setActive(
-          this.pmethods.findIndex(pm => pm.name === 'Cash')
-        )
+        this.$refs.paymentmethods.setActive(CONSTANTS.CASH)
         this.$store.commit('checkoutForm/forceCash', false)
       }
     },
@@ -55,9 +53,9 @@ export default {
     }),
     ...mapGetters(['payNowCalcHendler']),
     ...mapGetters({
-      pmethods: 'payment/methods',
       payable: 'checkoutForm/payable',
     }),
+    ...mapState('payment', ['methods']),
   },
 
   methods: {
@@ -65,7 +63,8 @@ export default {
     selectMethod({ index, slide }) {
       //const event = window.event
       //event.preventDefault()
-      this.setMethod(slide)
+      if (!$.isEmptyObject(slide)) this.setMethod(slide)
+      else this.$store.commit('checkoutForm/forceCash', true)
       this.methodCardHendlerChange(slide.priority)
 
       if (this.$store.getters['checkoutForm/payable'] > 0) {
