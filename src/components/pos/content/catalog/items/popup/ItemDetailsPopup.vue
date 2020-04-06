@@ -29,7 +29,7 @@
             class="image-container"
             v-if="currentItem && currentItem.image !== ''"
           >
-            <Preloader v-if="loading" />
+            <Preloader v-show="loading" />
             <img
               v-show="!loading"
               style="width: 100%; height:100%;"
@@ -57,7 +57,9 @@
               <div
                 style="display: flex; 
                   justify-content:space-between; 
-                  padding-top:1rem;"
+                  padding:.5rem;
+                  padding-top:1rem;
+                  "
               >
                 <!-- :style="{ color: isFirstItem() ? 'grey' : 'unset' }" -->
                 <div
@@ -121,6 +123,10 @@ export default {
     Preloader,
   },
   mixins: [Scroll],
+  model: {
+    prop: 'currentItem',
+    event: 'input',
+  },
   props: {
     currentItem: {
       type: Object,
@@ -171,6 +177,9 @@ export default {
     },
   },
   methods: {
+    eventEmitter(payLoad) {
+      this.$emit('input', payLoad)
+    },
     isFirstItem() {
       const index = this.items.indexOf(this.currentItem)
       if (index != -1 && index === 0) {
@@ -192,10 +201,10 @@ export default {
       const currentItemIndex = this.items.indexOf(currentItem)
       const totalItemsLength = this.lengthOfTotalItems
       if (currentItemIndex != -1 && currentItemIndex < totalItemsLength) {
-        this.currentItem = this.items[currentItemIndex + 1]
+        this.eventEmitter(this.items[currentItemIndex + 1])
       }
       if (currentItemIndex != -1 && currentItemIndex == totalItemsLength - 1) {
-        this.currentItem = this.items[0]
+        this.eventEmitter(this.items[0])
       }
     },
     previousItem(currentItem) {
@@ -205,10 +214,10 @@ export default {
       const currentItemIndex = this.items.indexOf(currentItem)
       const totalItemsLength = this.lengthOfTotalItems
       if (currentItemIndex != -1 && currentItemIndex > 0) {
-        this.currentItem = this.items[currentItemIndex - 1]
+        this.eventEmitter(this.items[currentItemIndex - 1])
       }
-      if (currentItemIndex == 0) {
-        this.currentItem = this.items[totalItemsLength - 1]
+      if (currentItemIndex != -1 && currentItemIndex == 0) {
+        this.eventEmitter(this.items[totalItemsLength - 1])
       }
     },
     alignTextProperly() {
@@ -320,6 +329,14 @@ export default {
       background-color: #f2f2f2 !important;
       display: grid;
       grid-template-columns: 1fr 1fr;
+      .image-container {
+        /deep/ .preloader {
+          /deep/ img {
+            width: 100%;
+            height: 100%;
+          }
+        }
+      }
     }
 
     .positemoption_body {
@@ -374,7 +391,9 @@ export default {
       grid-template-columns: 1fr !important;
       height: 4rem;
       button {
-        width: 100%;
+        width: 98%;
+        margin-left: 1%;
+        margin-right: 1%;
         border-radius: 0px;
       }
       .add-to-cart-btn {
