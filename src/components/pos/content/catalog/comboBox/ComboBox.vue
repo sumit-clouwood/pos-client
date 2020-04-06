@@ -17,7 +17,9 @@ export default {
 
 <style lang="scss" scoped>
 .modal-dialog {
-  max-width: 800px;
+  min-width: 80vw;
+  max-width: 80vw;
+  margin: auto !important;
 }
 .combox_p {
   z-index: 999;

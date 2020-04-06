@@ -16,36 +16,34 @@
         <img
           v-else
           :style="{
-            background: item.image == '' ? item.item_color : '',
+            background:
+              item.image == '' && item.item_color ? item.item_color : 'white',
           }"
         />
         <div class="food-menu-item-text color-text">
           {{ dt(item) }}
         </div>
-        <div class="food-box-icon">
-          <i
-            class="fa fa-check item-selected-check right_icon"
-            aria-hidden="true"
-          ></i>
-          <div
-            class="button-plus"
-            data-toggle="modal"
-            data-target="#POSOrderItemOptions"
-          >
-            <div
-              class="button-plus-icon"
-              @click.stop="setModifiersForItem(item)"
+      </div>
+      <div class="food-box-icon">
+        <i
+          class="fa fa-check item-selected-check right_icon"
+          aria-hidden="true"
+        ></i>
+        <div
+          class="button-plus"
+          data-toggle="modal"
+          data-target="#POSOrderItemOptions"
+        >
+          <div class="button-plus-icon" @click.stop="setModifiersForItem(item)">
+            <svg
+              class="color-text"
+              viewBox="0 0 15 15"
+              xmlns="http://www.w3.org/2000/svg"
             >
-              <svg
-                class="color-text"
-                viewBox="0 0 15 15"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M8.40002 6.3999V1.3999C8.40002 1.13469 8.29467 0.880332 8.10713 0.692796C7.9196 0.505259 7.66524 0.399902 7.40002 0.399902C7.13481 0.399902 6.88045 0.505259 6.69292 0.692796C6.50538 0.880332 6.40002 1.13469 6.40002 1.3999V6.3999H1.40002C1.13481 6.3999 0.880454 6.50526 0.692918 6.6928C0.505381 6.88033 0.400024 7.13469 0.400024 7.3999C0.400024 7.66512 0.505381 7.91947 0.692918 8.10701C0.880454 8.29455 1.13481 8.3999 1.40002 8.3999H6.40002V13.3999C6.40002 13.6651 6.50538 13.9195 6.69292 14.107C6.88045 14.2945 7.13481 14.3999 7.40002 14.3999C7.66524 14.3999 7.9196 14.2945 8.10713 14.107C8.29467 13.9195 8.40002 13.6651 8.40002 13.3999V8.3999H13.4C13.6652 8.3999 13.9196 8.29455 14.1071 8.10701C14.2947 7.91947 14.4 7.66512 14.4 7.3999C14.4 7.13469 14.2947 6.88033 14.1071 6.6928C13.9196 6.50526 13.6652 6.3999 13.4 6.3999H8.40002Z"
-                />
-              </svg>
-            </div>
+              <path
+                d="M8.40002 6.3999V1.3999C8.40002 1.13469 8.29467 0.880332 8.10713 0.692796C7.9196 0.505259 7.66524 0.399902 7.40002 0.399902C7.13481 0.399902 6.88045 0.505259 6.69292 0.692796C6.50538 0.880332 6.40002 1.13469 6.40002 1.3999V6.3999H1.40002C1.13481 6.3999 0.880454 6.50526 0.692918 6.6928C0.505381 6.88033 0.400024 7.13469 0.400024 7.3999C0.400024 7.66512 0.505381 7.91947 0.692918 8.10701C0.880454 8.29455 1.13481 8.3999 1.40002 8.3999H6.40002V13.3999C6.40002 13.6651 6.50538 13.9195 6.69292 14.107C6.88045 14.2945 7.13481 14.3999 7.40002 14.3999C7.66524 14.3999 7.9196 14.2945 8.10713 14.107C8.29467 13.9195 8.40002 13.6651 8.40002 13.3999V8.3999H13.4C13.6652 8.3999 13.9196 8.29455 14.1071 8.10701C14.2947 7.91947 14.4 7.66512 14.4 7.3999C14.4 7.13469 14.2947 6.88033 14.1071 6.6928C13.9196 6.50526 13.6652 6.3999 13.4 6.3999H8.40002Z"
+              />
+            </svg>
           </div>
         </div>
       </div>
@@ -199,8 +197,8 @@ export default {
 @import '@/assets/scss/mixins.scss';
 .modal-body {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-column-gap: 0.138rem;
+  grid-template-columns: repeat(4, 1fr);
+  grid-column-gap: 2rem;
   row-gap: 1rem;
   .food-menu-item {
     min-width: 95%;
@@ -248,7 +246,8 @@ export default {
 }
 .food-item-box {
   display: grid;
-  grid-template-columns: 0.5fr 1.5fr auto;
+  // grid-template-columns: 0.5fr 1.5fr auto;
+  grid-template-columns: 0.5fr auto;
 }
 .food-item-box img {
   max-height: 2.188rem;
@@ -292,7 +291,7 @@ i.fa.fa-check.item-selected-check {
 }
 .modal-body.color-dashboard-background.grid_combo_item_content {
   overflow: hidden;
-  padding: 1.563rem 0.625rem !important;
+  padding: 1.563rem 1.625rem !important;
   padding-top: 0px !important;
   border-left: 1px solid #e3e7f2;
   /*min-height: 21.875rem;*/
@@ -302,6 +301,11 @@ i.fa.fa-check.item-selected-check {
 }
 .grid_parent_combo .food-box-icon {
   text-align: right;
+  display: flex;
+  justify-content: flex-end;
+}
+.button-plus {
+  padding-right: 0.5rem;
 }
 .foodbox_container .item-selected-check.right_icon {
   display: none;

@@ -125,9 +125,13 @@ export default {
 }
 </script>
 <style scoped>
+.btn-announce {
+  margin-bottom: 0px !important;
+}
 @media only screen and (max-width: 600px) and (min-width: 320px) {
   .btn-announce {
     margin: 0 auto;
+    margin-bottom: 0px !important;
   }
 }
 </style>
