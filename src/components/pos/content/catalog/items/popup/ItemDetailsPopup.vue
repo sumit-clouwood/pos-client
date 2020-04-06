@@ -437,7 +437,7 @@ export default {
     }
     /deep/ .inputs-wrapper {
       display: flex !important;
-      justify-content: space-between !important;
+      justify-content: flex-end !important;
       .qtyminus,
       .qtyplus,
       .value-qty {
@@ -457,6 +457,7 @@ export default {
         border: 0 none;
         margin: auto;
         font-size: 1.1rem !important;
+        margin-left: 2rem !important;
       }
       .POSItemOptions_quantity_inputs {
         width: 7.1875rem;
