@@ -1,6 +1,6 @@
 /* global $, showModal */
 /* eslint-disable no-console */
-// import * as CONST from '@/constants'
+import * as CONST from '@/constants'
 import bootstrap from '@/bootstrap'
 import { mapGetters } from 'vuex'
 // import store from '@/store'
@@ -34,7 +34,8 @@ export default {
         this.$store.dispatch('modifier/assignModifiersToItem', item)
         this.$store.commit('orderForm/clearSelection')
         //handle open item inside popup
-        showModal('#POSItemOptions')
+        if (item.item_type !== CONST.COMBO_ITEM_TYPE)
+          showModal('#POSItemOptions')
       } else {
         if (item.open_item === true) {
           //show popup for open item
