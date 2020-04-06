@@ -21,7 +21,9 @@
           }"
         />
         <div class="food-menu-item-text color-text">
-          {{ dt(item) }}
+          <label :title="dt(item)">
+            {{ dt(item) }}
+          </label>
         </div>
       </div>
       <div class="food-box-icon">
