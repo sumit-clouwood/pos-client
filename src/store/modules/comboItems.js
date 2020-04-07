@@ -1,5 +1,6 @@
 import * as mutation from './combo/mutation-types'
 import Num from '@/plugins/helpers/Num.js'
+import * as CONST from '@/constants'
 
 const state = {
   comboItemsList: false,
@@ -157,7 +158,8 @@ const getters = {
     return activeItemModifiers
   },
   updateItemPriceTax: (state, getters, rootState, rootGetters) => item => {
-    if (item.item_type !== 'combo_item') {
+    let isCombo = item.item_type === CONST.COMBO_ITEM_TYPE
+    if (!isCombo) {
       let qty = item.quantity || 1
       item.orderIndex = state.orderIndex
       item.for_combo = state.forCombo
@@ -171,6 +173,16 @@ const getters = {
     }
     item.grossPrice = rootGetters['order/grossPrice'](item)
     item.netPrice = rootGetters['order/netPrice'](item)
+    // eslint-disable-next-line no-console
+    console.log(
+      item,
+      'itemitemitem',
+      rootGetters['modifier/hasModifiers'](item)
+    )
+    if (rootGetters['modifier/hasModifiers'](item) && !isCombo) {
+      item.grossPrice = rootGetters['order/itemGrossPrice'](item)
+      item.netPrice = rootGetters['order/itemNetPrice'](item)
+    }
     // item.grossPrice = rootGetters['order/itemGrossPrice'](item)
     // item.netPrice = rootGetters['order/itemNetPrice'](item)
     item.tax = Num.round(item.grossPrice - item.netPrice)
