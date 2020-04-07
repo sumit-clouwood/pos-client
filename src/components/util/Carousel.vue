@@ -250,8 +250,6 @@ export default {
     },
     isAggregator() {
       let childSlides = Object.values(this.slides)
-      // eslint-disable-next-line no-console
-      console.log('childSlides', childSlides)
       if (childSlides) {
         if (childSlides[0]) {
           return childSlides[0][0].type === CONST.AGGREGATOR ? true : false
