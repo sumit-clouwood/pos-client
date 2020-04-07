@@ -186,7 +186,7 @@ export default {
       this.menuHeight += parseInt(this.menuInitHeight)
     },
     subCategoryHendlerChange() {
-      this.$store.dispatch('subCategoryHendlerChange')
+      // this.$store.dispatch('subCategoryHendlerChange')
     },
   },
 }
