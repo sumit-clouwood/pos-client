@@ -14,7 +14,7 @@
             {{ formatPrice(item.value * quantity) }}
           </div>
         </div>
-        <Quantity />
+        <Quantity v-show="item.item_type !== 'combo_item'" />
       </div>
     </div>
   </div>
