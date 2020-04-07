@@ -308,7 +308,7 @@ export default {
     opacity: 1 !important;
   }
   .carhop-running-orders-wrapper .carhop-running-orders {
-    height: calc(100vh - 150px);
+    height: calc(95vh - 150px);
   }
   .pagination-customer-details {
     display: flex;

@@ -316,6 +316,9 @@ span#dine-bottom {
   display: grid;
   grid-template-columns: 1fr;
   height: calc(100vh - 275px);
+  @include responsive(mobile){
+  height: calc(90vh - 275px);
+  }
   overflow-y: auto;
   overflow-x: hidden;
   position: relative;
@@ -959,7 +962,7 @@ div {
   }
   .fixed-reservation {
     width: 100%;
-    height: calc(100vh - 10.8rem);
+    height: calc(100% - 10.8rem);
     .pos-reservation-table {
       overflow: auto;
       display: grid;
