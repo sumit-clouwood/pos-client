@@ -598,7 +598,7 @@ div.order-address {
 
 .table-drivers-filter {
   display: grid;
-  grid-template-rows: auto 1fr auto;
+  grid-template-rows: 20% auto 25%;
   height: 100%; }
 
 .block-table-page-container {
@@ -1131,6 +1131,7 @@ tr.dataContentStyle > td > a {
 @media only screen and (max-width: 599px) {
   section.with-drivers-filter{
     grid-template-columns: 1fr;
+    grid-template-rows: 50% auto;
   }
 }
 @media only screen and (max-width: 479px) {
