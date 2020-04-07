@@ -32,6 +32,9 @@
             <TotalAmount :param="{ totalAmountBlock: true }" />
             <div class="payment-method-title">
               <h2 class="color-text">{{ _t('Payment Method') }}</h2>
+              <p class="color-text">
+                {{ dt(method) }}
+              </p>
             </div>
             <PaymentMethods />
             <form>
@@ -137,7 +140,12 @@ export default {
       },
     },
     ...mapState('order', ['items']),
-    ...mapState('checkoutForm', ['error', 'showCalc', 'showPayBreak']),
+    ...mapState('checkoutForm', [
+      'error',
+      'showCalc',
+      'showPayBreak',
+      'method',
+    ]),
     ...mapGetters('location', ['formatPrice', '_t']),
     ...mapGetters('order', ['orderTotal']),
     ...mapGetters('checkoutForm', ['payable']),

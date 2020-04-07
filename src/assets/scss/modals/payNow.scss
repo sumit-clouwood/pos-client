@@ -175,6 +175,9 @@
         .payment-method-title {
           border-bottom: solid 2px #e5e9f3;
           margin-bottom: $px20;
+          display: flex;
+          justify-content: space-between;
+          width: 98%;
 
           > h2 {
             font-size: $px18;
@@ -185,6 +188,11 @@
             letter-spacing: normal;
             color: #3d3f43;
             padding-bottom: $px15;
+            justify-self: flex-start;
+          }
+          > p{
+            justify-self: flex-end;
+            font-weight: 700;
           }
         }
 

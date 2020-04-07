@@ -108,8 +108,8 @@ export default {
     #payment-method
     .carousel-container
     .carousel {
-    overflow-y: scroll;
-    height: 40vh;
+    overflow-y: scroll !important;
+    height: 65vh;
   }
 }
 </style>
