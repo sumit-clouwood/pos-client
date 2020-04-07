@@ -12,6 +12,7 @@ const state = {
   forCombo: 0, // set this to 0 initially
   selectedContainerLength: 0,
   modifingItem: false,
+  additionalComboValue: 0,
 }
 
 const actions = {
@@ -51,9 +52,23 @@ const actions = {
   reset({ commit }) {
     commit(mutation.RESET)
   },
+  setAdditionalComboPrice({ commit }, items) {
+    let price = 0
+    items.forEach(item => {
+      price += item.additional_combo_value || 0
+    })
+    commit(mutation.ADDITIONAL_COMBO_VALUE, price)
+  },
 }
 
 const getters = {
+  /*additionalComboPrice: state => {
+    let price = 0
+    /!*state.activeComboItems.forEach(item => {
+      price += parseFloat(item.additional_combo_value)
+    })*!/
+    return price
+  },*/
   comboItemName: state => {
     if (state.comboItemsList) {
       return state.comboItemsList.name
@@ -104,7 +119,7 @@ const getters = {
       subItemTax += item.tax
       pickItemPriceSettlement = item
     })
-    let setMainItem = getters.updateItemPriceTax({ ...state.comboItemsList })
+    let setMainItem = getters.updateItemPriceTax(state.comboItemsList)
     // eslint-disable-next-line no-console
     console.log(
       rootState.order.item,
@@ -117,7 +132,9 @@ const getters = {
         activeItemModifiers.indexOf(pickItemPriceSettlement),
         1
       )
-
+      // here we are checking if combo item price is 100 and there are 3 items only.
+      // we need to set all three item price and tax according to 100
+      // so we will update remaining amount .1 to ast item
       let differencePrice = setMainItem.netPrice - subItemNetPrice
       let differenceTax = setMainItem.tax - subItemTax
       pickItemPriceSettlement.netPrice = Num.round(
@@ -136,22 +153,21 @@ const getters = {
         )
       }*/
       activeItemModifiers.push(pickItemPriceSettlement)
-      // eslint-disable-next-line no-console
-      console.log(pickItemPriceSettlement, 'getOneItem', activeItemModifiers)
     }
     return activeItemModifiers
   },
   updateItemPriceTax: (state, getters, rootState, rootGetters) => item => {
     if (item.item_type !== 'combo_item') {
       let qty = item.quantity || 1
-      // eslint-disable-next-line no-console
-      // console.log(state.comboItemsList, 'comboItemsListcomboItemsList')
       item.orderIndex = state.orderIndex
       item.for_combo = state.forCombo
       item.tax_sum = state.comboItemsList.tax_sum
-      item.value = parseFloat(getters.setItemPrice(item)) * qty
+      let itemPrice =
+        parseFloat(getters.setItemPrice(item)) + item.additional_combo_value ||
+        0
+      item.value = itemPrice * qty
     } else {
-      // item.value = parseInt(getters.setItemPrice(item))
+      item.value = item.value + state.additionalComboValue
     }
     item.grossPrice = rootGetters['order/grossPrice'](item)
     item.netPrice = rootGetters['order/netPrice'](item)
@@ -214,6 +230,9 @@ const mutations = {
   },
   [mutation.MODIFING_SELECTED_ITEM](state, modifingItem) {
     state.modifingItem = modifingItem
+  },
+  [mutation.ADDITIONAL_COMBO_VALUE](state, additionalComboValue) {
+    state.additionalComboValue = additionalComboValue
   },
 }
 

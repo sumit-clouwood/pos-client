@@ -50,8 +50,6 @@ export default {
       let activeItemModifiers = []
       this.validateNumberOfItems()
       let itemQty = 0
-      // eslint-disable-next-line no-console
-      console.log(this.comboItemsList.combo_items, 'this.comboItemsList')
       // eslint-disable-next-line no-unused-vars
       for (let [key, value] of Object.entries(this.activeComboItems)) {
         value.map(activeItem => {
@@ -60,14 +58,10 @@ export default {
           )
           if (activeChecker) {
             itemQty += parseInt(activeChecker.quantity)
-            // eslint-disable-next-line no-console
-            console.log(activeChecker, 'activeChecker')
             let item = this.updateItemPrice(activeChecker)
             activeItemModifiers.push(item)
           } else {
             itemQty += 1
-            // eslint-disable-next-line no-console
-            console.log(activeItem, 'activeItem', item)
             let item = this.updateItemPrice(activeItem)
             activeItemModifiers.push(item)
           }
@@ -84,6 +78,10 @@ export default {
       } else {
         this.error = false
       }
+      this.$store.dispatch(
+        'comboItems/setAdditionalComboPrice',
+        activeItemModifiers
+      )
       let itemPriceSettlement = this.$store.getters[
         'comboItems/priceSettlement'
       ](activeItemModifiers)
