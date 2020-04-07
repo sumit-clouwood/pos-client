@@ -125,6 +125,7 @@
             type="button"
             class="button btn btn-danger color-button color-text-invert"
             data-dismiss="modal"
+            @click="clearOrder()"
           >
             <div class="button-content-container">
               <div class="button-icon-container"></div>
@@ -183,6 +184,11 @@ export default {
     fetchCustomer(customerId) {
       hideModal('#orderDetailsPopup')
       this.fetchSelectedCustomer(customerId)
+    },
+    clearOrder() {
+      this.$store.commit('order/CLEAR_SELECTED_ORDER', null, {
+        root: true,
+      })
     },
     printInvoiceDisableKitchenPrint(details) {
       let dt = this.$store.state.auth.deviceType

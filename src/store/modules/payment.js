@@ -6,85 +6,152 @@ import * as CONST from '@/constants'
 const state = {
   methods: {},
   appInvoiceData: {},
+  aggregatorGroups: [],
 }
 
 // getters
 const getters = {
   methods: state => {
-    return state.methods.data ? state.methods.data : []
+    return state.methods ? state.methods : []
   },
   cash: state => {
     let method = ''
-    if (typeof state.methods.data != 'undefined') {
-      method = state.methods.data.find(method => method.type === 'cash')
-      if (!method) {
-        method = state.methods.data.find(method => method.name.match(/cash/i))
-      }
+    if (state.methods) {
+      method = Object.entries(state.methods).find(
+        method => method[0] === CONST.CASH
+      )
+      return method[1][0]
     }
-    return method
+    return []
   },
 
   getImages: (state, getters) => {
     //for caching
     let images = []
 
-    getters.methods.forEach(method => {
+    Object.entries(getters.methods).forEach(method => {
       images.push(method.icon)
     })
 
     return images
   },
+  findAggregateGroup: state => groupId => {
+    if (!state.aggregatorGroups) return {}
+
+    return state.aggregatorGroups.find(group => group._id === groupId)
+  },
 }
 
 function makeTransFormat(translations) {
   let modifiedTrans = []
-  translations.find(data => {
-    let modifiedTransFinal = []
-    if (typeof data.translations_dict != 'undefined') {
-      Object.entries(data.translations_dict.name).forEach(trans => {
-        if (trans.length) {
-          let arr = { language: trans[0], value: trans[1] }
-          modifiedTransFinal.push(arr)
-        }
-      })
-      modifiedTrans.push({
-        _id: data._id,
-        translations_dict: { name: modifiedTransFinal },
-      })
-    }
-  })
+  if (Array.isArray(translations)) {
+    translations.find(data => {
+      let modifiedTransFinal = []
+      if (typeof data.translations_dict != 'undefined') {
+        Object.entries(data.translations_dict.name).forEach(trans => {
+          if (trans.length) {
+            let arr = { language: trans[0], value: trans[1] }
+            modifiedTransFinal.push(arr)
+          }
+        })
+        modifiedTrans.push({
+          _id: data._id,
+          translations_dict: { name: modifiedTransFinal },
+        })
+      }
+    })
+  } else {
+    Object.entries(translations).find(data => {
+      let modifiedTransFinal = []
+      if (Array.isArray(data)) {
+        data[1].forEach(item => {
+          if (typeof item.translations_dict != 'undefined') {
+            Object.entries(item.translations_dict.name).forEach(trans => {
+              if (trans.length) {
+                let arr = { language: trans[0], value: trans[1] }
+                modifiedTransFinal.push(arr)
+              }
+            })
+            modifiedTrans.push({
+              _id: item._id,
+              translations_dict: { name: modifiedTransFinal },
+            })
+          }
+        })
+      }
+    })
+  }
+
   return modifiedTrans
+}
+
+function getAggregatorMethods(aggregatorMethods) {
+  if (typeof aggregatorMethods != undefined) {
+    let groups = aggregatorMethods.filter(method => method.group === true)
+
+    let aggregateMethods = aggregatorMethods.reduce(
+      (accumulator, currentmethod) => {
+        let key = currentmethod._id
+
+        if (currentmethod.group) {
+          return accumulator
+        } else if (!currentmethod.group && currentmethod.payment_type_group) {
+          // if currentmethod is not a group and have a payment type group
+          let group = groups.find(
+            group => group._id === currentmethod.payment_type_group
+          )
+          key = group.name
+          if (!accumulator[key]) {
+            accumulator[key] = []
+          }
+        } else {
+          // it means this method is not a part of any program/group
+          key = currentmethod.name
+          if (!accumulator[key]) {
+            accumulator[key] = []
+          }
+        }
+
+        accumulator[key].push(currentmethod)
+        return accumulator
+      },
+      {}
+    )
+    return { groups, aggregateMethods }
+  }
+  return { groups: {}, aggregateMethods: {} }
 }
 
 // actions
 const actions = {
   async fetchAll({ rootGetters, commit, getters }) {
     const paymentMethods = await PaymentService.fetchMethods()
-
-    let methods = []
-    paymentMethods.data.data.forEach(method => {
-      if (method.item_status) {
-        switch (method.type) {
-          case CONST.GIFT_CARD:
-            if (rootGetters['modules/enabled'](CONST.MODULE_GIFT_CARDS)) {
-              methods.push(method)
-            }
-            break
-          case CONST.LOYALTY:
-            if (rootGetters['modules/enabled'](CONST.MODULE_LOYALTY)) {
-              methods.push(method)
-            }
-            break
-
-          default:
-            methods.push(method)
-        }
-        paymentMethods.data = methods
-        commit(mutation.SET_METHODS, paymentMethods)
-        //commit('checkoutForm/setMethod', state.methods.data[0], { root: true })
-        commit('checkoutForm/setMethod', getters.cash, { root: true })
+    let payMethod = paymentMethods.data.data
+    let methods = payMethod.reduce((accumulator, currentmethod) => {
+      const key = currentmethod['type']
+      if (!accumulator[key]) {
+        accumulator[key] = []
       }
-    })
+      if (currentmethod.type === CONST.MODULE_LOYALTY) {
+        if (rootGetters['modules/enabled'](CONST.MODULE_LOYALTY)) {
+          accumulator[key].push(currentmethod)
+        }
+      } else if (currentmethod.type === CONST.MODULE_GIFT_CARDS) {
+        if (rootGetters['modules/enabled'](CONST.MODULE_GIFT_CARDS)) {
+          accumulator[key].push(currentmethod)
+        }
+      } else {
+        accumulator[key].push(currentmethod)
+      }
+      return accumulator
+    }, {})
+    if (methods[CONST.AGGREGATOR]) {
+      let aggregateMethods = getAggregatorMethods(methods[CONST.AGGREGATOR])
+      methods[CONST.AGGREGATOR] = [aggregateMethods['aggregateMethods']]
+      commit(mutation.SET_AGGREGATE_GROUPS, aggregateMethods['groups'])
+    }
+    commit(mutation.SET_METHODS, methods)
+    commit('checkoutForm/setMethod', getters.cash, { root: true })
   },
   setTranslations({ commit, rootState }) {
     let allItems = []
@@ -102,8 +169,8 @@ const actions = {
     if (rootState.modifier.modifiers) {
       allModifiers = makeTransFormat(rootState.modifier.modifiers)
     }
-    if (state.methods.data) {
-      allPaymentTypes = makeTransFormat(state.methods.data)
+    if (state.methods) {
+      allPaymentTypes = makeTransFormat(state.methods)
     }
     if (rootState.discount.orderDiscounts) {
       allOrderDiscounts = makeTransFormat(rootState.discount.orderDiscounts)
@@ -135,6 +202,9 @@ const mutations = {
   },
   [mutation.RESET](state) {
     state.methods = {}
+  },
+  [mutation.SET_AGGREGATE_GROUPS](state, aggregatorGroups) {
+    state.aggregatorGroups = aggregatorGroups
   },
 }
 

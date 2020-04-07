@@ -29,12 +29,14 @@
             class="image-container"
             v-if="currentItem && currentItem.image !== ''"
           >
-            <!-- <Preloader v-if="loading" /> -->
+            <Preloader v-show="loading" />
             <img
+              v-show="!loading"
               style="width: 100%; height:100%;"
               :src="currentImageUrl"
               :alt="currentItem.name"
-              @error="imageLoadError"
+              @error="currentImagePath = currentItem.image"
+              @load="loading = false"
             />
           </div>
           <div class="content-container">
@@ -53,8 +55,27 @@
               <span aria-hidden="true">&times;</span>
             </button>
             <div class="item-one-line item-name-price-container">
-              <div class="item-name font-weight-bold">
-                {{ dt(currentItem) }}
+              <div
+                style="display: flex; 
+                  justify-content:space-between; 
+                  padding:.5rem;
+                  padding-top:1rem;
+                  "
+              >
+                <!-- :style="{ color: isFirstItem() ? 'grey' : 'unset' }" -->
+                <div
+                  class="navigation-icons"
+                  @click="previousItem(currentItem)"
+                >
+                  <i class="fa fa-arrow-circle-left"></i>
+                </div>
+                <div class="item-name font-weight-bold">
+                  {{ dt(currentItem) }}
+                </div>
+                <!-- :style="{ color: isLastItem() ? 'grey' : 'unset' }" -->
+                <div class="navigation-icons" @click="nextItem(currentItem)">
+                  <i class="fa fa-arrow-circle-right"></i>
+                </div>
               </div>
               <div class="item-price">
                 {{ formatPrice(currentItem.value * quantity) }}
@@ -93,16 +114,20 @@ import { mapState, mapGetters } from 'vuex'
 import bootstrap from '@/bootstrap'
 import ModifiersContent from '@/components/pos/content/catalog/items/popup/Content.vue'
 import Scroll from '@/mixins/Scroll'
-// import Preloader from '@/components/util/Preloader'
+import Preloader from '@/components/util/Preloader'
 import Quantity from '@/components/pos/content/catalog/items/popup/header/Quantity.vue'
 export default {
   name: 'ItemDetailsPopup',
   components: {
     ModifiersContent,
     Quantity,
-    // Preloader,
+    Preloader,
   },
   mixins: [Scroll],
+  model: {
+    prop: 'currentItem',
+    event: 'input',
+  },
   props: {
     currentItem: {
       type: Object,
@@ -116,20 +141,18 @@ export default {
     return {
       currentImagePath: '',
       alignText: 'left !important',
-      // loading: true,
+      loading: true,
     }
   },
   watch: {
     currentItem(newVal) {
       if (!$.isEmptyObject(newVal)) {
+        this.loading = true
+        this.currentImagePath = ''
         this.$nextTick(() => {
-          // this.loading = true
           this.getImage()
           this.alignTextProperly()
           this.assignModifiers()
-          // setTimeout(() => {
-          //   this.loading = false
-          // }, 1500)
         })
       }
     },
@@ -140,14 +163,61 @@ export default {
     ...mapState('order', ['splitBill']),
     ...mapGetters(['foodMenuHendler', 'bascketItems']),
     ...mapGetters('orderForm', ['quantity']),
+    ...mapGetters('category', ['items']),
     currentImageUrl() {
       return this.currentImagePath
     },
     hasModifiers() {
       return this.$store.getters['modifier/hasModifiers'](this.currentItem)
     },
+    lengthOfTotalItems() {
+      return this.items.length
+    },
   },
   methods: {
+    eventEmitter(payLoad) {
+      this.$emit('input', payLoad)
+    },
+    isFirstItem() {
+      const index = this.items.indexOf(this.currentItem)
+      if (index != -1 && index === 0) {
+        return true
+      }
+      return false
+    },
+    isLastItem() {
+      const index = this.items.indexOf(this.currentItem)
+      if (index != -1 && index + 1 == this.lengthOfTotalItems) {
+        return true
+      }
+      return false
+    },
+    nextItem(currentItem) {
+      // if (this.isLastItem()) {
+      //   return false
+      // }
+      const currentItemIndex = this.items.indexOf(currentItem)
+      const totalItemsLength = this.lengthOfTotalItems
+      if (currentItemIndex != -1 && currentItemIndex < totalItemsLength) {
+        this.eventEmitter(this.items[currentItemIndex + 1])
+      }
+      if (currentItemIndex != -1 && currentItemIndex == totalItemsLength - 1) {
+        this.eventEmitter(this.items[0])
+      }
+    },
+    previousItem(currentItem) {
+      // if (this.isFirstItem()) {
+      //   return false
+      // }
+      const currentItemIndex = this.items.indexOf(currentItem)
+      const totalItemsLength = this.lengthOfTotalItems
+      if (currentItemIndex != -1 && currentItemIndex > 0) {
+        this.eventEmitter(this.items[currentItemIndex - 1])
+      }
+      if (currentItemIndex != -1 && currentItemIndex == 0) {
+        this.eventEmitter(this.items[totalItemsLength - 1])
+      }
+    },
     alignTextProperly() {
       let language = this.availableLanguages.find(
         lang => lang.code === this.$store.state.location.locale
@@ -210,6 +280,7 @@ export default {
         } else {
           this.$store.dispatch('order/addToOrder', item).then(() => {
             hideModal('#item-details-popup')
+            this.resetPopup()
           })
         }
       }
@@ -221,9 +292,6 @@ export default {
       } else {
         this.bascketItems.find(x => x.name === item.name).count++
       }
-    },
-    imageLoadError() {
-      this.currentImagePath = this.currentItem.image
     },
     setQuantity(quantity) {
       this.$store.commit('orderForm/updateQuantity', quantity)
@@ -253,12 +321,23 @@ export default {
     .close {
       line-height: normal;
       opacity: 1;
+      :hover {
+        color: red;
+      }
     }
     .modal-body {
       padding: 0.5rem !important;
       background-color: #f2f2f2 !important;
       display: grid;
       grid-template-columns: 1fr 1fr;
+      .image-container {
+        /deep/ .preloader {
+          /deep/ img {
+            width: 100%;
+            height: 100%;
+          }
+        }
+      }
     }
 
     .positemoption_body {
@@ -273,8 +352,10 @@ export default {
       .item-one-line {
         display: grid;
         grid-template-columns: 1fr;
-        margin: 0.7rem 0rem;
+        // margin: 0.7rem 0rem;
         text-align: center;
+        width: 90% !important;
+        margin: auto !important;
         .item-name-price-container {
           grid-template-columns: 5fr 1fr;
         }
@@ -285,14 +366,20 @@ export default {
         }
         .item-name {
           font-size: 2rem;
-          margin-top: 1rem;
+          // margin-top: 1rem;
+        }
+        .navigation-icons {
+          font-size: 2.5rem;
+          :hover {
+            color: #5056ca;
+            cursor: pointer;
+          }
         }
       }
       .item-description {
-        width: 90%;
+        width: 100%;
         font-size: 1.2rem;
         color: black;
-        margin: auto !important;
         padding-bottom: 1rem;
       }
       #modifiers-popup {
@@ -313,7 +400,9 @@ export default {
       grid-template-columns: 1fr !important;
       height: 4rem;
       button {
-        width: 100%;
+        width: 98%;
+        margin-left: 1%;
+        margin-right: 1%;
         border-radius: 0px;
       }
       .add-to-cart-btn {
@@ -341,9 +430,9 @@ export default {
   margin-bottom: 2rem;
   /deep/ .quantity-component {
     display: grid;
-    grid-template-columns: 1fr 2fr;
+    grid-template-columns: 37% 60%;
     /deep/ .lbl-quantity {
-      font-size: 1.2rem !important;
+      font-size: 1.3rem !important;
       color: black !important;
     }
     /deep/ .inputs-wrapper {
@@ -367,7 +456,8 @@ export default {
         width: 8.75rem;
         border: 0 none;
         margin: auto;
-        margin-left: 2rem;
+        font-size: 1.1rem !important;
+        margin-left: 2rem !important;
       }
       .POSItemOptions_quantity_inputs {
         width: 7.1875rem;
