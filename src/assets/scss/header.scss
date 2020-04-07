@@ -392,7 +392,12 @@
     @include responsive(mobile) {
       max-width: unset;
     }
-
+    .modal-content{
+      @include responsive(mobile) {
+        max-height: 80vh;
+        overflow: auto;
+      } 
+    }
     .business-summary-wrapper {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
