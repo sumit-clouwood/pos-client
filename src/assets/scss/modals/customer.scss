@@ -205,6 +205,7 @@
       .modal-content {
         display: grid;
         grid-template-rows: max-content 1fr max-content;
+        max-height: 80vh !important;
 
         .modal-header {
           border: none;

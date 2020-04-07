@@ -340,6 +340,8 @@ export default {
       max-width: 100%;
 
       .modal-content {
+        max-height: 80vh !important;
+        overflow: auto;
         .modal-header {
         }
       }
