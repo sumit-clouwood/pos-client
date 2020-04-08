@@ -14,6 +14,7 @@ const state = {
   selectedContainerLength: 0,
   modifingItem: false,
   additionalComboValue: 0,
+  itemsModifiersValueTaxDiff: [],
 }
 
 const actions = {
@@ -53,12 +54,31 @@ const actions = {
   reset({ commit }) {
     commit(mutation.RESET)
   },
-  setAdditionalComboPrice({ commit }, items) {
+  setAdditionalComboPrice({ commit, dispatch }, items) {
     let price = 0
     items.forEach(item => {
       price += item.additional_combo_value || 0
     })
+    dispatch('itemsModifierPrice', items)
     commit(mutation.ADDITIONAL_COMBO_VALUE, price)
+  },
+  itemsModifierPrice({ commit, rootGetters, state }, items) {
+    let modifierPriceCollection = {
+      itemId: state.comboItemsList._id,
+      price: 0,
+      tax: 0,
+    }
+    items.forEach(item => {
+      if (rootGetters['modifier/hasModifiers'](item)) {
+        // eslint-disable-next-line no-console
+        console.log(item.modifiersData)
+        item.modifiersData.forEach(modifier => {
+          modifierPriceCollection.price += modifier.price || 0
+          modifierPriceCollection.tax += modifier.tax || 0
+        })
+      }
+    })
+    commit(mutation.ITEMS_MODIFIERS_VALUE_TAX_DIFF, modifierPriceCollection)
   },
 }
 
@@ -170,6 +190,7 @@ const getters = {
       item.value = itemPrice * qty
     } else {
       item.value = item.value + state.additionalComboValue
+      // state.itemsModifiersValueTaxDiff.price // need to update first item collection and add modifiers data
     }
     item.grossPrice = rootGetters['order/grossPrice'](item)
     item.netPrice = rootGetters['order/netPrice'](item)
@@ -180,11 +201,9 @@ const getters = {
       rootGetters['modifier/hasModifiers'](item)
     )
     if (rootGetters['modifier/hasModifiers'](item) && !isCombo) {
-      item.grossPrice = rootGetters['order/itemGrossPrice'](item)
-      item.netPrice = rootGetters['order/itemNetPrice'](item)
+      /*item.grossPrice = rootGetters['order/itemGrossPrice'](item)
+      item.netPrice = rootGetters['order/itemNetPrice'](item)*/
     }
-    // item.grossPrice = rootGetters['order/itemGrossPrice'](item)
-    // item.netPrice = rootGetters['order/itemNetPrice'](item)
     item.tax = Num.round(item.grossPrice - item.netPrice)
     return item
     /*activeItem.tax = this.$store
@@ -236,6 +255,7 @@ const mutations = {
     state.forCombo = 0
     state.selectedContainerLength = 0
     state.modifingItem = false
+    state.itemsModifiersValueTaxDiff = []
   },
   [mutation.CONTAINER_SELECTED_LENGTH](state, selectedContainerLength) {
     state.selectedContainerLength = selectedContainerLength
@@ -245,6 +265,18 @@ const mutations = {
   },
   [mutation.ADDITIONAL_COMBO_VALUE](state, additionalComboValue) {
     state.additionalComboValue = additionalComboValue
+  },
+  [mutation.ITEMS_MODIFIERS_VALUE_TAX_DIFF](state, modifier) {
+    // eslint-disable-next-line no-console
+    console.log(modifier, 'modifiermodifier')
+    if (!modifier) {
+      state.itemsModifiersValueTaxDiff = []
+    } else {
+      state.itemsModifiersValueTaxDiff.push(modifier)
+
+      // state.itemsModifiersValueTaxDiff.price += modifier.price
+      // state.itemsModifiersValueTaxDiff.tax += modifier.tax
+    }
   },
 }
 

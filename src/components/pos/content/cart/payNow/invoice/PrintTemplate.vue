@@ -107,7 +107,9 @@
           </tr>
           <template v-for="(item, key) in order.items">
             <tr v-if="item.type == 'combo_item'" :key="key">
-              <td class="first-col" valign="top">{{ item.qty }} {{ measurement_unit(item) }}</td>
+              <td class="first-col" valign="top">
+                {{ item.qty }} {{ measurement_unit(item) }}
+              </td>
               <td>
                 <div class="food-title">
                   {{ translate_item(item) }}

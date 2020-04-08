@@ -611,21 +611,23 @@ const actions = {
         // let isCombo = item.item_type === CONST.COMBO_ITEM_TYPE
         if(item.item_type === CONSTANTS.COMBO_ITEM_TYPE) {
           item.combo_selected_items.forEach(cmb_item => {
-            cmb_item.modifiersData.forEach(modifier => {
-              let modifierEntity = {
-                entity_id: modifier.modifierId,
-                for_item: cmb_item.orderIndex,
-                price: modifier.price,
-                tax: modifier.tax,
-                name: modifier.name,
-                qty: cmb_item.quantity,
-                type: modifier.type,
-              }
-              if (modifier.store_id) {
-                modifierEntity.store_id = modifier.store_id
-              }
-              itemModifiers.push(modifierEntity)
-            })
+            if (rootGetters['modifier/hasModifiers'](cmb_item)) {
+              cmb_item.modifiersData.forEach(modifier => {
+                let modifierEntity = {
+                  entity_id: modifier.modifierId,
+                  for_item: cmb_item.orderIndex,
+                  price: modifier.price,
+                  tax: modifier.tax,
+                  name: modifier.name,
+                  qty: cmb_item.quantity,
+                  type: modifier.type,
+                }
+                if (modifier.store_id) {
+                  modifierEntity.store_id = modifier.store_id
+                }
+                itemModifiers.push(modifierEntity)
+              })
+            }
           })
         }
         let orderItemsPayload = {

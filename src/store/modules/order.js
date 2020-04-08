@@ -103,10 +103,17 @@ const getters = {
       if (item.modifiersData && item.modifiersData.length) {
         modifiersTax += getters.itemModifiersTax(item) * item.quantity
       }
+      if (item.item_type === CONST.COMBO_ITEM_TYPE) {
+        modifiersTax += getters.comboItemModifier(item).tax
+      }
     })
     return modifiersTax
   },
-
+  comboItemModifier: (state, getters, rootState) => item => {
+    return rootState.comboItems.itemsModifiersValueTaxDiff.find(
+      comboItemModifier => comboItemModifier.itemId === item._id
+    )
+  },
   totalItemTaxDiscount: (state, getters) => {
     let itemTaxDiscount = 0
     getters.splitItems.forEach(item => {
@@ -180,13 +187,15 @@ const getters = {
     let subTotal = 0
     getters.splitItems.forEach(item => {
       const itemPrice = Num.round(item.netPrice) * item.quantity
-      const modifiersPrice = getters.itemModifiersPrice(item) * item.quantity
+      let modifiersPrice = getters.itemModifiersPrice(item) * item.quantity
+      if (item.item_type === CONST.COMBO_ITEM_TYPE) {
+        modifiersPrice += getters.comboItemModifier(item).price
+      }
       const itemDiscount = getters.itemNetDiscount(item) * item.quantity
       const modifiersDiscount =
         getters.itemModifierDiscount(item) * item.quantity
       subTotal += itemPrice + modifiersPrice - itemDiscount - modifiersDiscount
     })
-
     return Num.round(subTotal)
   },
 
@@ -288,17 +297,24 @@ const getters = {
   itemGrossPrice: (state, getters) => item => {
     const itemPrice = item.netPrice
     //gross price is inclusive of tax but modifier price is not including tax
-    const modifiersPrice = getters.itemModifiersPrice(item)
+    let modifiersPrice = getters.itemModifiersPrice(item)
     //add modifier tax to modifier price to make it gross price
-    const modifiersTax = getters.itemModifiersTax(item)
+    let modifiersTax = getters.itemModifiersTax(item)
+    if (item.item_type === CONST.COMBO_ITEM_TYPE) {
+      modifiersPrice += getters.comboItemModifier(item).price
+      modifiersTax += getters.comboItemModifier(item).tax
+    }
     return itemPrice + item.tax + modifiersPrice + modifiersTax
   },
 
   itemNetPrice: (state, getters) => item => {
     const itemPrice = item.netPrice
     //gross price is inclusive of tax but modifier price is not including tax
-    const modifiersPrice = getters.itemModifiersPrice(item)
-    //add modifier tax to modifier price to make it gross price
+    let modifiersPrice = getters.itemModifiersPrice(item)
+    if (item.item_type === CONST.COMBO_ITEM_TYPE) {
+      modifiersPrice += getters.comboItemModifier(item).price
+    }
+    //add modifier tax to modifier pritemNetPriceice to make it gross price
     //const modifiersTax = getters.itemModifiersTax(item)
     return itemPrice + modifiersPrice
   },
