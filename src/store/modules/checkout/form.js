@@ -522,11 +522,11 @@ const mutations = {
       state.payments.splice(index, 1, type)
     } else {
       let isPaymentAcceptble = 1
-      if (method.name == 'Loyalty Points') {
+      if (method.type == CONST.LOYALTY) {
         /* prevent adding multiple loyalty payments using method type */
         /* check existing payments for same (Loyalty Points) method name*/
         state.payments.forEach(element => {
-          if (element.method.name == 'Loyalty Points') {
+          if (element.method.type == CONST.LOYALTY) {
             isPaymentAcceptble = 0
           }
         })
