@@ -153,6 +153,7 @@ export default {
         console.log('combo_item', item)
         this.$store.commit('comboItems/ACTIVE_COMBO_ITEMS', {}, { root: true })
         this.$store.commit('comboItems/SET_COMBO_ITEMS', item)
+        this.$store.dispatch('comboItems/updateOrderIndex')
         this.$store.commit(
           'comboItems/SET_SELECTED_ITEM_DATA',
           item.combo_items[0]
