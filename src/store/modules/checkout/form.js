@@ -515,11 +515,13 @@ const mutations = {
   },
   addAmount(state, { amount, method }) {
     state.decimalExists = false
-    const index = state.payments.findIndex(type => type === method)
-    if (index !== -1) {
-      let type = state.payments[index]
-      type.amount += parseFloat(amount)
-      state.payments.splice(index, 1, type)
+    const paymentIndex = state.payments.findIndex(
+      payment => payment.method === method
+    )
+    if (paymentIndex !== -1) {
+      let paymentMethod = state.payments[paymentIndex]
+      paymentMethod.amount += parseFloat(amount)
+      state.payments.splice(paymentIndex, 1, paymentMethod)
     } else {
       let isPaymentAcceptble = 1
       if (method.type == CONST.LOYALTY) {
