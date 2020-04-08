@@ -91,6 +91,8 @@ export default {
     },
     filterInput($event) {
       const keyCode = $event.keyCode ? $event.keyCode : $event.which
+      // eslint-disable-next-line no-console
+      console.log('keyCode', keyCode, '$event.which', $event.which)
       if (keyCode == 8 || $event.which == 8) {
         return
       } else if (keyCode < 48 || keyCode > 57) {
