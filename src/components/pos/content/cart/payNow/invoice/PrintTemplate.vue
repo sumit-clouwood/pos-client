@@ -128,7 +128,7 @@
                     </div>
                     <template v-for="(modifier, i) in order.item_modifiers">
                       <template v-if="modifier.for_item == combo_item.no">
-                        <div class="combo-items-extra" :key="i">
+                        <div class="combo-items-extra" :key="i + 100">
                           {{ translate_item_modifier(modifier) }}
                           <span v-if="modifier.price !== 0"
                             >({{
