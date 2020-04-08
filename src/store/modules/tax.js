@@ -40,13 +40,14 @@ const getters = {
 }
 
 const actions = {
-  fetchAll({ commit, rootState }) {
+  fetchAll({ commit, rootState, dispatch }) {
     TaxService.fetchAll(rootState.order.orderType.OTApi).then(response => {
       //If taxes available for location.
       if (response.data.data.length) {
         commit('SET_TAXES', response.data.data)
       }
     })
+    dispatch('openItemTaxes')
   },
   openItemTaxes({ commit }) {
     TaxService.fetchOpenItemTaxes().then(response => {

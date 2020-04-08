@@ -1,6 +1,6 @@
 <template>
   <div class="modal fade" id="switchWaiter" role="dialog">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
       <!-- Modal content-->
       <div class="modal-content color-dashboard-background">
         <div class="modal-header customer-header color-secondary">
@@ -27,20 +27,20 @@
         <div class="modal-footer">
           <div class="btn-announce">
             <button
-              type="button"
-              class="btn btn-danger cancel-announce color-button color-text-invert"
-              data-dismiss="modal"
-              @click="resetWaiter"
-            >
-              {{ _t('Cancel') }}
-            </button>
-            <button
               class="btn btn-success btn-large color-main color-text-invert"
               type="button"
               id="discount-save-btn"
               @click="switchWaiter(selectedWaiter)"
             >
               {{ _t('Assign') }}
+            </button>
+            <button
+              type="button"
+              class="btn btn-danger cancel-announce color-button color-text-invert"
+              data-dismiss="modal"
+              @click="resetWaiter"
+            >
+              {{ _t('Cancel') }}
             </button>
           </div>
         </div>
@@ -103,3 +103,35 @@ export default {
   },
 }
 </script>
+
+<style lang="scss" scoped>
+@import '@/assets/scss/pixels_rem.scss';
+@import '@/assets/scss/variables.scss';
+@import '@/assets/scss/mixins.scss';
+
+@include responsive(mobile) {
+  #switchWaiter {
+    overflow: hidden !important;
+    .modal-dialog {
+      max-width: 100% !important;
+      margin: 0px !important;
+      margin-top: 2rem !important;
+      .modal-content {
+        width: 95% !important;
+        margin: auto !important;
+        .modal-body {
+          padding-left: 0px !important;
+          padding-right: 0px !important;
+          width: 90%;
+        }
+        #available-tables {
+          width: 100%;
+          .table-status-container {
+            grid-template-columns: 1fr 1fr !important;
+          }
+        }
+      }
+    }
+  }
+}
+</style>

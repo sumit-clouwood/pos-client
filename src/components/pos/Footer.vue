@@ -363,6 +363,7 @@
     <!--All popup including online order, because we need to apply few js which are not on header so all popups will be here-->
     <DineIn />
     <openItem />
+    <generic-open-item></generic-open-item>
     <AddNote />
     <item-note></item-note>
     <Discount />
@@ -395,6 +396,13 @@
     <OrderDetailsPopup />
     <InformationPopup :responseInformation="this.message" :title="this.title" />
     <combox-box></combox-box>
+    <DineInCoverSelection
+      v-if="brand.number_of_covers && covers && cartType !== 'hold'"
+    />
+    <DineInTableSelection
+      v-if="brand.move_table && availableTables && cartType !== 'hold'"
+    />
+    <alert-popup></alert-popup>
   </div>
 </template>
 
@@ -430,6 +438,7 @@ import Loyalty from '../pos/content/cart/newOrders/popup/Loyalty.vue'
 import OnlineOrderDetails from './header/popups/OnlineOrderDetails'
 import OrderDetailsPopup from '@/components/pos/content/OrderDetailPopup'
 import InformationPopup from '@/components/pos/content/InformationPopup'
+import AlertPopup from '@/components/pos/content/Alert'
 import ModificationPermissions from '@/components/pos/content/orderDetails/ModificationPermissions'
 import DineinBtn from './footer/buttons/cart/dinein'
 import CrmBtn from './footer/buttons/cart/crm'
@@ -439,6 +448,9 @@ import openItemButton from '@/components/pos/openItem/button'
 import openItem from '@/components/pos/openItem/item'
 import ComboxBox from '@/components/pos/content/catalog/comboBox/ComboBox'
 
+import genericOpenItem from '@/components/pos/openItem/genericItem'
+import DineInTableSelection from '@/components/dinein/cart/popup/DineInTableSelection'
+import DineInCoverSelection from '@/components/dinein/cart/popup/DineInCoverSelection.vue'
 import * as CONST from '@/constants'
 
 import { mapState, mapGetters } from 'vuex'
@@ -477,6 +489,7 @@ export default {
     Invoice,
     OrderDetailsPopup,
     InformationPopup,
+    AlertPopup,
     ModificationPermissions,
     DineinBtn,
     CrmBtn,
@@ -485,6 +498,9 @@ export default {
     openItemButton,
     openItem,
     ComboxBox,
+    genericOpenItem,
+    DineInTableSelection,
+    DineInCoverSelection,
   },
   data() {
     return {
@@ -506,6 +522,7 @@ export default {
       'needSupervisorAccess',
     ]),
     ...mapState('location', ['brand']),
+    ...mapState('dinein', ['availableTables', 'covers']),
     ...mapState('sync', ['online']),
     ...mapGetters('location', ['formatPrice', '_t']),
 
@@ -603,13 +620,6 @@ export default {
       this.slicker()
     })
   },
-
-  /*updated() {
-    this.$nextTick(() => {
-      alert(3)
-      // $('ul.ullist-icons').slick('refresh')
-    })
-  },*/
 }
 </script>
 

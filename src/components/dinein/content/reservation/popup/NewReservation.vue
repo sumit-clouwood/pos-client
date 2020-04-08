@@ -1,6 +1,6 @@
 <template>
   <div class="modal fade" id="NewReservation">
-    <div class="modal-dialog" style="max-width: 80%">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 80%">
       <div class="modal-content">
         <!-- Modal Header -->
         <!--<div class="modal-header">
@@ -711,7 +711,8 @@ export default {
 </script>
 
 <style lang="scss">
-@import '../../../../../assets/scss/variables';
+@import '@/assets/scss/variables';
+@import '@/assets/scss/mixins';
 
 .num_guests {
   display: grid;
@@ -814,7 +815,7 @@ export default {
 }
 div#NewReservation label {
   color: #a4a4a4;
-  font-size: 14px;
+  font-size: $px16;
   font-weight: normal;
 }
 
@@ -868,10 +869,10 @@ div#NewReservation .num_guests .btn-secondary label {
   justify-content: center;
 }
 .next {
-  width: 40px !important;
+  width: 20px !important;
 }
 .prev {
-  width: 40px !important;
+  width: 20px !important;
 }
 .pre .SCDayNum {
   width: 80px;

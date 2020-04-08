@@ -2,7 +2,7 @@
   <!-- Manage Customers -->
   <div>
     <div class="modal fade offline" id="manage-customer" role="dialog">
-      <div class="modal-dialog">
+      <div class="modal-dialog modal-dialog-centered modal-dialog-centered">
         <!-- Modal content-->
         <div class="modal-content color-dashboard-background">
           <div class="modal-header customer-header color-secondary">
@@ -17,20 +17,20 @@
           <div class="modal-footer">
             <div class="btn-announce">
               <button
-                type="button"
-                class="btn btn-danger cancel-announce color-button"
-                data-dismiss="modal"
-                id="close-customer"
-              >
-                {{ _t('Cancel') }}
-              </button>
-              <button
                 class="btn btn-success btn-large color-main"
                 type="button"
                 id="post_announcement"
                 v-on:click="post"
               >
                 {{ _t('Save') }}
+              </button>
+              <button
+                type="button"
+                class="btn btn-danger cancel-announce color-button"
+                data-dismiss="modal"
+                id="close-customer"
+              >
+                {{ _t('Cancel') }}
               </button>
             </div>
             <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
@@ -107,14 +107,16 @@ export default {
 }
 </style>
 <style lang="scss">
-@import '../../../../assets/scss/pixels_rem.scss';
-@import '../../../../assets/scss/variables.scss';
-@import '../../../../assets/scss/mixins.scss';
+@import '@/assets/scss/pixels_rem.scss';
+@import '@/assets/scss/variables.scss';
+@import '@/assets/scss/mixins.scss';
 
 @include responsive(mobile) {
   #manage-customer {
     .modal-dialog {
       .modal-content {
+        overflow-y: auto;
+        overflow-x: hidden !important;
         .modal-header {
           width: 100vw;
           border: none;
@@ -127,6 +129,7 @@ export default {
           grid-template-rows: max-content 1fr;
           padding-bottom: 0;
           height: calc(100vh - 250px);
+          width: 95% !important;
         }
 
         .modal-body {
@@ -184,6 +187,7 @@ export default {
             border-right: none;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             border-bottom: none;
+            margin-top: 10px !important;
           }
 
           .manage-customer-table {
@@ -266,11 +270,12 @@ export default {
           .pagination-customer-details {
             display: grid;
             grid-template-columns: max-content;
-            justify-content: end;
+            justify-content: center;
             margin-bottom: 20px;
             margin-right: 0;
           }
           .btn-announce {
+            width: 95% !important;
             #cust-new {
               margin-left: 0;
             }
@@ -278,15 +283,10 @@ export default {
               width: 100%;
             }
             .btn-danger {
-              position: absolute;
-              top: 28px;
-              right: 40px;
-              width: 0;
-              height: 0 !important;
               border: none;
               &:after {
                 font-size: 16px;
-                content: '✖';
+
                 color: #444;
                 position: absolute;
                 right: -10px;

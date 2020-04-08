@@ -20,8 +20,8 @@ export default {
 </script>
 
 <style lang="scss">
-@import '../../assets/scss/variables.scss';
-@import '../../assets/scss/mixins.scss';
+@import '@/assets/scss/variables.scss';
+@import '@/assets/scss/mixins.scss';
 
 @include responsive(mobile) {
   #search-loyalty-customer {
@@ -34,7 +34,6 @@ export default {
     right: -100vw;
     bottom: 0;
     z-index: 1060;
-    background-color: #fff;
     border-left: 1px solid #eee;
 
     &.active {
@@ -49,6 +48,7 @@ export default {
       right: 0;
       bottom: 0;
       left: 0;
+      width: 100% !important;
 
       .modal-dialog {
         position: absolute;
@@ -59,7 +59,7 @@ export default {
         height: auto;
         min-height: auto;
         max-width: 100%;
-        margin: 0;
+        margin-top: 20vh;
         transform: none;
 
         .modal-content {

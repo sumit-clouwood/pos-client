@@ -1,7 +1,7 @@
 <template>
   <div class="transaction-item">
     <h3 class="trans_head">{{ _t('ITEMS') }}</h3>
-    <div class="trans-item-list-wrapper">
+    <div class="trans-item-list-wrapper item-list-wrapper item-height-wrapper">
       <div class="trans-item-list" v-for="(item, index) in items" :key="index">
         <div class="trans-menu-item">
           <div
@@ -133,5 +133,18 @@ export default {
   color: #3d3f43;
   font-size: 0.875rem;
   font-weight: 600;
+}
+</style>
+<style lang="scss" scoped>
+@import '@/assets/scss/pixels_rem.scss';
+@import '@/assets/scss/variables.scss';
+@import '@/assets/scss/mixins.scss';
+@include responsive(mobile) {
+  .item-list-wrapper {
+    overflow: scroll;
+  }
+  .item-height-wrapper {
+    height: 16vh !important;
+  }
 }
 </style>

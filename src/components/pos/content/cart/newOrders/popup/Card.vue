@@ -5,7 +5,7 @@
     role="dialog"
     style="display: none; padding-left: 6px;"
   >
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
       <!-- Modal content-->
       <div class="modal-content color-dashboard-background">
         <div class="modal-header customer-header color-secondary">

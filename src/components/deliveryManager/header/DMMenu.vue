@@ -70,10 +70,10 @@ export default {
     ...mapState('deliveryManager', ['section']),
   },
   methods: {
-    updateOrderStatus: function(orderStatus) {
+    updateOrderStatus(orderStatus) {
       this.$store.commit('deliveryManager/LIST_TYPE', orderStatus.title)
       this.$store.commit('deliveryManager/SECTION', orderStatus.section)
-      if (this.section) {
+      if (orderStatus.section) {
         this.$store.dispatch('deliveryManager/updateDMOrderStatus', orderStatus)
         deliveryTabs(orderStatus.dataRelated)
       }

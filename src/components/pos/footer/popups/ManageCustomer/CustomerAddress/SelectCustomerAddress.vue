@@ -1,7 +1,7 @@
 <template>
   <!-- Add to order popup -->
   <div class="modal fade" id="add-to-order" role="dialog">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
       <!-- Modal content-->
       <div class="modal-content color-dashboard-background">
         <div class="modal-header customer-header">
@@ -89,10 +89,10 @@ export default {
   },
 }
 </script>
-<style lang="scss">
-@import '../../../../../../assets/scss/pixels_rem.scss';
-@import '../../../../../../assets/scss/variables.scss';
-@import '../../../../../../assets/scss/mixins.scss';
+<style lang="scss" scoped>
+@import '@/assets/scss/pixels_rem.scss';
+@import '@/assets/scss/variables.scss';
+@import '@/assets/scss/mixins.scss';
 
 @include responsive(mobile) {
   #add-to-order {
@@ -110,7 +110,8 @@ export default {
 
         .modal-body {
           overflow: auto;
-          height: calc(100vh - 200px);
+          // height: calc(100vh - 200px);
+          min-height: 0 !important;
 
           .location-delivery-area-address {
             .order-location {
@@ -142,7 +143,7 @@ export default {
             grid-gap: 10px;
 
             button {
-              width: auto;
+              width: 100% !important;
               margin: 0;
               padding: 0 20px;
             }

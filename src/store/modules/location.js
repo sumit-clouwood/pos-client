@@ -8,7 +8,7 @@ import TimezoneService from '@/services/data/TimezoneService'
 import * as CONST from '@/constants'
 import router from '../../router'
 import moment from 'moment-timezone'
-/* global $ */
+/* global $ showModal */
 // initial state
 const state = {
   currency: 'AED',
@@ -87,7 +87,7 @@ const getters = {
 // actions
 const actions = {
   //coming from login
-  setContext({ state, commit, rootGetters }) {
+  setContext({ state, commit, rootGetters, dispatch }) {
     return new Promise(resolve => {
       LocationService.getLocationData().then(storedata => {
         let availabeStores = storedata.data.available_stores
@@ -126,7 +126,35 @@ const actions = {
             store: rootGetters['context/store'],
           })
         }
-
+        let path = storedata.data.start_path
+        if (path != null) {
+          if (availabeStores.length === 1) {
+            if (path !== 'pos') {
+              if (path === 'delivery_home') {
+                path = 'delivery-manager'
+              }
+              let URL = path + rootGetters['context/store']
+              router.push(URL)
+              router.go(router.currentRoute)
+            }
+            dispatch('auth/getUserDetails', storedata.data.user_id, {
+              root: true,
+            })
+          } else {
+            showModal('#multiStores')
+          }
+        } else {
+          let currentURL = window.location.href
+          if (currentURL.includes('/pos')) {
+            if (
+              router.currentRoute.params &&
+              (!router.currentRoute.params.brand_id ||
+                !router.currentRoute.params.store_id)
+            ) {
+              location.href = currentURL.split('/pos/')[0]
+            }
+          }
+        }
         resolve()
       })
     })
@@ -342,6 +370,17 @@ const actions = {
         JSON.stringify(response.data.data)
       )
     })
+  },
+
+  measurementUnits({ rootGetters, commit }) {
+    if (rootGetters['sync/lastFetch']('h') > 12) {
+      LocationService.getMeasurementUnits().then(response => {
+        if (response && response.data) {
+          commit('sync/lastFetch', null, { root: true })
+          commit(mutation.SET_MEASUREMENT_UNITS, response.data)
+        }
+      })
+    }
   },
 
   formatDate: function({ commit }) {

@@ -123,7 +123,7 @@ img {
 }
 
 ::-webkit-scrollbar {
-  width: $px10;
+  width: 0px;
   height: $px3;
   @include responsive(mobile) {
     width: 0px;
@@ -307,7 +307,7 @@ div#nav-tabContent {
   .nav-tabs {
     .nav-item {
       margin-bottom: -1px;
-      font-size: 20px;
+      font-size: $px20;
       border: medium none !important;
       flex: 1 1 auto;
       justify-content: center;
@@ -504,8 +504,7 @@ h6 {
           width: 100%;
           border: none !important;
           padding: 20px !important;
-          min-height: 23.75rem;
-          max-height: 23.75rem;
+          margin: auto;
         }
 
         .modal-footer {
@@ -513,7 +512,7 @@ h6 {
             display: flex;
             flex-wrap: wrap;
             flex-direction: row-reverse;
-            margin-bottom: 35px;
+            margin-bottom: 0px !important;
             button {
               height: 50px !important;
               font-size: 14px !important;
@@ -583,7 +582,7 @@ h6 {
         }
 
         .modal-footer {
-          padding: 20px !important;
+          padding: 10px !important;
           margin-bottom: 0px !important;
           box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }

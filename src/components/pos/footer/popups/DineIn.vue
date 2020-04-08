@@ -1,7 +1,7 @@
 <template>
   <!-- Dining option Model -->
   <div class="modal fade" id="dining-option" role="dialog">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
       <!-- Modal content-->
       <div class="modal-content color-dashboard-background">
         <div class="modal-header customer-header color-secondary">
@@ -49,11 +49,11 @@
             <div
               class="option-contain"
               :class="{ active: selectedOrderType.OTApi === 'event' }"
-              @click="setOrderType({ OTview: 'Event', OTApi: 'event' })"
+              @click="showReservationSection()"
             >
-              <img src="img/pos/event.svg" />
+              <img src="img/pos/reservation.svg" />
               <span class="color-text-invert">
-                {{ _t('Event') }}
+                {{ _t('Reservation') }}
               </span>
             </div>
             <div
@@ -115,6 +115,7 @@
 </template>
 
 <script>
+/* global $ */
 import { mapState, mapGetters } from 'vuex'
 import * as CONST from '@/constants'
 
@@ -139,7 +140,6 @@ export default {
         this.$store.dispatch('customer/reset')
       }
       this.selectedOrderType = newVal
-
       if (newVal.OTApi !== oldVal.OTApi) {
         //don't know what is this ???
         /*
@@ -197,10 +197,24 @@ export default {
         }
       }
     },
+    showReservationSection() {
+      this.$router.push('/dine-in' + this.store)
+      this.$store
+        .dispatch('dinein/updateDineInOrderStatus', {
+          title: 'reservation',
+          pageId: '',
+        })
+        .then(() => {
+          $('#' + this.activeArea._id).click()
+        })
+    },
   },
 }
 </script>
 <style lang="scss">
+@import '@/assets/scss/pixels_rem.scss';
+@import '@/assets/scss/variables.scss';
+@import '@/assets/scss/mixins.scss';
 .carhop {
   padding: 10px !important;
 
@@ -208,11 +222,6 @@ export default {
     width: 50px;
   }
 }
-
-@import '../../../../assets/scss/pixels_rem.scss';
-@import '../../../../assets/scss/variables.scss';
-@import '../../../../assets/scss/mixins.scss';
-
 @include responsive(mobile) {
   #dining-option {
     .modal-dialog {

@@ -1,12 +1,11 @@
 <template>
   <div class="modal fade" id="printer-settings" role="dialog">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
       <!-- Modal content-->
       <div class="modal-content color-dashboard-background">
         <div class="modal-header customer-header color-secondary">
           <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
           <h4 class="customer-title color-text-invert">
-            Printer Configuration
             {{ _t('Printer Configuration') }}
           </h4>
         </div>
@@ -84,7 +83,6 @@ export default {
   },
   methods: {
     getAllPrinters() {
-      alert('1')
       if (window.PrintHandle != null) {
         window.PrintHandle.GetAllPrinters(function(data) {
           let dataObj = JSON.parse(data)

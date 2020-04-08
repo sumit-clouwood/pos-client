@@ -2,7 +2,7 @@
   <!--Add Address popup-->
 
   <div class="modal fade" id="add_address" role="dialog">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
       <!-- Modal content-->
       <div class="modal-content">
         <div class="modal-header customer-header">
@@ -236,13 +236,13 @@ export default {
   },
 }
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
 .getAreaId {
   width: 55.6795rem !important;
 }
-@import '../../../../../../assets/scss/pixels_rem.scss';
-@import '../../../../../../assets/scss/variables.scss';
-@import '../../../../../../assets/scss/mixins.scss';
+@import '@/assets/scss/pixels_rem.scss';
+@import '@/assets/scss/variables.scss';
+@import '@/assets/scss/mixins.scss';
 #add_address {
   .modal-dialog {
     /*margin: 0;*/
@@ -331,6 +331,9 @@ export default {
   }
 }
 @include responsive(mobile) {
+  .getAreaId {
+    width: auto !important;
+  }
   #add_address {
     .modal-dialog {
       margin: 0;

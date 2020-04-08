@@ -54,7 +54,6 @@
         >
           {{ _t('Move Table') }}
         </button>
-        <DineInTableSelection />
       </div>
       <div
         v-if="brand.number_of_covers && covers && cartType !== 'hold'"
@@ -68,7 +67,6 @@
         >
           {{ selectedCover.name ? _t(selectedCover.name) : _t('Select Cover') }}
         </button>
-        <DineInCoverSelection />
       </div>
       <div
         v-if="enabledSplitBill && orderId && covers && cartType !== 'hold'"
@@ -100,6 +98,9 @@
           <img src="img/dinein/guest-user.svg" /> <b> {{ guests }}</b>
         </span>
       </div>
+      <div class="btn btn-success cartBottomBtn">
+        <i aria-hidden="true" class="fa fa-chevron-down"></i>
+      </div>
     </div>
     <div class="scrolls">
       <div
@@ -126,15 +127,10 @@ import { bus } from '@/eventBus'
 
 import { mapState, mapGetters, mapActions } from 'vuex'
 import CheckoutMixin from '@/mixins/Checkout'
-import DineInTableSelection from './popup/DineInTableSelection'
-import DineInCoverSelection from './popup/DineInCoverSelection'
 export default {
   name: 'Header',
   mixins: [CheckoutMixin],
-  components: {
-    DineInTableSelection,
-    DineInCoverSelection,
-  },
+  components: {},
   data() {
     return {
       showScrollUp: false,
@@ -143,6 +139,9 @@ export default {
       myStyle: {
         backgroundColor: '#fff',
       },
+      cartItemHeight: 0,
+      cartHeight: 0,
+      cartInitHeight: 0,
     }
   },
   mounted() {
@@ -236,9 +235,9 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-@import '../../../assets/scss/pixels_rem.scss';
-@import '../../../assets/scss/variables.scss';
-@import '../../../assets/scss/mixins.scss';
+@import '@/assets/scss/pixels_rem.scss';
+@import '@/assets/scss/variables.scss';
+@import '@/assets/scss/mixins.scss';
 
 .hide {
   display: none;
@@ -275,7 +274,7 @@ export default {
     .main-oreders-buttons {
       display: grid !important;
       align-items: center;
-      margin: 0;
+      margin: auto !important;
       #holdorder {
         height: 35px;
         width: 30%;

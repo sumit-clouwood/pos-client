@@ -1,20 +1,23 @@
 <template>
   <!-- CRM details -->
   <div class="modal fade" id="display-order" role="dialog">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
       <!-- Modal content-->
       <div class="modal-content color-dashboard-background">
         <Preloader v-if="customerLoading" />
         <div v-else class="modal-body manage-customer-wrap">
           <div class="crm-details-wrap">
-            <div id="order-profile" class="profile-order">
+            <div
+              id="order-profile"
+              class="profile-order order-profile-wrapper "
+            >
               <CustomerProfile />
               <CustomerDeliveryAddress />
               <div class="cu-loyality-points">
                 <LoyaltyPoint />
                 <div class="btn-right-neworder">
                   <button
-                    class="color-button color-main color-text-invert"
+                    class="color-button color-main color-text-invert place-new-order-wrapper"
                     id="place-new-order"
                     data-dismiss="modal"
                     @click="
@@ -35,21 +38,21 @@
           <CustomerPastOrders :pastOrders="pastOrders" />
         </div>
         <div class="modal-footer">
-          <div class="pagination-customer-details">
-            <paginate
-              v-if="paginateDetails.totalPages"
-              :page-count="paginateDetails.totalPages"
-              :page-range="1"
-              :margin-pages="1"
-              :clickHandler="setPastOrderPageNumber"
-              :prev-text="_t('Prev')"
-              :next-text="_t('Next')"
-              :container-class="''"
-              :page-class="_t('page-item')"
-            ></paginate>
-            <!--</template>-->
-          </div>
           <div class="btn-announce">
+            <div class="pagination-customer-details">
+              <paginate
+                v-if="paginateDetails.totalPages"
+                :page-count="paginateDetails.totalPages"
+                :page-range="1"
+                :margin-pages="1"
+                :clickHandler="setPastOrderPageNumber"
+                :prev-text="_t('Prev')"
+                :next-text="_t('Next')"
+                :container-class="''"
+                :page-class="_t('page-item')"
+              ></paginate>
+              <!--</template>-->
+            </div>
             <button
               type="button"
               class="btn btn-danger cancel-announce color-button color-text-invert"
@@ -119,9 +122,9 @@ div#display-order .modal-dialog {
 }
 </style>
 <style lang="scss">
-@import '../../../../../assets/scss/pixels_rem.scss';
-@import '../../../../../assets/scss/variables.scss';
-@import '../../../../../assets/scss/mixins.scss';
+@import '@/assets/scss/pixels_rem.scss';
+@import '@/assets/scss/variables.scss';
+@import '@/assets/scss/mixins.scss';
 
 @include responsive(mobile) {
   #display-order {
@@ -186,12 +189,12 @@ div#display-order .modal-dialog {
 
               .cu-loyality-points {
                 display: grid;
-                grid-template-columns: 1fr;
+                grid-template-columns: 1fr !important;
               }
             }
 
             .customer-insight {
-              width: 100%;
+              width: 100% !important;
 
               .title-cu {
                 padding: 10px 0;
@@ -261,11 +264,14 @@ div#display-order .modal-dialog {
             }
           }
         }
-
-        .modal-footer {
-        }
       }
     }
+  }
+  .order-profile-wrapper {
+    width: 95% !important;
+  }
+  .place-new-order-wrapper {
+    width: 100% !important;
   }
 }
 </style>

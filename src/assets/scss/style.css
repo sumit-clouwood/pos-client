@@ -226,7 +226,7 @@ div#nav-tabContent {
   border: 1px solid #E3E7F2; }
   div#nav-tabContent .nav-tabs .nav-item {
     margin-bottom: -1px;
-    font-size: 20px;
+    font-size: 1.25rem;
     border: medium none !important;
     flex: 1 1 auto;
     justify-content: center;
@@ -363,13 +363,12 @@ h6 {
           width: 100%;
           border: none !important;
           padding: 20px !important;
-          min-height: 23.75rem;
-          max-height: 23.75rem; }
+          margin: auto; }
         .modal .modal-dialog .modal-content .modal-footer .btn-announce {
           display: flex;
           flex-wrap: wrap;
           flex-direction: row-reverse;
-          margin-bottom: 35px; }
+          margin-bottom: 0px !important; }
           .modal .modal-dialog .modal-content .modal-footer .btn-announce button {
             height: 50px !important;
             font-size: 14px !important;
@@ -410,7 +409,7 @@ h6 {
           .modal .modal-dialog .modal-content .modal-header .main-orders-title .text {
             font-size: 16px; }
       .modal .modal-dialog .modal-content .modal-footer {
-        padding: 20px !important;
+        padding: 10px !important;
         margin-bottom: 0px !important;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); } }
 .header {
@@ -561,7 +560,7 @@ h6 {
         color: #000;
         font-size: 1rem; }
         .header .header-main .header-main-right .setting-dropdown .setting-menu-wrapper {
-          height: calc(100vh - 160px);
+          height: calc(100vh - 152px);
           overflow: auto; }
         .header .header-main .header-main-right .setting-dropdown ul.dine-footer-navmenu {
           display: flex;
@@ -577,13 +576,12 @@ h6 {
             .header .header-main .header-main-right .setting-dropdown ul.dine-footer-navmenu li svg path {
               fill: #cc3232;
               opacity: 1; }
-        .header .header-main .header-main-right .setting-dropdown li:hover {
+        .header .header-main .header-main-right .setting-dropdown li a:hover, .header .header-main .header-main-right .setting-dropdown li a.router-link-active {
+          color: #fff;
           background: #5056ca; }
-          .header .header-main .header-main-right .setting-dropdown li:hover svg path {
+          .header .header-main .header-main-right .setting-dropdown li a:hover svg path, .header .header-main .header-main-right .setting-dropdown li a.router-link-active svg path {
             fill: #fff;
             opacity: 1; }
-          .header .header-main .header-main-right .setting-dropdown li:hover a {
-            color: #fff; }
         .header .header-main .header-main-right .setting-dropdown li svg {
           width: 1.5625rem; }
           .header .header-main .header-main-right .setting-dropdown li svg path {
@@ -625,7 +623,14 @@ h6 {
 
 .transaction-orders .header-main .header-main-right .walkin-btn-design > .walkin-btn {
   height: 3.125rem;
-  margin-right: 0.625rem; }
+  margin-right: 0.625rem;
+  padding: 0; }
+  .transaction-orders .header-main .header-main-right .walkin-btn-design > .walkin-btn > a {
+    height: 3.125rem;
+    display: grid;
+    vertical-align: middle;
+    padding: 0.375rem 0.75rem;
+    align-items: center; }
 
 .header .header-main .change-brand-setting {
   display: none !important; }
@@ -639,7 +644,7 @@ h6 {
       display: none; }
 
   .setting-dropdown {
-    z-index: 999;
+    z-index: 9999 !important;
     width: 90% !important;
     overflow: auto; }
     .setting-dropdown ul.dine-footer-navmenu {
@@ -667,6 +672,8 @@ h6 {
         border: 1px solid #E3E7F2;
         text-align: left;
         padding: 0.5rem; }
+        #business-summary .modal-dialog .business-summary-wrapper table td span, #business-summary .modal-dialog .business-summary-wrapper table th span {
+          cursor: pointer; }
 
 .POSItemOptions {
   padding-right: 0.625rem; }
@@ -886,6 +893,20 @@ h6 {
     right: 30px !important;
     bottom: 90px !important; }
 
+@media only screen and (min-width: 320px) and (max-width: 960px) {
+  .POSItemOptions .POSItemOptions_money {
+    text-align: right !important;
+    padding-right: 1rem !important; }
+  .POSItemOptions .POSItemOptions_quantity_inputs {
+    width: 7.1875rem !important; }
+
+  .POSItemOptions .modal-dialog .modal-content .modal-footer .btn-announce {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    grid-row-gap: 0.75rem !important;
+    width: 100% !important; }
+  .POSItemOptions .modal-dialog .modal-content .modal-footer .buttoned.colorwhite.donebutton {
+    width: 100%; } }
 #customer .modal-dialog,
 #manage-customer .modal-dialog {
   max-width: 73.75rem; }
@@ -1059,9 +1080,9 @@ h6 {
           #customer .modal-dialog .modal-content .modal-body .left-form > div {
             margin-bottom: 10px; }
             #customer .modal-dialog .modal-content .modal-body .left-form > div > input {
-              width: 100%; }
+              width: 95%; }
             #customer .modal-dialog .modal-content .modal-body .left-form > div > select {
-              width: 100%; }
+              width: 95%; }
             #customer .modal-dialog .modal-content .modal-body .left-form > div label {
               padding: 0; }
         #customer .modal-dialog .modal-content .modal-body .right-form {
@@ -1069,18 +1090,18 @@ h6 {
           #customer .modal-dialog .modal-content .modal-body .right-form > div {
             margin-bottom: 10px; }
             #customer .modal-dialog .modal-content .modal-body .right-form > div > input {
-              width: 100%; }
+              width: 95%; }
             #customer .modal-dialog .modal-content .modal-body .right-form > div > select {
-              width: 100%; }
+              width: 95%; }
             #customer .modal-dialog .modal-content .modal-body .right-form > div > label {
               padding: 0; }
           #customer .modal-dialog .modal-content .modal-body .right-form .customer-group .right-shift {
             padding: 0; }
             #customer .modal-dialog .modal-content .modal-body .right-form .customer-group .right-shift .vdatetime {
-              width: 100%; }
+              width: 95%; }
               #customer .modal-dialog .modal-content .modal-body .right-form .customer-group .right-shift .vdatetime input {
                 margin: 0;
-                width: 100%; } }
+                width: 95%; } }
 @media only screen and (min-width: 320px) and (max-width: 960px) {
   #search-loyalty-customer .modal-dialog {
     position: absolute;
@@ -1091,20 +1112,23 @@ h6 {
     margin: 0;
     min-height: auto;
     border-left: 1px solid #ddd; }
-    #search-loyalty-customer .modal-dialog .modal-content .modal-header {
-      border-radius: 0;
-      padding: 10px 20px; }
-    #search-loyalty-customer .modal-dialog .modal-content .modal-body {
-      padding: 20px; }
-      #search-loyalty-customer .modal-dialog .modal-content .modal-body > .color-text-invert {
-        margin-bottom: 10px; }
-      #search-loyalty-customer .modal-dialog .modal-content .modal-body .add-note-area input {
-        width: 100%; }
-      #search-loyalty-customer .modal-dialog .modal-content .modal-body .inputSearch {
-        margin-bottom: 10px; }
-      #search-loyalty-customer .modal-dialog .modal-content .modal-body button {
-        margin-bottom: 10px;
-        border-radius: 3px; } }
+    #search-loyalty-customer .modal-dialog .modal-content {
+      width: 95vw !important;
+      margin: auto; }
+      #search-loyalty-customer .modal-dialog .modal-content .modal-header {
+        border-radius: 0;
+        padding: 10px 20px; }
+      #search-loyalty-customer .modal-dialog .modal-content .modal-body {
+        padding: 20px; }
+        #search-loyalty-customer .modal-dialog .modal-content .modal-body > .color-text-invert {
+          margin-bottom: 10px; }
+        #search-loyalty-customer .modal-dialog .modal-content .modal-body .add-note-area input {
+          width: 95%; }
+        #search-loyalty-customer .modal-dialog .modal-content .modal-body .inputSearch {
+          margin-bottom: 10px; }
+        #search-loyalty-customer .modal-dialog .modal-content .modal-body button {
+          margin-bottom: 10px;
+          border-radius: 3px; } }
 #dining-option .modal-dialog {
   max-width: 35rem; }
   #dining-option .modal-dialog .modal-content .modal-body .dining-option-block {
@@ -1632,6 +1656,9 @@ h6 {
   overflow: hidden;
   text-align: center;
   padding-top: 2.1875rem; }
+  @media only screen and (min-width: 320px) and (max-width: 960px) {
+    .amount-change-wrap {
+      padding-top: 0px !important; } }
 
 a:hover {
   text-decoration: none; }
@@ -1665,7 +1692,6 @@ div#order-confirmation .modal-dialog {
   height: 36.875rem;
   box-shadow: 0 10px 40px rgba(133, 139, 151, 0.16);
   border-radius: 3px;
-  background-color: #ffffff;
   max-width: 39.6875rem; }
 
 .order-header > h4.order-confirm-title {
@@ -1898,6 +1924,9 @@ button:focus {
         letter-spacing: 0.5px;
         padding: 1.25rem 0 0 0;
         text-align: left; }
+        @media only screen and (min-width: 320px) and (max-width: 960px) {
+          #tip-amount .modal-dialog .modal-content .modal-body .tip-amount-wrap > p {
+            font-size: 1.25rem; } }
       #tip-amount .modal-dialog .modal-content .modal-body .tip-amount-wrap input {
         height: 3.125rem;
         width: 100%;
@@ -1908,6 +1937,12 @@ button:focus {
         color: #4B4E53;
         border: 1px solid #E3E7F2;
         margin-top: 0.625rem; }
+        @media only screen and (min-width: 320px) and (max-width: 960px) {
+          #tip-amount .modal-dialog .modal-content .modal-body .tip-amount-wrap input {
+            font-size: 1.25rem; } }
+    @media only screen and (min-width: 320px) and (max-width: 960px) {
+      #tip-amount .modal-dialog .modal-content .modal-footer .btn-announce button {
+        font-size: 1.25rem !important; } }
     #tip-amount .modal-dialog .modal-content .modal-footer .btn-announce #add-top {
       width: 6.875rem;
       height: 3.125rem;
@@ -1917,8 +1952,6 @@ button:focus {
       border-color: #5056ca; }
       #tip-amount .modal-dialog .modal-content .modal-footer .btn-announce #add-top > span {
         padding-right: 0.625rem; }
-#tip-amount > .modal-footer {
-  display: none; }
 
 @media only screen and (min-width: 320px) and (max-width: 960px) {
   #tip-amount {
@@ -1938,8 +1971,6 @@ button:focus {
       display: grid; }
       #tip-amount .modal-dialog .modal-content {
         border-radius: 0;
-        display: grid;
-        grid-template-rows: max-content max-content;
         position: absolute;
         margin-top: auto; }
         #tip-amount .modal-dialog .modal-content .modal-body .tip-amount-wrap input {
@@ -2020,7 +2051,6 @@ button:focus {
   width: 35rem;
   box-shadow: 0 10px 40px rgba(133, 139, 151, 0.16);
   border-radius: 3px;
-  background-color: #ffffff;
   max-width: 35rem; }
   #add-note .modal-dialog .modal-content {
     box-shadow: 0 10px 40px rgba(133, 139, 151, 0.16); }
@@ -2720,7 +2750,7 @@ a:hover {
               margin-right: 0.3125rem;
               cursor: pointer; }
       #display-order .modal-dialog .modal-content .modal-body .crm-details-wrap #order-profile .cu-loyality-points {
-        overflow: hidden;
+        overflow: scroll;
         margin: 0 auto;
         display: grid;
         grid-template-columns: max-content 1fr;
@@ -2913,7 +2943,8 @@ a:hover {
             #display-order .modal-dialog .modal-content .modal-body .crm-details-wrap .customer-insight .customer-insight-feedback .ullist-feedback li.active .color-smile {
               z-index: 1; }
   #display-order .modal-dialog .modal-content .modal-footer {
-    padding-top: 0; }
+    padding-top: 0;
+    border-top: 2px solid grey; }
 
 /**********************************/
 .cu-delivery-area-location {
@@ -3160,6 +3191,9 @@ label.container-radio-btn img {
   margin-right: 0.625rem;
   width: 2.1875rem;
   height: 2.1875rem; }
+  @media only screen and (min-width: 320px) and (max-width: 960px) {
+    label.container-radio-btn img {
+      margin: auto; } }
 
 button:focus {
   box-shadow: none !important; }
@@ -3179,6 +3213,9 @@ button:focus {
 
 button#gift-card-btn {
   width: 6.5625rem; }
+  @media only screen and (min-width: 320px) and (max-width: 960px) {
+    button#gift-card-btn {
+      width: auto !important; } }
 
 .gift-card-details-wrap > div.gift-card-detail {
   width: 47.5%;
@@ -3548,7 +3585,8 @@ div#total-order-past-wrap {
       #add_address .modal-dialog .modal-content .modal-body .left-form > div label span,
       #add_address .modal-dialog .modal-content .modal-body .right-form > div label span {
         color: #f44040;
-        font-size: 1.5rem; }
+        font-size: 1.5rem;
+        line-height: 10px; }
     #add_address .modal-dialog .modal-content .modal-body .left-form > div .selectpicker,
     #add_address .modal-dialog .modal-content .modal-body .right-form > div .selectpicker {
       background-image: url("/assets/images/select-arrow.png");
@@ -3610,6 +3648,9 @@ button.btn.btn-danger.cancel-announce {
   width: 7.8125rem;
   background: #cc3232;
   border-color: #cc3232; }
+  @media only screen and (min-width: 320px) and (max-width: 960px) {
+    button.btn.btn-danger.cancel-announce {
+      width: auto !important; } }
 
 button.btn.btn-danger.cancel-announce > span {
   padding-right: 0.625rem; }
@@ -3702,8 +3743,16 @@ div#user-details .modal-dialog {
   align-items: center;
   justify-content: center;
   overflow: auto; }
+  @media only screen and (min-width: 320px) and (max-width: 960px) {
+    .modal .modal-dialog {
+      margin: auto !important; } }
   .modal .modal-dialog .modal-content {
     width: 100%; }
+    @media only screen and (min-width: 320px) and (max-width: 960px) {
+      .modal .modal-dialog .modal-content {
+        width: 95% !important;
+        margin: auto !important;
+        margin-top: 2rem !important; } }
     .modal .modal-dialog .modal-content .modal-header {
       background-color: #D7DCE2;
       display: flex;
@@ -3711,6 +3760,9 @@ div#user-details .modal-dialog {
       padding: 0.9375rem 1.875rem;
       font-size: 1rem;
       font-weight: 600; }
+      @media only screen and (min-width: 320px) and (max-width: 960px) {
+        .modal .modal-dialog .modal-content .modal-header {
+          background-color: #D7DCE2 !important; } }
       .modal .modal-dialog .modal-content .modal-header h4 {
         margin: 0; }
     .modal .modal-dialog .modal-content .modal-body {
@@ -3724,7 +3776,14 @@ div#user-details .modal-dialog {
         align-items: center;
         justify-content: flex-end;
         margin-left: auto; }
+        @media only screen and (min-width: 320px) and (max-width: 960px) {
+          .modal .modal-dialog .modal-content .modal-footer .btn-announce {
+            display: grid !important;
+            grid-template-columns: 1fr !important;
+            width: 100% !important;
+            grid-row-gap: 10px !important; } }
         .modal .modal-dialog .modal-content .modal-footer .btn-announce button {
+          margin-top: auto;
           height: 3.125rem;
           font-weight: 600;
           font-size: 1rem;
@@ -3764,6 +3823,9 @@ button {
     width: 7.8125rem;
     background: #cc3232;
     border-color: #cc3232; }
+    @media only screen and (min-width: 320px) and (max-width: 960px) {
+      button .btn .btn-danger .cancel-announce {
+        width: auto !important; } }
   button .btn .btn-danger > span {
     padding-right: 0.5rem; }
   button #post_announcement {
@@ -3773,6 +3835,9 @@ button {
     border-color: #5056ca;
     margin-left: 0.9375rem;
     font-size: 0.875rem; }
+    @media only screen and (min-width: 320px) and (max-width: 960px) {
+      button #post_announcement {
+        width: auto !important; } }
   button #dining-opt {
     width: 6.875rem;
     height: 3.125rem;
@@ -3816,6 +3881,9 @@ button {
     border-radius: 3px;
     background-color: #cc3232;
     box-shadow: 0 2px 2px 0 rgba(232, 150, 150, 0.5); }
+    @media only screen and (min-width: 320px) and (max-width: 960px) {
+      button#cancel-annc {
+        width: auto !important; } }
   button.reject-order {
     height: 2.1875rem;
     border-radius: 3px;
@@ -3829,6 +3897,9 @@ button {
     height: 2.1875rem;
     padding: 0 0.9375rem;
     float: right; }
+    @media only screen and (min-width: 320px) and (max-width: 960px) {
+      button.add-to-delivery {
+        width: auto !important; } }
     button.add-to-delivery:hover {
       background: #5056ca;
       color: #fff !important;
@@ -3849,6 +3920,9 @@ button {
     line-height: normal;
     letter-spacing: 0.6px;
     color: #ffffff; }
+    @media only screen and (min-width: 320px) and (max-width: 960px) {
+      button#modify-btn {
+        width: auto !important; } }
     button#modify-btn > span {
       float: left; }
   button#view-history {
@@ -4062,8 +4136,8 @@ body {
     color: #fff;
     margin: 0 auto;
     background-color: #3A3E9F;
-    width: 1.875rem;
-    height: 1.875rem;
+    width: 2.875rem;
+    height: 2.5rem;
     font-size: 0.75rem;
     display: flex;
     align-items: center;
@@ -4569,6 +4643,10 @@ body {
       letter-spacing: 0.0625rem;
       position: relative;
       border: 0.0625rem dashed #a4a4a4; }
+      @media only screen and (min-width: 320px) and (max-width: 960px) {
+        .main-orders .main-orders-contacts .main-oreders-email {
+          width: 95%;
+          margin: auto; } }
       .main-orders .main-orders-contacts .main-oreders-email > span {
         position: absolute;
         top: -0.75rem;
@@ -4880,6 +4958,13 @@ body {
           justify-content: center;
           padding: 0 10px;
           height: 100%; }
+          @media only screen and (min-width: 320px) and (max-width: 960px) {
+            .footer .footer-buttons .button .pay-btn-holder .pay-button {
+              display: grid;
+              grid-template-columns: auto;
+              width: auto;
+              color: red;
+              background-color: blue; } }
           .footer .footer-buttons .button .pay-btn-holder .pay-button span {
             color: #fff;
             padding-left: 0.625rem;
@@ -5019,7 +5104,8 @@ body {
 #dm-content-wrapper {
   overflow: hidden; }
 
-div#reservation-orders-show .rinning-order-title, #waiting-dinein-show .rinning-order-title {
+div#reservation-orders-show .rinning-order-title,
+#waiting-dinein-show .rinning-order-title {
   padding: 2.8125rem; }
 
 .dinein-footer-icon {
@@ -5096,21 +5182,27 @@ li#circle-table-shape {
   padding-top: 0.3125rem;
   margin-left: 0.9375rem;
   border-bottom: solid 0.125rem #e3e7f2; }
-  .floor-section-wrap .ullist-floor {
-    padding-left: 0; }
-    .floor-section-wrap .ullist-floor > li {
-      display: inline-block;
-      min-width: 3.125rem;
-      text-align: center; }
-      .floor-section-wrap .ullist-floor > li.active {
-        border-bottom: 0.125rem solid #5056CA; }
-        .floor-section-wrap .ullist-floor > li.active > a {
-          color: #3d3f43;
-          font-weight: bold; }
-      .floor-section-wrap .ullist-floor > li > a {
-        color: #72747b;
-        font-size: 0.875rem;
-        padding: 0.3125rem; }
+  .floor-section-wrap .floor-section {
+    display: grid;
+    overflow: auto;
+    grid-template-columns: 1fr; }
+    .floor-section-wrap .floor-section .ullist-floor {
+      padding-left: 0;
+      display: flex;
+      white-space: nowrap; }
+      .floor-section-wrap .floor-section .ullist-floor > li {
+        text-align: center;
+        display: inline-block;
+        margin-right: 1rem; }
+        .floor-section-wrap .floor-section .ullist-floor > li.active {
+          border-bottom: 0.125rem solid #5056CA; }
+          .floor-section-wrap .floor-section .ullist-floor > li.active > a {
+            color: #3d3f43;
+            font-weight: bold; }
+        .floor-section-wrap .floor-section .ullist-floor > li > a {
+          color: #72747b;
+          font-size: 0.875rem;
+          padding: 0.625rem 0; }
 
 .ullist-dinein-table {
   padding-left: 0; }
@@ -5401,7 +5493,7 @@ button.qtyminus.value-qty {
   border-bottom-right-radius:  0;*/ }
 
 input.qty {
-  border: 0.0625rem solid #D8DCE1;
+  border: 0.0625rem solid #d8dce1;
   border-left: medium none;
   border-right: medium none;
   border-radius: 0; }
@@ -5413,7 +5505,7 @@ input.qty {
   width: 33.33%;
   text-align: center;
   outline: none;
-  color: #3D3F43;
+  color: #3d3f43;
   font-size: 1rem;
   font-weight: 600;
   height: 2.5rem;
@@ -5470,7 +5562,7 @@ input.qty {
 
 .sitting-image svg {
   -webkit-filter: drop-shadow(2px 2px 3px rgba(0, 0, 0, 0.3));
-  filter: drop-shadow(1px 1PX 2px rgba(0, 0, 0, 0.3)); }
+  filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.3)); }
   .sitting-image svg #dine-in-area {
     background: #ffffff; }
 
@@ -5571,13 +5663,9 @@ div#confirmModal .customer-title {
   font-size: 16px; }
 
 .running-actions {
-  display: grid;
-  grid-template-columns: repeat(2, auto);
+  display: flex;
   text-align: center;
-  align-items: center;
-  grid-gap: 10px;
-  position: sticky;
-  top: 0; }
+  align-items: center; }
 
 .action-status {
   display: grid;
@@ -5604,7 +5692,7 @@ div#confirmModal .customer-title {
   overflow: auto; }
   .table-order-view-wrapper > .table-order-view {
     border: 0.125rem solid #e5e9f4;
-    padding: 0.3125rem 0.625rem;
+    padding: 0.625rem;
     margin: 0.3125rem;
     border-radius: 4px;
     position: relative;
@@ -5616,9 +5704,15 @@ div#confirmModal .customer-title {
       grid-template-columns: 1fr;
       align-items: center; }
       .table-order-view-wrapper > .table-order-view > div .moodifiers-btn-wrapper {
-        display: grid;
-        grid-template-columns: auto auto;
+        display: flex;
+        justify-content: space-between;
         grid-gap: 10px; }
+        .table-order-view-wrapper > .table-order-view > div .moodifiers-btn-wrapper .running-actions > * {
+          margin-left: 10px; }
+        .table-order-view-wrapper > .table-order-view > div .moodifiers-btn-wrapper .running-actions > .dinefor-paynow {
+          padding: 0; }
+          .table-order-view-wrapper > .table-order-view > div .moodifiers-btn-wrapper .running-actions > .dinefor-paynow > a {
+            padding: 0.375rem 0.75rem; }
       .table-order-view-wrapper > .table-order-view > div .order-moifier-wrapper {
         display: flex;
         padding: 5px 0;
@@ -5647,7 +5741,7 @@ div#confirmModal .customer-title {
       transition: 0.3s ease-in-out; }
 
 #available-tables > .table-status:hover {
-  background: #E3E7F2; }
+  background: #e3e7f2; }
 
 .cancel-order-dd > .dropdown {
   border-bottom: 1px solid #cccccc; }
@@ -5655,6 +5749,12 @@ div#confirmModal .customer-title {
     padding: 0; }
 
 @media only screen and (min-width: 320px) and (max-width: 960px) {
+  #sitting-dinein-table .sitting-image {
+    overflow: auto; }
+    #sitting-dinein-table .sitting-image svg {
+      width: 768px;
+      overflow: auto; }
+
   #NewReservation .modal-dialog {
     max-width: 96% !important; }
     #NewReservation .modal-dialog .modal-content .modal-body {
@@ -5696,8 +5796,15 @@ div#confirmModal .customer-title {
       top: 30% !important;
       margin: 0 auto !important;
       background: #f8fbff !important;
-      max-height: 74px !important;
+      max-height: 145px !important;
       overflow: auto; }
+      body#page-top.dm-manager .new-pos #sitting-dinein-table .dropdown-content .tooltip-c-range .table-order-footer .buttons > span {
+        padding: 0.375rem 0.5rem; }
+      body#page-top.dm-manager .new-pos #sitting-dinein-table .dropdown-content .tooltip-c-range .table-order-content .order-details-with-action {
+        grid-template-columns: 1fr; }
+        body#page-top.dm-manager .new-pos #sitting-dinein-table .dropdown-content .tooltip-c-range .table-order-content .order-details-with-action .table-draw-order-details {
+          grid-template-columns: 1fr auto;
+          grid-gap: 6px; }
 
   .table-order-view-wrapper {
     grid-template-columns: 1fr; }
@@ -5730,9 +5837,9 @@ div#confirmModal .customer-title {
     margin: 0;
     padding: 0;
     background: #000000;
-    opacity: .65;
+    opacity: 0.65;
     filter: alpha(opacity=65);
-    -moz-opacity: .65;
+    -moz-opacity: 0.65;
     z-index: 101;
     display: none; }
   .hideBigScreen .all-booking-btns {
@@ -5785,7 +5892,7 @@ div#confirmModal .customer-title {
         text-align: left;
         font-size: 17px;
         font-weight: normal;
-        border-bottom: 1px solid #E3E7F2;
+        border-bottom: 1px solid #e3e7f2;
         min-height: 60px;
         margin: 0;
         border-radius: 0; }
@@ -5802,7 +5909,7 @@ div#confirmModal .customer-title {
       -ms-flex-pack: center;
       justify-content: center;
       border-radius: 3px;
-      background-color: #4B4E53; }
+      background-color: #4b4e53; }
       .hideBigScreen .all-booking-btns .footer-slide-menu.btn-menu-close {
         background-color: #cc3232;
         display: none;
@@ -5880,12 +5987,18 @@ div#confirmModal .customer-title {
         text-overflow: ellipsis;
         white-space: nowrap; }
       .dm-manager .header .header-main .header-main-left .change-location > button {
-        margin-right: 0; } }
+        margin-right: 0; }
+
+  .fixed-reservation {
+    width: 100vw !important; } }
 .dine-in-table-guest-details-pos {
   display: grid;
   grid-template-columns: 1fr 1fr;
   align-content: center;
   text-align: center; }
+  @media only screen and (min-width: 320px) and (max-width: 960px) {
+    .dine-in-table-guest-details-pos {
+      grid-column-gap: 10px !important; } }
 
 .tables-draw {
   border: 0.0625rem dashed;
@@ -5908,6 +6021,9 @@ div#confirmModal .customer-title {
       padding: 0.75rem 0.3125rem;
       position: relative;
       border-radius: 4px; }
+      @media only screen and (min-width: 320px) and (max-width: 960px) {
+        #available-tables .table-status-container .table-status {
+          text-align: center; } }
       #available-tables .table-status-container .table-status > span {
         padding: 0 2px !important;
         display: block !important;
@@ -5934,7 +6050,7 @@ div#confirmModal .customer-title {
       #available-tables .table-status-container .table-status.active {
         border-color: #5056CA !important; }
         #available-tables .table-status-container .table-status.active:after {
-          content: "\F00C";
+          content: '\F00C';
           font-family: FontAwesome;
           font-size: 1.125rem;
           color: #fff;
@@ -5946,9 +6062,9 @@ div#confirmModal .customer-title {
           right: 0rem;
           top: 0rem;
           border-radius: 0px 0px 0px 3px;
-          background-color: #767DFF;
+          background-color: #767dff;
           background-position: center center;
-          border-color: #767DFF !important; }
+          border-color: #767dff !important; }
 
 .driver-container > button {
   width: 100%; }
@@ -5978,8 +6094,8 @@ input[type='number']::-webkit-inner-spin-button {
   -webkit-appearance: none; }
 
 .button-wrapper {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
+  flex-wrap: wrap;
   width: auto;
   justify-content: center;
   margin: 0 auto; }
@@ -6104,7 +6220,7 @@ button.res-select-table {
   @media only screen and (min-width: 320px) and (max-width: 960px) {
     .transaction-orders .main-orders #cancellationReason .modal-dialog,
     .transaction-orders .main-orders #cancellationReason .modal-header {
-      max-width: 97%; } }
+      max-width: 100%; } }
   .transaction-orders .main-orders #cancellationReason .modal-dialog .autocomplete-container {
     grid-gap: 10px; }
   @media only screen and (min-width: 320px) and (max-width: 960px) {

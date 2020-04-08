@@ -61,6 +61,7 @@ import bootstrap from '@/bootstrap'
 import Preloader from '@/components/util/Preloader'
 import { mapState, mapGetters } from 'vuex'
 import moment from 'moment-timezone'
+
 export default {
   name: 'PrivateView',
   props: {},
@@ -134,6 +135,11 @@ export default {
                 this.progressIncrement = '100%'
               }, 100)
             })
+          }
+          if (event.data.msg === 'sync') {
+            if (event.data.data.status === 'done') {
+              this.$store.dispatch('sync/offlineSync', event.data.data.status)
+            }
           }
         })
       }, 3000)

@@ -33,3 +33,34 @@ export default {
   },
 }
 </script>
+<style lang="scss" scoped>
+@import '@/assets/scss/mixins.scss';
+@include responsive(mobile) {
+  .POSItemOptions_pricequantity {
+    .POSItemOptions_label {
+      padding-left: 8px !important;
+    }
+    .quantity-wrapper {
+      position: relative !important;
+      left: 0 !important;
+      right: 0 !important;
+    }
+
+    .item-count-wrapper {
+      margin-left: 1rem;
+      margin-right: 1rem;
+    }
+    .postItem-wrapper {
+      flex-flow: nowrap !important;
+    }
+    .quantity-btn-wrapper {
+      width: 100%;
+    }
+    .POSItemOptions_price {
+      display: grid !important;
+      grid-template-columns: 2fr 2fr !important;
+      padding: 4px !important;
+    }
+  }
+}
+</style>

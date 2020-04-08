@@ -4,6 +4,10 @@ export default {
     if (!amount) amount = 0
     return Math.round((parseFloat(amount) + 0.00001) * 100) / 100
   },
+  truncate2Decimal(number, fixed = 2) {
+    var re = new RegExp('^-?\\d+(?:.\\d{0,' + (fixed || -1) + '})?')
+    return parseFloat(number.toString().match(re)[0])
+  },
   toPrice(number) {
     //this converts negetive numbers to 0
     return number > 0 ? number : 0

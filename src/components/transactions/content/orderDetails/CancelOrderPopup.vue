@@ -120,20 +120,22 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-danger" data-dismiss="modal">
-              {{ _t('Close') }}
-            </button>
-            <button
-              type="button"
-              class="btn btn-success"
-              @click="
-                cancelOrderAction({
-                  order,
-                })
-              "
-            >
-              {{ _t('Submit') }}
-            </button>
+            <div class="btn-announce">
+              <button type="button" class="btn btn-danger" data-dismiss="modal">
+                {{ _t('Close') }}
+              </button>
+              <button
+                type="button"
+                class="btn btn-success"
+                @click="
+                  cancelOrderAction({
+                    order,
+                  })
+                "
+              >
+                {{ _t('Submit') }}
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -169,9 +171,11 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-danger" data-dismiss="modal">
-              {{ _t('Close') }}
-            </button>
+            <div class="btn-announce">
+              <button type="button" class="btn btn-danger" data-dismiss="modal">
+                {{ _t('Close') }}
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -311,8 +315,6 @@ function showModal(modalName) {
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/scss/pixels_rem.scss';
-@import '@/assets/scss/variables.scss';
 @import '@/assets/scss/mixins.scss';
 @include responsive(mobile) {
   #cancellationReason,

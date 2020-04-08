@@ -1,21 +1,26 @@
 @import 'pixels_rem.scss';
 @import 'variables.scss';
+
 .header {
   padding: 0 $px30;
+
   .header-main {
     height: $header-height;
     display: grid;
     grid-template-columns: auto auto;
+
     //padding: 0 $px30;
-    @include responsive(mobile){
+    @include responsive(mobile) {
       padding: 5px;
     }
+
     .header-main-left {
       height: $header-height;
       display: grid;
       grid-template-columns: auto auto;
       align-items: center;
       justify-content: start;
+
       @include responsive(mobile) {
         width: 10rem !important;
       }
@@ -61,15 +66,19 @@
       align-items: center;
       justify-content: flex-end;
       position: relative;
+
       .menu-language {
         margin-right: $px10;
+
         img {
           width: 24px;
         }
       }
+
       .switch-store {
         padding-right: $px10;
       }
+
       .user-name {
         height: $header-btn-height;
         display: flex;
@@ -79,6 +88,7 @@
         font-weight: 600;
         cursor: pointer;
       }
+
       .language-button {
         height: $px50;
         background: none;
@@ -87,6 +97,7 @@
         padding: 0 $px10;
         margin: 0 $px10;
       }
+
       .online {
         height: $header-btn-height;
         display: flex;
@@ -108,6 +119,7 @@
               color: $green;
             }
           }
+
           &:before {
             color: $red;
           }
@@ -131,6 +143,7 @@
             color: #fff;
             display: flex;
             align-items: center;
+
             .online-digit {
               width: $px20;
               height: $px20;
@@ -155,17 +168,20 @@
         justify-content: center;
         position: relative;
         cursor: pointer;
+
         .nav-link {
           padding: 0;
           display: inline-flex;
           align-items: center;
           justify-content: center;
+
           svg {
             width: $px25;
             height: $px25;
           }
         }
       }
+
       .status {
         .online {
           height: auto;
@@ -173,6 +189,7 @@
           margin-left: 0;
         }
       }
+
       .setting-dropdown {
         display: none;
         font-weight: 600;
@@ -197,10 +214,12 @@
         background-color: #fff;
         color: #000;
         font-size: $px16;
+
         .setting-menu-wrapper {
-          height: calc(100vh - 160px);
+          height: calc(100vh - 152px);
           overflow: auto;
         }
+
         ul {
           &.dine-footer-navmenu {
             display: flex;
@@ -208,11 +227,13 @@
             position: absolute;
             bottom: 0;
             width: 100%;
+
             li {
               border-bottom: medium none;
               display: grid;
               align-items: center;
               width: 100%;
+
               svg {
                 path {
                   fill: #cc3232;
@@ -222,26 +243,32 @@
             }
           }
         }
+
         li {
           &:hover {
             background: #5056ca;
+
             svg {
               path {
                 fill: #fff;
                 opacity: 1;
               }
             }
+            
             a {
               color: #fff;
             }
           }
+
           svg {
             width: $px25;
+
             path {
               fill: #000;
               opacity: 0.5;
             }
           }
+
           a {
             font-size: $px18;
             color: #555;
@@ -256,14 +283,16 @@
           }
         }
       }
+
       .profile-sidebar-header {
         display: grid;
         grid-template-columns: max-content auto max-content;
         align-items: center;
         justify-content: space-between;
         grid-row-gap: 20px;
-        padding: 30.5px 20px;
+        padding: 1.8rem 1rem;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+
         @include responsive(mobile) {
           padding: 30.5px 7px;
         }
@@ -281,24 +310,36 @@
           background-color: #fff;
         }
       }
+
       .popup {
         display: none;
       }
     }
   }
 }
+
 .transaction-orders {
   .header-main {
     .header-main-right {
       .walkin-btn-design {
-        > .walkin-btn {
+        >.walkin-btn {
           height: $px50;
           margin-right: $px10;
+          padding: 0;
+
+          >a {
+            height: $px50;
+            display: grid;
+            vertical-align: middle;
+            padding: $px6 $px12;
+            align-items: center;
+          }
         }
       }
     }
   }
 }
+
 .header {
   .header-main {
     .change-brand-setting {
@@ -310,62 +351,87 @@
 @include responsive(mobile) {
   .header {
     padding: 0;
+
     .header-main {
       .change-brand-setting {
         display: grid !important;
       }
+
       .change-brand-web {
         display: none;
       }
     }
   }
+
   .setting-dropdown {
-    z-index: 999;
-    width: 90% !important;
+    z-index: 9999 !important;
+    width: 70% !important;
     overflow: auto;
+
     ul {
       &.dine-footer-navmenu {
         position: static !important;
       }
     }
+
     li {
       text-align: left;
     }
   }
 }
+
 //Business Summary details
-#business-summary{
-  .modal-dialog{
+#business-summary {
+  @include responsive(mobile) {
+    position: fixed !important;
+  }
+  .modal-dialog {
     max-width: 70%;
+
+    @include responsive(mobile) {
+      max-width: unset;
+    }
+
     .business-summary-wrapper {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        grid-gap: $px20;
-        width: 100%;
-      table{
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-gap: $px20;
+      width: 100%;
+
+      @include responsive(mobile) {
+        grid-template-columns: 1fr !important;
+      }
+
+      table {
         border-collapse: collapse;
         width: 100%;
-        thead{
-          tr{
+
+        thead {
+          tr {
             background: $blue-middle;
             color: $white;
           }
         }
-        tbody{
-          tr{
-            &:nth-child(even){
+
+        tbody {
+          tr {
+            &:nth-child(even) {
               background-color: $gray-middle;
             }
-            .align-right{
+
+            .align-right {
               text-align: right;
             }
           }
         }
-        td, th{
+
+        td,
+        th {
           border: 1px solid $gray-middle;
           text-align: left;
           padding: $px8;
-          span{
+
+          span {
             cursor: pointer;
           }
         }

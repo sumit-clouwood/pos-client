@@ -24,7 +24,7 @@ export default {
       dbrequest.onblocked = function() {
         // Another connection is open, preventing the upgrade,
         // and it didn't close immediately.
-        reject('blocked')
+        reject({ idb: self.idb, event: 'blocked' })
       }
 
       dbrequest.onerror = function(event) {
@@ -32,30 +32,16 @@ export default {
       }
     })
   },
-  createBucket(bucket, options, cb) {
-    return new Promise((resolve, reject) => {
-      const objectStore = this.idb.createObjectStore(
-        bucket,
-        options
-          ? options
-          : {
-              autoIncrement: true,
-              keyPath: 'id',
-            }
-      )
-
-      if (cb) {
-        cb(objectStore)
-      }
-
-      objectStore.transaction.oncomplete = function() {
-        resolve(objectStore)
-      }
-
-      objectStore.transaction.onerror = function(event) {
-        reject(event)
-      }
-    })
+  createBucket(bucket, options) {
+    return this.idb.createObjectStore(
+      bucket,
+      options
+        ? options
+        : {
+            autoIncrement: true,
+            keyPath: 'id',
+          }
+    )
   },
   getBucket(bucketName, mode) {
     // retrieve our object storend
@@ -85,6 +71,17 @@ export default {
   find(bucket, key) {
     return new Promise((resolve, reject) => {
       var objectStoreRequest = bucket.get(key)
+      objectStoreRequest.onsuccess = function() {
+        resolve(objectStoreRequest.result)
+      }
+      objectStoreRequest.onerror = function(event) {
+        reject(event)
+      }
+    })
+  },
+  delete(bucket, key) {
+    return new Promise((resolve, reject) => {
+      var objectStoreRequest = bucket.delete(key)
       objectStoreRequest.onsuccess = function() {
         resolve(objectStoreRequest.result)
       }

@@ -8,10 +8,7 @@
       </a>
     </div>-->
     <div class="change-location color-main color-text-invert change-brand-web">
-      <button
-        class="popup-btn-save"
-        v-if="isPermitted(PERMISSIONS.BRAND_SETTINGS)"
-      >
+      <button class="popup-btn-save" v-if="allowed(PERMS.BRAND_SETTINGS)">
         <a :href="baseurl('dashboard')" target="_self">{{
           _t('Change Brand')
         }}</a>
@@ -43,6 +40,7 @@ export default {
   },
   computed: {
     ...mapGetters('location', ['_t', 'permitted']),
+    ...mapGetters('auth', ['allowed']),
   },
   methods: {
     baseurl(link) {

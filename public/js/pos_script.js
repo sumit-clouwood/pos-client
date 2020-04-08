@@ -45,7 +45,11 @@ $(document).ready(function() {
     return false
   })
 })
-
+/*$('.main, .header').click(() => {
+  alert('2')
+  $('.multi-store-menu-pos').slideUp()
+  $('.logo').removeClass('multistore')
+})*/
 $('#status-history').click(function() {
   $('div#dm-order-history-rec').show()
   $('button#recipt-history').show()

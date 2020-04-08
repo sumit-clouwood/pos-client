@@ -49,7 +49,6 @@ export default {
   },
   methods: {
     /*setPageNumber: function () {
-      alert()
       this.$store.dispatch('deliverManager/updateDispatchPageNumber', pageNumber)
     },*/
     ...mapActions('deliveryManager', ['updateDispatchPageNumber']),

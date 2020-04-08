@@ -1,5 +1,9 @@
 <template>
-  <div class="carousel-container" ref="carousel">
+  <div
+    class="carousel-container"
+    ref="carousel"
+    v-if="!show && !showAggregator"
+  >
     <div class="carousel">
       <transition name="slider">
         <ul
@@ -8,27 +12,102 @@
           @mousemove="doDrag"
           @mouseup="stopDrag"
         >
-          <li
-            v-for="(slide, key) in slides"
-            :key="key"
-            :class="{ active: key == currentSlide }"
-            :style="{
-              width: slideWidth + 'px',
-            }"
-            @click.stop=";[selectSlide({ index: key, slide: slide })]"
-          >
-            <div
-              class="slide"
-              :style="{
-                width: slideWidth - 10 + 'px',
-              }"
-            >
-              <img :src="slide.icon" />
-              <label class="shorten-sentence" :title="slide.name">
-                {{ slide.name }}
-              </label>
-            </div>
-          </li>
+          <template>
+            <template v-for="[currentKey, value] of Object.entries(slides)">
+              <li
+                v-if="isAggregatorChild(value)"
+                :style="{
+                  width: slideWidth + 'px',
+                }"
+                @click="close()"
+                :key="currentKey + 'aggregator'"
+              >
+                <div
+                  class="slide"
+                  :style="{
+                    width: slideWidth - 10 + 'px',
+                  }"
+                >
+                  <img src="img/icons/backarrow.svg" />
+                  <label class="shorten-sentence" title="Back">
+                    Back
+                  </label>
+                </div>
+              </li>
+              <li
+                v-if="currentKey === 'aggregator'"
+                :key="currentKey"
+                :class="{ active: currentKey == currentSlide }"
+                :style="{
+                  width: slideWidth + 'px',
+                }"
+              >
+                <div
+                  class="slide"
+                  :style="{
+                    width: slideWidth - 10 + 'px',
+                  }"
+                  @click="reCallSelf({ showAggregator, value })"
+                >
+                  <img :src="imagePath(currentKey, value)" />
+                  <label class="shorten-sentence" :title="currentKey">
+                    {{ currentKey }}
+                  </label>
+                </div>
+              </li>
+
+              <li
+                v-else-if="value.length === 1"
+                :key="currentKey"
+                :class="{ active: currentKey == currentSlide }"
+                :style="{
+                  width: slideWidth + 'px',
+                }"
+              >
+                <div
+                  @click.stop="
+                    selectSlide({ index: currentKey, slide: value[0] })
+                  "
+                  class="slide"
+                  :style="{
+                    width: slideWidth - 10 + 'px',
+                  }"
+                >
+                  <img :src="value[0].icon" />
+                  <label class="shorten-sentence" :title="dt(value[0])">
+                    {{ dt(value[0]) }}
+                  </label>
+                </div>
+              </li>
+              <li
+                v-else
+                :key="currentKey"
+                :class="{ active: currentKey == currentSlide }"
+                :style="{
+                  width: slideWidth + 'px',
+                }"
+              >
+                <div
+                  class="slide"
+                  :style="{
+                    width: slideWidth - 10 + 'px',
+                  }"
+                  @click="showChildSlides({ show, value, currentKey })"
+                >
+                  <img
+                    :src="
+                      value[0].type != 'aggregator'
+                        ? imagePath(currentKey)
+                        : fetchImage(value[0])
+                    "
+                  />
+                  <label class="shorten-sentence" :title="currentKey">
+                    {{ currentKey }}
+                  </label>
+                </div>
+              </li>
+            </template>
+          </template>
         </ul>
       </transition>
     </div>
@@ -46,194 +125,243 @@
       </ul>
     </div>
   </div>
+  <carousel
+    v-else-if="!show && showAggregator"
+    ref="paymentmethods"
+    :slides="aggregatorValues"
+    :perPage="4"
+    :width="456"
+    @click="selectSlide"
+  ></carousel>
+  <child-slider
+    v-else
+    ref="paymentmethods"
+    :slides="selectedValue"
+    :perPage="4"
+    :width="456"
+    :currentKey="currentKey"
+    @selected-slide="selectSlide"
+    @back="show = !show"
+  ></child-slider>
 </template>
 <script>
+import ChildSlider from './carousel/ChildSlider'
+import PaymentMethodsMixin from '@/mixins/PaymentMethods'
+import * as CONST from '@/constants'
 export default {
   name: 'Carousel',
-  props: {
-    slides: Array,
-    perPage: Number,
-    width: Number,
+  mixins: [PaymentMethodsMixin],
+  components: {
+    ChildSlider,
   },
   data() {
     return {
-      currentPage: 1,
-      currentSlide: 0,
-      positionX: 0,
-      dragging: false,
-      dragX: '',
-      dragY: '',
+      show: false,
+      selectedValue: [],
+      currentKey: '',
+      showAggregator: false,
+      aggregatorValues: {},
     }
   },
   computed: {
     totalPages() {
-      return Math.ceil(this.slides.length / this.perPage)
+      let length = 0
+
+      if (this.slides instanceof Object) {
+        length = Object.keys(this.slides).length
+        if (Array.isArray(this.slides[1])) {
+          if (this.slides[1]['type'] === CONST.AGGREGATOR) length = length + 1
+        } else {
+          length = length + 1
+        }
+        return Math.ceil(length / this.perPage)
+      }
+      length = this.slides.length
+      if (this.aggregatorChild) {
+        length = length + 1
+      }
+      return Math.ceil(length / this.perPage)
     },
-    slideWidth() {
-      return this.width / this.perPage
-    },
-  },
-  mounted() {
-    window.addEventListener('mouseup', this.stopDrag)
   },
   methods: {
+    imagePath(key) {
+      return 'img/icons/svgs/' + key + '.svg'
+    },
+    showChildSlides(payLoad) {
+      this.show = !payLoad.show
+      this.showAggregator = false
+      this.selectedValue = payLoad.value
+      this.currentKey = payLoad.currentKey
+    },
     // eslint-disable-next-line no-unused-vars
     selectSlide({ index, slide }) {
-      this.currentSlide = index
-      this.$emit('click', { index: index, slide: slide })
-    },
-    setActive(index) {
-      this.currentSlide = index
-      if (index < this.perPage) {
-        //move to slide one
-        this.movePage(1)
+      if (slide.type === CONST.AGGREGATOR) {
+        this.currentSlide = CONST.AGGREGATOR
+      } else {
+        this.currentSlide = index
       }
+      this.$emit('click', { index: index, slide: slide })
+      this.show = false
+      this.showAggregator = false
+    },
+    fetchImage(method) {
+      return this.$store.getters['payment/findAggregateGroup'](
+        method.payment_type_group
+      )['icon']
     },
     movePage(page) {
       let toMove = (page - 1) * this.perPage * this.slideWidth
       if (page == this.totalPages) {
-        const slidesToAdjust = this.slides.length % this.perPage
+        let slidesToAdjust = 0
+        if (!Array.isArray(this.slides)) {
+          let length = Object.keys(this.slides).length
+          if (Array.isArray(this.slides[1])) {
+            if (this.slides[1]['type'] === CONST.AGGREGATOR) {
+              length = length + 1
+            }
+          } else {
+            length = length + 1
+          }
+
+          slidesToAdjust = length % this.perPage
+        } else {
+          slidesToAdjust = this.slides.length % this.perPage
+        }
         if (slidesToAdjust > 0) {
           //that means last page has less slides than no of per page
           const missingSlies = this.perPage - slidesToAdjust
           toMove -= missingSlies * this.slideWidth
         }
       }
-
       this.positionX = -toMove
       this.currentPage = page
+      this.show = false
     },
-    startDrag(event) {
-      event = event || window.event
-      event.preventDefault()
-      this.dragging = true
-      this.x = this.y = 0
+    reCallSelf(payLoad) {
+      this.currentSlide = CONST.AGGREGATOR
+      this.show = false
+      this.showAggregator = true
+      this.aggregatorValues = payLoad.value[0]
     },
-    stopDrag(event) {
-      event = event || window.event
-      event.preventDefault()
-      this.dragging = false
-      this.x = this.y = ''
-      document.onmouseup = null
-      document.onmousemove = null
+    close() {
+      this.currentSlide = CONST.AGGREGATOR
+      this.$emit('click', { index: '', slide: {} })
+      this.show = false
+      this.showAggregator = false
     },
-    doDrag(event) {
-      event = event || window.event
-      event.preventDefault()
-      if (this.dragging) {
-        if (event.clientX > this.x) {
-          //drag to right
-          if (this.currentPage - 1 >= 1) {
-            this.movePage(this.currentPage - 1)
-          }
-        } else if (event.clientX < this.x) {
-          //drag to left
-          if (this.currentPage + 1 <= this.totalPages) {
-            this.movePage(this.currentPage + 1)
-          }
-        }
-        this.x = event.clientX
-        this.y = event.clientY
-      }
+    isAggregatorChild(value) {
+      let aggregatorChild =
+        (value.length === 1 && value.type === CONST.AGGREGATOR) ||
+        (value.length > 1 && value[0].type === CONST.AGGREGATOR)
+      this.aggregatorChild = aggregatorChild
+      return aggregatorChild
     },
   },
 }
 </script>
-<style lang="sass" scoped>
-.carousel-container
-  .carousel
-    transform: translate3d(0, 0, 0)
-    position: relative
-    display: block
-    overflow: hidden
-    margin: 0
-    padding: 0
-
-    ul
-      opacity: 1
-      width: 2200px
-      transition: transform 0.9s ease-in-out
-
-      li
-        display: inline-block
-        text-align: center
-        min-height: 1px
-        height: 100%
-
-        .slide
-          border-radius: 3px
-          background-color: #ffffff
-          border: solid 1px #dbdfe9
-          cursor: pointer
-          justify-content: center
-          padding: 4px
-
-        &.active
-          .slide
-            border: solid 2px #5056ca
-
-        img
-          width: 46px
-          height: 46px
-          display: block
-          margin: 0 auto
-          vertical-align: middle
-          border-style: none
-
-        label
-          display: block
-          cursor: pointer
-
-  .paging
-    display: block
-    justify-content: center
-
-    ul
-      width: 100%
-      padding: 0
-      margin: 0
-      list-style: none
-      text-align: center
-
-      li
-        display: inline-block
-        margin-right: 10px
-
-        button
-          font-size: 0
-          line-height: 0
-          display: block
-          width: 20px
-          height: 20px
-          padding: 5px
-          cursor: pointer
-          color: transparent
-          border: 0
-          outline: none
-          background: transparent
-
-          &.active
-            &:before
-              opacity: .75;
-
-          &:before
-            font-size: 28px
-            line-height: 20px
-            top: 0
-            left: 0
-            width: 20px
-            height: 20px
-            content: '•'
-            text-align: center
-            opacity: .25
-            color: black
-            -webkit-font-smoothing: antialiased
-</style>
 <style lang="scss">
 @import '../../assets/scss/pixels_rem.scss';
 @import '../../assets/scss/variables.scss';
 @import '../../assets/scss/mixins.scss';
+.carousel-container {
+  .carousel {
+    transform: translate3d(0, 0, 0);
+    position: relative;
+    display: block;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
 
+    ul {
+      opacity: 1;
+      width: 2200px;
+      transition: transform 0.9s ease-in-out;
+
+      li {
+        display: inline-block;
+        text-align: center;
+        min-height: 1px;
+        height: 100%;
+
+        .slide {
+          border-radius: 3px;
+          background-color: #ffffff;
+          border: solid 1px #dbdfe9;
+          cursor: pointer;
+          justify-content: center;
+          padding: 4px;
+        }
+
+        &.active {
+          .slide {
+            border: solid 2px #5056ca;
+          }
+        }
+        img {
+          width: 46px;
+          height: 46px;
+          display: block;
+          margin: 0 auto;
+          border-style: none;
+        }
+
+        label {
+          display: block;
+          cursor: pointer;
+        }
+      }
+    }
+  }
+  .paging {
+    display: block;
+    justify-content: center;
+
+    ul {
+      width: 100%;
+      padding: 0;
+      margin: 0;
+      list-style: none;
+      text-align: center;
+
+      li {
+        display: inline-block;
+        margin-right: 10px;
+        button {
+          font-size: 0;
+          line-height: 0;
+          display: block;
+          width: 20px;
+          height: 20px;
+          padding: 5px;
+          cursor: pointer;
+          color: transparent;
+          border: 0;
+          outline: none;
+          background: transparent;
+
+          &.active {
+            &:before {
+              opacity: 0.75;
+            }
+          }
+          &:before {
+            font-size: 28px;
+            line-height: 20px;
+            top: 0;
+            left: 0;
+            width: 20px;
+            height: 20px;
+            content: '•';
+            text-align: center;
+            opacity: 0.25;
+            color: black;
+            -webkit-font-smoothing: antialiased;
+          }
+        }
+      }
+    }
+  }
+}
 @include responsive(mobile) {
   .mobile-payment-methods .pay-body #payment-method {
     > div {

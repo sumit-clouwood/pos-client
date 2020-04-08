@@ -16,7 +16,7 @@
             })
           "
         >
-          <a role="button">New Order</a
+          <a role="button">{{ _t('New Order') }}</a
           ><span v-if="orderCount">{{ orderCount.take_away.new_order }}</span>
         </li>
         <li
@@ -54,7 +54,7 @@
             })
           "
         >
-          <a role="button">Collected</a
+          <a role="button">{{ _t('Collected') }}</a
           ><span v-if="orderCount">{{ orderCount.take_away.collected }}</span>
         </li>
       </ul>

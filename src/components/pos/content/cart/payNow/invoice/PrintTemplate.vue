@@ -107,7 +107,7 @@
           </tr>
           <template v-for="(item, key) in order.items">
             <tr v-if="item.type == 'combo_item'" :key="key">
-              <td class="first-col" valign="top">{{ item.qty }}</td>
+              <td class="first-col" valign="top">{{ item.qty }} {{ measurement_unit(item) }}</td>
               <td>
                 <div class="food-title">
                   {{ translate_item(item) }}
@@ -629,15 +629,31 @@ export default {
       }
 
       return orderEntities.map(entity => {
-        data.forEach(item => {
-          if (entity[key] === item[map]) {
-            keysToLoad.forEach(index => {
-              if (item[index]) {
-                entity[index] = item[index]
-              }
-            })
-          }
-        })
+        if (data instanceof Array) {
+          data.forEach(item => {
+            if (entity[key] === item[map]) {
+              keysToLoad.forEach(index => {
+                if (item[index]) {
+                  entity[index] = item[index]
+                }
+              })
+            }
+          })
+        } else {
+          Object.entries(data).forEach(item => {
+            if (Array.isArray(item)) {
+              item[1].forEach(singleItem => {
+                if (entity[key] === singleItem[map]) {
+                  keysToLoad.forEach(index => {
+                    if (singleItem[index]) {
+                      entity[index] = singleItem[index]
+                    }
+                  })
+                }
+              })
+            }
+          })
+        }
         return entity
       })
     },
@@ -667,6 +683,12 @@ export default {
         }
       }
       return results.join(' / ')
+    },
+    measurement_unit(item) {
+      if (item.measurement_unit) {
+        return item.measurement_unit
+      }
+      return ''
     },
     discount_total(discount) {
       if (discount.type === 'fixed_price') {

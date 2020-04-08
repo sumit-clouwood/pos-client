@@ -1,7 +1,10 @@
 <template>
   <!-- order confrmation  -->
   <div class="modal fade" id="order-confirmation" role="dialog">
-    <div class="modal-dialog" :class="{ 'error-dialog': !cartItems }">
+    <div
+      class="modal-dialog modal-dialog-centered"
+      :class="{ 'error-dialog': !cartItems }"
+    >
       <!-- Modal content-->
       <div class="modal-content color-dashboard-background" v-if="cartItems">
         <SendToDeliveryHeader />
@@ -77,9 +80,9 @@ export default {
 }
 </style>
 <style lang="scss">
-@import '../../../../assets/scss/pixels_rem.scss';
-@import '../../../../assets/scss/variables.scss';
-@import '../../../../assets/scss/mixins.scss';
+@import '@/assets/scss/pixels_rem.scss';
+@import '@/assets/scss/variables.scss';
+@import '@/assets/scss/mixins.scss';
 
 @include responsive(mobile) {
   #order-confirmation {
@@ -105,9 +108,8 @@ export default {
         }
 
         .modal-body {
-          width: 100vw;
           overflow: auto;
-          padding: 20px;
+          padding: 10px;
 
           .order-table {
             max-height: none;
@@ -186,18 +188,19 @@ export default {
         .modal-footer {
           display: grid;
           grid-template-columns: 1fr;
-          width: 100vw;
+          width: 100% !important;
           grid-gap: 10px;
           border: none;
 
           .referal {
-            display: grid;
-            margin: 0;
-            grid-template-columns: max-content 1fr;
-            grid-gap: 10px;
+            width: 100% !important;
+            button {
+              width: 100% !important;
+            }
 
             .vdatetime {
               order: 1;
+              width: 100% !important;
 
               input {
                 margin: 0;

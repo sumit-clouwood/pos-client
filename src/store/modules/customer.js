@@ -79,23 +79,20 @@ const getters = {
         if (checkDeliveryArea) {
           // let deliveryArea = getters.findDeliveryArea(checkDeliveryArea._id)
           let deliveryArea = state.fetchDeliveryAreas.map(dArea => {
-            if (checkDeliveryArea._id == dArea._id) {
-              let DAStatus = dArea.stores.find(entity => {
-                if (entity.entity_id == storeId && entity.item_status) {
-                  return true
-                } else false
-              })
-              if (typeof DAStatus != 'undefined' && DAStatus.item_status) {
-                if (DAStatus.min_order_value) {
-                  dArea.min_order_value = DAStatus.min_order_value
-                }
-                if (DAStatus.special_order_surcharge) {
-                  dArea.special_order_surcharge =
-                    DAStatus.special_order_surcharge
-                }
-                return dArea
-              } else return false
-            }
+            let DAStatus = dArea.stores.find(entity => {
+              if (entity.entity_id == storeId && entity.item_status) {
+                return true
+              } else false
+            })
+            if (typeof DAStatus != 'undefined' && DAStatus.item_status) {
+              if (DAStatus.min_order_value) {
+                dArea.min_order_value = DAStatus.min_order_value
+              }
+              if (DAStatus.special_order_surcharge) {
+                dArea.special_order_surcharge = DAStatus.special_order_surcharge
+              }
+              return dArea
+            } else return false
           })
 
           let data = deliveryArea.find(
@@ -631,6 +628,7 @@ const mutations = {
   },
   [mutation.LOYALTY_FILTER](
     state,
+    // eslint-disable-next-line no-unused-vars
     { loyalty, orderType, orderCurrency, orderAmount } = {
       loyalty: null,
       orderType: null,
@@ -667,11 +665,12 @@ const mutations = {
         state.loyalty.card = false
         state.loyalty.details = false
         state.loyalty.points = false
-      } else if (state.loyalty.details.min_order > orderAmount) {
-        state.loyalty.card = false
-        state.loyalty.details = false
-        state.loyalty.points = false
       } else {
+        // if (state.loyalty.details.min_order > orderAmount) {
+        //   state.loyalty.card = false
+        //   state.loyalty.details = false
+        //   state.loyalty.points = false
+        // } else {
         /* do noting */
       }
     } else {

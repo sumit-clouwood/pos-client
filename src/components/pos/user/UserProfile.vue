@@ -45,7 +45,35 @@
         <span class="caption">{{ _t('User Type') }}: </span>
         <span>{{ _t('Regular') }}</span>
       </div>
+      <div class="buttons">
+        <!-- TODO later, backlogged for now -->
+        <!-- <button
+          type="button"
+          v-if="allowed(PERMS.CHANGE_AVATAR)"
+          @click="showPopup('#avatar-modal')"
+          class="btn btn-success color-icon-table-neutral-button font-weight-bold"
+        >
+          Change Avatar
+        </button> -->
+        <button
+          type="button"
+          v-if="allowed(PERMS.CHANGE_NAME_EMAIL)"
+          @click="showPopup('#name-email-modal')"
+          class="btn btn-success color-icon-table-neutral-button font-weight-bold"
+        >
+          Change Name and Email
+        </button>
+        <button
+          type="button"
+          v-if="allowed(PERMS.CHANGE_PASSWORD)"
+          @click="showPopup('#password-modal')"
+          class="btn btn-success color-icon-table-neutral-button font-weight-bold"
+        >
+          Change Password
+        </button>
+      </div>
     </div>
+
     <div class="delimiter">&nbsp;</div>
     <div class="profile-brand-container">
       <div class="items">
@@ -79,45 +107,53 @@
           </span>
         </span>
       </div>
-    </div>
-    <div class="buttons">
-      <router-link
-        :to="'/cashier-login' + store"
-        v-if="enabledModule('switchCashier')"
-      >
+      <div class="buttons">
         <button
-          @click.native="logoutCashier"
-          id="switch-user-btn-profile"
           type="button"
-          class="btn btn-danger cancel-announce color-icon-table-neutral-button font-weight-bold"
+          class="btn btn-success color-icon-table-neutral-button font-weight-bold"
+          v-if="enabledModule('switchCashier')"
+          @click="logoutCashier"
         >
           {{ _t('Switch Cashier') }}
         </button>
-      </router-link>
-      <button
-        type="button"
-        class="btn btn-danger cancel-announce color-icon-table-neutral-button font-weight-bold logout"
-        @click="logout($router.push('/'))"
-      >
-        {{ _t('Logout') }}
-      </button>
+        <button
+          type="button"
+          class="btn btn-danger cancel-announce color-icon-table-neutral-button font-weight-bold logout"
+          @click="logout($router.push('/'))"
+        >
+          {{ _t('Logout') }}
+        </button>
+      </div>
     </div>
+
+    <ChangeNameEmail :user="user" />
+    <ChangePassword />
+    <!-- <ChangeAvatar /> -->
   </div>
 </template>
 
 <script>
+/* global $ */
 import DateTime from '@/mixins/DateTime'
 import AuthService from '@/services/data/AuthService'
+import ChangeNameEmail from './popups/ChangeNameEmail'
+import ChangePassword from './popups/ChangePassword'
+// import ChangeAvatar from './popups//ChangeAvatar'
 import { mapGetters, mapState, mapActions } from 'vuex'
 export default {
   name: 'UserProfile',
   mixins: [DateTime],
+  components: {
+    ChangeNameEmail,
+    ChangePassword,
+    // ChangeAvatar,
+  },
   methods: {
     logoutCashier() {
       localStorage.setItem('token', '')
       this.$store.commit('auth/SET_TOKEN', '')
       this.$store.commit('auth/LOGOUT_ACTION', 'switchCashier')
-      //this.$router.push({ path: '/cashier-login/' + this.storeUrl })
+      this.$router.push('/cashier-login/' + this.store)
       AuthService.logout().then(() => {})
     },
     ...mapActions('auth', ['logout']),
@@ -127,10 +163,13 @@ export default {
           return !this.carhop && !this.waiter
       }
     },
+    showPopup(modalName) {
+      $(modalName).modal('show')
+    },
   },
   computed: {
     ...mapGetters('context', ['store']),
-    ...mapGetters('auth', ['waiter', 'carhop']),
+    ...mapGetters('auth', ['waiter', 'carhop', 'allowed']),
     ...mapState({
       user: state => state.auth.userDetails.item,
       role: state => state.auth.role,
@@ -162,6 +201,16 @@ export default {
 }
 .buttons {
   margin-top: 2%;
+  display: flex;
+  grid-row-start: 2;
+  grid-column-start: 2;
+  grid-column-end: 3;
+}
+.profile-brand-container {
+  max-width: 60%;
+}
+.profile-container {
+  max-width: 65%;
 }
 .profile-container,
 .profile-brand-container {
@@ -171,8 +220,10 @@ export default {
 #dm-content-wrapper {
   margin-top: 2%;
 }
-#switch-user-btn-profile {
-  background: $blue-light;
-  border-color: $blue-light;
+.btn-success {
+  height: 3.125rem;
+  font-size: 0.875rem;
+  left: 45vh;
+  margin-right: 2rem;
 }
 </style>

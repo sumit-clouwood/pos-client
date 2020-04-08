@@ -6,11 +6,11 @@
     data-keyboard="false"
     data-backdrop="static"
   >
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
       <!-- Modal content-->
       <div class="modal-content">
         <div class="modal-header" style="background-color: rgb(245, 245, 245)">
-          <h4 class="modal-title">Select Store</h4>
+          <h4 class="modal-title">{{ _t('Select Store') }}</h4>
         </div>
         <div class="modal-body stores-list-container">
           <div class="stores-list">
@@ -42,7 +42,7 @@
             class="tables-btn-style"
             data-dismiss="modal"
           >
-            Close
+            {{ _t('Close') }}
           </button>
         </div>
       </div>
@@ -54,7 +54,9 @@
 /* global $ */
 import { mapGetters, mapState } from 'vuex'
 import DataService from '@/services/DataService'
+import bootstrap from '@/bootstrap'
 export default {
+  name: 'MultiStore',
   data() {
     return {
       stores: false,
@@ -68,6 +70,7 @@ export default {
       'haveMultipleStores',
       'multipleStores',
     ]),
+    ...mapGetters('location', ['_t']),
     ...mapGetters({
       selectedBrand: ['context/brand'],
       defaultStore: ['context/store'],
@@ -77,7 +80,6 @@ export default {
     selectedStoreId(storeId) {
       this.$store.commit('context/SET_BRAND_ID', this.brand._id, { root: true })
       this.$store.commit('context/SET_STORE_ID', storeId, { root: true })
-      this.$store.commit('context/SET_SELECTED_STORE', true, { root: true })
       localStorage.setItem('brand_id', this.brand._id)
       localStorage.setItem('store_id', storeId)
 
@@ -86,12 +88,19 @@ export default {
         store: this.$store.getters['context/store'],
       })
       $('#multiStoresModal').modal('hide')
-      this.$router.go(this.$router.currentRoute)
+      this.$store.dispatch('location/fetch')
+      bootstrap.fetchData()
+      bootstrap.loadUI(this.$store)
+      this.$store.commit('sync/reload', true)
+      this.$store.dispatch('checkout/reset', true)
+      this.$store.commit('order/CLEAR_SELECTED_ORDER')
     },
   },
 }
 </script>
 <style lang="scss" scoped>
+@import '@/assets/scss/variables.scss';
+@import '@/assets/scss/mixins.scss';
 .modal-title {
   font-weight: 500;
 }
@@ -100,6 +109,9 @@ export default {
   background: #cc3232;
   color: white;
   width: 10%;
+  @include responsive(mobile) {
+    width: 30%;
+  }
   border: none;
   font-size: 12.75px;
 }
@@ -123,6 +135,10 @@ export default {
   width: 100%;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr;
+  @include responsive(mobile) {
+    grid-template-columns: 1fr;
+    padding: 0px;
+  }
   grid-gap: 1.5625rem;
   padding-top: 1.5625rem;
   padding-bottom: 1.5625rem;
@@ -157,6 +173,14 @@ export default {
 
 .modal-dialog {
   max-width: 90% !important;
+  @include responsive(mobile) {
+    max-width: 95% !important;
+  }
   min-height: 80% !important;
+}
+.modal-content {
+  width: 95%;
+  margin: auto;
+  margin-top: 10%;
 }
 </style>

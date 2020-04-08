@@ -6,7 +6,7 @@
     role="dialog"
     @click.self="loyaltyHendlerChange"
   >
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
       <!-- Modal content-->
       <div class="modal-content color-dashboard-background">
         <div class="modal-header customer-header color-secondary">
@@ -64,41 +64,44 @@
                   class="pull-right p-0"
                   :class="customer.active ? 'text-success' : 'text-danger'"
                 >
-                  {{ customer.active ? 'Activated' : 'Deactivated' }}
+                  {{ customer.active ? _t('Activated') : _t('Deactivated') }}
                 </span>
               </span>
             </div>
           </div>
         </form>
         <div class="modal-footer">
-          <div
-            data-toggle="modal"
-            data-dismiss="modal"
-            class="cursor-pointer blue-middle color-text-invert"
-            @click="loyaltyAddCustomer('#customer')"
-          >
-            {{ _t('Create New Customer') }}
-          </div>
           <div class="btn-announce">
-            <button
-              type="button"
-              class="btn btn-danger cancel-announce color-text-invert color-button"
+            <div
+              data-toggle="modal"
               data-dismiss="modal"
-              @click="loyaltyHendlerChange"
+              class="cursor-pointer blue-middle color-text-invert"
+              @click="loyaltyAddCustomer('#customer')"
             >
-              {{ _t('Cancel') }}
-            </button>
-            <button
-              @click="addLoyalty"
-              class="btn btn-success btn-large color-text-invert color-main"
-              type="button"
-              id="save-note"
-            >
-              {{ _t('Select') }}
-            </button>
+              {{ _t('Create Customer') }}
+            </div>
+            <div class="btn-loyalty">
+              <button
+                @click="addLoyalty"
+                class="btn btn-success btn-large color-text-invert color-main"
+                type="button"
+                id="save-note"
+              >
+                {{ _t('Select') }}
+              </button>
+              <button
+                type="button"
+                class="btn btn-danger cancel-announce color-text-invert color-button"
+                data-dismiss="modal"
+                @click="loyaltyHendlerChange"
+              >
+                {{ _t('Cancel') }}
+              </button>
+            </div>
           </div>
-          <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
         </div>
+
+        <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
       </div>
     </div>
   </div>
@@ -130,6 +133,7 @@ export default {
   },
   methods: {
     loyaltyHendlerChange() {
+      this.searchTerm = ''
       this.$store.dispatch('loyaltyHendlerChange')
     },
     loyaltyAddCustomer: function(target) {
@@ -148,6 +152,7 @@ export default {
         $('#search-loyalty-customer').modal('toggle')
         this.loyaltyHendlerChange()
         this.fetchSelectedCustomer(this.customerId)
+        this.searchTerm = ''
       } else {
         this.searchCustomerErr = 'Please Select Customer'
       }
@@ -165,7 +170,8 @@ export default {
     },
     search() {
       clearTimeout(this.inputTimer)
-      if (this.searchTerm.length >= 2) {
+
+      if (this.searchTerm.trim().length >= 1) {
         $('#searchLoader').attr('style', 'display:block')
         this.inputTimer = setTimeout(() => {
           $('#myDropdown').toggle()
@@ -175,7 +181,6 @@ export default {
               this.searchCustomerErr = ''
               $('#searchLoader').hide()
               $('#myDropdown').toggle()
-              this.$store.dispatch('customer/fetchAllCustomers')
             })
             .catch(() => {
               $('#searchLoader').hide()
@@ -183,6 +188,8 @@ export default {
               this.$store.dispatch('customer/fetchAllCustomers')
             })
         }, 500)
+      } else {
+        this.$store.dispatch('customer/fetchAllCustomers')
       }
     },
     ...mapActions('customer', ['fetchSelectedCustomer', 'addCustomer']),
@@ -191,6 +198,9 @@ export default {
 </script>
 <!-- eslint-disable max-len -->
 <style scoped lang="scss">
+@import '@/assets/scss/pixels_rem.scss';
+@import '@/assets/scss/variables.scss';
+@import '@/assets/scss/mixins.scss';
 .dropdown {
   position: relative;
 }
@@ -202,6 +212,10 @@ export default {
 .dropdown-content {
   display: block;
   position: absolute;
+  @include responsive(mobile) {
+    position: static;
+    max-height: 100px !important;
+  }
   background-color: #f6f6f6;
   width: 100%;
   overflow: auto;
@@ -227,17 +241,22 @@ export default {
 .btnSuccess {
   color: #fff;
   height: 47px;
+  height: 3.125rem;
   border-radius: 0px 5px 5px 0px;
+}
+.cancel-announce,
+#save-note {
+  height: 3.125rem;
 }
 
 .dropdown span:hover {
   background-color: #ddd;
 }
-</style>
-<style lang="scss">
-@import '../../../../assets/scss/pixels_rem.scss';
-@import '../../../../assets/scss/variables.scss';
-@import '../../../../assets/scss/mixins.scss';
+
+.cursor-pointer {
+  margin-right: 1.5rem;
+  font-size: 1rem;
+}
 
 @include responsive(mobile) {
   .loyalty {
@@ -246,13 +265,13 @@ export default {
   }
   #search-loyalty-customer {
     border: none;
+    overflow: hidden;
     .modal-dialog {
       border: none;
       .modal-content {
         border: none;
         /*top: auto;*/
         .modal-header {
-          height: 80px;
           background-color: #fff;
           display: grid !important;
           align-items: center;
@@ -275,42 +294,44 @@ export default {
               /*margin-top: 20px;*/
               outline: none;
               margin-bottom: 0;
+              width: 96% !important;
             }
           }
         }
 
         .modal-footer {
+          padding: 5px !important;
+          display: grid;
+          grid-template-columns: 1fr;
+          grid-row-gap: 10px;
           .cursor-pointer {
             background-color: $green-middle;
-            height: 50px;
             color: #fff;
             border-radius: 3px;
             display: grid;
             align-items: center;
             justify-content: center;
-            width: 100%;
+            text-align: center;
+            height: 50px !important;
+            margin-right: 0px !important;
           }
-
           .btn-announce {
-            .btn-danger {
-              width: 0;
-              height: 0 !important;
-              border: none;
-              position: absolute;
-              top: 32px;
-              right: 40px;
-
-              &:after {
-                content: '✖';
-                position: absolute;
-                right: -10px;
-                color: #444;
-              }
-            }
+            width: 90% !important;
+            margin: auto;
           }
         }
       }
     }
+  }
+  .cancel-announce,
+  .cursor-pointer,
+  #save-note {
+    font-size: 1rem !important;
+  }
+  .btn-loyalty {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr) !important;
+    column-gap: 0.5rem;
   }
 }
 </style>

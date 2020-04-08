@@ -19,8 +19,8 @@ export default {
 </script>
 
 <style lang="scss">
-@import '../../assets/scss/variables.scss';
-@import '../../assets/scss/mixins.scss';
+@import '@/assets/scss/variables.scss';
+@import '@/assets/scss/mixins.scss';
 
 @include responsive(mobile) {
   #select-discount {
@@ -39,7 +39,7 @@ export default {
     right: -100vw;
     bottom: 0;
     z-index: 1060;
-    background-color: #fff;
+    background-color: transparent;
 
     &.active {
       right: 0;

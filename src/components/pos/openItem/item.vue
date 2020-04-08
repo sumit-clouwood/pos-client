@@ -1,6 +1,6 @@
 <template>
   <div class="modal fade" id="open-item" role="dialog">
-    <div class="modal-dialog">
+    <div class="modal-dialog  modal-dialog-centered">
       <div class="modal-content color-dashboard-background">
         <div class="modal-header customer-header color-secondary">
           <h4 class="customer-title color-text-invert">
@@ -60,7 +60,6 @@
     </div>
   </div>
 </template>
-
 <script>
 /* global hideModal */
 import { mapGetters, mapState } from 'vuex'
@@ -81,19 +80,15 @@ export default {
   methods: {
     addToCart() {
       this.errors = {}
-
       if (!this.item.name) {
         this.errors.name = this._t('Please provide item name')
       }
-
       if (!this.item.value) {
         this.errors.value = this._t('Please provide item price')
       }
-
       if (Object.keys(this.errors).length !== 0) {
         return false
       }
-
       this.$store
         .dispatch('order/addOpenItem', {
           item: {},

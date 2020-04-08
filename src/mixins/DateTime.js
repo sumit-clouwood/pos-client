@@ -81,15 +81,8 @@ export default {
       var s = diff
       let timer = '00:00:00'
       if (dateTime != '') {
-        timer =
-          d +
-          ' day(s), ' +
-          h +
-          ' hour(s), ' +
-          m +
-          ' minute(s), ' +
-          s +
-          ' second(s)'
+        if (d > 0) timer += d + ' day(s), '
+        timer = h + ' hour(s), ' + m + ' minute(s), ' + s + ' second(s)'
       }
       return timer
     },

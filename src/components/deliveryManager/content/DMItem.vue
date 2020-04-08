@@ -50,13 +50,13 @@
                       "
                     >
                       <span class="select-driver-caption assign_driver">
-                        Select driver
+                        {{ _t('Select driver') }}
                       </span>
                     </span>
                     <button
                       v-else
                       @click="
-                        updateOrderAction({
+                        updateOrder({
                           order: order,
                           orderType: order.order_type,
                           actionTrigger: actionDetails.action,
@@ -114,10 +114,19 @@
                 </div>
               </div>
               <div class="order-footer">
-                <p class="color-text">
-                  <!--<span class="timeago elapsedTime delManTime" title=""></span>-->
+                <!--<span class="timeago elapsedTime delManTime" title=""></span>-->
+
+                <div class="runningtimes">
+                  <div class="order-address" v-if="order.order_building">
+                    <div class="order-delivery-area">
+                      {{ order.order_flat_number }}, {{ order.order_building }},
+                      {{ order.order_street }},
+                      {{ order.order_city }}
+                    </div>
+                  </div>
                   <span
-                    class="customtime left"
+                    style="font-size: 0.9rem; justify-content:center;"
+                    v-else
                     :id="
                       'createdOrder-' +
                         convertDatetime(
@@ -126,27 +135,17 @@
                           'YYYY-MM-DD HH:mm:ss'
                         )
                     "
-                    style="display: none"
-                  ></span>
-                  <input
-                    type="hidden"
-                    id="storerunningtime"
-                    :value="
-                      convertDatetime(
-                        order.real_created_datetime,
-                        timezoneString,
-                        'YYYY-MM-DD HH:mm:ss'
+                    >{{
+                      orderTimer(
+                        convertDatetime(
+                          order.real_created_datetime,
+                          timezoneString,
+                          'YYYY-MM-DD HH:mm:ss'
+                        ),
+                        timezoneString
                       )
-                    "
-                  />
-                </p>
-                <div class="runningtimes">
-                  <div class="order-delivery-area"></div>
-                  <div class="order-address">
-                    {{ order.order_flat_number }}, {{ order.order_building }},
-                    {{ order.order_street }},
-                    {{ order.order_city }}
-                  </div>
+                    }}</span
+                  >
                 </div>
               </div>
             </div>
@@ -157,19 +156,31 @@
     <h5 v-else class="center-block text-center pt-5">
       {{ _t('No Orders Found') }}
     </h5>
+    <InformationPopup
+      :response-information="err"
+      title="Information"
+      :activated-class="'text-danger'"
+    />
   </div>
 </template>
 
 <script>
 import { mapState, mapActions, mapGetters } from 'vuex'
 import DateTime from '@/mixins/DateTime'
+import InformationPopup from '@/components/pos/content/InformationPopup'
 
+/* global $ */
 export default {
   name: 'DMItem',
   data() {
     return {
       orderCount: 2,
+      dateTime: '',
+      err: null,
     }
+  },
+  components: {
+    InformationPopup,
   },
   props: {
     actionDetails: Object,
@@ -181,14 +192,36 @@ export default {
     ...mapState({
       orderStatus: state => state.deliveryManager.deliveryOrderStatus,
     }),
+    ...mapState('order', ['alert']),
     ...mapState({
       branch: state => state.deliveryManager.availableStores,
     }),
     ...mapGetters('deliveryManager', ['orders']),
   },
+  updated() {
+    clearInterval(this.orderTime)
+  },
+  destroyed() {
+    clearInterval(this.orderTime)
+  },
   methods: {
     ...mapActions('deliveryManager', ['showOrderDetails']),
+    updateOrder(data) {
+      this.updateOrderAction(data)
+        .then(() => {})
+        .catch(er => {
+          this.err = er.data.error
+          $('.information-popup').modal('show')
+        })
+    },
     ...mapActions('order', ['selectedOrderDetails', 'updateOrderAction']),
   },
 }
 </script>
+
+<style lang="scss" scoped>
+.order-delivery-area {
+  width: 95% !important;
+  margin: auto;
+}
+</style>

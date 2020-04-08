@@ -35,8 +35,10 @@ const state = {
 }
 const getters = {
   drivers: (state, getters, rootState) =>
-    state.drivers.filter(driver =>
-      driver.brand_stores.includes(rootState.context.storeId)
+    state.drivers.filter(
+      driver =>
+        driver.brand_stores.includes(rootState.context.storeId) ||
+        driver.brand_access_type === 'all'
     ),
   orders: state => state.orders.filter(order => order.deleted === false),
   currentDriverOrders: (state, getters) => {

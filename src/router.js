@@ -107,11 +107,6 @@ const router = new Router({
       component: Home,
     },
     {
-      path: '/:brand_id/:store_id/',
-      name: 'BrandHome',
-      component: Home,
-    },
-    {
       path: '/about',
       name: 'about',
       // route level code-splitting

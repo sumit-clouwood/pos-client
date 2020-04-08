@@ -1,7 +1,7 @@
 <template>
   <!-- Select Discount  -->
   <div class="modal fade" id="select-discount" role="dialog">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
       <!-- Modal content-->
       <div class="modal-content color-dashboard-background">
         <div class="modal-header customer-header color-secondary">
@@ -159,9 +159,9 @@ export default {
         .dispatch('discount/applyOrderDiscount')
         .then(() => {
           hideModal('#select-discount')
+          this.discountHendlerChange()
         })
         .catch()
-      this.$store.dispatch('discountHendlerChange')
     },
     discountHendlerChange() {
       this.$store.dispatch('discountHendlerChange')

@@ -150,9 +150,9 @@ export default {
   scroll-behavior: smooth
 </style>
 <style lang="scss">
-@import '../../../assets/scss/pixels_rem.scss';
-@import '../../../assets/scss/variables.scss';
-@import '../../../assets/scss/mixins.scss';
+@import '@/assets/scss/pixels_rem.scss';
+@import '@/assets/scss/variables.scss';
+@import '@/assets/scss/mixins.scss';
 .main-orders {
 }
 @include responsive(mobile) {
@@ -217,6 +217,7 @@ export default {
 
       .main-oreders-buttons {
         display: none;
+        margin: auto !important;
       }
     }
 

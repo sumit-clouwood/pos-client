@@ -72,15 +72,39 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+@import '@/assets/scss/header';
+@import '@/assets/scss/mixins.scss';
 .error {
   color: #ff0000;
   margin-bottom: 24px;
   padding-bottom: 24px;
   border-bottom: 1px solid #e3e7f2;
 }
-.positemoption_body::-webkit-scrollbar {
-  width: 0;
+.positemoption_body {
+  scroll-behavior: smooth;
+  &::-webkit-scrollbar {
+    width: 0;
+  }
+
+  @include responsive(mobile) {
+    padding-left: 5px !important;
+  }
+}
+
+.modal-body {
+  @include responsive(mobile) {
+    min-height: 0 !important;
+  }
+}
+.positemoption_body {
+  scroll-behavior: smooth;
+}
+
+@include responsive(mobile) {
+  .modal-body {
+    min-height: 0 !important;
+  }
 }
 </style>
 <style lang="sass" scoped>

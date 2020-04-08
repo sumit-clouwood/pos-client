@@ -1,7 +1,7 @@
 <template>
   <!-- payment screen email -->
   <div class="modal fade" id="add-email" role="dialog">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
       <!-- Modal content-->
       <div class="modal-content">
         <div class="modal-header customer-header">

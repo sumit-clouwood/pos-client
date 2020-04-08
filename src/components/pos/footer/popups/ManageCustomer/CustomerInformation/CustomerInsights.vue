@@ -91,7 +91,7 @@
                   >Show more</span
                 >-->
       </div>
-      <div>
+      <div class="add-btn-wrapper">
         <button
           id="customer-notes-add"
           data-toggle="modal"
@@ -116,114 +116,113 @@ function getCustomerList(state) {
 }
 
 /* eslint-disable */
-    export default {
-        name: 'CustomerInsights',
-        components: {
-            CustomerFeedback,
-        },
-        mixins: [DateTime],
-        data() {
-            return {
-                items: false,
-                lastOrder: false,
-                cancelOrders: 0
-            }
-        },
-        mounted() {
-            this.getLastOrderDetails(this.insight.last_order)
-        },
-        props: {
-            pastOrders: false,
-        },
-        computed: {
-            ...mapGetters('location', ['_t']),
-            ...mapState('location', ['timezoneString']),
-            ...mapState({
-                insight: state =>
-                    getCustomerList(state) ? getCustomerList(state) : false,
-            }),
-            ...mapState({
-                favoriteItems: state => state.customer.lookups.brand_menu_items,
-            }),
-            totalPages: function () {
-                let totalNotes = this.insight.notes.length
-                if (totalNotes <= 10) {
-                    return 1
-                } else {
-                    return totalNotes / 10
-                }
-            },
-        },
-        updated() {
-            try {
-                $('.last-order-wrap').slick({
-                    arrows: true,
-                    slidesToShow: 1,
-                    slidesToScroll: 1,
-                    dots: true,
-                    nextArrow: '<img class="next-btn" src="img/pos/next-arrow.png"/>',
-                    prevArrow: '<img class="back-btn" src="img/pos/back-arrow.png"/>',
-                })
-                $('.last-order-wrap')[0].slick.refresh()
-            } catch (e) {
+export default {
+  name: 'CustomerInsights',
+  components: {
+    CustomerFeedback,
+  },
+  mixins: [DateTime],
+  data() {
+    return {
+      items: false,
+      lastOrder: false,
+      cancelOrders: 0,
+    }
+  },
+  mounted() {
+    this.getLastOrderDetails(this.insight.last_order)
+  },
+  props: {
+    pastOrders: false,
+  },
+  computed: {
+    ...mapGetters('location', ['_t']),
+    ...mapState('location', ['timezoneString']),
+    ...mapState({
+      insight: state =>
+        getCustomerList(state) ? getCustomerList(state) : false,
+    }),
+    ...mapState({
+      favoriteItems: state => state.customer.lookups.brand_menu_items,
+    }),
+    totalPages: function() {
+      let totalNotes = this.insight.notes.length
+      if (totalNotes <= 10) {
+        return 1
+      } else {
+        return totalNotes / 10
+      }
+    },
+  },
+  updated() {
+    try {
+      $('.last-order-wrap').slick({
+        arrows: true,
+        slidesToShow: 1,
+        slidesToScroll: 1,
+        dots: true,
+        nextArrow: '<img class="next-btn" src="img/pos/next-arrow.png"/>',
+        prevArrow: '<img class="back-btn" src="img/pos/back-arrow.png"/>',
+      })
+      $('.last-order-wrap')[0].slick.refresh()
+    } catch (e) {}
+    // this.props.customerId = customerId
+  },
+  methods: {
+    getAge: function(dob) {
+      let now = new Date()
+      if (typeof dob != 'undefined' && dob != null) {
+        let dobSplit = dob.split('-')
+        let born = new Date(dobSplit[0], dobSplit[1] - 1, dobSplit[2])
+        let birthday = new Date(
+          now.getFullYear(),
+          born.getMonth(),
+          born.getDate()
+        )
+        if (now >= birthday) return now.getFullYear() - born.getFullYear()
+        else return now.getFullYear() - born.getFullYear() /* - 1*/
+      } else return dob
+    },
 
-            }
-            // this.props.customerId = customerId
-        },
-        methods: {
-            getAge: function (dob) {
-                let now = new Date()
-                if (typeof dob != 'undefined' && dob != null) {
-                    let dobSplit = dob.split('-')
-                    let born = new Date(dobSplit[0], dobSplit[1] - 1, dobSplit[2])
-                    let birthday = new Date(
-                        now.getFullYear(),
-                        born.getMonth(),
-                        born.getDate()
-                    )
-                    if (now >= birthday) return now.getFullYear() - born.getFullYear()
-                    else return (now.getFullYear() - born.getFullYear())/* - 1*/
-                } else return dob
-            },
-
-            getLastOrderDetails: function (orderId) {
-                if (this.pastOrders.length) {
-                    this.lastOrder = this.pastOrders.find(order => order._id == orderId)
-                    this.items = typeof this.lastOrder != 'undefined' ? this.lastOrder.items : false
-                }
-            },
-            cancelled_orders_count: function () {
-                /*return this.insight.orders.reduce((prev, current) => {
+    getLastOrderDetails: function(orderId) {
+      if (this.pastOrders.length) {
+        this.lastOrder = this.pastOrders.find(order => order._id == orderId)
+        this.items =
+          typeof this.lastOrder != 'undefined' ? this.lastOrder.items : false
+      }
+    },
+    cancelled_orders_count: function() {
+      /*return this.insight.orders.reduce((prev, current) => {
                   return prev + (current.order_status == 'ORDER_STATUS_CANCELLED' ? 1 : 0)
                 }, 0)*/
-                this.cancelOrders = 0
-            },
-        },
-    }
+      this.cancelOrders = 0
+    },
+  },
+}
 </script>
 <style lang="scss" scoped>
-    .customer-insights-notes div {
-        overflow-y: auto;
-        max-height: 190px;
-    }
+.customer-insights-notes div {
+  overflow-y: auto;
+  max-height: 190px;
+}
 
-    .insight-last-order {
-        text-align: center;
-    }
-
+.insight-last-order {
+  text-align: center;
+}
 </style>
-<style lang="scss">
-    @import '../../../../../../assets/scss/pixels_rem.scss';
-    @import '../../../../../../assets/scss/variables.scss';
-    @import '../../../../../../assets/scss/mixins.scss';
+<style lang="scss" scoped>
+@import '@/assets/scss/mixins.scss';
 
-    @include responsive(mobile) {
-        .customer-insight {
-            #customer-notes-add {
-                height: 45px;
-                padding: 0 25px;
-            }
-        }
+@include responsive(mobile) {
+  .customer-insight {
+    #customer-notes-add {
+      height: 45px;
+      padding: 0 25px;
+      width: 100% !important;
     }
-
+  }
+  .add-btn-wrapper {
+    width: 100% !important;
+  }
+}
 </style>

@@ -60,7 +60,7 @@
         </div>
       </div>
       <item-details-popup
-        :currentItem="currentItem"
+        v-model="currentItem"
         @resetCurrentItem="resetCurrentItem"
       />
 
@@ -96,8 +96,6 @@ export default {
   },
   mixins: [Scroll, Cart],
   components: {
-    // Popup,
-    // btnBack,
     ItemDetailsPopup,
   },
   data() {

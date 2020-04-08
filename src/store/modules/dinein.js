@@ -4,6 +4,7 @@ import * as CONST from '@/constants'
 import moment from 'moment-timezone'
 // import OrderHelper from '@/plugins/helpers/Order'
 import * as PERMS from '@/const/permissions'
+import workflow from '../../plugins/helpers/workflow'
 
 const state = {
   orders: {
@@ -44,8 +45,9 @@ const state = {
   totalReservations: { totalPages: 0, pageNumber: 1, limit: 10 },
   billSplit: null,
   processingSplit: false,
-  currentTableReservationData: null,
   reservationData: null,
+  isModified: false,
+  currentTableReservationData: null,
 }
 const getters = {
   getCurrentTableRunningReservations: state => {
@@ -82,6 +84,9 @@ const getters = {
     })
     return tableNumber
   },
+  getTableNumberById: state => tableId => {
+    return state.tablesOnArea.find(table => table._id === tableId)
+  },
   guestInBillItem: state => (item, guest) => {
     if (
       state.bills &&
@@ -102,15 +107,19 @@ const actions = {
       dispatch(orderStatus.pageId, loader)
     }
   },
-  async fetchAll({ dispatch, commit }) {
-    commit(mutation.LOADING, true)
+  async fetchAll({ dispatch, commit }, data) {
+    if (!data || !data.silent) {
+      commit(mutation.LOADING, true)
+    }
     await Promise.all([
       dispatch('getDineInTables'),
       dispatch('getCovers'),
       dispatch('getBookedTables', false),
       // dispatch('getDineInArea'),
     ])
-    commit(mutation.LOADING, false)
+    if (!data || !data.silent) {
+      commit(mutation.LOADING, false)
+    }
   },
   getDineInOrders({ dispatch }) {
     dispatch('getBookedTables')
@@ -141,6 +150,13 @@ const actions = {
       /*localStorage.setItem('reservationId', false)*/
       DineInService.getAllBookedTables()
         .then(response => {
+          //if we have offline bookings data ll be returned always as offline once syced up it ll return original
+          //if we get fresh data we need to save it in cache
+          workflow.storeData({
+            key: 'dinein_reservations',
+            data: response.data,
+          })
+
           commit(mutation.BOOKED_TABLES, response.data)
           dispatch('getDineInArea').then(() => {
             return resolve()
@@ -200,7 +216,6 @@ const actions = {
     loader = true
   ) {
     if (loader) commit(mutation.LOADING, loader)
-    if (loader) commit(mutation.LOADING, loader)
 
     let userId = ''
     if (!rootGetters['auth/allowed'](PERMS.SEE_OTHERS_ORDERS)) {
@@ -249,10 +264,16 @@ const actions = {
       })
     })
   },
-  getDineInTables({ commit, dispatch }) {
+  getDineInTables({ commit, dispatch, rootState }) {
     return new Promise((resolve, reject) => {
       DineInService.dineTables()
         .then(response => {
+          if (rootState.sync.online) {
+            workflow.storeData({
+              key: 'dinein_tables',
+              data: response.data,
+            })
+          }
           commit(mutation.DINE_IN_TABLES, response.data)
           commit(mutation.PAGE_LOOKUP, response.data.page_lookups)
           dispatch('getAvailableTables')
@@ -453,9 +474,17 @@ const actions = {
       dispatch('newReservation', ...params)
     }
   },
-  newReservation({ commit, dispatch }, params) {
-    return new Promise((resolve, reject) => {
+  newReservation({ commit, dispatch, rootState, getters }, params) {
+    return new Promise(async (resolve, reject) => {
+      //offline booking
+      params.assigned_to = rootState.auth.userDetails.item._id
+      params.created_by = rootState.auth.userDetails.item._id
+      params.number = getters.getTableNumberById(
+        params.assigned_table_id
+      ).number
+
       DineInService.reservationOperation(params, 'add')
+
         .then(response => {
           commit(mutation.RESERVATION_RESPONSE, response.data)
           dispatch('getCovers').then(() => {
@@ -557,9 +586,34 @@ const actions = {
       })
     })
   },
+  /*switchWaiter({ state, rootGetters }, waiter) {
+    if (
+        !waiter ||
+        (state.reservationData &&
+            state.reservationData.assigned_to === waiter._id)
+    ) {
+      return Promise.reject({
+        message: rootGetters['location/_t'](
+            'Waiter already assigned to table.'
+        ),
+      })
+    }
+    if (!state.reservationData) {
+      return Promise.reject({
+        message: rootGetters['location/_t']('No order found on table.'),
+      })
+    }
+    return DineInService.switchWaiter(state.reservationData.reservationId, {
+      switch_from: state.reservationData.assigned_to,
+      switch_to: waiter._id,
+    })
+  },*/
 }
 
 const mutations = {
+  [mutation.IS_MODIFIED](state, isModified) {
+    state.isModified = isModified
+  },
   [mutation.SET_COVER](state, selectedCover) {
     state.selectedCover = selectedCover
   },

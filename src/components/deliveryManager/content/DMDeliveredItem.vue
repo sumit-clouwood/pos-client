@@ -78,44 +78,45 @@
             </td>
             <td>{{ avgTime(driOrders) }}</td>
             <td class="align-right">
-              <button
-                id="open-collect-money-modal"
-                role="button"
-                class="btn btn-success btn-large collect-driver-money-btn"
-                :driver-id="deliveryDriver"
-                total-orders="4"
-                cash="271.98"
-              >
-                <i class="fa fa-refresh fa"></i>
-                {{ _t('Collect Money') }}
-              </button>
-              &nbsp;
-              <a
-                :id="'refresh_data-' + driOrders.driverId"
-                href
-                class="btn btn-success btn-large btnRefreshDetails btn-data-refresh"
-                style="display: none;"
-              >
-                <i class="fa fa-refresh fa"></i>
-                {{ _t('Refresh Data') }} </a
-              >&nbsp;
-              <a
-                :id="'driver_details-' + driOrders.driverId"
-                role="button"
-                class="btn btn-info btn-large btnShowDetails btn-show-details-delivered"
-                @click="showOrders(driOrders.driverId)"
-              >
-                <i class="fa fa-eye" aria-hidden="true"></i>
-                <!--{{ _t('Show Details') }}-->
-              </a>
-              <a
-                :class="'driver_details_hide-' + driOrders.driverId"
-                role="button"
-                class="btn btn-info btn-large btnShowDetails btn-show-details"
-                style="display: none;"
-                @click="showOrders(driOrders.driverId)"
-                ><i class="fa fa-eye-slash" aria-hidden="true"></i>
-              </a>
+              <div class="delivered-items-iocns">
+                <button
+                  id="open-collect-money-modal"
+                  role="button"
+                  class="btn btn-success btn-large collect-driver-money-btn"
+                  :driver-id="deliveryDriver"
+                  total-orders="4"
+                  cash="271.98"
+                >
+                  <i class="fa fa-refresh fa"></i>
+                  {{ _t('Collect Money') }}</button
+                >&nbsp;
+                <a
+                  :id="'refresh_data-' + driOrders.driverId"
+                  href
+                  class="btn btn-success btn-large btnRefreshDetails btn-data-refresh"
+                  style="display: none;"
+                >
+                  <i class="fa fa-refresh fa"></i>
+                  {{ _t('Refresh Data') }} </a
+                >&nbsp;
+                <a
+                  :id="'driver_details-' + driOrders.driverId"
+                  role="button"
+                  class="btn btn-info btn-large btnShowDetails btn-show-details-delivered"
+                  @click="showOrders(driOrders.driverId)"
+                >
+                  <i class="fa fa-eye" aria-hidden="true"></i>
+                  <!--{{ _t('Show Details') }}-->
+                </a>
+                <a
+                  :class="'driver_details_hide-' + driOrders.driverId"
+                  role="button"
+                  class="btn btn-info btn-large btnShowDetails btn-show-details"
+                  style="display: none;"
+                  @click="showOrders(driOrders.driverId)"
+                  ><i class="fa fa-eye-slash" aria-hidden="true"></i>
+                </a>
+              </div>
             </td>
           </tr>
           <tr
@@ -293,6 +294,17 @@ tr.dataContentStyle > td > a svg {
   a {
     font-size: 12px;
     color: #fff;
+  }
+}
+.delivered-items-iocns {
+  display: flex;
+  a {
+    font-size: 12px;
+    color: #fff;
+    i {
+      font-size: 20px;
+      color: #fff;
+    }
   }
 }
 </style>

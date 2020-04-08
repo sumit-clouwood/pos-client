@@ -77,7 +77,6 @@
   </div>
 </template>
 <script>
-/* global $ */
 import { mapGetters } from 'vuex'
 import Progress from '@/components/util/Progress'
 import DataService from '@/services/DataService'
@@ -123,48 +122,6 @@ export default {
           .then(token => {
             this.login_success_message = 'Logged in successfully.'
             this.$store.commit('auth/SET_TOKEN', token)
-            return new Promise((resolve, reject) => {
-              DataService.getT('/ui_menu?&menu_needed=false')
-                .then(response => {
-                  let availabeStores = response.data.available_stores
-                  if (
-                    !this.$route.params.store_id &&
-                    availabeStores.length > 1
-                  ) {
-                    $('#multiStoresModal').css({ 'background-color': 'grey' })
-                    $('#multiStoresModal').modal('show')
-                    this.$store.commit(
-                      'context/SET_STORES_LENGTH',
-                      availabeStores.length
-                    )
-                    this.$store.commit(
-                      'context/SET_MULTI_STORES',
-                      availabeStores
-                    )
-                  }
-                  let path = response.data.start_path
-
-                  if (path != null && availabeStores.length === 1) {
-                    if (path !== 'pos') {
-                      if (path === 'delivery_home') {
-                        path = 'delivery-manager'
-                      }
-                      let URL = path + this.$store.getters['context/store']
-                      this.$router.push(URL)
-                    }
-                    this.$store.dispatch(
-                      'auth/getUserDetails',
-                      response.data.user_id
-                    )
-                  } else {
-                    $('#multiStores').modal.show()
-                  }
-                  resolve(response)
-                })
-                .catch(error => {
-                  reject(error)
-                })
-            })
           })
           .catch(error => {
             this.login_fail_message = error

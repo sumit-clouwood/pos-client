@@ -16,14 +16,21 @@ export default {
     return new Promise((resolve, reject) => {
       this.setupDB()
         .then(idb => {
+          console.log('dbsetup, now feth data')
           this.store.commit('sync/setIdb', idb)
           this.fetchData()
             .then(() => {
               resolve()
             })
-            .catch(error => reject(error))
+            .catch(error => {
+              console.log('error db: ', error)
+              reject(error)
+            })
         })
-        .catch(error => reject(error))
+        .catch(error => {
+          console.log('error db: ', error)
+          reject(error)
+        })
 
       //setup network
       this.setNetwork()
@@ -81,6 +88,7 @@ export default {
           this.store.dispatch('tax/openItemTaxes')
           this.store.dispatch('surcharge/fetchAll').then(() => {})
           this.store.dispatch('discount/fetchAll').then(() => {})
+          this.store.dispatch('dinein/fetchAll')
 
           this.store
             .dispatch('category/fetchAll')
@@ -205,136 +213,142 @@ export default {
     })
   },
 
-  setupDB() {
+  setupDB(resolver = null) {
     return new Promise(resolve => {
-      this.createDb(1)
-        .then(idb => {
-          idb.close()
-          this.createDb(2).then(idb => {
-            idb.close()
-            this.createDb(3).then(idb => {
-              idb.close()
-              this.createDb(4).then(idb => {
-                resolve(idb)
-              })
-            })
-          })
-        })
-        .catch(event => {
-          if (event.target.error.code === 0) {
-            //db has been created already so try with a recent version
-            const version = 4
-            db.openDatabase(version)
-              .then(({ idb, flag }) => {
-                if (flag === 'open') {
-                  this.store.commit('sync/setIdbVersion', version)
-                  resolve(idb)
-                }
-              })
-              .catch(error => {
-                console.log(error)
-              })
-          }
-        })
-    })
-  },
-  createDb(version) {
-    return new Promise((resolve, reject) => {
+      const version = 5
       db.openDatabase(version)
         .then(({ idb, flag, event }) => {
+          console.log('db opened flag: ', flag)
           if (flag === 'upgrade') {
-            this.createBuckets(event)
-              .then(() => {
-                resolve(idb)
-              })
-              .catch(error => reject(error))
+            console.log('creating buckets')
+            this.createBuckets(event, version)
+            var transaction = event.target.transaction
+            transaction.oncomplete = function(event) {
+              // Now store is available to be populated
+              resolve(idb)
+
+              if (resolver) {
+                resolver(idb)
+              }
+              console.log('buckets created', event)
+            }
           } else {
-            reject(event)
+            resolve(idb)
           }
         })
-        .catch(error => reject(error))
+        .catch(({ idb, event }) => {
+          console.log('ooops', event)
+          if (event == 'blocked') {
+            console.log(
+              'db was already opened may be by sw or app itself, closing and retrying'
+            )
+            idb.close()
+            this.setupDB(resolve)
+          }
+        })
     })
   },
-  createBuckets(event) {
-    return new Promise((resolve, reject) => {
-      if (event.oldVersion === 0) {
-        // version 1 -> 2 upgrade
-        console.log('creating bucket auth')
-        db.createBucket('auth')
-          .then(() => {
-            console.log('created bucket auth')
-            this.store.commit('sync/setIdbVersion', 1)
-            resolve(1)
-          })
-          .catch(error => reject(error))
-      }
-      if (event.oldVersion === 1) {
-        // version 2 -> 3 upgrade
-        console.log('creating bucket order_post_requests')
-        db.createBucket(
-          'order_post_requests',
-          { keyPath: 'order_time' },
-          bucket => {
-            bucket.createIndex('order_time', 'order_time', { unique: true })
-          }
-        )
-          .then(() => {
-            console.log('created bucket order_post_requests')
-            this.store.commit('sync/setIdbVersion', 2)
-            resolve(2)
-          })
-          .catch(error => reject(error))
-      }
-      if (event.oldVersion === 2) {
-        // initial database creation
-        // (your code does nothing here)
-        console.log('creating bucket events')
-        db.createBucket('events', { keyPath: 'url' }, bucket => {
-          bucket.createIndex('url', 'url', { unique: true })
-        })
-          .then(() => {
-            console.log('created bucket events')
-            this.store.commit('sync/setIdbVersion', 3)
 
-            resolve(3)
-          })
-          .catch(error => reject(error))
-      }
-      if (event.oldVersion === 3) {
-        // initial database creation
-        // (your code does nothing here)
-        console.log('creating bucket logs')
-        db.createBucket(
-          'log',
-          {
-            autoIncrement: true,
-            keyPath: 'id',
-          },
-          bucket => {
-            bucket.createIndex('log_time', 'log_time', { unique: false })
-            bucket.createIndex('event_time', 'event_time', {
-              unique: false,
-            })
-            bucket.createIndex('event_type', 'event_type', {
-              unique: false,
-            })
-            bucket.createIndex('event_title', 'event_title', {
-              unique: false,
-            })
-            bucket.createIndex('event_data', 'event_data', {
-              unique: false,
-            })
-          }
-        )
-          .then(() => {
-            console.log('created bucket events')
-            this.store.commit('sync/setIdbVersion', 4)
-
-            resolve(4)
-          })
-          .catch(error => reject(error))
-      }
+  authBucket() {
+    db.createBucket('auth')
+    this.store.commit('sync/setIdbVersion', 1)
+    console.log('auth bucket created')
+  },
+  orderPostRequestBucket() {
+    const bucket = db.createBucket('order_post_requests', {
+      keyPath: 'order_time',
     })
+    bucket.createIndex('order_time', 'order_time', { unique: true })
+
+    console.log('order post requests bucket created')
+    this.store.commit('sync/setIdbVersion', 2)
+  },
+  eventsBucket() {
+    const bucket = db.createBucket('events', { keyPath: 'url' })
+    bucket.createIndex('url', 'url', { unique: true })
+    console.log('events bucket created')
+    this.store.commit('sync/setIdbVersion', 3)
+  },
+  logBucket() {
+    const bucket = db.createBucket('log', {
+      autoIncrement: true,
+      keyPath: 'id',
+    })
+    bucket.createIndex('log_time', 'log_time', { unique: false })
+    bucket.createIndex('event_time', 'event_time', {
+      unique: false,
+    })
+    bucket.createIndex('event_type', 'event_type', {
+      unique: false,
+    })
+    bucket.createIndex('event_title', 'event_title', {
+      unique: false,
+    })
+    bucket.createIndex('event_data', 'event_data', {
+      unique: false,
+    })
+
+    console.log('log bucket created')
+
+    this.store.commit('sync/setIdbVersion', 4)
+  },
+  orderWorkflowBucket() {
+    const bucket = db.createBucket('workflow_order', {
+      keyPath: ['_id', 'type', 'step'],
+    })
+
+    bucket.createIndex('_id', '_id', { unique: false })
+    bucket.createIndex('step', 'step', { unique: false })
+    bucket.createIndex('type', 'type', { unique: false })
+    bucket.createIndex('keys', 'keys', {
+      unique: false,
+    })
+    bucket.createIndex('status', 'status', {
+      unique: false,
+    })
+    bucket.createIndex('rootStep', 'rootStep', {
+      unique: false,
+    })
+
+    bucket.createIndex('rootkeys', ['type', 'step', 'status', 'rootStep'], {
+      unique: false,
+    })
+    bucket.createIndex('idkey', ['_id', 'type', 'step'], {
+      unique: true,
+    })
+    bucket.createIndex('stepstatus', ['type', 'step', 'status'], {
+      unique: false,
+    })
+    bucket.createIndex('idstepstatus', ['_id', 'type', 'step', 'status'], {
+      unique: false,
+    })
+
+    console.log('order workflow bucket created')
+
+    this.store.commit('sync/setIdbVersion', 5)
+  },
+  dataStore() {
+    const bucket = db.createBucket('store', { keyPath: 'key' })
+    bucket.createIndex('key', 'key', { unique: true })
+    console.log('datastore bucket created')
+    this.store.commit('sync/setIdbVersion', 5)
+  },
+
+  createBuckets(event, version) {
+    //createbucket doesn't wait so don't need promise here
+    const buckets = [
+      ['authBucket'],
+      ['orderPostRequestBucket'],
+      ['eventsBucket'],
+      ['logBucket'],
+      ['dataStore', 'orderWorkflowBucket'],
+    ]
+
+    for (let i = event.oldVersion; i < version; i++) {
+      for (const j in buckets[i]) {
+        this[buckets[i][j]]()
+      }
+    }
   },
 
   setNetwork() {
@@ -375,6 +389,9 @@ export default {
         } else {
           //console.log(this.syncInterval, ' not passed yet')
         }
+      } else {
+        //system gone offline
+        this.store.dispatch('sync/offlineSync', false)
       }
     })
   },

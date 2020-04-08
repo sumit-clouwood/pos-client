@@ -28,6 +28,17 @@ export default {
         return collectionItems[details.matchWith]
       }
     }
+    //TODO Remove it later
+    if (
+      typeof collectionItems != 'undefined' &&
+      typeof collectionItems[details.matchWith] != 'undefined'
+    ) {
+      if (details.selection) {
+        return collectionItems[details.matchWith][details.selection]
+      } else {
+        return collectionItems[details.matchWith]
+      }
+    }
     return 'NA'
   },
 

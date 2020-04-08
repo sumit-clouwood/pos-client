@@ -1,7 +1,7 @@
 <template>
   <!-- Add Note -->
   <div class="modal fade" id="add-note" role="dialog">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
       <!-- Modal content-->
       <div class="modal-content color-dashboard-background">
         <div class="modal-header customer-header color-secondary">
@@ -25,19 +25,19 @@
         <div class="modal-footer">
           <div class="btn-announce">
             <button
-              type="button"
-              class="btn btn-danger cancel-announce color-button"
-              data-dismiss="modal"
-            >
-              {{ _t('Cancel') }}
-            </button>
-            <button
               @click="addNoteOrder(orderNote)"
               class="btn btn-success btn-large color-main "
               type="button"
               id="save-note"
             >
               {{ _t('Save') }}
+            </button>
+            <button
+              type="button"
+              class="btn btn-danger cancel-announce color-button"
+              data-dismiss="modal"
+            >
+              {{ _t('Cancel') }}
             </button>
           </div>
           <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
@@ -85,14 +85,15 @@ export default {
   },
 }
 </script>
-<style lang="scss">
-@import '../../../../assets/scss/pixels_rem.scss';
-@import '../../../../assets/scss/variables.scss';
-@import '../../../../assets/scss/mixins.scss';
+<style lang="scss" scoped>
+@import '@/assets/scss/pixels_rem.scss';
+@import '@/assets/scss/variables.scss';
+@import '@/assets/scss/mixins.scss';
 
 @include responsive(mobile) {
   #add-note {
     .modal-dialog {
+      margin: 0px !important;
       .modal-content {
         .modal-header {
           padding: 20px;
@@ -119,6 +120,7 @@ export default {
             button,
             #save-note {
               height: 50px;
+              width: 100% !important;
             }
           }
         }

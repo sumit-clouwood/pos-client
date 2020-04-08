@@ -1,6 +1,10 @@
 <template>
   <div class="avatar">
-    <a class="avatar-link" href="" target="_self">
+    <router-link
+      class="avatar-link"
+      :title="user ? user.name : ''"
+      :to="!isMobile ? '/user-details' + currentStore : ''"
+    >
       <!--<img class="avatar-link-img" :src="profileImage" alt="profile" />-->
       <img
         class="avatar-link-img"
@@ -9,13 +13,15 @@
         "
         alt="profile"
       />
-      <div class="avatar-link-user">{{ user ? user.name : '' }}</div>
+      <label class="avatar-link-user" :title="user ? user.name : ''">
+        {{ isMobile ? userName : user.name }}
+      </label>
       <status />
-    </a>
+    </router-link>
   </div>
 </template>
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 import status from './status.vue'
 
 export default {
@@ -24,6 +30,12 @@ export default {
     status,
   },
   computed: {
+    userName() {
+      return this.user ? this.user.name : ''
+    },
+    isMobile() {
+      return this.$store.state.mobile.device === 'mobile'
+    },
     // ...mapState({
     //   profileImage: state =>
     //     state.auth.userDetails && state.auth.userDetails.image
@@ -34,6 +46,9 @@ export default {
     // }),
     ...mapState({
       user: state => state.auth.userDetails.item,
+    }),
+    ...mapGetters({
+      currentStore: ['context/store'],
     }),
   },
 }
@@ -63,12 +78,16 @@ export default {
     }
 
     .avatar-link-user {
-      font-size: 20px;
+      font-size: 1.2rem;
       line-height: 20px;
       font-weight: 600;
       color: #4b4e53;
+      &:hover {
+        cursor: pointer;
+      }
       @include responsive(mobile) {
         text-transform: capitalize;
+        font-size: 1rem;
       }
     }
   }

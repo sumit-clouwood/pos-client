@@ -3,7 +3,7 @@
   <li
     class="footer-slider-list-item color-secondary"
     data-toggle="modal"
-    data-target="#open-item"
+    data-target="#generic-open-item"
   >
     <a class="footer-slider-list-item-link color-text-invert" role="button">
       <!--<img src="images/footer-images/a.png" alt="customer">-->

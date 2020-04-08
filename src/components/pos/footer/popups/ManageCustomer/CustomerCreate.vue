@@ -2,7 +2,7 @@
   <!-- Add customer model -->
   <div>
     <div class="modal fade " id="customer" role="dialog">
-      <div class="modal-dialog">
+      <div class="modal-dialog modal-dialog-centered">
         <!-- Modal content-->
         <div class="modal-content color-dashboard-background">
           <div class="modal-header customer-header color-secondary">
@@ -21,20 +21,20 @@
           <div class="modal-footer">
             <div class="btn-announce">
               <button
-                type="button"
-                class="btn btn-danger cancel-announce color-button"
-                data-dismiss="modal"
-                id="close-customer"
-              >
-                {{ _t('Cancel') }}
-              </button>
-              <button
                 class="btn btn-success btn-large color-main"
                 type="button"
                 id="post_announcement"
                 v-on:click="customerAction(customer_title)"
               >
                 {{ _t('Save') }}
+              </button>
+              <button
+                type="button"
+                class="btn btn-danger cancel-announce color-button"
+                data-dismiss="modal"
+                id="close-customer"
+              >
+                {{ _t('Cancel') }}
               </button>
             </div>
             <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
@@ -142,9 +142,9 @@ export default {
 }
 </script>
 <style lang="scss">
-@import '../../../../../assets/scss/pixels_rem.scss';
-@import '../../../../../assets/scss/variables.scss';
-@import '../../../../../assets/scss/mixins.scss';
+@import '@/assets/scss/pixels_rem.scss';
+@import '@/assets/scss/variables.scss';
+@import '@/assets/scss/mixins.scss';
 
 @include responsive(mobile) {
   #post_announcement {
@@ -188,7 +188,7 @@ export default {
         form {
           overflow-y: auto;
           overflow-x: hidden;
-          width: 100vw;
+          width: 95vw !important;
         }
 
         .modal-body {
@@ -207,6 +207,10 @@ export default {
 
         .modal-footer {
           z-index: 1;
+          min-height: 0px !important;
+          .btn-announce {
+            margin-bottom: 0px !important;
+          }
         }
       }
     }

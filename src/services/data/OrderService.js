@@ -1,11 +1,13 @@
 /* eslint-disable no-console */
 import DataService from '@/services/DataService'
 import Logger from '@/services/network/Logger'
+import DateTime from '@/mixins/DateTime.js'
 
 export default {
   saveOrder(data) {
+    const orderTimeUTC = this.getOrderTimeUTC()
     let msg = {
-      form_data: data,
+      form_data: { ...data, ...orderTimeUTC },
     }
 
     try {
@@ -127,12 +129,28 @@ export default {
     return DataService.post(`/model/orders/id/${id}/modify_${type}order`, order)
   },
 
-  updateOrderItems(order, id, type) {
-    if (type) {
-      type += '_'
-    } else {
-      type = ''
+  getOrderTimeUTC() {
+    return { orderTimeUTC: DateTime.getUTCDateTime() }
+  },
+
+  updateOrderItems(order, id) {
+    const orderTimeUTC = this.getOrderTimeUTC()
+    let msg = {
+      form_data: { ...order, ...orderTimeUTC },
     }
+
+    try {
+      if ('serviceWorker' in navigator && 'SyncManager' in window) {
+        navigator.serviceWorker.controller.postMessage(msg)
+      } else {
+        console.log('service worker not found in app ')
+      }
+    } catch (e) {
+      console.log("Couldn't send msg to service worker in dev", e, msg)
+    }
+
+    //remove offline data
+    delete order.user
     return DataService.post(`/model/orders/id/${id}/update_order_items`, order)
   },
   invoiceAPI(order, apiurl) {

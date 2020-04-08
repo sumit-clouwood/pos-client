@@ -1,13 +1,14 @@
 <template>
   <div
     :class="['orders-menu-overlay', { active: !footerMenuHendler }]"
-    @click.self="footerMenuHendlerChange"
+    @click="footerMenuHendlerChange"
   >
     <div class="orders-menu">
-      <li
+      <div
         class="footer-slider-list-item color-secondary"
         data-toggle="modal"
         data-target="#manage-customer"
+        v-show="!carhop && !waiter"
       >
         <!--@click="openManageCustomer"-->
         <svg
@@ -37,11 +38,12 @@
         <a class="footer-slider-list-item-link">
           <span>{{ _t('Customer') }}</span>
         </a>
-      </li>
+      </div>
       <div
+        v-if="!carhop && !waiter"
         class="footer-slider-list-item footer-slider-list-item-open-orders"
         id="hold-order-box"
-        @click="viewHoldOrders"
+        @click.stop="viewHoldOrders"
       >
         <svg
           width="24"
@@ -65,11 +67,12 @@
           <span>{{ _t('Hold Orders') }}</span>
         </a>
       </div>
-      <li
+      <div
+        v-show="!carhop && !waiter"
         class="footer-slider-list-item"
         data-toggle="modal"
         data-dismiss="modal"
-        @click="add_customer_address"
+        @click.stop="add_customer_address"
       >
         <svg
           width="17"
@@ -91,13 +94,14 @@
         >
           <span>{{ _t('Send to Delivery') }}</span>
         </a>
-      </li>
+      </div>
       <div
         class="footer-slider-list-item active"
         data-toggle="modal"
         data-target="#select-discount"
         id="discount-footer"
-        @click="discountHendlerChange"
+        @click.stop="discountHendlerChange"
+        v-show="!carhop && !waiter"
       >
         <svg
           width="21"
@@ -113,17 +117,15 @@
             fill="#3D3F43"
           />
         </svg>
-        <a
-          class="footer-slider-list-item-link"
-          @click.prevent="validateOrderDiscounts()"
-        >
+        <a class="footer-slider-list-item-link">
           <span>{{ _t('Select') + ' ' + _t('Discount') }}</span>
         </a>
       </div>
-      <li
+      <div
         class="footer-slider-list-item"
         data-toggle="modal"
         data-target="#dining-option"
+        v-show="!carhop && !waiter"
       >
         <svg
           width="15"
@@ -141,13 +143,14 @@
         <a class="footer-slider-list-item-link">
           <span>{{ _t('Dinning Options') }}</span>
         </a>
-      </li>
-      <li
+      </div>
+      <div
         data-toggle="modal"
         data-target="#search-loyalty-customer"
         class="footer-slider-list-item"
         :class="{ loyaltyApplied: loyaltyCard }"
         @click="loyaltyHendlerChange"
+        v-show="!carhop && !waiter"
       >
         <svg
           width="22"
@@ -178,7 +181,7 @@
             <span>{{ selectedCustomer }}</span>
           </span>
         </a>
-      </li>
+      </div>
       <div
         class="footer-slider-list-item"
         data-toggle="modal"
@@ -208,7 +211,7 @@
 </template>
 <script>
 /* global $ */
-import { mapActions, mapState, mapGetters } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 // import mobileFooter from './mobileFooter.vue'
 
 export default {
@@ -225,6 +228,7 @@ export default {
     ...mapGetters('location', ['formatPrice', '_t']),
     ...mapState({
       loyaltyCard: state => state.customer.loyalty.card,
+      selectedCustomer: state => state.customer.customer.name,
     }),
     ...mapState({
       selectedModal: state =>
@@ -232,9 +236,10 @@ export default {
           ? '#manage-customer'
           : state.location.setModal,
     }),
+    ...mapGetters('auth', ['waiter', 'carhop']),
+    ...mapState('order', ['orderType', 'cartType']),
   },
   methods: {
-    ...mapActions('discount', ['validateOrderDiscounts']),
     footerMenuHendlerChange() {
       this.$store.dispatch('footerMenuHendlerChange')
     },

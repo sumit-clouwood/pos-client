@@ -1,7 +1,7 @@
 <template>
   <div class="online-counter">
-    <div class="online-counter-text">{{ _t('Online') }}</div>
-    <div class="online-counter-num">2</div>
+    <span class="online-counter-text">{{ _t('Online') }}</span>
+    <span class="online-counter-num">2</span>
   </div>
 </template>
 <script>
@@ -13,14 +13,19 @@ export default {
   },
 }
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
+@import '@/assets/scss/mixins.scss';
 .online-counter {
   display: grid;
   grid-template-columns: max-content max-content;
   align-items: center;
   .online-counter-text {
-    font-size: 14px;
+    font-size: 0.8rem;
     margin-right: 10px;
+    @include responsive(mobile) {
+      margin-right: 0.3rem !important;
+      font-size: 0.7rem;
+    }
   }
   .online-counter-num {
     width: 25px;
@@ -32,6 +37,9 @@ export default {
     justify-content: center;
     color: #fff;
     font-weight: 600;
+    @include responsive(mobile) {
+      font-size: 0.7rem;
+    }
   }
 }
 </style>

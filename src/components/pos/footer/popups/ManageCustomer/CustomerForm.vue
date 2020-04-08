@@ -498,12 +498,21 @@ export default {
   background-color: #ddd;
 }
 </style>
-<style lang="scss">
-@import '../../../../../assets/scss/pixels_rem.scss';
-@import '../../../../../assets/scss/variables.scss';
-@import '../../../../../assets/scss/mixins.scss';
+<style lang="scss" scoped>
+@import '@/assets/scss/pixels_rem.scss';
+@import '@/assets/scss/variables.scss';
+@import '@/assets/scss/mixins.scss';
 
 @include responsive(mobile) {
+  .getAreaId {
+    width: 100% !important;
+  }
+  .delivery-area-name {
+    /deep/ .IZ-select__menu {
+      z-index: 999;
+    }
+  }
+
   .dropdown-content {
     margin: 0 !important;
     border: none !important;

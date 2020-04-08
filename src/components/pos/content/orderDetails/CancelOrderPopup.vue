@@ -110,20 +110,27 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-danger" data-dismiss="modal">
-            {{ _t('Close') }}
-          </button>
-          <button
-            type="button"
-            class="btn btn-success"
-            @click="
-              cancelOrderAction({
-                order: selectedOrder.item,
-              })
-            "
-          >
-            {{ _t('Submit') }}
-          </button>
+          <div class="btn-announce">
+            <button
+              type="button"
+              class="btn btn-danger"
+              data-dismiss="modal"
+              @click="clearOrder()"
+            >
+              {{ _t('Close') }}
+            </button>
+            <button
+              type="button"
+              class="btn btn-success"
+              @click="
+                cancelOrderAction({
+                  order: selectedOrder.item,
+                })
+              "
+            >
+              {{ _t('Submit') }}
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -160,6 +167,11 @@ export default {
     ...mapGetters('context', ['store']),
   },
   methods: {
+    clearOrder() {
+      this.$store.commit('order/CLEAR_SELECTED_ORDER', null, {
+        root: true,
+      })
+    },
     selectedReason: function(reason) {
       this.showSelectedReason = reason.name
       $('.dropdown-content').hide()
@@ -232,14 +244,18 @@ export default {
 }
 </script>
 
-<style lang="scss">
-@import '../../../../assets/scss/pixels_rem.scss';
-@import '../../../../assets/scss/variables.scss';
-@import '../../../../assets/scss/mixins.scss';
+<style lang="scss" scoped>
+@import '@/assets/scss/pixels_rem.scss';
+@import '@/assets/scss/variables.scss';
+@import '@/assets/scss/mixins.scss';
 
 #cancellationReason {
   .modal-dialog {
     /*margin: 0;*/
+  }
+  #cancellation-dropdown,
+  #inventory-dropdown {
+    width: 100% !important;
   }
 }
 
@@ -272,10 +288,11 @@ export default {
         }
 
         .modal-body {
+          min-height: 0rem;
           .autocomplete-container {
-            grid-gap: 3em;
+            grid-gap: 1em;
             .dropdown-content {
-              top: 3em;
+              top: 4em !important;
               background-color: #fff !important;
               max-height: inherit !important;
               bottom: inherit;
@@ -288,6 +305,38 @@ export default {
           box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
       }
+    }
+  }
+  #cancellationReason {
+    position: fixed !important;
+    .modal-content {
+      width: 95% !important;
+      margin: 20% auto;
+    }
+    .modal-body {
+      min-height: 0rem !important;
+    }
+  }
+  .dropdown-content .cancel-order-dd {
+    margin-top: 15px !important;
+    min-width: 100% !important;
+  }
+
+  div#cancellationReason .modal-dialog .autocomplete-container {
+    grid-template-columns: 1fr !important;
+  }
+  .dropdown-content span {
+    white-space: nowrap;
+  }
+  .input-search-driver {
+    width: 100%;
+  }
+  #cancellationReason .modal-header {
+    max-width: 100%;
+  }
+  #successCancel {
+    .modal-content {
+      width: 95% !important;
     }
   }
 }

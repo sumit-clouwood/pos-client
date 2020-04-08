@@ -1852,14 +1852,26 @@ const actions = {
           }
         })
       }
-      dispatch('printingServer/convertDatetime', {
-        datetime: orderData.real_created_datetime,
-        format: 'Do MMMM YYYY',
-      })
-      dispatch('printingServer/convertDatetime', {
-        datetime: orderData.real_created_datetime,
-        format: 'h:mm:ss A',
-      })
+      dispatch(
+        'printingServer/convertDatetime',
+        {
+          datetime: orderData.real_created_datetime,
+          format: 'Do MMMM YYYY',
+        },
+        {
+          root: true,
+        }
+      )
+      dispatch(
+        'printingServer/convertDatetime',
+        {
+          datetime: orderData.real_created_datetime,
+          format: 'h:mm:ss A',
+        },
+        {
+          root: true,
+        }
+      )
       //Created Date
       // let timezoneString = locationData.timezoneString
       let created_date = rootState.printingServer.createdDateTime.date

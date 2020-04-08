@@ -110,6 +110,14 @@ export default {
 }
 </script>
 <style scoped lang="scss">
+@import '@/assets/scss/mixins.scss';
+
+@include responsive(mobile) {
+  .addOrders {
+    grid-template-columns: 1fr !important;
+    padding-bottom: 1rem;
+  }
+}
 .order-location.option-contain {
   padding: 10px;
 }

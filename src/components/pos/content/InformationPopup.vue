@@ -5,7 +5,7 @@
     id="information-popup"
     role="dialog"
   >
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
       <!-- Modal content-->
       <div class="modal-content">
         <div class="modal-header customer-header">
@@ -61,7 +61,7 @@ import { mapGetters } from 'vuex'
 export default {
   name: 'InformationPopup',
   props: {
-    responseInformation: String,
+    responseInformation: [String, Object],
     title: String,
     activatedClass: String,
   },
@@ -83,9 +83,9 @@ export default {
 }
 </script>
 <style lang="scss">
-@import '../../../assets/scss/pixels_rem.scss';
-@import '../../../assets/scss/variables.scss';
-@import '../../../assets/scss/mixins.scss';
+@import '@/assets/scss/pixels_rem.scss';
+@import '@/assets/scss/variables.scss';
+@import '@/assets/scss/mixins.scss';
 
 @include responsive(mobile) {
   #information-popup {
@@ -94,13 +94,17 @@ export default {
 
       .modal-content {
         width: 95% !important;
-        height: 50% !important;
+        height: auto !important;
         margin: auto;
         margin-top: 50%;
         margin-bottom: 50%;
         .modal-header {
-          height: 80px;
+          height: 50px;
           background-color: #fff;
+          font-size: 18px !important;
+          .customer-title {
+            font-size: 2rem !important;
+          }
         }
         .modal-body {
           min-height: 0rem !important;

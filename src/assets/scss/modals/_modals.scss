@@ -32,11 +32,21 @@
   justify-content: center;
   overflow: auto;
   .modal-dialog {
+    @include responsive(mobile) {
+      margin: auto !important;
+    }
     .modal-content {
       width: 100%;
-
+      @include responsive(mobile) {
+        width: 95% !important;
+        margin: auto !important;
+        margin-top: 2rem !important;
+      }
       .modal-header {
         background-color: $gray-bg-dark;
+        @include responsive(mobile) {
+          background-color: $gray-bg-dark !important;
+        }
         display: flex;
         align-items: center;
         padding: $px15 $px30;
@@ -62,8 +72,15 @@
           align-items: center;
           justify-content: flex-end;
           margin-left: auto;
+          @include responsive(mobile) {
+            display: grid !important;
+            grid-template-columns: 1fr !important;
+            width: 100% !important;
+            grid-row-gap: 10px !important;
+          }
 
           button {
+            margin-top: auto;
             height: $header-btn-height;
             font-weight: 600;
             font-size: $px16;
@@ -126,6 +143,9 @@ button {
         width: $px125;
         background: #cc3232;
         border-color: #cc3232;
+        @include responsive(mobile) {
+          width: auto !important;
+        }
       }
 
       > span {
@@ -141,6 +161,9 @@ button {
     border-color: #5056ca;
     margin-left: $px15;
     font-size: $px14;
+    @include responsive(mobile) {
+      width: auto !important;
+    }
   }
 
   #dining-opt {
@@ -179,7 +202,7 @@ button {
     font-weight: 600;
     letter-spacing: 0.58px;
     border: medium none;
-    @include responsive(mobile){
+    @include responsive(mobile) {
       padding: 0.3125rem 0.25rem !important;
     }
   }
@@ -198,6 +221,9 @@ button {
     border-radius: $btn-border-radius;
     background-color: #cc3232;
     box-shadow: 0 2px 2px 0 rgba(232, 150, 150, 0.5);
+    @include responsive(mobile) {
+      width: auto !important;
+    }
   }
 
   &.reject-order {
@@ -215,6 +241,9 @@ button {
     height: $px35;
     padding: 0 $px15;
     float: right;
+    @include responsive(mobile) {
+      width: auto !important;
+    }
 
     &:hover {
       background: #5056ca;
@@ -239,6 +268,9 @@ button {
     line-height: normal;
     letter-spacing: 0.6px;
     color: #ffffff;
+    @include responsive(mobile) {
+      width: auto !important;
+    }
 
     > span {
       float: left;

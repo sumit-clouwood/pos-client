@@ -40,7 +40,7 @@
           ]"
           @click="allCategoryHendlerChange"
         >
-          All category
+          {{ _t('All category') }}
           <i
             :class="['fa', 'fa-angle-down', { active: allCategoryHendler }]"
             aria-hidden="true"
@@ -55,7 +55,7 @@
           ]"
           @click="subCategoryHendlerChange"
         >
-          Sub category
+          {{ _t('Sub category') }}
           <i
             :class="['fa', 'fa-angle-down', { active: subCategoryHendler }]"
             aria-hidden="true"
@@ -123,9 +123,9 @@ export default {
 }
 </script>
 <style lang="scss">
-@import '../../../../assets/scss/pixels_rem.scss';
-@import '../../../../assets/scss/variables.scss';
-@import '../../../../assets/scss/mixins.scss';
+@import '@/assets/scss/pixels_rem.scss';
+@import '@/assets/scss/variables.scss';
+@import '@/assets/scss/mixins.scss';
 .search-field-icon.home {
   display: none;
 }

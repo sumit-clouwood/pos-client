@@ -2,9 +2,9 @@
   <div>
     <Preloader v-if="loading" />
     <div v-else class="running-order-table-wrap">
-      <table class="table" id="running-order">
+      <table class="table responsive-table" id="running-order">
         <thead>
-          <tr class="dine-table-heading">
+          <tr class="dine-table-heading text-capitalize">
             <th width="200px">{{ _t('TABLE NUMBER') }}</th>
             <!--<th width="100px">{{ _t('STATUS') }}</th>-->
             <th width="450px">{{ _t('ORDERS') }}</th>
@@ -29,8 +29,10 @@
                   <p>
                     {{ _t('Status') }} :
                     {{
-                      LookupData.replaceUnderscoreHyphon(
-                        orderTable.table.status
+                      _t(
+                        LookupData.replaceUnderscoreHyphon(
+                          orderTable.table.status
+                        )
                       )
                     }}
                   </p>
@@ -447,7 +449,9 @@ export default {
   },
 }
 </script>
-<style scoped>
+<style lang="scss" scoped>
+@import '@/assets/scss/mixins.scss';
+
 /*td.dine-order-tabel > span {
     height: 7.375rem;
   }*/
@@ -457,6 +461,14 @@ export default {
 
 button#dropdownMenuButton {
   width: 100%;
+  @include responsive(mobile) {
+    font-size: 1rem;
+  }
+}
+.dinefor-paynow {
+  @include responsive(mobile) {
+    font-size: 1rem;
+  }
 }
 button#dropdownMenuButton svg {
   display: inline-block;
@@ -464,5 +476,60 @@ button#dropdownMenuButton svg {
 }
 .table-order-view:empty {
   display: none;
+}
+@include responsive(mobile) {
+  .table-order-view-wrapper {
+    .table-order-view {
+      border: none;
+      padding: 0rem;
+      margin: 0rem;
+    }
+  }
+  .dine-table-heading {
+    display: none;
+  }
+  .dine-order-tabel {
+    padding: 0px !important;
+  }
+  .moodifiers-btn-wrapper {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    .progress-order-details {
+      button {
+        width: 100%;
+        margin: auto;
+        font-size: 1.1rem;
+      }
+    }
+  }
+  .action-status {
+    button {
+      width: 100%;
+      margin: auto;
+      font-size: 1.1rem;
+    }
+  }
+  .dine-order-amt,
+  .order-time-det {
+    border: none !important;
+  }
+  .dine-order-amt {
+    font-size: 1.1rem;
+  }
+  .order-time-det {
+    padding: 0px;
+  }
+  .dine-table-content {
+    display: grid;
+    border: 1px solid lightgrey;
+    margin-top: 0.75rem;
+    .running,
+    .completed {
+      grid-template-columns: 1fr 1fr !important;
+      padding: 0px !important;
+      width: auto;
+      font-size: 1.15rem !important;
+    }
+  }
 }
 </style>
