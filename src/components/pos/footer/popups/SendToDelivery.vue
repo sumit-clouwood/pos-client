@@ -92,6 +92,8 @@ export default {
       max-width: none !important;
 
       .modal-content {
+        max-height: 75vh !important;
+        overflow: scroll;
         .order-header {
           margin: 0;
           padding: 20px;
