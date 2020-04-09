@@ -63,8 +63,9 @@ const actions = {
     commit(mutation.ADDITIONAL_COMBO_VALUE, price)
   },
   itemsModifierPrice({ commit, rootGetters, state }, items) {
+    let orderIndexByCartItem = rootGetters['order/orderIndex'].toString()
     let modifierPriceCollection = {
-      itemId: state.comboItemsList._id,
+      itemId: state.comboItemsList._id + orderIndexByCartItem,
       price: 0,
       tax: 0,
     }
@@ -236,7 +237,11 @@ const mutations = {
     state.activeComboItems = activeComboItems
   },
   [mutation.SET_MODIFIERS](state, setModifiersItem) {
-    state.setModifiersItem.push({ ...setModifiersItem })
+    if (!setModifiersItem) {
+      state.setModifiersItem = []
+    } else {
+      state.setModifiersItem.push(setModifiersItem)
+    }
   },
   [mutation.SET_ORDER_INDEX](state, orderIndex) {
     state.orderIndex = orderIndex + 1
@@ -255,7 +260,7 @@ const mutations = {
     state.forCombo = 0
     state.selectedContainerLength = 0
     state.modifingItem = false
-    state.itemsModifiersValueTaxDiff = []
+    // state.itemsModifiersValueTaxDiff = []
   },
   [mutation.CONTAINER_SELECTED_LENGTH](state, selectedContainerLength) {
     state.selectedContainerLength = selectedContainerLength
@@ -267,8 +272,6 @@ const mutations = {
     state.additionalComboValue = additionalComboValue
   },
   [mutation.ITEMS_MODIFIERS_VALUE_TAX_DIFF](state, modifier) {
-    // eslint-disable-next-line no-console
-    console.log(modifier, 'modifiermodifier')
     if (!modifier) {
       state.itemsModifiersValueTaxDiff = []
     } else {
@@ -277,6 +280,8 @@ const mutations = {
       // state.itemsModifiersValueTaxDiff.price += modifier.price
       // state.itemsModifiersValueTaxDiff.tax += modifier.tax
     }
+    // eslint-disable-next-line no-console
+    // console.log(state.itemsModifiersValueTaxDiff, 'modifiermodifier')
   },
 }
 

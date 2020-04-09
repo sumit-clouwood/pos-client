@@ -10,12 +10,12 @@ export default {
     ...mapGetters(['bascketItems']),
   },
   methods: {
-    setModifiers(item, showModifierPopup = true) {
+    setModifiers(item) {
       if (this.$store.getters['modifier/hasModifiers'](item)) {
         this.$store.dispatch('modifier/assignModifiersToItem', item)
         this.$store.commit('orderForm/clearSelection')
         //handle open item inside popup
-        if (showModifierPopup) showModal('#POSItemOptions')
+        showModal('#POSItemOptions')
       } else {
         if (item.open_item === true) {
           //show popup for open item

@@ -110,8 +110,10 @@ const getters = {
     return modifiersTax
   },
   comboItemModifier: (state, getters, rootState) => item => {
+    console.log(item.orderIndex.toString(), 'order index item')
     return rootState.comboItems.itemsModifiersValueTaxDiff.find(
-      comboItemModifier => comboItemModifier.itemId === item._id
+      comboItemModifier =>
+        comboItemModifier.itemId === item._id + item.orderIndex.toString()
     )
   },
   totalItemTaxDiscount: (state, getters) => {
@@ -744,6 +746,7 @@ const actions = {
       dispatch('reset', true)
       // Reset combo items store when cart is empty
       dispatch('comboItems/reset', null, { root: true })
+      commit('comboItems/ITEMS_MODIFIERS_VALUE_TAX_DIFF', false, { root: true })
     }
   },
 

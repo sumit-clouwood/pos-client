@@ -153,6 +153,8 @@ export default {
         console.log('combo_item', item)
         this.$store.commit('comboItems/ACTIVE_COMBO_ITEMS', {}, { root: true })
         this.$store.commit('comboItems/SET_COMBO_ITEMS', item)
+        this.$store.commit('comboItems/SUB_ITEM_LIST', false)
+        this.$store.commit('comboItems/SET_MODIFIERS', false)
         this.$store.dispatch('comboItems/updateOrderIndex')
         this.$store.commit(
           'comboItems/SET_SELECTED_ITEM_DATA',
@@ -161,6 +163,7 @@ export default {
         this.$store.dispatch('comboItems/findItemById')
         showModal('#combox-box-popup')
       } else {
+        this.$store.dispatch('comboItems/reset')
         return this.itemsAddToCart(item)
       }
     },
