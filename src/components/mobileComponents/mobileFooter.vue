@@ -62,27 +62,31 @@
       >
         <i class="fa fa-times" aria-hidden="true"></i>
       </div>
-      <carhop v-show="orderType.OTApi === 'carhop'" />
-      <dinein v-show="orderType.OTApi === 'dine_in'" />
-      <crm v-show="orderType.OTApi === 'call_center'" />
-      <div
-        v-show="orderType.OTApi === 'walk_in' || orderType.OTApi === 'takeaway'"
-        class="btn-charge"
-        @click="buttonChargeAction()"
-      >
+      <template v-if="footerMenuHendler">
+        <carhop v-show="orderType.OTApi === 'carhop'" />
+        <dinein v-show="orderType.OTApi === 'dine_in'" />
+        <crm v-show="orderType.OTApi === 'call_center'" />
         <div
-          class="btn-charge-amount"
-          v-show="orderType.OTApi !== 'call_center'"
+          v-show="
+            orderType.OTApi === 'walk_in' || orderType.OTApi === 'takeaway'
+          "
+          class="btn-charge"
+          @click="buttonChargeAction()"
         >
-          {{ formatPrice(orderTotal || 0) }}
+          <div
+            class="btn-charge-amount"
+            v-show="orderType.OTApi !== 'call_center'"
+          >
+            {{ formatPrice(orderTotal || 0) }}
+          </div>
+          <div
+            class="btn-charge-title"
+            v-show="orderType.OTApi !== 'call_center'"
+          >
+            CHARGE
+          </div>
         </div>
-        <div
-          class="btn-charge-title"
-          v-show="orderType.OTApi !== 'call_center'"
-        >
-          CHARGE
-        </div>
-      </div>
+      </template>
       <!--
         <div>
         <li

@@ -215,6 +215,7 @@ import { mapState, mapGetters } from 'vuex'
 // import mobileFooter from './mobileFooter.vue'
 
 export default {
+  name: 'mobileOrdersMenu',
   data() {
     return {
       vbutton: '',
