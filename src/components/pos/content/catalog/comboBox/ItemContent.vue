@@ -15,6 +15,7 @@
         <img :src="item.image" alt v-if="item.image != ''" />
         <img
           v-else
+          style="border:1px solid rgba(0, 0, 0, 0.44);"
           :style="{
             background:
               item.image == '' && item.item_color ? item.item_color : 'white',
