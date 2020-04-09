@@ -252,11 +252,17 @@ export default {
   grid-template-columns: 0.5fr auto;
 }
 .food-item-box img {
-  max-height: 2.188rem;
+  /*max-height: 2.188rem;
   min-height: 2.188rem;
   min-width: 2.188rem;
   max-width: 2.188rem;
   margin: 0.625rem;
+  border-radius: 0.313rem;*/
+  max-height: 2.688rem;
+  min-height: 2.688rem;
+  min-width: 2.688rem;
+  max-width: 2.688rem;
+  margin: 0.325rem;
   border-radius: 0.313rem;
 }
 .food-item-box > div {
@@ -268,10 +274,10 @@ i.fa.fa-check.item-selected-check {
   right: 0;
   background: #5056ca;
   color: white;
-  padding: 0.188rem;
-  font-weight: 300;
+  padding: 0.298rem;
+  font-weight: 400;
   border-radius: 0.25rem;
-  font-size: 0.75rem;
+  font-size: 1.125rem;
 }
 .addtocart-icon {
   text-align: center;
