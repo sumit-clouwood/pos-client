@@ -195,10 +195,11 @@
         font-weight: 600;
         z-index: 999;
         position: fixed;
-        width: $px300;
+        width: $px320;
         right: 0;
         top: 0;
-        height: 100vh !important;
+        bottom: 0em;
+        height: 100%;
         -webkit-box-shadow: 0 0px 0.0625rem 0 rgba(23, 23, 32, 0.05),
           0 0px 0.1875rem 0 rgba(23, 23, 32, 0.05),
           0 0px 0.1875rem 0 rgba(23, 23, 32, 0.05),
@@ -216,7 +217,7 @@
         font-size: $px16;
 
         .setting-menu-wrapper {
-          height: calc(100vh - 152px);
+          height: calc(100% - 160px);
           overflow: auto;
         }
 
@@ -391,7 +392,12 @@
     @include responsive(mobile) {
       max-width: unset;
     }
-
+    .modal-content{
+      @include responsive(mobile) {
+        max-height: 80vh;
+        overflow: auto;
+      } 
+    }
     .business-summary-wrapper {
       display: grid;
       grid-template-columns: repeat(3, 1fr);

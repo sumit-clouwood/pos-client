@@ -231,6 +231,9 @@ export default {
     padding-bottom: 0;
     margin-top: 0;
     margin-bottom: 0;
+    @include responsive(mobile) {
+      font-size: 12px;
+    }
   }
 }
 button.toggle_btn {

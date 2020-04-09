@@ -13,29 +13,28 @@
           @mouseup="stopDrag"
         >
           <template>
+            <li
+              v-if="isAggregator()"
+              :style="{
+                width: slideWidth + 'px',
+              }"
+              @click="close()"
+            >
+              <div
+                class="slide"
+                :style="{
+                  width: slideWidth - 10 + 'px',
+                }"
+              >
+                <img src="img/icons/backarrow.svg" />
+                <label class="shorten-sentence" title="Back">
+                  Back
+                </label>
+              </div>
+            </li>
             <template v-for="[currentKey, value] of Object.entries(slides)">
               <li
-                v-if="isAggregatorChild(value)"
-                :style="{
-                  width: slideWidth + 'px',
-                }"
-                @click="close()"
-                :key="currentKey + 'aggregator'"
-              >
-                <div
-                  class="slide"
-                  :style="{
-                    width: slideWidth - 10 + 'px',
-                  }"
-                >
-                  <img src="img/icons/backarrow.svg" />
-                  <label class="shorten-sentence" title="Back">
-                    Back
-                  </label>
-                </div>
-              </li>
-              <li
-                v-if="currentKey === 'aggregator'"
+                v-if="currentKey === CONST.AGGREGATOR"
                 :key="currentKey"
                 :class="{ active: currentKey == currentSlide }"
                 :style="{
@@ -80,7 +79,7 @@
                 </div>
               </li>
               <li
-                v-else
+                v-else-if="value.length > 1"
                 :key="currentKey"
                 :class="{ active: currentKey == currentSlide }"
                 :style="{
@@ -96,7 +95,7 @@
                 >
                   <img
                     :src="
-                      value[0].type != 'aggregator'
+                      value[0].type != CONST.AGGREGATOR
                         ? imagePath(currentKey)
                         : fetchImage(value[0])
                     "
@@ -249,12 +248,14 @@ export default {
       this.show = false
       this.showAggregator = false
     },
-    isAggregatorChild(value) {
-      let aggregatorChild =
-        (value.length === 1 && value.type === CONST.AGGREGATOR) ||
-        (value.length > 1 && value[0].type === CONST.AGGREGATOR)
-      this.aggregatorChild = aggregatorChild
-      return aggregatorChild
+    isAggregator() {
+      let childSlides = Object.values(this.slides)
+      if (childSlides) {
+        if (childSlides[0]) {
+          return childSlides[0][0].type === CONST.AGGREGATOR ? true : false
+        }
+      }
+      return false
     },
   },
 }

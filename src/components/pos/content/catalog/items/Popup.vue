@@ -93,6 +93,8 @@ export default {
         width: 95% !important;
         margin: auto !important;
         font-size: 16px !important;
+        max-height: 80vh !important;
+        overflow: auto;
 
         .modal-header {
           height: 70px;

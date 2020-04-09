@@ -109,6 +109,7 @@ export default {
     searchHendlerChange() {
       this.$store.dispatch('searchHendlerChange')
       this.$store.dispatch('CloseCategoryAndSubCategory')
+      this.$store.dispatch('showMainCategory')
     },
     goToHome() {
       this.$store.dispatch('showMainCategory')

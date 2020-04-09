@@ -76,14 +76,18 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-@import '@/assets/scss/pixels_rem.scss';
-@import '@/assets/scss/variables.scss';
 @import '@/assets/scss/mixins.scss';
 
 .POSItemOptions {
   .modal-body {
     height: auto !important;
     max-height: 460px;
+  }
+  .modal-content {
+    @include responsive(mobile) {
+      max-height: 70vh !important;
+      overflow: auto !important;
+    }
   }
 }
 </style>

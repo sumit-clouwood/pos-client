@@ -15,7 +15,7 @@
 <script>
 /* global $, showModal */
 import { mapActions, mapGetters, mapState } from 'vuex'
-import * as CONSTANTS from '@/constants'
+import * as CONST from '@/constants'
 import Carousel from '@/components/util/Carousel.vue'
 
 export default {
@@ -34,8 +34,9 @@ export default {
   watch: {
     forceCash(newVal) {
       if (newVal) {
-        this.$refs.paymentmethods.setActive(CONSTANTS.CASH)
+        this.$refs.paymentmethods.setActive(CONST.CASH)
         this.$store.commit('checkoutForm/forceCash', false)
+        this.$refs.paymentmethods.movePage(1)
       }
     },
     payable(newval) {
@@ -48,6 +49,7 @@ export default {
   computed: {
     ...mapState({
       activeMethod: state => state.checkoutForm.method.name,
+      payments: state => state.checkoutForm.payments,
       forceCash: state => state.checkoutForm.forceCash,
       selectedModal: state => state.location.setModal,
     }),
@@ -63,12 +65,36 @@ export default {
     selectMethod({ index, slide }) {
       //const event = window.event
       //event.preventDefault()
-      if (!$.isEmptyObject(slide)) this.setMethod(slide)
-      else this.$store.commit('checkoutForm/forceCash', true)
+      //Method is called when payment method is selected
+      if (!$.isEmptyObject(slide)) {
+        if (this.payments.length > 0 && slide.type === CONST.AGGREGATOR) {
+          // Paying partially using Aggregator, Don't allow
+          this.$store.commit('checkoutForm/forceCash', true)
+          this.setErrorMessage()
+        } else if (this.payments) {
+          //if there are already any method added, check if it Aggregator or not
+          let index = this.payments.findIndex(
+            payment => payment.method.type === CONST.AGGREGATOR
+          )
+          if (index == -1) {
+            this.setMethod(slide)
+          } else {
+            this.setErrorMessage()
+          }
+        }
+      } else {
+        let index = this.payments.findIndex(
+          payment => payment.method.type === CONST.AGGREGATOR
+        )
+        // If aggregator type is not already selected, then set force cash method
+        if (index == -1) {
+          this.$store.commit('checkoutForm/forceCash', true)
+        }
+      }
       this.methodCardHendlerChange(slide.priority)
 
       if (this.$store.getters['checkoutForm/payable'] > 0) {
-        if (slide.type == CONSTANTS.LOYALTY) {
+        if (slide.type == CONST.LOYALTY) {
           if (this.selectedModal == '#manage-customer') {
             showModal('#search-loyalty-customer')
           } else {
@@ -79,7 +105,16 @@ export default {
       }
       return ''
     },
-
+    setErrorMessage() {
+      this.$store.commit('order/setAlert', {
+        type: 'error',
+        title: 'Partial Payment error',
+        msg: 'Partial Payments not allowed for Aggregator types',
+      })
+      $('#alert-popup').modal('show')
+      this.$store.commit('checkoutForm/forceCash', true)
+      this.$refs.paymentmethods.movePage(1)
+    },
     image(imgPath) {
       return imgPath
     },
@@ -108,8 +143,8 @@ export default {
     #payment-method
     .carousel-container
     .carousel {
-    overflow-y: scroll;
-    height: 40vh;
+    overflow-y: scroll !important;
+    height: 65vh;
   }
 }
 </style>

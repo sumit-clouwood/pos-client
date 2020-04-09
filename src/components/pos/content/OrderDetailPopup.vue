@@ -282,6 +282,7 @@ export default {
         padding-left: 0px !important;
         padding-right: 0px !important;
         padding-top: 0px !important;
+        max-height: 80vh !important;
         .details {
           display: grid;
           grid-template-columns: 1fr;
