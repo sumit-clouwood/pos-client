@@ -9,7 +9,6 @@
         @click="selectMethod"
       ></carousel>
     </div>
-    <p class="error-text">{{ errorMessage }}</p>
   </div>
 </template>
 
@@ -30,7 +29,6 @@ export default {
       jqInit: false,
       getToggle: '',
       getTarget: '',
-      errorMessage: '',
     }
   },
   watch: {
@@ -38,22 +36,13 @@ export default {
       if (newVal) {
         this.$refs.paymentmethods.setActive(CONST.CASH)
         this.$store.commit('checkoutForm/forceCash', false)
+        this.$refs.paymentmethods.movePage(1)
       }
     },
     payable(newval) {
       if (!newval) {
         //this method ll call the forcash inside
         this.$store.dispatch('checkoutForm/setCashMethod')
-      }
-    },
-    errorMessage(newVal) {
-      if (newVal != '') {
-        this.$nextTick(() => {
-          setTimeout(() => {
-            this.errorMessage = ''
-            this.$store.dispatch('checkoutForm/setCashMethod')
-          }, 3000)
-        })
       }
     },
   },
@@ -89,7 +78,6 @@ export default {
           )
           if (index == -1) {
             this.setMethod(slide)
-            this.errorMessage = ''
           } else {
             this.setErrorMessage()
           }
@@ -118,8 +106,14 @@ export default {
       return ''
     },
     setErrorMessage() {
-      this.errorMessage =
-        'Partial payments not allowed for Aggregator pay methods'
+      this.$store.commit('order/setAlert', {
+        type: 'error',
+        title: 'Partial Payment error',
+        msg: 'Partial Payments not allowed for Aggregator types',
+      })
+      $('#alert-popup').modal('show')
+      this.$store.commit('checkoutForm/forceCash', true)
+      this.$refs.paymentmethods.movePage(1)
     },
     image(imgPath) {
       return imgPath
@@ -142,10 +136,6 @@ export default {
   img {
     height: 46px;
   }
-}
-.error-text {
-  color: red;
-  font-size: 1rem;
 }
 @include responsive(mobile) {
   .mobile-payment-methods

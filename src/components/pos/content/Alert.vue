@@ -66,16 +66,16 @@ export default {
     },
   },
   methods: {
-    closeModal: function() {
+    closeModal() {
       hideModal('#alert-popup')
     },
   },
 }
 </script>
 <style lang="scss">
-@import '../../../assets/scss/pixels_rem.scss';
-@import '../../../assets/scss/variables.scss';
-@import '../../../assets/scss/mixins.scss';
+@import '@/assets/scss/pixels_rem.scss';
+@import '@/assets/scss/variables.scss';
+@import '@/assets/scss/mixins.scss';
 
 @include responsive(mobile) {
   #alert-popup {
@@ -84,7 +84,7 @@ export default {
 
       .modal-content {
         width: 95% !important;
-        height: 50% !important;
+        max-height: 50% !important;
         margin: auto;
         margin-top: 50%;
         margin-bottom: 50%;
