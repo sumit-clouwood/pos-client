@@ -1131,7 +1131,7 @@ tr.dataContentStyle > td > a {
 @media only screen and (max-width: 599px) {
   section.with-drivers-filter{
     grid-template-columns: 1fr;
-    grid-template-rows: 50% auto;
+    grid-template-rows: 45% auto;
   }
 }
 @media only screen and (max-width: 479px) {
