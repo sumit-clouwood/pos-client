@@ -20,7 +20,7 @@
             <p class="error-text">
               {{ error }}
             </p>
-            <h1 class="error-amount text-danger">
+            <h1 class="error-amount text-danger" v-show="errorAmount">
               {{ formatPrice(errorAmount) }}
             </h1>
           </div>

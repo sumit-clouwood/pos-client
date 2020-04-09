@@ -2,6 +2,18 @@ import * as CONST from '@/constants'
 import Num from '@/plugins/helpers/Num'
 import DateTime from '@/mixins/DateTime'
 
+/*
+
+1- User can pay full order amount using cash (Passed)
+2- User can pay partial amount using cash and any other method (other than Aggregator) (Passed)
+3- User can pay full amount using card (Passed)
+4- User can not pay amount greater then payable amount using card (true for Aggregator methods as well) (Passed)
+5- User can partially pay using card methods (Other than aggregator) (Passed)
+6- Only One Aggregator method can be used for paying order amount
+7- Tip amount should be removed automatically for aggregator payment types
+
+*/
+
 // initial state
 const state = {
   amount: '',
@@ -56,6 +68,15 @@ const getters = {
     }
     return loyaltyUsed
   },
+  validateAggregator: (state, getters, rootState, rootGetters) => {
+    if (state.method.type === CONST.AGGREGATOR) {
+      const totalPayable = parseFloat(rootGetters['order/orderTotal'])
+      if (totalPayable !== state.amount) {
+        return false
+      }
+    }
+    return true
+  },
 }
 
 // actions
@@ -80,15 +101,46 @@ const actions = {
         return dispatch('validateGiftPayment')
       } else if (state.method.type == CONST.LOYALTY) {
         return dispatch('validateLoyaltyPayment')
-      } else {
-        if (state.method.type === 'cash') {
-          //display reference popup
-          return dispatch('validateCashPayment')
-        } else {
-          return dispatch('validateCardPayment')
+      } else if (state.method.reference_code) {
+        if (!getters.validateAggregator) {
+          if (state.tipAmount) {
+            return dispatch('setTipAmountErrors')
+          }
+          return dispatch('aggregatorPaymentErrors', totalPayable)
         }
+
+        return dispatch('validateCardPayment')
+      } else {
+        // Handle aggregator payments here
+        if (!getters.validateAggregator) {
+          if (state.tipAmount) {
+            return dispatch('setTipAmountErrors')
+          }
+          return dispatch('aggregatorPaymentErrors', totalPayable)
+        }
+
+        return dispatch('validateCashPayment')
       }
     }
+  },
+
+  aggregatorPaymentErrors({ commit, rootGetters }, totalPayable) {
+    commit(
+      'SET_ERROR',
+      rootGetters['location/_t']('Please add below amount to proceed')
+    )
+    commit('SET_ERROR_AMOUNT', totalPayable)
+    commit('setAmount', totalPayable)
+    return Promise.reject()
+  },
+
+  setTipAmountErrors({ commit, rootGetters }) {
+    commit(
+      'SET_ERROR',
+      rootGetters['location/_t']('Tip amount not allowed for Aggregator types')
+    )
+    commit('addTip', 0)
+    return Promise.reject()
   },
 
   addAmount({ commit, getters, dispatch }) {
