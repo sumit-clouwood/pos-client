@@ -281,7 +281,7 @@ const mutations = {
       // state.itemsModifiersValueTaxDiff.tax += modifier.tax
     }
     // eslint-disable-next-line no-console
-    // console.log(state.itemsModifiersValueTaxDiff, 'modifiermodifier')
+    console.log(state.itemsModifiersValueTaxDiff, 'modifiermodifier')
   },
 }
 
