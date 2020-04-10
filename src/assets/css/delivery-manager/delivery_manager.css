@@ -1122,7 +1122,7 @@ tr.dataContentStyle > td > a {
   div#dm-waiting-for-pick {
     height: calc(100vh - 15rem); }
   .with-drivers-filter .drivers-filter{
-    height: auto;
+    height: none !important;
   }
   .driver-container .dropdown-content {
     background: #fff !important;

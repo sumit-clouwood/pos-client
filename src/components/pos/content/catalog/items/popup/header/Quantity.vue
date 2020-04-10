@@ -18,6 +18,7 @@
           </button>
           <input
             @keydown="Num.toNumberOnly($event)"
+            pattern="[0-9]"
             @paste.prevent
             min="1"
             class="qty color-text-invert"

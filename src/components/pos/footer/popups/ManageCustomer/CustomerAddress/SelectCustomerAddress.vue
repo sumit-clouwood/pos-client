@@ -96,6 +96,7 @@ export default {
 
 @include responsive(mobile) {
   #add-to-order {
+    position: fixed !important;
     .modal-dialog {
       margin: 0;
       max-width: 100%;
