@@ -178,8 +178,8 @@ export default {
 
       if (this.slides instanceof Object) {
         length = Object.keys(this.slides).length
-        if (Array.isArray(this.slides[1])) {
-          if (this.isAggregator()) length += 1
+        if (this.isAggregator()) {
+          length += 1
         }
         return Math.ceil(length / this.perPage)
       }
@@ -213,15 +213,16 @@ export default {
       )['icon']
     },
     movePage(page) {
+      if (this.totalPages === 1) return
       let toMove = (page - 1) * this.perPage * this.slideWidth
       if (page == this.totalPages) {
         let slidesToAdjust = 0
-        if (!Array.isArray(this.slides)) {
-          let length = Object.keys(this.slides).length
+        let length = 0
+        if (this.slides instanceof Object) {
+          length = Object.keys(this.slides).length
           if (this.isAggregator()) {
             length += 1
           }
-
           slidesToAdjust = length % this.perPage
         } else {
           slidesToAdjust = this.slides.length % this.perPage
