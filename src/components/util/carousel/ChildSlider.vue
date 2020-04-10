@@ -33,6 +33,7 @@
               width: slideWidth + 'px',
             }"
             @click.stop="selectSlide({ index: key, slide: slide })"
+            :class="{ active: key == currentSlide }"
           >
             <div
               class="slide"
