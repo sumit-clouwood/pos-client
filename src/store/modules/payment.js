@@ -147,8 +147,14 @@ const actions = {
     }, {})
     if (methods[CONST.AGGREGATOR]) {
       let aggregateMethods = getAggregatorMethods(methods[CONST.AGGREGATOR])
-      methods[CONST.AGGREGATOR] = [aggregateMethods['aggregateMethods']]
-      commit(mutation.SET_AGGREGATE_GROUPS, aggregateMethods['groups'])
+      let filtered = Object.values(aggregateMethods['aggregateMethods'])
+      // If there are no aggregator payment types, only groups, remove the aggregator key as well
+      if (filtered.length) {
+        methods[CONST.AGGREGATOR] = [aggregateMethods['aggregateMethods']]
+        commit(mutation.SET_AGGREGATE_GROUPS, aggregateMethods['groups'])
+      } else {
+        delete methods[CONST.AGGREGATOR]
+      }
     }
     commit(mutation.SET_METHODS, methods)
     commit('checkoutForm/setMethod', getters.cash, { root: true })
