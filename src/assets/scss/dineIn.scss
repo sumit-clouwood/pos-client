@@ -317,7 +317,7 @@ span#dine-bottom {
   grid-template-columns: 1fr;
   height: calc(100vh - 275px);
   @include responsive(mobile){
-  height: calc(90vh - 275px);
+    height: calc(85vh - 275px);
   }
   overflow-y: auto;
   overflow-x: hidden;
