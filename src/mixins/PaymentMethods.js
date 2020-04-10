@@ -1,3 +1,5 @@
+import { mapState } from 'vuex'
+
 export default {
   props: {
     slides: [Array, Object],
@@ -19,6 +21,7 @@ export default {
     slideWidth() {
       return this.width / this.perPage
     },
+    ...mapState('checkoutForm', ['method']),
   },
   methods: {
     imagePath(key) {
