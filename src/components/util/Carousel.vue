@@ -36,7 +36,11 @@
               <li
                 v-if="currentKey === CONST.AGGREGATOR"
                 :key="currentKey"
-                :class="{ active: currentKey == currentSlide }"
+                :class="{
+                  active:
+                    currentKey == currentSlide ||
+                    method.type == CONST.AGGREGATOR,
+                }"
                 :style="{
                   width: slideWidth + 'px',
                 }"
@@ -58,7 +62,10 @@
               <li
                 v-else-if="value.length === 1"
                 :key="currentKey"
-                :class="{ active: currentKey == currentSlide }"
+                :class="{
+                  active:
+                    currentKey == currentSlide && method.type == value[0].type,
+                }"
                 :style="{
                   width: slideWidth + 'px',
                 }"
@@ -81,7 +88,10 @@
               <li
                 v-else-if="value.length > 1"
                 :key="currentKey"
-                :class="{ active: currentKey == currentSlide }"
+                :class="{
+                  active:
+                    currentKey == currentSlide && method.type == value[0].type,
+                }"
                 :style="{
                   width: slideWidth + 'px',
                 }"
@@ -169,9 +179,7 @@ export default {
       if (this.slides instanceof Object) {
         length = Object.keys(this.slides).length
         if (Array.isArray(this.slides[1])) {
-          if (this.slides[1]['type'] === CONST.AGGREGATOR) length = length + 1
-        } else {
-          length = length + 1
+          if (this.isAggregator()) length += 1
         }
         return Math.ceil(length / this.perPage)
       }
@@ -192,16 +200,12 @@ export default {
       this.selectedValue = payLoad.value
       this.currentKey = payLoad.currentKey
     },
-    // eslint-disable-next-line no-unused-vars
     selectSlide({ index, slide }) {
-      if (slide.type === CONST.AGGREGATOR) {
-        this.currentSlide = CONST.AGGREGATOR
-      } else {
-        this.currentSlide = index
-      }
+      this.currentSlide = index
       this.$emit('click', { index: index, slide: slide })
-      this.show = false
-      this.showAggregator = false
+      if (this.isAggregator()) {
+        this.showAggregator = false
+      }
     },
     fetchImage(method) {
       return this.$store.getters['payment/findAggregateGroup'](
@@ -214,12 +218,8 @@ export default {
         let slidesToAdjust = 0
         if (!Array.isArray(this.slides)) {
           let length = Object.keys(this.slides).length
-          if (Array.isArray(this.slides[1])) {
-            if (this.slides[1]['type'] === CONST.AGGREGATOR) {
-              length = length + 1
-            }
-          } else {
-            length = length + 1
+          if (this.isAggregator()) {
+            length += 1
           }
 
           slidesToAdjust = length % this.perPage
@@ -243,10 +243,16 @@ export default {
       this.aggregatorValues = payLoad.value[0]
     },
     close() {
-      this.currentSlide = CONST.AGGREGATOR
       this.$emit('click', { index: '', slide: {} })
+      this.currentSlide = CONST.AGGREGATOR
       this.show = false
       this.showAggregator = false
+      this.$refs.carousel.show = false
+      this.$refs.carousel.showAggregator = false
+      if (this.method.type === CONST.AGGREGATOR) {
+        this.currentSlide = CONST.AGGREGATOR
+        this.$refs.carousel.currentSlide = CONST.AGGREGATOR
+      }
     },
     isAggregator() {
       let childSlides = Object.values(this.slides)

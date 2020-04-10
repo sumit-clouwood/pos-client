@@ -81,6 +81,8 @@ export default {
           } else {
             this.setErrorMessage()
           }
+        } else {
+          this.$refs.paymentmethods.setActive(CONST.AGGREGATOR)
         }
       } else {
         let index = this.payments.findIndex(
@@ -90,6 +92,10 @@ export default {
         if (index == -1) {
           this.$store.commit('checkoutForm/forceCash', true)
         }
+        if (index == '' && this.method.type === CONST.AGGREGATOR) {
+          this.$refs.carousel.currentSlide = CONST.AGGREGATOR
+        }
+        this.$refs.paymentmethods.showAggregator = false
       }
       this.methodCardHendlerChange(slide.priority)
 
