@@ -17,11 +17,11 @@
             -
           </button>
           <input
-            v-model.number="quantity"
+            @keydown="Num.toNumberOnly($event)"
             @paste.prevent
             min="1"
             class="qty color-text-invert"
-            @keydown="filterInput"
+            v-model.number="quantity"
           />
           <button
             class="qtyplus value-qty color-text-invert"
@@ -88,18 +88,6 @@ export default {
         'order/updateQuantity',
         this.$store.getters['orderForm/quantity']
       )
-    },
-    filterInput($event) {
-      const keyCode = $event.keyCode ? $event.keyCode : $event.which
-      // eslint-disable-next-line no-console
-      console.log('keyCode', keyCode, '$event.which', $event.which)
-      if (keyCode == 8 || $event.which == 8) {
-        return
-      } else if (keyCode < 48 || keyCode > 57) {
-        $event.preventDefault()
-      } else if ($event.keyCode == 190 || $event.charCode == 46) {
-        $event.preventDefault()
-      }
     },
   },
 }
