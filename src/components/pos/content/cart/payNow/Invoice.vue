@@ -179,7 +179,16 @@ export default {
           .invoice-body .loading {
               padding: 05em;
           }
+          .invoice-body .combo-items {
+              font-weight: 500;
+              padding-left:1em;
+          }
 
+          .invoice-body .combo-items-extra {
+              font-style: italic;
+              font-size: 1em;
+              padding-left:1.5em;
+          }
 
           .invoice-body * {
               font-family: 'Roboto', sans-serif;

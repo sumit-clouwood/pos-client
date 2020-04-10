@@ -12,12 +12,8 @@
         </div>
 
         <div class="main-orders-list-item-title color-text">
-          <div :class="'orders-name' + item.orderIndex">
-            <button
-              v-if="item.item_type === CONST.COMBO_ITEM_TYPE"
-              class="toggle_btn"
-              @click="showCombo(item.orderIndex)"
-            >
+          <div class="orders-name">
+            <button class="toggle_btn" @click="showCombo()">
               <i class="fa fa-chevron-down" aria-hidden="true"></i>
             </button>
             {{ dt(item) }}
@@ -39,35 +35,23 @@
         >
           <div v-html="formatItemDiscount(item)"></div>
         </div>
-        <div
-          :id="'sub_dsc' + item.orderIndex"
-          class="sub_container"
-          v-if="item.item_type === CONST.COMBO_ITEM_TYPE"
-        >
-          <div
-            v-for="(cmbItm, index) in item.combo_selected_items"
-            :key="index"
-          >
-            <div class="subdescription_container">
-              <div
-                class="product_sub_description main-orders-list-item-subtitle color-text-invert item-exclude"
-              >
-                {{ cmbItm.name }} x {{ cmbItm.quantity || 1 }}
-              </div>
-              <!--<div class="sub_description_price">
-                  + NZD 60.00
-                </div>-->
+        <div id="sub_dsc" class="sub_container">
+          <div class="subdescription_container">
+            <div
+              class="product_sub_description main-orders-list-item-subtitle color-text-invert item-exclude"
+            >
+              Pizza Combo Offer x 2
             </div>
-            <div class="sub_des_catagary">
-              <div class="sub_more_description" v-if="cmbItm.modifiable">
-                <Modifiers
-                  v-bind:modifiers="cmbItm.modifiers"
-                  v-bind:item="cmbItm"
-                />
-              </div>
-              <!--<div class="sub_more_description_price">
-                + NZD 15.00
-              </div>-->
+            <div class="sub_description_price">
+              + NZD 60.00
+            </div>
+          </div>
+          <div class="sub_des_catagary">
+            <div class="sub_more_description">
+              pizza with extra cheese / cold drinks / franchise / Momos and more
+            </div>
+            <div class="sub_more_description_price">
+              + NZD 15.00
             </div>
           </div>
         </div>
@@ -114,11 +98,12 @@
 </template>
 
 <script>
-import { bus } from '@/eventBus'
 import Modifiers from './items/Modifiers.vue'
 import Preloader from '@/components/util/Preloader'
+
 import { mapState, mapActions, mapGetters } from 'vuex'
 import Discount from '@/mixins/Discount'
+import { bus } from '@/eventBus'
 import Scroll from '@/mixins/Scroll'
 /* global $ */
 export default {
@@ -150,7 +135,6 @@ export default {
     ]),
     ...mapGetters('location', ['formatPrice', '_t']),
     ...mapGetters('context', ['storeName']),
-    ...mapGetters('auth', ['allowed']),
     ...mapGetters('auth', ['multistore']),
   },
   mounted() {
@@ -195,23 +179,25 @@ export default {
   methods: {
     ...mapActions('category', ['getItems']),
     ...mapActions('order', ['removeFromOrder', 'setActiveItem']),
-    showCombo(orderIndex) {
-      let idSelector = '#sub_dsc' + orderIndex
-      let classSelector = '.orders-name' + orderIndex
-
-      $(`${idSelector}`).slideToggle(200)
-      $(`${classSelector} i`).toggleClass(
-        'fa fa fa-chevron-down fa-chevron-right '
-      )
+    showCombo() {
+      $('#sub_dsc').slideToggle(200)
+      //      $('i', this).toggleClass('fa fa fa-chevron-down fa-chevron-right ')
+      $('.orders-name i').toggleClass('fa fa fa-chevron-down fa-chevron-right ')
     },
     removeCurrentOrder(param) {
+      // if (this.selectedOrder || this.orderId) {
+      //   if (
+      //     (this.orderType == 'carhop' || this.orderType.OTApi === 'carhop') &&
+      //     this.selectedOrder.item.order_status == 'in-progress' &&
+      //     !this.allowed(this.PERMS.MODIFY_ORDER)
+      //   ) {
+      //     return
+      //   }
+      // }
       this.removeFromOrder(param)
       if (!this.items.length) {
         this.$store.dispatch('mainOrdersHendlerChange')
       }
-    },
-    modifierHeights() {
-      bus.$emit('modifier-heights')
     },
   },
   components: {
@@ -221,9 +207,9 @@ export default {
 }
 </script>
 <style lang="scss">
-@import '@/assets/scss/pixels_rem.scss';
-@import '@/assets/scss/variables.scss';
-@import '@/assets/scss/mixins.scss';
+@import '../../../../../assets/scss/pixels_rem.scss';
+@import '../../../../../assets/scss/variables.scss';
+@import '../../../../../assets/scss/mixins.scss';
 .main-orders-list-item {
   .storename {
     font-size: 9px;
@@ -231,9 +217,6 @@ export default {
     padding-bottom: 0;
     margin-top: 0;
     margin-bottom: 0;
-    @include responsive(mobile) {
-      font-size: 12px;
-    }
   }
 }
 button.toggle_btn {

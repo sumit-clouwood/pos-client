@@ -395,6 +395,7 @@
     <Invoice />
     <OrderDetailsPopup />
     <InformationPopup :responseInformation="this.message" :title="this.title" />
+    <combox-box></combox-box>
     <DineInCoverSelection
       v-if="brand.number_of_covers && covers && cartType !== 'hold'"
     />
@@ -445,6 +446,8 @@ import WalkinBtn from './footer/buttons/cart/walkin'
 import CarhopBtn from './footer/buttons/cart/carhop'
 import openItemButton from '@/components/pos/openItem/button'
 import openItem from '@/components/pos/openItem/item'
+import ComboxBox from '@/components/pos/content/catalog/comboBox/ComboBox'
+
 import genericOpenItem from '@/components/pos/openItem/genericItem'
 import DineInTableSelection from '@/components/dinein/cart/popup/DineInTableSelection'
 import DineInCoverSelection from '@/components/dinein/cart/popup/DineInCoverSelection.vue'
@@ -494,6 +497,7 @@ export default {
     CarhopBtn,
     openItemButton,
     openItem,
+    ComboxBox,
     genericOpenItem,
     DineInTableSelection,
     DineInCoverSelection,

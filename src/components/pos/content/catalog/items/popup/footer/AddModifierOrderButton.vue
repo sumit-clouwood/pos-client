@@ -24,9 +24,10 @@ export default {
       this.$store
         .dispatch('order/addModifierOrder')
         .then(() => {
+          this.$emit('error', false)
           closeModal('#POSItemOptions')
         })
-        .catch()
+        .catch(error => this.$emit('error', error))
     },
   },
 }

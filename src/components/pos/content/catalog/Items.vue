@@ -83,10 +83,10 @@
 /* global $, showModal  */
 import { mapGetters, mapState } from 'vuex'
 import * as CONST from '@/constants'
-import bootstrap from '@/bootstrap'
 import ItemDetailsPopup from './items/popup/ItemDetailsPopup'
 // import Popup from './items/Popup'
 import Scroll from '@/mixins/Scroll'
+import Cart from '@/mixins/Cart'
 // import btnBack from '../../../mobileComponents/mobileElements/btnBack'
 
 export default {
@@ -94,7 +94,7 @@ export default {
   props: {
     msg: String,
   },
-  mixins: [Scroll],
+  mixins: [Scroll, Cart],
   components: {
     ItemDetailsPopup,
   },
@@ -115,7 +115,7 @@ export default {
     ...mapGetters('location', ['_t']),
     ...mapGetters('category', ['items', 'itemByCode']),
     ...mapGetters('modifier', ['hasModifiers']),
-    ...mapGetters(['foodMenuHendler', 'bascketItems']),
+    ...mapGetters(['foodMenuHendler']),
     isEnabled() {
       return this.$store.getters['modules/enabled'](CONST.MODULE_DINE_IN_MENU)
     },
@@ -148,46 +148,23 @@ export default {
       showModal('#item-details-popup')
     },
     addToOrder(item) {
-      if (this.splitBill) {
-        return false
-      }
-      this.$store.commit('order/setEditMode', false)
-      this.$store.commit('order/RESET_SPLIT_BILL')
-      //load data only when new order is starting
-      if (!this.$store.state.order.items.length) {
-        this.$store.commit('sync/reload', true)
-        bootstrap.loadUI('orderStart').then(() => {})
-      }
-
-      this.$store.commit('order/SET_CART_TYPE', 'new')
-      this.$store.dispatch('order/startOrder')
-      $('#POSItemOptions .modifier-option-radio').prop('checked', false)
-      $('.food-menu-item').removeClass('active')
-      $(this).addClass('active')
-
-      this.$store.commit('category/SET_ITEM', item)
-      this.$store.commit('checkoutForm/showCalc', true)
-      this.$store.commit('orderForm/updateQuantity', 1)
-
-      if (this.$store.getters['modifier/hasModifiers'](item)) {
-        this.$store.dispatch('modifier/assignModifiersToItem', item)
-        this.$store.commit('orderForm/clearSelection')
-        //handle open item inside popup
-        showModal('#POSItemOptions')
+      if (item.item_type === CONST.COMBO_ITEM_TYPE) {
+        // eslint-disable-next-line no-console
+        console.log('combo_item', item)
+        this.$store.commit('comboItems/ACTIVE_COMBO_ITEMS', {}, { root: true })
+        this.$store.commit('comboItems/SET_COMBO_ITEMS', item)
+        this.$store.commit('comboItems/SUB_ITEM_LIST', false)
+        this.$store.commit('comboItems/SET_MODIFIERS', false)
+        this.$store.dispatch('comboItems/updateOrderIndex')
+        this.$store.commit(
+          'comboItems/SET_SELECTED_ITEM_DATA',
+          item.combo_items[0]
+        )
+        this.$store.dispatch('comboItems/findItemById')
+        showModal('#combox-box-popup')
       } else {
-        if (item.open_item === true) {
-          //show popup for open item
-          showModal('#open-item')
-        } else {
-          this.$store.dispatch('order/addToOrder', item)
-        }
-      }
-      this.$store.dispatch('addItemFood', item)
-
-      if (!this.bascketItems.find(x => x.name === item.name)) {
-        this.bascketItems.push({ name: item.name, count: 1, class: 'active' })
-      } else {
-        this.bascketItems.find(x => x.name === item.name).count++
+        this.$store.dispatch('comboItems/reset')
+        return this.itemsAddToCart(item)
       }
     },
     IsImageOk(img) {

@@ -106,10 +106,60 @@
             <th class="right-aligned">{{ template.amount_label }}</th>
           </tr>
           <template v-for="(item, key) in order.items">
-            <tr :key="'item' + key">
+            <tr v-if="item.type == 'combo_item'" :key="key">
               <td class="first-col" valign="top">
                 {{ item.qty }} {{ measurement_unit(item) }}
               </td>
+              <td>
+                <div class="food-title">
+                  {{ translate_item(item) }}
+                  <span
+                    >({{
+                      format_number(
+                        parseFloat(item.price) + parseFloat(item.tax)
+                      )
+                    }})&#x200E;</span
+                  >
+                </div>
+                <template v-for="(combo_item, i) in order.items">
+                  <template v-if="combo_item.for_combo === item.no">
+                    <div class="combo-items" :key="i">
+                      {{ combo_item.qty }} {{ translate_item(combo_item) }}
+                    </div>
+                    <template v-for="(modifier, i) in order.item_modifiers">
+                      <template v-if="modifier.for_item == combo_item.no">
+                        <div class="combo-items-extra" :key="i + 100">
+                          {{ translate_item_modifier(modifier) }}
+                          <span v-if="modifier.price !== 0"
+                            >({{
+                              format_number(
+                                parseFloat(modifier.price) +
+                                  parseFloat(modifier.tax)
+                              )
+                            }}
+                            x {{ modifier.qty }})&#x200E;</span
+                          >
+                          <span v-else-if="modifier.qty > 1"
+                            >(x {{ modifier.qty }})&#x200E;</span
+                          >
+                        </div>
+                      </template>
+                    </template>
+                  </template>
+                </template>
+              </td>
+              <td class="right-aligned" valign="top">
+                {{ format_number(combo_item_total(item.no)) }}
+              </td>
+            </tr>
+            <tr
+              v-if="
+                item.type != 'combo_item' &&
+                  (item.for_combo === false || item.for_combo == null)
+              "
+              :key="'item' + key"
+            >
+              <td class="first-col" valign="top">{{ item.qty }}</td>
               <td>
                 <div class="food-title">
                   {{ translate_item(item) }}
@@ -721,6 +771,31 @@ export default {
         dataURL = canvas.toDataURL(outputFormat)
         callback(dataURL)
       }
+    },
+
+    combo_item_total(item_no) {
+      var total = 0
+      for (var item of this.order.items) {
+        if (item.no == item_no) {
+          total += (parseFloat(item.price) + parseFloat(item.tax)) * item.qty
+        }
+        if (item.for_combo === item_no) {
+          for (var modifier of this.order.item_modifiers) {
+            if (modifier.for_item == item.no) {
+              total +=
+                (parseFloat(modifier.price) + parseFloat(modifier.tax)) *
+                modifier.qty
+            }
+          }
+        }
+      }
+
+      for (var item_discount of this.order.item_discounts) {
+        if (item_discount.for_item == item_no) {
+          total -= parseFloat(item_discount.price)
+        }
+      }
+      return total
     },
   },
 }

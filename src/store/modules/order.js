@@ -103,10 +103,19 @@ const getters = {
       if (item.modifiersData && item.modifiersData.length) {
         modifiersTax += getters.itemModifiersTax(item) * item.quantity
       }
+      if (item.item_type === CONST.COMBO_ITEM_TYPE) {
+        modifiersTax += getters.comboItemModifier(item).tax
+      }
     })
     return modifiersTax
   },
-
+  comboItemModifier: (state, getters, rootState) => item => {
+    console.log(item.orderIndex.toString(), 'order index item')
+    return rootState.comboItems.itemsModifiersValueTaxDiff.find(
+      comboItemModifier =>
+        comboItemModifier.itemId === item._id + item.orderIndex.toString()
+    )
+  },
   totalItemTaxDiscount: (state, getters) => {
     let itemTaxDiscount = 0
     getters.splitItems.forEach(item => {
@@ -180,13 +189,15 @@ const getters = {
     let subTotal = 0
     getters.splitItems.forEach(item => {
       const itemPrice = Num.round(item.netPrice) * item.quantity
-      const modifiersPrice = getters.itemModifiersPrice(item) * item.quantity
+      let modifiersPrice = getters.itemModifiersPrice(item) * item.quantity
+      if (item.item_type === CONST.COMBO_ITEM_TYPE) {
+        modifiersPrice += getters.comboItemModifier(item).price
+      }
       const itemDiscount = getters.itemNetDiscount(item) * item.quantity
       const modifiersDiscount =
         getters.itemModifierDiscount(item) * item.quantity
       subTotal += itemPrice + modifiersPrice - itemDiscount - modifiersDiscount
     })
-
     return Num.round(subTotal)
   },
 
@@ -288,17 +299,24 @@ const getters = {
   itemGrossPrice: (state, getters) => item => {
     const itemPrice = item.netPrice
     //gross price is inclusive of tax but modifier price is not including tax
-    const modifiersPrice = getters.itemModifiersPrice(item)
+    let modifiersPrice = getters.itemModifiersPrice(item)
     //add modifier tax to modifier price to make it gross price
-    const modifiersTax = getters.itemModifiersTax(item)
+    let modifiersTax = getters.itemModifiersTax(item)
+    if (item.item_type === CONST.COMBO_ITEM_TYPE) {
+      modifiersPrice += getters.comboItemModifier(item).price
+      modifiersTax += getters.comboItemModifier(item).tax
+    }
     return itemPrice + item.tax + modifiersPrice + modifiersTax
   },
 
   itemNetPrice: (state, getters) => item => {
     const itemPrice = item.netPrice
     //gross price is inclusive of tax but modifier price is not including tax
-    const modifiersPrice = getters.itemModifiersPrice(item)
-    //add modifier tax to modifier price to make it gross price
+    let modifiersPrice = getters.itemModifiersPrice(item)
+    if (item.item_type === CONST.COMBO_ITEM_TYPE) {
+      modifiersPrice += getters.comboItemModifier(item).price
+    }
+    //add modifier tax to modifier pritemNetPriceice to make it gross price
     //const modifiersTax = getters.itemModifiersTax(item)
     return itemPrice + modifiersPrice
   },
@@ -643,7 +661,7 @@ const actions = {
         })
 
         commit(mutation.ADD_MODIFIERS_DATA_TO_ITEM, modifierData)
-
+        const limitOfCombo = rootGetters['comboItems/limitOfSelectingItems']
         if (!item.editMode) {
           let quantity = 0
           //coming through hold orders
@@ -653,22 +671,44 @@ const actions = {
           if (!quantity) {
             quantity = rootState.orderForm.quantity || 1
           }
-          commit(mutation.SET_QUANTITY, quantity)
-          commit(mutation.ADD_ORDER_ITEM_WITH_MODIFIERS, state.item)
+          if (!rootState.comboItems.comboItemsList) {
+            commit(mutation.SET_QUANTITY, quantity)
+          } else {
+            if (quantity <= limitOfCombo) {
+              commit(mutation.SET_QUANTITY, quantity)
+            } else {
+              reject(`Item quantity can't be greater than ${limitOfCombo}`)
+              return false
+            }
+          }
+          if (!rootState.comboItems.comboItemsList) {
+            commit(mutation.ADD_ORDER_ITEM_WITH_MODIFIERS, state.item)
+          } else {
+            dispatch('comboItems/setModifiers', state.item, { root: true })
+          }
         } else {
           //edit mode
           //if the signature was different then modify modifiers,
           //as we are creating new item and attached modifiers again so its better to just
           //replace that item in state with existing item
 
-          const quantity = rootState.orderForm.quantity || 1
+          let quantity = rootState.orderForm.quantity || 1
+          if (!rootState.comboItems.comboItemsList) {
+            commit(mutation.SET_QUANTITY, quantity)
+          } else {
+            if (quantity <= limitOfCombo) {
+              commit(mutation.SET_QUANTITY, quantity)
+            } else {
+              reject(`Item quantity can't be greater than ${limitOfCombo}`)
+              return false
+            }
+          }
           commit(mutation.SET_QUANTITY, quantity)
 
           commit(mutation.REPLACE_ORDER_ITEM, {
             item: state.item,
           })
         }
-
         dispatch('postCartItem').then(() => {
           console.log('item modifer added to cart', state.item)
           resolve()
@@ -702,6 +742,11 @@ const actions = {
     } else {
       //cart is empty remove the discounts
       dispatch('checkout/reset', null, { root: true })
+      //If cart is empty, reset items, order index and other things as well
+      dispatch('reset', true)
+      // Reset combo items store when cart is empty
+      dispatch('comboItems/reset', null, { root: true })
+      commit('comboItems/ITEMS_MODIFIERS_VALUE_TAX_DIFF', false, { root: true })
     }
   },
 

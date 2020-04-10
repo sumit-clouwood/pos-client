@@ -98,3 +98,5 @@ export const DISCOUNT_ORDER_ERROR_CART =
   'Cart amount is less than minimum required for this discount.'
 export const DISCOUNT_ORDER_ERROR_MAX =
   'Cart amount is greater than maximum allowed for this discount.'
+export const REGULAR_ITEM_TYPE = 'regular'
+export const COMBO_ITEM_TYPE = 'combo_item'
