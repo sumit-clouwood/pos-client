@@ -155,7 +155,7 @@ export default {
     display: none;
   }
   #customer {
-    position: fixed;
+    position: fixed !important;
     top: 0;
     right: -100vw;
     bottom: 0;
