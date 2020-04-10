@@ -261,9 +261,9 @@ export default {
 }
 </script>
 <style lang="scss">
-@import '../../assets/scss/pixels_rem.scss';
-@import '../../assets/scss/variables.scss';
-@import '../../assets/scss/mixins.scss';
+@import '@/assets/scss/pixels_rem.scss';
+@import '@/assets/scss/variables.scss';
+@import '@/assets/scss/mixins.scss';
 .carousel-container {
   .carousel {
     transform: translate3d(0, 0, 0);
@@ -283,7 +283,9 @@ export default {
         text-align: center;
         min-height: 1px;
         height: 100%;
-
+        @media only screen and (min-width: 961px) and (max-width: 1024px) {
+          width: 102px !important;
+        }
         .slide {
           border-radius: 3px;
           background-color: #ffffff;
@@ -291,6 +293,9 @@ export default {
           cursor: pointer;
           justify-content: center;
           padding: 4px;
+          @media only screen and (min-width: 961px) and (max-width: 1023px) {
+            width: 94px !important;
+          }
         }
 
         &.active {
