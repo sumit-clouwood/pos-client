@@ -23,6 +23,7 @@ const state = {
   Items: {},
   searchTerm: '',
   barcode: false,
+  upSelling: [],
 }
 
 // getters, computed properties
@@ -271,6 +272,18 @@ const mutations = {
     } else {
       state.items = items
     }
+    let upSelling = {}
+    state.upSelling = []
+    items.forEach(item => {
+      if (item.is_upselling) {
+        upSelling = {
+          item: item,
+          isUpSellilng: true,
+          categories: item.upselling_categories,
+        }
+        state.upSelling.push(upSelling)
+      }
+    })
   },
 
   [mutation.SET_ITEM](state, item) {
