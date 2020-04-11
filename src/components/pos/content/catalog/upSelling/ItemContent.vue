@@ -17,13 +17,13 @@
       ref="entityItem"
       :id="'id_' + item._id"
     >
-      <div
+      <!-- <div
         v-if="isEnabled"
         class="item-details-icon"
         @click.stop="showDetails(item)"
       >
         <img style="padding: 3px;" src="img/maximize.svg" />
-      </div>
+      </div> -->
       <img
         v-if="item.image != ''"
         class="food-menu-item-img"
@@ -63,6 +63,7 @@
       </div>
     </div>
     <item-details-popup
+      v-show="currentItem"
       v-model="currentItem"
       @resetCurrentItem="resetCurrentItem"
     />
@@ -84,7 +85,7 @@
 /* global $, showModal  */
 import { mapGetters, mapState } from 'vuex'
 import * as CONST from '@/constants'
-import ItemDetailsPopup from '../items/popup/ItemDetailsPopup'
+import ItemDetailsPopup from '@/components/pos/content/catalog/items/popup/ItemDetailsPopup.vue'
 import Cart from '@/mixins/Cart'
 
 export default {
@@ -108,7 +109,6 @@ export default {
     ...mapState('order', ['item']),
     ...mapGetters('location', ['_t']),
     ...mapGetters('category', ['items', 'itemByCode']),
-    ...mapGetters('modifier', ['hasModifiers']),
     ...mapGetters(['foodMenuHendler']),
     isEnabled() {
       return this.$store.getters['modules/enabled'](CONST.MODULE_DINE_IN_MENU)
@@ -161,6 +161,8 @@ export default {
       this.currentItem = payLoad
     },
     showDetails(item) {
+      // eslint-disable-next-line no-console
+      console.log(item)
       this.currentItem = item
       showModal('#item-details-popup')
     },
@@ -217,24 +219,49 @@ export default {
 <style lang="scss" scoped>
 @import '@/assets/scss/variables.scss';
 @import '@/assets/scss/mixins.scss';
+
+.item-details-icon {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  z-index: 999;
+  height: 3.6rem;
+  width: 100%;
+  clip-path: polygon(0px 0px, 0px 100%, 45% 0px);
+  background: rgba(220, 220, 220, 0.9);
+  @include responsive(mobile) {
+    display: none !important;
+  }
+}
+
 .modal-body {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  grid-column-gap: 1rem;
-  row-gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax($px160, 1fr));
+  flex-wrap: wrap;
+  align-items: stretch;
+  align-content: start;
+  overflow-y: auto;
   .food-menu-item {
-    min-width: 95%;
-    max-width: 95%;
-    min-height: 14rem;
-    max-height: 14rem;
-    overflow: auto;
-    margin: auto;
-    border: 2px solid #e3e7f2;
-    padding: 0 4px !important;
-    position: relative;
+    padding: 10px;
+    cursor: pointer;
+    border: $px1 solid #ddd;
+    border-radius: $px5;
+    justify-self: center;
     display: grid;
+    grid-template-columns: auto;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    margin-right: $px20;
+    margin-bottom: $px20;
+    -webkit-transition: 0.2s linear;
+    transition: 0.2s linear;
+    font-size: $px16;
+    position: relative;
     /*transition: width 0.25s ease-out, height 0.25s ease-out 0.25s;*/
-
     .food-menu-item-img {
       margin: $px5 auto;
       border-radius: $px3;
@@ -243,9 +270,14 @@ export default {
       margin-bottom: auto;
     }
     .food-menu-item-text {
-      font-size: 1.1rem;
+      font-size: 1rem;
       text-align: left;
-      word-break: break-word;
+      word-break: normal;
+    }
+    .item-image-only {
+      width: 100px;
+      padding: 10px;
+      height: 142px;
     }
     .food-menu-item-price {
       text-align: left;
@@ -326,7 +358,7 @@ i.fa.fa-check.item-selected-check {
 .food-menu-item-text.color-text {
   max-height: 3.188rem;
   display: -webkit-box;
-  overflow: hidden;
+  overflow: scroll;
   text-overflow: ellipsis;
   line-height: 1.43rem !important;
   word-break: normal;
