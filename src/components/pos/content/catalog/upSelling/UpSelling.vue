@@ -17,16 +17,18 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.modal-dialog {
-  min-width: 55vw;
-  max-width: 55vw;
-  margin: auto !important;
-}
-.combox_p {
-  z-index: 999;
-}
-div#combox-box-popup {
+@import '@/assets/scss/mixins.scss';
+#up-selling-popup {
   padding-left: 0px !important;
-  padding-right: 0.938rem;
+  @include responsive(mobile) {
+    position: fixed !important;
+  }
+  .modal-dialog {
+    margin: auto !important;
+    max-width: 70%;
+    @include responsive(mobile) {
+      max-width: 100%;
+    }
+  }
 }
 </style>

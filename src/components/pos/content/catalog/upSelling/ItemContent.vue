@@ -331,29 +331,8 @@ i.fa.fa-check.item-selected-check {
 .foodbox_container:hover {
   box-shadow: #5056ca42 0px 0.063rem 0.75rem;
 }
-.modal-body.color-dashboard-background.grid_combo_item_content {
-  padding: 1.563rem 1.625rem !important;
-  padding-top: 0 !important;
-  border-left: 1px solid #e3e7f2;
-  /*min-height: 21.875rem;*/
-  max-height: 21.875rem;
-  overflow: hidden;
-  overflow-y: auto;
-}
-.grid_parent_combo .food-box-icon {
-  text-align: right;
-  display: flex;
-  justify-content: flex-end;
-}
 .button-plus {
   padding-right: 0.5rem;
-}
-.foodbox_container .item-selected-check.right_icon {
-  display: none;
-}
-
-.foodbox_container.active_right_combo .item-selected-check.right_icon {
-  display: block;
 }
 .food-menu-item-text.color-text {
   max-height: 3.188rem;
@@ -364,9 +343,6 @@ i.fa.fa-check.item-selected-check {
   word-break: normal;
   padding-right: 0.938rem;
   margin-top: 0.625rem;
-}
-.grid_combo_item_content::-webkit-scrollbar {
-  display: none;
 }
 .food-menu .food-menu-item {
   transition: color 0.25s;
@@ -396,28 +372,5 @@ i.fa.fa-check.item-selected-check {
   grid-template-columns: 1fr auto;
   align-items: center;
   grid-gap: 5px;
-}
-@media only screen and (max-width: 600px) and (min-width: 320px) {
-  .grid_parent_combo {
-    display: grid;
-    grid-template-columns: 1fr;
-  }
-  .modal-body {
-    display: grid;
-    grid-template-columns: repeat(2, 2fr);
-    grid-column-gap: 0.938rem;
-    row-gap: 1rem;
-  }
-  .modal-body.color-dashboard-background.grid_combo_item_content {
-    border-top: 1px solid #e3e7f2;
-    min-height: 16.563rem !important;
-    max-height: 16.563rem !important;
-    height: 265px !important;
-    overflow: hidden;
-    overflow-y: auto;
-  }
-  .food-menu-item-text.color-text {
-    font-size: 12px !important;
-  }
 }
 </style>
