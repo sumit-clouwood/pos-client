@@ -16,6 +16,7 @@ export default {
         this.$store.commit('orderForm/clearSelection')
         //handle open item inside popup
         showModal('#POSItemOptions')
+        $('#POSItemOptions').css({ 'z-index': 9999 })
       } else {
         if (item.open_item === true) {
           //show popup for open item
@@ -23,6 +24,7 @@ export default {
         } else {
           this.$store.dispatch('order/addToOrder', item)
         }
+        $('#POSItemOptions').css({ 'z-index': 99 })
       }
     },
     itemsAddToCart(item) {

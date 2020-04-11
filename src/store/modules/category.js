@@ -283,6 +283,7 @@ const mutations = {
         }
         state.upSelling.push(upSelling)
       }
+      return []
     })
   },
 

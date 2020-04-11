@@ -43,10 +43,11 @@
             {{ currency }} {{ item.value || 0 }}
           </div>
         </div>
-        <div
+        <!-- data-target="#POSOrderItemOptions" -->
+        <!-- <div
           class="button-plus"
           data-toggle="modal"
-          data-target="#POSOrderItemOptions"
+          @click="showModalBox('#POSOrderItemOptions')"
         >
           <div class="button-plus-icon">
             <svg
@@ -59,7 +60,7 @@
               />
             </svg>
           </div>
-        </div>
+        </div> -->
       </div>
     </div>
     <item-details-popup
@@ -82,7 +83,7 @@
   </div>
 </template>
 <script>
-/* global $, showModal  */
+/* global $, showModal, hideModal  */
 import { mapGetters, mapState } from 'vuex'
 import * as CONST from '@/constants'
 import ItemDetailsPopup from '@/components/pos/content/catalog/items/popup/ItemDetailsPopup.vue'
@@ -125,7 +126,9 @@ export default {
       }
     },
     item() {
-      this.getUpSellingItems()
+      this.$nextTick(() => {
+        this.getUpSellingItems()
+      })
     },
   },
   methods: {
@@ -138,23 +141,33 @@ export default {
       ) {
         $('[id^=id_]').show()
         this.upSellingItems = []
-        this.upSelling.forEach(itemList => {
-          if (itemList.categories.includes(this.item.category)) {
-            // get all item those have upsale items
-            // this.upSellingItems.push(item)
-            let itemModification = { ...itemList.item }
-            itemModification.value = itemModification.upselling_value
-            this.upSellingItems.push(itemModification)
-            /*let upSaleItem = this.items.find(
+        if (this.upSelling.length) {
+          this.upSelling.forEach(itemList => {
+            if (itemList.categories.includes(this.item.category)) {
+              // get all item those have upsale items
+              // this.upSellingItems.push(item)
+              let itemModification = { ...itemList.item }
+              itemModification.value = itemModification.upselling_value
+              this.upSellingItems.push(itemModification)
+              /*let upSaleItem = this.items.find(
                 item => item._id === itemList.itemId
               )*/
-          }
-        })
-        if (this.upSellingItems.length) {
+            }
+          })
+        }
+
+        if (this.upSellingItems.length && this.upSelling.length) {
           showModal('#up-selling-popup')
         }
         // eslint-disable-next-line no-console
-        console.log(this.items, 'fdfdfd', this.upSelling, this.upSellingItems)
+        console.log(
+          this.items,
+          'this.items',
+          'this.upSelling',
+          this.upSelling,
+          'this.upSellingItems',
+          this.upSellingItems
+        )
       }
     },
     resetCurrentItem(payLoad) {
@@ -168,31 +181,32 @@ export default {
     },
     addToOrder(item) {
       this.$store.dispatch('comboItems/reset')
-      $('#id_' + item._id).hide()
+      // $('#id_' + item._id).hide()
+      this.upSellingItems.pop(item)
+      if (this.upSellingItems.length === 0) {
+        hideModal('#up-selling-popup')
+      }
+      this.$store.commit('order/setAlert', {
+        type: 'Success',
+        title: 'Item added',
+        msg: `Upselling item ${item.name} has been added to cart`,
+      })
+      $('#alert-popup').modal('show')
       return this.itemsAddToCart(item)
     },
     IsImageOk(img) {
-      // During the onload event, IE correctly identifies any images that
-      // weren't downloaded as not complete. Others should too. Gecko-based
-      // browsers act like NS4 in that they report this incorrectly.
       if (!img.complete) {
         return false
       }
 
-      // However, they do have two very useful properties: naturalWidth and
-      // naturalHeight. These give the true size of the image. If it failed
-      // to load, either of these should be zero.
       if (typeof img.naturalWidth != 'undefined' && img.naturalWidth == 0) {
         return false
       }
 
-      // No other way of checking: assume it's ok.
       return true
     },
 
     imageLoadError() {
-      // let myDoc = document.getElementsByClassName('.contain-body-class')
-      /* myDoc = myDoc.remove('.sticky-footer')*/
       for (let i = 0; i < document.images.length; i++) {
         if (!this.IsImageOk(document.images[i])) {
           let hue = 'bg'
@@ -214,6 +228,10 @@ export default {
       }
     },
   },
+  // showModalBox(modalName) {
+  //   $(modalName).css({ 'z-index': 1052 })
+  //   $(modalName).toggle()
+  // },
 }
 </script>
 <style lang="scss" scoped>
@@ -259,6 +277,11 @@ export default {
     margin-bottom: $px20;
     -webkit-transition: 0.2s linear;
     transition: 0.2s linear;
+    &:hover {
+      transition: 0.2s ease-out;
+      -webkit-transform: scale(1.1);
+      transform: scale(1.1);
+    }
     font-size: $px16;
     position: relative;
     /*transition: width 0.25s ease-out, height 0.25s ease-out 0.25s;*/
@@ -369,7 +392,7 @@ i.fa.fa-check.item-selected-check {
 
 .food-menu-price-btn-wrap {
   display: grid;
-  grid-template-columns: 1fr auto;
+  grid-template-columns: 1fr;
   align-items: center;
   grid-gap: 5px;
 }
