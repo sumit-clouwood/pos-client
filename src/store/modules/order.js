@@ -717,9 +717,9 @@ const actions = {
     })
   },
 
-  removeFromOrder({ commit, dispatch }, { item, index }) {
+  removeFromOrder({ commit, dispatch, state }, { item, index }) {
     // eslint-disable-next-line no-console
-    console.log(item, index, 'details', state.items.length)
+    console.log(item, index, 'details', state.items)
     commit('checkoutForm/RESET', 'process', { root: true })
     commit(mutation.SET_ITEM, item)
     commit(mutation.REMOVE_ORDER_ITEM, index)
@@ -1857,7 +1857,8 @@ const mutations = {
 
   [mutation.REMOVE_ORDER_ITEM](state, index) {
     state.items = state.items.filter(function(orderItem, key) {
-      return key != index
+      console.log(key, index, 'key != index')
+      return orderItem.orderIndex != index
     })
   },
 

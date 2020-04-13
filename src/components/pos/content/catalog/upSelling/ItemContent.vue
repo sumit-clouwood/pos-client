@@ -18,13 +18,6 @@
         ref="entityItem"
         :id="'id_' + item._id"
       >
-        <!-- <div
-          v-if="isEnabled"
-          class="item-details-icon"
-          @click.stop="showDetails(item)"
-        >
-          <img style="padding: 3px;" src="img/maximize.svg" />
-        </div> -->
         <img
           v-if="item.image != ''"
           class="food-menu-item-img"
@@ -98,7 +91,12 @@ export default {
     }
   },
   computed: {
-    ...mapState('category', ['barcode', 'upSelling', 'isUpSellingDelete']),
+    ...mapState('category', [
+      'barcode',
+      'upSelling',
+      'isUpSellingDelete',
+      'upSellingParentItem',
+    ]),
     ...mapState('order', ['item']),
     ...mapState('comboItems', ['comboItemsList']),
     ...mapGetters(['foodMenuHendler']),
@@ -137,7 +135,9 @@ export default {
               this.upSellingItems.push(itemModification)
             }
           })
-          showModal('#up-selling-popup')
+          if (this.upSellingItems.length > 0) {
+            showModal('#up-selling-popup')
+          }
         }
 
         // eslint-disable-next-line no-console
@@ -159,19 +159,10 @@ export default {
         hideModal('#up-selling-popup')
       }
       this.msg = `${item.name} has been added to cart`
-      /*this.$store.commit('order/setAlert', {
-        type: 'Success',
-        title: 'Item added',
-        ,
-      })*/
-      // $('#alert-popup').modal('show')
+      item.upselling_parent_id = this.upSellingParentItem._id
       return this.itemsAddToCart(item)
     },
   },
-  // showModalBox(modalName) {
-  //   $(modalName).css({ 'z-index': 1052 })
-  //   $(modalName).toggle()
-  // },
 }
 </script>
 <style lang="scss" scoped>

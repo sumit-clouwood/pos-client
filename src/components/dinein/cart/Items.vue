@@ -17,7 +17,9 @@
         </div>
         <div
           class="orders-close"
-          @click.prevent="removeCurrentOrder({ item: item, index: index })"
+          @click.prevent="
+            removeCurrentOrder({ item: item, index: item.orderIndex })
+          "
         >
           <span class="dlt-icon">
             <img src="img/pos/delete-icon.svg" />
@@ -171,7 +173,14 @@ export default {
     },
 
     removeCurrentOrder(param) {
+      let parentItemId = param.item._id
+      this.$store.commit('category/IS_UP_SELLING_DELETE', true)
       this.removeFromOrder(param)
+      this.items.forEach(item => {
+        if (parentItemId === item.upselling_parent_id) {
+          this.removeFromOrder({ item: item, index: item.orderIndex })
+        }
+      })
       if (!this.items.length) {
         this.$store.dispatch('mainOrdersHendlerChange')
       }
