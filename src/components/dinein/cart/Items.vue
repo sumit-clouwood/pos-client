@@ -11,7 +11,16 @@
       ref="entityCartItem"
     >
       <div class="main-orders-list-item-title color-text">
-        <div class="orders-name">{{ dt(item) }}</div>
+        <div :class="'orders-name' + item.orderIndex">
+          <button
+            v-if="item.item_type === CONST.COMBO_ITEM_TYPE"
+            class="toggle_btn"
+            @click="showCombo(item.orderIndex)"
+          >
+            <i class="fa fa-chevron-down" aria-hidden="true"></i>
+          </button>
+          {{ dt(item) }}
+        </div>
         <div class="orders-amount">
           {{ formatPrice(itemGrossPriceDiscounted(item)) }}
         </div>
@@ -31,6 +40,38 @@
       >
         <div>
           <div v-html="formatItemDiscount(item)"></div>
+          <div
+            :id="'sub_dsc' + item.orderIndex"
+            class="sub_container"
+            v-if="item.item_type === CONST.COMBO_ITEM_TYPE"
+          >
+            <div
+              v-for="(cmbItm, index) in item.combo_selected_items"
+              :key="index"
+            >
+              <div class="subdescription_container">
+                <div
+                  class="product_sub_description main-orders-list-item-subtitle color-text-invert item-exclude"
+                >
+                  {{ cmbItm.name }} x {{ cmbItm.quantity || 1 }}
+                </div>
+                <!--<div class="sub_description_price">
+                    + NZD 60.00
+                  </div>-->
+              </div>
+              <div class="sub_des_catagary">
+                <div class="sub_more_description" v-if="cmbItm.modifiable">
+                  <Modifiers
+                    v-bind:modifiers="cmbItm.modifiers"
+                    v-bind:item="cmbItm"
+                  />
+                </div>
+                <!--<div class="sub_more_description_price">
+                  + NZD 15.00
+                </div>-->
+              </div>
+            </div>
+          </div>
           <div
             class="main-orders-list-item-subtitle color-text-invert"
             v-if="orderType.OTApi === 'dine_in'"
@@ -89,7 +130,7 @@ import { mapState, mapActions, mapGetters } from 'vuex'
 import Discount from '@/mixins/Discount'
 import { bus } from '@/eventBus'
 import Scroll from '@/mixins/Scroll'
-
+/* global $ */
 export default {
   name: 'Items',
   data() {
@@ -172,15 +213,24 @@ export default {
       this.$store.dispatch('order/splitItems', this.splittedItems)
     },
 
+    showCombo(orderIndex) {
+      let idSelector = '#sub_dsc' + orderIndex
+      let classSelector = '.orders-name' + orderIndex
+
+      $(`${idSelector}`).slideToggle(200)
+      $(`${classSelector} i`).toggleClass(
+        'fa fa fa-chevron-down fa-chevron-right '
+      )
+    },
     removeCurrentOrder(param) {
       let parentItemId = param.item._id
-      this.$store.commit('category/IS_UP_SELLING_DELETE', true)
-      this.removeFromOrder(param)
       this.items.forEach(item => {
         if (parentItemId === item.upselling_parent_id) {
           this.removeFromOrder({ item: item, index: item.orderIndex })
         }
       })
+      this.$store.commit('category/IS_UP_SELLING_DELETE', true)
+      this.removeFromOrder(param)
       if (!this.items.length) {
         this.$store.dispatch('mainOrdersHendlerChange')
       }
