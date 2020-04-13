@@ -33,6 +33,7 @@ export default {
         this.$store
           .dispatch('checkoutForm/addAmount')
           .then(payable => {
+            this.$store.commit('checkoutForm/forceCash', true)
             resolve(payable)
           })
           .catch(error => reject(error))
@@ -80,6 +81,7 @@ export default {
           .finally(() => {
             console.log('finally processing false')
             this.$store.commit('checkoutForm/SET_PROCESSING', false)
+            this.$store.commit('checkoutForm/forceCash', true)
           })
       })
     },

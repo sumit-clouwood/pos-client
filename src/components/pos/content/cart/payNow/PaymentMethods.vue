@@ -37,6 +37,8 @@ export default {
         this.$refs.paymentmethods.setActive(CONST.CASH)
         this.$store.commit('checkoutForm/forceCash', false)
         this.$refs.paymentmethods.movePage(1)
+        this.$refs.paymentmethods.show = false
+        this.$refs.paymentmethods.showAggregator = false
       }
     },
     payable(newval) {
