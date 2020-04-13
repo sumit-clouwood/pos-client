@@ -1,85 +1,81 @@
 <template>
-  <div
-    class="modal-body color-dashboard-background"
-    :class="['food-menu', foodMenuHendler ? 'active' : 'notActive']"
-    v-if="upSellingItems.length"
-  >
+  <div>
     <div
-      :class="{
-        'food-menu-item': true,
-        ' color-dashboard-background': item.image != '',
-      }"
-      :style="{ background: item.image == '' ? item.item_color : '' }"
-      v-for="item in upSellingItems"
-      :key="item._id"
-      :value="dt(item)"
-      @click.prevent="addToOrder(item)"
-      ref="entityItem"
-      :id="'id_' + item._id"
-    >
-      <!-- <div
-        v-if="isEnabled"
-        class="item-details-icon"
-        @click.stop="showDetails(item)"
-      >
-        <img style="padding: 3px;" src="img/maximize.svg" />
-      </div> -->
-      <img
-        v-if="item.image != ''"
-        class="food-menu-item-img"
-        :src="item.image"
-        :alt="dt(item)"
-        @error="imageLoadError()"
-      />
-      <div class="food-menu-price-btn-wrap">
-        <div style="line-height: 2rem">
-          <div
-            class="food-menu-item-text color-text"
-            :class="item.image === '' ? 'item-image-only' : ''"
-          >
-            {{ dt(item) }}
-          </div>
-          <div class="food-menu-item-price">
-            {{ currency }} {{ item.value || 0 }}
-          </div>
-        </div>
-        <!-- data-target="#POSOrderItemOptions" -->
-        <!-- <div
-          class="button-plus"
-          data-toggle="modal"
-          @click="showModalBox('#POSOrderItemOptions')"
-        >
-          <div class="button-plus-icon">
-            <svg
-              class="color-text"
-              viewBox="0 0 15 15"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M8.40002 6.3999V1.3999C8.40002 1.13469 8.29467 0.880332 8.10713 0.692796C7.9196 0.505259 7.66524 0.399902 7.40002 0.399902C7.13481 0.399902 6.88045 0.505259 6.69292 0.692796C6.50538 0.880332 6.40002 1.13469 6.40002 1.3999V6.3999H1.40002C1.13481 6.3999 0.880454 6.50526 0.692918 6.6928C0.505381 6.88033 0.400024 7.13469 0.400024 7.3999C0.400024 7.66512 0.505381 7.91947 0.692918 8.10701C0.880454 8.29455 1.13481 8.3999 1.40002 8.3999H6.40002V13.3999C6.40002 13.6651 6.50538 13.9195 6.69292 14.107C6.88045 14.2945 7.13481 14.3999 7.40002 14.3999C7.66524 14.3999 7.9196 14.2945 8.10713 14.107C8.29467 13.9195 8.40002 13.6651 8.40002 13.3999V8.3999H13.4C13.6652 8.3999 13.9196 8.29455 14.1071 8.10701C14.2947 7.91947 14.4 7.66512 14.4 7.3999C14.4 7.13469 14.2947 6.88033 14.1071 6.6928C13.9196 6.50526 13.6652 6.3999 13.4 6.3999H8.40002Z"
-              />
-            </svg>
-          </div>
-        </div> -->
-      </div>
-    </div>
-    <item-details-popup
-      v-show="currentItem"
-      v-model="currentItem"
-      @resetCurrentItem="resetCurrentItem"
-    />
-
-    <!-- <Popup /> -->
-    <div
-      class="color-dashboard-background"
-      v-if="!upSellingItems.length"
+      class="modal-body color-dashboard-background"
       :class="['food-menu', foodMenuHendler ? 'active' : 'notActive']"
+      v-if="upSellingItems.length"
     >
-      <!--<btnBack :param="'item'" />-->
-      <div class="no_item">
-        <h2>{{ _t('No menu item found') }}</h2>
+      <div
+        :class="{
+          'food-menu-item': true,
+          ' color-dashboard-background': item.image != '',
+        }"
+        :style="{ background: item.image == '' ? item.item_color : '' }"
+        v-for="item in upSellingItems"
+        :key="item._id"
+        :value="dt(item)"
+        @click.prevent="addToOrder(item)"
+        ref="entityItem"
+        :id="'id_' + item._id"
+      >
+        <!-- <div
+          v-if="isEnabled"
+          class="item-details-icon"
+          @click.stop="showDetails(item)"
+        >
+          <img style="padding: 3px;" src="img/maximize.svg" />
+        </div> -->
+        <img
+          v-if="item.image != ''"
+          class="food-menu-item-img"
+          :src="item.image"
+          :alt="dt(item)"
+          @error="imageLoadError()"
+        />
+        <div class="food-menu-price-btn-wrap">
+          <div style="line-height: 2rem">
+            <div
+              class="food-menu-item-text color-text"
+              :class="item.image === '' ? 'item-image-only' : ''"
+            >
+              {{ dt(item) }}
+            </div>
+            <div class="food-menu-item-price">
+              {{ currency }} {{ item.value || 0 }}
+            </div>
+          </div>
+          <!-- data-target="#POSOrderItemOptions" -->
+          <!-- <div
+            class="button-plus"
+            data-toggle="modal"
+            @click="showModalBox('#POSOrderItemOptions')"
+          >
+            <div class="button-plus-icon">
+              <svg
+                class="color-text"
+                viewBox="0 0 15 15"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M8.40002 6.3999V1.3999C8.40002 1.13469 8.29467 0.880332 8.10713 0.692796C7.9196 0.505259 7.66524 0.399902 7.40002 0.399902C7.13481 0.399902 6.88045 0.505259 6.69292 0.692796C6.50538 0.880332 6.40002 1.13469 6.40002 1.3999V6.3999H1.40002C1.13481 6.3999 0.880454 6.50526 0.692918 6.6928C0.505381 6.88033 0.400024 7.13469 0.400024 7.3999C0.400024 7.66512 0.505381 7.91947 0.692918 8.10701C0.880454 8.29455 1.13481 8.3999 1.40002 8.3999H6.40002V13.3999C6.40002 13.6651 6.50538 13.9195 6.69292 14.107C6.88045 14.2945 7.13481 14.3999 7.40002 14.3999C7.66524 14.3999 7.9196 14.2945 8.10713 14.107C8.29467 13.9195 8.40002 13.6651 8.40002 13.3999V8.3999H13.4C13.6652 8.3999 13.9196 8.29455 14.1071 8.10701C14.2947 7.91947 14.4 7.66512 14.4 7.3999C14.4 7.13469 14.2947 6.88033 14.1071 6.6928C13.9196 6.50526 13.6652 6.3999 13.4 6.3999H8.40002Z"
+                />
+              </svg>
+            </div>
+          </div> -->
+        </div>
       </div>
+      <item-details-popup
+        v-show="currentItem"
+        v-model="currentItem"
+        @resetCurrentItem="resetCurrentItem"
+      />
+      <div
+        class="color-dashboard-background"
+        v-if="!upSellingItems.length"
+        :class="['food-menu', foodMenuHendler ? 'active' : 'notActive']"
+      ></div>
     </div>
+    <div class="text-success msg-padding" v-if="msg">{{ msg }}</div>
   </div>
 </template>
 <script>
@@ -91,9 +87,6 @@ import Cart from '@/mixins/Cart'
 
 export default {
   name: 'Items',
-  props: {
-    msg: String,
-  },
   mixins: [Cart],
   components: {
     ItemDetailsPopup,
@@ -101,20 +94,27 @@ export default {
   data() {
     return {
       upSellingItems: [],
+      msg: false,
     }
   },
   computed: {
     ...mapState('category', ['barcode', 'upSelling', 'isUpSellingDelete']),
     ...mapState('order', ['item']),
+    ...mapState('comboItems', ['comboItemsList']),
     ...mapGetters(['foodMenuHendler']),
   },
   watch: {
     item() {
       this.$nextTick(() => {
-        if (!this.isUpSellingDelete) {
+        if (!this.isUpSellingDelete && !this.comboItemsList) {
           this.getUpSellingItems()
         }
       })
+      setTimeout(() => {
+        if (this.msg) {
+          this.msg = false
+        }
+      }, 1500)
     },
   },
   methods: {
@@ -158,12 +158,13 @@ export default {
       if (this.upSellingItems.length === 0) {
         hideModal('#up-selling-popup')
       }
-      this.$store.commit('order/setAlert', {
+      this.msg = `${item.name} has been added to cart`
+      /*this.$store.commit('order/setAlert', {
         type: 'Success',
         title: 'Item added',
-        msg: `Upselling item ${item.name} has been added to cart`,
-      })
-      $('#alert-popup').modal('show')
+        ,
+      })*/
+      // $('#alert-popup').modal('show')
       return this.itemsAddToCart(item)
     },
   },
@@ -199,7 +200,7 @@ export default {
   align-content: start;
   overflow-y: auto;
   .food-menu-item {
-    padding: 10px;
+    padding: 8px;
     cursor: pointer;
     border: $px1 solid #ddd;
     border-radius: $px5;
@@ -225,11 +226,11 @@ export default {
     position: relative;
     /*transition: width 0.25s ease-out, height 0.25s ease-out 0.25s;*/
     .food-menu-item-img {
-      margin: $px5 auto;
+      /*<!--margin: $px5 auto;-->*/
       border-radius: $px3;
-      width: 100%;
+      width: $px140;
       max-height: $px130;
-      margin-bottom: auto;
+      margin: auto;
     }
     .food-menu-item-text {
       font-size: 1rem;
@@ -328,7 +329,10 @@ i.fa.fa-check.item-selected-check {
   font-weight: bold;
   box-shadow: 0 0 4px 1px #5056ca;
 }
-
+.msg-padding {
+  padding-left: 1.875rem;
+  font-weight: bold;
+}
 .food-menu-price-btn-wrap {
   display: grid;
   grid-template-columns: 1fr;
