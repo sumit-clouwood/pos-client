@@ -114,7 +114,7 @@ export default {
         if (this.msg) {
           this.msg = false
         }
-      }, 1500)
+      }, 3000)
     },
   },
   methods: {
@@ -332,6 +332,7 @@ i.fa.fa-check.item-selected-check {
 .msg-padding {
   padding-left: 1.875rem;
   font-weight: bold;
+  font-size: 16px;
 }
 .food-menu-price-btn-wrap {
   display: grid;

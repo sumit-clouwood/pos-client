@@ -205,11 +205,35 @@ export default {
       )
     },
     removeCurrentOrder(param) {
-      this.$store.commit('category/IS_UP_SELLING_DELETE', true)
-      this.removeFromOrder(param)
+      let orderIndex = param.index
+      let loop = true
+      for (let item of this.items) {
+        if (orderIndex === param.index) {
+          this.$store.commit('category/IS_UP_SELLING_DELETE', true)
+          this.removeFromOrder(param)
+          orderIndex++
+        } else if (
+          loop &&
+          item.orderIndex === orderIndex &&
+          item.is_upselling &&
+          item.value === item.upselling_value
+        ) {
+          let details = { item: item, index: orderIndex }
+          this.$store.commit('category/IS_UP_SELLING_DELETE', true)
+          this.removeFromOrder(details)
+          orderIndex++
+        } else {
+          loop = false
+        }
+      }
       if (!this.items.length) {
         this.$store.dispatch('mainOrdersHendlerChange')
       }
+      /*this.$store.commit('category/IS_UP_SELLING_DELETE', true)
+      this.removeFromOrder(param)
+      if (!this.items.length) {
+        this.$store.dispatch('mainOrdersHendlerChange')
+      }*/
     },
     modifierHeights() {
       bus.$emit('modifier-heights')
