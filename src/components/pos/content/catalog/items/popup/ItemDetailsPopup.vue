@@ -6,7 +6,7 @@
     role="dialog"
     aria-labelledby="item-details-popup"
     aria-hidden="true"
-    v-if="currentItem"
+    v-if="Object.keys(currentItem).length"
     data-keyboard="false"
     data-backdrop="static"
   >

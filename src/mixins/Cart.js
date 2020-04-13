@@ -2,12 +2,36 @@
 /* eslint-disable no-console */
 import * as CONST from '@/constants'
 import bootstrap from '@/bootstrap'
-import { mapGetters } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 // import store from '@/store'
 
 export default {
+  data() {
+    return {
+      currentItem: {},
+    }
+  },
   computed: {
     ...mapGetters(['bascketItems']),
+    ...mapState('category', ['barcode']),
+    ...mapState('location', ['currency']),
+    ...mapGetters('location', ['_t']),
+    ...mapGetters('category', ['items', 'itemByCode']),
+    ...mapGetters(['foodMenuHendler']),
+    isEnabled() {
+      return this.$store.getters['modules/enabled'](CONST.MODULE_DINE_IN_MENU)
+    },
+  },
+  watch: {
+    barcode(itemCode) {
+      if (itemCode) {
+        const item = this.itemByCode(itemCode)
+        if (item) {
+          this.addToOrder(item)
+        }
+        this.$store.commit('category/setBarcode', false)
+      }
+    },
   },
   methods: {
     setModifiers(item) {
@@ -16,6 +40,7 @@ export default {
         this.$store.commit('orderForm/clearSelection')
         //handle open item inside popup
         showModal('#POSItemOptions')
+        $('#POSItemOptions').css({ 'z-index': 9999 })
       } else {
         if (item.open_item === true) {
           //show popup for open item
@@ -23,6 +48,7 @@ export default {
         } else {
           this.$store.dispatch('order/addToOrder', item)
         }
+        // $('#POSItemOptions').css({ 'z-index': 999 })
       }
     },
     itemsAddToCart(item) {
@@ -56,11 +82,51 @@ export default {
         })*/
       }
       this.$store.dispatch('addItemFood', item)
-
+      this.$store.commit('category/IS_UP_SELLING_DELETE', false)
       if (!this.bascketItems.find(x => x.name === item.name)) {
         this.bascketItems.push({ name: item.name, count: 1, class: 'active' })
       } else {
         this.bascketItems.find(x => x.name === item.name).count++
+      }
+    },
+    resetCurrentItem(payLoad) {
+      this.currentItem = payLoad
+    },
+    showDetails(item) {
+      this.currentItem = item
+      showModal('#item-details-popup')
+    },
+    IsImageOk(img) {
+      if (!img.complete) {
+        return false
+      }
+
+      if (typeof img.naturalWidth != 'undefined' && img.naturalWidth == 0) {
+        return false
+      }
+
+      return true
+    },
+
+    imageLoadError() {
+      for (let i = 0; i < document.images.length; i++) {
+        if (!this.IsImageOk(document.images[i])) {
+          let hue = 'bg'
+          $(document.images[i])
+            .closest('div.pos-item-bg')
+            .addClass(hue)
+          $(document.images[i])
+            .siblings('p')
+            .css('font-size', '15px')
+          $(document.images[i])
+            .closest('div.pos-size-bg')
+            .addClass(hue)
+          // .css('background-color', hue)
+          $(document.images[i])
+            .siblings('span')
+            .css('font-weight', 'bold')
+          document.images[i].remove()
+        }
       }
     },
   },

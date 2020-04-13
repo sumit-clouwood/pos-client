@@ -205,6 +205,7 @@ export default {
       )
     },
     removeCurrentOrder(param) {
+      this.$store.commit('category/IS_UP_SELLING_DELETE', true)
       this.removeFromOrder(param)
       if (!this.items.length) {
         this.$store.dispatch('mainOrdersHendlerChange')

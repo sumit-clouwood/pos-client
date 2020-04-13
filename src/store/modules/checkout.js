@@ -685,6 +685,7 @@ const actions = {
 
   pay({ commit, getters, rootGetters, rootState, dispatch }, { action, data }) {
     return new Promise((resolve, reject) => {
+      commit('category/IS_UP_SELLING_DELETE', true, { root: true })
       commit(mutation.SET_PAYMENT_ACTION, action)
       dispatch('validateEvent', { action: action, data: data })
         .then(() => {

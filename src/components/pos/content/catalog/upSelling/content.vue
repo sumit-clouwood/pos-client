@@ -22,40 +22,27 @@ export default {
 }
 </script>
 
-<style scoped>
-/*.modal-body.color-dashboard-background.grid_left {*/
-/*  display: grid;*/
-/*  grid-template-columns: 1fr;*/
-/*}*/
-
-/*.grid_parent_combo {
-  display: grid;
-  align-items: self-start;
-  grid-template-columns: 1fr;
-  padding: 25px 0;
-}*/
-
-/*.modal-body.color-dashboard-background.grid_combo_left {*/
-/*  grid-template-columns: 1fr;*/
-/*  max-height: 350px;*/
-/*  overflow: hidden;*/
-/*  overflow-y: auto;*/
-/*}*/
-/*.modal-body.color-dashboard-background.grid_combo_left::-webkit-scrollbar {*/
-/*  display: none;*/
-/*}*/
-
-.modal-body.color-dashboard-background.grid_combo_item_content .food-menu-item {
-  max-height: unset;
-}
-/*.modal-body.color-dashboard-background.grid_combo_left {*/
-/*  padding: 25px 10px !important;*/
-/*  padding-top: 0px !important;*/
-/*}*/
-/*@media only screen and (max-width: 600px) and (min-width: 320px) {
+<style lang="scss" scoped>
+@import '@/assets/scss/mixins.scss';
+.modal-content {
+  max-height: 75vh !important;
+  overflow: scroll;
   .grid_parent_combo {
-    display: grid;
-    grid-template-columns: 1fr;
+    @include responsive(mobile) {
+      max-height: 19.5rem !important;
+      overflow: scroll;
+    }
+    @media only screen and (max-width: 600px) and (min-width: 320px) {
+      .modal-body {
+        display: grid;
+        grid-template-columns: repeat(2, 2fr);
+        grid-column-gap: 0.938rem;
+        row-gap: 1rem;
+      }
+      .food-menu-item-text.color-text {
+        font-size: 12px !important;
+      }
+    }
   }
-}*/
+}
 </style>
