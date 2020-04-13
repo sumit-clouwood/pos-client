@@ -208,7 +208,7 @@ export default {
       let orderIndex = param.index
       let loop = true
       for (let item of this.items) {
-        if (orderIndex === param.index) {
+        if (orderIndex === item.orderIndex) {
           this.$store.commit('category/IS_UP_SELLING_DELETE', true)
           this.removeFromOrder(param)
           orderIndex++
