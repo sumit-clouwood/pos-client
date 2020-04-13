@@ -80,7 +80,7 @@
 </template>
 
 <script>
-/* global $, showModal  */
+/* global  showModal  */
 import { mapGetters, mapState } from 'vuex'
 import * as CONST from '@/constants'
 import ItemDetailsPopup from './items/popup/ItemDetailsPopup'
@@ -104,21 +104,11 @@ export default {
       entity: 'entityItem',
       margin: 17.5,
       keepEntitiesInScroll: 0,
-      currentItem: {},
     }
   },
   computed: {
-    ...mapState('category', ['barcode']),
-    ...mapState('location', ['currency']),
     ...mapState('order', ['splitBill', 'selectedOrder']),
     ...mapGetters('order', ['orderType']),
-    ...mapGetters('location', ['_t']),
-    ...mapGetters('category', ['items', 'itemByCode']),
-    ...mapGetters('modifier', ['hasModifiers']),
-    ...mapGetters(['foodMenuHendler']),
-    isEnabled() {
-      return this.$store.getters['modules/enabled'](CONST.MODULE_DINE_IN_MENU)
-    },
   },
   watch: {
     items() {
@@ -126,27 +116,8 @@ export default {
         this.calculateScrolls().catch(() => {})
       })
     },
-    barcode(itemCode) {
-      if (itemCode) {
-        const item = this.itemByCode(itemCode)
-        if (item) {
-          this.addToOrder(item)
-        }
-        this.$store.commit('category/setBarcode', false)
-      }
-    },
   },
-  created() {},
-  updated() {},
-  beforeUpdated() {},
   methods: {
-    resetCurrentItem(payLoad) {
-      this.currentItem = payLoad
-    },
-    showDetails(item) {
-      this.currentItem = item
-      showModal('#item-details-popup')
-    },
     addToOrder(item) {
       if (item.item_type === CONST.COMBO_ITEM_TYPE) {
         // eslint-disable-next-line no-console
@@ -165,55 +136,6 @@ export default {
       } else {
         this.$store.dispatch('comboItems/reset')
         return this.itemsAddToCart(item)
-      }
-    },
-    IsImageOk(img) {
-      // During the onload event, IE correctly identifies any images that
-      // weren't downloaded as not complete. Others should too. Gecko-based
-      // browsers act like NS4 in that they report this incorrectly.
-      if (!img.complete) {
-        return false
-      }
-
-      // However, they do have two very useful properties: naturalWidth and
-      // naturalHeight. These give the true size of the image. If it failed
-      // to load, either of these should be zero.
-      if (typeof img.naturalWidth != 'undefined' && img.naturalWidth == 0) {
-        return false
-      }
-
-      // No other way of checking: assume it's ok.
-      return true
-    },
-
-    imageLoadError() {
-      // let myDoc = document.getElementsByClassName('.contain-body-class')
-      /* myDoc = myDoc.remove('.sticky-footer')*/
-      for (let i = 0; i < document.images.length; i++) {
-        if (!this.IsImageOk(document.images[i])) {
-          let hue = 'bg'
-          /*'rgb(' +
-                                          (Math.floor((256 - 199) * Math.random()) + 200) +
-                                          ',' +
-                                          (Math.floor((256 - 199) * Math.random()) + 200) +
-                                          ',' +
-                                          (Math.floor((256 - 199) * Math.random()) + 200) +
-                          ')'*/
-          $(document.images[i])
-            .closest('div.pos-item-bg')
-            .addClass(hue)
-          $(document.images[i])
-            .siblings('p')
-            .css('font-size', '15px')
-          $(document.images[i])
-            .closest('div.pos-size-bg')
-            .addClass(hue)
-          // .css('background-color', hue)
-          $(document.images[i])
-            .siblings('span')
-            .css('font-weight', 'bold')
-          document.images[i].remove()
-        }
       }
     },
   },

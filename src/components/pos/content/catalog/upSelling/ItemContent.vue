@@ -100,31 +100,15 @@ export default {
   },
   data() {
     return {
-      currentItem: {},
       upSellingItems: [],
     }
   },
   computed: {
-    ...mapState('category', ['barcode', 'upSelling']),
-    ...mapState('location', ['currency']),
+    ...mapState('category', ['upSelling']),
     ...mapState('order', ['item']),
-    ...mapGetters('location', ['_t']),
-    ...mapGetters('category', ['items', 'itemByCode']),
     ...mapGetters(['foodMenuHendler']),
-    isEnabled() {
-      return this.$store.getters['modules/enabled'](CONST.MODULE_DINE_IN_MENU)
-    },
   },
   watch: {
-    barcode(itemCode) {
-      if (itemCode) {
-        const item = this.itemByCode(itemCode)
-        if (item) {
-          this.addToOrder(item)
-        }
-        this.$store.commit('category/setBarcode', false)
-      }
-    },
     item() {
       this.$nextTick(() => {
         this.getUpSellingItems()
@@ -170,13 +154,6 @@ export default {
         )
       }
     },
-    resetCurrentItem(payLoad) {
-      this.currentItem = payLoad
-    },
-    showDetails(item) {
-      this.currentItem = item
-      showModal('#item-details-popup')
-    },
     addToOrder(item) {
       this.$store.dispatch('comboItems/reset')
       // $('#id_' + item._id).hide()
@@ -191,39 +168,6 @@ export default {
       })
       $('#alert-popup').modal('show')
       return this.itemsAddToCart(item)
-    },
-    IsImageOk(img) {
-      if (!img.complete) {
-        return false
-      }
-
-      if (typeof img.naturalWidth != 'undefined' && img.naturalWidth == 0) {
-        return false
-      }
-
-      return true
-    },
-
-    imageLoadError() {
-      for (let i = 0; i < document.images.length; i++) {
-        if (!this.IsImageOk(document.images[i])) {
-          let hue = 'bg'
-          $(document.images[i])
-            .closest('div.pos-item-bg')
-            .addClass(hue)
-          $(document.images[i])
-            .siblings('p')
-            .css('font-size', '15px')
-          $(document.images[i])
-            .closest('div.pos-size-bg')
-            .addClass(hue)
-          // .css('background-color', hue)
-          $(document.images[i])
-            .siblings('span')
-            .css('font-weight', 'bold')
-          document.images[i].remove()
-        }
-      }
     },
   },
   // showModalBox(modalName) {
