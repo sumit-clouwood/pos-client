@@ -1,7 +1,7 @@
 <template>
   <div class="modal-details color-dashboard-background" v-if="item">
     <div class="POSItemOptions_pricequantity">
-      <div class="POSItemOptions_price">
+      <div class="POSItemOptions_price" v-if="!comboItemsList">
         <label class="POSItemOptions_label color-text-invert">{{
           _t('Price')
         }}</label>
@@ -27,6 +27,7 @@ export default {
     }),
     ...mapGetters('location', ['formatPrice', '_t']),
     ...mapGetters('orderForm', ['quantity']),
+    ...mapState('comboItems', ['comboItemsList']),
   },
   components: {
     Quantity,

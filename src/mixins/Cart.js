@@ -24,7 +24,7 @@ export default {
         } else {
           this.$store.dispatch('order/addToOrder', item)
         }
-        $('#POSItemOptions').css({ 'z-index': 99 })
+        // $('#POSItemOptions').css({ 'z-index': 999 })
       }
     },
     itemsAddToCart(item) {
@@ -58,7 +58,7 @@ export default {
         })*/
       }
       this.$store.dispatch('addItemFood', item)
-
+      this.$store.commit('category/IS_UP_SELLING_DELETE', false)
       if (!this.bascketItems.find(x => x.name === item.name)) {
         this.bascketItems.push({ name: item.name, count: 1, class: 'active' })
       } else {

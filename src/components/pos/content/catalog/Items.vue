@@ -163,6 +163,7 @@ export default {
         this.$store.dispatch('comboItems/findItemById')
         showModal('#combox-box-popup')
       } else {
+        // if (!item.is_upselling)
         this.$store.dispatch('comboItems/reset')
         return this.itemsAddToCart(item)
       }

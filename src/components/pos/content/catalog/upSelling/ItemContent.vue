@@ -105,7 +105,7 @@ export default {
     }
   },
   computed: {
-    ...mapState('category', ['barcode', 'upSelling']),
+    ...mapState('category', ['barcode', 'upSelling', 'isUpSellingDelete']),
     ...mapState('location', ['currency']),
     ...mapState('order', ['item']),
     ...mapGetters('location', ['_t']),
@@ -127,7 +127,9 @@ export default {
     },
     item() {
       this.$nextTick(() => {
-        this.getUpSellingItems()
+        if (!this.isUpSellingDelete) {
+          this.getUpSellingItems()
+        }
       })
     },
   },
@@ -149,16 +151,13 @@ export default {
               let itemModification = { ...itemList.item }
               itemModification.value = itemModification.upselling_value
               this.upSellingItems.push(itemModification)
-              /*let upSaleItem = this.items.find(
-                item => item._id === itemList.itemId
-              )*/
             }
           })
-        }
-
-        if (this.upSellingItems.length && this.upSelling.length) {
           showModal('#up-selling-popup')
         }
+
+        /*if (this.upSellingItems.length && this.upSelling.length) {
+        }*/
         // eslint-disable-next-line no-console
         console.log(
           this.items,

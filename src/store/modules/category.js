@@ -24,6 +24,7 @@ const state = {
   searchTerm: '',
   barcode: false,
   upSelling: [],
+  isUpSellingDelete: false,
 }
 
 // getters, computed properties
@@ -292,6 +293,9 @@ const mutations = {
   },
   updateSearchTerm(state, term) {
     state.searchTerm = term
+  },
+  [mutation.IS_UP_SELLING_DELETE](state, status) {
+    state.isUpSellingDelete = status
   },
   [mutation.RESET](state) {
     state.categoryImagePath = ''
