@@ -99,6 +99,12 @@ export default {
       return this.width / this.perPage
     },
   },
+  mounted() {
+    // Select first slide if no slide is selected and set it as a method type
+    if (this.slides.length && this.method.type != this.slides[0].type) {
+      this.selectSlide({ index: 0, slide: this.slides[0] })
+    }
+  },
   methods: {
     // eslint-disable-next-line no-unused-vars
     selectSlide({ index, slide }) {
