@@ -72,6 +72,7 @@
 </template>
 <script>
 import PaymentMethodsMixin from '@/mixins/PaymentMethods'
+import * as CONST from '@/constants'
 export default {
   name: 'ChildSlider',
   mixins: [PaymentMethodsMixin],
@@ -100,9 +101,16 @@ export default {
     },
   },
   mounted() {
+    const selectedMethodType = this.method.type
     // Select first slide if no slide is selected and set it as a method type
-    if (this.slides.length && this.method.type != this.slides[0].type) {
+    if (
+      this.slides.length &&
+      selectedMethodType != this.slides[0].type &&
+      selectedMethodType != CONST.AGGREGATOR
+    ) {
       this.selectSlide({ index: 0, slide: this.slides[0] })
+    } else {
+      this.currentSlide = this.slides.indexOf(this.method)
     }
   },
   methods: {
