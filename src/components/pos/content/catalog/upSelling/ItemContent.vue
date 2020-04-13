@@ -174,8 +174,6 @@ export default {
       this.currentItem = payLoad
     },
     showDetails(item) {
-      // eslint-disable-next-line no-console
-      console.log(item)
       this.currentItem = item
       showModal('#item-details-popup')
     },
