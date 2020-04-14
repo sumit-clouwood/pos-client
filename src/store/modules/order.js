@@ -718,8 +718,6 @@ const actions = {
   },
 
   removeFromOrder({ commit, dispatch, state }, { item, index }) {
-    // eslint-disable-next-line no-console
-    console.log(item, index, 'details', state.items)
     commit('checkoutForm/RESET', 'process', { root: true })
     commit(mutation.SET_ITEM, item)
     commit(mutation.REMOVE_ORDER_ITEM, index)
