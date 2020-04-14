@@ -4,9 +4,11 @@
       <transition name="slider">
         <ul
           :style="{ transform: 'translate3d(' + positionX + 'px, 0px, 0px)' }"
+          @touchstart="startDrag"
+          @touchmove="doDrag"
+          @touchend="stopDrag"
           @mousedown="startDrag"
           @mousemove="doDrag"
-          @mouseup="stopDrag"
         >
           <li
             :style="{
@@ -86,10 +88,6 @@ export default {
     return {
       currentPage: 1,
       currentSlide: 0,
-      positionX: 0,
-      dragging: false,
-      dragX: '',
-      dragY: '',
     }
   },
   computed: {
@@ -109,7 +107,8 @@ export default {
     } else {
       if (selectedMethodType === this.slides[0].type) {
         this.currentSlide = this.slides.indexOf(this.method)
-        this.movePage(Math.ceil(this.currentSlide / this.perPage))
+        // Needs to add +1 becasue we're showing back button as well
+        this.movePage(Math.ceil((this.currentSlide + 1) / this.perPage))
       }
     }
     window.addEventListener('mouseup', this.stopDrag)
