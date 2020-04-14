@@ -25,6 +25,7 @@ const state = {
   barcode: false,
   upSelling: [],
   isUpSellingDelete: false,
+  upSellingParentItem: false,
 }
 
 // getters, computed properties
@@ -296,6 +297,9 @@ const mutations = {
   },
   [mutation.IS_UP_SELLING_DELETE](state, status) {
     state.isUpSellingDelete = status
+  },
+  [mutation.UP_SELLING_PARENT_ITEM](state, item) {
+    state.upSellingParentItem = item
   },
   [mutation.RESET](state) {
     state.categoryImagePath = ''
