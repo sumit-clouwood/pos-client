@@ -33,6 +33,7 @@ export const LOYALTY = 'loyalty'
 export const GIFT_CARD = 'gift_card'
 export const AGGREGATOR = 'aggregator'
 export const CASH = 'cash'
+export const ONLINE = 'online'
 
 /* MODULE RELATED CONSTENTS */
 

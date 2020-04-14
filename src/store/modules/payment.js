@@ -132,16 +132,18 @@ const actions = {
       if (!accumulator[key]) {
         accumulator[key] = []
       }
-      if (currentmethod.type === CONST.MODULE_LOYALTY) {
+      if (currentmethod.type === CONST.LOYALTY) {
         if (rootGetters['modules/enabled'](CONST.MODULE_LOYALTY)) {
           accumulator[key].push(currentmethod)
         }
-      } else if (currentmethod.type === CONST.MODULE_GIFT_CARDS) {
+      } else if (currentmethod.type === CONST.GIFT_CARD) {
         if (rootGetters['modules/enabled'](CONST.MODULE_GIFT_CARDS)) {
           accumulator[key].push(currentmethod)
         }
       } else {
-        accumulator[key].push(currentmethod)
+        if (currentmethod.type != CONST.ONLINE) {
+          accumulator[key].push(currentmethod)
+        }
       }
       return accumulator
     }, {})
