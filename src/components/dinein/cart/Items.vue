@@ -104,7 +104,7 @@
           >
             <div
               class="button-plus-icon"
-              @click="setActiveItem({ orderItem: item, index: index })"
+              @click="setItem({ orderItem: item, index: index })"
             >
               <svg
                 class="color-text"
@@ -212,7 +212,10 @@ export default {
       this.$set(this.splittedItems, item.index, item.checked)
       this.$store.dispatch('order/splitItems', this.splittedItems)
     },
-
+    setItem(payLoad) {
+      this.$store.commit('category/IS_UP_SELLING_DELETE', true)
+      this.setActiveItem(payLoad)
+    },
     showCombo(orderIndex) {
       let idSelector = '#sub_dsc' + orderIndex
       let classSelector = '.orders-name' + orderIndex

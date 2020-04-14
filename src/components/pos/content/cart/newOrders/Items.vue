@@ -86,7 +86,7 @@
           >
             <div
               class="button-plus-icon"
-              @click="setActiveItem({ orderItem: item, index: index })"
+              @click="setItem({ orderItem: item, index: index })"
             >
               <svg
                 class="color-text"
@@ -205,6 +205,10 @@ export default {
       $(`${classSelector} i`).toggleClass(
         'fa fa fa-chevron-down fa-chevron-right '
       )
+    },
+    setItem(payLoad) {
+      this.$store.commit('category/IS_UP_SELLING_DELETE', true)
+      this.setActiveItem(payLoad)
     },
     removeCurrentOrder(param) {
       let parentItemId = param.item._id
