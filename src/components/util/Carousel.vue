@@ -163,6 +163,9 @@ export default {
   components: {
     ChildSlider,
   },
+  mounted() {
+    window.addEventListener('mouseup', this.stopDrag)
+  },
   data() {
     return {
       show: false,

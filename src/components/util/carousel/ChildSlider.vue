@@ -112,6 +112,7 @@ export default {
     } else {
       this.currentSlide = this.slides.indexOf(this.method)
     }
+    window.addEventListener('mouseup', this.stopDrag)
   },
   methods: {
     // eslint-disable-next-line no-unused-vars
