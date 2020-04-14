@@ -207,7 +207,7 @@ export default {
       )
     },
     setItem(payLoad) {
-      this.$store.commit('category/IS_UP_SELLING_DELETE', true)
+      this.$store.commit('category/IS_UP_SELLING_MODIFY', true)
       this.setActiveItem(payLoad)
     },
     removeCurrentOrder(param) {
@@ -217,7 +217,7 @@ export default {
           this.removeFromOrder({ item: item, index: item.orderIndex })
         }
       })
-      this.$store.commit('category/IS_UP_SELLING_DELETE', true)
+      this.$store.commit('category/IS_UP_SELLING_MODIFY', true)
       this.removeFromOrder(param)
       if (!this.items.length) {
         this.$store.dispatch('mainOrdersHendlerChange')

@@ -83,7 +83,7 @@ export default {
         })*/
       }
       this.$store.dispatch('addItemFood', item)
-      this.$store.commit('category/IS_UP_SELLING_DELETE', false)
+      this.$store.commit('category/IS_UP_SELLING_MODIFY', false)
       if (!item.is_upselling) {
         this.$store.commit('category/UP_SELLING_PARENT_ITEM', item, {
           root: true,

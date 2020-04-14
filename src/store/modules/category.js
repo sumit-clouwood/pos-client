@@ -295,7 +295,7 @@ const mutations = {
   updateSearchTerm(state, term) {
     state.searchTerm = term
   },
-  [mutation.IS_UP_SELLING_DELETE](state, status) {
+  [mutation.IS_UP_SELLING_MODIFY](state, status) {
     state.isUpSellingDelete = status
   },
   [mutation.UP_SELLING_PARENT_ITEM](state, item) {
