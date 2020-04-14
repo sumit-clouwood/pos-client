@@ -355,7 +355,10 @@
             </div>
             <div class="profile-menu-item-text">Support</div>
           </div>-->
-          <div class="profile-menu-item">
+          <div
+            class="profile-menu-item"
+            v-if="allowed(PERMS.PRINT_BUSINESS_SUMMARY)"
+          >
             <div class="profile-menu-item-icon">
               <svg
                 xmlns="http://www.w3.org/2000/svg"

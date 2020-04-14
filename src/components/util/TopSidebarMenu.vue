@@ -343,7 +343,7 @@
             ><span>{{ _t('Printers') }}</span></a
           >
         </li>
-        <li>
+        <li v-if="allowed(PERMS.PRINT_BUSINESS_SUMMARY)">
           <a
             data-toggle="modal"
             data-target="#supervisor-password"
