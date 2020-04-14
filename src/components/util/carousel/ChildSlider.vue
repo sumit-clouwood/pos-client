@@ -72,7 +72,7 @@
 </template>
 <script>
 import PaymentMethodsMixin from '@/mixins/PaymentMethods'
-import * as CONST from '@/constants'
+// import * as CONST from '@/constants'
 export default {
   name: 'ChildSlider',
   mixins: [PaymentMethodsMixin],
@@ -103,32 +103,32 @@ export default {
   mounted() {
     const selectedMethodType = this.method.type
     // Select first slide if no slide is selected and set it as a method type
-    if (
-      this.slides.length &&
-      selectedMethodType != this.slides[0].type &&
-      selectedMethodType != CONST.AGGREGATOR
-    ) {
+    if (this.slides.length && selectedMethodType != this.slides[0].type) {
       this.selectSlide({ index: 0, slide: this.slides[0] })
+      this.movePage(1)
     } else {
-      this.currentSlide = this.slides.indexOf(this.method)
+      if (selectedMethodType === this.slides[0].type) {
+        this.currentSlide = this.slides.indexOf(this.method)
+        this.movePage(Math.ceil(this.currentSlide / this.perPage))
+      }
     }
     window.addEventListener('mouseup', this.stopDrag)
   },
   methods: {
-    // eslint-disable-next-line no-unused-vars
     selectSlide({ index, slide }) {
       this.currentSlide = index
       this.$emit('selected-slide', { index: this.currentKey, slide: slide })
     },
     movePage(page) {
+      if (this.totalPages === 1) return
       let toMove = (page - 1) * this.perPage * this.slideWidth
       if (page == this.totalPages) {
         //We're adding 1 in total length Because we are showing back button
         const slidesToAdjust = (this.slides.length + 1) % this.perPage
         if (slidesToAdjust > 0) {
           //that means last page has less slides than no of per page
-          const missingSlies = this.perPage - slidesToAdjust
-          toMove -= missingSlies * this.slideWidth
+          const missingSlides = this.perPage - slidesToAdjust
+          toMove -= missingSlides * this.slideWidth
         }
       }
 
