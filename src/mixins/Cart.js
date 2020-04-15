@@ -56,6 +56,13 @@ export default {
         return false
       }
       item.upselling_parent_id = item.upselling_parent_id || false
+      if (!item.is_upselling) {
+        item.id_with_cart_index =
+          item._id + this.$store.getters['order/orderIndex']
+        this.$store.commit('category/UP_SELLING_PARENT_ITEM', item, {
+          root: true,
+        })
+      }
       this.$store.commit('order/setEditMode', false)
       this.$store.commit('order/RESET_SPLIT_BILL')
       //load data only when new order is starting
@@ -84,11 +91,7 @@ export default {
       }
       this.$store.dispatch('addItemFood', item)
       this.$store.commit('category/IS_UP_SELLING_MODIFY', false)
-      if (!item.is_upselling) {
-        this.$store.commit('category/UP_SELLING_PARENT_ITEM', item, {
-          root: true,
-        })
-      }
+
       if (!this.bascketItems.find(x => x.name === item.name)) {
         this.bascketItems.push({ name: item.name, count: 1, class: 'active' })
       } else {

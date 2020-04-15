@@ -94,17 +94,17 @@ export default {
     ...mapState('category', [
       'barcode',
       'upSelling',
-      'isUpSellingDelete',
+      'isUpSellingModify',
       'upSellingParentItem',
     ]),
-    ...mapState('order', ['item']),
+    ...mapState('order', ['item', 'items']),
     ...mapState('comboItems', ['comboItemsList']),
     ...mapGetters(['foodMenuHendler']),
   },
   watch: {
     item() {
       this.$nextTick(() => {
-        if (!this.isUpSellingDelete && !this.comboItemsList) {
+        if (!this.isUpSellingModify && !this.comboItemsList) {
           this.getUpSellingItems()
         }
       })
@@ -117,8 +117,6 @@ export default {
   },
   methods: {
     getUpSellingItems() {
-      // eslint-disable-next-line no-console
-      console.log(this.item, 'up selling ')
       if (
         this.item.item_type !== CONST.COMBO_ITEM_TYPE &&
         !this.item.is_upselling
@@ -139,28 +137,25 @@ export default {
             showModal('#up-selling-popup')
           }
         }
-
-        // eslint-disable-next-line no-console
-        console.log(
-          this.items,
-          'this.items',
-          'this.upSelling',
-          this.upSelling,
-          'this.upSellingItems',
-          this.upSellingItems
-        )
       }
     },
     addToOrder(item) {
       this.$store.dispatch('comboItems/reset')
       // $('#id_' + item._id).hide()
-      this.upSellingItems.pop(item)
-      if (this.upSellingItems.length === 0) {
-        hideModal('#up-selling-popup')
+      // Use splice instead of pop
+      // pop removes element from last index
+      // splice removes element from any given index
+      let indexOfItem = this.upSellingItems.indexOf(item)
+      if (indexOfItem > -1) {
+        this.upSellingItems.splice(indexOfItem, 1)
+        if (this.upSellingItems.length === 0) {
+          hideModal('#up-selling-popup')
+          this.msg = false
+        }
+        item.upselling_parent_id = this.upSellingParentItem.id_with_cart_index
+        this.msg = `${item.name} has been added to cart`
+        return this.itemsAddToCart(item)
       }
-      this.msg = `${item.name} has been added to cart`
-      item.upselling_parent_id = this.upSellingParentItem._id
-      return this.itemsAddToCart(item)
     },
   },
 }

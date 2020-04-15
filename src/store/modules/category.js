@@ -24,7 +24,7 @@ const state = {
   searchTerm: '',
   barcode: false,
   upSelling: [],
-  isUpSellingDelete: false,
+  isUpSellingModify: false,
   upSellingParentItem: false,
 }
 
@@ -296,7 +296,7 @@ const mutations = {
     state.searchTerm = term
   },
   [mutation.IS_UP_SELLING_MODIFY](state, status) {
-    state.isUpSellingDelete = status
+    state.isUpSellingModify = status
   },
   [mutation.UP_SELLING_PARENT_ITEM](state, item) {
     state.upSellingParentItem = item

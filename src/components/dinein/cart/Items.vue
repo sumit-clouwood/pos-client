@@ -226,12 +226,14 @@ export default {
       )
     },
     removeCurrentOrder(param) {
-      let parentItemId = param.item._id
-      this.items.forEach(item => {
-        if (parentItemId === item.upselling_parent_id) {
-          this.removeFromOrder({ item: item, index: item.orderIndex })
-        }
-      })
+      let parentItemId = param.item.id_with_cart_index
+      if (parentItemId) {
+        this.items.forEach(item => {
+          if (parentItemId === item.upselling_parent_id) {
+            this.removeFromOrder({ item: item, index: item.orderIndex })
+          }
+        })
+      }
       this.$store.commit('category/IS_UP_SELLING_MODIFY', true)
       this.removeFromOrder(param)
       if (!this.items.length) {

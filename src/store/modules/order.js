@@ -1854,8 +1854,7 @@ const mutations = {
   },
 
   [mutation.REMOVE_ORDER_ITEM](state, index) {
-    state.items = state.items.filter(function(orderItem, key) {
-      console.log(key, index, 'key != index')
+    state.items = state.items.filter(orderItem => {
       return orderItem.orderIndex != index
     })
   },
