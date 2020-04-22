@@ -17,10 +17,14 @@ const getters = {
   cash: state => {
     let method = ''
     if (state.methods) {
-      method = Object.entries(state.methods).find(
-        method => method[0] === CONST.CASH
-      )
-      return method[1][0]
+      // eslint-disable-next-line no-unused-vars
+      for (let [key, arrayOfMethods] of Object.entries(state.methods)) {
+        method = arrayOfMethods.find(method => method.type === CONST.CASH)
+        if (method) {
+          break
+        }
+      }
+      return method ? method : []
     }
     return []
   },
@@ -100,7 +104,7 @@ function getAggregatorMethods(aggregatorMethods) {
           let group = groups.find(
             group => group._id === currentmethod.payment_type_group
           )
-          key = group.name
+          key = group ? group.name : currentmethod.payment_type_group
           if (!accumulator[key]) {
             accumulator[key] = []
           }

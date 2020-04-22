@@ -263,7 +263,7 @@ export default {
     isAggregator() {
       let childSlides = Object.values(this.slides)
       if (childSlides) {
-        if (childSlides[0]) {
+        if (childSlides[0] && childSlides[0][0]) {
           return childSlides[0][0].type === CONST.AGGREGATOR ? true : false
         }
       }

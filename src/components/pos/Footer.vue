@@ -398,10 +398,10 @@
     <combox-box></combox-box>
     <UpSelliing />
     <DineInCoverSelection
-      v-if="brand.number_of_covers && covers && cartType !== 'hold'"
+      v-if="brand && brand.number_of_covers && covers && cartType !== 'hold'"
     />
     <DineInTableSelection
-      v-if="brand.move_table && availableTables && cartType !== 'hold'"
+      v-if="brand && brand.move_table && availableTables && cartType !== 'hold'"
     />
     <alert-popup></alert-popup>
   </div>
