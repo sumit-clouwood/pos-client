@@ -16,8 +16,23 @@
         </tfoot>-->
       <tbody>
         <tr :key="index" v-for="(order, index) in orders">
-          <td v-if="order.order_status == orderStatus">
-            <div class="order-item">
+          <td
+            v-if="order.order_status == orderStatus"
+            :class="{ active: order._id == activeIndex }"
+          >
+            <div
+              class="order-item"
+              :class="{ active: order._id == activeIndex }"
+              @click="
+                store.jeebly && order.order_status == 'in-progress'
+                  ? AssigneeOrder({
+                      order: order,
+                      orderType: order.order_type,
+                      actionTrigger: 'addToDriverBucket',
+                    })
+                  : null
+              "
+            >
               <div class="order-header">
                 <div class="number-id-button">
                   <span class="order-id">
@@ -113,7 +128,10 @@
                   </div>
                 </div>
               </div>
-              <div class="order-footer">
+              <div
+                class="order-footer"
+                :class="{ active: order._id == activeIndex }"
+              >
                 <!--<span class="timeago elapsedTime delManTime" title=""></span>-->
 
                 <div class="runningtimes">
@@ -177,6 +195,7 @@ export default {
       orderCount: 2,
       dateTime: '',
       err: null,
+      activeIndex: '',
     }
   },
   components: {
@@ -188,7 +207,7 @@ export default {
   mixins: [DateTime],
   computed: {
     ...mapGetters('location', ['_t']),
-    ...mapState('location', ['timezoneString']),
+    ...mapState('location', ['timezoneString', 'store']),
     ...mapState({
       orderStatus: state => state.deliveryManager.deliveryOrderStatus,
     }),
@@ -196,7 +215,8 @@ export default {
     ...mapState({
       branch: state => state.deliveryManager.availableStores,
     }),
-    ...mapGetters('deliveryManager', ['orders']),
+    ...mapGetters('deliveryManager', ['orders', 'drivers']),
+    ...mapState('deliveryManager', ['selectedDriver']),
   },
   updated() {
     clearInterval(this.orderTime)
@@ -206,6 +226,7 @@ export default {
   },
   methods: {
     ...mapActions('deliveryManager', ['showOrderDetails']),
+    ...mapState('deliveryManager', ['selectedDriver']),
     updateOrder(data) {
       this.updateOrderAction(data)
         .then(() => {})
@@ -214,6 +235,26 @@ export default {
           $('.information-popup').modal('show')
         })
     },
+    AssigneeOrder(data) {
+      // eslint-disable-next-line no-console
+      if (this.activeIndex == data.order._id) {
+        this.activeIndex = false
+        this.$store.commit('location/SET_ORDER_JEEBLY', false)
+        return false
+      }
+      var driver = this.drivers.filter(function(el) {
+        return el.name.toLowerCase() === 'jeebly'
+      })
+
+      this.activeIndex = data.order._id
+      this.selectDriver = driver[0]
+      this.$store.commit(
+        'deliveryManager/SET_SELECTED_DM_DRIVER',
+        this.selectDriver._id
+      )
+      this.$store.commit('location/SET_ORDER_JEEBLY', data)
+    },
+    ...mapActions('deliveryManager', ['selectDriver']),
     ...mapActions('order', ['selectedOrderDetails', 'updateOrderAction']),
   },
 }
@@ -223,5 +264,8 @@ export default {
 .order-delivery-area {
   width: 95% !important;
   margin: auto;
+}
+.active {
+  background-color: blueviolet;
 }
 </style>

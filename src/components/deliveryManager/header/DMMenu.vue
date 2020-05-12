@@ -49,6 +49,15 @@
       >
         {{ _t('Future Orders') }}
       </button>
+      <button
+        v-if="store.jeebly"
+        :disabled="!jeeblyOrder"
+        class="btn btn-success"
+        data-related="future-order"
+        @click="SubmitOrder()"
+      >
+        {{ _t('Assign To Jeebly') }}
+      </button>
     </div>
 
     <!-- <Branches /> -->
@@ -59,6 +68,7 @@
 /*global deliveryTabs*/
 // import Branches from '@/components/deliveryManager/partial/Branches'
 import { mapActions, mapGetters, mapState } from 'vuex'
+import DMService from '@/services/data/DeliveryManagerService'
 
 export default {
   name: 'DMMenu',
@@ -66,8 +76,9 @@ export default {
     // Branches,
   },
   computed: {
-    ...mapGetters('location', ['_t']),
-    ...mapState('deliveryManager', ['section']),
+    ...mapGetters('location', ['_t', 'jeeblyOrder']),
+    ...mapState('deliveryManager', ['section', 'selectedDriver']),
+    ...mapState('location', ['store', 'jeeblyOrder']),
   },
   methods: {
     updateOrderStatus(orderStatus) {
@@ -78,7 +89,25 @@ export default {
         deliveryTabs(orderStatus.dataRelated)
       }
     },
+    SubmitOrder() {
+      let orders = [this.jeeblyOrder.order._id]
+      // eslint-disable-next-line no-console
+      console.log(this.selectedDriver)
+      DMService.assignOrdersToDriver(this.selectedDriver, orders)
+        .then(
+          this.updateOrderAction(this.jeeblyOrder)
+            .then(() => {
+              this.$store.commit('location/SET_ORDER_JEEBLY', false)
+            })
+            .catch(er => {
+              this.err = er.data.error
+            })
+        )
+        .catch()
+        .finally()
+    },
     ...mapActions('deliveryManager', ['updateDMOrderStatus']),
+    ...mapActions('order', ['updateOrderAction']),
   },
 }
 </script>
