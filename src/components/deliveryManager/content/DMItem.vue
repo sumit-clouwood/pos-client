@@ -18,11 +18,11 @@
         <tr :key="index" v-for="(order, index) in orders">
           <td
             v-if="order.order_status == orderStatus"
-            :class="{ active: order._id == activeIndex }"
+            :class="{ active: activeIndex.includes(order._id) }"
           >
             <div
               class="order-item"
-              :class="{ active: order._id == activeIndex }"
+              :class="{ active: activeIndex.includes(order._id) }"
               @click="
                 store.jeebly && order.order_status == 'in-progress'
                   ? AssigneeOrder({
@@ -130,7 +130,7 @@
               </div>
               <div
                 class="order-footer"
-                :class="{ active: order._id == activeIndex }"
+                :class="{ active: activeIndex.includes(order._id) }"
               >
                 <!--<span class="timeago elapsedTime delManTime" title=""></span>-->
 
@@ -195,7 +195,7 @@ export default {
       orderCount: 2,
       dateTime: '',
       err: null,
-      activeIndex: '',
+      activeIndex: [],
     }
   },
   components: {
@@ -216,7 +216,6 @@ export default {
       branch: state => state.deliveryManager.availableStores,
     }),
     ...mapGetters('deliveryManager', ['orders', 'drivers']),
-    ...mapState('deliveryManager', ['selectedDriver']),
   },
   updated() {
     clearInterval(this.orderTime)
@@ -226,7 +225,6 @@ export default {
   },
   methods: {
     ...mapActions('deliveryManager', ['showOrderDetails']),
-    ...mapState('deliveryManager', ['selectedDriver']),
     updateOrder(data) {
       this.updateOrderAction(data)
         .then(() => {})
@@ -237,22 +235,24 @@ export default {
     },
     AssigneeOrder(data) {
       // eslint-disable-next-line no-console
-      if (this.activeIndex == data.order._id) {
-        this.activeIndex = false
-        this.$store.commit('location/SET_ORDER_JEEBLY', false)
+      if (this.activeIndex.includes(data.order._id)) {
+        const index = this.activeIndex.indexOf(data.order._id)
+        if (index > -1) {
+          this.activeIndex.splice(index, 1)
+        }
+        this.$store.commit('location/SET_ORDER_JEEBLY', this.activeIndex)
         return false
       }
       var driver = this.drivers.filter(function(el) {
         return el.name.toLowerCase() === 'jeebly'
       })
-
-      this.activeIndex = data.order._id
+      this.activeIndex.push(data.order._id)
       this.selectDriver = driver[0]
       this.$store.commit(
         'deliveryManager/SET_SELECTED_DM_DRIVER',
         this.selectDriver._id
       )
-      this.$store.commit('location/SET_ORDER_JEEBLY', data)
+      this.$store.commit('location/SET_ORDER_JEEBLY', this.activeIndex)
     },
     ...mapActions('deliveryManager', ['selectDriver']),
     ...mapActions('order', ['selectedOrderDetails', 'updateOrderAction']),

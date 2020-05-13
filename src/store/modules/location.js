@@ -31,7 +31,7 @@ const state = {
   timezones: [],
   openHours: null,
   brandStores: false,
-  jeeblyOrder: false,
+  jeeblyOrder: [],
 }
 
 // getters
@@ -511,6 +511,7 @@ const mutations = {
   },
   [mutation.SET_ORDER_JEEBLY](state, data) {
     state.jeeblyOrder = data
+    console.log(state.jeeblyOrder)
   },
 }
 
