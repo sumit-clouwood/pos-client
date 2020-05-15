@@ -70,7 +70,7 @@
                     </span>
                     <button
                       v-else
-                      @click="
+                      @click.stop="
                         updateOrder({
                           order: order,
                           orderType: order.order_type,
@@ -226,6 +226,13 @@ export default {
   methods: {
     ...mapActions('deliveryManager', ['showOrderDetails']),
     updateOrder(data) {
+      if (this.activeIndex.includes(data.order._id)) {
+        const index = this.activeIndex.indexOf(data.order._id)
+        if (index > -1) {
+          this.activeIndex.splice(index, 1)
+        }
+        this.$store.commit('location/SET_ORDER_JEEBLY', this.activeIndex)
+      }
       this.updateOrderAction(data)
         .then(() => {})
         .catch(er => {
