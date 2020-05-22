@@ -160,7 +160,7 @@ const actions = {
         rootState.context.storeId,
         state.params.query /*query*/,
         state.params.page_number /*page_number*/,
-        'last_order_datetime',
+        'created_at',
         state.params.page_size /*page_size*/,
         state.pageId,
       ]

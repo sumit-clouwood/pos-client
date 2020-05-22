@@ -53,7 +53,7 @@ export default {
 
   customerList(...[stores, query, page, orderBy, perPage, pageId]) {
     return DataService.get(
-      `/model/brand_customers?page_id=${pageId}&query=${query}&limit=${perPage}&ascending=0&page=${page}&byColumn=0&ascending=0&byColumn=0&orderBy=${orderBy}&stores=${stores}`,
+      `/model/brand_customers?page_id=${pageId}&query=${query}&limit=${perPage}&ascending=0&page=${page}&byColumn=0&orderBy=${orderBy}&stores=${stores}`,
       'brand'
     )
   },

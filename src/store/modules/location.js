@@ -237,6 +237,8 @@ const actions = {
 
           if (storedata.data.store) {
             commit(mutation.SET_STORE, storedata.data.store)
+          } else {
+            commit(mutation.SET_STORE, storedata.data.available_stores[0])
           }
 
           if (state.store && state.store._id) {
@@ -263,27 +265,7 @@ const actions = {
           userDetails.userId = storedata.data.user_id
           userDetails.avatar = storedata.data.avatar
           commit(mutation.USER_SHORT_DETAILS, userDetails)
-
-          TimezoneService.getTimezoneData(state.store.timezone).then(
-            timezoneData => {
-              commit(mutation.SET_TIMEZONES, timezoneData.data)
-              const timezoneStr = state.timezones.data.find(
-                timezone => timezone._id == state.store.timezone
-              )
-              if (timezoneStr) {
-                const timezone = timezoneStr.name.replace(/\s+(GMT|GTM).*/g, '')
-                commit(mutation.SET_TIMEZONE_STRING, timezone)
-                if (!localStorage.getItem('token_reset_at')) {
-                  localStorage.setItem(
-                    'token_reset_at',
-                    moment()
-                      .tz(state.timezoneString)
-                      .format('YYYY-MM-DD')
-                  )
-                }
-              }
-            }
-          )
+          dispatch('timezone')
 
           commit('modules/SET_ENABLED_MODULES', state.brand.enabled_modules, {
             root: true,
@@ -361,6 +343,26 @@ const actions = {
           console.log('refresh token failed, logout user', error)
           reject(error)
         })
+    })
+  },
+  timezone({ commit, state }) {
+    TimezoneService.getTimezoneData(state.store.timezone).then(timezoneData => {
+      commit(mutation.SET_TIMEZONES, timezoneData.data)
+      const timezoneStr = state.timezones.data.find(
+        timezone => timezone._id == state.store.timezone
+      )
+      if (timezoneStr) {
+        const timezone = timezoneStr.name.replace(/\s+(GMT|GTM).*/g, '')
+        commit(mutation.SET_TIMEZONE_STRING, timezone)
+        if (!localStorage.getItem('token_reset_at')) {
+          localStorage.setItem(
+            'token_reset_at',
+            moment()
+              .tz(state.timezoneString)
+              .format('YYYY-MM-DD')
+          )
+        }
+      }
     })
   },
   referrals({ commit }) {

@@ -87,7 +87,7 @@ export default {
     let validResponse = false
     if (typeof response.data.status !== 'undefined') {
       //check for status
-      validResponse = ['success', 'ok', '1', 'form_errors'].includes(
+      validResponse = ['success', 'ok', '1', 'form_errors', 'loaded'].includes(
         response.data.status
       )
     } else if (typeof response.data.error !== 'undefined') {
