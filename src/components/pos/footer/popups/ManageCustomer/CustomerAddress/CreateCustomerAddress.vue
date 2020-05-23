@@ -141,16 +141,11 @@ export default {
       customerId: state => state.customer.customer._id,
       deliveryAreas() {
         if (this.fetchDeliveryAreas) {
-          let storeId = this.$store.state.context.storeId
           let areas = []
           this.fetchDeliveryAreas.forEach(area => {
-            let DAStatus = area.stores.find(entity => {
-              if (entity.entity_id == storeId && entity.item_status) {
-                return true
-              } else false
-            })
-            if (typeof DAStatus != 'undefined' && DAStatus.item_status)
-              areas.push(area.name)
+            if (area.item_status) {
+              areas.push(area.delivery_area)
+            }
           })
           return areas
         } else {
@@ -198,18 +193,20 @@ export default {
         let addAddress = $('#add_address')
         addAddress.modal('toggle')
         // addAddress.click()
-        let areaId = ''
-        this.fetchDeliveryAreas.forEach(element => {
-          if (this.selectedDeliveryArea === element.name) {
-            areaId = element._id
-          }
-        })
-
+        let areaId = this.selectedDeliveryArea
+        // this.fetchDeliveryAreas.forEach(element => {
+        //   if (this.selectedDeliveryArea === element.delivery_area) {
+        //     areaId = element._id
+        //   }
+        // })
+        // eslint-disable-next-line no-console
         const formData = {
           ...this.newAddressDetails,
           delivery_area_id: areaId,
+          lat_lng_available: false,
         }
-
+        // eslint-disable-next-line no-console
+        console.log(formData, 'ffff')
         if (modalStatus == 'Add') {
           this.createAction({
             data: formData,
