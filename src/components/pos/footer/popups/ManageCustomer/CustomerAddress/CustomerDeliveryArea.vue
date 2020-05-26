@@ -19,10 +19,10 @@
           >
             Inactive
           </span>-->
-          <span class="color-text">{{ _t('Store:') }} {{ storeName }}</span
+          <span class="color-text">{{ _t('Store') }}: {{ storeName }}</span
           ><br />
           <span class="color-text-invert">
-            {{ _t('Area:') }}
+            {{ _t('Area') }}:
             {{ getDeliveryArea(address.delivery_area_id) }}
           </span>
           <br />
@@ -49,9 +49,7 @@
     </div>
   </div>
   <div v-else>
-    <p>
-      No address available.
-    </p>
+    <p>{{ _t('No address available') }}.</p>
   </div>
 </template>
 

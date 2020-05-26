@@ -204,6 +204,7 @@ export default {
           ...this.newAddressDetails,
           delivery_area_id: areaId,
           lat_lng_available: false,
+          location_coordinates: { lat: 0, lng: 0 },
         }
         // eslint-disable-next-line no-console
         console.log(formData, 'ffff')

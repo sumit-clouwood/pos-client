@@ -38,11 +38,23 @@ const state = {
   lookups: false,
   buildingAreas: false,
 }
+
 const getters = {
   findDeliveryArea: state => areaId =>
     state.fetchDeliveryAreas.find(deliveryArea => deliveryArea._id === areaId),
   customer: state => {
     return state.customer
+  },
+  // Added this function if we need store Id again
+  // eslint-disable-next-line no-unused-vars
+  getDeliveryAreaStatus: (state, getters, rootState) => dArea => {
+    // let storeId = rootState.context.storeId
+    /*return dArea.stores.find(entity => {
+      if (entity.entity_id == storeId && entity.item_status) {
+        return true
+      } else false
+    });*/
+    return dArea
   },
   selectedAddress: state => {
     if (state.address) {
@@ -53,11 +65,17 @@ const getters = {
     }
   },
   checkDeliveryArea: () => (addressId, deliveryAreas) => {
-    if (typeof deliveryAreas[addressId] !== 'undefined') {
+    let areas = Object.values(deliveryAreas)
+    return areas.find(area => {
+      if (area.item_status && area.delivery_area === addressId) {
+        return area
+      }
+    })
+    /*if (typeof deliveryAreas[addressId] !== 'undefined') {
       const area = deliveryAreas[addressId]
       return area.item_status === true ? area : false
-    }
-    return false
+    }*/
+    // return false
   },
   getDeliveryArea: state => addressId => {
     return LookupData.check({
@@ -66,24 +84,23 @@ const getters = {
       selection: 'name',
     })
   },
-  getCustomerAddresses: (state, getters, rootState) => {
+  getCustomerAddresses: (state, getters) => {
     let data = {}
     let valueData = []
-    let storeId = rootState.context.storeId
     if (state.customer && state.customer.customer_addresses) {
       data = state.customer.customer_addresses.filter(address => {
         let checkDeliveryArea = getters.checkDeliveryArea(
           address.delivery_area_id,
           state.deliveryAreas
         )
+        // eslint-disable-next-line no-console
+        console.log(checkDeliveryArea, 'checkDeliveryArea')
         if (checkDeliveryArea) {
           // let deliveryArea = getters.findDeliveryArea(checkDeliveryArea._id)
           let deliveryArea = state.fetchDeliveryAreas.map(dArea => {
-            let DAStatus = dArea.stores.find(entity => {
-              if (entity.entity_id == storeId && entity.item_status) {
-                return true
-              } else false
-            })
+            let DAStatus = getters.getDeliveryAreaStatus(dArea)
+            // eslint-disable-next-line no-debugger
+            debugger
             if (typeof DAStatus != 'undefined' && DAStatus.item_status) {
               if (DAStatus.min_order_value) {
                 dArea.min_order_value = DAStatus.min_order_value
