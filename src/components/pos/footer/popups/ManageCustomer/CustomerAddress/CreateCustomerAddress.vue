@@ -133,16 +133,17 @@ export default {
   },
   computed: {
     ...mapGetters('location', ['_t']),
+    ...mapGetters('customer', ['deliveryAreaNames']),
     ...mapState({
       newAddressDetails: state => state.customer.editInformation,
       customer_title: state => state.customer.modalStatus,
-      fetchDeliveryAreas: state => state.customer.fetchDeliveryAreas,
+      // fetchDeliveryAreas: state => state.customer.fetchDeliveryAreas,
       customerCreateStatus: state => state.customer.responseInformation,
       customerId: state => state.customer.customer._id,
       deliveryAreas() {
-        if (this.fetchDeliveryAreas) {
+        if (this.deliveryAreaNames) {
           let areas = []
-          this.fetchDeliveryAreas.forEach(area => {
+          this.deliveryAreaNames.forEach(area => {
             if (area.item_status) {
               areas.push(area.delivery_area)
             }
@@ -193,7 +194,7 @@ export default {
         let addAddress = $('#add_address')
         addAddress.modal('toggle')
         // addAddress.click()
-        let areaId = this.selectedDeliveryArea
+        let areaId = this.selectedDeliveryArea.split(', ').join('|')
         // this.fetchDeliveryAreas.forEach(element => {
         //   if (this.selectedDeliveryArea === element.delivery_area) {
         //     areaId = element._id

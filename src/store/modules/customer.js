@@ -93,14 +93,10 @@ const getters = {
           address.delivery_area_id,
           state.deliveryAreas
         )
-        // eslint-disable-next-line no-console
-        console.log(checkDeliveryArea, 'checkDeliveryArea')
         if (checkDeliveryArea) {
           // let deliveryArea = getters.findDeliveryArea(checkDeliveryArea._id)
           let deliveryArea = state.fetchDeliveryAreas.map(dArea => {
             let DAStatus = getters.getDeliveryAreaStatus(dArea)
-            // eslint-disable-next-line no-debugger
-            debugger
             if (typeof DAStatus != 'undefined' && DAStatus.item_status) {
               if (DAStatus.min_order_value) {
                 dArea.min_order_value = DAStatus.min_order_value
@@ -139,6 +135,19 @@ const getters = {
       })
     }
     return data
+  },
+  deliveryAreaNames: state => {
+    if (state.fetchDeliveryAreas) {
+      let areas = [...state.fetchDeliveryAreas]
+      areas.map(area => {
+        area.delivery_area = area.delivery_area
+          ? area.delivery_area.split('|').join(', ')
+          : ''
+      })
+      return areas
+    }
+    return state.fetchDeliveryAreas
+    // return areaId ? areaId.split('|').join(', ') : ''
   },
 }
 const actions = {
@@ -375,15 +384,17 @@ const actions = {
           } else {
             dispatch('fetchAll')
           }
-          if (typeof response.data.id != 'undefined') {
-            dispatch('fetchSelectedCustomer', response.data.id).then(
-              customer => {
-                dispatch('selectedAddress', customer.customer_addresses[0])
-                commit('location/SET_MODAL', '#order-confirmation', {
-                  root: true,
-                })
-              }
-            )
+          if (
+            typeof response.data.id != 'undefined' &&
+            actionDetails.model === 'brand_customers'
+          ) {
+            let customerId = actionDetails.customer || response.data.id
+            dispatch('fetchSelectedCustomer', customerId).then(customer => {
+              dispatch('selectedAddress', customer.customer_addresses[0])
+              commit('location/SET_MODAL', '#order-confirmation', {
+                root: true,
+              })
+            })
           }
 
           resolve(response.data)
