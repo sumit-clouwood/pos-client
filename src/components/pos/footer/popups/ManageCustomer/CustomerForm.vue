@@ -249,17 +249,18 @@ export default {
   },
   computed: {
     ...mapGetters('location', ['_t']),
+    ...mapGetters('customer', ['deliveryAreaNames']),
     ...mapState({
       newCustomerDetails: state => state.customer.editInformation,
       customer_title: state => state.customer.modalStatus,
       buildingAreas: state => state.customer.buildingAreas,
       loyalty: state => state.loyalty.loyalty,
-      fetchDeliveryAreas: state => state.customer.fetchDeliveryAreas,
+      // fetchDeliveryAreas: state => state.customer.fetchDeliveryAreas,
 
       deliveryAreas() {
-        if (this.fetchDeliveryAreas) {
+        if (this.deliveryAreaNames) {
           let areas = []
-          this.fetchDeliveryAreas.forEach(area => {
+          this.deliveryAreaNames.forEach(area => {
             if (area.item_status) {
               areas.push(area.delivery_area)
             }
@@ -425,13 +426,19 @@ export default {
       return this.errors
     },
     getData() {
-      let areaId = ''
-      this.fetchDeliveryAreas.forEach(element => {
+      let areaId = this.selectedDeliveryArea.split(', ').join('|')
+      /*this.fetchDeliveryAreas.forEach(element => {
         if (this.selectedDeliveryArea === element.name) {
           areaId = element._id
         }
-      })
-
+      })*/
+      // message: "Excessive field lat_lng_available provided"
+      // let customer = {
+      //   ...this.newCustomerDetails,
+      //   delivery_area_id: areaId,
+      //   lat_lng_available: false,
+      //   location_coordinates: { lat: 0, lng: 0 },
+      // }
       let customer = { ...this.newCustomerDetails, delivery_area_id: areaId }
       return customer
     },

@@ -87,8 +87,6 @@ const mutations = {
     state.brandId = null
   },
   [mutation.SET_MULTI_STORES](state, multiStores) {
-    // eslint-disable-next-line no-console
-    console.log(multiStores, 'multiStores')
     state.multiStores = multiStores
   },
   [mutation.SET_STORES_LENGTH](state, storeLength) {

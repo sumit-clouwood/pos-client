@@ -193,7 +193,6 @@ const actions = {
     let role = rootGetters['auth/getRole']('Driver')
     if (role) {
       DMService.getUsers(role._id).then(response => {
-        console.log(response.data.data)
         commit(mutation.DRIVERS, response.data.data)
       })
     }
