@@ -40,8 +40,11 @@ const state = {
 }
 
 const getters = {
-  findDeliveryArea: state => areaId =>
-    state.fetchDeliveryAreas.find(deliveryArea => deliveryArea._id === areaId),
+  findDeliveryArea: state => areaId => {
+    return state.fetchDeliveryAreas.find(
+      deliveryArea => deliveryArea.delivery_area === areaId
+    )
+  },
   customer: state => {
     return state.customer
   },
@@ -138,13 +141,15 @@ const getters = {
   },
   deliveryAreaNames: state => {
     if (state.fetchDeliveryAreas) {
-      let areas = [...state.fetchDeliveryAreas]
-      areas.map(area => {
-        area.delivery_area = area.delivery_area
-          ? area.delivery_area.split('|').join(', ')
+      let newAreas = []
+      state.fetchDeliveryAreas.forEach(area => {
+        let newArea = { ...area }
+        newArea.delivery_area = newArea.delivery_area
+          ? newArea.delivery_area.split('|').join(', ')
           : ''
+        newAreas.push(newArea)
       })
-      return areas
+      return newAreas
     }
     return state.fetchDeliveryAreas
     // return areaId ? areaId.split('|').join(', ') : ''
