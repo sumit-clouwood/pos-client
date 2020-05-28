@@ -202,8 +202,12 @@ const actions = {
       order.order_street = address.street
       order.order_flat_number = address.flat_number
       order.order_nearest_landmark = address.nearest_landmark
-      order.order_city = address.city
-      order.order_country = address.country
+      order.order_city = rootGetters['customer/getElementByAreaId'](
+          address.delivery_area_id, 2
+      )
+      order.order_country = rootGetters['customer/getElementByAreaId'](
+          address.delivery_area_id, 1
+      )
       order.order_delivery_area = address.delivery_area_id
 
       //add user address for creating online customer request
@@ -217,8 +221,12 @@ const actions = {
       order.order_street = address.street
       order.order_flat_number = address.flat_number
       order.order_nearest_landmark = address.nearest_landmark
-      order.order_city = address.city
-      order.order_country = address.country
+      order.order_city = rootGetters['customer/getElementByAreaId'](
+          address.delivery_area_id, 2
+      )
+      order.order_country = rootGetters['customer/getElementByAreaId'](
+          address.delivery_area_id, 1
+      )
       order.order_delivery_area = address.delivery_area_id
     }
     let deliveryAreaId = null
@@ -239,6 +247,7 @@ const actions = {
     const deliveryArea = rootGetters['customer/findDeliveryArea'](
       deliveryAreaId
     )
+    console.log(deliveryArea, 'delivery area, dd')
     if (deliveryArea) {
       if (deliveryArea.special_order_surcharge) {
         order.delivery_surcharge = deliveryArea.special_order_surcharge
@@ -416,7 +425,6 @@ const actions = {
     order.tip_amount = Num.round(order.tip_amount).toFixed(2)
 
     order.total_paid = Num.round(totalPaid).toFixed(2)
-
     //if (order.delivery_surcharge) {
     order.delivery_surcharge = Num.round(order.delivery_surcharge).toFixed(2)
     //}

@@ -149,6 +149,13 @@ const getters = {
     return state.fetchDeliveryAreas
     // return areaId ? areaId.split('|').join(', ') : ''
   },
+  // eslint-disable-next-line no-unused-vars
+  getElementByAreaId: state => (deliveryArea, element) => {
+    let deliveryAreaArr = deliveryArea ? deliveryArea.split('|') : []
+    // eslint-disable-next-line no-console
+    console.log(deliveryAreaArr)
+    return deliveryAreaArr[deliveryAreaArr.length - element]
+  },
 }
 const actions = {
   setAddressForDelivery({ dispatch, commit }, { customerId, addressId }) {
