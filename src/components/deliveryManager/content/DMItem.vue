@@ -221,6 +221,7 @@ export default {
     clearInterval(this.orderTime)
   },
   destroyed() {
+    this.$store.commit('location/SET_ORDER_JEEBLY', [])
     clearInterval(this.orderTime)
   },
   methods: {
