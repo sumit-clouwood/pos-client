@@ -73,6 +73,7 @@
                     >
                       <span
                         :key="LabelIndex"
+                        style="margin: 0.2rem"
                         v-for="(label, LabelIndex) in actionDetails.actionLabel"
                       >
                         <button
@@ -269,7 +270,7 @@ export default {
       this.updateOrderAction(data)
         .then(() => {})
         .catch(er => {
-          this.err = er.data.error
+          this.err = er.data ? er.data.error : er.message
           $('.information-popup').modal('show')
         })
     },
@@ -301,11 +302,25 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '@/assets/scss/variables.scss';
 .order-delivery-area {
   width: 95% !important;
   margin: auto;
 }
 .active {
   background-color: blueviolet;
+}
+
+tbody {
+  grid-row-start: 1;
+  grid-row-end: 2;
+  overflow: auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-column-gap: $px10;
+  grid-row-gap: $px10;
+  padding: $px40 $px60;
+  word-break: break-word;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
 }
 </style>
