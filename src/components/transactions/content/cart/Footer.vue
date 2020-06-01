@@ -26,6 +26,12 @@
         <div class="sub-total-num">{{ formatPrice(order.total_tax || 0) }}</div>
       </div>
       <div class="item tax">
+        <div class="sub-total-text">{{ _t('Special Delivery Surcharge') }}</div>
+        <div class="sub-total-num">
+          {{ formatPrice(order.delivery_surcharge || 0) }}
+        </div>
+      </div>
+      <div class="item tax">
         <div class="sub-total-text">{{ _t('Tips') }}</div>
         <div class="sub-total-num">
           {{ formatPrice(order.tip_amount || 0) }}
@@ -35,7 +41,7 @@
     <div class="total color-text">
       <div class="sub-total-text">{{ _t('Total') }}</div>
       <div class="sub-total-num" @click="totalWrapperHendlerChange">
-        {{ formatPrice(orderTotalWithTips(order) || 0) }}
+        {{ formatPrice(orderGrandTotal(order) || 0) }}
         <i
           aria-hidden="true"
           :class="['fa', 'fa-angle-up', { active: totalWrapperHendler }]"
@@ -112,7 +118,7 @@ export default {
       'orderTotal',
       'subTotal',
       'totalTax',
-      'orderTotalWithTips',
+      'orderGrandTotal',
     ]),
     ...mapGetters('surcharge', ['surcharge']),
     ...mapGetters('location', ['formatPrice', '_t']),
