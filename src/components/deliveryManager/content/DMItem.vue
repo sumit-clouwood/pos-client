@@ -1,6 +1,5 @@
 <template>
   <div class="table-responsive">
-    {{ actionDetails }}
     <table v-if="orders.length" class="table table-block-page shahbaj-here">
       <!--<thead>
                       <tr>
