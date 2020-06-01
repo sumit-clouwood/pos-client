@@ -24,7 +24,7 @@
               class="order-item"
               :class="{ active: activeIndex.includes(order._id) }"
               @click="
-                store.jeebly && actionDetails.pageId == 'home_delivery_new'
+                store.jeebly && actionDetails.action == 'delivery_ready'
                   ? AssigneeOrder({
                       order: order,
                       orderType: order.order_type,
