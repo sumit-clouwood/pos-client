@@ -4,6 +4,24 @@
       <ul class="dm-ullist">
         <li
           v-if="permitted('home_delivery_new', 'delivery_home')"
+          data-related="dm-order-acceptance"
+          :class="{ active: listType == _t('Awaiting Acceptance') }"
+          @click="
+            updateOrderStatus({
+              orderStatus: 'in-progress',
+              collected: 'no',
+              pageId: 'home_delivery_acceptance',
+              title: _t('Awaiting Acceptance'),
+              dataRelated: 'dm-order-acceptance',
+              section: 'crm',
+            })
+          "
+        >
+          <a role="button">{{ _t('Awaiting Acceptance') }}</a
+          ><span v-if="orderCount">{{ orderCount.running }}</span>
+        </li>
+        <li
+          v-if="permitted('home_delivery_new', 'delivery_home')"
           data-related="dm-new-order"
           :class="{ active: listType == _t('New Orders') }"
           @click="

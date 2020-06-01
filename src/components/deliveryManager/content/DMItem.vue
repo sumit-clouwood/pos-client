@@ -1,6 +1,7 @@
 <template>
   <div class="table-responsive">
-    <table v-if="orders.length" class="table table-block-page">
+    {{ actionDetails }}
+    <table v-if="orders.length" class="table table-block-page shahbaj-here">
       <!--<thead>
                       <tr>
                         <th class="sortable ">
@@ -24,7 +25,7 @@
               class="order-item"
               :class="{ active: activeIndex.includes(order._id) }"
               @click="
-                store.jeebly && order.order_status == 'in-progress'
+                store.jeebly && actionDetails.pageId == 'home_delivery_new'
                   ? AssigneeOrder({
                       order: order,
                       orderType: order.order_type,
@@ -68,6 +69,35 @@
                         {{ _t('Select driver') }}
                       </span>
                     </span>
+                    <div
+                      v-else-if="typeof actionDetails.actionLabel == 'object'"
+                    >
+                      <span
+                        :key="LabelIndex"
+                        v-for="(label, LabelIndex) in actionDetails.actionLabel"
+                      >
+                        <button
+                          @click.stop="
+                            updateOrder({
+                              order: order,
+                              orderType: order.order_type,
+                              actionTrigger: actionDetails.action[LabelIndex],
+                            })
+                          "
+                          class="button text-button btn btn-success"
+                          type="button"
+                        >
+                          <div class="button-content-container">
+                            <div class="button-icon-container">
+                              <!---->
+                            </div>
+                            <div class="button-caption">
+                              {{ actionDetails.actionLabel[LabelIndex] }}
+                            </div>
+                          </div>
+                        </button>
+                      </span>
+                    </div>
                     <button
                       v-else
                       @click.stop="
@@ -81,7 +111,9 @@
                       type="button"
                     >
                       <div class="button-content-container">
-                        <div class="button-icon-container"><!----></div>
+                        <div class="button-icon-container">
+                          <!---->
+                        </div>
                         <div class="button-caption">
                           {{ actionDetails.actionLabel }}
                         </div>
@@ -191,6 +223,7 @@ import InformationPopup from '@/components/pos/content/InformationPopup'
 export default {
   name: 'DMItem',
   data() {
+    // eslint-disable-next-line no-console
     return {
       orderCount: 2,
       dateTime: '',
@@ -227,13 +260,13 @@ export default {
   methods: {
     ...mapActions('deliveryManager', ['showOrderDetails']),
     updateOrder(data) {
-      if (this.activeIndex.includes(data.order._id)) {
-        const index = this.activeIndex.indexOf(data.order._id)
-        if (index > -1) {
-          this.activeIndex.splice(index, 1)
-        }
-        this.$store.commit('location/SET_ORDER_JEEBLY', this.activeIndex)
-      }
+      // if (this.activeIndex.includes(data.order._id)) {
+      //   const index = this.activeIndex.indexOf(data.order._id)
+      //   if (index > -1) {
+      //     this.activeIndex.splice(index, 1)
+      //   }
+      //   this.$store.commit('location/SET_ORDER_JEEBLY', this.activeIndex)
+      // }
       this.updateOrderAction(data)
         .then(() => {})
         .catch(er => {

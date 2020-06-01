@@ -80,12 +80,9 @@ const getters = {
     }*/
     // return false
   },
+  // eslint-disable-next-line no-unused-vars
   getDeliveryArea: state => addressId => {
-    return LookupData.check({
-      collection: state.deliveryAreas,
-      matchWith: addressId,
-      selection: 'name',
-    })
+    return addressId ? addressId.split('|').join(', ') : 'NA'
   },
   getCustomerAddresses: (state, getters) => {
     let data = {}
