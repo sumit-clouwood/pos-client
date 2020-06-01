@@ -239,11 +239,15 @@
         <div class=" color-text">
           {{ orderDetails.total_tax }}
         </div>
+        <div class="caption color-text-invert">{{ _t('Tips') }}:</div>
+        <div class=" color-text">
+          {{ orderDetails.tip_amount || 0 }}
+        </div>
         <div class="total color-text-invert">
           {{ _t('Total') }}
         </div>
         <div class="total color-text">
-          {{ orderDetails.balance_due }}
+          {{ orderTotal }}
         </div>
       </div>
     </div>
@@ -266,6 +270,12 @@ export default {
   computed: {
     ...mapGetters('location', ['_t', 'formatPrice']),
     ...mapState('order', ['orderSource']),
+    orderTotal() {
+      return this.Num.round(
+        parseFloat(this.orderDetails.balance_due) +
+          parseFloat(this.orderDetails.tip_amount)
+      ).toFixed(2)
+    },
     orderDetails() {
       if (!this.order_data || typeof this.order_data.item === undefined) {
         return false
