@@ -39,18 +39,20 @@ export default {
         method.payment_type_group
       )['icon']
     },
+    // eslint-disable-next-line no-unused-vars
     startDrag(event) {
       event = event || window.event
-      event.preventDefault()
+      // event.preventDefault()
       this.dragging = true
       this.x = this.getClientX()
       this.y = this.getClientY()
       this.dx = this.getClientX()
       this.dy = this.getClientY()
     },
+    // eslint-disable-next-line no-unused-vars
     stopDrag(event) {
       event = event || window.event
-      event.preventDefault()
+      //event.preventDefault()
       if (this.dragging) {
         if (this.getClientX() < this.x) {
           //drag to left, move right
