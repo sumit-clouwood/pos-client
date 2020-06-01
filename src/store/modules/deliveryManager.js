@@ -8,7 +8,7 @@ const state = {
   collected: 'no',
   orders: [],
   orderCounts: 0,
-  listType: 'Awaiting Acceptance',
+  listType: 'New Orders',
   section: 'crm',
   selectedOrder: false,
   selectedDriver: false,

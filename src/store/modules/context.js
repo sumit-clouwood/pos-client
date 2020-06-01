@@ -10,6 +10,7 @@ const state = {
   selectedStore: false,
   storesLength: 1,
   currentRoute: null,
+  availableModules: null,
 }
 
 // getters
@@ -88,6 +89,9 @@ const mutations = {
   },
   [mutation.SET_MULTI_STORES](state, multiStores) {
     state.multiStores = multiStores
+  },
+  [mutation.SET_AVAILABLE_MODULES](state, availableModules) {
+    state.availableModules = availableModules
   },
   [mutation.SET_STORES_LENGTH](state, storeLength) {
     state.storesLength = storeLength
