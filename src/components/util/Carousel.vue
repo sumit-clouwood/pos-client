@@ -8,6 +8,9 @@
       <transition name="slider">
         <ul
           :style="{ transform: 'translate3d(' + positionX + 'px, 0px, 0px)' }"
+          @touchstart="startDrag"
+          @touchmove="doDrag"
+          @touchend="stopDrag"
           @mousedown="startDrag"
           @mousemove="doDrag"
         >
@@ -203,6 +206,8 @@ export default {
       this.currentKey = payLoad.currentKey
     },
     selectSlide({ index, slide }) {
+      // eslint-disable-next-line no-console
+      console.log(index, slide, 'fdfd')
       this.currentSlide = index
       this.$emit('click', { index: index, slide: slide })
       if (this.isAggregator()) {

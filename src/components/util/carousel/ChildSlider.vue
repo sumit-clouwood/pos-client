@@ -4,6 +4,9 @@
       <transition name="slider">
         <ul
           :style="{ transform: 'translate3d(' + positionX + 'px, 0px, 0px)' }"
+          @touchstart="startDrag"
+          @touchmove="doDrag"
+          @touchend="stopDrag"
           @mousedown="startDrag"
           @mousemove="doDrag"
         >
