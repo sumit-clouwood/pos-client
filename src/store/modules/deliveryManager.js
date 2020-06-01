@@ -350,7 +350,6 @@ const actions = {
 const mutations = {
   [mutation.LIST_TYPE](state, listType) {
     state.listType = listType
-    console.log('hey motherfuncker')
   },
   [mutation.SECTION](state, section) {
     state.section = section
