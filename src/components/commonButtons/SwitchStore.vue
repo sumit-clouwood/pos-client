@@ -39,5 +39,6 @@ export default {
   display: grid;
   margin: 0;
   min-height: 3.3rem;
+  align-items: center;
 }
 </style>

@@ -213,7 +213,9 @@ export default {
       return this.orderTimer(this.datetime, this.timezoneString)
     },*/
     getLookupData: function(lookup) {
-      let setData = this.orderDetails.lookups[lookup.lookupFrom]._id
+      let setData = this.orderDetails.lookups[lookup.lookupFrom]
+        ? this.orderDetails.lookups[lookup.lookupFrom]._id
+        : ''
       let selection =
         lookup.lookupFrom == 'brand_loyalty_cards' ? false : 'name'
       return LookupData.get({
