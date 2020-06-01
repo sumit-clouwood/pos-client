@@ -171,7 +171,7 @@ const getters = {
     }
     return 0
   },
-  orderTotalWithTips: () => order => {
+  orderGrandTotal: () => order => {
     return Num.round(
       parseFloat(order.balance_due) + parseFloat(order.tip_amount)
     ).toFixed(2)

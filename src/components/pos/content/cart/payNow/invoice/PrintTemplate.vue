@@ -271,14 +271,6 @@
                 {{ format_number(order.total_tax) }}
               </td>
             </tr>
-            <tr>
-              <td colspan="2">
-                {{ template.surcharge_tax_label }}
-              </td>
-              <td class="right-aligned">
-                {{ format_number(order.surcharge_tax) }}
-              </td>
-            </tr>
             <tr v-if="parseFloat(order.delivery_surcharge) > 0">
               <td colspan="2">
                 {{ _t('Delivery Surcharge') }}

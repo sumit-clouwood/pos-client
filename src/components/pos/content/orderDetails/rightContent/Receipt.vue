@@ -59,7 +59,7 @@
                     <div :key="cmbKey">
                       <div class="combo-items">
                         {{ combo_item.qty }}
-                        <span> {{ combo_item.name }}</span>
+                        <span>{{ combo_item.name }}</span>
                       </div>
                       <div
                         class="discount"
@@ -151,9 +151,10 @@
                       v-for="(discount, index) in orderDetails.item_discounts"
                       :key="index"
                     >
-                      <span v-if="item.no === discount.for_item">
-                        {{ discount.name }} - {{ formatPrice(discount.price) }}
-                      </span>
+                      <span v-if="item.no === discount.for_item"
+                        >{{ discount.name }} -
+                        {{ formatPrice(discount.price) }}</span
+                      >
                     </div>
                   </div>
                   <div
@@ -200,7 +201,7 @@
               <tr v-if="item.note" :key="'note' + key">
                 <td colspan="4" class="note-td">
                   <div>
-                    <span class="item-note">{{ _t('Note') }}: </span>
+                    <span class="item-note">{{ _t('Note') }}:</span>
                     <i>{{ item.note }}</i>
                   </div>
                 </td>
@@ -220,7 +221,7 @@
         >
           {{ _t('Surcharges') }}:
         </div>
-        <div v-if="orderDetails.total_surcharge" class=" color-text">
+        <div v-if="orderDetails.total_surcharge" class="color-text">
           {{ orderDetails.total_surcharge }}
         </div>
         <div
@@ -228,26 +229,24 @@
           v-if="orderDetails.total_discount"
         >
           {{ _t('Discount') }}
-          <span v-if="orderDetails.order_discounts.length">
-            ({{ orderDetails.order_discounts[0].name }}):</span
+          <span v-if="orderDetails.order_discounts.length"
+            >({{ orderDetails.order_discounts[0].name }}):</span
           >
         </div>
-        <div v-if="orderDetails.total_discount" class=" color-text">
+        <div v-if="orderDetails.total_discount" class="color-text">
           {{ orderDetails.total_discount }}
         </div>
         <div class="caption color-text-invert">{{ _t('Total Tax') }}:</div>
-        <div class=" color-text">
-          {{ orderDetails.total_tax }}
+        <div class="color-text">{{ orderDetails.total_tax }}</div>
+        <div class="caption color-text-invert">
+          {{ _t('Special Delivery Surcharge') }}:
         </div>
+        <div class="color-text">{{ orderDetails.delivery_surcharge || 0 }}</div>
         <div class="caption color-text-invert">{{ _t('Tips') }}:</div>
-        <div class=" color-text">
-          {{ orderDetails.tip_amount || 0 }}
-        </div>
-        <div class="total color-text-invert">
-          {{ _t('Total') }}
-        </div>
+        <div class="color-text">{{ orderDetails.tip_amount || 0 }}</div>
+        <div class="total color-text-invert">{{ _t('Total') }}</div>
         <div class="total color-text">
-          {{ orderTotalWithTips(orderDetails) || 0 }}
+          {{ orderGrandTotal(orderDetails) || 0 }}
         </div>
       </div>
     </div>
@@ -270,7 +269,7 @@ export default {
   computed: {
     ...mapGetters('location', ['_t', 'formatPrice']),
     ...mapState('order', ['orderSource']),
-    ...mapGetters('order', ['orderTotalWithTips']),
+    ...mapGetters('order', ['orderGrandTotal']),
     orderDetails() {
       if (!this.order_data || typeof this.order_data.item === undefined) {
         return false

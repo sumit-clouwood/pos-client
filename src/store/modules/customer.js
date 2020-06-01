@@ -85,56 +85,27 @@ const getters = {
     return addressId ? addressId.split('|').join(', ') : 'NA'
   },
   getCustomerAddresses: (state, getters) => {
-    let data = {}
-    let valueData = []
     if (state.customer && state.customer.customer_addresses) {
-      data = state.customer.customer_addresses.filter(address => {
-        let checkDeliveryArea = getters.checkDeliveryArea(
-          address.delivery_area_id,
-          state.deliveryAreas
-        )
-        if (checkDeliveryArea) {
-          // let deliveryArea = getters.findDeliveryArea(checkDeliveryArea._id)
-          let deliveryArea = state.fetchDeliveryAreas.map(dArea => {
-            let DAStatus = getters.getDeliveryAreaStatus(dArea)
-            if (typeof DAStatus != 'undefined' && DAStatus.item_status) {
-              if (DAStatus.min_order_value) {
-                dArea.min_order_value = DAStatus.min_order_value
-              }
-              if (DAStatus.special_order_surcharge) {
-                dArea.special_order_surcharge = DAStatus.special_order_surcharge
-              }
-              return dArea
-            } else return false
-          })
-
-          let data = deliveryArea.find(
-            area => area && typeof area != 'undefined'
+      let avilableCustomerAddress = state.customer.customer_addresses.map(
+        address => {
+          let checkDeliveryArea = getters.checkDeliveryArea(
+            address.delivery_area_id,
+            state.deliveryAreas
           )
-          if (data && typeof data._id !== 'undefined') {
-            valueData.push({
-              _id: data._id,
-              special_order_surcharge: data.special_order_surcharge,
-              min_order_value: data.min_order_value,
-            })
-            return data
+
+          if (checkDeliveryArea) {
+            address.min_order_value = checkDeliveryArea.min_order_value
+            address.special_order_surcharge =
+              checkDeliveryArea.special_order_surcharge
+
+            return address
           }
-          return []
         }
-      })
+      )
+      return avilableCustomerAddress
     }
-    if (Object.keys(data).length !== 0) {
-      data.map(area => {
-        valueData.forEach(data => {
-          if (data._id == area.delivery_area_id) {
-            area.min_order_value = data.min_order_value
-            area.special_order_surcharge = data.special_order_surcharge
-          }
-          return area
-        })
-      })
-    }
-    return data
+
+    return []
   },
   deliveryAreaNames: state => {
     if (state.fetchDeliveryAreas) {

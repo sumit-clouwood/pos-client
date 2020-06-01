@@ -20,8 +20,8 @@
             })
           "
         >
-          <a role="button">{{ _t('Awaiting Acceptance') }}</a
-          ><span v-if="orderCount">{{ orderCount.running }}</span>
+          <a role="button">{{ _t('Awaiting Acceptance') }}</a>
+          <span v-if="orderCount">{{ orderCount.running }}</span>
         </li>
         <li
           v-if="permitted('home_delivery_new', 'delivery_home')"
@@ -38,8 +38,8 @@
             })
           "
         >
-          <a role="button">{{ _t('New Orders') }}</a
-          ><span v-if="orderCount">{{ orderCount.running }}</span>
+          <a role="button">{{ _t('New Orders') }}</a>
+          <span v-if="orderCount">{{ orderCount.running }}</span>
         </li>
         <li
           v-if="permitted('home_delivery_pick', 'delivery_home')"
@@ -57,8 +57,8 @@
             })
           "
         >
-          <a role="button">{{ _t('Waiting for Pick') }}</a
-          ><span v-if="orderCount">{{ orderCount.ready }}</span>
+          <a role="button">{{ _t('Waiting for Pick') }}</a>
+          <span v-if="orderCount">{{ orderCount.ready }}</span>
         </li>
         <li
           v-if="permitted('home_delivery_in_progress', 'delivery_home')"
@@ -76,8 +76,8 @@
             })
           "
         >
-          <a role="button">{{ _t('Delivery - In Progress') }}</a
-          ><span v-if="orderCount">{{ orderCount['in-progress'] }}</span>
+          <a role="button">{{ _t('Delivery - In Progress') }}</a>
+          <span v-if="orderCount">{{ orderCount['in-progress'] }}</span>
         </li>
         <li
           v-if="permitted('home_delivery_finished', 'delivery_home')"
@@ -95,8 +95,8 @@
             })
           "
         >
-          <a role="button">{{ _t('Delivered') }}</a
-          ><span v-if="orderCount">{{ orderCount.delivered }}</span>
+          <a role="button">{{ _t('Delivered') }}</a>
+          <span v-if="orderCount">{{ orderCount.delivered }}</span>
         </li>
       </ul>
     </div>
@@ -106,7 +106,6 @@
 <script>
 /*global deliveryTabs*/
 import { mapState, mapGetters } from 'vuex'
-import * as CONST from '@/constants'
 export default {
   name: 'DMHomeDeliverySubMenu',
   methods: {
