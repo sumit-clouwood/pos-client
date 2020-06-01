@@ -25,11 +25,17 @@
         <div class="sub-total-text">{{ _t('Tax') }}</div>
         <div class="sub-total-num">{{ formatPrice(order.total_tax || 0) }}</div>
       </div>
+      <div class="item tax">
+        <div class="sub-total-text">{{ _t('Tips') }}</div>
+        <div class="sub-total-num">
+          {{ formatPrice(order.tip_amount || 0) }}
+        </div>
+      </div>
     </div>
     <div class="total color-text">
       <div class="sub-total-text">{{ _t('Total') }}</div>
       <div class="sub-total-num" @click="totalWrapperHendlerChange">
-        {{ formatPrice(order.balance_due || 0) }}
+        {{ formatPrice(orderTotalWithTips(order) || 0) }}
         <i
           aria-hidden="true"
           :class="['fa', 'fa-angle-up', { active: totalWrapperHendler }]"
@@ -102,7 +108,12 @@ export default {
     CancelOrderPopup,
   },
   computed: {
-    ...mapGetters('order', ['orderTotal', 'subTotal', 'totalTax']),
+    ...mapGetters('order', [
+      'orderTotal',
+      'subTotal',
+      'totalTax',
+      'orderTotalWithTips',
+    ]),
     ...mapGetters('surcharge', ['surcharge']),
     ...mapGetters('location', ['formatPrice', '_t']),
     ...mapGetters('discount', ['orderDiscountWithoutTax']),

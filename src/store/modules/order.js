@@ -171,7 +171,11 @@ const getters = {
     }
     return 0
   },
-
+  orderTotalWithTips: () => order => {
+    return Num.round(
+      parseFloat(order.balance_due) + parseFloat(order.tip_amount)
+    ).toFixed(2)
+  },
   itemModifiersPrice: () => item =>
     item.modifiersData && item.modifiersData.length
       ? item.modifiersData.reduce(
