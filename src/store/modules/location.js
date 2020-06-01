@@ -215,7 +215,7 @@ const actions = {
             )
             if (
               storedata.data.available_modules.includes(
-                'Order Manual Acceptance'
+                CONST.MODULE_MANUAL_ACCEPTANCE
               )
             ) {
               commit('deliveryManager/LIST_TYPE', 'Awaiting Acceptance', {

@@ -5,7 +5,7 @@
         <li
           v-if="
             permitted('home_delivery_new', 'delivery_home') &&
-              availableModules.includes('Order Manual Acceptance')
+              availableModules.includes(CONST.MODULE_MANUAL_ACCEPTANCE)
           "
           data-related="dm-order-acceptance"
           :class="{ active: listType == _t('Awaiting Acceptance') }"
@@ -106,6 +106,7 @@
 <script>
 /*global deliveryTabs*/
 import { mapState, mapGetters } from 'vuex'
+import * as CONST from '@/constants'
 export default {
   name: 'DMHomeDeliverySubMenu',
   methods: {
