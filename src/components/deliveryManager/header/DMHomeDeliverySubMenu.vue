@@ -3,7 +3,10 @@
     <div class="dm-delivery-details-btn">
       <ul class="dm-ullist">
         <li
-          v-if="permitted('home_delivery_new', 'delivery_home')"
+          v-if="
+            permitted('home_delivery_new', 'delivery_home') &&
+              availableModules.includes('Order Manual Acceptance')
+          "
           data-related="dm-order-acceptance"
           :class="{ active: listType == _t('Awaiting Acceptance') }"
           @click="
@@ -116,6 +119,7 @@ export default {
   computed: {
     ...mapGetters('location', ['_t', 'permitted']),
     ...mapState('deliveryManager', ['listType']),
+    ...mapState('context', ['availableModules']),
     ...mapState({
       orderCount: state => state.deliveryManager.orderCounts,
     }),

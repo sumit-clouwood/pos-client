@@ -206,6 +206,22 @@ const actions = {
                 root: true,
               }
             )
+            commit(
+              'context/SET_AVAILABLE_MODULES',
+              storedata.data.available_modules,
+              {
+                root: true,
+              }
+            )
+            if (
+              storedata.data.available_modules.includes(
+                'Order Manual Acceptance'
+              )
+            ) {
+              commit('deliveryManager/LIST_TYPE', 'Awaiting Acceptance', {
+                root: true,
+              })
+            }
           }
           let availableStoreGroups =
             storedata.data.available_store_groups || false

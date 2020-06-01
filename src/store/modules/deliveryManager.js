@@ -8,7 +8,7 @@ const state = {
   collected: 'no',
   orders: [],
   orderCounts: 0,
-  listType: 'Awaiting Acceptance',
+  listType: 'New Orders',
   section: 'crm',
   selectedOrder: false,
   selectedDriver: false,
@@ -350,6 +350,7 @@ const actions = {
 const mutations = {
   [mutation.LIST_TYPE](state, listType) {
     state.listType = listType
+    console.log('hey motherfuncker')
   },
   [mutation.SECTION](state, section) {
     state.section = section
