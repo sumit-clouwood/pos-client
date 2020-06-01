@@ -1,6 +1,10 @@
 <template>
   <div class="dm-order-screens dm-order-screen-change" id="home-delivery-order">
     <DMHomeDeliverySubMenu />
+    <div class="dm-ready-order-wrapper" id="dm-order-acceptance">
+      <Preloader :msg="_t('Loading new orders') + '...'" v-if="loading" />
+      <DMItem :actionDetails="acceptanceDetails" v-else />
+    </div>
     <div class="dm-ready-order-wrapper" id="dm-new-order">
       <Preloader :msg="_t('Loading new orders') + '...'" v-if="loading" />
       <DMItem :actionDetails="readyDetails" v-else />
@@ -158,6 +162,12 @@ export default {
   data() {
     return {
       isActive: false,
+      acceptanceDetails: {
+        moreDetails: false,
+        actionLabel: ['Accept', 'Reject'],
+        action: ['delivery_accept', 'delivery_reject'],
+        nextOrderStatus: 'in-progress',
+      },
       readyDetails: {
         moreDetails: true,
         actionLabel: 'Ready',
