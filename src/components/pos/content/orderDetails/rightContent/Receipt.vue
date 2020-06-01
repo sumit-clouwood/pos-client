@@ -247,7 +247,7 @@
           {{ _t('Total') }}
         </div>
         <div class="total color-text">
-          {{ orderTotal }}
+          {{ orderTotalWithTips(orderDetails) || 0 }}
         </div>
       </div>
     </div>
@@ -270,12 +270,7 @@ export default {
   computed: {
     ...mapGetters('location', ['_t', 'formatPrice']),
     ...mapState('order', ['orderSource']),
-    orderTotal() {
-      return this.Num.round(
-        parseFloat(this.orderDetails.balance_due) +
-          parseFloat(this.orderDetails.tip_amount)
-      ).toFixed(2)
-    },
+    ...mapGetters('order', ['orderTotalWithTips']),
     orderDetails() {
       if (!this.order_data || typeof this.order_data.item === undefined) {
         return false
