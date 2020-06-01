@@ -106,6 +106,7 @@
 <script>
 /*global deliveryTabs*/
 import { mapState, mapGetters } from 'vuex'
+// eslint-disable-next-line no-unused-vars
 import * as CONST from '@/constants'
 export default {
   name: 'DMHomeDeliverySubMenu',
