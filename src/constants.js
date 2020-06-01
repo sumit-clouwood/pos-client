@@ -56,6 +56,7 @@ export const MODULE_POS = 'Point of Sale'
 export const MODULE_OFFLINE_ORDERS = 'Offline Orders'
 export const MODULE_FUTURE_ORDERS = 'Future Orders'
 export const MODULE_DINE_IN_MENU = 'Dine-In Menu'
+export const MODULE_MANUAL_ACCEPTANCE = 'Order Manual Acceptance'
 
 /* order related constants */
 
