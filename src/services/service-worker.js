@@ -1857,9 +1857,11 @@ var Dinein = {
                       console.log('record to be updated', reservationsRecord)
                       const keys = JSON.parse(record.keys)
                       console.log('keys to be updated', keys)
+                      // eslint-disable-next-line max-len
                       reservationsRecord.data.data = reservationsRecord.data.data.map(
                         reservationData => {
                           if (reservationData._id === keys.reservationId) {
+                            // eslint-disable-next-line max-len
                             reservationData.related_orders_ids = reservationData.related_orders_ids.map(
                               orderId => {
                                 if (orderId === keys.orderId) {
@@ -1883,6 +1885,7 @@ var Dinein = {
                                   delete reservationsRecord.data.page_lookups
                                     .orders._id[orderId]
 
+                                  // eslint-disable-next-line max-len
                                   reservationsRecord.data.page_lookups.orders._id[
                                     newOrder._id
                                   ] = newOrder

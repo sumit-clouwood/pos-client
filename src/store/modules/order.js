@@ -1226,18 +1226,18 @@ const actions = {
     commit(mutation.SET_ORDER_NOTE, orderNote)
   },
 
-  setOnlineOrders({ commit, rootState }, onlineOrderData) {
-    // const params = [1, onlineOrderData.location_id]
-    let orderDetail = ''
-    // OrderService.fetchOnlineOrderDetails(...params).then(response => {
-    //   orderDetail = response.data.orderDetails
-    commit(mutation.ONLINE_ORDERS, {
-      onlineOrders: onlineOrderData,
-      locationId: rootState.location.location,
-      orderDetails: orderDetail,
-    })
-    // })
-  },
+  // setOnlineOrders({ commit, rootState }, onlineOrderData) {
+  //   // const params = [1, onlineOrderData.location_id]
+  //   let orderDetail = ''
+  //   // OrderService.fetchOnlineOrderDetails(...params).then(response => {
+  //   //   orderDetail = response.data.orderDetails
+  //   commit(mutation.ONLINE_ORDERS, {
+  //     onlineOrders: onlineOrderData,
+  //     locationId: rootState.location.location,
+  //     orderDetails: orderDetail,
+  //   })
+  //   // })
+  // },
 
   /*getPastOrderDetails({ commit, rootState }, orderId) {
     const params = [orderId, rootState.location.location]
@@ -1788,35 +1788,32 @@ const actions = {
     commit(mutation.START_ORDER)
     commit('checkout/SET_PROCESSING', false, { root: true })
   },
-}
-
-function playSound(locationId, onlineOrders) {
-  let nopromise = {
-    catch: new Function(),
-  }
-  // onlineOrders.orders.forEach(order => {
-  if (locationId == onlineOrders.location_id) {
-    let onlineNewOrderAudioRing = new Audio(
-      'https://int.erp-pos.com/sound/doorbell.ogg'
-    )
-    onlineNewOrderAudioRing.load()
-    if (onlineOrders.orders && onlineOrders.orders.length) {
-      onlineNewOrderAudioRing.addEventListener(
-        'ended',
-        function() {
-          this.currentTime = 0
-          ;(this.play() || nopromise).catch(function() {})
-        },
-        false
-      )
-      ;(onlineNewOrderAudioRing.play() || nopromise).catch(function() {})
-    } else {
-      onlineNewOrderAudioRing.pause()
-      onlineNewOrderAudioRing.currentTime = 0
+  playSound({ rootState }, onlineOrders) {
+    let locationId = rootState.location.location
+    let nopromise = {
+      catch: new Function(),
     }
-  }
+    // onlineOrders.orders.forEach(order => {
+    if (locationId == onlineOrders.location_id) {
+      let onlineNewOrderAudioRing = new Audio('/sound/doorbell.ogg')
+      onlineNewOrderAudioRing.load()
+      if (onlineOrders.orders && onlineOrders.orders.length) {
+        onlineNewOrderAudioRing.addEventListener(
+          'ended',
+          function() {
+            this.currentTime = 0
+            ;(this.play() || nopromise).catch(function() {})
+          },
+          false
+        )
+        ;(onlineNewOrderAudioRing.play() || nopromise).catch(function() {})
+      } else {
+        onlineNewOrderAudioRing.pause()
+        onlineNewOrderAudioRing.currentTime = 0
+      }
+    }
+  },
 }
-
 // mutations
 const mutations = {
   [mutation.SET_ITEM](state, item) {
@@ -1946,11 +1943,11 @@ const mutations = {
   [mutation.SET_ORDER_DATA](state, data) {
     state.orderData = data
   },
-  [mutation.ONLINE_ORDERS](state, { onlineOrders, locationId, orderDetails }) {
-    localStorage.setItem('onlineOrders', JSON.stringify(orderDetails))
-    state.onlineOrders = orderDetails
-    playSound(locationId, onlineOrders)
-  },
+  // [mutation.ONLINE_ORDERS](state, { onlineOrders, locationId, orderDetails }) {
+  //   localStorage.setItem('onlineOrders', JSON.stringify(orderDetails))
+  //   state.onlineOrders = orderDetails
+  //   // playSound(locationId, onlineOrders)
+  // },
   [mutation.SET_ORDER_DETAILS](state, selectedOrderDetails) {
     state.selectedOrder = selectedOrderDetails
   },

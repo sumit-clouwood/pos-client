@@ -7,6 +7,7 @@ const state = {
   deliveryOrderStatus: 'in-progress',
   collected: 'no',
   orders: [],
+  onlineOrders: { count: 0, orders: false },
   orderCounts: 0,
   listType: 'New Orders',
   section: 'crm',
@@ -41,6 +42,8 @@ const getters = {
         driver.brand_access_type === 'all'
     ),
   orders: state => state.orders.filter(order => order.deleted === false),
+  onlineOrders: state =>
+    state.onlineOrders.orders.filter(order => order.deleted === false),
   currentDriverOrders: (state, getters) => {
     if (state.driverId) {
       const driver = state.drivers.find(driver => driver._id == state.driverId)
@@ -195,6 +198,41 @@ const actions = {
       DMService.getUsers(role._id).then(response => {
         commit(mutation.DRIVERS, response.data.data)
       })
+    }
+  },
+  getOnlineOrders({ rootGetters, commit, state }) {
+    const params = [
+      '',
+      50,
+      'orderBy',
+      'real_created_datetime',
+      'home_delivery_acceptance',
+      state.selectedStores,
+    ]
+    let checkAPIPermission = rootGetters['location/permitted'](
+      'home_delivery_acceptance',
+      'delivery_home'
+    )
+    if (checkAPIPermission) {
+      DMService.getDMOrderDetails(...params)
+        .then(response => {
+          commit(mutation.SET_LOADING, true)
+          if (response.data) {
+            commit(mutation.SET_DM_ORDERS, response.data)
+            let onlineOrders = {
+              count: response.data.count,
+              orders: response.data.data,
+            }
+            console.log(onlineOrders, 'onlineOrders')
+            commit(mutation.SET_ONLINE_ORDERS, onlineOrders)
+            commit(mutation.SET_LOADING, false)
+          }
+        })
+        .catch(() => {
+          commit(mutation.SET_LOADING, false)
+        })
+    } else {
+      commit(mutation.SET_LOADING, false)
     }
   },
 
@@ -450,6 +488,9 @@ const mutations = {
       })
     }
     state.driverBucket = bucket
+  },
+  [mutation.SET_ONLINE_ORDERS](state, onlineOrders) {
+    state.onlineOrders = onlineOrders
   },
 }
 
