@@ -42,8 +42,7 @@ const getters = {
         driver.brand_access_type === 'all'
     ),
   orders: state => state.orders.filter(order => order.deleted === false),
-  onlineOrders: state =>
-    state.onlineOrders.orders.filter(order => order.deleted === false),
+  onlineOrders: state => state.onlineOrders,
   currentDriverOrders: (state, getters) => {
     if (state.driverId) {
       const driver = state.drivers.find(driver => driver._id == state.driverId)

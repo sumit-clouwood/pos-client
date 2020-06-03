@@ -99,8 +99,6 @@ export default {
     ...mapState('sync', ['online']),
     ...mapState('order', ['orderType']),
     ...mapState({
-      latestOnlineOrders: state =>
-        state.order.onlineOrders ? state.order.onlineOrders.length : 0,
       username: state =>
         state.auth.userDetails ? state.auth.userDetails.name : '',
     }),
@@ -148,22 +146,22 @@ export default {
       this.$store.dispatch('location/changeLanguage', locale)
     },
 
-    onlineOrders() {
-      if (this.latestOnlineOrders == 0) {
-        if (
-          localStorage.getItem('onlineOrders') != 'undefined' &&
-          JSON.parse(localStorage.getItem('onlineOrders')) != null
-        ) {
-          this.onlineOrdersCount = JSON.parse(
-            localStorage.getItem('onlineOrders')
-          ).length
-        } else {
-          this.onlineOrdersCount = 0
-        }
-      } else {
-        this.onlineOrdersCount = this.latestOnlineOrders
-      }
-    },
+    // onlineOrders() {
+    //   if (this.latestOnlineOrders == 0) {
+    //     if (
+    //       localStorage.getItem('onlineOrders') != 'undefined' &&
+    //       JSON.parse(localStorage.getItem('onlineOrders')) != null
+    //     ) {
+    //       this.onlineOrdersCount = JSON.parse(
+    //         localStorage.getItem('onlineOrders')
+    //       ).length
+    //     } else {
+    //       this.onlineOrdersCount = 0
+    //     }
+    //   } else {
+    //     this.onlineOrdersCount = this.latestOnlineOrders
+    //   }
+    // },
     baseurl(link) {
       return (
         window.location.href.replace(new RegExp('/pos/.*'), '/' + link) +
@@ -189,12 +187,11 @@ export default {
         OTApi: CONST.ORDER_TYPE_CARHOP,
       })
     } else {
-      this.onlineOrders()
       $('.setting-dropdown').hide()
     }
     this.$store.dispatch('deliveryManager/fetchDMOrderDetail', true)
   },
-  created() {
+  beforeMount() {
     this.$socket.$subscribe('online-order-channel', payload => {
       if (payload.data.store_id == this.store._id) {
         // eslint-disable-next-line no-console
