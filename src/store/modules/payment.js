@@ -145,7 +145,10 @@ const actions = {
           accumulator[key].push(currentmethod)
         }
       } else {
-        if (currentmethod.type != CONST.ONLINE) {
+        if (
+          currentmethod.type != CONST.ONLINE &&
+          currentmethod.type != CONST.GO_ORDER_LOYALTY
+        ) {
           accumulator[key].push(currentmethod)
         }
       }

@@ -34,6 +34,7 @@ export const GIFT_CARD = 'gift_card'
 export const AGGREGATOR = 'aggregator'
 export const CASH = 'cash'
 export const ONLINE = 'online'
+export const GO_ORDER_LOYALTY = 'go_order_loyalty'
 
 /* MODULE RELATED CONSTENTS */
 
