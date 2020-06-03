@@ -3,7 +3,7 @@
   <div class="modal fade" id="online-order" role="dialog">
     <div class="modal-dialog modal-dialog-centered">
       <!-- Modal content-->
-      <div class="modal-content color-dashboard-background">
+      <!-- <div class="modal-content color-dashboard-background">
         <div class="modal-header customer-header">
           <h4 class="customer-title color-text-invert">
             Additional order are almost ready. Would you like to take them with
@@ -123,7 +123,7 @@
             </button>
           </div>
         </div>
-      </div>
+      </div> -->
     </div>
   </div>
   <!-- End online order popup -->
@@ -134,7 +134,36 @@
 import moment from 'moment-timezone'
 import DateTime from '@/mixins/DateTime'
 import * as CONST from '@/constants.js'
+// import * as utils from '@/utils/main_utils'
 import { mapState, mapGetters, mapActions } from 'vuex'
+// var debouncedGetData = utils.debounce(function () {
+//         // eslint-disable-next-line no-console
+//         console.log(route)
+//         api_utils.execute_get(route, business_entity_id, brand_id, store_id, params).then((response) => {
+//             var results = response.data.data;
+//             if (results.length > 0) {
+//                 var final_results = [];
+//                 for (var item of results) {
+//                     final_results.push({
+//                         'value': item.currency,
+//                         'text': item.currency,
+//                         'full': item
+//                     })
+//                 }
+//                 component.onlineOrders = final_results;
+//                 if (action == CONST.ACTION_ID_ADD) {
+//                     component.showNotification();
+//                 }
+//             } else {
+//                 component.onlineOrders = [];
+//                 component.pauseSound();
+//                 component.hideNotification();
+//             }
+//         }).catch(err => {
+//             utils.process_error(err.response.data);
+//         })
+//     }, 500);
+
 export default {
   name: 'OnlineOrder',
   props: {},
@@ -200,6 +229,7 @@ export default {
       this.$store.dispatch('order/selectedOrderDetails', order._id)
       $('#past-order').modal('toggle')
     },
+    ...mapActions('order', ['selectedOrderDetails', 'updateOrderAction']),
   },
 }
 </script>

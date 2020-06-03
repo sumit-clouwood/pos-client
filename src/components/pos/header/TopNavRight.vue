@@ -18,7 +18,7 @@
       >
         <a class="btn-part color-text-invert" role="button">
           {{ _t('Online') }}
-          <span class="online-digit color-secondary">2</span>
+          <span class="online-digit color-secondary">{{ orders.length }}</span>
         </a>
       </li>
     </ul>
@@ -45,8 +45,48 @@ import AuthService from '@/services/data/AuthService'
 import SwitchStore from '@/components/commonButtons/SwitchStore'
 import TopSidebarMenu from '@/components/util/TopSidebarMenu'
 import LanguageMenu from '@/components/util/LanguageMenu'
+import DMService from '@/services/data/DeliveryManagerService'
 
 import bootstrap from '@/bootstrap'
+// var debouncedGetData = utils.debounce(function() {
+//   // eslint-disable-next-line no-console
+//   DMService.getDMOrderDetails(...params)
+//         .then(response => {
+//           commit(mutation.SET_LOADING, true)
+//           if (response.data) {
+//             commit(mutation.SET_DM_ORDERS, response.data)
+//             commit(mutation.SET_TOTAL_ORDER, response.data.count)
+//             commit(mutation.SET_LOADING, false)
+//             /*if (section === 'delivery_home') {*/
+//             dispatch('getDrivers')
+//             // }
+//           }
+//         })
+//         .catch(() => {
+//           commit(mutation.SET_LOADING, false)
+//         })
+//   if (orders.length) {
+
+//   } 
+// else {
+//             // component.onlineOrders = [];
+//             // component.pauseSound();
+//             // component.hideNotification();
+//         }
+//   }, 500);
+var audio = new Audio('/sound/doorbell.ogg');
+var nopromise = {
+  catch: new Function(),
+}
+audio.load()
+audio.addEventListener(
+  'ended',
+  function() {
+    this.currentTime = 0;
+    this.load()(this.play() || nopromise).catch(function() {})
+  },
+  false
+)
 export default {
   name: 'TopNavRight',
   props: {},
@@ -67,6 +107,8 @@ export default {
   },
   watch: {},
   computed: {
+    ...mapGetters('deliveryManager', ['orders', 'drivers','params']),
+    ...mapGetters('context', ['store']),
     ...mapGetters('auth', ['waiter', 'carhop']),
 
     vlocale: {
@@ -78,7 +120,7 @@ export default {
       },
     },
     ...mapGetters('context', ['store', 'transactions']),
-    ...mapState('location', ['availableLanguages', 'language']),
+    ...mapState('location', ['availableLanguages', 'language', 'store']),
     ...mapState('sync', ['online']),
     ...mapState('order', ['orderType']),
     ...mapState({
@@ -87,7 +129,9 @@ export default {
       username: state =>
         state.auth.userDetails ? state.auth.userDetails.name : '',
     }),
+    ...mapState('context'),
     ...mapGetters('location', ['_t', 'permitted']),
+    ...mapGetters('deliveryManager', ['orders', 'drivers']),
   },
   methods: {
     logoutCashier() {
@@ -103,7 +147,6 @@ export default {
           return true
       }
     },
-
     ...mapActions('auth', ['logout']),
     moveDineSection() {
       this.$router.push('/dine-in' + this.store)
@@ -153,10 +196,46 @@ export default {
         this.$store.getters['context/brand']
       )
     },
+    getData() {
+      DMService.getDMOrderDetails([
+        '',
+        50,
+        'orderBy',
+        'real_created_datetime',
+        'home_delivery_acceptance',
+        this.store._id,
+      ])
+        .then(response => {
+          // eslint-disable-next-line no-console
+          console.log('reachingsssss')
+          // eslint-disable-next-line no-console
+          console.log(response)
+          // commit(mutation.SET_LOADING, true)
+          // if (response.data) {
+          //   commit(mutation.SET_DM_ORDERS, response.data)
+          //   commit(mutation.SET_TOTAL_ORDER, response.data.count)
+          //   commit(mutation.SET_LOADING, false)
+          //   /*if (section === 'delivery_home') {*/
+          //   dispatch('getDrivers')
+          //   // }
+          // }
+        })
+        .catch(() => {
+          commit(mutation.SET_LOADING, false)
+        })
+
+    },
     /*dineInUrl(link) {
       return window.location.href.replace(new RegExp('/dine-in/.*'), '/' + link)
     },*/
     /*...mapActions('customer', ['fetchCustomerAddress']),*/
+    // playSound() {
+    //   (audio.play() || nopromise).catch(function(){});
+    // },
+    // pauseSound() {
+    //   (audio.pause() || nopromise).catch(function(){});
+    // },
+    ...mapGetters('order', ['getLatestOnlineOrders']),
   },
   mounted() {
     if (this.$route.name.match('Carhop')) {
@@ -168,6 +247,24 @@ export default {
       this.onlineOrders()
       $('.setting-dropdown').hide()
     }
+    this.$store.dispatch('deliveryManager/fetchDMOrderDetail', true)
+  },
+  created() {
+    // eslint-disable-next-line no-console
+    console.log('reaching')
+    this.$socket.$subscribe('online-order-channel', payload => {
+      if (payload.data.store_id == this.store._id) {
+        this.getData()
+      }
+      // if (this.waitingForAcceptance && payload.data.brand_id == this.currentBrandId) {
+      //     if (this.currentStore) {
+      //         if (payload.data.store_id == this.currentStoreId)
+      //             this.getData(payload.data.action_id);
+      //     } else {
+      //         this.getData(payload.data.action_id);
+      //     }
+      // }
+    })
   },
 }
 </script>

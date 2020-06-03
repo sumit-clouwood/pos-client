@@ -92,23 +92,18 @@ export default {
     SubmitOrder() {
       let orders = this.jeeblyOrder
       // eslint-disable-next-line no-console
-      console.log(this.selectedDriver)
       DMService.assignOrdersToDriver(this.selectedDriver, orders)
-        .then(
-          this.updateOrderAction(this.jeeblyOrder)
-            .then(() => {
-              this.$store.commit('location/SET_ORDER_JEEBLY', [])
-              let dmautoloader = true
-              this.$store.dispatch(
-                'deliveryManager/fetchDMOrderDetail',
-                dmautoloader
-              )
-            })
-            .catch(er => {
-              this.err = er.data.error
-            })
-        )
-        .catch()
+        .then(() => {
+          this.$store.commit('location/SET_ORDER_JEEBLY', [])
+          let dmautoloader = true
+          this.$store.dispatch(
+            'deliveryManager/fetchDMOrderDetail',
+            dmautoloader
+          )
+        })
+        .catch(er => {
+          this.err = er.data.error
+        })
         .finally()
     },
     ...mapActions('deliveryManager', ['updateDMOrderStatus']),
