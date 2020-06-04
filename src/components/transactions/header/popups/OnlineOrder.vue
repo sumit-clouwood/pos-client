@@ -35,95 +35,94 @@
         </tfoot>-->
               <tbody>
                 <tr :key="index" v-for="(order, index) in onlineOrders.orders">
-                  <td
-                    v-if="order.order_status == orderStatus"
-                    :class="{ active: activeIndex.includes(order._id) }"
-                  >
-                    <div class="order-header">
-                      <div class="number-id-button">
-                        <span class="order-id">
-                          <span
-                            @click="selectedOrderDetails(order._id)"
-                            class="open-details-popup cursor-pointer"
-                            data-dismiss="modal"
-                            data-target=".bd-example-modal-lg"
-                            data-toggle="modal"
-                          >
-                            #{{ order.order_no }}
-                          </span>
-                        </span>
-                      </div>
-                      <div class="order_price-container">
-                        <div class="order_price">
-                          {{ order.balance_due + ' ' + order.currency }}
-                        </div>
-                      </div>
-                      <div class="order_time">
-                        {{
-                          convertDatetime(
-                            order.real_created_datetime,
-                            timezoneString
-                          )
-                        }}
-                      </div>
-                      <div class="button-block" style="visibility: visible;">
-                        <div>
-                          <span
-                            :key="LabelIndex"
-                            style="margin: 0.2rem"
-                            v-for="(label,
-                            LabelIndex) in actionDetails.actionLabel"
-                          >
-                            <button
-                              @click.stop="
-                                updateOrder({
-                                  order: order,
-                                  orderType: order.order_type,
-                                  actionTrigger:
-                                    actionDetails.action[LabelIndex],
-                                })
-                              "
-                              class="button text-button btn btn-success"
-                              type="button"
+                  <td>
+                    <div class="order-item">
+                      <div class="order-header">
+                        <div class="number-id-button">
+                          <span class="order-id">
+                            <span
+                              @click="selectedOrderDetails(order._id)"
+                              class="open-details-popup cursor-pointer"
+                              data-dismiss="modal"
+                              data-target=".bd-example-modal-lg"
+                              data-toggle="modal"
                             >
-                              <div class="button-content-container">
-                                <div class="button-icon-container"></div>
-                                <div class="button-caption">
-                                  {{ actionDetails.actionLabel[LabelIndex] }}
-                                </div>
-                              </div>
-                            </button>
+                              #{{ order.order_no }}
+                            </span>
                           </span>
                         </div>
-                      </div>
-                      <div>
-                        {{ branch[order.store_id]['name'] }}
-                      </div>
-                      <div></div>
-                    </div>
-                    <div class="order-body">
-                      <div class="order-items-list">
-                        <div
-                          :key="index"
-                          class="order-name"
-                          v-for="(i, index) in order.items"
-                        >
-                          <div class="main-item">
-                            {{
-                              typeof order.items[index] != 'undefined'
-                                ? order.items[index].name
-                                : ''
-                            }}<span></span>
+                        <div class="order_price-container">
+                          <div class="order_price">
+                            {{ order.balance_due + ' ' + order.currency }}
                           </div>
+                        </div>
+                        <div class="order_time">
+                          {{
+                            convertDatetime(
+                              order.real_created_datetime,
+                              timezoneString
+                            )
+                          }}
+                        </div>
+                        <div class="button-block" style="visibility: visible;">
+                          <div>
+                            <span
+                              :key="LabelIndex"
+                              style="margin: 0.2rem"
+                              v-for="(label,
+                              LabelIndex) in actionDetails.actionLabel"
+                            >
+                              <button
+                                @click.stop="
+                                  updateOrder({
+                                    order: order,
+                                    orderType: order.order_type,
+                                    actionTrigger:
+                                      actionDetails.action[LabelIndex],
+                                  })
+                                "
+                                class="button text-button btn btn-success"
+                                type="button"
+                              >
+                                <div class="button-content-container">
+                                  <div class="button-icon-container"></div>
+                                  <div class="button-caption">
+                                    {{ actionDetails.actionLabel[LabelIndex] }}
+                                  </div>
+                                </div>
+                              </button>
+                            </span>
+                          </div>
+                        </div>
+                        <div>
+                          {{ branch[order.store_id]['name'] }}
+                        </div>
+                        <div></div>
+                      </div>
+                      <div class="order-body">
+                        <div class="order-items-list">
                           <div
                             :key="index"
-                            class="modifiers"
-                            v-for="(item, index) in order.item_modifiers"
+                            class="order-name"
+                            v-for="(i, index) in order.items"
                           >
-                            <span v-if="item.for_item == i.no">
-                              <span v-if="item.qty > 0">+{{ item.qty }}</span>
-                              {{ item.name }}
-                            </span>
+                            <div class="main-item">
+                              {{
+                                typeof order.items[index] != 'undefined'
+                                  ? order.items[index].name
+                                  : ''
+                              }}<span></span>
+                            </div>
+                            <div
+                              :key="index"
+                              class="modifiers"
+                              v-for="(item, index) in order.item_modifiers"
+                            >
+                              <span v-if="item.for_item == i.no">
+                                <span v-if="item.qty > 0">+{{ item.qty }}</span>
+                                {{ item.name }}
+                              </span>
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -166,6 +165,7 @@
                           }}</span
                         >
                       </div>
+                    </div>
                     </div>
                   </td>
                 </tr>
@@ -240,7 +240,6 @@ export default {
     clearInterval(this.orderTime)
   },
   destroyed() {
-    this.$store.commit('location/SET_ORDER_JEEBLY', [])
     clearInterval(this.orderTime)
   },
   methods: {
@@ -253,28 +252,6 @@ export default {
           $('.information-popup').modal('show')
         })
     },
-    AssigneeOrder(data) {
-      // eslint-disable-next-line no-console
-      if (this.activeIndex.includes(data.order._id)) {
-        const index = this.activeIndex.indexOf(data.order._id)
-        if (index > -1) {
-          this.activeIndex.splice(index, 1)
-        }
-        this.$store.commit('location/SET_ORDER_JEEBLY', this.activeIndex)
-        return false
-      }
-      var driver = this.drivers.filter(function(el) {
-        return el.name.toLowerCase() === 'jeebly'
-      })
-      this.activeIndex.push(data.order._id)
-      this.selectDriver = driver[0]
-      this.$store.commit(
-        'deliveryManager/SET_SELECTED_DM_DRIVER',
-        this.selectDriver._id
-      )
-      this.$store.commit('location/SET_ORDER_JEEBLY', this.activeIndex)
-    },
-    ...mapActions('deliveryManager', ['selectDriver']),
     ...mapActions('order', ['selectedOrderDetails', 'updateOrderAction']),
   },
 }
@@ -295,6 +272,7 @@ tbody {
   grid-row-end: 2;
   overflow: auto;
   display: grid;
+  grid-template-columns: 1fr 1fr;
   grid-column-gap: $px10;
   grid-row-gap: $px10;
   padding: $px40 $px60;

@@ -1,6 +1,6 @@
 <template>
   <div class="table-responsive">
-    <table v-if="orders.length" class="table table-block-page shahbaj-here">
+    <table v-if="orders.length" class="table table-block-page">
       <!--<thead>
                       <tr>
                         <th class="sortable ">

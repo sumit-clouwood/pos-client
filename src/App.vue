@@ -11,12 +11,14 @@
     <!-- Public view -->
     <public-view v-else class="public-view"></public-view>
     <app-notification></app-notification>
+    <DmItemOnline></DmItemOnline>
   </div>
 </template>
 <script>
 import PublicView from './PublicView'
 import PrivateView from './PrivateView'
 import AppNotification from './AppNotification'
+import DmItemOnline from './components/pos/header/popups/OnlineOrder.vue'
 import { mapGetters, mapState } from 'vuex'
 import MultipleStores from '@/components/MultipleStores'
 
@@ -28,6 +30,7 @@ export default {
     PrivateView,
     AppNotification,
     MultipleStores,
+    DmItemOnline,
   },
   computed: {
     ...mapGetters('context', ['isStoreSelected', 'haveMultipleStores']),

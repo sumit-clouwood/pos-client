@@ -85,7 +85,6 @@ export default {
     ...mapGetters('deliveryManager', ['onlineOrders', 'drivers', 'params']),
     ...mapGetters('context', ['store']),
     ...mapGetters('auth', ['waiter', 'carhop']),
-
     vlocale: {
       get() {
         return this.$store.state.location.locale
@@ -189,16 +188,9 @@ export default {
     } else {
       $('.setting-dropdown').hide()
     }
-    this.$store.dispatch('deliveryManager/fetchDMOrderDetail', true)
   },
   beforeMount() {
-    this.$socket.$subscribe('online-order-channel', payload => {
-      if (payload.data.store_id == this.store._id) {
-        // eslint-disable-next-line no-console
-        console.log(payload.data.store_id, this.store._id, 'this.store._id')
-        this.$store.dispatch('deliveryManager/getOnlineOrders')
-      }
-    })
+    this.$store.dispatch('deliveryManager/getOnlineOrders')
   },
 }
 </script>
