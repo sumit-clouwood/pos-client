@@ -212,27 +212,32 @@ const actions = {
       'home_delivery_acceptance',
       'delivery_home'
     )
-    if (checkAPIPermission) {
-      DMService.getDMOrderDetails(...params)
-        .then(response => {
-          commit(mutation.SET_LOADING, true)
-          if (response.data) {
-            commit(mutation.SET_DM_ORDERS, response.data)
-            let onlineOrders = {
-              count: response.data.count,
-              orders: response.data.data,
+    return new Promise((resolve, reject) => {
+      if (checkAPIPermission) {
+        DMService.getDMOrderDetails(...params)
+          .then(response => {
+            commit(mutation.SET_LOADING, true)
+            if (response.data) {
+              commit(mutation.SET_DM_ORDERS, response.data)
+              let onlineOrders = {
+                count: response.data.count,
+                orders: response.data.data,
+              }
+              console.log(onlineOrders, 'onlineOrders')
+              resolve()
+              commit(mutation.SET_ONLINE_ORDERS, onlineOrders)
+              commit(mutation.SET_LOADING, false)
             }
-            console.log(onlineOrders, 'onlineOrders')
-            commit(mutation.SET_ONLINE_ORDERS, onlineOrders)
+          })
+          .catch(er => {
             commit(mutation.SET_LOADING, false)
-          }
-        })
-        .catch(() => {
-          commit(mutation.SET_LOADING, false)
-        })
-    } else {
-      commit(mutation.SET_LOADING, false)
-    }
+            reject(er)
+          })
+      } else {
+        commit(mutation.SET_LOADING, false)
+        reject()
+      }
+    })
   },
 
   fetchStoreOrders({ commit, dispatch }, storeId) {

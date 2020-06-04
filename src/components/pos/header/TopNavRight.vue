@@ -49,19 +49,19 @@ import TopSidebarMenu from '@/components/util/TopSidebarMenu'
 import LanguageMenu from '@/components/util/LanguageMenu'
 
 import bootstrap from '@/bootstrap'
-var audio = new Audio('/sound/doorbell.ogg')
-var nopromise = {
-  catch: new Function(),
-}
-audio.load()
-audio.addEventListener(
-  'ended',
-  function() {
-    this.currentTime = 0
-    this.load()(this.play() || nopromise).catch(function() {})
-  },
-  false
-)
+// var audio = new Audio('/sound/doorbell.ogg')
+// var nopromise = {
+//   catch: new Function(),
+// }
+// audio.load()
+// audio.addEventListener(
+//   'ended',
+//   function() {
+//     this.currentTime = 0
+//     this.load()(this.play() || nopromise).catch(function() {})
+//   },
+//   false
+// )
 export default {
   name: 'TopNavRight',
   props: {},
@@ -72,7 +72,6 @@ export default {
   },
   data: function() {
     return {
-      onlineOrdersCount: 0,
       dm: this.baseurl('delivery') + '/delivery_home/new',
       dashboard: this.baseurl('dashboard'),
       crm: this.baseurl('crm') + '/brand_customers',

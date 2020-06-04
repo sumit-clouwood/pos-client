@@ -9,8 +9,11 @@
             class="customer-title color-text-invert"
             v-if="onlineOrders.count"
           >
-            Additional order are almost ready. Would you like to take them with
-            you ?
+            {{
+              _t(
+                'Additional order are almost ready. Would you like to take them with you ?'
+              )
+            }}
           </h4>
           <h4 class="customer-title color-text-invert" v-else>
             No orders Found
@@ -19,7 +22,7 @@
             type="button"
             class="close pull-right color-text"
             data-dismiss="modal"
-            @click="Close()"
+            @click="hideOnlineModal()"
           >
             &times;
           </button>
@@ -185,7 +188,7 @@
               type="button"
               class="btn btn-danger cancel-announce"
               data-dismiss="modal"
-              @click="Close()"
+              @click="hideOnlineModal()"
             >
               Close
             </button>
@@ -201,26 +204,15 @@ import { mapState, mapActions, mapGetters } from 'vuex'
 import DateTime from '@/mixins/DateTime'
 import InformationPopup from '@/components/pos/content/InformationPopup'
 
-var audio = new Audio('/sounds/doorbell.ogg')
-audio.load()
-audio.addEventListener(
-  'ended',
-  function() {
-    this.currentTime = 0
-    this.play()
-  },
-  false
-)
-
 /* global $ */
 export default {
   name: 'DmItemOnline',
   data() {
-    // eslint-disable-next-line no-console
     return {
-      orderCount: 2,
+      audio: false,
       dateTime: '',
       err: null,
+      interval: null,
       activeIndex: [],
       actionDetails: {
         moreDetails: false,
@@ -247,15 +239,17 @@ export default {
     ...mapGetters('deliveryManager', ['onlineOrders', 'drivers']),
   },
   updated() {
+    // eslint-disable-next-line no-console
+    console.log('update', this.onlineOrders.count)
     if (!this.onlineOrders.count) {
       this.pauseSound()
     }
-    clearInterval(this.orderTime)
   },
-  destroyed() {
-    this.$store.commit('location/SET_ORDER_JEEBLY', [])
-    clearInterval(this.orderTime)
-  },
+  /*destroyed() {
+    // eslint-disable-next-line no-console
+    console.log('destroyed')
+    this.pauseSound()
+  },*/
   methods: {
     ...mapActions('deliveryManager', ['showOrderDetails']),
     updateOrder(data) {
@@ -266,37 +260,62 @@ export default {
           $('.information-popup').modal('show')
         })
     },
-    Close() {
-      $('#online-order').modal('hide')
+    hideOnlineModal() {
+      // eslint-disable-next-line no-console
+      console.log('hide')
+      this.pauseSound()
     },
     playSound() {
-      // eslint-disable-next-line prettier/prettier
-      audio.play()
+      // eslint-disable-next-line no-console
+      console.log('play')
+      this.audio.pause()
+      this.audio.play()
+      $('#online-order').modal('show')
     },
     pauseSound() {
-      audio.pause()
+      // eslint-disable-next-line no-console
+      console.log('pause', this.audio)
+      $('#online-order').modal('hide')
+      clearTimeout(this.interval)
+      this.audio.pause()
     },
+    onlineOrderSetup() {
+      let scope = this
+      let storeId = this.store ? this.store._id : this.$route.params.store_id
+      this.$socket.$subscribe('online-order-channel', payload => {
+        if (payload.data.store_id == storeId) {
+          this.$store.dispatch('deliveryManager/getOnlineOrders').then(() => {
+            if (scope.onlineOrders.count) {
+              // eslint-disable-next-line no-console
+              console.log('onlineOrders', scope.onlineOrders.count, storeId)
+              scope.playSound()
+              clearTimeout(scope.interval)
+            }
+          })
+        }
+      })
+    },
+    /*makeAudioObj() {
+
+    },*/
     ...mapActions('deliveryManager', ['selectDriver']),
     ...mapActions('order', ['selectedOrderDetails', 'updateOrderAction']),
   },
   created() {
-    // eslint-disable-next-line no-console
-    if (this.onlineOrders.count) {
-      this.playSound()
-    }
-    this.$socket.$subscribe('online-order-channel', payload => {
-      if (payload.data.store_id == this.store._id) {
-        // eslint-disable-next-line no-console
-        // eslint-disable-next-line no-console
-        this.$store.dispatch('deliveryManager/getOnlineOrders')
-        this.playSound()
-        setTimeout(function() {
-          $('#online-order')
-            .dialog()
-            .dialog('open')
-        }, 1000)
-      }
-    })
+    let scope = this
+    this.audio = new Audio('/sounds/doorbell.ogg')
+    this.audio.load()
+    this.audio.addEventListener(
+      'ended',
+      function() {
+        this.interval = setTimeout(function() {
+          // eslint-disable-next-line no-console
+          console.log('this.interval')
+          scope.onlineOrderSetup()
+        }, 2000)
+      },
+      false
+    )
   },
 }
 </script>
@@ -320,12 +339,17 @@ tbody {
   grid-row-gap: $px10;
   padding: $px40 $px60;
   word-break: break-word;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr;
 }
 .modal-dialog {
   width: 100% !important;
 }
 #online-order .modal-dialog {
   max-width: 88.5rem;
+}
+.runningtimes {
+  width: 100%;
+  display: grid;
+  text-align: center;
 }
 </style>
