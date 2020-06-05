@@ -217,6 +217,7 @@ export default {
       'loading',
     ]),
     ...mapGetters('location', ['_t']),
+    ...mapState('context', ['availableModules']),
   },
   updated() {
     if (this.listType == 'Waiting for Pick') {

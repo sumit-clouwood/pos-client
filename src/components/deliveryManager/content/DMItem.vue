@@ -1,6 +1,9 @@
 <template>
   <div class="table-responsive">
     <table v-if="orders.length" class="table table-block-page">
+      {{
+        actionDetails
+      }}
       <!--<thead>
                       <tr>
                         <th class="sortable ">

@@ -209,6 +209,7 @@ export default {
   name: 'DmItemOnline',
   data() {
     return {
+      isAudioPlaying: false,
       audio: false,
       dateTime: '',
       err: null,
@@ -270,6 +271,7 @@ export default {
       console.log('play')
       this.audio.pause()
       this.audio.play()
+      this.isAudioPlaying = true
       $('#online-order').modal('show')
     },
     pauseSound() {
@@ -278,17 +280,25 @@ export default {
       $('#online-order').modal('hide')
       clearTimeout(this.interval)
       this.audio.pause()
+      this.isAudioPlaying = false
     },
     onlineOrderSetup() {
       let scope = this
       let storeId = this.store ? this.store._id : this.$route.params.store_id
       this.$socket.$subscribe('online-order-channel', payload => {
+        // eslint-disable-next-line no-console
+        console.log('payload', payload)
         if (payload.data.store_id == storeId) {
           this.$store.dispatch('deliveryManager/getOnlineOrders').then(() => {
             if (scope.onlineOrders.count) {
               // eslint-disable-next-line no-console
-              console.log('onlineOrders', scope.onlineOrders.count, storeId)
-              scope.playSound()
+              console.log(
+                'onlineOrders',
+                scope.onlineOrders.count,
+                storeId,
+                scope.isAudioPlaying
+              )
+              if (!scope.isAudioPlaying) scope.playSound()
               clearTimeout(scope.interval)
             }
           })
@@ -311,11 +321,11 @@ export default {
         this.interval = setTimeout(function() {
           // eslint-disable-next-line no-console
           console.log('this.interval')
-          scope.onlineOrderSetup()
         }, 2000)
       },
       false
     )
+    scope.onlineOrderSetup()
   },
 }
 </script>
