@@ -209,6 +209,7 @@ export default {
   name: 'DmItemOnline',
   data() {
     return {
+      lastOrderId: '',
       isAudioPlaying: false,
       audio: false,
       dateTime: '',
@@ -271,8 +272,8 @@ export default {
       console.log('play')
       this.audio.pause()
       this.audio.play()
-      this.isAudioPlaying = true
       $('#online-order').modal('show')
+      this.isAudioPlaying = true
     },
     pauseSound() {
       // eslint-disable-next-line no-console
@@ -287,8 +288,17 @@ export default {
       let storeId = this.store ? this.store._id : this.$route.params.store_id
       this.$socket.$subscribe('online-order-channel', payload => {
         // eslint-disable-next-line no-console
-        console.log('payload', payload)
-        if (payload.data.store_id == storeId) {
+        console.log(
+          'payload',
+          payload,
+          scope.lastOrderId,
+          payload.data.order_id
+        )
+        if (
+          payload.data.store_id == storeId &&
+          scope.lastOrderId !== payload.data.order_id
+        ) {
+          scope.lastOrderId = payload.data.order_id
           this.$store.dispatch('deliveryManager/getOnlineOrders').then(() => {
             if (scope.onlineOrders.count) {
               // eslint-disable-next-line no-console
@@ -312,20 +322,20 @@ export default {
     ...mapActions('order', ['selectedOrderDetails', 'updateOrderAction']),
   },
   created() {
-    let scope = this
+    // let scope = this
     this.audio = new Audio('/sounds/doorbell.ogg')
     this.audio.load()
     this.audio.addEventListener(
       'ended',
       function() {
-        this.interval = setTimeout(function() {
-          // eslint-disable-next-line no-console
-          console.log('this.interval')
-        }, 2000)
+        // this.interval = setTimeout(function() {
+        //   // eslint-disable-next-line no-console
+        //   console.log('this.interval')
+        // }, 1000)
       },
       false
     )
-    scope.onlineOrderSetup()
+    this.onlineOrderSetup()
   },
 }
 </script>

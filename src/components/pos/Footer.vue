@@ -404,6 +404,7 @@
       v-if="brand && brand.move_table && availableTables && cartType !== 'hold'"
     />
     <alert-popup></alert-popup>
+    <DmItemOnline />
   </div>
 </template>
 
@@ -456,11 +457,13 @@ import DineInCoverSelection from '@/components/dinein/cart/popup/DineInCoverSele
 import * as CONST from '@/constants'
 
 import { mapState, mapGetters } from 'vuex'
+import DmItemOnline from './header/popups/OnlineOrder'
 /* global $ */
 export default {
   name: 'Footer',
   props: {},
   components: {
+    DmItemOnline,
     DineIn,
     AddNote,
     itemNote,
