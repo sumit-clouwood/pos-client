@@ -99,7 +99,9 @@ jobs:
           name: "BUILD APPLICATON"
           command: |
             # USING YARN INSTEAD NPM FOR SPEED
-            yarn run build
+            #yarn run build
+            ./node_modules/.bin/vue-cli-service build --modern
+
 
       - run:
           name: "PREPARE FILES"
