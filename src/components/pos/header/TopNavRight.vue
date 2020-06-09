@@ -16,7 +16,7 @@
         data-toggle="modal"
         data-target="#online-order"
       >
-        <a class="btn-part color-text-invert" role="button">
+        <a class="btn-part color-text-invert" href="javascript:void(0)">
           {{ _t('Online') }}
           <span class="online-digit color-secondary">{{
             onlineOrders.count
@@ -26,6 +26,7 @@
     </ul>
     <LanguageMenu />
     <SwitchStore />
+    <OnlineOrder />
     <div class="curent-sale hideBigScreen">
       <div class="curent-sale-title">{{ _t('Current Sale') }}</div>
       <div class="curent-sale-item">
@@ -49,6 +50,7 @@ import TopSidebarMenu from '@/components/util/TopSidebarMenu'
 import LanguageMenu from '@/components/util/LanguageMenu'
 
 import bootstrap from '@/bootstrap'
+import OnlineOrder from './popups/OnlineOrder'
 // var audio = new Audio('/sound/doorbell.ogg')
 // var nopromise = {
 //   catch: new Function(),
@@ -66,6 +68,7 @@ export default {
   name: 'TopNavRight',
   props: {},
   components: {
+    OnlineOrder,
     SwitchStore,
     TopSidebarMenu,
     LanguageMenu,

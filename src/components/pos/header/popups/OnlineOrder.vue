@@ -16,7 +16,7 @@
             }}
           </h4>
           <h4 class="customer-title color-text-invert" v-else>
-            No orders Found
+            {{ _t('No more orders') }}
           </h4>
           <button
             type="button"
@@ -179,7 +179,7 @@
         </div>
         <div class="modal-body text-center" v-else>
           <h4 class="customer-title color-text-invert">
-            No orders Found
+            {{ _t('No more orders') }}
           </h4>
         </div>
         <div class="modal-footer">
@@ -204,17 +204,25 @@ import { mapState, mapActions, mapGetters } from 'vuex'
 import DateTime from '@/mixins/DateTime'
 import InformationPopup from '@/components/pos/content/InformationPopup'
 
+var audio = new Audio('/sounds/doorbell.ogg')
+audio.load()
+audio.addEventListener(
+  'ended',
+  function() {
+    this.currentTime = 0
+    this.play()
+  },
+  false
+)
 /* global $ */
 export default {
-  name: 'DmItemOnline',
+  name: 'OnlineOrder',
   data() {
     return {
       lastOrderId: '',
       isAudioPlaying: false,
-      audio: false,
       dateTime: '',
       err: null,
-      interval: null,
       activeIndex: [],
       actionDetails: {
         moreDetails: false,
@@ -256,7 +264,9 @@ export default {
     ...mapActions('deliveryManager', ['showOrderDetails']),
     updateOrder(data) {
       this.updateOrderAction(data)
-        .then(() => {})
+        .then(() => {
+          this.$store.dispatch('deliveryManager/getOnlineOrders')
+        })
         .catch(er => {
           this.err = er.data ? er.data.error : er.message
           $('.information-popup').modal('show')
@@ -268,21 +278,17 @@ export default {
       this.pauseSound()
     },
     playSound() {
-      // eslint-disable-next-line no-console
-      console.log('play')
-      this.audio.pause()
-      this.audio.play()
-      $('#online-order').modal('show')
-      this.isAudioPlaying = true
+      // eslint-disable-next-line prettier/prettier
+      audio.play()
     },
-    pauseSound() {
-      // eslint-disable-next-line no-console
-      console.log('pause', this.audio)
-      $('#online-order').modal('hide')
-      clearTimeout(this.interval)
-      this.audio.pause()
-      this.isAudioPlaying = false
-    },
+    // pauseSound() {
+    //   // eslint-disable-next-line no-console
+    //   console.log('pause', this.audio)
+    //   $('#online-order').modal('hide')
+    //   clearTimeout(this.interval)
+    //   this.audio.pause()
+    //   this.isAudioPlaying = false
+    // },
     onlineOrderSetup() {
       let scope = this
       let storeId = this.store ? this.store._id : this.$route.params.store_id
@@ -300,7 +306,7 @@ export default {
         ) {
           scope.lastOrderId = payload.data.order_id
           this.$store.dispatch('deliveryManager/getOnlineOrders').then(() => {
-            if (scope.onlineOrders.count) {
+            if (scope.onlineOrders.count && payload.data.action_id === 'add') {
               // eslint-disable-next-line no-console
               console.log(
                 'onlineOrders',
@@ -308,33 +314,36 @@ export default {
                 storeId,
                 scope.isAudioPlaying
               )
+              $('#online-order')
+                .dialog()
+                .dialog('open')
               if (!scope.isAudioPlaying) scope.playSound()
-              clearTimeout(scope.interval)
+              // clearTimeout(scope.interval)
             }
           })
         }
       })
     },
-    /*makeAudioObj() {
-
-    },*/
+    pauseSound() {
+      audio.pause()
+    },
     ...mapActions('deliveryManager', ['selectDriver']),
     ...mapActions('order', ['selectedOrderDetails', 'updateOrderAction']),
   },
   created() {
-    // let scope = this
-    this.audio = new Audio('/sounds/doorbell.ogg')
-    this.audio.load()
-    this.audio.addEventListener(
-      'ended',
-      function() {
-        // this.interval = setTimeout(function() {
-        //   // eslint-disable-next-line no-console
-        //   console.log('this.interval')
-        // }, 1000)
-      },
-      false
-    )
+    // // let scope = this
+    // this.audio = new Audio('/sounds/doorbell.ogg')
+    // this.audio.load()
+    // this.audio.addEventListener(
+    //   'ended',
+    //   function() {
+    //     // this.interval = setTimeout(function() {
+    //     //   // eslint-disable-next-line no-console
+    //     //   console.log('this.interval')
+    //     // }, 1000)
+    //   },
+    //   false
+    // )
     this.onlineOrderSetup()
   },
 }

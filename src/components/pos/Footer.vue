@@ -367,8 +367,6 @@
     <AddNote />
     <item-note></item-note>
     <Discount />
-    <OnlineOrder />
-    <OnlineOrderDetails />
     <SendToDelivery />
     <ManageCustomer v-if="online" />
     <OfflineManageCustomer v-else />
@@ -404,7 +402,6 @@
       v-if="brand && brand.move_table && availableTables && cartType !== 'hold'"
     />
     <alert-popup></alert-popup>
-    <DmItemOnline />
   </div>
 </template>
 
@@ -415,7 +412,6 @@ import DineIn from './footer/popups/DineIn'
 import AddNote from './footer/popups/AddNote'
 import itemNote from './footer/popups/itemNote'
 import Discount from './footer/popups/Discount'
-import OnlineOrder from './header/popups/OnlineOrder'
 import SendToDelivery from './footer/popups/SendToDelivery'
 import ManageCustomer from './footer/popups/ManageCustomer'
 import OfflineManageCustomer from './footer/popups/OfflineManageCustomer'
@@ -437,7 +433,6 @@ import Card from '../pos/content/cart/newOrders/popup/Card.vue'
 import GiftCardInfo from '../pos/content/cart/newOrders/popup/GiftCardInfo.vue'
 import SearchLoyaltyCustomer from '../pos/footer/popups/SearchLoyaltyCustomer'
 import Loyalty from '../pos/content/cart/newOrders/popup/Loyalty.vue'
-import OnlineOrderDetails from './header/popups/OnlineOrderDetails'
 import OrderDetailsPopup from '@/components/pos/content/OrderDetailPopup'
 import InformationPopup from '@/components/pos/content/InformationPopup'
 import AlertPopup from '@/components/pos/content/Alert'
@@ -457,19 +452,15 @@ import DineInCoverSelection from '@/components/dinein/cart/popup/DineInCoverSele
 import * as CONST from '@/constants'
 
 import { mapState, mapGetters } from 'vuex'
-import DmItemOnline from './header/popups/OnlineOrder'
 /* global $ */
 export default {
   name: 'Footer',
   props: {},
   components: {
-    DmItemOnline,
     DineIn,
     AddNote,
     itemNote,
     Discount,
-    OnlineOrderDetails,
-    OnlineOrder,
     CustomerNote,
     ManageCustomer,
     OfflineManageCustomer,

@@ -40,6 +40,7 @@
             <LanguageMenu />
             <SwitchStore />
             <TopSidebarMenu />
+            <OnlineOrder />
           </div>
           <div class="dm-btn-footer hideBigScreen">
             <!--<div id="bkgOverlay" class="backgroundOverlay"></div>-->
@@ -137,6 +138,7 @@
                 <SwitchStore />
                 <LanguageMenu />
                 <TopSidebarMenu />
+                <onlineOrder />
               </div>
             </div>
           </div>
@@ -156,10 +158,12 @@ import SwitchStore from '@/components/commonButtons/SwitchStore'
 import TopSidebarMenu from '@/components/util/TopSidebarMenu'
 import LanguageMenu from '@/components/util/LanguageMenu'
 import DateTimeVue from '@/components/util/DateTimeVue'
+import OnlineOrder from '@/components/pos/header/popups/OnlineOrder'
 
 export default {
   name: 'DMTopRightNav',
   components: {
+    OnlineOrder,
     SwitchStore,
     TopSidebarMenu,
     LanguageMenu,

@@ -18,7 +18,9 @@
       >
         <a class="btn-part color-text-invert" href="javascript:void(0)">
           {{ _t('Online') }}
-          <span class="online-digit color-secondary">2</span>
+          <span class="online-digit color-secondary">{{
+            onlineOrders.count
+          }}</span>
         </a>
       </li>
     </ul>
@@ -35,6 +37,7 @@
     <LanguageMenu />
     <SwitchStore />
     <TopSidebarMenu />
+    <OnlineOrder />
   </div>
 </template>
 
@@ -44,9 +47,11 @@ import bootstrap from '@/bootstrap'
 import SwitchStore from '@/components/commonButtons/SwitchStore'
 import TopSidebarMenu from '@/components/util/TopSidebarMenu'
 import LanguageMenu from '@/components/util/LanguageMenu'
+import OnlineOrder from '@/components/pos/header/popups/OnlineOrder'
 export default {
   name: 'TopNavRight',
   components: {
+    OnlineOrder,
     SwitchStore,
     TopSidebarMenu,
     LanguageMenu,
@@ -73,6 +78,7 @@ export default {
     },
     ...mapGetters('context', ['store', 'haveMultipleStores']),
     ...mapState('location', ['availableLanguages', 'language']),
+    ...mapGetters('deliveryManager', ['onlineOrders']),
     ...mapState('sync', ['online']),
     ...mapState({
       latestOnlineOrders: state =>

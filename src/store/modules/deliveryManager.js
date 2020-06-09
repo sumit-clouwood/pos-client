@@ -223,7 +223,7 @@ const actions = {
                 count: response.data.count,
                 orders: response.data.data,
               }
-              console.log(onlineOrders, 'onlineOrders')
+              // console.log(onlineOrders, 'onlineOrders')
               resolve()
               commit(mutation.SET_ONLINE_ORDERS, onlineOrders)
               commit(mutation.SET_LOADING, false)
