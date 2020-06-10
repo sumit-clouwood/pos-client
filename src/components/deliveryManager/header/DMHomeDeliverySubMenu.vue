@@ -38,7 +38,7 @@
             })
           "
         >
-          <a role="button">{{ _t('New Orders') }}</a>
+          <a role="button">{{ _t('Preparing') }}</a>
           <span v-if="orderCount">{{ orderCount.running }}</span>
         </li>
         <li
@@ -95,7 +95,7 @@
             })
           "
         >
-          <a role="button">{{ _t('Delivered') }}</a>
+          <a role="button">{{ _t('Delivery - Finished') }}</a>
           <span v-if="orderCount">{{ orderCount.delivered }}</span>
         </li>
       </ul>

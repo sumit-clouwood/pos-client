@@ -155,6 +155,21 @@
                       {{ formatPrice(BSData.REPORT_ORDER_SURCHARGE) }}
                     </td>
                   </tr>
+                  <tr class="font-weight-bold">
+                    <td
+                      style="border-right: 1px dashed #000;
+                      border-left: 1px dashed #000;
+                      text-align: left;padding: 0.3rem; width: 60%"
+                    >
+                      {{ _t('Delivery Surcharges') }}
+                    </td>
+                    <td
+                      style="padding-left: 10px;
+                      border-right: 1px dashed #000; width: 40%"
+                    >
+                      {{ formatPrice(BSData.REPORT_DELIVERY_SURCHARGE_VALUE) }}
+                    </td>
+                  </tr>
                   <tr>
                     <td
                       style="border-right: 1px dashed #000;

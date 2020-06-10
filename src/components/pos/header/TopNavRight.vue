@@ -16,7 +16,7 @@
         data-toggle="modal"
         data-target="#online-order"
       >
-        <a class="btn-part color-text-invert" href="javascript:void(0)">
+        <a class="btn-part color-text-invert" role="button">
           {{ _t('Online') }}
           <span class="online-digit color-secondary">{{
             onlineOrders.count

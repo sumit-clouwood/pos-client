@@ -1,6 +1,6 @@
 @import "../pixels_rem.scss";
 @import "../variables.scss";
-@import "../mixins.scss"
+@import "../mixins.scss";
 
 .da-image {
   text-align: center;
@@ -104,7 +104,7 @@ ul.dm-ullist>li {
   >a {
     font-size: $px14;
     letter-spacing: 0.5px;
-    color: rgba(63, 74, 74, 0.8);
+    color: rgba(24, 232, 232, 0.8);
     padding: $px10 $px5;
     opacity: 0.7;
     cursor: pointer;

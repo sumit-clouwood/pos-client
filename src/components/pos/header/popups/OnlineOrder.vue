@@ -275,11 +275,15 @@ export default {
     hideOnlineModal() {
       // eslint-disable-next-line no-console
       console.log('hide')
-      this.pauseSound()
+      $('#online-order')
+        .dialog()
+        .dialog('close')
+      // this.pauseSound()
     },
     playSound() {
       // eslint-disable-next-line prettier/prettier
       audio.play()
+      this.isAudioPlaying = true
     },
     // pauseSound() {
     //   // eslint-disable-next-line no-console
@@ -326,6 +330,10 @@ export default {
     },
     pauseSound() {
       audio.pause()
+      this.isAudioPlaying = false
+      $('#online-order')
+        .dialog()
+        .dialog('close')
     },
     ...mapActions('deliveryManager', ['selectDriver']),
     ...mapActions('order', ['selectedOrderDetails', 'updateOrderAction']),

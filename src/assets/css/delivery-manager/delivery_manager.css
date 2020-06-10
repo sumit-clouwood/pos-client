@@ -67,13 +67,17 @@ ul.dm-ullist > li {
   ul.dm-ullist > li > a {
     font-size: 0.875rem;
     letter-spacing: 0.5px;
-    color: #3d3f43;
+    color: rgba(126, 130, 130, 0.8) !important;
     padding: 0.625rem 0.3125rem;
     /* opacity: 0.7; */
     cursor: pointer;
     font-weight: 600; }
   ul.dm-ullist > li.active > a {
-    color: rgba(63, 74, 74, 0.8);
+    color: rgb(32, 36, 36) !important;
+    border-bottom: 3px solid #CC3232;
+    opacity: 1; }
+  ul.dm-ullist > li > a:hover {
+    color: rgb(32, 36, 36);
     border-bottom: 3px solid #CC3232;
     opacity: 1; }
   ul.dm-ullist > li.pick > span {
