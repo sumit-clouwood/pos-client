@@ -195,6 +195,8 @@ export default {
 .errortrans-enter
   transform: translateY(2px)
   opacity: 0
+.modal-body-digits
+  width: 101%
 
 .errortrans-leave-to
   transform: translateY(-2px)
@@ -229,7 +231,7 @@ export default {
     &:after
       content: ''
       position: absolute
-      top: -2%
+      top: -3%
       left: 45%
       width: 0
       height: 0
