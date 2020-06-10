@@ -10,7 +10,7 @@
       <div v-if="online">{{ _t('Online') }}</div>
       <div v-else>{{ _t('Offline') }}</div>
     </div>
-    <ul class="online-counter color-main">
+    <ul class="online-counter color-main" @click="showOnlineOrders()">
       <li
         class="nav-item online-data "
         data-toggle="modal"
@@ -107,6 +107,11 @@ export default {
     ...mapGetters('location', ['_t', 'permitted']),
   },
   methods: {
+    showOnlineOrders() {
+      $('#online-order')
+        .dialog()
+        .dialog('open')
+    },
     logoutCashier() {
       localStorage.setItem('token', '')
       this.$store.commit('auth/SET_TOKEN', '')

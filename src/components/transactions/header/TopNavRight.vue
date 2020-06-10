@@ -10,7 +10,7 @@
       <div v-if="online">{{ _t('Online') }}</div>
       <div v-else>{{ _t('Offline') }}</div>
     </div>
-    <ul class="online-counter color-main">
+    <!--<ul class="online-counter color-main">
       <li
         class="nav-item online-data "
         data-toggle="modal"
@@ -23,7 +23,7 @@
           }}</span>
         </a>
       </li>
-    </ul>
+    </ul>-->
     <div class="walkin-btn-design">
       <button
         class="btn btn-success walkin-btn"
@@ -59,7 +59,6 @@ export default {
   props: {},
   data: function() {
     return {
-      onlineOrdersCount: 0,
       dm: this.baseurl('delivery') + '/delivery_home/new',
       dashboard: this.baseurl('dashboard'),
       crm: this.baseurl('crm') + '/brand_customers',
@@ -78,11 +77,9 @@ export default {
     },
     ...mapGetters('context', ['store', 'haveMultipleStores']),
     ...mapState('location', ['availableLanguages', 'language']),
-    ...mapGetters('deliveryManager', ['onlineOrders']),
+    // ...mapGetters('deliveryManager', ['onlineOrders']),
     ...mapState('sync', ['online']),
     ...mapState({
-      latestOnlineOrders: state =>
-        state.order.onlineOrders ? state.order.onlineOrders.length : 0,
       username: state =>
         state.auth.userDetails ? state.auth.userDetails.name : '',
     }),
@@ -112,22 +109,6 @@ export default {
       bootstrap.loadUI(this.$store)
       this.$store.dispatch('location/changeLanguage', locale)
     },
-    onlineOrders() {
-      if (this.latestOnlineOrders === 0) {
-        if (
-          localStorage.getItem('onlineOrders') != 'undefined' &&
-          JSON.parse(localStorage.getItem('onlineOrders')) != null
-        ) {
-          this.onlineOrdersCount = JSON.parse(
-            localStorage.getItem('onlineOrders')
-          ).length
-        } else {
-          this.onlineOrdersCount = 0
-        }
-      } else {
-        this.onlineOrdersCount = this.latestOnlineOrders
-      }
-    },
     baseurl(link) {
       return (
         window.location.href.replace(new RegExp('/pos/.*'), '/' + link) +
@@ -135,9 +116,6 @@ export default {
       )
     },
     /*...mapActions('customer', ['fetchCustomerAddress']),*/
-  },
-  mounted() {
-    this.onlineOrders()
   },
 }
 </script>
