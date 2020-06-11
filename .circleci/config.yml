@@ -77,7 +77,7 @@ jobs:
             echo "Acquire::Check-Valid-Until false;" | sudo tee -a /etc/apt/apt.conf.d/10-nocheckvalid
             echo 'Package: *\nPin: origin "archive.debian.org"\nPin-Priority: 500' | sudo tee -a /etc/apt/preferences.d/10-archive-pin
             sudo apt-get update
-            sudo apt-get install -y python3.7 python3-pip python-dev build-essential
+            sudo apt-get install -y python3.8 python3-pip python-dev build-essential
 
             sudo pip3 install --upgrade pip
             sudo pip3 install --upgrade virtualenv
@@ -99,7 +99,9 @@ jobs:
           name: "BUILD APPLICATON"
           command: |
             # USING YARN INSTEAD NPM FOR SPEED
-            yarn run build
+            #yarn run build
+            ./node_modules/.bin/vue-cli-service build --modern
+
 
       - run:
           name: "PREPARE FILES"
