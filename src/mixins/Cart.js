@@ -22,17 +22,7 @@ export default {
       return this.$store.getters['modules/enabled'](CONST.MODULE_DINE_IN_MENU)
     },
   },
-  watch: {
-    barcode(itemCode) {
-      if (itemCode) {
-        const item = this.itemByCode(itemCode)
-        if (item) {
-          this.addToOrder(item)
-        }
-        this.$store.commit('category/setBarcode', false)
-      }
-    },
-  },
+  watch: {},
   methods: {
     setModifiers(item) {
       if (this.$store.getters['modifier/hasModifiers'](item)) {
