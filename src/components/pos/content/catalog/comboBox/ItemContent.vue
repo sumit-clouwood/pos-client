@@ -60,7 +60,7 @@
 </template>
 
 <script>
-/* global $, showModal, hideModal */
+/* global showModal */
 /*   eslint-disable no-console */
 import { mapActions, mapGetters, mapState } from 'vuex'
 export default {
@@ -69,6 +69,7 @@ export default {
     return {
       activeItems: {},
       activeOnClick: [],
+      itemWithModifiers: false,
     }
   },
   watch: {
@@ -87,6 +88,7 @@ export default {
     ...mapState('comboItems', [
       'subItems',
       'selectedItemContainer',
+      'setModifiersItem',
       'activeComboItems',
     ]),
     ...mapState('context', ['storeId']),
@@ -114,10 +116,15 @@ export default {
       return activeItem
     },
     ...mapActions('order', ['setActiveItem']),
-    setActiveItems(item, modifiersBtn = false) {
+    setActiveItems(item, modifiersAction = false) {
       let selectedContainerId = this.selectedItemContainer._id.$oid
+      console.log(
+        this.activeComboItems,
+        this.setModifiersItem,
+        this.selectedItemContainer,
+        'this.activeComboItems'
+      )
       if (Object.keys(this.activeComboItems).length === 0) {
-        console.log(this.activeComboItems)
         this.activeItems = {}
         this.activeItems[selectedContainerId] = []
       }
@@ -132,16 +139,15 @@ export default {
         this.activeItems[selectedContainerId] = []
       }
 
-      if (itemIndex) {
+      if (itemIndex && !modifiersAction) {
         let indexSubItem = this.activeItems[selectedContainerId].indexOf(
           itemIndex
         )
         this.activeItems[selectedContainerId].splice(indexSubItem, 1)
-        if (!modifiersBtn)
-          this.activeOnClick.splice(
-            this.activeOnClick.indexOf(item._id + selectedContainerId),
-            1
-          )
+        this.activeOnClick.splice(
+          this.activeOnClick.indexOf(item._id + selectedContainerId),
+          1
+        )
         this.commitErrorMessage('')
       } else {
         if (selectedLength != this.limitOfSelectingItems) {
@@ -156,11 +162,11 @@ export default {
             showModal('#POSItemOptions')*/
             this.setModifiersForItem(item, false)
           } else {
-            hideModal('#POSItemOptions')
+            //hideModal('#POSItemOptions')
           }
         } else {
           this.commitErrorMessage(
-            `You can select only ${this.limitOfSelectingItems} item (s)`
+            `You can select only ${this.limitOfSelectingItems} item (s) from this section.`
           )
         }
       }
@@ -168,11 +174,22 @@ export default {
         root: true,
       })
     },
-    setModifiersForItem(item, shouldCheckActiveItem = true) {
-      if (shouldCheckActiveItem) this.setActiveItems(item, false)
+    setModifiersForItem(itemData, shouldCheckActiveItem = true) {
+      let item = itemData
+      if (this.setModifiersItem.length) {
+        item = Object.values(this.setModifiersItem).find(
+          item => item._id === itemData._id
+        )
+        // eslint-disable-next-line no-debugger
+        debugger
+        item = item || itemData
+      }
+      console.log(item, Object.values(this.setModifiersItem), 'ffff', itemData)
+
+      if (shouldCheckActiveItem) this.setActiveItems(item, true)
       // if (this.$store.getters['modifier/hasModifiers'](item)) {
       this.$store.commit('modifier/SET_ITEM', item)
-      $('#POSItemOptions .modifier-option-radio').prop('checked', false)
+      // $('#POSItemOptions .modifier-option-radio').prop('checked', false)
       // this.$store.dispatch('modifier/assignModifiersToItem', item)
       if (!this.stateItemModifiers.find(obj => obj.itemId == item._id)) {
         //use updated modifiers
