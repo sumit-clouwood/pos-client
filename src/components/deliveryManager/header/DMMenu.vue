@@ -50,13 +50,18 @@
         {{ _t('Future Orders') }}
       </button>
       <button
-        v-if="store.jeebly"
         :disabled="!jeeblyOrder.length"
+        v-if="
+          (brand.jeebly && store.jeebly) ||
+            (brand.tawseel && store.tawseel) ||
+            (brand.one_click && store.one_click)
+        "
         class="btn btn-success"
         data-related="future-order"
-        @click="SubmitOrder()"
+        data-toggle="modal"
+        data-target="#Delivery-Service"
       >
-        {{ _t('Assign To Jeebly') }}
+        {{ _t('Assign To Delivery Services') }}
       </button>
     </div>
 
@@ -78,7 +83,7 @@ export default {
   computed: {
     ...mapGetters('location', ['_t', 'jeeblyOrder']),
     ...mapState('deliveryManager', ['section', 'selectedDriver']),
-    ...mapState('location', ['store', 'jeeblyOrder']),
+    ...mapState('location', ['store', 'jeeblyOrder', 'brand']),
   },
   methods: {
     updateOrderStatus(orderStatus) {

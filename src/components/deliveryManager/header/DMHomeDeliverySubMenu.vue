@@ -110,6 +110,7 @@ export default {
   name: 'DMHomeDeliverySubMenu',
   methods: {
     updateOrderStatus: function(orderStatus) {
+      this.$store.commit('location/SET_ORDER_JEEBLY', [])
       this.$store.commit('deliveryManager/LIST_TYPE', orderStatus.title)
       this.$store.commit('deliveryManager/SECTION', orderStatus.section)
       this.$store.dispatch('deliveryManager/updateDMOrderStatus', orderStatus)

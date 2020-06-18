@@ -1,11 +1,27 @@
 <template>
   <div class="dm-order-screens dm-order-screen-change" id="home-delivery-order">
     <DMHomeDeliverySubMenu />
-    <div class="dm-ready-order-wrapper" id="dm-order-acceptance">
+    <div
+      class="dm-ready-order-wrapper"
+      id="dm-order-acceptance"
+      v-bind:style="{
+        display: availableModules.includes(CONST.MODULE_MANUAL_ACCEPTANCE)
+          ? 'grid'
+          : 'none',
+      }"
+    >
       <Preloader :msg="_t('Loading new orders') + '...'" v-if="loading" />
       <DMItem :actionDetails="acceptanceDetails" v-else />
     </div>
-    <div class="dm-ready-order-wrapper" id="dm-new-order">
+    <div
+      class="dm-ready-order-wrapper"
+      id="dm-new-order"
+      v-bind:style="{
+        display: availableModules.includes(CONST.MODULE_MANUAL_ACCEPTANCE)
+          ? 'none'
+          : 'grid',
+      }"
+    >
       <Preloader :msg="_t('Loading new orders') + '...'" v-if="loading" />
       <DMItem :actionDetails="readyDetails" v-else />
     </div>
@@ -128,6 +144,7 @@
       <!--<DMItem :actionDetails="delivered" />-->
     </div>
     <OrderDetailsPopup />
+    <DeliveryService></DeliveryService>
     <div class="pagination-customer-details" v-if="!loading">
       <paginate
         v-if="params.totalPages > 1"
@@ -153,6 +170,7 @@ import DMItem from '@/components/deliveryManager/content/DMItem'
 import DMDeliveredItem from '@/components/deliveryManager/content/DMDeliveredItem'
 import DMAssignedDriver from '@/components/deliveryManager/partial/DMAssignedDriver'
 import OrderDetailsPopup from '@/components/pos/content/OrderDetailPopup'
+import DeliveryService from './popups/DeliveryService'
 import paginate from 'vuejs-paginate'
 import Preloader from '@/components/util/progressbar'
 
@@ -207,6 +225,7 @@ export default {
     DMAssignedDriver,
     paginate,
     Preloader,
+    DeliveryService,
   },
   computed: {
     ...mapGetters('deliveryManager', ['drivers']),

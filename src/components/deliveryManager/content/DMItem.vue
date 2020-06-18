@@ -240,7 +240,7 @@ export default {
   mixins: [DateTime],
   computed: {
     ...mapGetters('location', ['_t']),
-    ...mapState('location', ['timezoneString', 'store']),
+    ...mapState('location', ['timezoneString', 'store', 'jeeblyOrder']),
     ...mapState({
       orderStatus: state => state.deliveryManager.deliveryOrderStatus,
     }),
@@ -250,11 +250,13 @@ export default {
     }),
     ...mapGetters('deliveryManager', ['orders', 'drivers']),
   },
+  created() {
+    this.activeIndex = this.jeeblyOrder
+  },
   updated() {
     clearInterval(this.orderTime)
   },
   destroyed() {
-    this.$store.commit('location/SET_ORDER_JEEBLY', [])
     clearInterval(this.orderTime)
   },
   methods: {
@@ -284,15 +286,7 @@ export default {
         this.$store.commit('location/SET_ORDER_JEEBLY', this.activeIndex)
         return false
       }
-      var driver = this.drivers.filter(function(el) {
-        return el.name.toLowerCase() === 'jeebly'
-      })
       this.activeIndex.push(data.order._id)
-      this.selectDriver = driver[0]
-      this.$store.commit(
-        'deliveryManager/SET_SELECTED_DM_DRIVER',
-        this.selectDriver._id
-      )
       this.$store.commit('location/SET_ORDER_JEEBLY', this.activeIndex)
     },
     ...mapActions('deliveryManager', ['selectDriver']),
@@ -322,5 +316,8 @@ tbody {
   padding: $px40 $px60;
   word-break: break-word;
   grid-template-columns: 1fr 1fr 1fr 1fr;
+}
+.displayOrder {
+  display: block;
 }
 </style>
