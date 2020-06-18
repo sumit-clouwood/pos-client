@@ -110,7 +110,7 @@ const getters = {
     return modifiersTax
   },
   comboItemModifier: (state, getters, rootState) => item => {
-    console.log(item.orderIndex.toString(), 'order index item')
+    // console.log(item.orderIndex.toString(), 'order index item')
     return rootState.comboItems.itemsModifiersValueTaxDiff.find(
       comboItemModifier =>
         comboItemModifier.itemId === item._id + item.orderIndex.toString()

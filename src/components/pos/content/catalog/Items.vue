@@ -111,6 +111,15 @@ export default {
     ...mapGetters('order', ['orderType']),
   },
   watch: {
+    barcode(itemCode) {
+      if (itemCode) {
+        const item = this.itemByCode(itemCode)
+        if (item) {
+          this.addToOrder(item)
+        }
+        this.$store.commit('category/setBarcode', false)
+      }
+    },
     items() {
       this.$nextTick(() => {
         this.calculateScrolls().catch(() => {})
