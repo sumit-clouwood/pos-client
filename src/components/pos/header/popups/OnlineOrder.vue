@@ -250,7 +250,7 @@ export default {
   },
   updated() {
     // eslint-disable-next-line no-console
-    console.log('update', this.onlineOrders.count)
+    //console.log('update', this.onlineOrders.count)
     if (!this.onlineOrders.count) {
       this.pauseSound()
     }
@@ -310,7 +310,9 @@ export default {
         ) {
           scope.lastOrderId = payload.data.order_id
           this.$store.dispatch('deliveryManager/getOnlineOrders').then(() => {
-            if (scope.onlineOrders.count && payload.data.action_id === 'add') {
+            // eslint-disable-next-line no-console
+            console.log(payload)
+            if (payload.data.action_id === 'add') {
               // eslint-disable-next-line no-console
               console.log(
                 'onlineOrders',
@@ -335,6 +337,20 @@ export default {
         .dialog()
         .dialog('close')
     },
+    getOnlineOrders() {
+      let scope = this
+      this.$store.dispatch('deliveryManager/getOnlineOrders').then(() => {
+        // eslint-disable-next-line no-console
+        // eslint-disable-next-line no-console
+        if (scope.onlineOrders.count > 0) {
+          $('#online-order')
+            .dialog()
+            .dialog('open')
+          if (!scope.isAudioPlaying) scope.playSound()
+        }
+        // clearTimeout(scope.interval)
+      })
+    },
     ...mapActions('deliveryManager', ['selectDriver']),
     ...mapActions('order', ['selectedOrderDetails', 'updateOrderAction']),
   },
@@ -352,6 +368,7 @@ export default {
     //   },
     //   false
     // )
+    this.getOnlineOrders()
     this.onlineOrderSetup()
   },
 }

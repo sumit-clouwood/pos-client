@@ -24,7 +24,8 @@
               class="order-item"
               :class="{ active: activeIndex.includes(order._id) }"
               @click="
-                store.jeebly && actionDetails.action == 'delivery_ready'
+                ;(jeeblyEnabled || tawseelEnabled || oneClickEnabled) &&
+                actionDetails.action == 'delivery_ready'
                   ? AssigneeOrder({
                       order: order,
                       orderType: order.order_type,
@@ -240,7 +241,12 @@ export default {
   mixins: [DateTime],
   computed: {
     ...mapGetters('location', ['_t']),
-    ...mapState('location', ['timezoneString', 'store', 'jeeblyOrder']),
+    ...mapState('location', [
+      'timezoneString',
+      'store',
+      'jeeblyOrder',
+      'brand',
+    ]),
     ...mapState({
       orderStatus: state => state.deliveryManager.deliveryOrderStatus,
     }),
@@ -251,6 +257,11 @@ export default {
     ...mapGetters('deliveryManager', ['orders', 'drivers']),
   },
   created() {
+    this.jeeblyEnabled = this.store.jeebly && this.brand.jeebly ? true : false
+    this.tawseelEnabled =
+      this.store.tawseel && this.brand.tawseel ? true : false
+    this.oneClickEnabled =
+      this.store.one_click && this.brand.one_click ? true : false
     this.activeIndex = this.jeeblyOrder
   },
   updated() {
