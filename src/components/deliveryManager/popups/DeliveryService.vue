@@ -62,19 +62,19 @@ export default {
           name: 'Jeebly',
           id: 'jeebly',
           discription: '',
-          img: '/img/delivery-services/jeebly.png',
+          img: 'img/delivery-services/jeebly.png',
         },
         {
           name: 'Tawseel',
           id: 'tawseel',
           discription: '',
-          img: '/img/delivery-services/tawseel.png',
+          img: 'img/delivery-services/tawseel.png',
         },
         {
           name: 'One Click',
           id: 'one_click',
           discription: '',
-          img: '/img/delivery-services/oneClick.png',
+          img: 'img/delivery-services/oneClick.png',
         },
       ],
     }
@@ -200,10 +200,10 @@ export default {
     padding: 0px;
   }
   grid-gap: 1.5625rem;
-  padding-top: 1.5625rem;
-  padding-bottom: 1.5625rem;
-  padding-left: 1.5625rem;
-  padding-right: 1.5625rem;
+  padding: 1.5625rem;
+}
+.stores-list > div:empty {
+  display: none;
 }
 .store-address {
   font-size: 0.85rem;
@@ -239,8 +239,15 @@ export default {
   min-height: 80% !important;
 }
 .modal-content {
-  width: 95%;
+  width: 90%;
   margin: auto;
-  margin-top: 10%;
+  /*margin-top: 10%;*/
+}
+.card-img-top {
+  width: 195px;
+  height: 125px;
+}
+.modal .modal-dialog .modal-content {
+  width: min-content;
 }
 </style>
