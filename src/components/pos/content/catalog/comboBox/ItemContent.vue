@@ -36,10 +36,7 @@
             data-toggle="modal"
             data-target="#POSOrderItemOptions"
           >
-            <div
-              class="button-plus-icon"
-              @click.stop="setModifiersForItem(item)"
-            >
+            <div class="button-plus-icon">
               <svg
                 class="color-text"
                 viewBox="0 0 15 15"
@@ -62,7 +59,9 @@ import { mapGetters } from 'vuex'
 import Checkbox from '@/components/util/form/CheckBox2.vue'
 export default {
   name: 'ItemContent',
-  components: { Checkbox },
+  components: {
+    Checkbox,
+  },
   data() {
     return {}
   },

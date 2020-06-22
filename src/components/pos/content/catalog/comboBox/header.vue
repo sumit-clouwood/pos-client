@@ -10,7 +10,7 @@
 import { mapGetters } from 'vuex'
 export default {
   computed: {
-    ...mapGetters('location', ['_t', 'dt']),
+    ...mapGetters('location', ['_t']),
     ...mapGetters('combo', ['current_combo']),
   },
 }

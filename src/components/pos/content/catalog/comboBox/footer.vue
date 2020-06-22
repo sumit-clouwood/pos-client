@@ -7,7 +7,7 @@
       <button
         type="button"
         class="btn btn-success btn-default "
-        @click="addComboItemCart"
+        @click="addToCart"
       >
         {{ _t('Add to Order') }}
       </button>
@@ -15,7 +15,6 @@
         type="button"
         class="btn btn-danger cancel-announce"
         data-dismiss="modal"
-        @click="emptyComboSelection"
       >
         {{ _t('Cancel') }}
       </button>
@@ -33,9 +32,13 @@ export default {
   },
   mixins: [Cart],
   data() {
-    return {}
+    return {
+      error: false,
+    }
   },
-  methods: {},
+  methods: {
+    addToCart() {},
+  },
 }
 </script>
 <style scoped>
