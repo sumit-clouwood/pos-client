@@ -59,20 +59,29 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import Checkbox from '@/components/util/form/CheckBox2.vue'
 export default {
   name: 'ItemContent',
+  components: { Checkbox },
   data() {
-    return {
-      activeItems: {},
-      activeOnClick: [],
-      itemWithModifiers: false,
-    }
+    return {}
   },
   watch: {},
   computed: {
     ...mapGetters('location', ['formatPrice', '_t']),
+    ...mapGetters('combo', ['current_combo_items']),
+    comboItemSelection: {
+      get() {
+        return this.$store.getters['combo/current_combo_selected_items']
+      },
+      set(items) {
+        this.$store.commit('combo/SET_CURRENT_COMBO_SELECTED_ITEMS', items)
+      },
+    },
   },
-  methods: {},
+  methods: {
+    validateSelection() {},
+  },
 }
 </script>
 

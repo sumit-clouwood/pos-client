@@ -133,7 +133,7 @@ export default {
         showModal('#combox-box-popup')
       } else {
         // if (!item.is_upselling)
-        this.$store.dispatch('comboItems/reset')
+        this.$store.dispatch('combo/reset')
         return this.itemsAddToCart(item)
       }
     },

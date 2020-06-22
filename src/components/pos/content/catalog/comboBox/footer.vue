@@ -26,102 +26,16 @@
 <script>
 import { mapGetters, mapState } from 'vuex'
 import Cart from '@/mixins/Cart'
-/* global hideModal */
 export default {
   computed: {
     ...mapGetters('location', ['_t']),
-    ...mapState('comboItems', [
-      'comboItemsList',
-      'activeComboItems',
-      'setModifiersItem',
-      'forCombo',
-    ]),
+    ...mapState('combo', []),
   },
   mixins: [Cart],
   data() {
-    return {
-      comboItem: [],
-      totalItemQty: 0,
-      error: false,
-    }
+    return {}
   },
-  methods: {
-    addComboItemCart() {
-      let activeItemModifiers = []
-      this.validateNumberOfItems()
-      let itemQty = 0
-      // eslint-disable-next-line no-unused-vars
-      for (let [key, value] of Object.entries(this.activeComboItems)) {
-        value.map(activeItem => {
-          let activeChecker = this.setModifiersItem.find(
-            mItem => mItem._id === activeItem._id
-          )
-          if (activeChecker) {
-            itemQty += parseInt(activeChecker.quantity)
-            let item = this.updateItemPrice(activeChecker)
-            activeItemModifiers.push(item)
-          } else {
-            itemQty += 1
-            let item = this.updateItemPrice(activeItem)
-            activeItemModifiers.push(item)
-          }
-        })
-      }
-      if (this.totalItemQty > itemQty) {
-        this.error = `Please select ${this.totalItemQty - itemQty} more item${
-          this.totalItemQty - itemQty > 1 ? 's' : ''
-        }`
-      } else if (this.totalItemQty < itemQty) {
-        this.error = `Please remove any ${itemQty - this.totalItemQty} item${
-          itemQty - this.totalItemQty > 1 ? 's' : ''
-        }`
-      } else {
-        this.error = false
-      }
-      this.$store.dispatch(
-        'comboItems/setAdditionalComboPrice',
-        activeItemModifiers
-      )
-      let itemPriceSettlement = this.$store.getters[
-        'comboItems/priceSettlement'
-      ](activeItemModifiers)
-      if (!this.error) {
-        let item = {
-          ...this.comboItemsList,
-          combo_selected_items: itemPriceSettlement,
-          for_combo: this.forCombo,
-        }
-        // eslint-disable-next-line no-console
-        console.log(activeItemModifiers, 'filtered data', itemPriceSettlement)
-        this.itemsAddToCart(item)
-        this.$store.commit('comboItems/ACTIVE_COMBO_ITEMS', {}, { root: true })
-        hideModal('#combox-box-popup')
-      }
-    },
-    validateNumberOfItems() {
-      this.totalItemQty = 0
-      this.comboItemsList.combo_items.forEach(itemGrp => {
-        this.totalItemQty += parseInt(itemGrp.qty)
-      })
-    },
-    emptyComboSelection() {
-      this.comboItem[this.comboItemsList] = false
-      this.$store.commit('comboItems/ACTIVE_COMBO_ITEMS', false)
-    },
-    updateItemPrice(addedItem) {
-      this.$store.dispatch('comboItems/updateOrderIndex')
-      /*let totalItemInCart =
-        parseInt(this.$store.getters['order/orderIndex']) || 1*/
-      this.$store.commit(
-        'comboItems/SET_FOR_COMBO',
-        this.$store.getters['order/orderIndex'],
-        {
-          root: true,
-        }
-      )
-      return this.$store.getters['comboItems/updateItemPriceTax'](addedItem)
-    },
-  },
+  methods: {},
 }
 </script>
 <style scoped>

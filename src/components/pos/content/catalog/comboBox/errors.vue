@@ -11,7 +11,7 @@
 import { mapState } from 'vuex'
 export default {
   computed: {
-    ...mapState('comboItems', ['errorMessage']),
+    ...mapState('combo', ['errorMessage']),
   },
 }
 </script>

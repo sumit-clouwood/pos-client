@@ -6,27 +6,26 @@
         v-for="(section, index) in current_combo.combo_items"
         :class="{ active_left_combo: section == current_combo_section }"
         :key="index"
-        @click="selectComboSection(section, item)"
+        @click="selectComboSection(section)"
       >
         <p class="food_title">{{ section.name }}</p>
       </div>
     </div>
   </div>
 </template>
-
 <script>
-import { mapGetters, mapState } from 'vuex'
+import { mapGetters } from 'vuex'
 export default {
   data() {},
   name: 'Items',
   watch: {},
   computed: {
-    ...mapState('comboItems', ['current_combo', 'current_combo_section']),
+    ...mapGetters('combo', ['current_combo', 'current_combo_section']),
     ...mapGetters('location', ['_t']),
   },
   methods: {
     selectComboSection(section) {
-      this.$store.commit('SET_CURRENT_COMBO_SECTION', section)
+      this.$store.commit('combo/SET_CURRENT_COMBO_SECTION', section)
     },
   },
 }
