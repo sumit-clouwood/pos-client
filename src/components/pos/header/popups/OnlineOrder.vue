@@ -1,6 +1,6 @@
 <template>
   <!-- Online order popup -->
-  <div class="modal" id="online-order" role="dialog">
+  <div class="modal online-order-modal" id="online-order" role="dialog">
     <div class="modal-dialog">
       <!-- Modal content-->
       <div class="modal-content color-dashboard-background">
@@ -274,7 +274,8 @@ export default {
     },
     hideOnlineModal() {
       // eslint-disable-next-line no-console
-      console.log('hide')
+      console.log('hide', $('#online-order'), 'ff')
+      $('.online-order-modal').hide()
       $('#online-order')
         .dialog()
         .dialog('close')
