@@ -5,6 +5,8 @@ const state = {
 const actions = {}
 const getters = {
   current_combo: state => state.currentCombo,
+  current_combo_items: (state, getters) =>
+    getters.current_combo_section.for_items,
 }
 const mutations = {
   SET_CURRENT_COMBO(state, combo) {

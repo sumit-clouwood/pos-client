@@ -129,7 +129,7 @@ export default {
   methods: {
     addToOrder(item) {
       if (item.item_type === CONST.COMBO_ITEM_TYPE) {
-        this.$store.commit('SET_CURRENT_COMBO', item)
+        this.$store.commit('combo/SET_CURRENT_COMBO', item)
         showModal('#combox-box-popup')
       } else {
         // if (!item.is_upselling)

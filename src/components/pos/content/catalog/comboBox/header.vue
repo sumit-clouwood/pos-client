@@ -1,6 +1,8 @@
 <template>
   <div class="modal-header customer-header">
-    <h4 class="customer-title">{{ _t(comboItemName) || _t('Combo item') }}</h4>
+    <h4 class="customer-title">
+      {{ _t(current_combo.name) || _t('Combo item') }}
+    </h4>
   </div>
 </template>
 
@@ -8,8 +10,8 @@
 import { mapGetters } from 'vuex'
 export default {
   computed: {
-    ...mapGetters('location', ['_t']),
-    ...mapGetters('comboItems', ['comboItemName']),
+    ...mapGetters('location', ['_t', 'dt']),
+    ...mapGetters('comboItems', ['current_combo']),
   },
 }
 </script>

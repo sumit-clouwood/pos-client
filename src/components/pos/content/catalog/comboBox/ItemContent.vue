@@ -2,67 +2,63 @@
   <div class="modal-body color-dashboard-background grid_combo_item_content">
     <div
       class="foodbox_container"
-      v-for="(item, index) in subItems"
-      :class="{
-        active_right_combo: activeOnClick.includes(
-          item._id + selectedContainerId
-        ),
-      }"
+      v-for="(item, index) in current_combo_items"
       :key="index"
-      @click="setActiveItems(item)"
     >
-      <div class="food-item-box">
-        <img :src="item.image" alt v-if="item.image != ''" />
-        <img
-          v-else
-          style="border:1px solid rgba(0, 0, 0, 0.44);"
-          :style="{
-            background:
-              item.image == '' && item.item_color ? item.item_color : 'white',
-          }"
-        />
-        <div class="food-menu-item-text color-text">
-          <label :title="dt(item)">
-            {{ dt(item) }}
-          </label>
-        </div>
-      </div>
-      <div class="food-box-icon">
-        <i
-          class="fa fa-check item-selected-check right_icon"
-          aria-hidden="true"
-        ></i>
-        <div
-          class="button-plus"
-          data-toggle="modal"
-          data-target="#POSOrderItemOptions"
-        >
-          <div class="button-plus-icon" @click.stop="setModifiersForItem(item)">
-            <svg
-              class="color-text"
-              viewBox="0 0 15 15"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M8.40002 6.3999V1.3999C8.40002 1.13469 8.29467 0.880332 8.10713 0.692796C7.9196 0.505259 7.66524 0.399902 7.40002 0.399902C7.13481 0.399902 6.88045 0.505259 6.69292 0.692796C6.50538 0.880332 6.40002 1.13469 6.40002 1.3999V6.3999H1.40002C1.13481 6.3999 0.880454 6.50526 0.692918 6.6928C0.505381 6.88033 0.400024 7.13469 0.400024 7.3999C0.400024 7.66512 0.505381 7.91947 0.692918 8.10701C0.880454 8.29455 1.13481 8.3999 1.40002 8.3999H6.40002V13.3999C6.40002 13.6651 6.50538 13.9195 6.69292 14.107C6.88045 14.2945 7.13481 14.3999 7.40002 14.3999C7.66524 14.3999 7.9196 14.2945 8.10713 14.107C8.29467 13.9195 8.40002 13.6651 8.40002 13.3999V8.3999H13.4C13.6652 8.3999 13.9196 8.29455 14.1071 8.10701C14.2947 7.91947 14.4 7.66512 14.4 7.3999C14.4 7.13469 14.2947 6.88033 14.1071 6.6928C13.9196 6.50526 13.6652 6.3999 13.4 6.3999H8.40002Z"
-              />
-            </svg>
+      <checkbox
+        v-model="comboItemSelection[item._id]"
+        :value="item._id"
+        @change="validateSelection(item)"
+      >
+        <div class="food-item-box">
+          <img :src="item.image" alt v-if="item.image != ''" />
+          <img
+            v-else
+            style="border:1px solid rgba(0, 0, 0, 0.44);"
+            :style="{
+              background:
+                item.image == '' && item.item_color ? item.item_color : 'white',
+            }"
+          />
+          <div class="food-menu-item-text color-text">
+            <label :title="dt(item)">
+              {{ dt(item) }}
+            </label>
           </div>
         </div>
-      </div>
-      <!--<div class="foodbox_price_cntr">
-        &lt;!&ndash;<div class="food-menu-item-price">
-          &lt;!&ndash;<strong>{{ formatPrice(item.value) }}</strong>&ndash;&gt;
-        </div>&ndash;&gt;
-      </div>-->
+        <div class="food-box-icon">
+          <i
+            class="fa fa-check item-selected-check right_icon"
+            aria-hidden="true"
+          ></i>
+          <div
+            class="button-plus"
+            data-toggle="modal"
+            data-target="#POSOrderItemOptions"
+          >
+            <div
+              class="button-plus-icon"
+              @click.stop="setModifiersForItem(item)"
+            >
+              <svg
+                class="color-text"
+                viewBox="0 0 15 15"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M8.40002 6.3999V1.3999C8.40002 1.13469 8.29467 0.880332 8.10713 0.692796C7.9196 0.505259 7.66524 0.399902 7.40002 0.399902C7.13481 0.399902 6.88045 0.505259 6.69292 0.692796C6.50538 0.880332 6.40002 1.13469 6.40002 1.3999V6.3999H1.40002C1.13481 6.3999 0.880454 6.50526 0.692918 6.6928C0.505381 6.88033 0.400024 7.13469 0.400024 7.3999C0.400024 7.66512 0.505381 7.91947 0.692918 8.10701C0.880454 8.29455 1.13481 8.3999 1.40002 8.3999H6.40002V13.3999C6.40002 13.6651 6.50538 13.9195 6.69292 14.107C6.88045 14.2945 7.13481 14.3999 7.40002 14.3999C7.66524 14.3999 7.9196 14.2945 8.10713 14.107C8.29467 13.9195 8.40002 13.6651 8.40002 13.3999V8.3999H13.4C13.6652 8.3999 13.9196 8.29455 14.1071 8.10701C14.2947 7.91947 14.4 7.66512 14.4 7.3999C14.4 7.13469 14.2947 6.88033 14.1071 6.6928C13.9196 6.50526 13.6652 6.3999 13.4 6.3999H8.40002Z"
+                />
+              </svg>
+            </div>
+          </div>
+        </div>
+      </checkbox>
     </div>
   </div>
 </template>
 
 <script>
-/* global showModal */
-/*   eslint-disable no-console */
-import { mapActions, mapGetters, mapState } from 'vuex'
+import { mapGetters } from 'vuex'
 export default {
   name: 'ItemContent',
   data() {
@@ -72,143 +68,11 @@ export default {
       itemWithModifiers: false,
     }
   },
-  watch: {
-    activeComboItems(newVal, oldVal) {
-      if (newVal != oldVal) {
-        this.$nextTick(() => {
-          if (Object.keys(this.activeComboItems).length === 0) {
-            this.activeOnClick = []
-          }
-          this.commitErrorMessage('')
-        })
-      }
-    },
-  },
+  watch: {},
   computed: {
-    ...mapState('comboItems', [
-      'subItems',
-      'selectedItemContainer',
-      'setModifiersItem',
-      'activeComboItems',
-    ]),
-    ...mapState('context', ['storeId']),
     ...mapGetters('location', ['formatPrice', '_t']),
-    ...mapGetters('modifier', ['stateItemModifiers', 'modifiers']),
-    ...mapGetters('auth', ['multistore']),
-    ...mapGetters('comboItems', ['limitOfSelectingItems']),
-    selectedContainerId() {
-      return this.selectedItemContainer._id.$oid
-    },
   },
-  methods: {
-    isActiveItem(itemId) {
-      let activeItem = false
-      let selectedContainerId = this.selectedContainerId
-      if (typeof this.activeItems[selectedContainerId] != 'undefined') {
-        this.activeItems[selectedContainerId].forEach(element => {
-          if (element) {
-            if (element._id === itemId) {
-              if (!activeItem) activeItem = true
-            }
-          }
-        })
-      }
-      return activeItem
-    },
-    ...mapActions('order', ['setActiveItem']),
-    setActiveItems(item, modifiersAction = false) {
-      let selectedContainerId = this.selectedItemContainer._id.$oid
-      console.log(
-        this.activeComboItems,
-        this.setModifiersItem,
-        this.selectedItemContainer,
-        'this.activeComboItems'
-      )
-      if (Object.keys(this.activeComboItems).length === 0) {
-        this.activeItems = {}
-        this.activeItems[selectedContainerId] = []
-      }
-      let itemIndex = false
-      let selectedLength = 0
-      if (typeof this.activeItems[selectedContainerId] != 'undefined') {
-        itemIndex = this.activeItems[selectedContainerId].find(
-          activatedItem => activatedItem._id === item._id
-        )
-        selectedLength = this.activeItems[selectedContainerId].length
-      } else {
-        this.activeItems[selectedContainerId] = []
-      }
-
-      if (itemIndex && !modifiersAction) {
-        let indexSubItem = this.activeItems[selectedContainerId].indexOf(
-          itemIndex
-        )
-        this.activeItems[selectedContainerId].splice(indexSubItem, 1)
-        this.activeOnClick.splice(
-          this.activeOnClick.indexOf(item._id + selectedContainerId),
-          1
-        )
-        this.commitErrorMessage('')
-      } else {
-        if (selectedLength != this.limitOfSelectingItems) {
-          this.commitErrorMessage('')
-          this.activeItems[selectedContainerId].push(item)
-          this.activeOnClick.push(item._id + selectedContainerId)
-          this.isActiveItem(item._id)
-          if (this.$store.getters['modifier/hasModifiers'](item)) {
-            /*$('#POSItemOptions .modifier-option-radio').prop('checked', false)
-            this.$store.dispatch('modifier/assignModifiersToItem', item)
-            this.$store.commit('orderForm/clearSelection')
-            showModal('#POSItemOptions')*/
-            this.setModifiersForItem(item, false)
-          } else {
-            //hideModal('#POSItemOptions')
-          }
-        } else {
-          this.commitErrorMessage(
-            `You can select only ${this.limitOfSelectingItems} item (s) from this section.`
-          )
-        }
-      }
-      this.$store.commit('comboItems/ACTIVE_COMBO_ITEMS', this.activeItems, {
-        root: true,
-      })
-    },
-    setModifiersForItem(itemData, shouldCheckActiveItem = true) {
-      let item = itemData
-      if (this.setModifiersItem.length) {
-        item = Object.values(this.setModifiersItem).find(
-          item => item._id === itemData._id
-        )
-        // eslint-disable-next-line no-debugger
-        debugger
-        item = item || itemData
-      }
-      console.log(item, Object.values(this.setModifiersItem), 'ffff', itemData)
-
-      if (shouldCheckActiveItem) this.setActiveItems(item, true)
-      // if (this.$store.getters['modifier/hasModifiers'](item)) {
-      this.$store.commit('modifier/SET_ITEM', item)
-      // $('#POSItemOptions .modifier-option-radio').prop('checked', false)
-      // this.$store.dispatch('modifier/assignModifiersToItem', item)
-      if (!this.stateItemModifiers.find(obj => obj.itemId == item._id)) {
-        //use updated modifiers
-        const modifiers = this.modifiers(item)
-
-        this.$store.commit('modifier/SET_ITEM_MODIFIERS', {
-          itemId: item._id,
-          modifiers: modifiers,
-          item: item,
-          multistore: this.multistore ? this.storeId : false,
-        })
-      }
-      showModal('#POSItemOptions')
-      // }
-    },
-    commitErrorMessage(message) {
-      this.$store.commit('comboItems/SET_ERROR_MESSAGE', message)
-    },
-  },
+  methods: {},
 }
 </script>
 
