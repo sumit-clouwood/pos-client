@@ -129,18 +129,7 @@ export default {
   methods: {
     addToOrder(item) {
       if (item.item_type === CONST.COMBO_ITEM_TYPE) {
-        // eslint-disable-next-line no-console
-        console.log('combo_item', item)
-        this.$store.commit('comboItems/ACTIVE_COMBO_ITEMS', {}, { root: true })
-        this.$store.commit('comboItems/SET_COMBO_ITEMS', item)
-        this.$store.commit('comboItems/SUB_ITEM_LIST', false)
-        this.$store.commit('comboItems/SET_MODIFIERS', false)
-        this.$store.dispatch('comboItems/updateOrderIndex')
-        this.$store.commit(
-          'comboItems/SET_SELECTED_ITEM_DATA',
-          item.combo_items[0]
-        )
-        this.$store.dispatch('comboItems/findItemById')
+        this.$store.commit('SET_CURRENT_COMBO', item)
         showModal('#combox-box-popup')
       } else {
         // if (!item.is_upselling)
