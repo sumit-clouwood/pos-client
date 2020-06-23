@@ -53,11 +53,7 @@ const getters = {
   current_combo_selected_item: state => state.currentComboSelectedItem,
   current_combo_selected_modifiers: state =>
     state.currentComboSelectedModifiers,
-  current_combo_item_modifiers: (state, getters) => item => {
-    if (getters.current_combo_selected_modifiers) {
-      return getters.current_combo_selected_modifiers[item._id]
-    }
-  },
+
   order_item: (state, getters, rootState) => {
     const item = { ...getters.current_combo }
     item.selectedItems = getters.current_combo_selected_items
