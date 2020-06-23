@@ -339,10 +339,12 @@ export default {
         .dialog('close')
     },
     getOnlineOrders() {
+      // eslint-disable-next-line no-console
       let scope = this
       this.$store.dispatch('deliveryManager/getOnlineOrders').then(() => {
         // eslint-disable-next-line no-console
         // eslint-disable-next-line no-console
+        console.log(scope.onlineOrders)
         if (scope.onlineOrders.count > 0) {
           $('#online-order')
             .dialog()
@@ -369,8 +371,10 @@ export default {
     //   },
     //   false
     // )
-    this.getOnlineOrders()
     this.onlineOrderSetup()
+    this.getOnlineOrders()
+    // eslint-disable-next-line no-console
+    console.log(this.onlineOrders)
   },
 }
 </script>

@@ -8,9 +8,9 @@
           updateOrderStatus({
             orderStatus: 'in-progress',
             collected: 'no',
-            pageId: 'home_delivery_acceptance',
+            pageId: 'home_delivery_new',
             title: _t('New Orders'),
-            dataRelated: 'dm-order-acceptance',
+            dataRelated: 'dm-new-order',
             section: 'crm',
           })
         "

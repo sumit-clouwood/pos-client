@@ -5,21 +5,25 @@
       class="dm-ready-order-wrapper"
       id="dm-order-acceptance"
       v-bind:style="{
-        display: availableModules.includes(CONST.MODULE_MANUAL_ACCEPTANCE)
-          ? 'grid'
-          : 'none',
+        display:
+          availableModules.includes(CONST.MODULE_MANUAL_ACCEPTANCE) == true &&
+          listType == 'Awaiting Acceptance'
+            ? 'grid'
+            : 'none',
       }"
     >
       <Preloader :msg="_t('Loading new orders') + '...'" v-if="loading" />
       <DMItem :actionDetails="acceptanceDetails" v-else />
     </div>
+    {{ availableModules.includes(CONST.MODULE_MANUAL_ACCEPTANCE) }}
     <div
       class="dm-ready-order-wrapper"
       id="dm-new-order"
       v-bind:style="{
-        display: availableModules.includes(CONST.MODULE_MANUAL_ACCEPTANCE)
-          ? 'none'
-          : 'grid',
+        display:
+          availableModules.includes(CONST.MODULE_MANUAL_ACCEPTANCE) == true
+            ? 'none'
+            : 'grid',
       }"
     >
       <Preloader :msg="_t('Loading new orders') + '...'" v-if="loading" />
@@ -173,6 +177,7 @@ import OrderDetailsPopup from '@/components/pos/content/OrderDetailPopup'
 import DeliveryService from './popups/DeliveryService'
 import paginate from 'vuejs-paginate'
 import Preloader from '@/components/util/progressbar'
+import * as CONST from '@/constants'
 
 /* global $ */
 export default {
@@ -246,6 +251,21 @@ export default {
     }
   },
   mounted() {
+    if (
+      this.availableModules.includes(CONST.MODULE_MANUAL_ACCEPTANCE) == true
+    ) {
+      // eslint-disable-next-line no-console
+      console.log('why')
+      let orderStatus = {
+        orderStatus: 'in-progress',
+        collected: 'no',
+        pageId: 'home_delivery_acceptance',
+        title: 'Awaiting Acceptance',
+        dataRelated: 'dm-order-acceptance',
+        section: 'crm',
+      }
+      this.$store.dispatch('deliveryManager/updateDMOrderStatus', orderStatus)
+    }
     this.$store.dispatch('deliveryManager/fetchDMOrderDetail')
     this.interval = setInterval(() => {
       let dmautoloader = this.listType == 'Waiting for Pick' ? false : true

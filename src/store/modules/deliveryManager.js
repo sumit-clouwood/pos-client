@@ -25,7 +25,7 @@ const state = {
     orderBy: 'real_created_datetime',
     page: 1,
     totalPages: 10,
-    pageId: 'home_delivery_acceptance',
+    pageId: 'home_delivery_new',
   },
   drivers: [],
   driverBucket: [],
@@ -223,7 +223,6 @@ const actions = {
                 count: response.data.count,
                 orders: response.data.data,
               }
-              // console.log(onlineOrders, 'onlineOrders')
               resolve()
               commit(mutation.SET_ONLINE_ORDERS, onlineOrders)
               commit(mutation.SET_LOADING, false)
