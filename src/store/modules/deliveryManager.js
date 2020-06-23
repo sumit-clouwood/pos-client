@@ -495,6 +495,7 @@ const mutations = {
   },
   [mutation.SET_ONLINE_ORDERS](state, onlineOrders) {
     state.onlineOrders = onlineOrders
+    console.log(state.onlineOrders, 'state.onlineOrders')
   },
 }
 
