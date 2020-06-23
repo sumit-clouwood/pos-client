@@ -15,7 +15,6 @@
       <Preloader :msg="_t('Loading new orders') + '...'" v-if="loading" />
       <DMItem :actionDetails="acceptanceDetails" v-else />
     </div>
-    {{ availableModules.includes(CONST.MODULE_MANUAL_ACCEPTANCE) }}
     <div
       class="dm-ready-order-wrapper"
       id="dm-new-order"

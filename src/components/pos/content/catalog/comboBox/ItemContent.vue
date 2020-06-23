@@ -181,7 +181,7 @@ export default {
           item => item._id === itemData._id
         )
         // eslint-disable-next-line no-debugger
-        debugger
+        // debugger
         item = item || itemData
       }
       console.log(item, Object.values(this.setModifiersItem), 'ffff', itemData)
