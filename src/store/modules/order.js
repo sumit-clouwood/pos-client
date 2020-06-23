@@ -642,6 +642,8 @@ const actions = {
     })
   },
 
+  //this is called for new item, updating existing item also pass through this function
+  //for example items.vue > click  > add to order
   async addToOrder({ dispatch, commit }, stateItem) {
     return new Promise(resolve => {
       let item = { ...stateItem }
@@ -654,6 +656,7 @@ const actions = {
       console.log('adding simple item to cart', item)
       dispatch('prepareItem', { item: item }).then(item => {
         commit(mutation.SET_ITEM, item)
+        //add item to cart
         commit(mutation.ADD_ORDER_ITEM, state.item)
         dispatch('postCartItem').then(() => {
           console.log('simple item added to cart', item)
@@ -1313,6 +1316,7 @@ const actions = {
     })
   },
 
+  //add already exiting order item to cart, it is not for new item, for example updating dine in order
   async addItemToCart({ state, rootState, dispatch }, { menuItem, orderItem }) {
     console.log('neworder', state.newOrder)
 
@@ -1381,7 +1385,7 @@ const actions = {
       }
     })
   },
-
+  //called for exiting items which were added to order already
   async addItemsToCart({ dispatch, rootGetters }, items) {
     return new Promise(async resolve => {
       const item = items.shift()
