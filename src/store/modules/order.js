@@ -643,7 +643,8 @@ const actions = {
   },
 
   //this is called for new item, updating existing item also pass through this function
-  //for example items.vue > click  > add to order
+  //for example items.vue > click  > add to order, for modifying already cart item it ll not called
+  //rather updateQuantity ll be called, Note: this function is for simple items not with modifiers
   async addToOrder({ dispatch, commit }, stateItem) {
     return new Promise(resolve => {
       let item = { ...stateItem }
@@ -683,10 +684,14 @@ const actions = {
       }
     })
   },
+  //this function adds both new or exiting items to cart
   //this function re-adds an item to order if item is in edit mode, it just replaces exiting item in cart
   async addModifierOrder({ rootState, dispatch }, item) {
+    //in edit mode item ll not be passed as argument so you need to get it in from state
+    //in state is it is set already when you click on + button
     return new Promise(resolve => {
       if (!item) {
+        //it is edit mode
         item = { ...rootState.modifier.item }
       }
 

@@ -39,7 +39,8 @@ export default {
   },
   methods: {
     addToCart() {
-      this.itemsAddToCart(this.$store.getters['combo/current_combo'])
+      const item = this.$store.getters['combo/current_combo']
+      this.itemsAddToCart(item)
       hideModal('#combox-box-popup')
     },
   },

@@ -77,10 +77,13 @@ export default {
       } else {
         // this.$store.dispatch('modifier/assignModifiersToItem', item)
         // this.$store.commit('orderForm/clearSelection')
-        this.$store.dispatch(
-          'order/addToOrder',
-          this.$store.getters['combo/order_item']
-        )
+        const item = this.$store.getters['combo/current_combo']
+        if (typeof item.orderIndex !== 'undefined') {
+          this.$store.dispatch('order/addModifierOrder')
+        } else {
+          this.$store.dispatch('order/addToOrder', item)
+        }
+
         /*item.combo_selected_items.forEach(combo_item => {
           this.setupItemModifiers(combo_item, false)
         })*/
