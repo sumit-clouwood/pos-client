@@ -19,12 +19,13 @@ const state = {
   is_pagination: true,
   selectedStores: '',
   availableStores: false,
+  ordersPerPage: 12,
   params: {
     query: '',
-    limit: 50,
+    limit: 12,
     orderBy: 'real_created_datetime',
     page: 1,
-    totalPages: 10,
+    totalPages: 1,
     pageId: 'home_delivery_acceptance',
   },
   drivers: [],
@@ -172,6 +173,7 @@ const actions = {
       section
     )
     if (checkAPIPermission) {
+      console.log(params, 'response')
       DMService.getDMOrderDetails(...params)
         .then(response => {
           commit(mutation.SET_LOADING, true)
@@ -434,7 +436,7 @@ const mutations = {
   },
   [mutation.SET_TOTAL_ORDER](state, count) {
     state.params.totalPages = Math.ceil(
-      parseInt(count) / parseInt(state.params.limit)
+      parseInt(count) / parseInt(state.ordersPerPage)
     )
   },
   [mutation.SET_SELECTED_STORE](state, storeId) {
