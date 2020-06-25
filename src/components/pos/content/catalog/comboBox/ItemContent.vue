@@ -8,7 +8,7 @@
       <checkbox
         v-model="comboItemSelection[item._id]"
         :value="item._id"
-        @change="validateSelection(item)"
+        @change="selectItemForCombo"
         class="item-selector"
       >
         <div class="food-item-box">
@@ -72,10 +72,13 @@ export default {
   watch: {},
   computed: {
     ...mapGetters('location', ['formatPrice', '_t']),
-    ...mapGetters('combo', ['current_combo_items']),
+    ...mapGetters('combo', [
+      'current_combo_items',
+      'current_combo_selected_items',
+    ]),
     comboItemSelection: {
       get() {
-        return this.$store.getters['combo/current_combo_selected_items']
+        return this.current_combo_selected_items
       },
       set(items) {
         this.$store.commit('combo/SET_CURRENT_COMBO_SELECTED_ITEMS', items)
@@ -83,8 +86,10 @@ export default {
     },
   },
   methods: {
-    validateSelection(item) {
+    selectItemForCombo(item) {
+      //associate modifiers to item, this is not selection of modifiers [note]
       this.setModifiers(item)
+      this.$store.commit('combo/SET_CURRENT_COMBO_SELECTED_ITEM', item)
     },
   },
 }

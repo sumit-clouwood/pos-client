@@ -23,6 +23,7 @@ export default {
   methods: {
     addModifierOrder() {
       if (this.current_combo) {
+        this.$store.dispatch('combo/selectModifiers')
         closeModal('#POSItemOptions')
       } else {
         this.$store
