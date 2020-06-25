@@ -8,7 +8,7 @@
       <checkbox
         v-model="comboItemSelection[item._id]"
         :value="item._id"
-        @change="selectItemForCombo"
+        @change="selectItemForCombo(item)"
         class="item-selector"
       >
         <div class="food-item-box">
