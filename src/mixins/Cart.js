@@ -17,6 +17,7 @@ export default {
     ...mapState('location', ['currency']),
     ...mapGetters('location', ['_t']),
     ...mapGetters('category', ['items', 'itemByCode']),
+    ...mapGetters('combo', ['current_combo']),
     ...mapGetters(['foodMenuHendler']),
     isEnabled() {
       return this.$store.getters['modules/enabled'](CONST.MODULE_DINE_IN_MENU)
@@ -25,9 +26,9 @@ export default {
   watch: {},
   methods: {
     setModifiers(item) {
+      this.$store.commit('orderForm/clearSelection')
       if (this.$store.getters['modifier/hasModifiers'](item)) {
         this.$store.dispatch('modifier/assignModifiersToItem', item)
-        this.$store.commit('orderForm/clearSelection')
         //handle open item inside popup
         showModal('#POSItemOptions')
         $('#POSItemOptions').css({ 'z-index': 9999 })
@@ -36,7 +37,9 @@ export default {
           //show popup for open item
           showModal('#open-item')
         } else {
-          this.$store.dispatch('order/addToOrder', item)
+          if (!this.current_combo) {
+            this.$store.dispatch('order/addToOrder', item)
+          }
         }
         // $('#POSItemOptions').css({ 'z-index': 999 })
       }

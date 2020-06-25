@@ -18,16 +18,21 @@ export default {
   props: {},
   computed: {
     ...mapGetters('location', ['_t']),
+    ...mapGetters('combo', ['current_combo']),
   },
   methods: {
     addModifierOrder() {
-      this.$store
-        .dispatch('order/addModifierOrder')
-        .then(() => {
-          this.$emit('error', false)
-          closeModal('#POSItemOptions')
-        })
-        .catch(error => this.$emit('error', error))
+      if (this.current_combo) {
+        closeModal('#POSItemOptions')
+      } else {
+        this.$store
+          .dispatch('order/addModifierOrder')
+          .then(() => {
+            this.$emit('error', false)
+            closeModal('#POSItemOptions')
+          })
+          .catch(error => this.$emit('error', error))
+      }
     },
   },
 }
