@@ -9,6 +9,7 @@
         v-model="comboItemSelection[item._id]"
         :value="item._id"
         @change="validateSelection(item)"
+        class="item-selector"
       >
         <div class="food-item-box">
           <img :src="item.image" alt v-if="item.image != ''" />
@@ -21,9 +22,7 @@
             }"
           />
           <div class="food-menu-item-text color-text">
-            <label :title="dt(item)">
-              {{ dt(item) }}
-            </label>
+            {{ dt(item) }}
           </div>
         </div>
         <div class="food-box-icon">
@@ -87,6 +86,14 @@ export default {
 <style lang="scss" scoped>
 @import '@/assets/scss/variables.scss';
 @import '@/assets/scss/mixins.scss';
+
+.item-selector {
+  /deep/ .checkbox2 {
+    position: absolute;
+    top: 0;
+    opacity: 0;
+  }
+}
 .modal-body {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -209,8 +216,16 @@ i.fa.fa-check.item-selected-check {
   display: none;
 }
 
-.foodbox_container.active_right_combo .item-selected-check.right_icon {
-  display: block;
+.foodbox_container {
+  label {
+    &.active {
+      .item-selected-check {
+        &.right_icon {
+          display: block;
+        }
+      }
+    }
+  }
 }
 .food-menu-item-text.color-text {
   max-height: 2.188rem;

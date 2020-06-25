@@ -3,6 +3,7 @@
     <div class="items">
       <slot></slot>
       <input
+        class="checkbox2"
         type="checkbox"
         v-bind:checked="checked"
         v-on:change="$emit('change', $event.target.checked)"
