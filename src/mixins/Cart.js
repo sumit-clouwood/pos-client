@@ -25,7 +25,7 @@ export default {
   },
   watch: {},
   methods: {
-    setModifiers(item) {
+    setupItemModifiers(item) {
       this.$store.commit('orderForm/clearSelection')
       if (this.$store.getters['modifier/hasModifiers'](item)) {
         this.$store.dispatch('modifier/assignModifiersToItem', item)
@@ -73,13 +73,13 @@ export default {
       this.$store.commit('checkoutForm/showCalc', true)
       this.$store.commit('orderForm/updateQuantity', 1)
       if (item.item_type !== CONST.COMBO_ITEM_TYPE) {
-        this.setModifiers(item)
+        this.setupItemModifiers(item)
       } else {
         // this.$store.dispatch('modifier/assignModifiersToItem', item)
         // this.$store.commit('orderForm/clearSelection')
         this.$store.dispatch('order/addToOrder', item)
         /*item.combo_selected_items.forEach(combo_item => {
-          this.setModifiers(combo_item, false)
+          this.setupItemModifiers(combo_item, false)
         })*/
       }
       this.$store.dispatch('addItemFood', item)

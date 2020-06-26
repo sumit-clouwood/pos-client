@@ -23,6 +23,7 @@
 </template>
 
 <script>
+/* global hideModal */
 import { mapGetters, mapState } from 'vuex'
 import Cart from '@/mixins/Cart'
 export default {
@@ -39,6 +40,7 @@ export default {
   methods: {
     addToCart() {
       this.itemsAddToCart(this.$store.getters['combo/current_combo'])
+      hideModal('#combox-box-popup')
     },
   },
 }

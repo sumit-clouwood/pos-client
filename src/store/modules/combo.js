@@ -1,8 +1,8 @@
 const state = {
-  currentCombo: {},
+  currentCombo: undefined,
   currentComboSection: undefined,
   currentComboSelectedItems: {},
-  currentComboSelectedItem: {},
+  currentComboSelectedItem: undefined,
   currentComboSelectedModifiers: undefined,
 }
 const actions = {
@@ -12,6 +12,9 @@ const actions = {
       modifiers: rootGetters['orderForm/modifiers'],
     })
     dispatch('orderForm/clearSelection', null, { root: true })
+  },
+  reset({ commit }) {
+    commit('RESET')
   },
 }
 const getters = {
@@ -67,6 +70,13 @@ const mutations = {
       state.currentComboSelectedModifiers = {}
     }
     state.currentComboSelectedModifiers[itemId] = modifiers
+  },
+  RESET(state) {
+    state.currentCombo = undefined
+    state.currentComboSection = undefined
+    state.currentComboSelectedItems = {}
+    state.currentComboSelectedItem = undefined
+    state.currentComboSelectedModifiers = undefined
   },
 }
 

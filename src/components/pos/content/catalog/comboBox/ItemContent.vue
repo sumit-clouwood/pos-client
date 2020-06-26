@@ -88,7 +88,7 @@ export default {
   methods: {
     selectItemForCombo(item) {
       //associate modifiers to item, this is not selection of modifiers [note]
-      this.setModifiers(item)
+      this.setupItemModifiers(item)
       this.$store.commit('combo/SET_CURRENT_COMBO_SELECTED_ITEM', item)
     },
   },
