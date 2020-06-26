@@ -63,7 +63,7 @@ const getters = {
     }
     return 0
   },
-  orderIndex: state => {
+  orderIndex: (state, getters, rootState) => {
     if (!state.items.length) {
       return 0
     }
@@ -74,6 +74,22 @@ const getters = {
         index = item.orderIndex
       }
     })
+    let haveComboItems = rootState.comboItems.itemIndexCounting
+    if (haveComboItems > 0) {
+      index += parseInt(haveComboItems)
+    } /*else {
+      index += rootState.comboItems.orderIndex
+    }*/
+    if (index === haveComboItems) {
+      /* added if simple combo item (without any modifier) come at update time or need to add more items */
+      ++index
+    }
+    console.log(
+      rootState.comboItems.orderIndex,
+      index,
+      haveComboItems,
+      'haveComboItems'
+    )
     return ++index
   },
 
@@ -109,12 +125,21 @@ const getters = {
     })
     return modifiersTax
   },
-  comboItemModifier: (state, getters, rootState) => item => {
-    // console.log(item.orderIndex.toString(), 'order index item')
-    return rootState.comboItems.itemsModifiersValueTaxDiff.find(
-      comboItemModifier =>
-        comboItemModifier.itemId === item._id + item.orderIndex.toString()
-    )
+  comboItemModifier: (state, getters, rootState, rootGetters) => item => {
+    let comboModifiers = rootState.comboItems.itemsModifiersValueTaxDiff
+    let isOldItem = rootGetters['comboItems/getComboItem'](item._id)
+    let itemIdAttr = isOldItem ? item.no : item.orderIndex
+    let itemId = item._id + itemIdAttr //|| item.orderIndex).toString()
+    //need to check with new items and old combo items, if new then orderIndex else item.no
+    if (comboModifiers.length > 0) {
+      let comboItemPrice = comboModifiers.find(
+        cmb_item_modifier_amount => cmb_item_modifier_amount.itemId === itemId
+      )
+      console.log(itemId, comboItemPrice, comboModifiers, 'comboItemModifier')
+      return comboItemPrice || { price: 0, tax: 0 }
+    } else {
+      return { price: 0, tax: 0 }
+    }
   },
   totalItemTaxDiscount: (state, getters) => {
     let itemTaxDiscount = 0
@@ -171,11 +196,7 @@ const getters = {
     }
     return 0
   },
-  orderGrandTotal: () => order => {
-    return Num.round(
-      parseFloat(order.balance_due) + parseFloat(order.tip_amount)
-    ).toFixed(2)
-  },
+
   itemModifiersPrice: () => item =>
     item.modifiersData && item.modifiersData.length
       ? item.modifiersData.reduce(
@@ -357,6 +378,13 @@ const getters = {
   items: state => state.items,
 
   orderType: state => state.orderType.OTApi,
+  isCombo: (state, getters, rootState, rootGetters) => item => {
+    if (item.for_combo === false) {
+      return rootGetters['comboItems/getComboItem'](item._id)
+    } else {
+      return rootGetters['comboItems/getComboByForCombo'](item)
+    }
+  },
 }
 
 // actions
@@ -369,162 +397,31 @@ const actions = {
       item: item,
     })
   },
-  fetchModificationReasons({ state, commit }) {
-    if (!state.modificationReasons.length) {
-      OrderService.getModifyReasons().then(response => {
-        commit(mutation.SET_MODIFICATION_REASONS, response.data.data)
-      })
-    }
-  },
-  setSplitBill({ commit, dispatch }) {
-    commit('SET_SPLIT_BILL', -1)
-    dispatch('surchargeCalculation')
-  },
-  splitItems({ commit, dispatch }, items) {
-    commit('SPLIT_ITEMS', items)
-
-    dispatch('recalculateItemPrices')
-    dispatch('recalculateOrderTotals')
-    dispatch('surchargeCalculation')
-  },
-  markSplitItemsPaid({ commit }) {
-    commit(mutation.MARK_SPLIT_ITEMS_PAID)
-    return Promise.resolve(1)
-  },
-
-  prepareItemTax({ rootState, getters }, { item, type }) {
+  comboPriceFix({ commit }, item) {
     return new Promise(resolve => {
-      if (type === 'genericOpenItem') {
-        //find tax for this item
-        item.tax_sum = rootState.tax.openItemTax
-        item._id = rootState.tax.openItemId
+      let orderBeforeModify = state.selectedOrder.item.items
+      let orderItem = orderBeforeModify.find(oldItem => oldItem.no === item.no)
+      if (orderItem) {
+        item.value = parseFloat(orderItem.price) + parseFloat(orderItem.tax)
+        item.tax = parseFloat(orderItem.tax)
+        // item.tax_sum = orderItem.tax_sum
+        item.grossPrice = parseFloat(item.value)
+        item.netPrice = parseFloat(orderItem.price)
       }
-      //item gross price is inclusive of tax
-      item.grossPrice = getters.grossPrice(item)
-      //net price is exclusive of tax, netPrice getter ll send unrounded price
-      item.netPrice = getters.netPrice(item)
-
-      //calculated item tax, it should be unrounded for precision
-      item.tax = Num.round(item.grossPrice - item.netPrice)
-
-      resolve(item)
-    })
-  },
-
-  async prepareItem(
-    { commit, getters, rootGetters, rootState, dispatch },
-    { item, data }
-  ) {
-    commit('checkoutForm/RESET', 'process', { root: true })
-
-    return new Promise(resolve => {
-      item.split = false
-      item.paid = false
-      //if generic open item, this comes from footer buttons
-      if (data) {
-        if (data.type === 'genericOpenItem') {
-          item.name = data.name
-          item.value = data.value
-        } else {
-          //this open item comes from backend
-          if (item.open_item === true) {
-            item.value = data.value
-            item.quantity = data.quantity
-          }
-        }
-      }
-
-      //if item already have store id don't add because there are chances user is in different store now
-      if (rootGetters['auth/multistore'] && !item.store_id) {
-        item.store_id = rootState.context.storeId
-      }
-
-      if (!item.note) {
-        item.note = ''
-      }
-
-      //Add no only if it is modification order, DON'T add no with new items, it ll break system
-      if (item.no) {
-        item.orderIndex = item.no
-      }
-
-      if (typeof item.orderIndex === 'undefined') {
-        item.orderIndex = getters.orderIndex
-      }
-
-      let quantity = 0
-      //coming through hold orders
-      if (typeof item.quantity !== 'undefined') {
-        quantity = item.quantity
-      }
-      if (!quantity) {
-        quantity = rootState.orderForm.quantity || 1
-      }
-
-      item.quantity = quantity
-
-      dispatch('prepareItemTax', {
-        item: item,
-        type: data ? data.type : null,
-      }).then(item => {
+      console.log(orderItem, 'orderitem price fixer')
+      if (item.item_type === CONST.COMBO_ITEM_TYPE) {
         resolve(item)
-      })
-    })
-  },
-
-  addOpenItem({ dispatch, commit }, { item, data }) {
-    return new Promise(resolve => {
-      item.modifiable = false
-      dispatch('prepareItem', { item, data }).then(item => {
-        //this comes directly from the items menu without modifiers
-        commit(mutation.ADD_ORDER_ITEM, item)
-        dispatch('postCartItem').then(() => resolve())
-      })
-    })
-  },
-
-  async addToOrder({ dispatch, commit }, stateItem) {
-    return new Promise(resolve => {
-      let item = { ...stateItem }
-
-      item.modifiable = false
-      item.note = stateItem.note ? stateItem.note : ''
-      console.log('adding simple item to cart', item)
-
-      dispatch('prepareItem', { item: item }).then(item => {
-        commit(mutation.SET_ITEM, item)
-        commit(mutation.ADD_ORDER_ITEM, state.item)
-        dispatch('postCartItem').then(() => {
-          console.log('simple item added to cart', item)
-          resolve()
-        })
-      })
-    })
-  },
-
-  async postCartItem({ dispatch, commit }) {
-    return new Promise(resolve => {
-      //reset the modifier form
-      commit('orderForm/clearSelection', null, { root: true })
-      commit(mutation.SET_TOTAL_ITEMS, state.items.length)
-      //if dine in modify then calculate surcharges after every item has been added so
-      //it won't clear discounts while validating
-      if (!['dine-in-modify'].includes(state.cartType)) {
-        dispatch('surchargeCalculation').then(() => resolve())
       } else {
+        commit('comboItems/UPDATE_COMBO_ITEMS', item, { root: true })
         resolve()
       }
     })
   },
-  //this function re-adds an item to order if item is in edit mode, it just replaces exiting item in cart
-  async addModifierOrder({ commit, rootState, dispatch, rootGetters }, item) {
-    return new Promise((resolve, reject) => {
-      if (!item) {
-        item = { ...rootState.modifier.item }
-      }
-
-      item.modifiable = true
-
+  prepareModifiersItemCart(
+    { dispatch, commit, rootGetters, rootState, getters },
+    item
+  ) {
+    new Promise((resolve, reject) => {
       dispatch('prepareItem', { item: item }).then(item => {
         //if there is item modifiers data assign it later
         item.modifiersData = []
@@ -572,11 +469,11 @@ const actions = {
             modifier => modifier.itemId == item._id
           )
 
-          let selectedModifeirGroups = []
+          let selectedModifierGroups = []
 
           modifiers.forEach(modifier => {
             itemModifierGroups.push(modifier)
-            selectedModifeirGroups.push(modifier.groupId)
+            selectedModifierGroups.push(modifier.groupId)
           })
 
           //match modifiers with mandatory modifiers for this item, if not matched set error and return false
@@ -587,7 +484,7 @@ const actions = {
           let mandatorySelected = true
 
           itemMandatoryModifierGroups.forEach(id => {
-            if (!selectedModifeirGroups.includes(id)) {
+            if (!selectedModifierGroups.includes(id)) {
               mandatorySelected = false
             }
           })
@@ -630,7 +527,6 @@ const actions = {
           modifiers: itemModifiers,
           modifierGroups: itemModifierGroups,
         })
-
         //calculating item price based on modifiers selected
         //since we have just ids attached to item,
         //we need to consult modifier store for modifier data ie price
@@ -663,8 +559,8 @@ const actions = {
             }
           })
         })
-
         commit(mutation.ADD_MODIFIERS_DATA_TO_ITEM, modifierData)
+        if (getters.isCombo(item) || modifierData.length < 1) return false //added || condition here when add one combo than edit has issue
         const limitOfCombo = rootGetters['comboItems/limitOfSelectingItems']
         if (!item.editMode) {
           let quantity = 0
@@ -718,6 +614,189 @@ const actions = {
           resolve()
         })
       })
+    })
+  },
+  fetchModificationReasons({ state, commit }) {
+    if (!state.modificationReasons.length) {
+      OrderService.getModifyReasons().then(response => {
+        commit(mutation.SET_MODIFICATION_REASONS, response.data.data)
+      })
+    }
+  },
+  setSplitBill({ commit, dispatch }) {
+    commit('SET_SPLIT_BILL', -1)
+    dispatch('surchargeCalculation')
+  },
+  splitItems({ commit, dispatch }, items) {
+    commit('SPLIT_ITEMS', items)
+
+    dispatch('recalculateItemPrices')
+    dispatch('recalculateOrderTotals')
+    dispatch('surchargeCalculation')
+  },
+  markSplitItemsPaid({ commit }) {
+    commit(mutation.MARK_SPLIT_ITEMS_PAID)
+    return Promise.resolve(1)
+  },
+
+  prepareItemTax({ rootState, getters, dispatch }, { item, type }) {
+    return new Promise(resolve => {
+      if (type === 'genericOpenItem') {
+        //find tax for this item
+        item.tax_sum = rootState.tax.openItemTax
+        item._id = rootState.tax.openItemId
+      }
+      let isCombo = getters.isCombo(item)
+      console.log('adding modified combo item to data', item, isCombo)
+      if (isCombo && isCombo.no === item.for_combo) {
+        dispatch('comboPriceFix', item)
+      } else {
+        //item gross price is inclusive of tax
+        item.grossPrice = getters.grossPrice(item)
+        //net price is exclusive of tax, netPrice getter ll send unrounded price
+        item.netPrice = getters.netPrice(item)
+
+        //calculated item tax, it should be unrounded for precision
+        item.tax = Num.round(item.grossPrice - item.netPrice)
+      }
+
+      resolve(item)
+    })
+  },
+
+  async prepareItem(
+    { commit, getters, rootGetters, rootState, dispatch },
+    { item, data }
+  ) {
+    commit('checkoutForm/RESET', 'process', { root: true })
+
+    return new Promise(resolve => {
+      item.split = false
+      item.paid = false
+      //if generic open item, this comes from footer buttons
+      if (data) {
+        if (data.type === 'genericOpenItem') {
+          item.name = data.name
+          item.value = data.value
+        } else {
+          //this open item comes from backend
+          if (item.open_item === true) {
+            item.value = data.value
+            item.quantity = data.quantity
+          }
+        }
+      }
+      //if item already have store id don't add because there are chances user is in different store now
+      if (rootGetters['auth/multistore'] && !item.store_id) {
+        item.store_id = rootState.context.storeId
+      }
+
+      if (!item.note) {
+        item.note = ''
+      }
+
+      //Add no only if it is modification order, DON'T add no with new items, it ll break system
+      if (item.no) {
+        item.orderIndex = item.no
+      }
+
+      if (typeof item.orderIndex === 'undefined') {
+        item.orderIndex = getters.orderIndex
+      }
+
+      let quantity = 0
+      //coming through hold orders
+      if (typeof item.quantity !== 'undefined') {
+        quantity = item.quantity
+      }
+      if (!quantity) {
+        quantity = rootState.orderForm.quantity || 1
+      }
+
+      item.quantity = quantity
+
+      dispatch('prepareItemTax', {
+        item: item,
+        type: data ? data.type : null,
+      }).then(item => {
+        resolve(item)
+      })
+    })
+  },
+
+  addOpenItem({ dispatch, commit }, { item, data }) {
+    return new Promise(resolve => {
+      item.modifiable = false
+      dispatch('prepareItem', { item, data }).then(item => {
+        //this comes directly from the items menu without modifiers
+        commit(mutation.ADD_ORDER_ITEM, item)
+        dispatch('postCartItem').then(() => resolve())
+      })
+    })
+  },
+
+  async addToOrder({ dispatch, commit, rootState, getters }, stateItem) {
+    return new Promise(resolve => {
+      let item = { ...stateItem }
+      let isCombo = getters.isCombo(item)
+      item.modifiable = false
+      item.note = stateItem.note ? stateItem.note : ''
+      console.log('adding simple item to cart', item, isCombo)
+      // eslint-disable-next-line no-debugger
+      // debugger
+      let isNewComboItem = rootState.comboItems.comboItemsList
+      if (
+        item.item_type === CONST.COMBO_ITEM_TYPE &&
+        !isCombo && // if remove this combo items (with or without combo in update mode) will not show
+        !isNewComboItem
+      ) {
+        console.log('adding combo simple item to cart', item)
+        commit('comboItems/SET_EDIT_COMBO_ITEM', item, { root: true })
+        resolve()
+      } else if (isCombo && isCombo.no === item.for_combo && !isNewComboItem) {
+        dispatch('comboPriceFix', item)
+        resolve()
+      } else {
+        console.log('adding simple item to cart', item, isCombo)
+        dispatch('prepareItem', { item: item }).then(item => {
+          commit(mutation.SET_ITEM, item)
+          commit(mutation.ADD_ORDER_ITEM, state.item)
+          dispatch('postCartItem').then(() => {
+            console.log('simple item added to cart', item)
+            resolve()
+          })
+        })
+      }
+      // eslint-disable-next-line no-debugger
+      // debugger
+    })
+  },
+
+  async postCartItem({ dispatch, commit }) {
+    return new Promise(resolve => {
+      //reset the modifier form
+      commit('orderForm/clearSelection', null, { root: true })
+      commit(mutation.SET_TOTAL_ITEMS, state.items.length)
+      //if dine in modify then calculate surcharges after every item has been added so
+      //it won't clear discounts while validating
+      if (!['dine-in-modify'].includes(state.cartType)) {
+        dispatch('surchargeCalculation').then(() => resolve())
+      } else {
+        resolve()
+      }
+    })
+  },
+  //this function re-adds an item to order if item is in edit mode, it just replaces exiting item in cart
+  async addModifierOrder({ rootState, dispatch }, item) {
+    return new Promise(resolve => {
+      if (!item) {
+        item = { ...rootState.modifier.item }
+      }
+
+      item.modifiable = true
+      // console.log('adding modified combo item to cart', item, isCombo)
+      dispatch('prepareModifiersItemCart', item)
+      resolve()
     })
   },
 
@@ -1226,18 +1305,18 @@ const actions = {
     commit(mutation.SET_ORDER_NOTE, orderNote)
   },
 
-  // setOnlineOrders({ commit, rootState }, onlineOrderData) {
-  //   // const params = [1, onlineOrderData.location_id]
-  //   let orderDetail = ''
-  //   // OrderService.fetchOnlineOrderDetails(...params).then(response => {
-  //   //   orderDetail = response.data.orderDetails
-  //   commit(mutation.ONLINE_ORDERS, {
-  //     onlineOrders: onlineOrderData,
-  //     locationId: rootState.location.location,
-  //     orderDetails: orderDetail,
-  //   })
-  //   // })
-  // },
+  setOnlineOrders({ commit, rootState }, onlineOrderData) {
+    // const params = [1, onlineOrderData.location_id]
+    let orderDetail = ''
+    // OrderService.fetchOnlineOrderDetails(...params).then(response => {
+    //   orderDetail = response.data.orderDetails
+    commit(mutation.ONLINE_ORDERS, {
+      onlineOrders: onlineOrderData,
+      locationId: rootState.location.location,
+      orderDetails: orderDetail,
+    })
+    // })
+  },
 
   /*getPastOrderDetails({ commit, rootState }, orderId) {
     const params = [orderId, rootState.location.location]
@@ -1247,6 +1326,7 @@ const actions = {
   },*/
 
   deliveryOrder({ commit, dispatch }, { referral, futureOrder }) {
+    console.log(referral, futureOrder != null, 'referral, futureOrder')
     return new Promise((resolve, reject) => {
       commit(mutation.ORDER_TYPE, { OTview: 'Delivery', OTApi: 'call_center' })
       commit(mutation.SET_REFERRAL, referral)
@@ -1345,7 +1425,10 @@ const actions = {
     })
   },
 
-  async addItemToCart({ state, rootState, dispatch }, { menuItem, orderItem }) {
+  async addItemToCart(
+    { state, rootState, dispatch, rootGetters },
+    { menuItem, orderItem }
+  ) {
     console.log('neworder', state.newOrder)
 
     let allCovers = rootState.dinein.covers
@@ -1354,8 +1437,21 @@ const actions = {
     return new Promise(async resolve => {
       item.no = orderItem.no
       item.note = orderItem.note
-      item.quantity = orderItem.qty
-
+      item.quantity = orderItem.qty || orderItem.quantity
+      item.for_combo = orderItem.for_combo
+      let isItemCombo = orderItem.item_type === CONST.COMBO_ITEM_TYPE
+      if (isItemCombo) {
+        item.combo_selected_items = orderItem.combo_selected_items
+        let additionalComboPrice = rootGetters[
+          'comboItems/additionalComboPrice'
+        ](item.combo_selected_items)
+        if (additionalComboPrice > 0) {
+          item.value += additionalComboPrice
+          item.grossPrice = getters.grossPrice(item)
+          item.netPrice = getters.netPrice(item)
+          item.tax = Num.round(item.grossPrice - item.netPrice)
+        }
+      }
       let modifiers = []
       //get modifiers from order and associate them with concerned item
       if (state.newOrder.item_modifiers.length) {
@@ -1413,7 +1509,7 @@ const actions = {
     })
   },
 
-  async addItemsToCart({ dispatch, rootGetters }, items) {
+  async addItemsToCart({ dispatch, rootGetters, rootState }, items) {
     return new Promise(async resolve => {
       const item = items.shift()
       const menuItem = rootGetters['category/findItem'](
@@ -1422,7 +1518,8 @@ const actions = {
         '_id'
       )
       console.log('menu item', menuItem)
-
+      // eslint-disable-next-line no-debugger
+      // debugger
       if (menuItem) {
         console.log('adding item: ', menuItem, item)
         await dispatch('addItemToCart', { menuItem: menuItem, orderItem: item })
@@ -1432,6 +1529,16 @@ const actions = {
           console.log('resolve in the recurrsion')
           resolve()
         } else {
+          let isCombo = rootState.comboItems.setEditComboItem
+          if (isCombo.length > 0) {
+            await dispatch('addComboItemToCart')
+            dispatch('comboItems/reset', null, { root: true })
+          }
+          /*commit('comboItems/ITEMS_MODIFIERS_VALUE_TAX_DIFF', false, {
+            root: true,
+          })*/
+          /* commented  because item modifiers price not added when new item added */
+
           console.log('finally no items left')
           resolve()
         }
@@ -1440,6 +1547,42 @@ const actions = {
         console.log('item was deleted from backend')
         resolve()
       }
+    })
+  },
+
+  async addComboItemToCart({ rootState, rootGetters, dispatch }) {
+    return new Promise(async resolve => {
+      for (const cmb_item of rootState.comboItems.setEditComboItem) {
+        let comboItemsList = rootGetters[
+          'comboItems/getComboSubItemByForCombo'
+        ](cmb_item) //rootState.comboItems.updateComboItems
+        dispatch(
+          'comboItems/itemsModifierPrice',
+          { items: comboItemsList, combo_item: cmb_item },
+          {
+            root: true,
+          }
+        )
+        console.log(state.selectedOrder, comboItemsList, 'selectedOrder')
+        let comboItem = {
+          ...cmb_item,
+          combo_selected_items: comboItemsList,
+          for_combo: false,
+          entity_id: cmb_item._id,
+        }
+        console.log(comboItem, 'comboItemcomboItem  final combo', comboItem)
+        const ComboMenuItem = rootGetters['category/findItem'](
+          comboItem,
+          'entity_id',
+          '_id'
+        )
+        console.log(ComboMenuItem, 'ComboMenuItemComboMenuItem')
+        await dispatch('addItemToCart', {
+          menuItem: ComboMenuItem,
+          orderItem: comboItem,
+        })
+      }
+      resolve()
     })
   },
 
@@ -1652,6 +1795,7 @@ const actions = {
     })
   },
   selectedOrderDetails({ commit }, orderId) {
+    commit('category/IS_UP_SELLING_MODIFY', true, { root: true })
     return new Promise((resolve, reject) => {
       const params = ['orders', orderId, '']
       OrderService.getGlobalDetails(...params)
@@ -1788,32 +1932,35 @@ const actions = {
     commit(mutation.START_ORDER)
     commit('checkout/SET_PROCESSING', false, { root: true })
   },
-  playSound({ rootState }, onlineOrders) {
-    let locationId = rootState.location.location
-    let nopromise = {
-      catch: new Function(),
-    }
-    // onlineOrders.orders.forEach(order => {
-    if (locationId == onlineOrders.location_id) {
-      let onlineNewOrderAudioRing = new Audio('/sound/doorbell.ogg')
-      onlineNewOrderAudioRing.load()
-      if (onlineOrders.orders && onlineOrders.orders.length) {
-        onlineNewOrderAudioRing.addEventListener(
-          'ended',
-          function() {
-            this.currentTime = 0
-            ;(this.play() || nopromise).catch(function() {})
-          },
-          false
-        )
-        ;(onlineNewOrderAudioRing.play() || nopromise).catch(function() {})
-      } else {
-        onlineNewOrderAudioRing.pause()
-        onlineNewOrderAudioRing.currentTime = 0
-      }
-    }
-  },
 }
+
+function playSound(locationId, onlineOrders) {
+  let nopromise = {
+    catch: new Function(),
+  }
+  // onlineOrders.orders.forEach(order => {
+  if (locationId == onlineOrders.location_id) {
+    let onlineNewOrderAudioRing = new Audio(
+      'https://int.erp-pos.com/sound/doorbell.ogg'
+    )
+    onlineNewOrderAudioRing.load()
+    if (onlineOrders.orders && onlineOrders.orders.length) {
+      onlineNewOrderAudioRing.addEventListener(
+        'ended',
+        function() {
+          this.currentTime = 0
+          ;(this.play() || nopromise).catch(function() {})
+        },
+        false
+      )
+      ;(onlineNewOrderAudioRing.play() || nopromise).catch(function() {})
+    } else {
+      onlineNewOrderAudioRing.pause()
+      onlineNewOrderAudioRing.currentTime = 0
+    }
+  }
+}
+
 // mutations
 const mutations = {
   [mutation.SET_ITEM](state, item) {
@@ -1870,6 +2017,7 @@ const mutations = {
   },
 
   [mutation.ADD_MODIFIERS_TO_ITEM](state, { modifiers, modifierGroups }) {
+    console.log(modifierGroups, 'modifierGroups')
     state.item.modifiers = modifiers
     state.item.modifierGroups = modifierGroups
   },
@@ -1943,11 +2091,11 @@ const mutations = {
   [mutation.SET_ORDER_DATA](state, data) {
     state.orderData = data
   },
-  // [mutation.ONLINE_ORDERS](state, { onlineOrders, locationId, orderDetails }) {
-  //   localStorage.setItem('onlineOrders', JSON.stringify(orderDetails))
-  //   state.onlineOrders = orderDetails
-  //   // playSound(locationId, onlineOrders)
-  // },
+  [mutation.ONLINE_ORDERS](state, { onlineOrders, locationId, orderDetails }) {
+    localStorage.setItem('onlineOrders', JSON.stringify(orderDetails))
+    state.onlineOrders = orderDetails
+    playSound(locationId, onlineOrders)
+  },
   [mutation.SET_ORDER_DETAILS](state, selectedOrderDetails) {
     state.selectedOrder = selectedOrderDetails
   },

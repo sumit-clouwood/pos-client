@@ -13,6 +13,15 @@ const actions = {
     })
     dispatch('orderForm/clearSelection', null, { root: true })
   },
+  addToCart({ getters, dispatch }) {
+    //add current combo to cart
+    if (getters.current_combo_selected_modifiers) {
+      //add modifier order
+    } else {
+      //add simple order
+    }
+    dispatch('order/addItemToCart')
+  },
 }
 const getters = {
   current_combo: state => state.currentCombo,

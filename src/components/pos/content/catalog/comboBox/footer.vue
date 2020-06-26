@@ -37,7 +37,9 @@ export default {
     }
   },
   methods: {
-    addToCart() {},
+    addToCart() {
+      this.$store.dispatch('combo/addToCart')
+    },
   },
 }
 </script>
