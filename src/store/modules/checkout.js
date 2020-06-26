@@ -1775,7 +1775,6 @@ const actions = {
     if (full && getters.complete) {
       dispatch('order/reset', {}, { root: true })
       dispatch('combo/reset', {}, { root: true })
-      commit('combo/ITEMS_MODIFIERS_VALUE_TAX_DIFF', false, { root: true })
       dispatch('customer/reset', true, { root: true })
       dispatch('location/reset', {}, { root: true })
     }

@@ -723,7 +723,6 @@ const actions = {
       dispatch('reset', true)
       // Reset combo items store when cart is empty
       dispatch('combo/reset', null, { root: true })
-      commit('combo/ITEMS_MODIFIERS_VALUE_TAX_DIFF', false, { root: true })
     }
   },
 
