@@ -1774,8 +1774,8 @@ const actions = {
     dispatch('surcharge/reset', {}, { root: true })
     if (full && getters.complete) {
       dispatch('order/reset', {}, { root: true })
-      dispatch('comboItems/reset', {}, { root: true })
-      commit('comboItems/ITEMS_MODIFIERS_VALUE_TAX_DIFF', false, { root: true })
+      dispatch('combo/reset', {}, { root: true })
+      commit('combo/ITEMS_MODIFIERS_VALUE_TAX_DIFF', false, { root: true })
       dispatch('customer/reset', true, { root: true })
       dispatch('location/reset', {}, { root: true })
     }

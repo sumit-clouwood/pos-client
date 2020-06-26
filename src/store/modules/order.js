@@ -63,7 +63,7 @@ const getters = {
     }
     return 0
   },
-  orderIndex: (state, getters, rootState) => {
+  orderIndex: state => {
     if (!state.items.length) {
       return 0
     }
@@ -74,22 +74,7 @@ const getters = {
         index = item.orderIndex
       }
     })
-    let haveComboItems = rootState.comboItems.itemIndexCounting
-    if (haveComboItems > 0) {
-      index += parseInt(haveComboItems)
-    } /*else {
-      index += rootState.comboItems.orderIndex
-    }*/
-    if (index === haveComboItems) {
-      /* added if simple combo item (without any modifier) come at update time or need to add more items */
-      ++index
-    }
-    console.log(
-      rootState.comboItems.orderIndex,
-      index,
-      haveComboItems,
-      'haveComboItems'
-    )
+
     return ++index
   },
 
@@ -119,28 +104,10 @@ const getters = {
       if (item.modifiersData && item.modifiersData.length) {
         modifiersTax += getters.itemModifiersTax(item) * item.quantity
       }
-      if (item.item_type === CONST.COMBO_ITEM_TYPE) {
-        modifiersTax += getters.comboItemModifier(item).tax
-      }
     })
     return modifiersTax
   },
-  comboItemModifier: (state, getters, rootState, rootGetters) => item => {
-    let comboModifiers = rootState.comboItems.itemsModifiersValueTaxDiff
-    let isOldItem = rootGetters['comboItems/getComboItem'](item._id)
-    let itemIdAttr = isOldItem ? item.no : item.orderIndex
-    let itemId = item._id + itemIdAttr //|| item.orderIndex).toString()
-    //need to check with new items and old combo items, if new then orderIndex else item.no
-    if (comboModifiers.length > 0) {
-      let comboItemPrice = comboModifiers.find(
-        cmb_item_modifier_amount => cmb_item_modifier_amount.itemId === itemId
-      )
-      console.log(itemId, comboItemPrice, comboModifiers, 'comboItemModifier')
-      return comboItemPrice || { price: 0, tax: 0 }
-    } else {
-      return { price: 0, tax: 0 }
-    }
-  },
+
   totalItemTaxDiscount: (state, getters) => {
     let itemTaxDiscount = 0
     getters.splitItems.forEach(item => {
@@ -215,9 +182,7 @@ const getters = {
     getters.splitItems.forEach(item => {
       const itemPrice = Num.round(item.netPrice) * item.quantity
       let modifiersPrice = getters.itemModifiersPrice(item) * item.quantity
-      if (item.item_type === CONST.COMBO_ITEM_TYPE) {
-        modifiersPrice += getters.comboItemModifier(item).price
-      }
+
       const itemDiscount = getters.itemNetDiscount(item) * item.quantity
       const modifiersDiscount =
         getters.itemModifierDiscount(item) * item.quantity
@@ -327,10 +292,7 @@ const getters = {
     let modifiersPrice = getters.itemModifiersPrice(item)
     //add modifier tax to modifier price to make it gross price
     let modifiersTax = getters.itemModifiersTax(item)
-    if (item.item_type === CONST.COMBO_ITEM_TYPE) {
-      modifiersPrice += getters.comboItemModifier(item).price
-      modifiersTax += getters.comboItemModifier(item).tax
-    }
+
     return itemPrice + item.tax + modifiersPrice + modifiersTax
   },
 
@@ -338,9 +300,7 @@ const getters = {
     const itemPrice = item.netPrice
     //gross price is inclusive of tax but modifier price is not including tax
     let modifiersPrice = getters.itemModifiersPrice(item)
-    if (item.item_type === CONST.COMBO_ITEM_TYPE) {
-      modifiersPrice += getters.comboItemModifier(item).price
-    }
+
     //add modifier tax to modifier pritemNetPriceice to make it gross price
     //const modifiersTax = getters.itemModifiersTax(item)
     return itemPrice + modifiersPrice
@@ -378,13 +338,6 @@ const getters = {
   items: state => state.items,
 
   orderType: state => state.orderType.OTApi,
-  isCombo: (state, getters, rootState, rootGetters) => item => {
-    if (item.for_combo === false) {
-      return rootGetters['comboItems/getComboItem'](item._id)
-    } else {
-      return rootGetters['comboItems/getComboByForCombo'](item)
-    }
-  },
 }
 
 // actions
@@ -397,30 +350,8 @@ const actions = {
       item: item,
     })
   },
-  comboPriceFix({ commit }, item) {
-    return new Promise(resolve => {
-      let orderBeforeModify = state.selectedOrder.item.items
-      let orderItem = orderBeforeModify.find(oldItem => oldItem.no === item.no)
-      if (orderItem) {
-        item.value = parseFloat(orderItem.price) + parseFloat(orderItem.tax)
-        item.tax = parseFloat(orderItem.tax)
-        // item.tax_sum = orderItem.tax_sum
-        item.grossPrice = parseFloat(item.value)
-        item.netPrice = parseFloat(orderItem.price)
-      }
-      console.log(orderItem, 'orderitem price fixer')
-      if (item.item_type === CONST.COMBO_ITEM_TYPE) {
-        resolve(item)
-      } else {
-        commit('comboItems/UPDATE_COMBO_ITEMS', item, { root: true })
-        resolve()
-      }
-    })
-  },
-  prepareModifiersItemCart(
-    { dispatch, commit, rootGetters, rootState, getters },
-    item
-  ) {
+
+  prepareModifiersItemCart({ dispatch, commit, rootGetters, rootState }, item) {
     new Promise((resolve, reject) => {
       dispatch('prepareItem', { item: item }).then(item => {
         //if there is item modifiers data assign it later
@@ -560,8 +491,6 @@ const actions = {
           })
         })
         commit(mutation.ADD_MODIFIERS_DATA_TO_ITEM, modifierData)
-        if (getters.isCombo(item) || modifierData.length < 1) return false //added || condition here when add one combo than edit has issue
-        const limitOfCombo = rootGetters['comboItems/limitOfSelectingItems']
         if (!item.editMode) {
           let quantity = 0
           //coming through hold orders
@@ -571,21 +500,10 @@ const actions = {
           if (!quantity) {
             quantity = rootState.orderForm.quantity || 1
           }
-          if (!rootState.comboItems.comboItemsList) {
-            commit(mutation.SET_QUANTITY, quantity)
-          } else {
-            if (quantity <= limitOfCombo) {
-              commit(mutation.SET_QUANTITY, quantity)
-            } else {
-              reject(`Item quantity can't be greater than ${limitOfCombo}`)
-              return false
-            }
-          }
-          if (!rootState.comboItems.comboItemsList) {
-            commit(mutation.ADD_ORDER_ITEM_WITH_MODIFIERS, state.item)
-          } else {
-            dispatch('comboItems/setModifiers', state.item, { root: true })
-          }
+
+          commit(mutation.SET_QUANTITY, quantity)
+
+          commit(mutation.ADD_ORDER_ITEM_WITH_MODIFIERS, state.item)
         } else {
           //edit mode
           //if the signature was different then modify modifiers,
@@ -593,16 +511,9 @@ const actions = {
           //replace that item in state with existing item
 
           let quantity = rootState.orderForm.quantity || 1
-          if (!rootState.comboItems.comboItemsList) {
-            commit(mutation.SET_QUANTITY, quantity)
-          } else {
-            if (quantity <= limitOfCombo) {
-              commit(mutation.SET_QUANTITY, quantity)
-            } else {
-              reject(`Item quantity can't be greater than ${limitOfCombo}`)
-              return false
-            }
-          }
+
+          commit(mutation.SET_QUANTITY, quantity)
+
           commit(mutation.SET_QUANTITY, quantity)
 
           commit(mutation.REPLACE_ORDER_ITEM, {
@@ -639,26 +550,22 @@ const actions = {
     return Promise.resolve(1)
   },
 
-  prepareItemTax({ rootState, getters, dispatch }, { item, type }) {
+  prepareItemTax({ rootState, getters }, { item, type }) {
     return new Promise(resolve => {
       if (type === 'genericOpenItem') {
         //find tax for this item
         item.tax_sum = rootState.tax.openItemTax
         item._id = rootState.tax.openItemId
       }
-      let isCombo = getters.isCombo(item)
-      console.log('adding modified combo item to data', item, isCombo)
-      if (isCombo && isCombo.no === item.for_combo) {
-        dispatch('comboPriceFix', item)
-      } else {
-        //item gross price is inclusive of tax
-        item.grossPrice = getters.grossPrice(item)
-        //net price is exclusive of tax, netPrice getter ll send unrounded price
-        item.netPrice = getters.netPrice(item)
+      console.log('adding modified combo item to data', item)
 
-        //calculated item tax, it should be unrounded for precision
-        item.tax = Num.round(item.grossPrice - item.netPrice)
-      }
+      //item gross price is inclusive of tax
+      item.grossPrice = getters.grossPrice(item)
+      //net price is exclusive of tax, netPrice getter ll send unrounded price
+      item.netPrice = getters.netPrice(item)
+
+      //calculated item tax, it should be unrounded for precision
+      item.tax = Num.round(item.grossPrice - item.netPrice)
 
       resolve(item)
     })
@@ -735,38 +642,25 @@ const actions = {
     })
   },
 
-  async addToOrder({ dispatch, commit, rootState, getters }, stateItem) {
+  async addToOrder({ dispatch, commit }, stateItem) {
     return new Promise(resolve => {
       let item = { ...stateItem }
-      let isCombo = getters.isCombo(item)
       item.modifiable = false
       item.note = stateItem.note ? stateItem.note : ''
-      console.log('adding simple item to cart', item, isCombo)
+      console.log('adding simple item to cart', item)
       // eslint-disable-next-line no-debugger
       // debugger
-      let isNewComboItem = rootState.comboItems.comboItemsList
-      if (
-        item.item_type === CONST.COMBO_ITEM_TYPE &&
-        !isCombo && // if remove this combo items (with or without combo in update mode) will not show
-        !isNewComboItem
-      ) {
-        console.log('adding combo simple item to cart', item)
-        commit('comboItems/SET_EDIT_COMBO_ITEM', item, { root: true })
-        resolve()
-      } else if (isCombo && isCombo.no === item.for_combo && !isNewComboItem) {
-        dispatch('comboPriceFix', item)
-        resolve()
-      } else {
-        console.log('adding simple item to cart', item, isCombo)
-        dispatch('prepareItem', { item: item }).then(item => {
-          commit(mutation.SET_ITEM, item)
-          commit(mutation.ADD_ORDER_ITEM, state.item)
-          dispatch('postCartItem').then(() => {
-            console.log('simple item added to cart', item)
-            resolve()
-          })
+
+      console.log('adding simple item to cart', item)
+      dispatch('prepareItem', { item: item }).then(item => {
+        commit(mutation.SET_ITEM, item)
+        commit(mutation.ADD_ORDER_ITEM, state.item)
+        dispatch('postCartItem').then(() => {
+          console.log('simple item added to cart', item)
+          resolve()
         })
-      }
+      })
+
       // eslint-disable-next-line no-debugger
       // debugger
     })
@@ -828,8 +722,8 @@ const actions = {
       //If cart is empty, reset items, order index and other things as well
       dispatch('reset', true)
       // Reset combo items store when cart is empty
-      dispatch('comboItems/reset', null, { root: true })
-      commit('comboItems/ITEMS_MODIFIERS_VALUE_TAX_DIFF', false, { root: true })
+      dispatch('combo/reset', null, { root: true })
+      commit('combo/ITEMS_MODIFIERS_VALUE_TAX_DIFF', false, { root: true })
     }
   },
 
@@ -1425,10 +1319,7 @@ const actions = {
     })
   },
 
-  async addItemToCart(
-    { state, rootState, dispatch, rootGetters },
-    { menuItem, orderItem }
-  ) {
+  async addItemToCart({ state, rootState, dispatch }, { menuItem, orderItem }) {
     console.log('neworder', state.newOrder)
 
     let allCovers = rootState.dinein.covers
@@ -1439,19 +1330,7 @@ const actions = {
       item.note = orderItem.note
       item.quantity = orderItem.qty || orderItem.quantity
       item.for_combo = orderItem.for_combo
-      let isItemCombo = orderItem.item_type === CONST.COMBO_ITEM_TYPE
-      if (isItemCombo) {
-        item.combo_selected_items = orderItem.combo_selected_items
-        let additionalComboPrice = rootGetters[
-          'comboItems/additionalComboPrice'
-        ](item.combo_selected_items)
-        if (additionalComboPrice > 0) {
-          item.value += additionalComboPrice
-          item.grossPrice = getters.grossPrice(item)
-          item.netPrice = getters.netPrice(item)
-          item.tax = Num.round(item.grossPrice - item.netPrice)
-        }
-      }
+
       let modifiers = []
       //get modifiers from order and associate them with concerned item
       if (state.newOrder.item_modifiers.length) {
@@ -1509,7 +1388,7 @@ const actions = {
     })
   },
 
-  async addItemsToCart({ dispatch, rootGetters, rootState }, items) {
+  async addItemsToCart({ dispatch, rootGetters }, items) {
     return new Promise(async resolve => {
       const item = items.shift()
       const menuItem = rootGetters['category/findItem'](
@@ -1528,61 +1407,12 @@ const actions = {
           await dispatch('addItemsToCart', items)
           console.log('resolve in the recurrsion')
           resolve()
-        } else {
-          let isCombo = rootState.comboItems.setEditComboItem
-          if (isCombo.length > 0) {
-            await dispatch('addComboItemToCart')
-            dispatch('comboItems/reset', null, { root: true })
-          }
-          /*commit('comboItems/ITEMS_MODIFIERS_VALUE_TAX_DIFF', false, {
-            root: true,
-          })*/
-          /* commented  because item modifiers price not added when new item added */
-
-          console.log('finally no items left')
-          resolve()
         }
       } else {
         //if item was removed from backend, resolve straigt away
         console.log('item was deleted from backend')
         resolve()
       }
-    })
-  },
-
-  async addComboItemToCart({ rootState, rootGetters, dispatch }) {
-    return new Promise(async resolve => {
-      for (const cmb_item of rootState.comboItems.setEditComboItem) {
-        let comboItemsList = rootGetters[
-          'comboItems/getComboSubItemByForCombo'
-        ](cmb_item) //rootState.comboItems.updateComboItems
-        dispatch(
-          'comboItems/itemsModifierPrice',
-          { items: comboItemsList, combo_item: cmb_item },
-          {
-            root: true,
-          }
-        )
-        console.log(state.selectedOrder, comboItemsList, 'selectedOrder')
-        let comboItem = {
-          ...cmb_item,
-          combo_selected_items: comboItemsList,
-          for_combo: false,
-          entity_id: cmb_item._id,
-        }
-        console.log(comboItem, 'comboItemcomboItem  final combo', comboItem)
-        const ComboMenuItem = rootGetters['category/findItem'](
-          comboItem,
-          'entity_id',
-          '_id'
-        )
-        console.log(ComboMenuItem, 'ComboMenuItemComboMenuItem')
-        await dispatch('addItemToCart', {
-          menuItem: ComboMenuItem,
-          orderItem: comboItem,
-        })
-      }
-      resolve()
     })
   },
 

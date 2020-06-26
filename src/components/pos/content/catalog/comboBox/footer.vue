@@ -38,7 +38,7 @@ export default {
   },
   methods: {
     addToCart() {
-      this.$store.dispatch('combo/addToCart')
+      this.itemsAddToCart(this.$store.getters['combo/current_combo'])
     },
   },
 }

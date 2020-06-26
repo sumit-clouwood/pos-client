@@ -13,15 +13,6 @@ const actions = {
     })
     dispatch('orderForm/clearSelection', null, { root: true })
   },
-  addToCart({ getters, dispatch }) {
-    //add current combo to cart
-    if (getters.current_combo_selected_modifiers) {
-      //add modifier order
-    } else {
-      //add simple order
-    }
-    dispatch('order/addItemToCart')
-  },
 }
 const getters = {
   current_combo: state => state.currentCombo,
@@ -72,6 +63,9 @@ const mutations = {
     state.currentComboSelectedItem = item
   },
   SET_CURRENT_COMBO_SELECTED_MODIFIERS(state, { itemId, modifiers }) {
+    if (!state.currentComboSelectedModifiers) {
+      state.currentComboSelectedModifiers = {}
+    }
     state.currentComboSelectedModifiers[itemId] = modifiers
   },
 }
