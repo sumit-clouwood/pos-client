@@ -542,6 +542,7 @@ export default {
       /*.attr('fill', 'green')*/
       /*if (this.selectedTableD3)
               d3.select(this.selectedTableD3).attr('class', 'dinein_table active')*/
+      // eslint-disable-next-line no-debugger
       debugger
       this.setTableProperties()
       this.drawViews()
@@ -848,6 +849,7 @@ export default {
           return `scale(${dis.tableZoomScale}) translate(0, 0) rotate(${data.table_position_coordinate.angle},${midX},${midY})`
         })
       })
+      // eslint-disable-next-line no-debugger
       debugger
     },
     confirmCancelReservation() {
@@ -1012,6 +1014,7 @@ export default {
     },
     drawViews() {
       if (this.activeArea) {
+        // eslint-disable-next-line no-debugger
         debugger
         this.activeArea.top_view.forEach((element, i) => {
           d3.select(this.$el)
@@ -1268,6 +1271,7 @@ export default {
                 .on('end', this.drag_view_end)
             )
         })
+        // eslint-disable-next-line no-debugger
         debugger
       }
     },
