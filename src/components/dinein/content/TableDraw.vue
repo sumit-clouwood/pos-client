@@ -542,8 +542,6 @@ export default {
       /*.attr('fill', 'green')*/
       /*if (this.selectedTableD3)
               d3.select(this.selectedTableD3).attr('class', 'dinein_table active')*/
-      // eslint-disable-next-line no-debugger
-      debugger
       this.setTableProperties()
       this.drawViews()
       // eslint-disable-next-line no-console
@@ -596,6 +594,7 @@ export default {
       // let angleX = parseInt(table.table_position_coordinate.angle)
       // angleX = angleX > 360 || angleX < -360 ? 360 : angleX
       // let angle = angleX < 0 ? angleX + 360 : angleX
+      let transform = {}
       if (!this.tableTextTransform) {
         return { transformOrigin: ';', transformRotate: '' }
       }
@@ -633,7 +632,7 @@ export default {
       //eslint-disable-next-line no-console
       // console.log(table, angle, transformRotate, angleX)
       /* angle - 270 will get transformRotate in deg only we need set 315 to 315*/
-      let transform = {}
+
       if (angle == 0 || angle == 360) {
         transform = {
           transformOrigin: '69% 8%;',
@@ -849,8 +848,6 @@ export default {
           return `scale(${dis.tableZoomScale}) translate(0, 0) rotate(${data.table_position_coordinate.angle},${midX},${midY})`
         })
       })
-      // eslint-disable-next-line no-debugger
-      debugger
     },
     confirmCancelReservation() {
       let makeId = '#id_' + this.selectedTableId
@@ -1014,8 +1011,6 @@ export default {
     },
     drawViews() {
       if (this.activeArea) {
-        // eslint-disable-next-line no-debugger
-        debugger
         this.activeArea.top_view.forEach((element, i) => {
           d3.select(this.$el)
             .select('#dine-in-area > g')
@@ -1271,8 +1266,6 @@ export default {
                 .on('end', this.drag_view_end)
             )
         })
-        // eslint-disable-next-line no-debugger
-        debugger
       }
     },
     manageViews() {
