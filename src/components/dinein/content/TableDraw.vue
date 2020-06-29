@@ -542,6 +542,7 @@ export default {
       /*.attr('fill', 'green')*/
       /*if (this.selectedTableD3)
               d3.select(this.selectedTableD3).attr('class', 'dinein_table active')*/
+      debugger
       this.setTableProperties()
       this.drawViews()
       // eslint-disable-next-line no-console
@@ -847,6 +848,7 @@ export default {
           return `scale(${dis.tableZoomScale}) translate(0, 0) rotate(${data.table_position_coordinate.angle},${midX},${midY})`
         })
       })
+      debugger
     },
     confirmCancelReservation() {
       let makeId = '#id_' + this.selectedTableId
@@ -1010,6 +1012,7 @@ export default {
     },
     drawViews() {
       if (this.activeArea) {
+        debugger
         this.activeArea.top_view.forEach((element, i) => {
           d3.select(this.$el)
             .select('#dine-in-area > g')
@@ -1265,6 +1268,7 @@ export default {
                 .on('end', this.drag_view_end)
             )
         })
+        debugger
       }
     },
     manageViews() {
