@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 const state = {
   currentCombo: undefined,
   currentComboSection: undefined,
@@ -15,6 +16,10 @@ const actions = {
   },
   reset({ commit }) {
     commit('RESET')
+  },
+  setItem({ commit }, { item }) {
+    console.log('current combo', item)
+    commit('SET_CURRENT_COMBO', item)
   },
 }
 const getters = {
