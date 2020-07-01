@@ -20,6 +20,8 @@ const actions = {
   setItem({ commit }, { item }) {
     console.log('current combo', item)
     commit('SET_CURRENT_COMBO', item)
+    commit('SET_CURRENT_COMBO_SELECTED_ITEMS', item.selectedItems)
+    commit('SET_CURRENT_COMBO_SELECTED_MODIFIERS', item.selectedModifiers)
   },
 }
 const getters = {
@@ -53,6 +55,12 @@ const getters = {
     if (getters.current_combo_selected_modifiers) {
       return getters.current_combo_selected_modifiers[item._id]
     }
+  },
+  order_item: (state, getters) => {
+    const item = { ...getters.current_combo }
+    item.selectedItems = getters.current_combo_selected_items
+    item.selectedModifiers = getters.current_combo_selected_modifiers
+    return item
   },
 }
 const mutations = {
