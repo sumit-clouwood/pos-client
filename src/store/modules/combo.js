@@ -21,7 +21,9 @@ const actions = {
     console.log('current combo', item)
     commit('SET_CURRENT_COMBO', item)
     commit('SET_CURRENT_COMBO_SELECTED_ITEMS', item.selectedItems)
-    commit('SET_CURRENT_COMBO_SELECTED_MODIFIERS', item.selectedModifiers)
+    commit('orderForm/restoreModifiersCtrls', item.selectedModifiersRaw, {
+      root: true,
+    })
   },
 }
 const getters = {
@@ -56,10 +58,14 @@ const getters = {
       return getters.current_combo_selected_modifiers[item._id]
     }
   },
-  order_item: (state, getters) => {
+  order_item: (state, getters, rootState) => {
     const item = { ...getters.current_combo }
     item.selectedItems = getters.current_combo_selected_items
     item.selectedModifiers = getters.current_combo_selected_modifiers
+    item.selectedModifiersRaw = {
+      checkboxes: rootState.orderForm.checkboxes,
+      radios: rootState.orderForm.radios,
+    }
     return item
   },
 }

@@ -121,6 +121,10 @@ const mutations = {
     //state.obj = { ...state.obj, newProp: 123 }
     state.radios = radios
   },
+  restoreModifiersCtrls(state, { checkboxes, radios }) {
+    state.checkboxes = checkboxes
+    state.radios = radios
+  },
 }
 
 export default {
