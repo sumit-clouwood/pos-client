@@ -20,6 +20,7 @@ import OrderService from '../../services/data/OrderService'
 import * as CONST from '@/constants'
 import Num from '@/plugins/helpers/Num.js'
 import DateTime from '@/mixins/DateTime.js'
+import { dispatch } from 'd3'
 
 // initial state
 const state = {
@@ -342,6 +343,14 @@ const getters = {
 
 // actions
 const actions = {
+  updateComboItemInCart({ state, commit }, item) {
+    //remove already existing combo item in cart with order index
+    return new Promise(resolve => {
+      commit(mutation.REMOVE_ORDER_ITEM, item.orderIndex)
+      dispatch('addToOrder', state.item).then(() => resolve())
+    })
+  },
+
   addNoteToItem({ commit }, note) {
     let item = { ...state.item }
     item.note = note

@@ -77,11 +77,15 @@ export default {
       } else {
         // this.$store.dispatch('modifier/assignModifiersToItem', item)
         // this.$store.commit('orderForm/clearSelection')
-        const item = this.$store.getters['combo/current_combo']
-        if (typeof item.orderIndex !== 'undefined') {
-          this.$store.dispatch('order/addModifierOrder')
+        const item = this.$store.getters['combo/order_item']
+        if (typeof item.orderIndex === 'undefined') {
+          this.$store
+            .dispatch('order/addToOrder', item)
+            .then(() => this.$store.commit('combo/RESET'))
         } else {
-          this.$store.dispatch('order/addToOrder', item)
+          this.$store
+            .dispatch('order/updateComboItemInCart', item)
+            .then(() => this.$store.commit('combo/RESET'))
         }
 
         /*item.combo_selected_items.forEach(combo_item => {
