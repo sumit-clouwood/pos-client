@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 const state = {
   currentCombo: undefined,
+  currentOrderCombo: undefined,
   currentComboSection: undefined,
   currentComboSelectedItems: {},
   currentComboSelectedItem: undefined,
@@ -19,6 +20,7 @@ const actions = {
   setItem({ commit }, { item }) {
     console.log('current combo', item)
     commit('SET_CURRENT_COMBO', item)
+    commit('SET_CURRENT_ORDER_COMBO', item)
     commit('SET_CURRENT_COMBO_SELECTED_ITEMS', item.selectedItems)
     commit('orderForm/restoreModifiersCtrls', item.selectedModifiersRaw, {
       root: true,
@@ -27,6 +29,7 @@ const actions = {
 }
 const getters = {
   current_combo: state => state.currentCombo,
+  current_order_combo: state => state.currentOrderCombo,
   current_combo_section: state => {
     if (state.currentComboSection) {
       return state.currentComboSection
@@ -70,6 +73,9 @@ const mutations = {
   },
   SET_CURRENT_COMBO_SECTION(state, comboSection) {
     state.currentComboSection = comboSection
+  },
+  SET_CURRENT_ORDER_COMBO(state, item) {
+    state.currentOrderCombo = item
   },
   // contains ids instead of full item
   SET_CURRENT_COMBO_SELECTED_ITEMS(state, items) {
