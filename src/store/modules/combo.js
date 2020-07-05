@@ -22,9 +22,18 @@ const actions = {
     commit('SET_CURRENT_COMBO', item)
     commit('SET_CURRENT_ORDER_COMBO', item)
     commit('SET_CURRENT_COMBO_SELECTED_ITEMS', item.selectedItems)
-    commit('orderForm/restoreModifiersCtrls', item.selectedModifiersRaw, {
-      root: true,
-    })
+  },
+  setOrderComboItem({ commit, getters }, item) {
+    commit('SET_CURRENT_COMBO_SELECTED_ITEM', item)
+    const combo = getters.current_combo
+    const modifiers = combo.selectedModifiersRaw
+    commit(
+      'orderForm/restoreModifiersCtrls',
+      { checkboxes: modifiers.checkboxes, radios: modifiers.radios },
+      {
+        root: true,
+      }
+    )
   },
 }
 const getters = {

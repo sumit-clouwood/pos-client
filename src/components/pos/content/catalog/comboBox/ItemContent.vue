@@ -114,9 +114,11 @@ export default {
       this.$store.commit('combo/SET_CURRENT_COMBO_SELECTED_ITEM', item)
     },
     setCombo(item) {
+      //for edit order set state of current combo
       if (this.$store.getters['modifier/hasModifiers'](item)) {
         this.$store.dispatch('modifier/assignModifiersToItem', item)
       }
+      this.$store.dispatch('combo/setOrderComboItem', item)
     },
   },
 }
