@@ -29,7 +29,7 @@
             type="checkbox"
             :name="modifier._id"
             :id="modifier._id"
-            class="customradio"
+            class="customradio checkbox"
             :value="{
               type: 'checkbox',
               itemId: item._id,
@@ -73,7 +73,7 @@
           <input
             v-if="item.editMode"
             type="radio"
-            class="customradio modifier-option-radio"
+            class="customradio modifier-option-radio edit"
             :id="modifier._id"
             :name="subgroup._id"
             :value="modifier._id"

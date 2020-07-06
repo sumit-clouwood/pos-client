@@ -19,12 +19,14 @@ const actions = {
   },
   setItem({ commit }, { item }) {
     console.log('current combo', item)
+    item.editMode = true
     commit('SET_CURRENT_COMBO', item)
     commit('SET_CURRENT_ORDER_COMBO', item)
     commit('SET_CURRENT_COMBO_SELECTED_ITEMS', item.selectedItems)
   },
-  setOrderComboItem({ commit, getters }, item) {
+  setOrderComboItem({ commit, getters, dispatch }, item) {
     commit('SET_CURRENT_COMBO_SELECTED_ITEM', item)
+    dispatch('modifier/setItem', item, { root: true })
     const combo = getters.current_combo
     const modifiers = combo.selectedModifiersRaw
     commit(
