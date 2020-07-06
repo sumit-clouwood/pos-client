@@ -17,7 +17,7 @@ export default {
     ...mapState('location', ['currency']),
     ...mapGetters('location', ['_t']),
     ...mapGetters('category', ['items', 'itemByCode']),
-    ...mapGetters('combo', ['current_combo']),
+    ...mapGetters('combo', ['current_combo', 'current_order_combo']),
     ...mapGetters(['foodMenuHendler']),
     isEnabled() {
       return this.$store.getters['modules/enabled'](CONST.MODULE_DINE_IN_MENU)
@@ -72,25 +72,28 @@ export default {
       this.$store.commit('category/SET_ITEM', item)
       this.$store.commit('checkoutForm/showCalc', true)
       this.$store.commit('orderForm/updateQuantity', 1)
-      if (item.item_type !== CONST.COMBO_ITEM_TYPE) {
-        this.setupItemModifiers(item)
-      } else {
+      if (item.item_type == CONST.COMBO_ITEM_TYPE) {
         // this.$store.dispatch('modifier/assignModifiersToItem', item)
         // this.$store.commit('orderForm/clearSelection')
         const item = this.$store.getters['combo/order_item']
-        if (typeof item.orderIndex === 'undefined') {
+        if (this.current_order_combo) {
           this.$store
-            .dispatch('order/addToOrder', item)
-            .then(() => this.$store.commit('combo/RESET'))
+            .dispatch('order/updateComboItemInCart', {
+              oldItem: this.current_order_combo,
+              newItem: item,
+            })
+            .then(() => this.$store.commit('combo/RESET', true))
         } else {
           this.$store
-            .dispatch('order/updateComboItemInCart', item)
-            .then(() => this.$store.commit('combo/RESET'))
+            .dispatch('order/addToOrder', item)
+            .then(() => this.$store.commit('combo/RESET', true))
         }
 
         /*item.combo_selected_items.forEach(combo_item => {
           this.setupItemModifiers(combo_item, false)
         })*/
+      } else {
+        this.setupItemModifiers(item)
       }
       this.$store.dispatch('addItemFood', item)
       this.$store.commit('category/IS_UP_SELLING_MODIFY', false)

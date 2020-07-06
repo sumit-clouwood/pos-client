@@ -19,10 +19,11 @@ const actions = {
   },
   setItem({ commit }, { item }) {
     console.log('current combo', item)
-    item.editMode = true
-    commit('SET_CURRENT_COMBO', item)
-    commit('SET_CURRENT_ORDER_COMBO', item)
-    commit('SET_CURRENT_COMBO_SELECTED_ITEMS', item.selectedItems)
+    let newItem = { ...item }
+    newItem.editMode = true
+    commit('SET_CURRENT_COMBO', newItem)
+    commit('SET_CURRENT_ORDER_COMBO', newItem)
+    commit('SET_CURRENT_COMBO_SELECTED_ITEMS', newItem.selectedItems)
   },
   setOrderComboItem({ commit, getters, dispatch }, item) {
     commit('SET_CURRENT_COMBO_SELECTED_ITEM', item)
@@ -102,12 +103,15 @@ const mutations = {
     }
     state.currentComboSelectedModifiers[itemId] = modifiers
   },
-  RESET(state) {
+  RESET(state, full = false) {
     state.currentCombo = undefined
     state.currentComboSection = undefined
     state.currentComboSelectedItems = {}
     state.currentComboSelectedItem = undefined
     state.currentComboSelectedModifiers = {}
+    if (full) {
+      state.currentOrderCombo = undefined
+    }
   },
 }
 
