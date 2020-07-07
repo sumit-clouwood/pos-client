@@ -58,6 +58,8 @@
 </template>
 
 <script>
+/* eslint-disable no-console */
+
 import { mapGetters } from 'vuex'
 import Checkbox from '@/components/util/form/CheckBox2.vue'
 import Cart from '@/mixins/Cart'
@@ -68,31 +70,50 @@ export default {
     Checkbox,
   },
   mixins: [Cart],
-  data() {
-    return {}
-  },
-  watch: {},
+
   computed: {
     ...mapGetters('location', ['formatPrice', '_t']),
-    ...mapGetters('combo', [
-      'current_combo_items',
-      'current_combo_selected_items',
-      'current_order_combo',
-    ]),
+    ...mapGetters('combo', ['current_combo_items', 'current_order_combo']),
     comboItemSelection: {
       get() {
-        return this.current_combo_selected_items
+        return this.$store.getters['combo/current_combo_selected_items']
       },
       set(items) {
-        this.$store.commit('combo/SET_CURRENT_COMBO_SELECTED_ITEMS', items)
+        console.log('in setter', items)
+        //if (this.validateSection()) {
+        //this.$store.commit('combo/SET_CURRENT_COMBO_SELECTED_ITEMS', items)
+        //}
       },
     },
   },
   methods: {
+    validateSection() {
+      const section = this.$store.getters['combo/current_combo_section']
+      const selectedItems = this.$store.getters[
+        'combo/current_combo_selected_items'
+      ]
+
+      let selectedItemsInCurrentSection = []
+      if (section.qty) {
+        //check if selectedItems contains == section.for_items
+        section.for_items.forEach(itemId => {
+          if (selectedItems[itemId]) {
+            selectedItemsInCurrentSection.push(itemId)
+          }
+        })
+        if (selectedItemsInCurrentSection.length < section.qty) {
+          return true
+        }
+        return false
+      }
+      return true
+    },
     selectItemForCombo(item) {
       //associate modifiers to item, this is not selection of modifiers [note]
       this.setupItemModifiers(item)
-      this.$store.commit('combo/SET_CURRENT_COMBO_SELECTED_ITEM', item)
+      if (this.validateSection()) {
+        this.$store.commit('combo/SET_CURRENT_COMBO_SELECTED_ITEM', item)
+      }
     },
     setCombo(item) {
       //for edit order set state of current combo
