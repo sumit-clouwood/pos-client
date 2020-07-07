@@ -10,7 +10,7 @@ const state = {
 const actions = {
   selectModifiers({ getters, rootGetters, commit }) {
     commit('SET_CURRENT_COMBO_SELECTED_MODIFIERS', {
-      itemId: getters.current_combo_selected_item,
+      item: getters.current_combo_selected_item,
       modifiers: rootGetters['orderForm/modifiers'],
     })
   },
@@ -68,7 +68,7 @@ const getters = {
   current_combo_selected_modifiers: state =>
     state.currentComboSelectedModifiers,
 
-  order_item: (state, getters, rootState) => {
+  order_item: (state, getters, rootState, rootGetters) => {
     const item = { ...getters.current_combo }
     item.selectedItems = getters.current_combo_selected_items
     item.selectedModifiers = getters.current_combo_selected_modifiers
@@ -76,6 +76,27 @@ const getters = {
       checkboxes: rootState.orderForm.checkboxes,
       radios: rootState.orderForm.radios,
     }
+
+    //set combo pricing based on selected modifiers
+    let netPrice = item.value / ((100 + item.tax_sum) / 100)
+    if (item.selectedModifiers) {
+      //combo contains modifiers
+      //get price of each modifier and add to current price
+      let modifiersPrice = 0
+      for (const itemId in item.selectedModifiers) {
+        const modifiers = item.selectedModifiers[itemId]
+        modifiers.forEach(selectedModifier => {
+          const modifier = rootGetters['modifiers/findModifier'](
+            selectedModifier.modifierId,
+            item
+          )
+          modifiersPrice += modifier.value
+        })
+      }
+      item.value = netPrice + modifiersPrice
+    }
+    //set per item price here associate it with item so we wouldn't need to
+    //re calculate it
     return item
   },
 }
@@ -97,18 +118,18 @@ const mutations = {
   SET_CURRENT_COMBO_SELECTED_ITEM(state, item) {
     state.currentComboSelectedItem = item
   },
-  SET_CURRENT_COMBO_SELECTED_MODIFIERS(state, { itemId, modifiers }) {
+  SET_CURRENT_COMBO_SELECTED_MODIFIERS(state, { item, modifiers }) {
     if (!state.currentComboSelectedModifiers) {
       state.currentComboSelectedModifiers = {}
     }
-    state.currentComboSelectedModifiers[itemId] = modifiers
+    state.currentComboSelectedModifiers[item._id] = modifiers
   },
   RESET(state, full = false) {
     state.currentCombo = undefined
     state.currentComboSection = undefined
     state.currentComboSelectedItems = {}
     state.currentComboSelectedItem = undefined
-    state.currentComboSelectedModifiers = {}
+    state.currentComboSelectedModifiers = undefined
     if (full) {
       state.currentOrderCombo = undefined
     }
