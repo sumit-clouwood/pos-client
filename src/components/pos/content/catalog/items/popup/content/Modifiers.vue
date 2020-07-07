@@ -508,7 +508,8 @@ export default {
           margin-right: $px5;
           display: inline-block;
           vertical-align: middle;
-          width: $px35;
+          min-width: $px35;
+          max-width: $px35;
           height: $px35;
           border-radius: 50%;
         }
