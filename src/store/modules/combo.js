@@ -86,17 +86,20 @@ const getters = {
       for (const itemId in item.selectedModifiers) {
         const modifiers = item.selectedModifiers[itemId]
         modifiers.forEach(selectedModifier => {
-          const modifier = rootGetters['modifiers/findModifier'](
+          const modifier = rootGetters['modifier/findModifier'](
             selectedModifier.modifierId,
             item
           )
           modifiersPrice += modifier.value
         })
       }
-      item.value = netPrice + modifiersPrice
+      netPrice += modifiersPrice
     }
+    //apply tax again
+    netPrice += netPrice * item.tax_sum * 0.01
     //set per item price here associate it with item so we wouldn't need to
     //re calculate it
+    item.value = netPrice
     return item
   },
 }

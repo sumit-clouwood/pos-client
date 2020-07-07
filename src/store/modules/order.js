@@ -347,7 +347,7 @@ const actions = {
     return new Promise(resolve => {
       commit(mutation.REMOVE_ORDER_ITEM, oldItem.orderIndex)
       dispatch('addToOrder', newItem).then(() => {
-        commit('combo/RESET', true)
+        commit('combo/RESET', true, { root: true })
         resolve()
       })
     })
@@ -741,7 +741,7 @@ const actions = {
       //If cart is empty, reset items, order index and other things as well
       dispatch('reset', true)
       // Reset combo items store when cart is empty
-      dispatch('combo/reset', null, { root: true })
+      dispatch('combo/reset', true, { root: true })
     }
   },
 

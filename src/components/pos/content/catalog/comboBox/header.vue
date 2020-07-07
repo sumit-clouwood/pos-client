@@ -1,6 +1,6 @@
 <template>
   <div class="modal-header customer-header">
-    <h4 class="customer-title">
+    <h4 class="customer-title" v-if="current_combo">
       {{ _t(current_combo.name) || _t('Combo item') }}
     </h4>
   </div>
