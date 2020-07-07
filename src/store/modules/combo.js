@@ -16,6 +16,7 @@ const actions = {
   },
   reset({ commit }) {
     commit('RESET')
+    commit('modifier/RESET', null, { root: true })
   },
   setItem({ commit }, { item }) {
     console.log('current combo', item)
