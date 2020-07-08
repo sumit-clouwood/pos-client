@@ -6,6 +6,7 @@ const state = {
   currentComboSelectedItems: {},
   currentComboSelectedItem: undefined,
   currentComboSelectedModifiers: undefined,
+  errors: {},
 }
 const actions = {
   selectModifiers({ getters, rootGetters, commit }) {
@@ -38,6 +39,40 @@ const actions = {
         root: true,
       }
     )
+  },
+  setError({ commit, getters }, error) {
+    commit('SET_ERROR', {
+      sectionId: getters.current_combo_section._id['$oid'],
+      error: error,
+    })
+  },
+  validate_combo_items: ({ state, getters, commit, rootGetters }) => {
+    let errors = {}
+    let sectionItems = {}
+    getters.current_combo.combo_items.forEach(section => {
+      section.for_items.forEach(itemId => {
+        if (state.currentComboSelectedItems[itemId]) {
+          if (!sectionItems[section._id['$oid']]) {
+            sectionItems[section._id['$oid']] = {
+              items: [],
+              qty: section.qty,
+              name: section.name,
+            }
+          }
+          sectionItems[section._id['$oid']].items.push(itemId)
+        }
+      })
+    })
+    getters.current_combo.combo_items.forEach(originalSection => {
+      const section = sectionItems[originalSection._id['$oid']]
+      if (!section || section.items.length != originalSection.qty) {
+        errors[originalSection._id['$oid']] = rootGetters['location/_t'](
+          `Please select ${originalSection.qty} item(s) from ${originalSection.name}`
+        )
+      }
+    })
+
+    commit('SET_ERRORS', errors)
   },
 }
 const getters = {
@@ -97,6 +132,24 @@ const getters = {
   current_combo_selected_item: state => state.currentComboSelectedItem,
   current_combo_selected_modifiers: state =>
     state.currentComboSelectedModifiers,
+  combo_error: (state, getters) => {
+    if (!getters.combo_errors) {
+      return ''
+    }
+    let error = ''
+    for (const sectionId in getters.combo_errors) {
+      if (!error && getters.combo_errors[sectionId]) {
+        error = getters.combo_errors[sectionId]
+      }
+    }
+    return error
+  },
+  combo_errors: state => {
+    return Object.keys(state.errors).length === 0 &&
+      state.errors.constructor === Object
+      ? false
+      : state.errors
+  },
 
   order_item: (state, getters, rootState, rootGetters) => {
     const item = { ...getters.current_combo }
@@ -151,6 +204,14 @@ const mutations = {
   SET_CURRENT_COMBO_SELECTED_ITEM(state, item) {
     state.currentComboSelectedItem = item
   },
+  SET_ERROR(state, { sectionId, error }) {
+    let errors = { ...state.errors }
+    errors[sectionId] = error
+    state.errors = errors
+  },
+  SET_ERRORS(state, errors) {
+    state.errors = errors
+  },
   SET_CURRENT_COMBO_SELECTED_MODIFIERS(state, { item, modifiers }) {
     if (!state.currentComboSelectedModifiers) {
       state.currentComboSelectedModifiers = {}
@@ -159,7 +220,6 @@ const mutations = {
   },
   RESET(state, full = false) {
     state.currentCombo = undefined
-    state.currentComboSection = undefined
     state.currentComboSelectedItems = {}
     state.currentComboSelectedItem = undefined
     state.currentComboSelectedModifiers = undefined

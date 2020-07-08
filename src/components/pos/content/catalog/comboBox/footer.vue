@@ -24,12 +24,12 @@
 
 <script>
 /* global hideModal */
-import { mapGetters, mapState } from 'vuex'
+import { mapGetters } from 'vuex'
 import Cart from '@/mixins/Cart'
 export default {
   computed: {
     ...mapGetters('location', ['_t']),
-    ...mapState('combo', []),
+    ...mapGetters('combo', ['combo_errors']),
   },
   mixins: [Cart],
   data() {
@@ -40,8 +40,11 @@ export default {
   methods: {
     addToCart() {
       const item = this.$store.getters['combo/current_combo']
-      this.itemsAddToCart(item)
-      hideModal('#combox-box-popup')
+      this.$store.dispatch('combo/validate_combo_items')
+      if (!this.combo_errors) {
+        this.itemsAddToCart(item)
+        hideModal('#combox-box-popup')
+      }
     },
   },
 }

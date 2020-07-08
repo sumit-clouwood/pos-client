@@ -70,7 +70,11 @@ export default {
     Checkbox,
   },
   mixins: [Cart],
-
+  data() {
+    return {
+      sectionQty: 0,
+    }
+  },
   computed: {
     comboItemSelection: {
       get() {
@@ -84,27 +88,6 @@ export default {
     ...mapGetters('combo', ['current_combo_items', 'current_order_combo']),
   },
   methods: {
-    validateSection() {
-      const section = this.$store.getters['combo/current_combo_section']
-      const selectedItems = this.$store.getters[
-        'combo/current_combo_selected_items'
-      ]
-
-      let selectedItemsInCurrentSection = []
-      if (section.qty) {
-        //check if selectedItems contains == section.for_items
-        section.for_items.forEach(itemId => {
-          if (selectedItems[itemId]) {
-            selectedItemsInCurrentSection.push(itemId)
-          }
-        })
-        if (selectedItemsInCurrentSection.length < section.qty) {
-          return true
-        }
-        return false
-      }
-      return true
-    },
     // eslint-disable-next-line no-unused-vars
     selectItemForCombo(item) {
       for (var itemId in this.comboItemSelection) {
@@ -114,8 +97,26 @@ export default {
       }
       //associate modifiers to item, this is not selection of modifiers [note]
       this.setupItemModifiers(item)
-      if (this.validateSection()) {
+      const isValid = this.validateSection()
+      if (isValid === false) {
+        //validation failed, remove current item
+        this.$store.dispatch(
+          'combo/setError',
+          this._t(`Select ${this.sectionQty} items `)
+        )
+        delete this.comboItemSelection[item._id]
+      } else {
         this.$store.commit('combo/SET_CURRENT_COMBO_SELECTED_ITEM', item)
+        if (isValid === true) {
+          //ok
+          this.$store.dispatch('combo/setError', '')
+        } else if (isValid > 0) {
+          //still need to select more
+          this.$store.dispatch(
+            'combo/setError',
+            this._t(`Select ${isValid} more item(s) `)
+          )
+        }
       }
     },
     setCombo(item) {

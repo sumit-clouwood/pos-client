@@ -25,6 +25,31 @@ export default {
   },
   watch: {},
   methods: {
+    validateSection() {
+      const section = this.$store.getters['combo/current_combo_section']
+      const selectedItems = this.$store.getters[
+        'combo/current_combo_selected_items'
+      ]
+
+      let selectedItemsInCurrentSection = []
+      if (section.qty) {
+        this.sectionQty = section.qty
+        //check if selectedItems contains == section.for_items
+        section.for_items.forEach(itemId => {
+          if (selectedItems[itemId]) {
+            selectedItemsInCurrentSection.push(itemId)
+          }
+        })
+        if (selectedItemsInCurrentSection.length < section.qty) {
+          return section.qty - selectedItemsInCurrentSection.length
+        } else if (selectedItemsInCurrentSection.length == section.qty) {
+          return true
+        } else {
+          return false
+        }
+      }
+      return true
+    },
     setupItemModifiers(item) {
       this.$store.commit('orderForm/clearSelection')
       if (this.$store.getters['modifier/hasModifiers'](item)) {

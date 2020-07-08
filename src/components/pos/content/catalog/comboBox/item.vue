@@ -15,17 +15,43 @@
 </template>
 <script>
 import { mapGetters } from 'vuex'
+import Cart from '@/mixins/Cart'
+
 export default {
   data() {},
   name: 'Items',
   watch: {},
+  mixins: [Cart],
   computed: {
-    ...mapGetters('combo', ['current_combo', 'current_combo_section']),
+    ...mapGetters('combo', [
+      'current_combo',
+      'current_combo_section',
+      'current_combo_selected_items',
+    ]),
     ...mapGetters('location', ['_t']),
   },
   methods: {
     selectComboSection(section) {
       this.$store.commit('combo/SET_CURRENT_COMBO_SECTION', section)
+      const isValid = this.validateSection()
+      if (isValid === false) {
+        //validation failed, remove current item
+        this.$store.dispatch(
+          'combo/setError',
+          this._t(`Select ${this.sectionQty} items `)
+        )
+      } else {
+        if (isValid === true) {
+          //ok
+          this.$store.dispatch('combo/setError', '')
+        } else if (isValid > 0) {
+          //still need to select more
+          this.$store.dispatch(
+            'combo/setError',
+            this._t(`Select ${isValid} item(s) `)
+          )
+        }
+      }
     },
   },
 }
