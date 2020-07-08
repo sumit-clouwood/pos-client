@@ -72,19 +72,16 @@ export default {
   mixins: [Cart],
 
   computed: {
-    ...mapGetters('location', ['formatPrice', '_t']),
-    ...mapGetters('combo', ['current_combo_items', 'current_order_combo']),
     comboItemSelection: {
       get() {
-        return this.$store.getters['combo/current_combo_selected_items']
+        return this.$store.state.combo.currentComboSelectedItems
       },
-      set(items) {
-        console.log('in setter', items)
-        //if (this.validateSection()) {
-        //this.$store.commit('combo/SET_CURRENT_COMBO_SELECTED_ITEMS', items)
-        //}
+      set(val) {
+        this.$store.commit('combo/SET_CURRENT_COMBO_SELECTED_ITEMS', val)
       },
     },
+    ...mapGetters('location', ['formatPrice', '_t']),
+    ...mapGetters('combo', ['current_combo_items', 'current_order_combo']),
   },
   methods: {
     validateSection() {
@@ -108,7 +105,13 @@ export default {
       }
       return true
     },
+    // eslint-disable-next-line no-unused-vars
     selectItemForCombo(item) {
+      for (var itemId in this.comboItemSelection) {
+        if (this.comboItemSelection[itemId] === false) {
+          delete this.comboItemSelection[itemId]
+        }
+      }
       //associate modifiers to item, this is not selection of modifiers [note]
       this.setupItemModifiers(item)
       if (this.validateSection()) {

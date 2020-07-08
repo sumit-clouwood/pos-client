@@ -64,6 +64,35 @@ const getters = {
     })
     return items
   },
+  find_combo_items: (state, getters, rootState, rootGetters) => combo => {
+    let items = []
+    for (const itemId in combo.selectedItems) {
+      const item = rootGetters['category/itemById'](itemId)
+      if (item) {
+        items.push(item)
+      }
+    }
+    return items
+  },
+  find_combo_item_modifiers: (state, getters, rootState, rootGetters) => (
+    combo,
+    item
+  ) => {
+    let modifiers = []
+    if (combo.selectedModifiers && combo.selectedModifiers[item._id]) {
+      const selectedModifiers = combo.selectedModifiers[item._id]
+      selectedModifiers.forEach(selectedModifier => {
+        const modifier = rootGetters['modifier/findModifier'](
+          selectedModifier.modifierId,
+          item
+        )
+        if (modifier) {
+          modifiers.push(modifier)
+        }
+      })
+    }
+    return modifiers
+  },
   current_combo_selected_items: state => state.currentComboSelectedItems,
   current_combo_selected_item: state => state.currentComboSelectedItem,
   current_combo_selected_modifiers: state =>
@@ -116,7 +145,7 @@ const mutations = {
   },
   // contains ids instead of full item
   SET_CURRENT_COMBO_SELECTED_ITEMS(state, items) {
-    state.currentComboSelectedItems = items
+    state.currentComboSelectedItems = items || {}
   },
   // contains item id instead of full item
   SET_CURRENT_COMBO_SELECTED_ITEM(state, item) {

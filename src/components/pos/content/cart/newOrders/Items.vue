@@ -46,10 +46,7 @@
           class="sub_container"
           v-if="item.item_type === CONST.COMBO_ITEM_TYPE"
         >
-          <div
-            v-for="(cmbItm, index) in item.combo_selected_items"
-            :key="index"
-          >
+          <div v-for="(cmbItm, index) in find_combo_items(item)" :key="index">
             <div class="subdescription_container">
               <div
                 class="product_sub_description main-orders-list-item-subtitle color-text-invert item-exclude"
@@ -61,11 +58,20 @@
                 </div>-->
             </div>
             <div class="sub_des_catagary">
-              <div class="sub_more_description" v-if="cmbItm.modifiable">
-                <Modifiers
-                  v-bind:modifiers="cmbItm.modifiers"
-                  v-bind:item="cmbItm"
-                />
+              <div
+                class="sub_more_description"
+                v-if="find_combo_item_modifiers(item, cmbItm)"
+              >
+                <div
+                  class="orders-button-small"
+                  v-for="(modifier, modifierId) in find_combo_item_modifiers(
+                    item,
+                    cmbItm
+                  )"
+                  :key="modifierId"
+                >
+                  {{ dt(modifier) }}
+                </div>
               </div>
               <!--<div class="sub_more_description_price">
                 + NZD 15.00
@@ -168,6 +174,7 @@ export default {
     }),
     ...mapState('order', ['orderType', 'selectedOrder', 'orderId']),
     ...mapGetters('category', ['subcategoryImage']),
+    ...mapGetters('combo', ['find_combo_items', 'find_combo_item_modifiers']),
     ...mapGetters('modifier', ['hasModifiers']),
     ...mapGetters('order', [
       'items',
