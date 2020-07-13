@@ -675,6 +675,7 @@ const actions = {
               kitchen_invoice: 0,
               type: itemInCombo.item_type || 'regular',
               for_combo: item.no,
+              store_id: item.store_id,
             }
             comboItems.push(orderItem)
             //set modifiers
