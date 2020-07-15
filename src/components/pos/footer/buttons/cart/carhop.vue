@@ -58,7 +58,7 @@
   </div> -->
 </template>
 <script>
-/* global clickPayNow */
+/* global clickPayNow showModal */
 import CheckoutMixin from '@/mixins/Checkout'
 
 import { mapState } from 'vuex'
@@ -73,7 +73,12 @@ export default {
   },
   computed: {
     ...mapState('checkoutForm', ['processing']),
-    ...mapState('order', ['items', 'orderSource', 'selectedOrder']),
+    ...mapState('order', [
+      'items',
+      'orderSource',
+      'selectedOrder',
+      'needSupervisorAccess',
+    ]),
   },
   methods: {
     payNow() {
@@ -92,8 +97,11 @@ export default {
         action = 'carhop-update-order'
         this.$store.commit('checkoutForm/setAction', 'add')
       }
-
-      this.executePayment({ action: action })
+      if (this.needSupervisorAccess) {
+        showModal('#modificationReason')
+      } else {
+        this.executePayment({ action: action })
+      }
     },
   },
 }

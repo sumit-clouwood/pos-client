@@ -441,7 +441,7 @@
                       border-left: 1px dashed #000;
                       text-align: left;padding: 0.3rem;"
                     >
-                      {{ _t('Unfinished CRM Orders') }}
+                      {{ _t('Undelivered CRM Orders') }}
                     </td>
                     <td
                       style="padding-left: 10px;
