@@ -203,10 +203,12 @@ const actions = {
       order.order_flat_number = address.flat_number
       order.order_nearest_landmark = address.nearest_landmark
       order.order_city = rootGetters['customer/getElementByAreaId'](
-          address.delivery_area_id, 2
+        address.delivery_area_id,
+        2
       )
       order.order_country = rootGetters['customer/getElementByAreaId'](
-          address.delivery_area_id, 1
+        address.delivery_area_id,
+        1
       )
       order.order_delivery_area = address.delivery_area_id
 
@@ -222,10 +224,12 @@ const actions = {
       order.order_flat_number = address.flat_number
       order.order_nearest_landmark = address.nearest_landmark
       order.order_city = rootGetters['customer/getElementByAreaId'](
-          address.delivery_area_id, 2
+        address.delivery_area_id,
+        2
       )
       order.order_country = rootGetters['customer/getElementByAreaId'](
-          address.delivery_area_id, 1
+        address.delivery_area_id,
+        1
       )
       order.order_delivery_area = address.delivery_area_id
     }
@@ -465,12 +469,31 @@ const actions = {
         forCombo = oitem.for_combo
         // eslint-disable-next-line no-console
         console.log(oitem, 'oitem,')
-        dispatch('orderItemPayload', { order, oitem, action, item_discounts, itemModifiers })
+        dispatch('orderItemPayload', {
+          order,
+          oitem,
+          action,
+          item_discounts,
+          itemModifiers,
+        })
         oitem.combo_selected_items.forEach(oitem => {
-          dispatch('orderItemPayload', { order, oitem, action, item_discounts, itemModifiers, forCombo })
+          dispatch('orderItemPayload', {
+            order,
+            oitem,
+            action,
+            item_discounts,
+            itemModifiers,
+            forCombo,
+          })
         })
       } else {
-        dispatch('orderItemPayload', { order, oitem, action, item_discounts, itemModifiers })
+        dispatch('orderItemPayload', {
+          order,
+          oitem,
+          action,
+          item_discounts,
+          itemModifiers,
+        })
       }
     })
     item_discounts = state.orderItemsPayload.item_discounts
@@ -502,7 +525,7 @@ const actions = {
     return dispatch('orderItemsHook', order)
   },
   orderItemPayload(
-      { rootGetters, commit, rootState, dispatch },
+    { rootGetters, commit, rootState, dispatch },
     { order, oitem, action, item_discounts, itemModifiers, forCombo = false }
   ) {
     let item = null
@@ -561,7 +584,7 @@ const actions = {
       if (orderItem.for_combo === false) {
         if (item.discount) {
           let itemDiscountedTax = Num.round(
-              rootGetters['order/itemTaxDiscount'](item)
+            rootGetters['order/itemTaxDiscount'](item)
           )
 
           if (item.discountedNetPrice) {
@@ -570,7 +593,7 @@ const actions = {
           }
 
           const modifiersDiscountedTax = Num.round(
-              rootGetters['order/itemModifierTaxDiscount'](item)
+            rootGetters['order/itemModifierTaxDiscount'](item)
           )
 
           let itemDiscount = item.discount
@@ -588,12 +611,12 @@ const actions = {
             itemDiscount.tax = itemDiscountedTax + modifiersDiscountedTax
           } else {
             itemDiscount.tax = Num.round(
-                itemDiscountedTax + modifiersDiscountedTax
+              itemDiscountedTax + modifiersDiscountedTax
             )
           }
           itemDiscount.price =
-              rootGetters['order/itemNetDiscount'](item) +
-              rootGetters['order/itemModifierDiscount'](item)
+            rootGetters['order/itemNetDiscount'](item) +
+            rootGetters['order/itemModifierDiscount'](item)
           item_discounts.push(itemDiscount)
         }
         if (item.modifiersData && item.modifiersData.length) {
@@ -617,7 +640,7 @@ const actions = {
         // let collection = {modifiers: itemModifiers, discount: item_discounts}
         // commit(mutation.ORDER_ITEM_DISCOUNT_MODIFIERS_COLLECTOR, collection)
         // let isCombo = item.item_type === CONST.COMBO_ITEM_TYPE
-        if(item.item_type === CONSTANTS.COMBO_ITEM_TYPE) {
+        if (item.item_type === CONSTANTS.COMBO_ITEM_TYPE) {
           item.combo_selected_items.forEach(cmb_item => {
             if (rootGetters['modifier/hasModifiers'](cmb_item)) {
               cmb_item.modifiersData.forEach(modifier => {
@@ -1244,13 +1267,18 @@ const actions = {
     }
   },
 
-  modifyCarhopOrder({ dispatch, rootState, rootGetters, commit }, action) {
+  modifyCarhopOrder(
+    { dispatch, rootState, rootGetters, commit },
+    { action = false, data = false }
+  ) {
     return new Promise(resolve => {
       dispatch('getModifyOrder').then(order => {
         //delete order.order_system_status
         //delete order.real_created_datetime
         delete order.new_real_transition_order_no
-
+        if (action && data) {
+          order = { ...order, ...data }
+        }
         OrderService.updateOrderItems(order, rootState.order.orderId)
           .then(response => {
             if (response.data.status === 'ok') {
@@ -1266,7 +1294,10 @@ const actions = {
                 'setToken',
                 rootState.order.selectedOrder.item.token_number
               ) //order paid
-              if (rootState.checkoutForm.action === 'pay' && !action) {
+              if (
+                rootState.checkoutForm.action === 'pay' &&
+                (action === 'modify-backend-order' || !action)
+              ) {
                 msgStr = rootGetters['location/_t'](
                   'Carhop order has been Paid'
                 )
@@ -1359,6 +1390,14 @@ const actions = {
           action: action,
           data: data,
           route: 'updateOrder',
+        })
+      }
+    }
+    if (rootState.order.orderSource !== 'backend') {
+      if (rootGetters['order/orderType'] === CONSTANTS.ORDER_TYPE_CARHOP) {
+        return dispatch('modifyCarhopOrder', {
+          action: action,
+          data: data,
         })
       }
     }
@@ -1748,7 +1787,7 @@ const actions = {
       if (action === 'carhop-place-order' || !rootState.order.orderId) {
         return dispatch('createCarhopOrder', action)
       } else {
-        return dispatch('modifyCarhopOrder', action)
+        return dispatch('modifyCarhopOrder', { action: action, data: false })
       }
     } else {
       return dispatch('createWalkinOrder')
