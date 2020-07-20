@@ -20,7 +20,7 @@
       >
         {{ _t('Tables') }}
       </button>
-      <button
+      <!--<button
         type
         id="waiting-dinein"
         class="tables-btn-style"
@@ -33,7 +33,7 @@
         "
       >
         {{ _t('Waiting') }}
-      </button>
+      </button>-->
       <button
         type
         id="resrvation-orders"
@@ -132,7 +132,7 @@
             >
               {{ _t('Tables') }}
             </button>
-            <button
+            <!--<button
               type
               id="waiting-dinein"
               class="tables-btn-style"
@@ -145,7 +145,7 @@
               "
             >
               {{ _t('Waiting') }}
-            </button>
+            </button>-->
             <button
               type
               id="resrvation-orders"
