@@ -594,6 +594,7 @@ export default {
       // let angleX = parseInt(table.table_position_coordinate.angle)
       // angleX = angleX > 360 || angleX < -360 ? 360 : angleX
       // let angle = angleX < 0 ? angleX + 360 : angleX
+      let transform = {}
       if (!this.tableTextTransform) {
         return { transformOrigin: ';', transformRotate: '' }
       }
@@ -631,7 +632,7 @@ export default {
       //eslint-disable-next-line no-console
       // console.log(table, angle, transformRotate, angleX)
       /* angle - 270 will get transformRotate in deg only we need set 315 to 315*/
-      let transform = {}
+
       if (angle == 0 || angle == 360) {
         transform = {
           transformOrigin: '69% 8%;',
