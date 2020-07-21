@@ -235,6 +235,7 @@
       {{ _t('No Orders Found') }}
     </h5>
     <InformationPopup
+      v-if="err"
       :response-information="err"
       title="Information"
       :activated-class="'text-danger'"
@@ -342,7 +343,7 @@ export default {
   margin: auto;
 }
 .active {
-  background-color: blueviolet;
+  background-color: rgba(127, 177, 121, 0.93);
 }
 
 tbody {
