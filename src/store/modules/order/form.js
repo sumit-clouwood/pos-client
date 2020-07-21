@@ -11,12 +11,12 @@ const getters = {
   radios: state => state.radios,
   isSelected: state => ({ modifierId, groupId, itemId }) => {
     const radio = state.radios[groupId]
-    return (
+    const checked =
       radio &&
       radio.groupId == groupId &&
       radio.itemId == itemId &&
       radio.modifierId == modifierId
-    )
+    return checked
   },
   quantity: state => {
     return state.quantity > 0 ? state.quantity : 1
@@ -119,6 +119,10 @@ const mutations = {
       modifierId: modifierId,
     }
     //state.obj = { ...state.obj, newProp: 123 }
+    state.radios = radios
+  },
+  restoreModifiersCtrls(state, { checkboxes, radios }) {
+    state.checkboxes = checkboxes
     state.radios = radios
   },
 }

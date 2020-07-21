@@ -302,6 +302,10 @@ const actions = {
       }
     })
   },
+  setItem({ commit }, item) {
+    item.editMode = true
+    commit(mutation.SET_ITEM, item)
+  },
   //active item and index already been set to order.item
   setActiveItem({ commit, dispatch, rootState, rootGetters }) {
     //pop needs all modifiers available for this item so we need to fetch modifier from modifeir store

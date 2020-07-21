@@ -17,6 +17,7 @@ export default {
     ...mapState('location', ['currency']),
     ...mapGetters('location', ['_t']),
     ...mapGetters('category', ['items', 'itemByCode']),
+    ...mapGetters('combo', ['current_combo', 'current_order_combo']),
     ...mapGetters(['foodMenuHendler']),
     isEnabled() {
       return this.$store.getters['modules/enabled'](CONST.MODULE_DINE_IN_MENU)
@@ -24,10 +25,35 @@ export default {
   },
   watch: {},
   methods: {
-    setModifiers(item) {
+    validateSection() {
+      const section = this.$store.getters['combo/current_combo_section']
+      const selectedItems = this.$store.getters[
+        'combo/current_combo_selected_items'
+      ]
+
+      let selectedItemsInCurrentSection = []
+      if (section.qty) {
+        this.sectionQty = section.qty
+        //check if selectedItems contains == section.for_items
+        section.for_items.forEach(itemId => {
+          if (selectedItems[itemId]) {
+            selectedItemsInCurrentSection.push(itemId)
+          }
+        })
+        if (selectedItemsInCurrentSection.length < section.qty) {
+          return section.qty - selectedItemsInCurrentSection.length
+        } else if (selectedItemsInCurrentSection.length == section.qty) {
+          return true
+        } else {
+          return false
+        }
+      }
+      return true
+    },
+    setupItemModifiers(item) {
+      this.$store.commit('orderForm/clearSelection')
       if (this.$store.getters['modifier/hasModifiers'](item)) {
         this.$store.dispatch('modifier/assignModifiersToItem', item)
-        this.$store.commit('orderForm/clearSelection')
         //handle open item inside popup
         showModal('#POSItemOptions')
         $('#POSItemOptions').css({ 'z-index': 9999 })
@@ -36,7 +62,9 @@ export default {
           //show popup for open item
           showModal('#open-item')
         } else {
-          this.$store.dispatch('order/addToOrder', item)
+          if (!this.current_combo) {
+            this.$store.dispatch('order/addToOrder', item)
+          }
         }
         // $('#POSItemOptions').css({ 'z-index': 999 })
       }
@@ -69,15 +97,28 @@ export default {
       this.$store.commit('category/SET_ITEM', item)
       this.$store.commit('checkoutForm/showCalc', true)
       this.$store.commit('orderForm/updateQuantity', 1)
-      if (item.item_type !== CONST.COMBO_ITEM_TYPE) {
-        this.setModifiers(item)
-      } else {
+      if (item.item_type == CONST.COMBO_ITEM_TYPE) {
         // this.$store.dispatch('modifier/assignModifiersToItem', item)
         // this.$store.commit('orderForm/clearSelection')
-        this.$store.dispatch('order/addToOrder', item)
+        const item = this.$store.getters['combo/order_item']
+        if (this.current_order_combo) {
+          this.$store
+            .dispatch('order/updateComboItemInCart', {
+              oldItem: this.current_order_combo,
+              newItem: item,
+            })
+            .then(() => this.$store.commit('combo/RESET', true))
+        } else {
+          this.$store
+            .dispatch('order/addToOrder', item)
+            .then(() => this.$store.commit('combo/RESET', true))
+        }
+
         /*item.combo_selected_items.forEach(combo_item => {
-          this.setModifiers(combo_item, false)
+          this.setupItemModifiers(combo_item, false)
         })*/
+      } else {
+        this.setupItemModifiers(item)
       }
       this.$store.dispatch('addItemFood', item)
       this.$store.commit('category/IS_UP_SELLING_MODIFY', false)

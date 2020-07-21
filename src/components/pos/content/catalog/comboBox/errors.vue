@@ -1,17 +1,17 @@
 <template>
   <div class="error_mgs_container">
     <div></div>
-    <div v-show="errorMessage" class="combobox_error_msg">
-      {{ errorMessage }}
+    <div v-show="combo_error" class="combobox_error_msg">
+      {{ combo_error }}
     </div>
   </div>
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapGetters } from 'vuex'
 export default {
   computed: {
-    ...mapState('comboItems', ['errorMessage']),
+    ...mapGetters('combo', ['combo_error']),
   },
 }
 </script>

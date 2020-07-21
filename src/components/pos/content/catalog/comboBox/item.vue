@@ -1,45 +1,56 @@
 <template>
   <div class="modal-body color-dashboard-background grid_combo_left">
-    <div class="food-menu_container" v-if="comboItemsList">
+    <div class="food-menu_container" v-if="current_combo">
       <div
         class="food-menu_title"
-        v-for="(item, index) in comboItemsList.combo_items"
-        :class="{ active_left_combo: index === activeItem }"
+        v-for="(section, index) in current_combo.combo_items"
+        :class="{ active_left_combo: section == current_combo_section }"
         :key="index"
-        @click="setActiveItem(index, item)"
+        @click="selectComboSection(section)"
       >
-        <p class="food_title">{{ item.name }}</p>
+        <p class="food_title">{{ section.name }}</p>
       </div>
     </div>
   </div>
 </template>
-
 <script>
-import { mapGetters, mapState } from 'vuex'
+import { mapGetters } from 'vuex'
+import Cart from '@/mixins/Cart'
+
 export default {
-  data() {
-    return {
-      activeItem: 0,
-    }
-  },
+  data() {},
   name: 'Items',
-  watch: {
-    activeComboItems() {
-      this.$nextTick(() => {
-        this.activeItem = 0
-      })
-    },
-  },
+  watch: {},
+  mixins: [Cart],
   computed: {
-    ...mapState('comboItems', ['comboItemsList', 'activeComboItems']),
+    ...mapGetters('combo', [
+      'current_combo',
+      'current_combo_section',
+      'current_combo_selected_items',
+    ]),
     ...mapGetters('location', ['_t']),
   },
   methods: {
-    setActiveItem(itemIndex, itemList) {
-      if (this.activeItem != itemIndex) {
-        this.activeItem = itemIndex
-        this.$store.commit('comboItems/SET_SELECTED_ITEM_DATA', itemList)
-        this.$store.dispatch('comboItems/findItemById')
+    selectComboSection(section) {
+      this.$store.commit('combo/SET_CURRENT_COMBO_SECTION', section)
+      const isValid = this.validateSection()
+      if (isValid === false) {
+        //validation failed, remove current item
+        this.$store.dispatch(
+          'combo/setError',
+          this._t(`Select ${this.sectionQty} items `)
+        )
+      } else {
+        if (isValid === true) {
+          //ok
+          this.$store.dispatch('combo/setError', '')
+        } else if (isValid > 0) {
+          //still need to select more
+          this.$store.dispatch(
+            'combo/setError',
+            this._t(`Select ${isValid} item(s) `)
+          )
+        }
       }
     },
   },
