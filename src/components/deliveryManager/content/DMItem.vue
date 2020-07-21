@@ -22,10 +22,16 @@
           >
             <div
               class="order-item"
-              :class="{ active: activeIndex.includes(order._id) }"
+              :class="[
+                activeIndex.includes(order._id) ? 'active' : '',
+                order.driver !== '' && actionDetails.action == 'delivery_ready'
+                  ? 'overlay-busy-store'
+                  : '',
+              ]"
               @click="
                 ;(jeeblyEnabled || tawseelEnabled || oneClickEnabled) &&
-                actionDetails.action == 'delivery_ready'
+                actionDetails.action == 'delivery_ready' &&
+                order.driver == ''
                   ? AssigneeOrder({
                       order: order,
                       orderType: order.order_type,
@@ -92,7 +98,7 @@
                             <div class="button-icon-container">
                               <!---->
                             </div>
-                            <div class="button-caption">
+                            <div class="button-caption" :style="{ opacity: 1 }">
                               {{ actionDetails.actionLabel[LabelIndex] }}
                             </div>
                           </div>
@@ -122,8 +128,23 @@
                     </button>
                   </div>
                 </div>
+                <span
+                  class="order-id cursor-pointer"
+                  v-if="order.aggregator_data.order_id"
+                >
+                  Talabat Order no # {{ order.aggregator_data.order_id }}
+                </span>
                 <div>
                   {{ branch[order.store_id]['name'] }}
+                </div>
+                <div
+                  v-if="
+                    order.driver !== '' &&
+                      actionDetails.action == 'delivery_ready'
+                  "
+                  :style="{ opacity: 1 }"
+                >
+                  Order Assigned to delivery service
                 </div>
                 <div></div>
               </div>
@@ -162,8 +183,14 @@
                 </div>
               </div>
               <div
-                class="order-footer"
-                :class="{ active: activeIndex.includes(order._id) }"
+                :class="[
+                  activeIndex.includes(order._id) ? 'active' : '',
+                  order.driver !== '' &&
+                  actionDetails.action == 'delivery_ready'
+                    ? 'overlay-busy-store'
+                    : '',
+                  'order-footer',
+                ]"
               >
                 <!--<span class="timeago elapsedTime delManTime" title=""></span>-->
 
@@ -332,5 +359,11 @@ tbody {
 }
 .displayOrder {
   display: block;
+}
+.overlay-busy-store {
+  background: rgba(225, 0, 0, 0.3);
+}
+.Overlay-show-driver {
+  opacity: 1;
 }
 </style>
