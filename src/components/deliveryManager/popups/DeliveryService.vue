@@ -44,6 +44,7 @@
         </div>
       </div>
     </div>
+    <InformationPopup :responseInformation="errorMessage" title="Alert" />
   </div>
 </template>
 
@@ -57,6 +58,7 @@ export default {
   data() {
     return {
       loading: false,
+      errorMessage: '',
       deliveryServices: [
         {
           name: 'Jeebly',
@@ -147,6 +149,8 @@ export default {
           this.hideOnlineModal()
         })
         .catch(er => {
+          // eslint-disable-next-line no-console
+          this.errorMessage = er.data.error
           this.loading = false
           this.err = er.data.error
         })

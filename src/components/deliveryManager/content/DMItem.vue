@@ -183,8 +183,14 @@
                 </div>
               </div>
               <div
-                class="order-footer"
-                :class="{ active: activeIndex.includes(order._id) }"
+                :class="[
+                  activeIndex.includes(order._id) ? 'active' : '',
+                  order.driver !== '' &&
+                  actionDetails.action == 'delivery_ready'
+                    ? 'overlay-busy-store'
+                    : '',
+                  'order-footer',
+                ]"
               >
                 <!--<span class="timeago elapsedTime delManTime" title=""></span>-->
 
