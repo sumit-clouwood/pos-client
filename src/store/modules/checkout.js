@@ -661,6 +661,9 @@ const actions = {
         if (item.type == CONSTANTS.COMBO_ITEM_TYPE) {
           //get items from combo and prepare them as checkout
           const itemsInCombo = rootGetters['combo/find_combo_items'](item.originalItem)
+
+          const perItemPrice = Num.round(item.price / itemsInCombo.length)
+          const perItemTax = Num.round(item.tax / itemsInCombo.length)
           itemsInCombo.forEach(itemInCombo => {
             let orderItem = {
               name: itemInCombo.name,
@@ -668,8 +671,8 @@ const actions = {
               no: latestOrderIndex,
               status: 'in-progress',
               //itemTax.undiscountedTax is without modifiers
-              tax: itemInCombo.tax,
-              price: itemInCombo.netPrice,
+              price: perItemPrice,
+              tax: perItemTax,
               qty: itemInCombo.quantity || 1,
               note: '',
               kitchen_invoice: 0,
@@ -688,8 +691,15 @@ const actions = {
 
             latestOrderIndex ++
           })
+          //fix last item price
+          const priceDiff = item.price - perItemPrice * itemsInCombo.length
+          const taxDiff = item.tax - perItemTax * itemsInCombo.length
+
+          comboItems[comboItems.length - 1].price += priceDiff
+          comboItems[comboItems.length - 1].tax += taxDiff
         }
       })
+      
       order.items = [...order.items, ...comboItems]
       order.item_modifiers = [...order.item_modifiers, ...comboItemsModifiers]
       resolve(order)
