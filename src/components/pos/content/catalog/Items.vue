@@ -128,12 +128,14 @@ export default {
   },
   methods: {
     addToOrder(item) {
+      this.$store.dispatch('combo/reset')
+      this.$store.commit('orderForm/clearSelection')
+
       if (item.item_type === CONST.COMBO_ITEM_TYPE) {
         this.$store.commit('combo/SET_CURRENT_COMBO', item)
         showModal('#combox-box-popup')
       } else {
         // if (!item.is_upselling)
-        this.$store.dispatch('combo/reset')
         return this.itemsAddToCart(item)
       }
     },
