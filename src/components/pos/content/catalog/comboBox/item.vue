@@ -18,7 +18,11 @@ import { mapGetters } from 'vuex'
 import Cart from '@/mixins/Cart'
 
 export default {
-  data() {},
+  data() {
+    return {
+      currentSection: 0,
+    }
+  },
   name: 'Items',
   watch: {},
   mixins: [Cart],
@@ -32,23 +36,51 @@ export default {
   },
   methods: {
     selectComboSection(section) {
-      this.$store.commit('combo/SET_CURRENT_COMBO_SECTION', section)
       const isValid = this.validateSection()
+      const sections = this.$store.getters['combo/current_combo'].combo_items
+      const newSectionNo = sections.findIndex(sec => sec._id == section._id)
+      const previousSectionNo = sections.findIndex(
+        sec => sec._id == this.currentSection._id
+      )
+      if (isValid === true || newSectionNo < previousSectionNo) {
+        this.$store.commit('combo/SET_CURRENT_COMBO_SECTION', section)
+      }
       if (isValid === false) {
         //validation failed, remove current item
         this.$store.dispatch(
           'combo/setError',
-          this._t(`Select ${this.sectionQty} items `)
+          this._t(
+            `You can select ${this.currentSection.qty} item(s) from ${this.currentSection.name}`
+          )
         )
       } else {
         if (isValid === true) {
           //ok
           this.$store.dispatch('combo/setError', '')
+          const sections = this.$store.getters['combo/current_combo']
+            .combo_items
+          const sectionNo = sections.findIndex(
+            section => section._id == this.currentSection._id
+          )
+          if (sectionNo < sections.length - 1) {
+            this.$store.commit(
+              'combo/SET_MSG',
+              'Awesome! select items from ' +
+                this.$store.getters['combo/current_section'].name
+            )
+          } else {
+            this.$store.commit(
+              'combo/SET_MSG',
+              'Awesome! click on add to order button'
+            )
+          }
         } else if (isValid > 0) {
           //still need to select more
           this.$store.dispatch(
             'combo/setError',
-            this._t(`Select ${isValid} item(s) `)
+            this._t(
+              `Select ${isValid} more item(s) from ${this.currentSection.name}`
+            )
           )
         }
       }

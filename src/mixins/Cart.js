@@ -33,7 +33,7 @@ export default {
 
       let selectedItemsInCurrentSection = []
       if (section.qty) {
-        this.sectionQty = section.qty
+        this.currentSection = section
         //check if selectedItems contains == section.for_items
         section.for_items.forEach(itemId => {
           if (selectedItems[itemId]) {
@@ -53,11 +53,14 @@ export default {
     setupItemModifiers(item) {
       this.$store.commit('orderForm/clearSelection')
       if (this.$store.getters['modifier/hasModifiers'](item)) {
+        console.log('has modifiers')
         this.$store.dispatch('modifier/assignModifiersToItem', item)
         //handle open item inside popup
+        console.log('showing modal')
         showModal('#POSItemOptions')
         $('#POSItemOptions').css({ 'z-index': 9999 })
       } else {
+        console.log('no not have modifiers')
         if (item.open_item === true) {
           //show popup for open item
           showModal('#open-item')

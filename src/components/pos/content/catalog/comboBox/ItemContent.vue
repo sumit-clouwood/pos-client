@@ -72,7 +72,7 @@ export default {
   mixins: [Cart],
   data() {
     return {
-      sectionQty: 0,
+      currentSection: 0,
     }
   },
   computed: {
@@ -98,11 +98,15 @@ export default {
       //associate modifiers to item, this is not selection of modifiers [note]
       this.setupItemModifiers(item)
       const isValid = this.validateSection()
+      this.$store.dispatch('combo/setError', '')
+      this.$store.commit('combo/SET_MSG', '')
       if (isValid === false) {
         //validation failed, remove current item
         this.$store.dispatch(
           'combo/setError',
-          this._t(`Select ${this.sectionQty} items `)
+          this._t(
+            `You can select ${this.currentSection.qty} item(s) from ${this.currentSection.name}`
+          )
         )
         delete this.comboItemSelection[item._id]
       } else {
@@ -110,11 +114,33 @@ export default {
         if (isValid === true) {
           //ok
           this.$store.dispatch('combo/setError', '')
+          //move to next section
+          const sections = this.$store.getters['combo/current_combo']
+            .combo_items
+          const sectionNo = sections.findIndex(
+            section => section._id == this.currentSection._id
+          )
+          if (sectionNo < sections.length - 1) {
+            const nextSection = sections[sectionNo + 1]
+            this.$store.commit('combo/SET_CURRENT_COMBO_SECTION', nextSection)
+            this.$store.commit(
+              'combo/SET_MSG',
+              'Awesome! select items from ' +
+                this.$store.getters['combo/current_section'].name
+            )
+          } else {
+            this.$store.commit(
+              'combo/SET_MSG',
+              'Awesome! click on add to order button'
+            )
+          }
         } else if (isValid > 0) {
           //still need to select more
           this.$store.dispatch(
             'combo/setError',
-            this._t(`Select ${isValid} more item(s) `)
+            this._t(
+              `Select ${isValid} more item(s) from ${this.currentSection.name}`
+            )
           )
         }
       }
