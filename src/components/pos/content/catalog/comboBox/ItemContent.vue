@@ -2,42 +2,45 @@
   <div class="modal-body color-dashboard-background grid_combo_item_content">
     <div
       class="foodbox_container"
-      v-for="(item, index) in subItems"
-      :class="{
-        active_right_combo: activeOnClick.includes(
-          item._id + selectedContainerId
-        ),
-      }"
+      v-for="(item, index) in current_combo_items"
       :key="index"
-      @click="setActiveItems(item)"
     >
-      <div class="food-item-box">
-        <img :src="item.image" alt v-if="item.image != ''" />
-        <img
-          v-else
-          style="border:1px solid rgba(0, 0, 0, 0.44);"
-          :style="{
-            background:
-              item.image == '' && item.item_color ? item.item_color : 'white',
-          }"
-        />
-        <div class="food-menu-item-text color-text">
-          <label :title="dt(item)">
+      <checkbox
+        v-model="comboItemSelection[item._id]"
+        :value="item._id"
+        @change="selectItemForCombo(item)"
+        class="item-selector"
+      >
+        <div class="food-item-box">
+          <img :src="item.image" alt v-if="item.image != ''" />
+          <img
+            v-else
+            style="border:1px solid rgba(0, 0, 0, 0.44);"
+            :style="{
+              background:
+                item.image == '' && item.item_color ? item.item_color : 'white',
+            }"
+          />
+          <div class="food-menu-item-text color-text">
             {{ dt(item) }}
-          </label>
+          </div>
         </div>
-      </div>
-      <div class="food-box-icon">
-        <i
-          class="fa fa-check item-selected-check right_icon"
-          aria-hidden="true"
-        ></i>
+        <div class="food-box-icon">
+          <i
+            class="fa fa-check item-selected-check right_icon"
+            aria-hidden="true"
+          ></i>
+        </div>
+      </checkbox>
+      <div class="item-customize">
         <div
+          v-if="current_order_combo"
           class="button-plus"
           data-toggle="modal"
           data-target="#POSOrderItemOptions"
+          @click="setCombo(item)"
         >
-          <div class="button-plus-icon" @click.stop="setModifiersForItem(item)">
+          <div class="button-plus-icon">
             <svg
               class="color-text"
               viewBox="0 0 15 15"
@@ -50,163 +53,78 @@
           </div>
         </div>
       </div>
-      <!--<div class="foodbox_price_cntr">
-        &lt;!&ndash;<div class="food-menu-item-price">
-          &lt;!&ndash;<strong>{{ formatPrice(item.value) }}</strong>&ndash;&gt;
-        </div>&ndash;&gt;
-      </div>-->
     </div>
   </div>
 </template>
 
 <script>
-/* global showModal */
-/*   eslint-disable no-console */
-import { mapActions, mapGetters, mapState } from 'vuex'
+/* eslint-disable no-console */
+
+import { mapGetters } from 'vuex'
+import Checkbox from '@/components/util/form/CheckBox2.vue'
+import Cart from '@/mixins/Cart'
+
 export default {
   name: 'ItemContent',
+  components: {
+    Checkbox,
+  },
+  mixins: [Cart],
   data() {
     return {
-      activeItems: {},
-      activeOnClick: [],
-      itemWithModifiers: false,
+      sectionQty: 0,
     }
   },
-  watch: {
-    activeComboItems(newVal, oldVal) {
-      if (newVal != oldVal) {
-        this.$nextTick(() => {
-          if (Object.keys(this.activeComboItems).length === 0) {
-            this.activeOnClick = []
-          }
-          this.commitErrorMessage('')
-        })
-      }
-    },
-  },
   computed: {
-    ...mapState('comboItems', [
-      'subItems',
-      'selectedItemContainer',
-      'setModifiersItem',
-      'activeComboItems',
-    ]),
-    ...mapState('context', ['storeId']),
-    ...mapGetters('location', ['formatPrice', '_t']),
-    ...mapGetters('modifier', ['stateItemModifiers', 'modifiers']),
-    ...mapGetters('auth', ['multistore']),
-    ...mapGetters('comboItems', ['limitOfSelectingItems']),
-    selectedContainerId() {
-      return this.selectedItemContainer._id.$oid
+    comboItemSelection: {
+      get() {
+        return this.$store.state.combo.currentComboSelectedItems
+      },
+      set(val) {
+        this.$store.commit('combo/SET_CURRENT_COMBO_SELECTED_ITEMS', val)
+      },
     },
+    ...mapGetters('location', ['formatPrice', '_t']),
+    ...mapGetters('combo', ['current_combo_items', 'current_order_combo']),
   },
   methods: {
-    isActiveItem(itemId) {
-      let activeItem = false
-      let selectedContainerId = this.selectedContainerId
-      if (typeof this.activeItems[selectedContainerId] != 'undefined') {
-        this.activeItems[selectedContainerId].forEach(element => {
-          if (element) {
-            if (element._id === itemId) {
-              if (!activeItem) activeItem = true
-            }
-          }
-        })
+    // eslint-disable-next-line no-unused-vars
+    selectItemForCombo(item) {
+      for (var itemId in this.comboItemSelection) {
+        if (this.comboItemSelection[itemId] === false) {
+          delete this.comboItemSelection[itemId]
+        }
       }
-      return activeItem
-    },
-    ...mapActions('order', ['setActiveItem']),
-    setActiveItems(item, modifiersAction = false) {
-      let selectedContainerId = this.selectedItemContainer._id.$oid
-      console.log(
-        this.activeComboItems,
-        this.setModifiersItem,
-        this.selectedItemContainer,
-        'this.activeComboItems'
-      )
-      if (Object.keys(this.activeComboItems).length === 0) {
-        this.activeItems = {}
-        this.activeItems[selectedContainerId] = []
-      }
-      let itemIndex = false
-      let selectedLength = 0
-      if (typeof this.activeItems[selectedContainerId] != 'undefined') {
-        itemIndex = this.activeItems[selectedContainerId].find(
-          activatedItem => activatedItem._id === item._id
+      //associate modifiers to item, this is not selection of modifiers [note]
+      this.setupItemModifiers(item)
+      const isValid = this.validateSection()
+      if (isValid === false) {
+        //validation failed, remove current item
+        this.$store.dispatch(
+          'combo/setError',
+          this._t(`Select ${this.sectionQty} items `)
         )
-        selectedLength = this.activeItems[selectedContainerId].length
+        delete this.comboItemSelection[item._id]
       } else {
-        this.activeItems[selectedContainerId] = []
-      }
-
-      if (itemIndex && !modifiersAction) {
-        let indexSubItem = this.activeItems[selectedContainerId].indexOf(
-          itemIndex
-        )
-        this.activeItems[selectedContainerId].splice(indexSubItem, 1)
-        this.activeOnClick.splice(
-          this.activeOnClick.indexOf(item._id + selectedContainerId),
-          1
-        )
-        this.commitErrorMessage('')
-      } else {
-        if (selectedLength != this.limitOfSelectingItems) {
-          this.commitErrorMessage('')
-          this.activeItems[selectedContainerId].push(item)
-          this.activeOnClick.push(item._id + selectedContainerId)
-          this.isActiveItem(item._id)
-          if (this.$store.getters['modifier/hasModifiers'](item)) {
-            /*$('#POSItemOptions .modifier-option-radio').prop('checked', false)
-            this.$store.dispatch('modifier/assignModifiersToItem', item)
-            this.$store.commit('orderForm/clearSelection')
-            showModal('#POSItemOptions')*/
-            this.setModifiersForItem(item, false)
-          } else {
-            //hideModal('#POSItemOptions')
-          }
-        } else {
-          this.commitErrorMessage(
-            `You can select only ${this.limitOfSelectingItems} item (s) from this section.`
+        this.$store.commit('combo/SET_CURRENT_COMBO_SELECTED_ITEM', item)
+        if (isValid === true) {
+          //ok
+          this.$store.dispatch('combo/setError', '')
+        } else if (isValid > 0) {
+          //still need to select more
+          this.$store.dispatch(
+            'combo/setError',
+            this._t(`Select ${isValid} more item(s) `)
           )
         }
       }
-      this.$store.commit('comboItems/ACTIVE_COMBO_ITEMS', this.activeItems, {
-        root: true,
-      })
     },
-    setModifiersForItem(itemData, shouldCheckActiveItem = true) {
-      let item = itemData
-      if (this.setModifiersItem.length) {
-        item = Object.values(this.setModifiersItem).find(
-          item => item._id === itemData._id
-        )
-        // eslint-disable-next-line no-debugger
-        // debugger
-        item = item || itemData
+    setCombo(item) {
+      //for edit order set state of current combo
+      if (this.$store.getters['modifier/hasModifiers'](item)) {
+        this.$store.dispatch('modifier/assignModifiersToItem', item)
       }
-      console.log(item, Object.values(this.setModifiersItem), 'ffff', itemData)
-
-      if (shouldCheckActiveItem) this.setActiveItems(item, true)
-      // if (this.$store.getters['modifier/hasModifiers'](item)) {
-      this.$store.commit('modifier/SET_ITEM', item)
-      // $('#POSItemOptions .modifier-option-radio').prop('checked', false)
-      // this.$store.dispatch('modifier/assignModifiersToItem', item)
-      if (!this.stateItemModifiers.find(obj => obj.itemId == item._id)) {
-        //use updated modifiers
-        const modifiers = this.modifiers(item)
-
-        this.$store.commit('modifier/SET_ITEM_MODIFIERS', {
-          itemId: item._id,
-          modifiers: modifiers,
-          item: item,
-          multistore: this.multistore ? this.storeId : false,
-        })
-      }
-      showModal('#POSItemOptions')
-      // }
-    },
-    commitErrorMessage(message) {
-      this.$store.commit('comboItems/SET_ERROR_MESSAGE', message)
+      this.$store.dispatch('combo/setOrderComboItem', item)
     },
   },
 }
@@ -215,6 +133,15 @@ export default {
 <style lang="scss" scoped>
 @import '@/assets/scss/variables.scss';
 @import '@/assets/scss/mixins.scss';
+
+.item-selector {
+  cursor: pointer;
+  /deep/ .checkbox2 {
+    position: absolute;
+    top: 0;
+    opacity: 0;
+  }
+}
 .modal-body {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -248,6 +175,11 @@ export default {
       font-weight: 600;
     }
   }
+  .item-customize {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+  }
 }
 .foodbox_container {
   position: relative;
@@ -256,8 +188,8 @@ export default {
   border-color: #5056ca5e;
   width: 100%;
   border-radius: 5px;
-  min-height: 5.625rem !important;
   max-height: 5.625rem !important;
+  min-height: 4.625rem !important;
   // max-width: 11.063rem !important;
   @include responsive(mobile) {
     max-height: 100% !important;
@@ -337,8 +269,16 @@ i.fa.fa-check.item-selected-check {
   display: none;
 }
 
-.foodbox_container.active_right_combo .item-selected-check.right_icon {
-  display: block;
+.foodbox_container {
+  label {
+    &.active {
+      .item-selected-check {
+        &.right_icon {
+          display: block;
+        }
+      }
+    }
+  }
 }
 .food-menu-item-text.color-text {
   max-height: 2.188rem;

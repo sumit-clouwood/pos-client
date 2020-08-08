@@ -109,6 +109,9 @@ const getters = {
   itemByCode: (state, getters) => itemCode => {
     return getters.rawItems.find(item => item.barcode === itemCode)
   },
+  itemById: (state, getters) => itemId => {
+    return getters.rawItems.find(item => item._id === itemId)
+  },
   findItem: state => (itemToFind, key, map) => {
     return state.items.find(item => item[map] === itemToFind[key])
   },
