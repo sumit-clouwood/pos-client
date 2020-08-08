@@ -7,6 +7,7 @@ const state = {
   currentComboSelectedItem: undefined,
   currentComboSelectedModifiers: undefined,
   errors: {},
+  msg: '',
 }
 const actions = {
   selectModifiers({ getters, rootGetters, commit }) {
@@ -132,6 +133,7 @@ const getters = {
   current_combo_selected_item: state => state.currentComboSelectedItem,
   current_combo_selected_modifiers: state =>
     state.currentComboSelectedModifiers,
+  combo_msg: state => state.msg,
   combo_error: (state, getters) => {
     if (!getters.combo_errors) {
       return ''
@@ -209,6 +211,9 @@ const mutations = {
     errors[sectionId] = error
     state.errors = errors
   },
+  SET_MSG(state, msg) {
+    state.msg = msg
+  },
   SET_ERRORS(state, errors) {
     state.errors = errors
   },
@@ -223,6 +228,8 @@ const mutations = {
     state.currentComboSelectedItems = {}
     state.currentComboSelectedItem = undefined
     state.currentComboSelectedModifiers = undefined
+    state.errors = {}
+    state.msg = ''
     if (full) {
       state.currentOrderCombo = undefined
     }
