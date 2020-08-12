@@ -459,7 +459,7 @@ const actions = {
     return Promise.resolve(order)
   },
 
-  addItemsToOrder({ rootState, dispatch, state }, { order, action }) {
+  addItemsToOrder({ rootState, dispatch, state, rootGetters }, { order, action }) {
     order.items = []
     let item_discounts = []
     let itemModifiers = []
