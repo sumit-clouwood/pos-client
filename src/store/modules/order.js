@@ -1429,6 +1429,9 @@ const actions = {
           await dispatch('addItemsToCart', items)
           console.log('resolve in the recurrsion')
           resolve()
+        } else {
+          //no item left
+          resolve()
         }
       } else {
         //if item was removed from backend, resolve straigt away
