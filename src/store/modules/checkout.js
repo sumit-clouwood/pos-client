@@ -688,8 +688,16 @@ const actions = {
             //set modifiers
             let modifiersForItemInCombo = rootGetters['combo/find_combo_item_modifiers'](item.originalItem, itemInCombo)
             modifiersForItemInCombo.forEach(modifier => {
-              let newModifier = {...modifier}
-              newModifier.for_item = latestOrderIndex
+              let newModifier = {
+                entity_id: modifier._id,
+                price: 0,
+                tax: 0,
+                name: modifier.name,
+                qty: itemInCombo.quantity || 1,
+                type: modifier.type,
+                store_id: item.store_id,
+                for_item: latestOrderIndex,
+              }
               comboItemsModifiers.push(newModifier)
             })
 
