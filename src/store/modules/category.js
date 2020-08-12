@@ -112,8 +112,8 @@ const getters = {
   itemById: (state, getters) => itemId => {
     return getters.rawItems.find(item => item._id === itemId)
   },
-  findItem: state => (itemToFind, key, map) => {
-    return state.items.find(item => item[map] === itemToFind[key])
+  findItem: (state, getters) => (itemToFind, key, map) => {
+    return getters.rawItems.find(item => item[map] === itemToFind[key])
   },
   rawItems: (state, getters, rootState, rootGetters) => {
     if (rootGetters['auth/multistore']) {

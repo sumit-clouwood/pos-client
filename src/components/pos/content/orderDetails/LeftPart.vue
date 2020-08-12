@@ -65,6 +65,25 @@
           {{ getPlacedBy(orderDetails) }}
         </p>
       </div>
+      <div
+        class="details-item"
+        v-if="
+          orderDetails.item.aggregator_data.riderPickupTime !== 'undefined' &&
+            orderDetails.item.aggregator_data.riderPickupTime !== null
+        "
+      >
+        <span class="details-item-name color-text-invert"
+          >{{ _t('Rider Order Pickup Time') }}:</span
+        >
+        <p class="color-text">
+          {{
+            convertDatetime(
+              orderDetails.item.aggregator_data.riderPickupTime,
+              timezoneString
+            )
+          }}
+        </p>
+      </div>
       <div class="details-item" v-if="orderDetails.item.token_number">
         <span class="details-item-name color-text-invert"
           >{{ _t('Token Number') }}:

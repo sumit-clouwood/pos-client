@@ -36,11 +36,6 @@ const router = new Router({
       component: Home,
     },
     {
-      path: '/:brand_id/:store_id/',
-      name: 'BrandHome',
-      component: Home,
-    },
-    {
       path: '/:iosprinter',
       name: 'iosApplication',
       component: Home,
@@ -121,8 +116,13 @@ const router = new Router({
       component: DispatchScreenInit,
     },
     {
+      path: '/:brand_id/:store_id/',
+      name: 'BrandHome',
+      component: Home,
+    },
+    {
       path: '*',
-      name: 'Home',
+      name: 'HomeDefault',
       component: Home,
     },
   ],
