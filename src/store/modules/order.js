@@ -107,7 +107,13 @@ const getters = {
     })
     return modifiersTax
   },
-
+  comboItemModifier: (state, getters, rootState) => item => {
+    // console.log(item.orderIndex.toString(), 'order index item')
+    return rootState.comboItems.itemsModifiersValueTaxDiff.find(
+      comboItemModifier =>
+        comboItemModifier.itemId === item._id + item.orderIndex.toString()
+    )
+  },
   totalItemTaxDiscount: (state, getters) => {
     let itemTaxDiscount = 0
     getters.splitItems.forEach(item => {
@@ -163,7 +169,11 @@ const getters = {
     }
     return 0
   },
-
+  orderGrandTotal: () => order => {
+    return Num.round(
+      parseFloat(order.balance_due) + parseFloat(order.tip_amount)
+    ).toFixed(2)
+  },
   itemModifiersPrice: () => item =>
     item.modifiersData && item.modifiersData.length
       ? item.modifiersData.reduce(
