@@ -710,17 +710,15 @@ const actions = {
   async addModifierOrder({ rootState, dispatch }, item) {
     //in edit mode item ll not be passed as argument so you need to get it in from state
     //in state is it is set already when you click on + button
-    return new Promise(resolve => {
-      if (!item) {
-        //it is edit mode
-        item = { ...rootState.modifier.item }
-      }
+    if (!item) {
+      //it is edit mode
+      item = { ...rootState.modifier.item }
+    }
 
-      item.modifiable = true
-      // console.log('adding modified combo item to cart', item, isCombo)
-      dispatch('prepareModifiersItemCart', item)
-      resolve()
-    })
+    item.modifiable = true
+
+    // console.log('adding modified combo item to cart', item, isCombo)
+    return dispatch('prepareModifiersItemCart', item)
   },
 
   removeFromOrder({ commit, dispatch, state }, { item, index }) {
