@@ -373,7 +373,7 @@ const actions = {
   },
 
   prepareModifiersItemCart({ dispatch, commit, rootGetters, rootState }, item) {
-    new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       dispatch('prepareItem', { item: item }).then(item => {
         //if there is item modifiers data assign it later
         item.modifiersData = []
