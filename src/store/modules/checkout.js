@@ -1419,7 +1419,11 @@ const actions = {
               commit('order/SET_ORDER_ID', rootState.order.orderId, {
                 root: true,
               })
-              commit('SET_ORDER_NUMBER', rootState.order.orderData.order_no)
+              if (response.data.order_no) {
+                commit('SET_ORDER_NUMBER', response.data.order_no)
+              } else {
+                commit('SET_ORDER_NUMBER', rootState.order.orderData.order_no)
+              }
               dispatch('setToken', response.data.token_number)
               const msg = rootGetters['location/_t']('Order has been modified.')
               dispatch('setMessage', {
