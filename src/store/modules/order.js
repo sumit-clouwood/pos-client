@@ -1444,7 +1444,7 @@ const actions = {
   },
 
   //from hold order, there would be a single order with multiple items so need to clear what we have already in cart
-  async addOrderToCart({ state, rootState, commit, dispatch }, order) {
+  async addOrderToCart({ state, rootGetters, commit, dispatch }, order) {
     //create cart items indexes so we can sort them when needed
     let needSupervisorpassword = false
     if (state.orderSource === 'backend') {
@@ -1463,16 +1463,16 @@ const actions = {
       let orderAddress = []
 
       if (order.customer) {
-        let deliveryAreaDetails = Object.values(
-          rootState.order.selectedOrder.lookups.delivery_areas._id
-        ).find(deliveryArea => deliveryArea._id === order.order_delivery_area)
+        const deliveryArea = rootGetters['customer/findDeliveryArea'](
+          order.order_delivery_area
+        )
 
         orderAddress.push({
           building: order.order_building,
           city: order.order_city,
           country: order.order_country,
           created_at: order.created_at,
-          delivery_area: deliveryAreaDetails.name,
+          delivery_area: deliveryArea.name,
           delivery_area_id: order.order_delivery_area,
           flat_number: order.order_flat_number,
           nearest_landmark: order.order_nearest_landmark,

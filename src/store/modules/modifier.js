@@ -141,6 +141,7 @@ const getters = {
         itemModifierSubgroups.forEach(subgroup => {
           subgroup.modifiers.forEach(submod => {
             if (submod._id == modifierId) {
+              submod.type = subgroup.item_type
               modifier = submod
             }
           })
@@ -152,6 +153,7 @@ const getters = {
         itemModifierSubgroups.forEach(subgroup => {
           subgroup.modifiers.forEach(submod => {
             if (submod._id == modifierId) {
+              submod.type = subgroup.item_type
               modifier = submod
             }
           })
