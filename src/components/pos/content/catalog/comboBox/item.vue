@@ -56,7 +56,7 @@ export default {
       } else {
         if (isValid === true) {
           //ok
-          this.$store.dispatch('combo/setError', '')
+          this.$store.dispatch('combo/clearError')
           const sections = this.$store.getters['combo/current_combo']
             .combo_items
           const sectionNo = sections.findIndex(

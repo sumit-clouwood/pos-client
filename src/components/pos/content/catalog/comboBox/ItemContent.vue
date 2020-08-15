@@ -98,7 +98,7 @@ export default {
       //associate modifiers to item, this is not selection of modifiers [note]
       this.setupItemModifiers(item)
       const isValid = this.validateSection()
-      this.$store.dispatch('combo/setError', '')
+      this.$store.dispatch('combo/clearError', '')
       this.$store.commit('combo/SET_MSG', '')
       if (isValid === false) {
         //validation failed, remove current item
@@ -113,7 +113,7 @@ export default {
         this.$store.commit('combo/SET_CURRENT_COMBO_SELECTED_ITEM', item)
         if (isValid === true) {
           //ok
-          this.$store.dispatch('combo/setError', '')
+          this.$store.dispatch('combo/clearError')
           //move to next section
           const sections = this.$store.getters['combo/current_combo']
             .combo_items
@@ -159,7 +159,10 @@ export default {
 <style lang="scss" scoped>
 @import '@/assets/scss/variables.scss';
 @import '@/assets/scss/mixins.scss';
-
+::-webkit-scrollbar-thumb {
+  border-radius: 3px;
+  margin: 0px;
+}
 .item-selector {
   cursor: pointer;
   /deep/ .checkbox2 {
@@ -203,8 +206,8 @@ export default {
   }
   .item-customize {
     position: absolute;
-    bottom: 0;
-    right: 0;
+    bottom: -5px;
+    right: -7px;
   }
 }
 .foodbox_container {
@@ -215,7 +218,6 @@ export default {
   width: 100%;
   border-radius: 5px;
   max-height: 5.625rem !important;
-  min-height: 4.625rem !important;
   // max-width: 11.063rem !important;
   @include responsive(mobile) {
     max-height: 100% !important;
@@ -297,6 +299,9 @@ i.fa.fa-check.item-selected-check {
 
 .foodbox_container {
   label {
+    width: 100%;
+    margin-bottom: 0;
+    padding-bottom: 0;
     &.active {
       .item-selected-check {
         &.right_icon {

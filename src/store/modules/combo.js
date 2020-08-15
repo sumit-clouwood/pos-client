@@ -47,6 +47,9 @@ const actions = {
       error: error,
     })
   },
+  clearError({ commit }) {
+    commit('SET_ERRORS', {})
+  },
   validate_combo_items: ({ state, getters, commit, rootGetters }) => {
     let errors = {}
     let sectionItems = {}
@@ -226,6 +229,7 @@ const mutations = {
   RESET(state, full = false) {
     state.currentCombo = undefined
     state.currentComboSelectedItems = {}
+    state.currentComboSection = undefined
     state.currentComboSelectedItem = undefined
     state.currentComboSelectedModifiers = undefined
     state.errors = {}
