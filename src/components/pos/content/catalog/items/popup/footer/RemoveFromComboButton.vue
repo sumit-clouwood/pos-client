@@ -1,6 +1,5 @@
 <template>
   <button type="button" class="btn btn-danger" @click="removeFromCombo">
-    <img src="img/pos/delete-icon.svg" />
     <span class="color-text-invert">{{ _t('Remove from Combo') }}</span>
   </button>
 </template>

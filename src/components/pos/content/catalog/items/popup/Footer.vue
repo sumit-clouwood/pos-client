@@ -30,7 +30,7 @@ export default {
     combo_item_with_mods() {
       const item = this.$store.getters['combo/current_combo_selected_item']
       if (
-        this.$store.getters['combo/current_order_combo'] &&
+        //this.$store.getters['combo/current_order_combo'] &&
         item &&
         this.$store.getters['modifier/hasModifiers'](item)
       ) {

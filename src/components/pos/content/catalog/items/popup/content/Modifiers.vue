@@ -71,7 +71,7 @@
 
         <label class="container-radio-btn" v-else>
           <input
-            v-if="item.editMode"
+            v-if="item.editMode || current_order_combo"
             type="radio"
             class="customradio modifier-option-radio edit"
             :id="modifier._id"
@@ -163,6 +163,7 @@ export default {
     ...mapState('modifier', ['item']),
     ...mapState('orderForm', ['error', 'radios']),
     ...mapGetters('orderForm', ['isSelected']),
+    ...mapGetters('combo', ['current_order_combo']),
     ...mapGetters('modifier', ['itemModifiers']),
     ...mapGetters('location', ['formatPrice', '_t']),
   },

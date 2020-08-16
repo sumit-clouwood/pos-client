@@ -790,8 +790,11 @@ const actions = {
     // if (item.modifiable) {
     dispatch('orderForm/setItem', { item: item }, { root: true })
     dispatch('discount/setItem', { item: item }, { root: true })
-    dispatch('combo/setItem', { item: item }, { root: true })
-    dispatch('modifier/setActiveItem', { item: item }, { root: true })
+    if (item.item_type === CONST.COMBO_ITEM_TYPE) {
+      dispatch('combo/setItem', { item: item }, { root: true })
+    } else {
+      dispatch('modifier/setActiveItem', { item: item }, { root: true })
+    }
     // }
   },
   recalculateOrderTotals({
