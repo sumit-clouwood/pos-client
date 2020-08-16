@@ -45,7 +45,9 @@ const actions = {
         })
         commit('SET_CURRENT_COMBO_SELECTED_MODIFIERS', {
           item: item,
-          modifiers: rootGetters['orderForm/modifiers'],
+          modifiers: rootGetters['orderForm/modifiers'].filter(
+            selectedModifier => selectedModifier.itemId == item._id
+          ),
         })
         resolve()
       } else {
@@ -60,26 +62,50 @@ const actions = {
     commit('RESET', option)
     commit('orderForm/clearSelection', null, { root: true })
   },
-  setItem({ commit }, { item }) {
+  //set item while updating in cart
+  setItem({ commit, dispatch, rootGetters }, { item }) {
     console.log('current combo', item)
     let newItem = { ...item }
     newItem.editMode = true
     commit('SET_CURRENT_COMBO', newItem)
     commit('SET_CURRENT_ORDER_COMBO', newItem)
     commit('SET_CURRENT_COMBO_SELECTED_ITEMS', newItem.selectedItems)
-  },
-  setOrderComboItem({ commit, getters, dispatch }, item) {
-    commit('SET_CURRENT_COMBO_SELECTED_ITEM', item)
-    dispatch('modifier/setItem', item, { root: true })
-    const combo = getters.current_combo
-    const modifiers = combo.selectedModifiersRaw
-    commit(
-      'orderForm/restoreModifiersCtrls',
-      { checkboxes: modifiers.checkboxes, radios: modifiers.radios },
-      {
-        root: true,
+
+    let modifiers = []
+    for (const itemId in item.selectedItems) {
+      for (const modItemId in item.selectedModifiers) {
+        if (modItemId == itemId) {
+          const itemModifiers = item.selectedModifiers[itemId]
+
+          /*
+          groupId: "5dbc5e8ff11bad3f95662ea2"
+          itemId: "5da2d458b82fe55b01336b97"
+          modifierId: "5dbc5eb5ef34bd74571152d2"
+          type: "radio"
+
+          groupId: "5e577459d454ff15b93b4a53"
+          itemId: "5da2d458b82fe55b01336b8b"
+          limit: 5
+          modifierId: "5e5774bec81c0f0f1d715944"
+          type: "checkbox"
+          */
+          itemModifiers.forEach(modifier => {
+            modifiers.push(modifier)
+          })
+          const catalogItem = rootGetters['category/itemById'](itemId)
+
+          commit('SET_CURRENT_COMBO_SELECTED_MODIFIERS', {
+            item: catalogItem,
+            modifiers: itemModifiers,
+          })
+        }
       }
-    )
+    }
+    dispatch('orderForm/populateSelection', modifiers, {
+      root: true,
+    })
+
+    //add modifiers to combo
   },
   setError({ commit, getters }, error) {
     commit('SET_ERROR', {

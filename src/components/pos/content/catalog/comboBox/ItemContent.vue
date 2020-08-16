@@ -60,7 +60,7 @@
 
 <script>
 /* eslint-disable no-console */
-
+/* global hideModal */
 import { mapGetters } from 'vuex'
 import Checkbox from '@/components/util/form/CheckBox2.vue'
 import Cart from '@/mixins/Cart'
@@ -99,7 +99,6 @@ export default {
       this.setupItemModifiers(data.item)
       if (this.current_order_combo) {
         //setup modifiers
-        alert('setup modifiers')
       }
     })
     bus.$on('addComboItemWithModifiers', () => {
@@ -112,11 +111,12 @@ export default {
     })
     bus.$on('removeComboItemWithModifiers', () => {
       const item = this.$store.getters['combo/current_combo_selected_item']
-      let items = this.$store.state.combo.currentComboSelectedItems
+      let items = { ...this.$store.state.combo.currentComboSelectedItems }
       items[item._id] = false
       this.$store.commit('combo/SET_CURRENT_COMBO_SELECTED_ITEMS', items)
       this.comboItemSelection = items
       this.validateSelection(item)
+      hideModal('#POSItemOptions')
     })
   },
   methods: {
@@ -137,13 +137,6 @@ export default {
         this.validateSelection(item)
       }
     },
-    // setCombo(item) {
-    //   //for edit order set state of current combo
-    //   if (this.$store.getters['modifier/hasModifiers'](item)) {
-    //     this.$store.dispatch('modifier/assignModifiersToItem', item)
-    //   }
-    //   this.$store.dispatch('combo/setOrderComboItem', item)
-    // },
     validateSelection(item) {
       const isValid = this.validateSection()
       this.$store.dispatch('combo/clearError', '')
