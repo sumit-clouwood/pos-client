@@ -779,6 +779,10 @@ const actions = {
               if (rootGetters['auth/multistore']) {
                 order.multi_store = true
               }
+              //if order was created by split bill (new order with unpaid items), don't print KOT
+              if (data && data['route'] === 'splitOrder') {
+                order['skip_kot_print'] = 1
+              }
               order.order_surcharges = rootState.surcharge.surchargeAmounts.map(
                 appliedSurcharge => {
                   const surcharge = rootState.surcharge.surcharges.find(
