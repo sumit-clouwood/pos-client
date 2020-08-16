@@ -10,6 +10,7 @@
         :value="item._id"
         @change="selectItemForCombo(item)"
         class="item-selector"
+        :noaction="hasModifiers(item)"
       >
         <div class="food-item-box">
           <img :src="item.image" alt v-if="item.image != ''" />
@@ -34,7 +35,7 @@
       </checkbox>
       <div class="item-customize">
         <div
-          v-if="current_order_combo"
+          v-if="current_order_combo && false"
           class="button-plus"
           data-toggle="modal"
           data-target="#POSOrderItemOptions"
@@ -63,6 +64,7 @@
 import { mapGetters } from 'vuex'
 import Checkbox from '@/components/util/form/CheckBox2.vue'
 import Cart from '@/mixins/Cart'
+import { bus } from '@/eventBus'
 
 export default {
   name: 'ItemContent',
@@ -78,25 +80,53 @@ export default {
   computed: {
     comboItemSelection: {
       get() {
+        console.log('getter called')
         return this.$store.state.combo.currentComboSelectedItems
       },
-      set(val) {
-        this.$store.commit('combo/SET_CURRENT_COMBO_SELECTED_ITEMS', val)
+      set(items) {
+        console.log('setter called', items)
+        this.$store.commit('combo/SET_CURRENT_COMBO_SELECTED_ITEMS', items)
       },
     },
     ...mapGetters('location', ['formatPrice', '_t']),
     ...mapGetters('combo', ['current_combo_items', 'current_order_combo']),
   },
+  mounted() {
+    bus.$on('addComboItemWithModifiers', () => {
+      const item = this.$store.getters['combo/current_combo_selected_item']
+      let items = this.$store.state.combo.currentComboSelectedItems
+      items[item._id] = true
+      this.$store.commit('combo/SET_CURRENT_COMBO_SELECTED_ITEMS', items)
+      this.comboItemSelection = items
+      this.validateSelection(item)
+    })
+  },
   methods: {
+    hasModifiers(item) {
+      return this.$store.getters['modifier/hasModifiers'](item)
+    },
     // eslint-disable-next-line no-unused-vars
     selectItemForCombo(item) {
-      for (var itemId in this.comboItemSelection) {
-        if (this.comboItemSelection[itemId] === false) {
-          delete this.comboItemSelection[itemId]
-        }
-      }
+      //this is hook function which doesn't update actual selection
+      //what it does is peform any action post selection
+
+      //set current selected item
+      this.$store.commit('combo/SET_CURRENT_COMBO_SELECTED_ITEM', item)
       //associate modifiers to item, this is not selection of modifiers [note]
       this.setupItemModifiers(item)
+      //if item has modifiers don't select it
+      if (!this.$store.getters['modifier/hasModifiers'](item)) {
+        this.validateSelection(item)
+      }
+    },
+    setCombo(item) {
+      //for edit order set state of current combo
+      if (this.$store.getters['modifier/hasModifiers'](item)) {
+        this.$store.dispatch('modifier/assignModifiersToItem', item)
+      }
+      this.$store.dispatch('combo/setOrderComboItem', item)
+    },
+    validateSelection(item) {
       const isValid = this.validateSection()
       this.$store.dispatch('combo/clearError', '')
       this.$store.commit('combo/SET_MSG', '')
@@ -110,7 +140,6 @@ export default {
         )
         delete this.comboItemSelection[item._id]
       } else {
-        this.$store.commit('combo/SET_CURRENT_COMBO_SELECTED_ITEM', item)
         if (isValid === true) {
           //ok
           this.$store.dispatch('combo/clearError')
@@ -144,13 +173,6 @@ export default {
           )
         }
       }
-    },
-    setCombo(item) {
-      //for edit order set state of current combo
-      if (this.$store.getters['modifier/hasModifiers'](item)) {
-        this.$store.dispatch('modifier/assignModifiersToItem', item)
-      }
-      this.$store.dispatch('combo/setOrderComboItem', item)
     },
   },
 }
