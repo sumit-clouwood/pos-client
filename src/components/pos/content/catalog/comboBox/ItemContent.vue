@@ -10,7 +10,7 @@
         :value="item._id"
         @change="selectItemForCombo(item)"
         class="item-selector"
-        :noaction="hasModifiers(item)"
+        :noaction="hasModifiers(item) ? item : false"
       >
         <div class="food-item-box">
           <img :src="item.image" alt v-if="item.image != ''" />
@@ -92,9 +92,19 @@ export default {
     ...mapGetters('combo', ['current_combo_items', 'current_order_combo']),
   },
   mounted() {
+    bus.$on('checkbox2Change', data => {
+      //check if it is in edit mode then setup modifiers
+      this.$store.commit('combo/SET_CURRENT_COMBO_SELECTED_ITEM', data.item)
+      //associate modifiers to item, and show popup, this is not selection of modifiers [note]
+      this.setupItemModifiers(data.item)
+      if (this.current_order_combo) {
+        //setup modifiers
+        alert('setup modifiers')
+      }
+    })
     bus.$on('addComboItemWithModifiers', () => {
       const item = this.$store.getters['combo/current_combo_selected_item']
-      let items = this.$store.state.combo.currentComboSelectedItems
+      let items = { ...this.$store.state.combo.currentComboSelectedItems }
       items[item._id] = true
       this.$store.commit('combo/SET_CURRENT_COMBO_SELECTED_ITEMS', items)
       this.comboItemSelection = items
@@ -120,7 +130,7 @@ export default {
 
       //set current selected item
       this.$store.commit('combo/SET_CURRENT_COMBO_SELECTED_ITEM', item)
-      //associate modifiers to item, this is not selection of modifiers [note]
+      //associate modifiers to item, and show popup, this is not selection of modifiers [note]
       this.setupItemModifiers(item)
       //if item has modifiers don't select it
       if (!this.$store.getters['modifier/hasModifiers'](item)) {
