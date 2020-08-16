@@ -56,8 +56,8 @@ const actions = {
       }
     })
   },
-  reset({ commit }) {
-    commit('RESET')
+  reset({ commit }, option) {
+    commit('RESET', option)
     commit('orderForm/clearSelection', null, { root: true })
   },
   setItem({ commit }, { item }) {

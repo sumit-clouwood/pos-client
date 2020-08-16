@@ -1826,7 +1826,7 @@ const actions = {
     dispatch('surcharge/reset', {}, { root: true })
     if (full && getters.complete) {
       dispatch('order/reset', {}, { root: true })
-      dispatch('combo/reset', {}, { root: true })
+      dispatch('combo/reset',true, { root: true })
       dispatch('customer/reset', true, { root: true })
       dispatch('location/reset', {}, { root: true })
     }

@@ -128,7 +128,7 @@ export default {
   },
   methods: {
     addToOrder(item) {
-      this.$store.dispatch('combo/reset')
+      this.$store.dispatch('combo/reset', true)
       this.$store.commit('orderForm/clearSelection')
 
       if (item.item_type === CONST.COMBO_ITEM_TYPE) {
