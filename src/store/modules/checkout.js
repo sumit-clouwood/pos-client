@@ -784,7 +784,7 @@ const actions = {
               }
 
               //if order was created by split bill (new order with unpaid items), don't print KOT
-              if (data['route'] === 'splitOrder') {
+              if (data && data['route'] === 'splitOrder') {
                 order['skip_kot_print'] = 1
               }
 
