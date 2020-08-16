@@ -16,7 +16,7 @@
         class="modal-content color-dashboard-background modal-content-wrapper footerStyle"
       >
         <Header />
-        <HeaderDetails />
+        <HeaderDetails v-show="!current_combo_selected_item" />
         <Content />
         <Footer />
       </div>
@@ -32,6 +32,7 @@ import Header from './popup/Header'
 import HeaderDetails from './popup/header/HeaderDetails'
 import Content from './popup/Content'
 import Footer from './popup/Footer'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'Popup',
@@ -42,6 +43,9 @@ export default {
       modifierBlockInitHeight: 0,
       modifierBlockItemHeight: 0,
     }
+  },
+  computed: {
+    ...mapGetters('combo', ['current_combo_selected_item']),
   },
   components: {
     Content,
