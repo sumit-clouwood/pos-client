@@ -1,14 +1,12 @@
 <template>
-  <div class="btn-announce apply_btn">
-    <button
-      type="button"
-      class="buttoned colorwhite donebutton color-main"
-      @click="addModifierOrder"
-    >
-      <img src="img/pos/done.png" alt="done" />
-      <span class="color-text-invert">{{ _t('Apply') }}</span>
-    </button>
-  </div>
+  <button
+    type="button"
+    class="buttoned colorwhite donebutton color-main"
+    @click="addModifierOrder"
+  >
+    <img src="img/pos/done.png" alt="done" />
+    <span class="color-text-invert">{{ _t('Apply') }}</span>
+  </button>
 </template>
 <script>
 /* global closeModal */

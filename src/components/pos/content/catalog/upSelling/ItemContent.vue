@@ -127,7 +127,7 @@ export default {
       }
     },
     addToOrder(item) {
-      this.$store.dispatch('combo/reset')
+      this.$store.dispatch('combo/reset', true)
       // $('#id_' + item._id).hide()
       // Use splice instead of pop
       // pop removes element from last index
