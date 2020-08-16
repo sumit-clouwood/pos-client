@@ -92,6 +92,7 @@ export default {
     ...mapGetters('combo', ['current_combo_items', 'current_order_combo']),
   },
   mounted() {
+    const store = this.$store
     bus.$on('checkbox2Change', data => {
       //check if it is in edit mode then setup modifiers
       this.$store.commit('combo/SET_CURRENT_COMBO_SELECTED_ITEM', data.item)
@@ -99,6 +100,7 @@ export default {
       this.setupItemModifiers(data.item)
       if (this.current_order_combo) {
         //setup modifiers
+        console.log('selected radios', store.state.orderForm.radios)
       }
     })
     bus.$on('addComboItemWithModifiers', () => {
@@ -163,11 +165,13 @@ export default {
           if (sectionNo < sections.length - 1) {
             const nextSection = sections[sectionNo + 1]
             this.$store.commit('combo/SET_CURRENT_COMBO_SECTION', nextSection)
-            this.$store.commit(
-              'combo/SET_MSG',
-              'Awesome! select items from ' +
-                this.$store.getters['combo/current_section'].name
-            )
+            if (this.$store.getters['combo/current_section']) {
+              this.$store.commit(
+                'combo/SET_MSG',
+                'Awesome! select items from ' +
+                  this.$store.getters['combo/current_section'].name
+              )
+            }
           } else {
             this.$store.commit(
               'combo/SET_MSG',

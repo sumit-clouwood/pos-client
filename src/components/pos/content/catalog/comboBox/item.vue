@@ -63,11 +63,13 @@ export default {
             section => section._id == this.currentSection._id
           )
           if (sectionNo < sections.length - 1) {
-            this.$store.commit(
-              'combo/SET_MSG',
-              'Awesome! select items from ' +
-                this.$store.getters['combo/current_section'].name
-            )
+            if (this.$store.getters['combo/current_section']) {
+              this.$store.commit(
+                'combo/SET_MSG',
+                'Awesome! select items from ' +
+                  this.$store.getters['combo/current_section'].name
+              )
+            }
           } else {
             this.$store.commit(
               'combo/SET_MSG',

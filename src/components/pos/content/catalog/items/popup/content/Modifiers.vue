@@ -71,29 +71,10 @@
 
         <label class="container-radio-btn" v-else>
           <input
-            v-if="item.editMode || current_order_combo"
             type="radio"
             class="customradio modifier-option-radio edit"
-            :id="modifier._id"
-            :name="subgroup._id"
             :value="modifier._id"
-            @click="setRadio(item._id, subgroup._id, modifier._id)"
-            :checked="
-              isSelected({
-                modifierId: modifier._id,
-                groupId: subgroup._id,
-                itemId: item._id,
-              })
-            "
-          />
-          <input
-            v-else
-            type="radio"
-            class="customradio modifier-option-radio"
-            :id="modifier._id"
-            :name="subgroup._id"
-            :value="modifier._id"
-            @click="setRadio(item._id, subgroup._id, modifier._id)"
+            v-model="radios[item._id + '-' + subgroup._id]"
           />
           <div class="borderCheck">
             <span class="customradioc">
@@ -151,6 +132,14 @@ export default {
     }
   },
   computed: {
+    radios: {
+      get() {
+        return this.$store.state.orderForm.radios
+      },
+      set(vmodel) {
+        this.$store.commit('orderForm/mutateRadios', vmodel)
+      },
+    },
     checkboxes: {
       get() {
         return this.$store.state.orderForm.checkboxes
@@ -161,7 +150,7 @@ export default {
     },
     ...mapState('location', ['currency']),
     ...mapState('modifier', ['item']),
-    ...mapState('orderForm', ['error', 'radios']),
+    ...mapState('orderForm', ['error']),
     ...mapGetters('orderForm', ['isSelected']),
     ...mapGetters('combo', ['current_order_combo']),
     ...mapGetters('modifier', ['itemModifiers']),
@@ -175,14 +164,6 @@ export default {
       } else {
         this.subgroup.modifiers[index].class = ''
       }
-    },
-    setRadio(itemId, groupId, modifierId) {
-      this.$store.commit('orderForm/setRadios', {
-        itemId: itemId,
-        groupId: groupId,
-        modifierId: modifierId,
-      })
-      this.$store.commit('orderForm/setError', false)
     },
   },
 }

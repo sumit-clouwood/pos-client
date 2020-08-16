@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 // initial state
 const state = {
   error: false,
@@ -11,12 +12,17 @@ const getters = {
   radios: state => state.radios,
   isSelected: state => ({ modifierId, groupId, itemId }) => {
     const radio = state.radios[groupId]
-    const checked =
+    if (
       radio &&
       radio.groupId == groupId &&
       radio.itemId == itemId &&
       radio.modifierId == modifierId
-    return checked
+    ) {
+      return true
+    }
+    // eslint-disable-next-line no-console
+    console.log('radio selection ', groupId, itemId, modifierId, 'false')
+    return false
   },
   quantity: state => {
     return state.quantity > 0 ? state.quantity : 1
@@ -34,14 +40,14 @@ const getters = {
     })
 
     for (let key in state.radios) {
-      const model = state.radios[key]
-      model &&
-        modifiers.push({
-          type: 'radio',
-          itemId: model.itemId,
-          modifierId: model.modifierId,
-          groupId: model.groupId,
-        })
+      const modifierId = state.radios[key]
+      var [itemId, groupId] = key.split('-')
+      modifiers.push({
+        type: 'radio',
+        itemId: itemId,
+        modifierId: modifierId,
+        groupId: groupId,
+      })
     }
 
     return modifiers
@@ -81,14 +87,17 @@ const mutations = {
     state.quantity = quantity
   },
   populateSelection(state, modifierGroups) {
+    console.log('populating modifiers selection')
     let radios = {}
     modifierGroups.forEach(model => {
       if (model.type === 'checkbox') {
         state.checkboxes.push(model)
       } else if (model.type === 'radio') {
-        radios[model.groupId] = model
+        radios[model.itemId + '-' + model.groupId] = model.modifierId
       }
     })
+    console.log('setting up radio state')
+
     state.radios = radios
   },
 
@@ -121,6 +130,9 @@ const mutations = {
       modifierId: modifierId,
     }
     //state.obj = { ...state.obj, newProp: 123 }
+    state.radios = radios
+  },
+  mutateRadios(state, radios) {
     state.radios = radios
   },
   restoreModifiersCtrls(state, { checkboxes, radios }) {
