@@ -51,9 +51,6 @@ export default {
       return true
     },
     setupItemModifiers(item) {
-      if (!this.$store.getters['combo/current_order_combo']) {
-        this.$store.commit('orderForm/clearSelection')
-      }
       if (this.$store.getters['modifier/hasModifiers'](item)) {
         console.log('has modifiers')
         this.$store.dispatch('modifier/assignModifiersToItem', item)
