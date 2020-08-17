@@ -5,8 +5,13 @@
       <input
         class="checkbox2"
         type="checkbox"
+        noaction="noaction"
         v-bind:checked="checked"
-        v-on:change="$emit('change', $event.target.checked)"
+        v-on:change="
+          noaction
+            ? $emit('change', false)
+            : $emit('change', $event.target.checked)
+        "
       />
     </div>
   </label>
@@ -21,6 +26,7 @@ export default {
   props: {
     checked: Boolean,
     value: String,
+    noaction: Boolean,
   },
 }
 </script>

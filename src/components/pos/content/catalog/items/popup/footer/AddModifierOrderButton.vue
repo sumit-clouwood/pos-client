@@ -12,6 +12,7 @@
 </template>
 <script>
 /* global closeModal */
+import { bus } from '@/eventBus'
 import { mapGetters } from 'vuex'
 export default {
   name: 'AddModifierOrderButton',
@@ -23,8 +24,15 @@ export default {
   methods: {
     addModifierOrder() {
       if (this.current_combo) {
-        closeModal('#POSItemOptions')
-        this.$store.dispatch('combo/selectModifiers')
+        this.$store.dispatch('combo/selectModifiers').then(() => {
+          closeModal('#POSItemOptions')
+          bus.$emit('addComboItemWithModifiers')
+        })
+        //select modifiers
+        //if validated then
+        //emit and catch in itemContent
+        //add to the current selected items of combo
+        //if removed emit and remove from current selection
       } else {
         this.$store
           .dispatch('order/addModifierOrder')

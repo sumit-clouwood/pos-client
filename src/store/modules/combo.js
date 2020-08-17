@@ -11,9 +11,49 @@ const state = {
 }
 const actions = {
   selectModifiers({ getters, rootGetters, commit }) {
-    commit('SET_CURRENT_COMBO_SELECTED_MODIFIERS', {
-      item: getters.current_combo_selected_item,
-      modifiers: rootGetters['orderForm/modifiers'],
+    const item = getters.current_combo_selected_item
+
+    return new Promise((resolve, reject) => {
+      const modifiers = rootGetters['orderForm/modifiers'].filter(
+        modifier => modifier.itemId == item._id
+      )
+
+      let selectedModifierGroups = []
+      let itemModifierGroups = []
+
+      modifiers.forEach(modifier => {
+        itemModifierGroups.push(modifier)
+        selectedModifierGroups.push(modifier.groupId)
+      })
+
+      //match modifiers with mandatory modifiers for this item, if not matched set error and return false
+      const itemMandatoryModifierGroups = rootGetters[
+        'modifier/itemMandatoryGroups'
+      ](item._id)
+
+      let mandatorySelected = true
+
+      itemMandatoryModifierGroups.forEach(id => {
+        if (!selectedModifierGroups.includes(id)) {
+          mandatorySelected = false
+        }
+      })
+
+      if (mandatorySelected) {
+        commit('orderForm/setError', false, {
+          root: true,
+        })
+        commit('SET_CURRENT_COMBO_SELECTED_MODIFIERS', {
+          item: item,
+          modifiers: rootGetters['orderForm/modifiers'],
+        })
+        resolve()
+      } else {
+        commit('orderForm/setError', 'Please select at least one item', {
+          root: true,
+        })
+        reject()
+      }
     })
   },
   reset({ commit }) {
@@ -132,7 +172,16 @@ const getters = {
     }
     return modifiers
   },
-  current_combo_selected_items: state => state.currentComboSelectedItems,
+  current_combo_selected_items: state => {
+    //return only those which has true value
+    let trueSelection = {}
+    for (const i in state.currentComboSelectedItems) {
+      if (state.currentComboSelectedItems[i] === true) {
+        trueSelection[i] = true
+      }
+    }
+    return trueSelection
+  },
   current_combo_selected_item: state => state.currentComboSelectedItem,
   current_combo_selected_modifiers: state =>
     state.currentComboSelectedModifiers,
