@@ -619,7 +619,6 @@ export default {
             transformRotate: '90deg',
           }
         }
-
         if (table.table_shape === 'circle') {
           transform = {
             transformOrigin: '10% 29%;',
@@ -809,6 +808,8 @@ export default {
     },
     setTableProperties() {
       let dis = this
+      let user_agent = this.$store.state.auth.deviceType.userAgent
+      let checkIpad = user_agent.search('ipad')
       d3.selectAll('.dinein_table').each((d, i, a) => {
         let data = d
         let angleX = parseInt(data.table_position_coordinate.angle)
@@ -817,19 +818,25 @@ export default {
         let transform = dis.setTextRotate(data, angle)
         let writingMode =
           angle == 270 || !dis.tableTextTransform ? '' : 'vertical-lr'
-        d3.select(a[i])
-          .select('text')
-          .text(`${d.number}`)
-          .attr(
-            'style',
-            'font-weight:bold; cursor: default; writing-mode:' +
-              writingMode +
-              '; transform-origin: ' +
-              transform.transformOrigin +
-              'transform: rotate(' +
-              transform.transformRotate +
-              ')'
-          )
+        if (checkIpad) {
+          d3.select(a[i])
+            .select('text')
+            .text(`${d.number}`)
+        } else {
+          d3.select(a[i])
+            .select('text')
+            .text(`${d.number}`)
+            .attr(
+              'style',
+              'font-weight:bold; cursor: default; writing-mode:' +
+                writingMode +
+                '; transform-origin: ' +
+                transform.transformOrigin +
+                'transform: rotate(' +
+                transform.transformRotate +
+                ')'
+            )
+        }
         // .attr('fill', '#fff')
 
         this.setTableColour(a[i], data)
