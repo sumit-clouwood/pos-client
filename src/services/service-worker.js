@@ -3,7 +3,7 @@
 /* eslint-disable no-console */
 //appVersion has production build number . staging build number . int build number . bugfix
 //Reason: fixed msg 13
-var appVersion = '7.9.34.20'
+var appVersion = '7.9.34.21'
 
 var clientUrl = ''
 

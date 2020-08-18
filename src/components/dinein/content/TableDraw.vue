@@ -327,7 +327,7 @@ export default {
       moveReservation: false,
       validationErrors: false,
       selectedArea: false,
-      zoomLevel: {
+      /*zoomLevel: {
         zoomOut: [
           {
             x: 1830 - 100,
@@ -355,7 +355,7 @@ export default {
             level: 0.4,
           },
         ],
-      },
+      },*/
     }
   },
   updated() {

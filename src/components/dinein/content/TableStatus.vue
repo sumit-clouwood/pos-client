@@ -78,10 +78,38 @@ export default {
       let data = d
       let x = parseFloat(data.table_position_coordinate.x)
       let y = parseFloat(data.table_position_coordinate.y)
-      let midX = nodeDims.width / 8 + x
-      let midY = nodeDims.height / 8 + y
+      let midX = nodeDims.width / 14 + x
+      let midY = nodeDims.height / 12 + y
       return { data, midX, midY }
     },
+    /*zoomIn() {
+      let that = this
+      that.transform.k += 0.1
+      if (that.transform.k > 0.9) {
+        that.transform.k -= 0.1
+        return true
+      }
+      d3.selectAll('.dinein_table_parent').each((d, i, a) => {
+        var transform = d3.zoomIdentity
+            .scale(that.transform.k)
+            .translate(that.transform.x, that.transform.y)
+        d3.select(a[i]).attr('transform', transform)
+      })
+    },
+    zoomOut() {
+      let that = this
+      that.transform.k -= 0.1
+      if (that.transform.k < 0.4) {
+        that.transform.k = 0.4
+        return true
+      }
+      d3.selectAll('.dinein_table_parent').each((d, i, a) => {
+        let transform = d3.zoomIdentity
+            .scale(that.transform.k)
+            .translate(that.transform.x, that.transform.y)
+        d3.select(a[i]).attr('transform', transform)
+      })
+    },*/
     zoomIn() {
       let that = this
       if (that.transform.k < 0.9) {
