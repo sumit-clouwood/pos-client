@@ -227,8 +227,8 @@ li#circle-table-shape {
     box-shadow: 0 $px2 $px17 0 rgba(0, 0, 0, 0.19);
     background-color: $white;
     border: solid $px1 #d8dce1;
-    width: $px154;
-    margin-right: $px20;
+    width: $px165;
+    margin-right: $px25;
   }
 }
 
@@ -540,6 +540,10 @@ button.qtyminus.value-qty {
   border-right:  medium none;
   border-top-right-radius:  0;
   border-bottom-right-radius:  0;*/
+  height: $px50;
+}
+button.qtyplus.value-qty {
+  height: $px50;
 }
 
 input.qty {
@@ -558,11 +562,11 @@ input.qty {
     text-align: center;
     outline: none;
     color: #3d3f43;
-    font-size: $px16;
+    font-size: $px20;
     font-weight: 600;
-    height: $px40;
+    height: $px56;
     letter-spacing: 0;
-    line-height: $px40;
+    line-height: $px56;
     vertical-align: middle;
     padding: 0;
     border-radius: $px5;
@@ -1459,7 +1463,7 @@ div {
     width: 100%;
 
     .value-qty {
-      height: $px60;
+      height: $px90;
 
       &.qtyminus {
         background: linear-gradient(45deg, rgba(164, 151, 151, 0.3), #fff);
