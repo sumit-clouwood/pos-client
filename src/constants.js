@@ -103,3 +103,7 @@ export const DISCOUNT_ORDER_ERROR_MAX =
   'Cart amount is greater than maximum allowed for this discount.'
 export const REGULAR_ITEM_TYPE = 'regular'
 export const COMBO_ITEM_TYPE = 'combo_item'
+
+export const GENERAL_INFORMATION = 'gi'
+export const ADDITIONAL_INFORMATION = 'ai'
+export const CUSTOMER_ADDRESS = 'addi'
