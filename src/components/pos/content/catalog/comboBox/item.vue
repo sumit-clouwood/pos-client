@@ -1,45 +1,90 @@
 <template>
   <div class="modal-body color-dashboard-background grid_combo_left">
-    <div class="food-menu_container" v-if="comboItemsList">
+    <div class="food-menu_container" v-if="current_combo">
       <div
         class="food-menu_title"
-        v-for="(item, index) in comboItemsList.combo_items"
-        :class="{ active_left_combo: index === activeItem }"
+        v-for="(section, index) in current_combo.combo_items"
+        :class="{ active_left_combo: section == current_combo_section }"
         :key="index"
-        @click="setActiveItem(index, item)"
+        @click="selectComboSection(section)"
       >
-        <p class="food_title">{{ item.name }}</p>
+        <p class="food_title">{{ section.name }}</p>
       </div>
     </div>
   </div>
 </template>
-
 <script>
-import { mapGetters, mapState } from 'vuex'
+import { mapGetters } from 'vuex'
+import Cart from '@/mixins/Cart'
+
 export default {
   data() {
     return {
-      activeItem: 0,
+      currentSection: 0,
     }
   },
   name: 'Items',
-  watch: {
-    activeComboItems() {
-      this.$nextTick(() => {
-        this.activeItem = 0
-      })
-    },
-  },
+  watch: {},
+  mixins: [Cart],
   computed: {
-    ...mapState('comboItems', ['comboItemsList', 'activeComboItems']),
+    ...mapGetters('combo', [
+      'current_combo',
+      'current_combo_section',
+      'current_combo_selected_items',
+    ]),
     ...mapGetters('location', ['_t']),
   },
   methods: {
-    setActiveItem(itemIndex, itemList) {
-      if (this.activeItem != itemIndex) {
-        this.activeItem = itemIndex
-        this.$store.commit('comboItems/SET_SELECTED_ITEM_DATA', itemList)
-        this.$store.dispatch('comboItems/findItemById')
+    selectComboSection(section) {
+      const isValid = this.validateSection()
+      const sections = this.$store.getters['combo/current_combo'].combo_items
+      const newSectionNo = sections.findIndex(sec => sec._id == section._id)
+      const previousSectionNo = sections.findIndex(
+        sec => sec._id == this.currentSection._id
+      )
+      if (isValid === true || newSectionNo < previousSectionNo) {
+        this.$store.commit('combo/SET_CURRENT_COMBO_SECTION', section)
+      }
+      if (isValid === false) {
+        //validation failed, remove current item
+        this.$store.dispatch(
+          'combo/setError',
+          this._t(
+            `You can select ${this.currentSection.qty} item(s) from ${this.currentSection.name}`
+          )
+        )
+      } else {
+        if (isValid === true) {
+          //ok
+          this.$store.dispatch('combo/clearError')
+          const sections = this.$store.getters['combo/current_combo']
+            .combo_items
+          const sectionNo = sections.findIndex(
+            section => section._id == this.currentSection._id
+          )
+          if (sectionNo < sections.length - 1) {
+            if (this.$store.getters['combo/current_section']) {
+              this.$store.commit(
+                'combo/SET_MSG',
+                'Awesome! select items from ' +
+                  this.$store.getters['combo/current_section'].name
+              )
+            }
+          } else {
+            this.$store.commit(
+              'combo/SET_MSG',
+              'Awesome! click on add to order button'
+            )
+          }
+        } else if (isValid > 0) {
+          //still need to select more
+          this.$store.dispatch(
+            'combo/setError',
+            this._t(
+              `Select ${isValid} more item(s) from ${this.currentSection.name}`
+            )
+          )
+        }
       }
     },
   },

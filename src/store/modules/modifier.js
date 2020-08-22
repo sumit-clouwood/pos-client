@@ -304,6 +304,10 @@ const actions = {
       }
     })
   },
+  setItem({ commit }, item) {
+    item.editMode = true
+    commit(mutation.SET_ITEM, item)
+  },
   //active item and index already been set to order.item
   setActiveItem({ commit, dispatch, rootState, rootGetters }) {
     //pop needs all modifiers available for this item so we need to fetch modifier from modifeir store
@@ -329,13 +333,13 @@ const actions = {
       item.orderIndex = orderItem.orderIndex
       item.modifiable = orderItem.modifiable
       //formstate should contain only those fiels which are selected by this order item
-      dispatch('orderForm/populateSelection', orderItem.modifierGroups, {
-        root: true,
-      })
     } else {
       item = orderItem
     }
 
+    dispatch('orderForm/populateSelection', item.modifierGroups, {
+      root: true,
+    })
     //set current item with modifiers in modifer store
     commit(mutation.SET_ITEM, item)
   },

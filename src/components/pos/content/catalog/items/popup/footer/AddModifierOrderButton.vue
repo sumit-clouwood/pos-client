@@ -1,33 +1,45 @@
 <template>
-  <div class="btn-announce apply_btn">
-    <button
-      type="button"
-      class="buttoned colorwhite donebutton color-main"
-      @click="addModifierOrder"
-    >
-      <img src="img/pos/done.png" alt="done" />
-      <span class="color-text-invert">{{ _t('Apply') }}</span>
-    </button>
-  </div>
+  <button
+    type="button"
+    class="buttoned colorwhite donebutton color-main"
+    @click="addModifierOrder"
+  >
+    <img src="img/pos/done.png" alt="done" />
+    <span class="color-text-invert">{{ _t('Apply') }}</span>
+  </button>
 </template>
 <script>
 /* global closeModal */
+import { bus } from '@/eventBus'
 import { mapGetters } from 'vuex'
 export default {
   name: 'AddModifierOrderButton',
   props: {},
   computed: {
     ...mapGetters('location', ['_t']),
+    ...mapGetters('combo', ['current_combo']),
   },
   methods: {
     addModifierOrder() {
-      this.$store
-        .dispatch('order/addModifierOrder')
-        .then(() => {
-          this.$emit('error', false)
+      if (this.current_combo) {
+        this.$store.dispatch('combo/selectModifiers').then(() => {
           closeModal('#POSItemOptions')
+          bus.$emit('addComboItemWithModifiers')
         })
-        .catch(error => this.$emit('error', error))
+        //select modifiers
+        //if validated then
+        //emit and catch in itemContent
+        //add to the current selected items of combo
+        //if removed emit and remove from current selection
+      } else {
+        this.$store
+          .dispatch('order/addModifierOrder')
+          .then(() => {
+            this.$emit('error', false)
+            closeModal('#POSItemOptions')
+          })
+          .catch(error => this.$emit('error', error))
+      }
     },
   },
 }

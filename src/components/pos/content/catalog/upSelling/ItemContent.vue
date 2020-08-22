@@ -98,23 +98,10 @@ export default {
       'upSellingParentItem',
     ]),
     ...mapState('order', ['item', 'items']),
-    ...mapState('comboItems', ['comboItemsList']),
+    ...mapState('combo', ['current_combo']),
     ...mapGetters(['foodMenuHendler']),
   },
-  watch: {
-    item() {
-      this.$nextTick(() => {
-        if (!this.isUpSellingModify && !this.comboItemsList) {
-          this.getUpSellingItems()
-        }
-      })
-      setTimeout(() => {
-        if (this.msg) {
-          this.msg = false
-        }
-      }, 3000)
-    },
-  },
+  watch: {},
   methods: {
     getUpSellingItems() {
       if (
@@ -140,7 +127,7 @@ export default {
       }
     },
     addToOrder(item) {
-      this.$store.dispatch('comboItems/reset')
+      this.$store.dispatch('combo/reset', true)
       // $('#id_' + item._id).hide()
       // Use splice instead of pop
       // pop removes element from last index

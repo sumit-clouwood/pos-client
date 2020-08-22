@@ -2,42 +2,46 @@
   <div class="modal-body color-dashboard-background grid_combo_item_content">
     <div
       class="foodbox_container"
-      v-for="(item, index) in subItems"
-      :class="{
-        active_right_combo: activeOnClick.includes(
-          item._id + selectedContainerId
-        ),
-      }"
+      v-for="(item, index) in current_combo_items"
       :key="index"
-      @click="setActiveItems(item)"
     >
-      <div class="food-item-box">
-        <img :src="item.image" alt v-if="item.image != ''" />
-        <img
-          v-else
-          style="border:1px solid rgba(0, 0, 0, 0.44);"
-          :style="{
-            background:
-              item.image == '' && item.item_color ? item.item_color : 'white',
-          }"
-        />
-        <div class="food-menu-item-text color-text">
-          <label :title="dt(item)">
+      <checkbox
+        v-model="comboItemSelection[item._id]"
+        :value="item._id"
+        @change="selectItemForCombo(item)"
+        class="item-selector"
+        :noaction="hasModifiers(item) ? item : false"
+      >
+        <div class="food-item-box">
+          <img :src="item.image" alt v-if="item.image != ''" />
+          <img
+            v-else
+            style="border:1px solid rgba(0, 0, 0, 0.44);"
+            :style="{
+              background:
+                item.image == '' && item.item_color ? item.item_color : 'white',
+            }"
+          />
+          <div class="food-menu-item-text color-text">
             {{ dt(item) }}
-          </label>
+          </div>
         </div>
-      </div>
-      <div class="food-box-icon">
-        <i
-          class="fa fa-check item-selected-check right_icon"
-          aria-hidden="true"
-        ></i>
+        <div class="food-box-icon">
+          <i
+            class="fa fa-check item-selected-check right_icon"
+            aria-hidden="true"
+          ></i>
+        </div>
+      </checkbox>
+      <!-- <div class="item-customize">
         <div
+          v-if="current_order_combo && hasModifiers(item)"
           class="button-plus"
           data-toggle="modal"
           data-target="#POSOrderItemOptions"
+          @click="setCombo(item)"
         >
-          <div class="button-plus-icon" @click.stop="setModifiersForItem(item)">
+          <div class="button-plus-icon">
             <svg
               class="color-text"
               viewBox="0 0 15 15"
@@ -49,164 +53,141 @@
             </svg>
           </div>
         </div>
-      </div>
-      <!--<div class="foodbox_price_cntr">
-        &lt;!&ndash;<div class="food-menu-item-price">
-          &lt;!&ndash;<strong>{{ formatPrice(item.value) }}</strong>&ndash;&gt;
-        </div>&ndash;&gt;
-      </div>-->
+      </div> -->
     </div>
   </div>
 </template>
 
 <script>
-/* global showModal */
-/*   eslint-disable no-console */
-import { mapActions, mapGetters, mapState } from 'vuex'
+/* eslint-disable no-console */
+/* global hideModal */
+import { mapGetters } from 'vuex'
+import Checkbox from '@/components/util/form/CheckBox2.vue'
+import Cart from '@/mixins/Cart'
+import { bus } from '@/eventBus'
+
 export default {
   name: 'ItemContent',
+  components: {
+    Checkbox,
+  },
+  mixins: [Cart],
   data() {
     return {
-      activeItems: {},
-      activeOnClick: [],
-      itemWithModifiers: false,
+      currentSection: 0,
     }
   },
-  watch: {
-    activeComboItems(newVal, oldVal) {
-      if (newVal != oldVal) {
-        this.$nextTick(() => {
-          if (Object.keys(this.activeComboItems).length === 0) {
-            this.activeOnClick = []
-          }
-          this.commitErrorMessage('')
-        })
-      }
-    },
-  },
   computed: {
-    ...mapState('comboItems', [
-      'subItems',
-      'selectedItemContainer',
-      'setModifiersItem',
-      'activeComboItems',
-    ]),
-    ...mapState('context', ['storeId']),
-    ...mapGetters('location', ['formatPrice', '_t']),
-    ...mapGetters('modifier', ['stateItemModifiers', 'modifiers']),
-    ...mapGetters('auth', ['multistore']),
-    ...mapGetters('comboItems', ['limitOfSelectingItems']),
-    selectedContainerId() {
-      return this.selectedItemContainer._id.$oid
+    comboItemSelection: {
+      get() {
+        console.log('getter called')
+        return this.$store.state.combo.currentComboSelectedItems
+      },
+      set(items) {
+        console.log('setter called', items)
+        this.$store.commit('combo/SET_CURRENT_COMBO_SELECTED_ITEMS', items)
+      },
     },
+    ...mapGetters('location', ['formatPrice', '_t']),
+    ...mapGetters('combo', ['current_combo_items', 'current_order_combo']),
+  },
+  mounted() {
+    const store = this.$store
+    bus.$on('checkbox2Change', data => {
+      //check if it is in edit mode then setup modifiers
+      this.$store.commit('combo/SET_CURRENT_COMBO_SELECTED_ITEM', data.item)
+      //associate modifiers to item, and show popup, this is not selection of modifiers [note]
+      this.setupItemModifiers(data.item)
+      if (this.current_order_combo) {
+        //setup modifiers
+        console.log('selected radios', store.state.orderForm.radios)
+      }
+    })
+    bus.$on('addComboItemWithModifiers', () => {
+      const item = this.$store.getters['combo/current_combo_selected_item']
+      let items = { ...this.$store.state.combo.currentComboSelectedItems }
+      items[item._id] = true
+      this.$store.commit('combo/SET_CURRENT_COMBO_SELECTED_ITEMS', items)
+      this.comboItemSelection = items
+      this.validateSelection(item)
+    })
+    bus.$on('removeComboItemWithModifiers', () => {
+      const item = this.$store.getters['combo/current_combo_selected_item']
+      let items = { ...this.$store.state.combo.currentComboSelectedItems }
+      items[item._id] = false
+      this.$store.commit('combo/SET_CURRENT_COMBO_SELECTED_ITEMS', items)
+      this.comboItemSelection = items
+      this.validateSelection(item)
+      hideModal('#POSItemOptions')
+    })
   },
   methods: {
-    isActiveItem(itemId) {
-      let activeItem = false
-      let selectedContainerId = this.selectedContainerId
-      if (typeof this.activeItems[selectedContainerId] != 'undefined') {
-        this.activeItems[selectedContainerId].forEach(element => {
-          if (element) {
-            if (element._id === itemId) {
-              if (!activeItem) activeItem = true
-            }
-          }
-        })
-      }
-      return activeItem
+    hasModifiers(item) {
+      return this.$store.getters['modifier/hasModifiers'](item)
     },
-    ...mapActions('order', ['setActiveItem']),
-    setActiveItems(item, modifiersAction = false) {
-      let selectedContainerId = this.selectedItemContainer._id.$oid
-      console.log(
-        this.activeComboItems,
-        this.setModifiersItem,
-        this.selectedItemContainer,
-        'this.activeComboItems'
-      )
-      if (Object.keys(this.activeComboItems).length === 0) {
-        this.activeItems = {}
-        this.activeItems[selectedContainerId] = []
-      }
-      let itemIndex = false
-      let selectedLength = 0
-      if (typeof this.activeItems[selectedContainerId] != 'undefined') {
-        itemIndex = this.activeItems[selectedContainerId].find(
-          activatedItem => activatedItem._id === item._id
-        )
-        selectedLength = this.activeItems[selectedContainerId].length
-      } else {
-        this.activeItems[selectedContainerId] = []
-      }
+    // eslint-disable-next-line no-unused-vars
+    selectItemForCombo(item) {
+      //this is hook function which doesn't update actual selection
+      //what it does is peform any action post selection
 
-      if (itemIndex && !modifiersAction) {
-        let indexSubItem = this.activeItems[selectedContainerId].indexOf(
-          itemIndex
+      //set current selected item
+      this.$store.commit('combo/SET_CURRENT_COMBO_SELECTED_ITEM', item)
+      //associate modifiers to item, and show popup, this is not selection of modifiers [note]
+      this.setupItemModifiers(item)
+      //if item has modifiers don't select it
+      if (!this.$store.getters['modifier/hasModifiers'](item)) {
+        this.validateSelection(item)
+      }
+    },
+    validateSelection(item) {
+      const isValid = this.validateSection()
+      this.$store.dispatch('combo/clearError', '')
+      this.$store.commit('combo/SET_MSG', '')
+      if (isValid === false) {
+        //validation failed, remove current item
+        this.$store.dispatch(
+          'combo/setError',
+          this._t(
+            `You can select ${this.currentSection.qty} item(s) from ${this.currentSection.name}`
+          )
         )
-        this.activeItems[selectedContainerId].splice(indexSubItem, 1)
-        this.activeOnClick.splice(
-          this.activeOnClick.indexOf(item._id + selectedContainerId),
-          1
-        )
-        this.commitErrorMessage('')
+        delete this.comboItemSelection[item._id]
       } else {
-        if (selectedLength != this.limitOfSelectingItems) {
-          this.commitErrorMessage('')
-          this.activeItems[selectedContainerId].push(item)
-          this.activeOnClick.push(item._id + selectedContainerId)
-          this.isActiveItem(item._id)
-          if (this.$store.getters['modifier/hasModifiers'](item)) {
-            /*$('#POSItemOptions .modifier-option-radio').prop('checked', false)
-            this.$store.dispatch('modifier/assignModifiersToItem', item)
-            this.$store.commit('orderForm/clearSelection')
-            showModal('#POSItemOptions')*/
-            this.setModifiersForItem(item, false)
+        if (isValid === true) {
+          //ok
+          this.$store.dispatch('combo/clearError')
+          //move to next section
+          const sections = this.$store.getters['combo/current_combo']
+            .combo_items
+          const sectionNo = sections.findIndex(
+            section => section._id == this.currentSection._id
+          )
+          if (sectionNo < sections.length - 1) {
+            const nextSection = sections[sectionNo + 1]
+            this.$store.commit('combo/SET_CURRENT_COMBO_SECTION', nextSection)
+            if (this.$store.getters['combo/current_section']) {
+              this.$store.commit(
+                'combo/SET_MSG',
+                'Awesome! select items from ' +
+                  this.$store.getters['combo/current_section'].name
+              )
+            }
           } else {
-            //hideModal('#POSItemOptions')
+            this.$store.commit(
+              'combo/SET_MSG',
+              'Awesome! click on add to order button'
+            )
           }
-        } else {
-          this.commitErrorMessage(
-            `You can select only ${this.limitOfSelectingItems} item (s) from this section.`
+        } else if (isValid > 0) {
+          //still need to select more
+          this.$store.dispatch(
+            'combo/setError',
+            this._t(
+              `Select ${isValid} more item(s) from ${this.currentSection.name}`
+            )
           )
         }
       }
-      this.$store.commit('comboItems/ACTIVE_COMBO_ITEMS', this.activeItems, {
-        root: true,
-      })
-    },
-    setModifiersForItem(itemData, shouldCheckActiveItem = true) {
-      let item = itemData
-      if (this.setModifiersItem.length) {
-        item = Object.values(this.setModifiersItem).find(
-          item => item._id === itemData._id
-        )
-        // eslint-disable-next-line no-debugger
-        // debugger
-        item = item || itemData
-      }
-      console.log(item, Object.values(this.setModifiersItem), 'ffff', itemData)
-
-      if (shouldCheckActiveItem) this.setActiveItems(item, true)
-      // if (this.$store.getters['modifier/hasModifiers'](item)) {
-      this.$store.commit('modifier/SET_ITEM', item)
-      // $('#POSItemOptions .modifier-option-radio').prop('checked', false)
-      // this.$store.dispatch('modifier/assignModifiersToItem', item)
-      if (!this.stateItemModifiers.find(obj => obj.itemId == item._id)) {
-        //use updated modifiers
-        const modifiers = this.modifiers(item)
-
-        this.$store.commit('modifier/SET_ITEM_MODIFIERS', {
-          itemId: item._id,
-          modifiers: modifiers,
-          item: item,
-          multistore: this.multistore ? this.storeId : false,
-        })
-      }
-      showModal('#POSItemOptions')
-      // }
-    },
-    commitErrorMessage(message) {
-      this.$store.commit('comboItems/SET_ERROR_MESSAGE', message)
     },
   },
 }
@@ -215,6 +196,18 @@ export default {
 <style lang="scss" scoped>
 @import '@/assets/scss/variables.scss';
 @import '@/assets/scss/mixins.scss';
+::-webkit-scrollbar-thumb {
+  border-radius: 3px;
+  margin: 0px;
+}
+.item-selector {
+  cursor: pointer;
+  /deep/ .checkbox2 {
+    position: absolute;
+    top: 0;
+    opacity: 0;
+  }
+}
 .modal-body {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -248,6 +241,11 @@ export default {
       font-weight: 600;
     }
   }
+  .item-customize {
+    position: absolute;
+    bottom: -5px;
+    right: -7px;
+  }
 }
 .foodbox_container {
   position: relative;
@@ -256,7 +254,6 @@ export default {
   border-color: #5056ca5e;
   width: 100%;
   border-radius: 5px;
-  min-height: 5.625rem !important;
   max-height: 5.625rem !important;
   // max-width: 11.063rem !important;
   @include responsive(mobile) {
@@ -337,8 +334,19 @@ i.fa.fa-check.item-selected-check {
   display: none;
 }
 
-.foodbox_container.active_right_combo .item-selected-check.right_icon {
-  display: block;
+.foodbox_container {
+  label {
+    width: 100%;
+    margin-bottom: 0;
+    padding-bottom: 0;
+    &.active {
+      .item-selected-check {
+        &.right_icon {
+          display: block;
+        }
+      }
+    }
+  }
 }
 .food-menu-item-text.color-text {
   max-height: 2.188rem;
