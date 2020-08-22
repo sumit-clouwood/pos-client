@@ -1,7 +1,6 @@
 <template>
   <form>
     <div class="modal-body form-block color-dashboard-background">
-      {{ newCustomerDetails }}
       <div
         class="divide-block row"
         v-for="(fields, index) in crm_fields"
@@ -61,6 +60,7 @@
                 </map-location-selector>
                 <label>{{ _t('Latitude') }}</label>
                 <input
+                  v-if="newCustomerDetails.location_coordinates"
                   class="text-width"
                   type="text"
                   autocomplete="off"
@@ -69,6 +69,7 @@
                 />
                 <label>{{ _t('Longitude') }}</label>
                 <input
+                  v-if="newCustomerDetails.location_coordinates"
                   class="text-width"
                   type="text"
                   autocomplete="off"
@@ -140,7 +141,10 @@
                 v-model="newCustomerDetails.birthday"
                 class="text-width"
               ></datetime>
-              <span class="validation-error" v-if="errors[field.name_key]">
+              <span
+                class="validation-error text-capitalize"
+                v-if="errors[field.name_key]"
+              >
                 {{ errors[field.name_key] }}
               </span>
             </div>
@@ -269,30 +273,29 @@ export default {
       this.errors.count = 0
       this.mandatory_fields.forEach(field => {
         if (
+          (field === 'phone_number' || field === 'alternative_phone') &&
+          $.trim(this.newCustomerDetails[field]).length < 10
+        ) {
+          this.errors.phone_number =
+            this._t('Mobile number') +
+            ' ' +
+            this._t('is required and it should be at least 10 digits')
+          this.errors.count = 1
+        }
+        if (
+          field === 'email' &&
+          !this.validEmail(this.newCustomerDetails[field])
+        ) {
+          this.errors.email =
+            this._t('Valid email') + ' ' + this._t('is required.')
+          this.errors.count = 1
+        }
+        if (
           !this.newCustomerDetails[field] ||
           !getWithoutSpaceLength(this.newCustomerDetails[field])
         ) {
-          if (
-            (field === 'phone_number' || field === 'alternative_phone') &&
-            $.trim(this.newCustomerDetails[field]).length < 10
-          ) {
-            this.errors.phone_number =
-              this._t('Mobile number ') +
-              ' ' +
-              this._t('length should be 10 or more characters')
-            this.errors.count = 1
-          }
-          if (
-            field === 'email' &&
-            !this.validEmail(this.newCustomerDetails[field])
-          ) {
-            this.errors.email =
-              this._t('Valid email') + ' ' + this._t('is required.')
-            this.errors.count = 1
-          } else {
-            this.errors.name = this._t(field) + ' ' + this._t('is required')
-            this.errors.count = 1
-          }
+          this.errors[field] = this._t(field) + ' ' + this._t('is required')
+          this.errors.count = 1
         }
       })
 
