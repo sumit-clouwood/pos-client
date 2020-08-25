@@ -81,7 +81,7 @@ export default {
         .dispatch('auth/filterUserInOffline', md5(this.pincode))
         .then(user => {
           if (user) {
-            this.$router.replace({ name: 'Home' })
+            this.$router.replace({ name: 'HomeDefault' })
             localStorage.setItem('offline_mode_login', true)
             this.$store.commit('auth/SET_OFFLINE_PIN', this.pincode)
             this.$store.commit('sync/status', false)
@@ -115,7 +115,7 @@ export default {
             store: this.store_id,
           })
           .then(() => {
-            this.$router.replace({ name: 'Home' })
+            this.$router.replace({ name: 'HomeDefault' })
             localStorage.setItem('offline_mode_login', false)
           })
           .catch(error => {
