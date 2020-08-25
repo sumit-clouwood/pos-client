@@ -315,6 +315,45 @@ var EventListener = {
               })
             })
         )
+      } else {
+        //intercept normal css
+        console.log('no handler found, find in cache', event.request)
+        event.respondWith(
+          caches
+            .match(event.request, { ignoreSearch: true })
+            .then(function(response) {
+              // serve from cache
+              // caches.match() always resolves
+              // but in case of success response will have value
+              if (response !== undefined) {
+                console.log('response found in cache')
+                return response
+              } else {
+                // no response found in cache
+                // fetch online version
+                console.log('fetch online')
+                return fetch(event.request)
+                  .then(function(response) {
+                    // response may be used only once
+                    // we need to save clone to put one copy in cache
+                    // and serve second one
+                    let responseClone = response.clone()
+
+                    caches.open('v1').then(function(cache) {
+                      cache.put(event.request, responseClone)
+                    })
+                    console.log('sending and caching online response')
+                    return response
+                  })
+                  .catch(function() {
+                    //online request failed due to network problem
+                    // provide fallback
+                    console.log('fallback')
+                    return caches.match(event.request)
+                  })
+              }
+            })
+        )
       }
     })
   },
