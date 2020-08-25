@@ -3,10 +3,13 @@ import CustomerService from '@/services/data/CustomerService'
 import LookupData from '@/plugins/helpers/LookupData'
 import OrderService from '@/services/data/OrderService'
 import MultistoreHelper from '@/plugins/helpers/Multistore.js'
+import * as CONST from '@/constants'
 
 const state = {
   customer_list: [],
   customer: false,
+  crm_fields: undefined,
+  mandatory_fields: [],
   multistore: false,
   multistoreDeliveryArea: {},
   customerId: null,
@@ -138,6 +141,34 @@ const actions = {
       })
     })
   },
+  fetchCRMCustomerFields({ commit }) {
+    // return new Promise((resolve, reject) => {
+    CustomerService.fetchCRMFields().then(response => {
+      let fields_by_group = {
+        GENERAL_INFORMATION: [],
+        ADDITIONAL_INFORMATION: [],
+        _ADDRESS: [],
+      }
+      let mandate_fields = []
+      if (response.data.data) {
+        response.data.data.forEach(field => {
+          if (field.mandatory) mandate_fields.push(field.name_key)
+          if (field.group === CONST.GENERAL_INFORMATION) {
+            fields_by_group.GENERAL_INFORMATION.push(field)
+          } else if (field.group === CONST.ADDITIONAL_INFORMATION) {
+            fields_by_group.ADDITIONAL_INFORMATION.push(field)
+          } else if (field.group === CONST.CUSTOMER_ADDRESS) {
+            fields_by_group._ADDRESS.push(field)
+          }
+        })
+      }
+      // eslint-disable-next-line no-console
+      console.log(fields_by_group, 'responseresponse crm')
+      commit('SET_CUSTOMER_FIELDS', fields_by_group)
+      commit('SET_CUSTOMER_MANDATORY_FIELDS', mandate_fields)
+    })
+    // })
+  },
   fetchAllCustomers({ commit, dispatch }) {
     commit(mutation.FETCH_ALL, 'brand_customers_main_tbl')
     dispatch('fetchAll')
@@ -146,6 +177,8 @@ const actions = {
     const params = [
       {
         nearest_landmark: '',
+        lat_lng_available: false,
+        location_coordinates: { lat: 0, lng: 0 },
         alternative_phone: '',
         gender: 'undisclosed',
         birthday: '',
@@ -192,6 +225,7 @@ const actions = {
       //fetch customer deliver areas
       resolve()
       dispatch('fetchDeliveryArea', '')
+      dispatch('fetchCRMCustomerFields')
       // get Customer Group
       CustomerService.customerGroupList().then(response => {
         commit(mutation.SET_CUSTOMER_GROUP, response.data.data)
@@ -614,6 +648,9 @@ const mutations = {
   [mutation.SET_ERROR](state, error) {
     state.error = error
   },
+  SET_CUSTOMER_FIELDS: (state, fields) => (state.crm_fields = fields),
+  SET_CUSTOMER_MANDATORY_FIELDS: (state, mandate_fields) =>
+    (state.mandatory_fields = mandate_fields),
   [mutation.LOYALTY](state, loyalty) {
     if (loyalty) {
       if (loyalty.card && loyalty.card.length) {

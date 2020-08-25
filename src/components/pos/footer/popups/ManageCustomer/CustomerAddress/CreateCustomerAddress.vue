@@ -13,6 +13,53 @@
         </div>
         <form class="modal-body row form-block">
           <div class="col-md-12 left-form add-address-form">
+            <div class="coordinates">
+              <label>
+                {{ _t('Coordinates Available') }}
+              </label>
+              <label>
+                <input
+                  type="checkbox"
+                  v-model="newAddressDetails.lat_lng_available"
+                  name="coordinates"
+                  id="coordinate"
+                />
+                <label for="coordinate"></label>
+              </label>
+            </div>
+            <map-location-selector
+              :zoom="15"
+              :latitude="store.location_coordinates.lat"
+              :longitude="store.location_coordinates.lng"
+              @locationUpdated="locationUpdated"
+            >
+            </map-location-selector>
+          </div>
+          <div class="col-md-6 left-form add-address-form">
+            <div class="alternate-phone-from">
+              <label>{{ _t('Latitude') }}</label>
+              <input
+                v-if="newAddressDetails.location_coordinates"
+                type="text"
+                autocomplete="off"
+                v-model="newAddressDetails.location_coordinates.lat"
+                name="lat"
+              />
+            </div>
+          </div>
+          <div class="col-md-6 left-form add-address-form">
+            <div class="alternate-phone-from">
+              <label>{{ _t('Longitude') }}</label>
+              <input
+                v-if="newAddressDetails.location_coordinates"
+                type="text"
+                autocomplete="off"
+                v-model="newAddressDetails.location_coordinates.lng"
+                name="lng"
+              />
+            </div>
+          </div>
+          <div class="col-md-12 left-form add-address-form">
             <div class="name-from">
               <label>
                 {{ _t('Delivery Area') }}
@@ -117,11 +164,14 @@
 import { mapState, mapActions, mapGetters } from 'vuex'
 // import InformationPopup from '@/components/pos/content/InformationPopup'
 import { CoolSelect } from 'vue-cool-select'
+import mapLocationSelector from 'vue-google-maps-location-selector'
+
 export default {
   name: 'CreateCustomerAddress',
   props: {},
   components: {
     CoolSelect,
+    mapLocationSelector,
   },
   data() {
     return {
@@ -140,6 +190,7 @@ export default {
       // fetchDeliveryAreas: state => state.customer.fetchDeliveryAreas,
       customerCreateStatus: state => state.customer.responseInformation,
       customerId: state => state.customer.customer._id,
+      store: state => state.location.store,
       deliveryAreas() {
         if (this.deliveryAreaNames) {
           let areas = []
@@ -156,6 +207,12 @@ export default {
     }),
   },
   methods: {
+    locationUpdated(latlng) {
+      this.newAddressDetails.location_coordinates.lat = latlng.lat
+      this.newAddressDetails.location_coordinates.lng = latlng.lng
+      // eslint-disable-next-line no-console
+      console.log(this.latitude, this.longitude)
+    },
     checkForm: function(modalStatus) {
       this.errors = {}
       this.errors.count = 0
@@ -204,8 +261,6 @@ export default {
         const formData = {
           ...this.newAddressDetails,
           delivery_area_id: areaId,
-          lat_lng_available: false,
-          location_coordinates: { lat: 0, lng: 0 },
         }
         // eslint-disable-next-line no-console
         console.log(formData, 'ffff')
@@ -243,6 +298,14 @@ export default {
 @import '@/assets/scss/variables.scss';
 @import '@/assets/scss/mixins.scss';
 #add_address {
+  .map-container {
+    height: 50vh;
+  }
+  #coordinate {
+    height: 1.8rem !important;
+    width: 2rem !important;
+    padding: unset !important;
+  }
   .modal-dialog {
     /*margin: 0;*/
 
