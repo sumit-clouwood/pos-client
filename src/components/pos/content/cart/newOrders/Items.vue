@@ -220,12 +220,15 @@ export default {
       }
     },
     orderType(newVal, previousVal) {
-      if (newVal.OTApi !== previousVal.OTApi)
+      if (newVal !== previousVal || newVal.OTApi !== previousVal.OTApi) {
         if (this.$store.state.discount.appliedOrderDiscount) {
           this.$store.dispatch('discount/clearOrderDiscount')
         } else {
           this.$store.dispatch('discount/clearItemDiscount')
         }
+        //reset surcharge calculation
+        this.$store.dispatch('order/surchargeCalculation')
+      }
     },
   },
   methods: {
