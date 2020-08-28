@@ -141,6 +141,7 @@ const getters = {
         itemModifierSubgroups.forEach(subgroup => {
           subgroup.modifiers.forEach(submod => {
             if (submod._id == modifierId) {
+              submod.type = subgroup.item_type
               modifier = submod
             }
           })
@@ -152,6 +153,7 @@ const getters = {
         itemModifierSubgroups.forEach(subgroup => {
           subgroup.modifiers.forEach(submod => {
             if (submod._id == modifierId) {
+              submod.type = subgroup.item_type
               modifier = submod
             }
           })
@@ -331,13 +333,13 @@ const actions = {
       item.orderIndex = orderItem.orderIndex
       item.modifiable = orderItem.modifiable
       //formstate should contain only those fiels which are selected by this order item
-      dispatch('orderForm/populateSelection', orderItem.modifierGroups, {
-        root: true,
-      })
     } else {
       item = orderItem
     }
 
+    dispatch('orderForm/populateSelection', item.modifierGroups, {
+      root: true,
+    })
     //set current item with modifiers in modifer store
     commit(mutation.SET_ITEM, item)
   },

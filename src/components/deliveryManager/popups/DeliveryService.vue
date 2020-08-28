@@ -8,11 +8,15 @@
   >
     <div class="modal-dialog modal-dialog-centered">
       <!-- Modal content-->
-      <Preloader :msg="_t('Loading new orders') + '...'" v-if="loading" />
-      <div class="modal-content" v-else>
+      <div class="modal-content">
         <div class="modal-header" style="background-color: rgb(245, 245, 245)">
           <h4 class="modal-title">{{ _t('Select Delivery Service') }}</h4>
         </div>
+        <Preloader
+          :msg="_t('Loading new orders') + '...'"
+          v-if="loading"
+          style="width: 100%"
+        />
         <div class="modal-body stores-list-container">
           <div class="stores-list">
             <div v-for="(service, index) in deliveryServices" :key="index">
@@ -44,6 +48,11 @@
         </div>
       </div>
     </div>
+    <InformationPopup
+      v-if="errorMessage.length"
+      :responseInformation="errorMessage"
+      title="Warning"
+    />
   </div>
 </template>
 
@@ -51,12 +60,15 @@
 import { mapState, mapActions, mapGetters } from 'vuex'
 import DateTime from '@/mixins/DateTime'
 import DMService from '@/services/data/DeliveryManagerService'
+import InformationPopup from '@/components/pos/content/InformationPopup'
+import Preloader from '@/components/util/Progress'
 /* global $ */
 export default {
   name: 'DeliveryService',
   data() {
     return {
       loading: false,
+      errorMessage: '',
       deliveryServices: [
         {
           name: 'Jeebly',
@@ -79,7 +91,7 @@ export default {
       ],
     }
   },
-  components: {},
+  components: { Preloader, InformationPopup },
   mixins: [DateTime],
   computed: {
     ...mapGetters('location', ['_t']),
@@ -147,8 +159,10 @@ export default {
           this.hideOnlineModal()
         })
         .catch(er => {
+          // eslint-disable-next-line no-console
+          this.errorMessage = er.data.error
           this.loading = false
-          this.err = er.data.error
+          $('.information-popup').modal('show')
         })
         .finally()
     },

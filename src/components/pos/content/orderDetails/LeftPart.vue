@@ -68,7 +68,8 @@
       <div
         class="details-item"
         v-if="
-          orderDetails.item.aggregator_data.riderPickupTime !== 'undefined' &&
+          orderDetails.item.aggregator_data &&
+            orderDetails.item.aggregator_data.riderPickupTime !== 'undefined' &&
             orderDetails.item.aggregator_data.riderPickupTime !== null
         "
       >

@@ -10,6 +10,7 @@
         :value="item._id"
         @change="selectItemForCombo(item)"
         class="item-selector"
+        :noaction="hasModifiers(item) ? item : false"
       >
         <div class="food-item-box">
           <img :src="item.image" alt v-if="item.image != ''" />
@@ -32,9 +33,9 @@
           ></i>
         </div>
       </checkbox>
-      <div class="item-customize">
+      <!-- <div class="item-customize">
         <div
-          v-if="current_order_combo"
+          v-if="current_order_combo && hasModifiers(item)"
           class="button-plus"
           data-toggle="modal"
           data-target="#POSOrderItemOptions"
@@ -52,17 +53,18 @@
             </svg>
           </div>
         </div>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
 
 <script>
 /* eslint-disable no-console */
-
+/* global hideModal */
 import { mapGetters } from 'vuex'
 import Checkbox from '@/components/util/form/CheckBox2.vue'
 import Cart from '@/mixins/Cart'
+import { bus } from '@/eventBus'
 
 export default {
   name: 'ItemContent',
@@ -72,59 +74,120 @@ export default {
   mixins: [Cart],
   data() {
     return {
-      sectionQty: 0,
+      currentSection: 0,
     }
   },
   computed: {
     comboItemSelection: {
       get() {
+        console.log('getter called')
         return this.$store.state.combo.currentComboSelectedItems
       },
-      set(val) {
-        this.$store.commit('combo/SET_CURRENT_COMBO_SELECTED_ITEMS', val)
+      set(items) {
+        console.log('setter called', items)
+        this.$store.commit('combo/SET_CURRENT_COMBO_SELECTED_ITEMS', items)
       },
     },
     ...mapGetters('location', ['formatPrice', '_t']),
     ...mapGetters('combo', ['current_combo_items', 'current_order_combo']),
   },
+  mounted() {
+    const store = this.$store
+    bus.$on('checkbox2Change', data => {
+      //check if it is in edit mode then setup modifiers
+      this.$store.commit('combo/SET_CURRENT_COMBO_SELECTED_ITEM', data.item)
+      //associate modifiers to item, and show popup, this is not selection of modifiers [note]
+      this.setupItemModifiers(data.item)
+      if (this.current_order_combo) {
+        //setup modifiers
+        console.log('selected radios', store.state.orderForm.radios)
+      }
+    })
+    bus.$on('addComboItemWithModifiers', () => {
+      const item = this.$store.getters['combo/current_combo_selected_item']
+      let items = { ...this.$store.state.combo.currentComboSelectedItems }
+      items[item._id] = true
+      this.$store.commit('combo/SET_CURRENT_COMBO_SELECTED_ITEMS', items)
+      this.comboItemSelection = items
+      this.validateSelection(item)
+    })
+    bus.$on('removeComboItemWithModifiers', () => {
+      const item = this.$store.getters['combo/current_combo_selected_item']
+      let items = { ...this.$store.state.combo.currentComboSelectedItems }
+      items[item._id] = false
+      this.$store.commit('combo/SET_CURRENT_COMBO_SELECTED_ITEMS', items)
+      this.comboItemSelection = items
+      this.validateSelection(item)
+      hideModal('#POSItemOptions')
+    })
+  },
   methods: {
+    hasModifiers(item) {
+      return this.$store.getters['modifier/hasModifiers'](item)
+    },
     // eslint-disable-next-line no-unused-vars
     selectItemForCombo(item) {
-      for (var itemId in this.comboItemSelection) {
-        if (this.comboItemSelection[itemId] === false) {
-          delete this.comboItemSelection[itemId]
-        }
-      }
-      //associate modifiers to item, this is not selection of modifiers [note]
+      //this is hook function which doesn't update actual selection
+      //what it does is peform any action post selection
+
+      //set current selected item
+      this.$store.commit('combo/SET_CURRENT_COMBO_SELECTED_ITEM', item)
+      //associate modifiers to item, and show popup, this is not selection of modifiers [note]
       this.setupItemModifiers(item)
+      //if item has modifiers don't select it
+      if (!this.$store.getters['modifier/hasModifiers'](item)) {
+        this.validateSelection(item)
+      }
+    },
+    validateSelection(item) {
       const isValid = this.validateSection()
+      this.$store.dispatch('combo/clearError', '')
+      this.$store.commit('combo/SET_MSG', '')
       if (isValid === false) {
         //validation failed, remove current item
         this.$store.dispatch(
           'combo/setError',
-          this._t(`Select ${this.sectionQty} items `)
+          this._t(
+            `You can select ${this.currentSection.qty} item(s) from ${this.currentSection.name}`
+          )
         )
         delete this.comboItemSelection[item._id]
       } else {
-        this.$store.commit('combo/SET_CURRENT_COMBO_SELECTED_ITEM', item)
         if (isValid === true) {
           //ok
-          this.$store.dispatch('combo/setError', '')
+          this.$store.dispatch('combo/clearError')
+          //move to next section
+          const sections = this.$store.getters['combo/current_combo']
+            .combo_items
+          const sectionNo = sections.findIndex(
+            section => section._id == this.currentSection._id
+          )
+          if (sectionNo < sections.length - 1) {
+            const nextSection = sections[sectionNo + 1]
+            this.$store.commit('combo/SET_CURRENT_COMBO_SECTION', nextSection)
+            if (this.$store.getters['combo/current_section']) {
+              this.$store.commit(
+                'combo/SET_MSG',
+                'Awesome! select items from ' +
+                  this.$store.getters['combo/current_section'].name
+              )
+            }
+          } else {
+            this.$store.commit(
+              'combo/SET_MSG',
+              'Awesome! click on add to order button'
+            )
+          }
         } else if (isValid > 0) {
           //still need to select more
           this.$store.dispatch(
             'combo/setError',
-            this._t(`Select ${isValid} more item(s) `)
+            this._t(
+              `Select ${isValid} more item(s) from ${this.currentSection.name}`
+            )
           )
         }
       }
-    },
-    setCombo(item) {
-      //for edit order set state of current combo
-      if (this.$store.getters['modifier/hasModifiers'](item)) {
-        this.$store.dispatch('modifier/assignModifiersToItem', item)
-      }
-      this.$store.dispatch('combo/setOrderComboItem', item)
     },
   },
 }
@@ -133,7 +196,10 @@ export default {
 <style lang="scss" scoped>
 @import '@/assets/scss/variables.scss';
 @import '@/assets/scss/mixins.scss';
-
+::-webkit-scrollbar-thumb {
+  border-radius: 3px;
+  margin: 0px;
+}
 .item-selector {
   cursor: pointer;
   /deep/ .checkbox2 {
@@ -177,8 +243,8 @@ export default {
   }
   .item-customize {
     position: absolute;
-    bottom: 0;
-    right: 0;
+    bottom: -5px;
+    right: -7px;
   }
 }
 .foodbox_container {
@@ -189,7 +255,6 @@ export default {
   width: 100%;
   border-radius: 5px;
   max-height: 5.625rem !important;
-  min-height: 4.625rem !important;
   // max-width: 11.063rem !important;
   @include responsive(mobile) {
     max-height: 100% !important;
@@ -271,6 +336,9 @@ i.fa.fa-check.item-selected-check {
 
 .foodbox_container {
   label {
+    width: 100%;
+    margin-bottom: 0;
+    padding-bottom: 0;
     &.active {
       .item-selected-check {
         &.right_icon {

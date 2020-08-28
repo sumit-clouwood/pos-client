@@ -107,7 +107,13 @@ const getters = {
     })
     return modifiersTax
   },
-
+  comboItemModifier: (state, getters, rootState) => item => {
+    // console.log(item.orderIndex.toString(), 'order index item')
+    return rootState.comboItems.itemsModifiersValueTaxDiff.find(
+      comboItemModifier =>
+        comboItemModifier.itemId === item._id + item.orderIndex.toString()
+    )
+  },
   totalItemTaxDiscount: (state, getters) => {
     let itemTaxDiscount = 0
     getters.splitItems.forEach(item => {
@@ -163,7 +169,11 @@ const getters = {
     }
     return 0
   },
-
+  orderGrandTotal: () => order => {
+    return Num.round(
+      parseFloat(order.balance_due) + parseFloat(order.tip_amount)
+    ).toFixed(2)
+  },
   itemModifiersPrice: () => item =>
     item.modifiersData && item.modifiersData.length
       ? item.modifiersData.reduce(
@@ -363,7 +373,7 @@ const actions = {
   },
 
   prepareModifiersItemCart({ dispatch, commit, rootGetters, rootState }, item) {
-    new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       dispatch('prepareItem', { item: item }).then(item => {
         //if there is item modifiers data assign it later
         item.modifiersData = []
@@ -685,6 +695,7 @@ const actions = {
     return new Promise(resolve => {
       //reset the modifier form
       commit('orderForm/clearSelection', null, { root: true })
+      dispatch('combo/reset', null, { root: true })
       commit(mutation.SET_TOTAL_ITEMS, state.items.length)
       //if dine in modify then calculate surcharges after every item has been added so
       //it won't clear discounts while validating
@@ -700,17 +711,15 @@ const actions = {
   async addModifierOrder({ rootState, dispatch }, item) {
     //in edit mode item ll not be passed as argument so you need to get it in from state
     //in state is it is set already when you click on + button
-    return new Promise(resolve => {
-      if (!item) {
-        //it is edit mode
-        item = { ...rootState.modifier.item }
-      }
+    if (!item) {
+      //it is edit mode
+      item = { ...rootState.modifier.item }
+    }
 
-      item.modifiable = true
-      // console.log('adding modified combo item to cart', item, isCombo)
-      dispatch('prepareModifiersItemCart', item)
-      resolve()
-    })
+    item.modifiable = true
+
+    // console.log('adding modified combo item to cart', item, isCombo)
+    return dispatch('prepareModifiersItemCart', item)
   },
 
   removeFromOrder({ commit, dispatch, state }, { item, index }) {
@@ -781,8 +790,11 @@ const actions = {
     // if (item.modifiable) {
     dispatch('orderForm/setItem', { item: item }, { root: true })
     dispatch('discount/setItem', { item: item }, { root: true })
-    dispatch('combo/setItem', { item: item }, { root: true })
-    dispatch('modifier/setActiveItem', { item: item }, { root: true })
+    if (item.item_type === CONST.COMBO_ITEM_TYPE) {
+      dispatch('combo/setItem', { item: item }, { root: true })
+    } else {
+      dispatch('modifier/setActiveItem', { item: item }, { root: true })
+    }
     // }
   },
   recalculateOrderTotals({
@@ -1421,6 +1433,9 @@ const actions = {
           await dispatch('addItemsToCart', items)
           console.log('resolve in the recurrsion')
           resolve()
+        } else {
+          //no item left
+          resolve()
         }
       } else {
         //if item was removed from backend, resolve straigt away
@@ -1431,7 +1446,7 @@ const actions = {
   },
 
   //from hold order, there would be a single order with multiple items so need to clear what we have already in cart
-  async addOrderToCart({ state, rootState, commit, dispatch }, order) {
+  async addOrderToCart({ state, rootGetters, commit, dispatch }, order) {
     //create cart items indexes so we can sort them when needed
     let needSupervisorpassword = false
     if (state.orderSource === 'backend') {
@@ -1450,16 +1465,16 @@ const actions = {
       let orderAddress = []
 
       if (order.customer) {
-        let deliveryAreaDetails = Object.values(
-          rootState.order.selectedOrder.lookups.delivery_areas._id
-        ).find(deliveryArea => deliveryArea._id === order.order_delivery_area)
+        const deliveryArea = rootGetters['customer/findDeliveryArea'](
+          order.order_delivery_area
+        )
 
         orderAddress.push({
           building: order.order_building,
           city: order.order_city,
           country: order.order_country,
           created_at: order.created_at,
-          delivery_area: deliveryAreaDetails.name,
+          delivery_area: deliveryArea.name,
           delivery_area_id: order.order_delivery_area,
           flat_number: order.order_flat_number,
           nearest_landmark: order.order_nearest_landmark,

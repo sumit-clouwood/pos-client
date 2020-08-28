@@ -183,8 +183,14 @@
                 </div>
               </div>
               <div
-                class="order-footer"
-                :class="{ active: activeIndex.includes(order._id) }"
+                :class="[
+                  activeIndex.includes(order._id) ? 'active' : '',
+                  order.driver !== '' &&
+                  actionDetails.action == 'delivery_ready'
+                    ? 'overlay-busy-store'
+                    : '',
+                  'order-footer',
+                ]"
               >
                 <!--<span class="timeago elapsedTime delManTime" title=""></span>-->
 
@@ -229,6 +235,7 @@
       {{ _t('No Orders Found') }}
     </h5>
     <InformationPopup
+      v-if="err"
       :response-information="err"
       title="Information"
       :activated-class="'text-danger'"
@@ -336,7 +343,7 @@ export default {
   margin: auto;
 }
 .active {
-  background-color: blueviolet;
+  background-color: rgba(127, 177, 121, 0.93);
 }
 
 tbody {

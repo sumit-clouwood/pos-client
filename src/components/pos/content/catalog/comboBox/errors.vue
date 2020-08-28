@@ -4,6 +4,9 @@
     <div v-show="combo_error" class="combobox_error_msg">
       {{ combo_error }}
     </div>
+    <div v-show="combo_msg" class="combobox_error_msg text-success">
+      {{ combo_msg }}
+    </div>
   </div>
 </template>
 
@@ -11,7 +14,7 @@
 import { mapGetters } from 'vuex'
 export default {
   computed: {
-    ...mapGetters('combo', ['combo_error']),
+    ...mapGetters('combo', ['combo_error', 'combo_msg']),
   },
 }
 </script>

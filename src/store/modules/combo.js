@@ -7,44 +7,114 @@ const state = {
   currentComboSelectedItem: undefined,
   currentComboSelectedModifiers: undefined,
   errors: {},
+  msg: '',
 }
 const actions = {
   selectModifiers({ getters, rootGetters, commit }) {
-    commit('SET_CURRENT_COMBO_SELECTED_MODIFIERS', {
-      item: getters.current_combo_selected_item,
-      modifiers: rootGetters['orderForm/modifiers'],
+    const item = getters.current_combo_selected_item
+
+    return new Promise((resolve, reject) => {
+      const modifiers = rootGetters['orderForm/modifiers'].filter(
+        modifier => modifier.itemId == item._id
+      )
+
+      let selectedModifierGroups = []
+      let itemModifierGroups = []
+
+      modifiers.forEach(modifier => {
+        itemModifierGroups.push(modifier)
+        selectedModifierGroups.push(modifier.groupId)
+      })
+
+      //match modifiers with mandatory modifiers for this item, if not matched set error and return false
+      const itemMandatoryModifierGroups = rootGetters[
+        'modifier/itemMandatoryGroups'
+      ](item._id)
+
+      let mandatorySelected = true
+
+      itemMandatoryModifierGroups.forEach(id => {
+        if (!selectedModifierGroups.includes(id)) {
+          mandatorySelected = false
+        }
+      })
+
+      if (mandatorySelected) {
+        commit('orderForm/setError', false, {
+          root: true,
+        })
+        commit('SET_CURRENT_COMBO_SELECTED_MODIFIERS', {
+          item: item,
+          modifiers: rootGetters['orderForm/modifiers'].filter(
+            selectedModifier => selectedModifier.itemId == item._id
+          ),
+        })
+        resolve()
+      } else {
+        commit('orderForm/setError', 'Please select at least one item', {
+          root: true,
+        })
+        reject()
+      }
     })
   },
-  reset({ commit }) {
-    commit('RESET')
-    commit('modifier/RESET', null, { root: true })
+  reset({ commit }, option) {
+    commit('RESET', option)
+    commit('orderForm/clearSelection', null, { root: true })
   },
-  setItem({ commit }, { item }) {
+  //set item while updating in cart
+  setItem({ commit, dispatch, rootGetters }, { item }) {
     console.log('current combo', item)
     let newItem = { ...item }
     newItem.editMode = true
     commit('SET_CURRENT_COMBO', newItem)
     commit('SET_CURRENT_ORDER_COMBO', newItem)
     commit('SET_CURRENT_COMBO_SELECTED_ITEMS', newItem.selectedItems)
-  },
-  setOrderComboItem({ commit, getters, dispatch }, item) {
-    commit('SET_CURRENT_COMBO_SELECTED_ITEM', item)
-    dispatch('modifier/setItem', item, { root: true })
-    const combo = getters.current_combo
-    const modifiers = combo.selectedModifiersRaw
-    commit(
-      'orderForm/restoreModifiersCtrls',
-      { checkboxes: modifiers.checkboxes, radios: modifiers.radios },
-      {
-        root: true,
+
+    let modifiers = []
+    for (const itemId in item.selectedItems) {
+      for (const modItemId in item.selectedModifiers) {
+        if (modItemId == itemId) {
+          const itemModifiers = item.selectedModifiers[itemId]
+
+          /*
+          groupId: "5dbc5e8ff11bad3f95662ea2"
+          itemId: "5da2d458b82fe55b01336b97"
+          modifierId: "5dbc5eb5ef34bd74571152d2"
+          type: "radio"
+
+          groupId: "5e577459d454ff15b93b4a53"
+          itemId: "5da2d458b82fe55b01336b8b"
+          limit: 5
+          modifierId: "5e5774bec81c0f0f1d715944"
+          type: "checkbox"
+          */
+          itemModifiers.forEach(modifier => {
+            modifiers.push(modifier)
+          })
+          const catalogItem = rootGetters['category/itemById'](itemId)
+
+          commit('SET_CURRENT_COMBO_SELECTED_MODIFIERS', {
+            item: catalogItem,
+            modifiers: itemModifiers,
+          })
+        }
       }
-    )
+    }
+    dispatch('orderForm/populateSelection', modifiers, {
+      root: true,
+    })
+
+    //add modifiers to combo
   },
   setError({ commit, getters }, error) {
     commit('SET_ERROR', {
       sectionId: getters.current_combo_section._id['$oid'],
       error: error,
     })
+  },
+  clearError({ commit }) {
+    commit('SET_ERRORS', {})
   },
   validate_combo_items: ({ state, getters, commit, rootGetters }) => {
     let errors = {}
@@ -128,10 +198,20 @@ const getters = {
     }
     return modifiers
   },
-  current_combo_selected_items: state => state.currentComboSelectedItems,
+  current_combo_selected_items: state => {
+    //return only those which has true value
+    let trueSelection = {}
+    for (const i in state.currentComboSelectedItems) {
+      if (state.currentComboSelectedItems[i] === true) {
+        trueSelection[i] = true
+      }
+    }
+    return trueSelection
+  },
   current_combo_selected_item: state => state.currentComboSelectedItem,
   current_combo_selected_modifiers: state =>
     state.currentComboSelectedModifiers,
+  combo_msg: state => state.msg,
   combo_error: (state, getters) => {
     if (!getters.combo_errors) {
       return ''
@@ -209,6 +289,9 @@ const mutations = {
     errors[sectionId] = error
     state.errors = errors
   },
+  SET_MSG(state, msg) {
+    state.msg = msg
+  },
   SET_ERRORS(state, errors) {
     state.errors = errors
   },
@@ -221,8 +304,11 @@ const mutations = {
   RESET(state, full = false) {
     state.currentCombo = undefined
     state.currentComboSelectedItems = {}
+    state.currentComboSection = undefined
     state.currentComboSelectedItem = undefined
     state.currentComboSelectedModifiers = undefined
+    state.errors = {}
+    state.msg = ''
     if (full) {
       state.currentOrderCombo = undefined
     }

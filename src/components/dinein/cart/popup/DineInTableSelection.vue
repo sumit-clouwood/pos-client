@@ -43,7 +43,7 @@
               class="btn btn-success btn-large color-main color-text-invert"
               type="button"
               id="move-Table-only"
-              v-if="this.$route.name === 'Home'"
+              v-if="this.$route.name === 'HomeDefault'"
               @click="moveSelectedTable(true)"
             >
               {{ _t('Move Table') }}

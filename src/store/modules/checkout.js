@@ -459,7 +459,7 @@ const actions = {
     return Promise.resolve(order)
   },
 
-  addItemsToOrder({ rootState, dispatch, state }, { order, action }) {
+  addItemsToOrder({ rootState, dispatch, state, rootGetters }, { order, action }) {
     order.items = []
     let item_discounts = []
     let itemModifiers = []
@@ -665,6 +665,9 @@ const actions = {
         if (item.type == CONSTANTS.COMBO_ITEM_TYPE) {
           //get items from combo and prepare them as checkout
           const itemsInCombo = rootGetters['combo/find_combo_items'](item.originalItem)
+
+          const perItemPrice = Num.round(item.price / itemsInCombo.length)
+          const perItemTax = Num.round(item.tax / itemsInCombo.length)
           itemsInCombo.forEach(itemInCombo => {
             let orderItem = {
               name: itemInCombo.name,
@@ -672,27 +675,43 @@ const actions = {
               no: latestOrderIndex,
               status: 'in-progress',
               //itemTax.undiscountedTax is without modifiers
-              tax: itemInCombo.tax,
-              price: itemInCombo.netPrice,
+              price: perItemPrice,
+              tax: perItemTax,
               qty: itemInCombo.quantity || 1,
               note: '',
               kitchen_invoice: 0,
               type: itemInCombo.item_type || 'regular',
               for_combo: item.no,
+              store_id: item.store_id,
             }
             comboItems.push(orderItem)
             //set modifiers
             let modifiersForItemInCombo = rootGetters['combo/find_combo_item_modifiers'](item.originalItem, itemInCombo)
             modifiersForItemInCombo.forEach(modifier => {
-              let newModifier = {...modifier}
-              newModifier.for_item = latestOrderIndex
+              let newModifier = {
+                entity_id: modifier._id,
+                price: 0,
+                tax: 0,
+                name: modifier.name,
+                qty: itemInCombo.quantity || 1,
+                type: modifier.type,
+                store_id: item.store_id,
+                for_item: latestOrderIndex,
+              }
               comboItemsModifiers.push(newModifier)
             })
 
             latestOrderIndex ++
           })
+          //fix last item price
+          const priceDiff = item.price - perItemPrice * itemsInCombo.length
+          const taxDiff = item.tax - perItemTax * itemsInCombo.length
+
+          comboItems[comboItems.length - 1].price += priceDiff
+          comboItems[comboItems.length - 1].tax += taxDiff
         }
       })
+      
       order.items = [...order.items, ...comboItems]
       order.item_modifiers = [...order.item_modifiers, ...comboItemsModifiers]
       resolve(order)
@@ -763,6 +782,12 @@ const actions = {
               if (rootGetters['auth/multistore']) {
                 order.multi_store = true
               }
+
+              //if order was created by split bill (new order with unpaid items), don't print KOT
+              if (data && data['route'] === 'splitOrder') {
+                order['skip_kot_print'] = 1
+              }
+
               order.order_surcharges = rootState.surcharge.surchargeAmounts.map(
                 appliedSurcharge => {
                   const surcharge = rootState.surcharge.surcharges.find(
@@ -1394,7 +1419,11 @@ const actions = {
               commit('order/SET_ORDER_ID', rootState.order.orderId, {
                 root: true,
               })
-              commit('SET_ORDER_NUMBER', rootState.order.orderData.order_no)
+              if (response.data.order_no) {
+                commit('SET_ORDER_NUMBER', response.data.order_no)
+              } else {
+                commit('SET_ORDER_NUMBER', rootState.order.orderData.order_no)
+              }
               dispatch('setToken', response.data.token_number)
               const msg = rootGetters['location/_t']('Order has been modified.')
               dispatch('setMessage', {
@@ -1797,7 +1826,7 @@ const actions = {
     dispatch('surcharge/reset', {}, { root: true })
     if (full && getters.complete) {
       dispatch('order/reset', {}, { root: true })
-      dispatch('combo/reset', {}, { root: true })
+      dispatch('combo/reset',true, { root: true })
       dispatch('customer/reset', true, { root: true })
       dispatch('location/reset', {}, { root: true })
     }

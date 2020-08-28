@@ -327,7 +327,7 @@ export default {
       moveReservation: false,
       validationErrors: false,
       selectedArea: false,
-      zoomLevel: {
+      /*zoomLevel: {
         zoomOut: [
           {
             x: 1830 - 100,
@@ -355,7 +355,7 @@ export default {
             level: 0.4,
           },
         ],
-      },
+      },*/
     }
   },
   updated() {
@@ -619,7 +619,6 @@ export default {
             transformRotate: '90deg',
           }
         }
-
         if (table.table_shape === 'circle') {
           transform = {
             transformOrigin: '10% 29%;',
@@ -809,6 +808,9 @@ export default {
     },
     setTableProperties() {
       let dis = this
+      let user_agent = this.$store.state.auth.deviceType.userAgent
+      let checkIpad = user_agent.search('ipad')
+      this.tableTextTransform = checkIpad < 0 ? true : false
       d3.selectAll('.dinein_table').each((d, i, a) => {
         let data = d
         let angleX = parseInt(data.table_position_coordinate.angle)

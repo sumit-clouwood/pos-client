@@ -12,16 +12,7 @@ import VueSocketIOExt from 'vue-socket.io-extended'
 import io from 'socket.io-client'
 
 const socket = io(process.env.VUE_APP_SOCKET_ENDPOINT)
-// eslint-disable-next-line no-console
-console.log('check 1', socket.connected)
-socket.on('connect', function() {
-  // eslint-disable-next-line no-console
-  console.log('check 2', socket.connected)
-})
-socket.on('disconnect', function() {
-  // eslint-disable-next-line no-console
-  console.log('check 2', 'disconnect')
-})
+
 Vue.use(VueSocketIOExt, socket)
 
 //import service worker

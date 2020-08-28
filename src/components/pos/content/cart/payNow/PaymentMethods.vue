@@ -9,6 +9,16 @@
         @click="selectMethod"
       ></carousel>
     </div>
+    <template v-for="method in methods">
+      <link
+        v-for="(entry, key) in method"
+        rel="prefetch"
+        :href="entry.icon"
+        :key="key"
+      />
+    </template>
+    <link rel="prefetch" href="img/icons/backarrow.svg" />
+    <link rel="prefetch" href="img/icons/svgs/aggregator.svg" />
   </div>
 </template>
 
@@ -63,6 +73,9 @@ export default {
   },
 
   methods: {
+    imagePath(key) {
+      return 'img/icons/svgs/' + key + '.svg'
+    },
     // eslint-disable-next-line no-unused-vars
     selectMethod({ index, slide }) {
       //const event = window.event
