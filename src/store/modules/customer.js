@@ -177,7 +177,7 @@ const actions = {
     const params = [
       {
         nearest_landmark: '',
-        lat_lng_available: false,
+        lat_lng_available: true,
         location_coordinates: { lat: 0, lng: 0 },
         alternative_phone: '',
         gender: 'undisclosed',

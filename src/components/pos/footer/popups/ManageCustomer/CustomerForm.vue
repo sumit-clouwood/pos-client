@@ -34,48 +34,42 @@
                 :name="field.name"
               />
               <div v-if="field.name_key === 'location_coordinates'">
-                <div class="coordinates">
-                  <label>
-                    {{ _t('Coordinates Available') }}
-                    <span v-if="field.mandatory">
-                      *
-                    </span>
-                  </label>
-                  <label>
+                <div class="hidden">
+                  <div class="coordinates">
+                    <label>
+                      {{ _t('Coordinates Available') }}
+                      <span v-if="field.mandatory">
+                        *
+                      </span>
+                    </label>
                     <input
                       type="checkbox"
                       v-model="newCustomerDetails.lat_lng_available"
                       name="coordinates"
                       id="coordinate"
+                      value="true"
                     />
                     <label for="coordinate"></label>
-                  </label>
+                  </div>
+                  <label>{{ _t('Latitude') }}</label>
+                  <input
+                    v-if="newCustomerDetails.location_coordinates"
+                    class="text-width"
+                    type="text"
+                    autocomplete="off"
+                    v-model="newCustomerDetails.location_coordinates.lat"
+                    name="lat"
+                  />
+                  <label>{{ _t('Longitude') }}</label>
+                  <input
+                    v-if="newCustomerDetails.location_coordinates"
+                    class="text-width"
+                    type="text"
+                    autocomplete="off"
+                    v-model="newCustomerDetails.location_coordinates.lng"
+                    name="lng"
+                  />
                 </div>
-                <map-location-selector
-                  :zoom="15"
-                  :latitude="store.location_coordinates.lat"
-                  :longitude="store.location_coordinates.lng"
-                  @locationUpdated="locationUpdated"
-                >
-                </map-location-selector>
-                <label>{{ _t('Latitude') }}</label>
-                <input
-                  v-if="newCustomerDetails.location_coordinates"
-                  class="text-width"
-                  type="text"
-                  autocomplete="off"
-                  v-model="newCustomerDetails.location_coordinates.lat"
-                  name="lat"
-                />
-                <label>{{ _t('Longitude') }}</label>
-                <input
-                  v-if="newCustomerDetails.location_coordinates"
-                  class="text-width"
-                  type="text"
-                  autocomplete="off"
-                  v-model="newCustomerDetails.location_coordinates.lng"
-                  name="lng"
-                />
               </div>
               <input
                 class="text-width"
@@ -105,7 +99,7 @@
                 </div>
               </div>
               <select
-                class="selectpicker text-width"
+                class="selectpicker"
                 v-if="field.name_key === 'gender'"
                 v-model="newCustomerDetails.gender"
               >
@@ -141,6 +135,14 @@
                 v-model="newCustomerDetails.birthday"
                 class="text-width"
               ></datetime>
+              <map-location-selector
+                v-if="field.name_key === 'delivery_area_id'"
+                :zoom="15"
+                :latitude="store.location_coordinates.lat"
+                :longitude="store.location_coordinates.lng"
+                @locationUpdated="locationUpdated"
+              >
+              </map-location-selector>
               <span
                 class="validation-error text-capitalize"
                 v-if="errors[field.name_key]"
@@ -344,20 +346,29 @@ export default {
 </script>
 <style scoped lang="css">
 .map-container {
-  height: 50vh;
-  width: 54vw;
-  left: 189px;
-  bottom: 25px;
+  height: 14.4rem;
+  width: 55.4rem;
+  left: 13.5rem;
+  top: 10px;
 }
 .getAreaId {
   display: inline-block !important;
   width: 55.6795rem !important;
 }
+input {
+  width: 21.0875rem !important;
+}
 .coordinates label {
   padding: unset;
 }
 .text-width {
-  width: 20.5vw !important;
+  /*width: 20.5vw !important;*/
+}
+.hidden {
+  display: none;
+}
+input.vdatetime-input.btn.schedule-input.btn-large.datepicker-here {
+  width: 100% !important;
 }
 .coordinates {
   margin-bottom: 22px;
