@@ -666,8 +666,15 @@ const actions = {
           //get items from combo and prepare them as checkout
           const itemsInCombo = rootGetters['combo/find_combo_items'](item.originalItem)
 
-          const perItemPrice = Num.round(item.price / itemsInCombo.length)
-          const perItemTax = Num.round(item.tax / itemsInCombo.length)
+          let qtys = 0
+          itemsInCombo.forEach(itemInCombo => {
+            let qty = itemInCombo.quantity || 1
+            qtys += qty
+          })
+
+          const perItemPrice = Num.round(item.price / qtys)
+          const perItemTax = Num.round(item.tax / qtys)
+
           itemsInCombo.forEach(itemInCombo => {
             let orderItem = {
               name: itemInCombo.name,
@@ -704,11 +711,21 @@ const actions = {
             latestOrderIndex ++
           })
           //fix last item price
-          const priceDiff = item.price - perItemPrice * itemsInCombo.length
-          const taxDiff = item.tax - perItemTax * itemsInCombo.length
+          if (perItemPrice * qtys < item.price) {
+            const priceDiff = item.price - perItemPrice * qtys
+            comboItems[comboItems.length - 1].price += priceDiff
+          } else {
+            const priceDiff =  perItemPrice * qtys - item.price
+            comboItems[comboItems.length - 1].price -= priceDiff
+          }
 
-          comboItems[comboItems.length - 1].price += priceDiff
-          comboItems[comboItems.length - 1].tax += taxDiff
+          if (perItemTax * qtys < item.tax) {
+            const taxDiff = item.tax - perItemTax * qtys
+            comboItems[comboItems.length - 1].tax += taxDiff
+          } else {
+            const taxDiff = perItemTax * qtys - item.tax
+            comboItems[comboItems.length - 1].tax -= taxDiff
+          }
         }
       })
       
