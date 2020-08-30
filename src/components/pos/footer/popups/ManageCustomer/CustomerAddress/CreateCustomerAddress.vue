@@ -12,7 +12,7 @@
           </h4>
         </div>
         <form class="modal-body row form-block">
-          <div class="col-md-12 left-form add-address-form">
+          <div class="col-md-12 left-form add-address-form hidden">
             <div class="coordinates">
               <label>
                 {{ _t('Coordinates Available') }}
@@ -27,15 +27,8 @@
                 <label for="coordinate"></label>
               </label>
             </div>
-            <map-location-selector
-              :zoom="15"
-              :latitude="store.location_coordinates.lat"
-              :longitude="store.location_coordinates.lng"
-              @locationUpdated="locationUpdated"
-            >
-            </map-location-selector>
           </div>
-          <div class="col-md-6 left-form add-address-form">
+          <div class="col-md-6 left-form add-address-form hidden">
             <div class="alternate-phone-from">
               <label>{{ _t('Latitude') }}</label>
               <input
@@ -47,7 +40,7 @@
               />
             </div>
           </div>
-          <div class="col-md-6 left-form add-address-form">
+          <div class="col-md-6 left-form add-address-form hidden">
             <div class="alternate-phone-from">
               <label>{{ _t('Longitude') }}</label>
               <input
@@ -74,6 +67,15 @@
                 {{ errors.delivery_area_id }}
               </span>
             </div>
+          </div>
+          <div class="col-md-12 left-form add-address-form">
+            <map-location-selector
+              :zoom="15"
+              :latitude="store.location_coordinates.lat"
+              :longitude="store.location_coordinates.lng"
+              @locationUpdated="locationUpdated"
+            >
+            </map-location-selector>
           </div>
           <div class="col-md-6 left-form add-address-form">
             <div class="alternate-phone-from">
@@ -258,9 +260,16 @@ export default {
         //   }
         // })
         // eslint-disable-next-line no-console
+        if (this.newAddressDetails.location_coordinates.lat === 0) {
+          // eslint-disable-next-line max-len
+          this.newAddressDetails.location_coordinates.lat = this.store.location_coordinates.lat
+          // eslint-disable-next-line max-len
+          this.newAddressDetails.location_coordinates.lng = this.store.location_coordinates.lng
+        }
         const formData = {
           ...this.newAddressDetails,
           delivery_area_id: areaId,
+          lat_lng_available: true,
         }
         // eslint-disable-next-line no-console
         console.log(formData, 'ffff')
@@ -299,12 +308,18 @@ export default {
 @import '@/assets/scss/mixins.scss';
 #add_address {
   .map-container {
-    height: 50vh;
+    height: 14.4rem;
+    //width: 55.4rem;
+    /*left: 13.5rem;
+    top: 10px;*/
   }
   #coordinate {
     height: 1.8rem !important;
     width: 2rem !important;
     padding: unset !important;
+  }
+  .hidden {
+    display: none;
   }
   .modal-dialog {
     /*margin: 0;*/

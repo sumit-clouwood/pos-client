@@ -320,6 +320,13 @@ export default {
         let areaId = this.selectedDeliveryArea.split(', ').join('|')
         return { ...this.newCustomerDetails, delivery_area_id: areaId }
       }
+      // eslint-disable-next-line no-console
+      if (this.newCustomerDetails.location_coordinates.lat === 0) {
+        // eslint-disable-next-line max-len
+        this.newCustomerDetails.location_coordinates.lat = this.store.location_coordinates.lat
+        // eslint-disable-next-line max-len
+        this.newCustomerDetails.location_coordinates.lng = this.store.location_coordinates.lng
+      }
       return { ...this.newCustomerDetails, delivery_area_id: false }
     },
     validEmail: function(email) {
