@@ -71,8 +71,14 @@
           <div class="col-md-12 left-form add-address-form">
             <map-location-selector
               :zoom="15"
-              :latitude="store.location_coordinates.lat"
-              :longitude="store.location_coordinates.lng"
+              :latitude="
+                newAddressDetails.location_coordinates.lat ||
+                  store.location_coordinates.lat
+              "
+              :longitude="
+                newAddressDetails.location_coordinates.lng ||
+                  store.location_coordinates.lng
+              "
               @locationUpdated="locationUpdated"
             >
             </map-location-selector>
@@ -210,8 +216,16 @@ export default {
   },
   methods: {
     locationUpdated(latlng) {
-      this.newAddressDetails.location_coordinates.lat = latlng.lat
-      this.newAddressDetails.location_coordinates.lng = latlng.lng
+      if (this.newAddressDetails.location_coordinates === null) {
+        let location_coordinate = {
+          ...this.newAddressDetails,
+          location_coordinates: { lat: latlng.lat, lng: latlng.lng },
+        }
+        this.$store.commit('customer/SET_EDIT_DETAILS', location_coordinate)
+      } else {
+        this.newAddressDetails.location_coordinates.lat = latlng.lat
+        this.newAddressDetails.location_coordinates.lng = latlng.lng
+      }
       // eslint-disable-next-line no-console
       console.log(this.latitude, this.longitude)
     },
@@ -260,7 +274,10 @@ export default {
         //   }
         // })
         // eslint-disable-next-line no-console
-        if (this.newAddressDetails.location_coordinates.lat === 0) {
+        if (
+          this.newAddressDetails.location_coordinates === null ||
+          this.newAddressDetails.location_coordinates.lat === 0
+        ) {
           // eslint-disable-next-line max-len
           this.newAddressDetails.location_coordinates.lat = this.store.location_coordinates.lat
           // eslint-disable-next-line max-len

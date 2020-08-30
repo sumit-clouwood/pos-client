@@ -234,8 +234,16 @@ export default {
   },
   methods: {
     locationUpdated(latlng) {
-      this.newCustomerDetails.location_coordinates.lat = latlng.lat
-      this.newCustomerDetails.location_coordinates.lng = latlng.lng
+      if (this.newCustomerDetails.location_coordinates === null) {
+        let location_coordinate = {
+          ...this.newCustomerDetails,
+          location_coordinates: { lat: latlng.lat, lng: latlng.lng },
+        }
+        this.$store.commit('customer/SET_EDIT_DETAILS', location_coordinate)
+      } else {
+        this.newCustomerDetails.location_coordinates.lat = latlng.lat
+        this.newCustomerDetails.location_coordinates.lng = latlng.lng
+      }
       // eslint-disable-next-line no-console
       console.log(this.latitude, this.longitude)
     },
