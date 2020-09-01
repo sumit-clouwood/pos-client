@@ -23,6 +23,7 @@ const state = {
   route: null,
   orderCreationSource: '',
   orderItemsPayload: {},
+  dineInSplitedItems: undefined,
 }
 
 // getters
@@ -1148,6 +1149,10 @@ const actions = {
         if (route === 'updateOrder') {
           order = { ...order, ...data }
           msg = 'Dinein order has been updated'
+          commit('SPLITED_ITEM', { ...order })
+          dispatch('printingServer/printingServerInvoiceRaw', order, {
+            root: true,
+          })
         }
         //delete order.order_system_status
         delete order.new_real_transition_order_no
@@ -2113,6 +2118,9 @@ const mutations = {
   },
   ['ORDER_CREATION_SOURCE'](state, route) {
     state.orderCreationSource = route
+  },
+  ['SPLITED_ITEM'](state, splitItems) {
+    state.dineInSplitedItems = splitItems
   },
   [mutation.ORDER_ITEM](state, orderItemsPayload) {
     console.log(orderItemsPayload, 'orderItemsPayload')

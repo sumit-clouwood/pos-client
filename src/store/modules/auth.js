@@ -135,6 +135,7 @@ const actions = {
       userAgent = window.navigator.userAgent.toLowerCase(),
       safari = /safari/.test(userAgent),
       ios = /dims_kot_app/.test(userAgent)
+    // ios = true
     // ios = /android|iphone|ipod|ipad/.test(userAgent)
     /*ios =
         /android|iPad|iPhone|iPod/.test(userAgent) ||
