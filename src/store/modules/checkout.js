@@ -1153,6 +1153,7 @@ const actions = {
           dispatch('printingServer/printingServerInvoiceRaw', order, {
             root: true,
           })
+          localStorage.setItem('dataorder', order)
         }
         //delete order.order_system_status
         delete order.new_real_transition_order_no
