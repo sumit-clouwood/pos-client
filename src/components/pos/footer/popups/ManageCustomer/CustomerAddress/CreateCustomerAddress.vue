@@ -29,7 +29,7 @@
             </div>
           </div>
           <div class="col-md-6 left-form add-address-form hidden">
-            <div class="alternate-phone-from">
+            <!--<div class="alternate-phone-from">
               <label>{{ _t('Latitude') }}</label>
               <input
                 v-if="newAddressDetails.location_coordinates"
@@ -38,7 +38,7 @@
                 v-model="newAddressDetails.location_coordinates.lat"
                 name="lat"
               />
-            </div>
+            </div>-->
           </div>
           <div class="col-md-6 left-form add-address-form hidden">
             <div class="alternate-phone-from">
@@ -68,7 +68,7 @@
               </span>
             </div>
           </div>
-          <div class="col-md-12 left-form add-address-form">
+          <!--<div class="col-md-12 left-form add-address-form">
             <map-location-selector
               :zoom="15"
               :latitude="
@@ -82,7 +82,7 @@
               @locationUpdated="locationUpdated"
             >
             </map-location-selector>
-          </div>
+          </div>-->
           <div class="col-md-6 left-form add-address-form">
             <div class="alternate-phone-from">
               <label>
@@ -172,14 +172,14 @@
 import { mapState, mapActions, mapGetters } from 'vuex'
 // import InformationPopup from '@/components/pos/content/InformationPopup'
 import { CoolSelect } from 'vue-cool-select'
-import mapLocationSelector from 'vue-google-maps-location-selector'
+// import mapLocationSelector from 'vue-google-maps-location-selector'
 
 export default {
   name: 'CreateCustomerAddress',
   props: {},
   components: {
     CoolSelect,
-    mapLocationSelector,
+    // mapLocationSelector,
   },
   data() {
     return {
@@ -215,7 +215,7 @@ export default {
     }),
   },
   methods: {
-    locationUpdated(latlng) {
+    /* locationUpdated(latlng) {
       if (this.newAddressDetails.location_coordinates === null) {
         let location_coordinate = {
           ...this.newAddressDetails,
@@ -228,7 +228,7 @@ export default {
       }
       // eslint-disable-next-line no-console
       console.log(this.latitude, this.longitude)
-    },
+    },*/
     checkForm: function(modalStatus) {
       this.errors = {}
       this.errors.count = 0
@@ -274,7 +274,7 @@ export default {
         //   }
         // })
         // eslint-disable-next-line no-console
-        if (
+        /*if (
           this.newAddressDetails.location_coordinates === null ||
           this.newAddressDetails.location_coordinates.lat === 0
         ) {
@@ -282,7 +282,7 @@ export default {
           this.newAddressDetails.location_coordinates.lat = this.store.location_coordinates.lat
           // eslint-disable-next-line max-len
           this.newAddressDetails.location_coordinates.lng = this.store.location_coordinates.lng
-        }
+        }*/
         const formData = {
           ...this.newAddressDetails,
           delivery_area_id: areaId,

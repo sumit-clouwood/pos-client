@@ -33,7 +33,7 @@
                 "
                 :name="field.name"
               />
-              <div v-if="field.name_key === 'location_coordinates'">
+              <!--<div v-if="field.name_key === 'location_coordinates'">
                 <div class="hidden">
                   <div class="coordinates">
                     <label>
@@ -70,7 +70,7 @@
                     name="lng"
                   />
                 </div>
-              </div>
+              </div>-->
               <input
                 class="text-width"
                 v-if="
@@ -135,14 +135,14 @@
                 v-model="newCustomerDetails.birthday"
                 class="text-width"
               ></datetime>
-              <map-location-selector
+              <!--<map-location-selector
                 v-if="field.name_key === 'delivery_area_id'"
                 :zoom="15"
                 :latitude="store.location_coordinates.lat"
                 :longitude="store.location_coordinates.lng"
                 @locationUpdated="locationUpdated"
               >
-              </map-location-selector>
+              </map-location-selector>-->
               <span
                 class="validation-error text-capitalize"
                 v-if="errors[field.name_key]"
@@ -161,7 +161,7 @@
 import { mapState, mapGetters } from 'vuex'
 import { Datetime } from 'vue-datetime'
 import { CoolSelect } from 'vue-cool-select'
-import mapLocationSelector from 'vue-google-maps-location-selector'
+// import mapLocationSelector from 'vue-google-maps-location-selector'
 
 function getWithoutSpaceLength(data) {
   if ($.trim(data).length == 0) {
@@ -177,7 +177,7 @@ export default {
   components: {
     Datetime,
     CoolSelect,
-    mapLocationSelector,
+    // mapLocationSelector,
   },
   data() {
     return {
@@ -233,7 +233,7 @@ export default {
     }),
   },
   methods: {
-    locationUpdated(latlng) {
+    /*locationUpdated(latlng) {
       if (this.newCustomerDetails.location_coordinates === null) {
         let location_coordinate = {
           ...this.newCustomerDetails,
@@ -246,7 +246,7 @@ export default {
       }
       // eslint-disable-next-line no-console
       console.log(this.latitude, this.longitude)
-    },
+    },*/
     search(keyName, searchTerm) {
       if (keyName !== 'building') {
         return true
@@ -322,19 +322,17 @@ export default {
       return this.errors
     },
     getData() {
-      // eslint-disable-next-line no-debugger
-      debugger
       if (this.selectedDeliveryArea) {
         let areaId = this.selectedDeliveryArea.split(', ').join('|')
         return { ...this.newCustomerDetails, delivery_area_id: areaId }
       }
       // eslint-disable-next-line no-console
-      if (this.newCustomerDetails.location_coordinates.lat === 0) {
+      /*if (this.newCustomerDetails.location_coordinates.lat === 0) {
         // eslint-disable-next-line max-len
         this.newCustomerDetails.location_coordinates.lat = this.store.location_coordinates.lat
         // eslint-disable-next-line max-len
         this.newCustomerDetails.location_coordinates.lng = this.store.location_coordinates.lng
-      }
+      }*/
       return { ...this.newCustomerDetails, delivery_area_id: false }
     },
     validEmail: function(email) {
