@@ -1137,6 +1137,7 @@ const actions = {
     { dispatch, rootState, getters, rootGetters, commit },
     { action, data, route }
   ) {
+    localStorage.setItem('dataorder0', route)
     if (action === 'dine-in-order-preview') {
       return new Promise(resolve => {
         commit(mutation.PRINT, true)
@@ -1144,7 +1145,9 @@ const actions = {
       })
     }
     return new Promise((resolve, reject) => {
+      localStorage.setItem('dataorder1', route)
       dispatch('getModifyOrder').then(order => {
+        localStorage.setItem('dataorder2', route)
         let msg = 'Dinein order has been placed.'
         if (route === 'updateOrder') {
           order = { ...order, ...data }
