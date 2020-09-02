@@ -1137,6 +1137,7 @@ const actions = {
     { dispatch, rootState, getters, rootGetters, commit },
     { action, data, route }
   ) {
+    alert('dd')
     localStorage.setItem('dataorder0', route)
     if (action === 'dine-in-order-preview') {
       return new Promise(resolve => {
@@ -1147,8 +1148,11 @@ const actions = {
     return new Promise((resolve, reject) => {
       localStorage.setItem('dataorder1', route)
       dispatch('getModifyOrder').then(order => {
-        localStorage.setItem('dataorder2', route)
+        localStorage.setItem('dataorder2', order)
         let msg = 'Dinein order has been placed.'
+        dispatch('printingServer/printingServerInvoiceRaw', order, {
+          root: true,
+        })
         if (route === 'updateOrder') {
           order = { ...order, ...data }
           msg = 'Dinein order has been updated'
@@ -1156,7 +1160,6 @@ const actions = {
           dispatch('printingServer/printingServerInvoiceRaw', order, {
             root: true,
           })
-          localStorage.setItem('dataorder', order)
         }
         //delete order.order_system_status
         delete order.new_real_transition_order_no
