@@ -1137,7 +1137,6 @@ const actions = {
     { dispatch, rootState, getters, rootGetters, commit },
     { action, data, route }
   ) {
-    alert('dd')
     localStorage.setItem('dataorder0', route)
     if (action === 'dine-in-order-preview') {
       return new Promise(resolve => {
@@ -1148,18 +1147,11 @@ const actions = {
     return new Promise((resolve, reject) => {
       localStorage.setItem('dataorder1', route)
       dispatch('getModifyOrder').then(order => {
-        localStorage.setItem('dataorder2', order)
         let msg = 'Dinein order has been placed.'
-        dispatch('printingServer/printingServerInvoiceRaw', order, {
-          root: true,
-        })
         if (route === 'updateOrder') {
           order = { ...order, ...data }
           msg = 'Dinein order has been updated'
           commit('SPLITED_ITEM', { ...order })
-          dispatch('printingServer/printingServerInvoiceRaw', order, {
-            root: true,
-          })
         }
         //delete order.order_system_status
         delete order.new_real_transition_order_no
@@ -1207,6 +1199,18 @@ const actions = {
                   dispatch('order/markSplitItemsPaid', null, {
                     root: true,
                   }).then(() => {
+                    /*dispatch('injectDineInItemsData', order).then(order => {
+                      order.items = order.items.map(item => {
+                        delete item.originalItem
+                        return item
+                      })
+                      dispatch('printingServer/printingServerInvoiceRaw', order, {
+                        root: true,
+                      })
+                    })*/
+                    dispatch('printingServer/printingServerInvoiceRaw', order, {
+                      root: true,
+                    })
                     if (!getters.complete) {
                       dispatch('splitOrder', {
                         action: action,
