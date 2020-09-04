@@ -3,14 +3,14 @@
 /* eslint-disable no-console */
 //appVersion has production build number . staging build number . int build number . bugfix
 //Reason: fixed msg 13
-var appVersion = '7.9.34.23'
+var appVersion = '7.10.34.23'
 
 var clientUrl = ''
 
 var ORDER_DOCUMENT = 'order_post_requests'
 var LOG_DOCUMENT = 'log'
 var client = null
-var enabledConsole = false
+var enabledConsole = true
 
 var notificationOptions = {
   body: '',
@@ -40,7 +40,7 @@ var notificationOptions = {
 
 function setupCache() {
   // adjust log level for displaying workbox logs
-  workbox.core.setLogLevel(workbox.core.LOG_LEVELS.debug)
+  //workbox.core.setLogLevel(workbox.core.LOG_LEVELS.debug)
 
   // apply precaching. In the built version, the precacheManifest will
   // be imported using importScripts (as is workbox itself) and we can
