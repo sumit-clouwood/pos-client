@@ -473,21 +473,30 @@ var Sync = {
         syncedObjects.push(obj.sync())
       })
       try {
-        await Promise.all(syncedObjects)
-        Sync.inprocess = false
-        enabledConsole &&
-          console.log(
-            1,
-            1,
-            'sw:',
-            'All synced',
-            'sync inprocess',
-            Sync.inprocess
-          )
-        client.postMessage({
-          msg: 'sync',
-          data: { status: 'done' },
-        })
+        Promise.all(syncedObjects)
+          .then(() => {
+            client.postMessage({
+              msg: 'sync',
+              data: { status: 'done' },
+            })
+          })
+          .catch(error => {
+            enabledConsole &&
+              console.log(1, 1, 'sw:', 'Sync failed', 'sync error', error)
+          })
+          .finally(() => {
+            Sync.inprocess = false
+            enabledConsole &&
+              console.log(
+                1,
+                1,
+                'sw:',
+                'Sync event completed',
+                'sync inprocess',
+                Sync.inprocess
+              )
+          })
+
         resolve()
       } catch (error) {
         Sync.inprocess = false
@@ -649,7 +658,7 @@ var Sync = {
                       'sw:',
                       'New token successful, resend request'
                     )
-                  this.request(requestUrl, method, payload)
+                  return this.request(requestUrl, method, payload)
                 })
                 .catch(error => {
                   enabledConsole &&
@@ -669,6 +678,7 @@ var Sync = {
           })
           .catch(error => {
             enabledConsole && console.log(1, 'sw:', 'Fetch error', error)
+            reject(error)
           })
       })
     })
