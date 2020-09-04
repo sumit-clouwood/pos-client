@@ -10,7 +10,7 @@ var clientUrl = ''
 var ORDER_DOCUMENT = 'order_post_requests'
 var LOG_DOCUMENT = 'log'
 var client = null
-var enabledConsole = true
+var enabledConsole = false
 
 var notificationOptions = {
   body: '',
