@@ -12,60 +12,61 @@
           </h4>
         </div>
         <form class="modal-body row form-block">
-          <div class="col-md-12 left-form add-address-form hidden">
-            <div class="coordinates">
-              <label>
-                {{ _t('Coordinates Available') }}
-              </label>
-              <label>
-                <input
-                  type="checkbox"
-                  v-model="newAddressDetails.lat_lng_available"
-                  name="coordinates"
-                  id="coordinate"
-                />
-                <label for="coordinate"></label>
-              </label>
-            </div>
-          </div>
-          <div class="col-md-6 left-form add-address-form hidden">
-            <!--<div class="alternate-phone-from">
-              <label>{{ _t('Latitude') }}</label>
-              <input
-                v-if="newAddressDetails.location_coordinates"
-                type="text"
-                autocomplete="off"
-                v-model="newAddressDetails.location_coordinates.lat"
-                name="lat"
-              />
-            </div>-->
-          </div>
-          <div class="col-md-6 left-form add-address-form hidden">
-            <div class="alternate-phone-from">
-              <label>{{ _t('Longitude') }}</label>
-              <input
-                v-if="newAddressDetails.location_coordinates"
-                type="text"
-                autocomplete="off"
-                v-model="newAddressDetails.location_coordinates.lng"
-                name="lng"
-              />
-            </div>
-          </div>
-          <div class="col-md-12 left-form add-address-form">
-            <div class="name-from">
-              <label>
-                {{ _t('Delivery Area') }}
-                <span>*</span>
-              </label>
-              <cool-select
-                class="getAreaId"
-                v-model="selectedDeliveryArea"
-                :items="deliveryAreas"
-              />
-              <span class="validation-error" v-if="errors.delivery_area_id">
-                {{ errors.delivery_area_id }}
-              </span>
+          <div v-for="(fields, index) in crm_fields" :key="index">
+            <!--<h5 class="customer-block-info color-text-invert">
+              {{ index }}
+            </h5>-->
+            <div v-if="index === '_ADDRESS'">
+              <div v-for="(field, key) in fields" :key="key">
+                <div class="right-form">
+                  <div class="grid-temp">
+                    <label v-if="field.name_key !== 'location_coordinates'">
+                      {{ _t(field.name) }}
+                      <span v-if="field.mandatory">
+                        *
+                      </span>
+                    </label>
+                    <cool-select
+                      v-if="field.name_key === 'delivery_area_id'"
+                      class="getAreaId text-width"
+                      :items="deliveryAreas"
+                      v-model="selectedDeliveryArea"
+                    />
+                    <input
+                      v-if="
+                        field.field_type === 'string' &&
+                          field.name_key !== 'delivery_area_id'
+                      "
+                      type="text"
+                      class="text-width"
+                      autocomplete="off"
+                      v-model="newAddressDetails[field.name_key]"
+                      v-on:keyup="
+                        search(
+                          field.name_key,
+                          newAddressDetails[field.name_key]
+                        )
+                      "
+                      :name="field.name"
+                    />
+                    <input
+                      class="text-width"
+                      v-if="field.field_type === 'numeric'"
+                      type="text"
+                      autocomplete="off"
+                      v-model="newAddressDetails[field.name_key]"
+                      @keypress="Num.toNumberOnly($event)"
+                      :name="field.name"
+                    />
+                    <span
+                      class="validation-error text-capitalize"
+                      v-if="errors[field.name_key]"
+                    >
+                      {{ errors[field.name_key] }}
+                    </span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
           <!--<div class="col-md-12 left-form add-address-form">
@@ -83,7 +84,7 @@
             >
             </map-location-selector>
           </div>-->
-          <div class="col-md-6 left-form add-address-form">
+          <!--<div class="col-md-6 left-form add-address-form">
             <div class="alternate-phone-from">
               <label>
                 {{ _t('Building/Villa') }}
@@ -136,7 +137,7 @@
                 v-model="newAddressDetails.nearest_landmark"
               />
             </div>
-          </div>
+          </div>-->
         </form>
         <div class="modal-footer">
           <div class="btn-announce">
@@ -193,6 +194,7 @@ export default {
     ...mapGetters('location', ['_t']),
     ...mapGetters('customer', ['deliveryAreaNames']),
     ...mapState({
+      crm_fields: state => state.customer.crm_fields,
       newAddressDetails: state => state.customer.editInformation,
       customer_title: state => state.customer.modalStatus,
       // fetchDeliveryAreas: state => state.customer.fetchDeliveryAreas,
