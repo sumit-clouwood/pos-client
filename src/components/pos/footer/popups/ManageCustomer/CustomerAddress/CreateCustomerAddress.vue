@@ -375,6 +375,9 @@ export default {
         .left-form,
         .right-form {
           padding: 10px;
+          .grid-temp {
+            display: grid;
+          }
 
           .name-from {
             display: grid;
