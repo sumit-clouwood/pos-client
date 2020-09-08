@@ -151,8 +151,10 @@ const actions = {
       }
       let mandate_fields = []
       if (response.data.data) {
+        // eslint-disable-next-line no-debugger
+        // debugger
         response.data.data.forEach(field => {
-          if (field.mandatory) mandate_fields.push(field.name_key)
+          if (field.mandatory) mandate_fields.push(field)
           if (field.group === CONST.GENERAL_INFORMATION) {
             fields_by_group.GENERAL_INFORMATION.push(field)
           } else if (field.group === CONST.ADDITIONAL_INFORMATION) {
@@ -178,8 +180,9 @@ const actions = {
       {
         nearest_landmark: '',
         // lat_lng_available: true,
-        location_coordinates: { lat: 0, lng: 0 },
+        // location_coordinates: { lat: 0, lng: 0 },
         alternative_phone: '',
+        phone_number: '',
         gender: 'undisclosed',
         birthday: '',
         customer_group: '',

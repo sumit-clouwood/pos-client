@@ -10,9 +10,12 @@
           {{ _t(index.replace(/_/g, ' ')) }}
         </h5>
         <div v-for="(field, key) in fields" :key="key">
-          <div class="left-form">
+          <div
+            class="left-form"
+            v-if="field.name_key !== 'location_coordinates'"
+          >
             <div>
-              <label v-if="field.name_key !== 'location_coordinates'">
+              <label>
                 {{ _t(field.name) }}
                 <span v-if="field.mandatory">
                   *
@@ -243,7 +246,8 @@ export default {
       console.log(this.mandatory_fields)
       this.errors = {}
       this.errors.count = 0
-      this.mandatory_fields.forEach(field => {
+      this.mandatory_fields.forEach(field_item => {
+        let field = field_item.name_key
         if (
           (field === 'phone_number' || field === 'alternative_phone') &&
           $.trim(this.newCustomerDetails[field]).length < 10

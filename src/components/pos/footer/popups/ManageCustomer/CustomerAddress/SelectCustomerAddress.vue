@@ -27,7 +27,7 @@
               @click="
                 setDefaultSettingsGlobalAddUpdate({
                   nearest_landmark: '',
-                  location_coordinates: { lat: 0, lng: 0 },
+                  // location_coordinates: { lat: 0, lng: 0 },
                 })
               "
             >
