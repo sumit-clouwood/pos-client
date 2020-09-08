@@ -14,13 +14,10 @@
         <form class="modal-body row form-block">
           <div v-for="(field, key) in fields" :key="key">
             <div
-              class="left-form"
-              v-if="field.name_key !== 'location_coordinates'"
+              v-if="field.name_key === 'delivery_area_id'"
+              class="right-form"
             >
-              <div
-                v-if="field.name_key === 'delivery_area_id'"
-                style="display: grid; grid-template-columns: 1fr;"
-              >
+              <div style="display: grid; grid-template-columns: 1fr;">
                 <label>
                   {{ _t(field.name) }}
                   <span v-if="field.mandatory">
@@ -34,8 +31,10 @@
                   v-model="selectedDeliveryArea"
                 />
               </div>
-              <div v-else>
-                <label>
+            </div>
+            <div v-else class="left-form">
+              <div>
+                <label v-if="field.name_key !== 'location_coordinates'">
                   {{ _t(field.name) }}
                   <span v-if="field.mandatory">
                     *
@@ -312,7 +311,7 @@ export default {
 @import '@/assets/scss/variables.scss';
 @import '@/assets/scss/mixins.scss';
 .getAreaId {
-  width: $px743 !important;
+  width: $px889 !important;
 }
 .validation-errors {
   color: red;
@@ -365,10 +364,13 @@ export default {
         /*display: grid;*/
         grid-template-rows: max-content 1fr max-content;
         overflow-y: auto;
-
-        .left-form,
         .right-form {
-          padding: 10px;
+          min-width: 100%;
+        }
+        .left-form {
+          padding: 10px 10px 10px 0;
+          min-width: $px448;
+          max-width: $px448;
         }
       }
     }
