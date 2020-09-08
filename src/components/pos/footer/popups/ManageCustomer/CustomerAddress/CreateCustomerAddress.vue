@@ -12,129 +12,64 @@
           </h4>
         </div>
         <form class="modal-body row form-block">
-          <!--<div class="col-md-12 left-form add-address-form hidden">
-            <div class="coordinates">
-              <label>
-                {{ _t('Coordinates Available') }}
-              </label>
-              <label>
-                <input
-                  type="checkbox"
-                  v-model="newAddressDetails.lat_lng_available"
-                  name="coordinates"
-                  id="coordinate"
-                />
-                <label for="coordinate"></label>
-              </label>
-            </div>
-          </div>-->
-          <!--<div class="col-md-6 left-form add-address-form hidden">
-            <div class="alternate-phone-from">
-              <label>{{ _t('Latitude') }}</label>
-              <input
-                v-if="newAddressDetails.location_coordinates"
-                type="text"
-                autocomplete="off"
-                v-model="newAddressDetails.location_coordinates.lat"
-                name="lat"
-              />
-            </div>
-          </div>
-          <div class="col-md-6 left-form add-address-form hidden">
-            <div class="alternate-phone-from">
-              <label>{{ _t('Longitude') }}</label>
-              <input
-                v-if="newAddressDetails.location_coordinates"
-                type="text"
-                autocomplete="off"
-                v-model="newAddressDetails.location_coordinates.lng"
-                name="lng"
-              />
-            </div>
-          </div>-->
-          <div class="col-md-12 left-form add-address-form">
-            <div class="name-from">
-              <label>
-                {{ _t('Delivery Area') }}
-                <span>*</span>
-              </label>
-              <cool-select
-                class="getAreaId"
-                v-model="selectedDeliveryArea"
-                :items="deliveryAreas"
-              />
-              <span class="validation-error" v-if="errors.delivery_area_id">
-                {{ errors.delivery_area_id }}
-              </span>
-            </div>
-          </div>
-          <div class="col-md-12 left-form add-address-form">
-            <!--<map-location-selector
-              :zoom="15"
-              :latitude="
-                newAddressDetails.location_coordinates.lat ||
-                  store.location_coordinates.lat
-              "
-              :longitude="
-                newAddressDetails.location_coordinates.lng ||
-                  store.location_coordinates.lng
-              "
-              @locationUpdated="locationUpdated"
-            >
-            </map-location-selector>-->
-          </div>
-          <div class="col-md-6 left-form add-address-form">
-            <div class="alternate-phone-from">
-              <label>
-                {{ _t('Building/Villa') }}
-                <span>*</span>
-              </label>
-              <input
-                type="text"
-                name="building"
-                v-model="newAddressDetails.building"
-              />
-              <span class="validation-error" v-if="errors.building">
-                {{ errors.building }}
-              </span>
-            </div>
-            <div class="gender">
-              <label>
-                {{ _t('Street') }}
-                <span>*</span>
-              </label>
-              <input
-                type="text"
-                name="street"
-                v-model="newAddressDetails.street"
-              />
-              <span class="validation-error" v-if="errors.street">
-                {{ errors.street }}
-              </span>
-            </div>
-          </div>
-          <div class="col-md-6 right-form add-address-form">
-            <div class="landmark">
-              <label>
-                {{ _t('Flat Number') }}
-                <span>*</span>
-              </label>
-              <input
-                type="text"
-                name="flat_number"
-                v-model="newAddressDetails.flat_number"
-              />
-              <span class="validation-error" v-if="errors.flat_number">
-                {{ errors.flat_number }}
-              </span>
-            </div>
-            <div class="landmark">
-              <label>{{ _t('Nearest Landmark') }}</label>
-              <input
-                type="text"
-                name="nearest_landmark"
-                v-model="newAddressDetails.nearest_landmark"
-              />
+          <div v-for="(fields, index) in crm_fields" :key="index">
+            <!--<h5 class="customer-block-info color-text-invert">
+              {{ index }}
+            </h5>-->
+            <div v-if="index === '_ADDRESS'">
+              <div v-for="(field, key) in fields" :key="key">
+                <div
+                  class="right-form"
+                  v-if="field.name_key !== 'location_coordinates'"
+                >
+                  <div class="grid-temp">
+                    <label>
+                      {{ _t(field.name) }}
+                      <span v-if="field.mandatory">
+                        *
+                      </span>
+                    </label>
+                    <cool-select
+                      v-if="field.name_key === 'delivery_area_id'"
+                      class="getAreaId text-width"
+                      :items="deliveryAreas"
+                      v-model="selectedDeliveryArea"
+                    />
+                    <input
+                      v-if="
+                        field.field_type === 'string' &&
+                          field.name_key !== 'delivery_area_id'
+                      "
+                      type="text"
+                      class="text-width"
+                      autocomplete="off"
+                      v-model="newAddressDetails[field.name_key]"
+                      v-on:keyup="
+                        search(
+                          field.name_key,
+                          newAddressDetails[field.name_key]
+                        )
+                      "
+                      :name="field.name"
+                    />
+                    <input
+                      class="text-width"
+                      v-if="field.field_type === 'numeric'"
+                      type="text"
+                      autocomplete="off"
+                      v-model="newAddressDetails[field.name_key]"
+                      @keypress="Num.toNumberOnly($event)"
+                      :name="field.name"
+                    />
+                    <span
+                      class="validation-errors text-capitalize"
+                      v-if="errors[field.name_key]"
+                    >
+                      {{ errors[field.name_key] }}
+                    </span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </form>
@@ -179,7 +114,7 @@ export default {
   props: {},
   components: {
     CoolSelect,
-    /*mapLocationSelector*/
+    // mapLocationSelector,
   },
   data() {
     return {
@@ -193,6 +128,8 @@ export default {
     ...mapGetters('location', ['_t']),
     ...mapGetters('customer', ['deliveryAreaNames']),
     ...mapState({
+      crm_fields: state => state.customer.crm_fields,
+      mandatory_fields: state => state.customer.mandatory_fields,
       newAddressDetails: state => state.customer.editInformation,
       customer_title: state => state.customer.modalStatus,
       // fetchDeliveryAreas: state => state.customer.fetchDeliveryAreas,
@@ -215,7 +152,7 @@ export default {
     }),
   },
   methods: {
-    locationUpdated(latlng) {
+    /* locationUpdated(latlng) {
       if (this.newAddressDetails.location_coordinates === null) {
         let location_coordinate = {
           ...this.newAddressDetails,
@@ -228,11 +165,26 @@ export default {
       }
       // eslint-disable-next-line no-console
       console.log(this.latitude, this.longitude)
+    },*/
+    getWithoutSpaceLength(data) {
+      if ($.trim(data).length == 0) {
+        return false
+      }
+      return true
     },
     checkForm: function(modalStatus) {
       this.errors = {}
       this.errors.count = 0
-      if (!this.selectedDeliveryArea) {
+      this.mandatory_fields.forEach(field => {
+        if (
+          !this.newAddressDetails[field] ||
+          !this.getWithoutSpaceLength(this.newAddressDetails[field])
+        ) {
+          this.errors[field] = this._t(field) + ' ' + this._t('is required')
+          this.errors.count = 1
+        }
+      })
+      /*if (!this.selectedDeliveryArea) {
         this.errors.delivery_area_id = 'Delivery area required'
         this.errors.count = 1
       }
@@ -262,7 +214,7 @@ export default {
         this.errors.building =
           'Building/Villa should be not more than 15 characters'
         this.errors.count = 1
-      }
+      }*/
       if (this.errors.count === 0) {
         let addAddress = $('#add_address')
         addAddress.modal('toggle')
@@ -274,7 +226,7 @@ export default {
         //   }
         // })
         // eslint-disable-next-line no-console
-        if (
+        /*if (
           this.newAddressDetails.location_coordinates === null ||
           this.newAddressDetails.location_coordinates.lat === 0
         ) {
@@ -282,7 +234,7 @@ export default {
           this.newAddressDetails.location_coordinates.lat = this.store.location_coordinates.lat
           // eslint-disable-next-line max-len
           this.newAddressDetails.location_coordinates.lng = this.store.location_coordinates.lng
-        }
+        }*/
         const formData = {
           ...this.newAddressDetails,
           delivery_area_id: areaId,
@@ -323,6 +275,9 @@ export default {
 @import '@/assets/scss/pixels_rem.scss';
 @import '@/assets/scss/variables.scss';
 @import '@/assets/scss/mixins.scss';
+.validation-errors {
+  color: red;
+}
 #add_address {
   .map-container {
     height: 14.4rem;
@@ -383,36 +338,36 @@ export default {
             display: grid;
             grid-template-columns: 1fr;
 
-            .validation-error {
+            /*.validation-error {
               position: static;
-            }
+            }*/
           }
 
           .alternate-phone-from {
             display: grid;
             grid-template-columns: 1fr;
 
-            .validation-error {
+            /*.validation-error {
               position: static;
-            }
+            }*/
           }
 
           .gender {
             display: grid;
             grid-template-columns: 1fr;
 
-            .validation-error {
+            /*.validation-error {
               position: static;
-            }
+            }*/
           }
 
           .landmark {
             display: grid;
             grid-template-columns: 1fr;
 
-            .validation-error {
+            /*.validation-error {
               position: static;
-            }
+            }*/
           }
         }
       }
