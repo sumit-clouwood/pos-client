@@ -13,7 +13,10 @@
         </div>
         <form class="modal-body row form-block">
           <div v-for="(field, key) in fields" :key="key">
-            <div class="left-form">
+            <div
+              class="left-form"
+              v-if="field.name_key !== 'location_coordinates'"
+            >
               <div
                 v-if="field.name_key === 'delivery_area_id'"
                 style="display: grid; grid-template-columns: 1fr;"
@@ -32,7 +35,7 @@
                 />
               </div>
               <div v-else>
-                <label v-if="field.name_key !== 'location_coordinates'">
+                <label>
                   {{ _t(field.name) }}
                   <span v-if="field.mandatory">
                     *
@@ -52,32 +55,23 @@
                   "
                   :name="field.name"
                 />
-                    <div
-                      class="dropdown"
-                      v-if="filterBuildingArea && field.name_key === 'building'"
+                <div
+                  class="dropdown"
+                  v-if="filterBuildingArea && field.name_key === 'building'"
+                >
+                  <div id="searchDropdown" class="dropdown-content">
+                    <span
+                      class="showItem color-dashboard-background"
+                      v-for="(area, index) in filterBuildingArea"
+                      :key="index"
+                      v-on:click="selectBuilding(area)"
                     >
-                      <div id="searchDropdown" class="dropdown-content">
-                        <span
-                          class="showItem color-dashboard-background"
-                          v-for="(area, index) in filterBuildingArea"
-                          :key="index"
-                          v-on:click="selectBuilding(area)"
-                        >
-                          {{ area }}
-                        </span>
-                      </div>
-                    </div>
-                    <!--<input
-                      class="text-width"
-                      v-if="field.field_type === 'numeric'"
-                      type="text"
-                      autocomplete="off"
-                      v-model="newAddressDetails[field.name_key]"
-                      @keypress="Num.toNumberOnly($event)"
-                      :name="field.name"
-                    />-->
+                      {{ area }}
+                    </span>
+                  </div>
+                </div>
                 <span
-                      class="validation-errors text-capitalize"
+                  class="validation-errors text-capitalize"
                   v-if="errors[field.name_key]"
                 >
                   {{ errors[field.name_key] }}
@@ -85,77 +79,6 @@
               </div>
             </div>
           </div>
-            </div>
-          </div>
-          <!--<div class="col-md-12 left-form add-address-form">
-            <map-location-selector
-              :zoom="15"
-              :latitude="
-                newAddressDetails.location_coordinates.lat ||
-                  store.location_coordinates.lat
-              "
-              :longitude="
-                newAddressDetails.location_coordinates.lng ||
-                  store.location_coordinates.lng
-              "
-              @locationUpdated="locationUpdated"
-            >
-            </map-location-selector>
-          </div>-->
-          <!--<div class="col-md-6 left-form add-address-form">
-            <div class="alternate-phone-from">
-              <label>
-                {{ _t('Building/Villa') }}
-                <span>*</span>
-              </label>
-              <input
-                type="text"
-                name="building"
-                v-model="newAddressDetails.building"
-              />
-              <span class="validation-error" v-if="errors.building">
-                {{ errors.building }}
-              </span>
-            </div>
-            <div class="gender">
-              <label>
-                {{ _t('Street') }}
-                <span>*</span>
-              </label>
-              <input
-                type="text"
-                name="street"
-                v-model="newAddressDetails.street"
-              />
-              <span class="validation-error" v-if="errors.street">
-                {{ errors.street }}
-              </span>
-            </div>
-          </div>
-          <div class="col-md-6 right-form add-address-form">
-            <div class="landmark">
-              <label>
-                {{ _t('Flat Number') }}
-                <span>*</span>
-              </label>
-              <input
-                type="text"
-                name="flat_number"
-                v-model="newAddressDetails.flat_number"
-              />
-              <span class="validation-error" v-if="errors.flat_number">
-                {{ errors.flat_number }}
-              </span>
-            </div>
-            <div class="landmark">
-              <label>{{ _t('Nearest Landmark') }}</label>
-              <input
-                type="text"
-                name="nearest_landmark"
-                v-model="newAddressDetails.nearest_landmark"
-              />
-            </div>
-          </div>-->
         </form>
         <div class="modal-footer">
           <div class="btn-announce">
