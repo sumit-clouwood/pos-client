@@ -90,6 +90,21 @@ function setupCache() {
       ],
     })
   )
+  //s3 bucket
+  workbox.routing.registerRoute(
+    /\.amazonaws\.com/,
+    new workbox.strategies.CacheFirst({
+      cacheName: 'dimsphotos',
+      plugins: [
+        new workbox.cacheableResponse.Plugin({
+          statuses: [0, 200],
+        }),
+        new workbox.expiration.Plugin({
+          maxAgeSeconds: 60 * 60 * 24 * 90,
+        }),
+      ],
+    })
+  )
 
   workbox.routing.registerRoute(
     /^https:\/\/stackpath\.bootstrapcdn\.com/,
