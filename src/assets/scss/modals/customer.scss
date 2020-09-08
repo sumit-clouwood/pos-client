@@ -45,7 +45,8 @@
             background-repeat: no-repeat;
             background-position: center right $px10;
             -webkit-appearance: none;
-            -moz-appearance: none;
+            -moz-appearance: none;    
+            width: $px342 !important;
           }
         }
 
@@ -70,7 +71,8 @@
             position: relative;
 
             input {
-              width: $px315;
+              width: $px335 !important;
+              margin-left: 0 !important;
               height: $px50;
               border-radius: $btn-border-radius;
               background-color: #ffffff;

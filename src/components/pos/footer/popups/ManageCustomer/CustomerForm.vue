@@ -319,7 +319,9 @@ export default {
   },
 }
 </script>
-<style scoped lang="css">
+<style scoped lang="scss">
+@import '@/assets/scss/pixels_rem.scss';
+@import '@/assets/scss/variables.scss';
 .map-container {
   height: 14.4rem;
   width: 55.4rem;
@@ -344,6 +346,9 @@ input {
 }
 input.vdatetime-input.btn.schedule-input.btn-large.datepicker-here {
   width: 100% !important;
+}
+input.vdatetime-input {
+  width: $px342 !important;
 }
 .coordinates {
   margin-bottom: 22px;
