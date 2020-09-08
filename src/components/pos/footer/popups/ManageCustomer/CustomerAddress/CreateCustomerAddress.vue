@@ -52,7 +52,22 @@
                       "
                       :name="field.name"
                     />
-                    <input
+                    <div
+                      class="dropdown"
+                      v-if="filterBuildingArea && field.name_key === 'building'"
+                    >
+                      <div id="searchDropdown" class="dropdown-content">
+                        <span
+                          class="showItem color-dashboard-background"
+                          v-for="(area, index) in filterBuildingArea"
+                          :key="index"
+                          v-on:click="selectBuilding(area)"
+                        >
+                          {{ area }}
+                        </span>
+                      </div>
+                    </div>
+                    <!--<input
                       class="text-width"
                       v-if="field.field_type === 'numeric'"
                       type="text"
@@ -60,7 +75,7 @@
                       v-model="newAddressDetails[field.name_key]"
                       @keypress="Num.toNumberOnly($event)"
                       :name="field.name"
-                    />
+                    />-->
                     <span
                       class="validation-errors text-capitalize"
                       v-if="errors[field.name_key]"
@@ -107,6 +122,7 @@
 import { mapState, mapActions, mapGetters } from 'vuex'
 // import InformationPopup from '@/components/pos/content/InformationPopup'
 import { CoolSelect } from 'vue-cool-select'
+import * as CONST from '@/constants'
 // import mapLocationSelector from 'vue-google-maps-location-selector'
 
 export default {
@@ -122,12 +138,14 @@ export default {
       errors: {},
       add_delivery_area: '',
       reOpenAddress: '',
+      filterBuildingArea: false,
     }
   },
   computed: {
     ...mapGetters('location', ['_t']),
     ...mapGetters('customer', ['deliveryAreaNames']),
     ...mapState({
+      buildingAreas: state => state.customer.buildingAreas,
       crm_fields: state => state.customer.crm_fields,
       mandatory_fields: state => state.customer.mandatory_fields,
       newAddressDetails: state => state.customer.editInformation,
@@ -152,6 +170,28 @@ export default {
     }),
   },
   methods: {
+    selectBuilding(selectedArea) {
+      this.newAddressDetails.building = selectedArea
+      $('#searchDropdown').hide()
+    },
+    search(keyName, searchTerm) {
+      if (keyName !== 'building') {
+        return true
+      }
+      $('#searchLoader').attr('style', 'display:block')
+      $('#searchDropdown').show()
+      let searchedItems = []
+      if (searchTerm.length > 0) {
+        this.buildingAreas.map(item => {
+          if (item.toLowerCase().indexOf(searchTerm.toLowerCase()) != -1) {
+            searchedItems.push(item)
+          }
+        })
+        this.filterBuildingArea = searchedItems
+      } else {
+        this.filterBuildingArea = this.buildingAreas
+      }
+    },
     /* locationUpdated(latlng) {
       if (this.newAddressDetails.location_coordinates === null) {
         let location_coordinate = {
@@ -173,15 +213,20 @@ export default {
       return true
     },
     checkForm: function(modalStatus) {
+      // eslint-disable-next-line no-debugger
+      debugger
       this.errors = {}
       this.errors.count = 0
       this.mandatory_fields.forEach(field => {
-        if (
-          !this.newAddressDetails[field] ||
-          !this.getWithoutSpaceLength(this.newAddressDetails[field])
-        ) {
-          this.errors[field] = this._t(field) + ' ' + this._t('is required')
-          this.errors.count = 1
+        if (field.group === CONST.CUSTOMER_ADDRESS) {
+          if (
+            !this.newAddressDetails[field.name_key] ||
+            !this.getWithoutSpaceLength(this.newAddressDetails[field.name_key])
+          ) {
+            this.errors[field.name_key] =
+              this._t(field.name_key) + ' ' + this._t('is required')
+            this.errors.count = 1
+          }
         }
       })
       /*if (!this.selectedDeliveryArea) {
@@ -238,7 +283,7 @@ export default {
         const formData = {
           ...this.newAddressDetails,
           delivery_area_id: areaId,
-          lat_lng_available: true,
+          // lat_lng_available: true,
         }
         // eslint-disable-next-line no-console
         console.log(formData, 'ffff')
