@@ -10,9 +10,12 @@
           {{ _t(index.replace(/_/g, ' ')) }}
         </h5>
         <div v-for="(field, key) in fields" :key="key">
-          <div class="left-form">
+          <div
+            class="left-form"
+            v-if="field.name_key !== 'location_coordinates'"
+          >
             <div>
-              <label v-if="field.name_key !== 'location_coordinates'">
+              <label>
                 {{ _t(field.name) }}
                 <span v-if="field.mandatory">
                   *
