@@ -33,44 +33,6 @@
                 "
                 :name="field.name"
               />
-              <!--<div v-if="field.name_key === 'location_coordinates'">
-                <div class="hidden">
-                  <div class="coordinates">
-                    <label>
-                      {{ _t('Coordinates Available') }}
-                      <span v-if="field.mandatory">
-                        *
-                      </span>
-                    </label>
-                    <input
-                      type="checkbox"
-                      v-model="newCustomerDetails.lat_lng_available"
-                      name="coordinates"
-                      id="coordinate"
-                      value="true"
-                    />
-                    <label for="coordinate"></label>
-                  </div>
-                  <label>{{ _t('Latitude') }}</label>
-                  <input
-                    v-if="newCustomerDetails.location_coordinates"
-                    class="text-width"
-                    type="text"
-                    autocomplete="off"
-                    v-model="newCustomerDetails.location_coordinates.lat"
-                    name="lat"
-                  />
-                  <label>{{ _t('Longitude') }}</label>
-                  <input
-                    v-if="newCustomerDetails.location_coordinates"
-                    class="text-width"
-                    type="text"
-                    autocomplete="off"
-                    v-model="newCustomerDetails.location_coordinates.lng"
-                    name="lng"
-                  />
-                </div>
-              </div>-->
               <input
                 class="text-width"
                 v-if="

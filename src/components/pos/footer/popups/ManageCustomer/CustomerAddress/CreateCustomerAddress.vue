@@ -12,60 +12,61 @@
           </h4>
         </div>
         <form class="modal-body row form-block">
-          <div v-for="(fields, index) in crm_fields" :key="index">
-            <!--<h5 class="customer-block-info color-text-invert">
-              {{ index }}
-            </h5>-->
-            <div v-if="index === '_ADDRESS'">
-              <div v-for="(field, key) in fields" :key="key">
-                <div class="right-form">
-                  <div class="grid-temp">
-                    <label v-if="field.name_key !== 'location_coordinates'">
-                      {{ _t(field.name) }}
-                      <span v-if="field.mandatory">
-                        *
-                      </span>
-                    </label>
-                    <cool-select
-                      v-if="field.name_key === 'delivery_area_id'"
-                      class="getAreaId text-width"
-                      :items="deliveryAreas"
-                      v-model="selectedDeliveryArea"
-                    />
-                    <input
-                      v-if="
-                        field.field_type === 'string' &&
-                          field.name_key !== 'delivery_area_id'
-                      "
-                      type="text"
-                      class="text-width"
-                      autocomplete="off"
-                      v-model="newAddressDetails[field.name_key]"
-                      v-on:keyup="
-                        search(
-                          field.name_key,
-                          newAddressDetails[field.name_key]
-                        )
-                      "
-                      :name="field.name"
-                    />
-                    <input
-                      class="text-width"
-                      v-if="field.field_type === 'numeric'"
-                      type="text"
-                      autocomplete="off"
-                      v-model="newAddressDetails[field.name_key]"
-                      @keypress="Num.toNumberOnly($event)"
-                      :name="field.name"
-                    />
-                    <span
-                      class="validation-error text-capitalize"
-                      v-if="errors[field.name_key]"
-                    >
-                      {{ errors[field.name_key] }}
-                    </span>
-                  </div>
-                </div>
+          <div v-for="(field, key) in fields" :key="key">
+            <div class="left-form">
+              <div
+                v-if="field.name_key === 'delivery_area_id'"
+                style="display: grid; grid-template-columns: 1fr;"
+              >
+                <label>
+                  {{ _t(field.name) }}
+                  <span v-if="field.mandatory">
+                    *
+                  </span>
+                </label>
+                <cool-select
+                  v-if="field.name_key === 'delivery_area_id'"
+                  class="getAreaId text-width"
+                  :items="deliveryAreas"
+                  v-model="selectedDeliveryArea"
+                />
+              </div>
+              <div v-else>
+                <label v-if="field.name_key !== 'location_coordinates'">
+                  {{ _t(field.name) }}
+                  <span v-if="field.mandatory">
+                    *
+                  </span>
+                </label>
+                <input
+                  v-if="
+                    field.field_type === 'string' &&
+                      field.name_key !== 'delivery_area_id'
+                  "
+                  type="text"
+                  class="text-width"
+                  autocomplete="off"
+                  v-model="newAddressDetails[field.name_key]"
+                  v-on:keyup="
+                    search(field.name_key, newAddressDetails[field.name_key])
+                  "
+                  :name="field.name"
+                />
+                <input
+                  class="text-width"
+                  v-if="field.field_type === 'numeric'"
+                  type="text"
+                  autocomplete="off"
+                  v-model="newAddressDetails[field.name_key]"
+                  @keypress="Num.toNumberOnly($event)"
+                  :name="field.name"
+                />
+                <span
+                  class="validation-error text-capitalize"
+                  v-if="errors[field.name_key]"
+                >
+                  {{ errors[field.name_key] }}
+                </span>
               </div>
             </div>
           </div>
@@ -194,7 +195,8 @@ export default {
     ...mapGetters('location', ['_t']),
     ...mapGetters('customer', ['deliveryAreaNames']),
     ...mapState({
-      crm_fields: state => state.customer.crm_fields,
+      fields: state =>
+        state.customer.crm_fields ? state.customer.crm_fields['_ADDRESS'] : [],
       newAddressDetails: state => state.customer.editInformation,
       customer_title: state => state.customer.modalStatus,
       // fetchDeliveryAreas: state => state.customer.fetchDeliveryAreas,
@@ -319,12 +321,12 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-.getAreaId {
-  width: 55.6795rem !important;
-}
 @import '@/assets/scss/pixels_rem.scss';
 @import '@/assets/scss/variables.scss';
 @import '@/assets/scss/mixins.scss';
+.getAreaId {
+  width: $px743 !important;
+}
 #add_address {
   .map-container {
     height: 14.4rem;
@@ -377,55 +379,16 @@ export default {
         .left-form,
         .right-form {
           padding: 10px;
-          .grid-temp {
-            display: grid;
-          }
-
-          .name-from {
-            display: grid;
-            grid-template-columns: 1fr;
-
-            .validation-error {
-              position: static;
-            }
-          }
-
-          .alternate-phone-from {
-            display: grid;
-            grid-template-columns: 1fr;
-
-            .validation-error {
-              position: static;
-            }
-          }
-
-          .gender {
-            display: grid;
-            grid-template-columns: 1fr;
-
-            .validation-error {
-              position: static;
-            }
-          }
-
-          .landmark {
-            display: grid;
-            grid-template-columns: 1fr;
-
-            .validation-error {
-              position: static;
-            }
-          }
         }
       }
+    }
 
-      .modal-footer {
-        z-index: 10;
-      }
-      select,
-      input {
-        width: 100% !important;
-      }
+    .modal-footer {
+      z-index: 10;
+    }
+    select,
+    input {
+      width: 100% !important;
     }
   }
 }
