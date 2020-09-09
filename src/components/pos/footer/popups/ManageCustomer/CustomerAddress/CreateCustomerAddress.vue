@@ -12,74 +12,70 @@
           </h4>
         </div>
         <form class="modal-body row form-block">
-          <div class="col-md-12 left-form add-address-form">
-            <div class="name-from">
-              <label>
-                {{ _t('Delivery Area') }}
-                <span>*</span>
-              </label>
-              <cool-select
-                class="getAreaId"
-                v-model="selectedDeliveryArea"
-                :items="deliveryAreas"
-              />
-              <span class="validation-error" v-if="errors.delivery_area_id">
-                {{ errors.delivery_area_id }}
-              </span>
+          <div v-for="(field, key) in fields" :key="key">
+            <div
+              v-if="field.name_key === 'delivery_area_id'"
+              class="right-form"
+            >
+              <div style="display: grid; grid-template-columns: 1fr;">
+                <label>
+                  {{ _t(field.name) }}
+                  <span v-if="field.mandatory">
+                    *
+                  </span>
+                </label>
+                <cool-select
+                  v-if="field.name_key === 'delivery_area_id'"
+                  class="getAreaId text-width"
+                  :items="deliveryAreas"
+                  v-model="selectedDeliveryArea"
+                />
+              </div>
             </div>
-          </div>
-          <div class="col-md-6 left-form add-address-form">
-            <div class="alternate-phone-from">
-              <label>
-                {{ _t('Building/Villa') }}
-                <span>*</span>
-              </label>
-              <input
-                type="text"
-                name="building"
-                v-model="newAddressDetails.building"
-              />
-              <span class="validation-error" v-if="errors.building">
-                {{ errors.building }}
-              </span>
-            </div>
-            <div class="gender">
-              <label>
-                {{ _t('Street') }}
-                <span>*</span>
-              </label>
-              <input
-                type="text"
-                name="street"
-                v-model="newAddressDetails.street"
-              />
-              <span class="validation-error" v-if="errors.street">
-                {{ errors.street }}
-              </span>
-            </div>
-          </div>
-          <div class="col-md-6 right-form add-address-form">
-            <div class="landmark">
-              <label>
-                {{ _t('Flat Number') }}
-                <span>*</span>
-              </label>
-              <input
-                type="text"
-                name="flat_number"
-                v-model="newAddressDetails.flat_number"
-              />
-              <span class="validation-error" v-if="errors.flat_number">
-                {{ errors.flat_number }}
-              </span>
-            </div>
-            <div class="landmark">
-              <label>{{ _t('Nearest Landmark') }}</label>
-              <input
-                type="text"
-                name="nearest_landmark"
-                v-model="newAddressDetails.nearest_landmark"
-              />
+            <div v-else class="left-form">
+              <div>
+                <label v-if="field.name_key !== 'location_coordinates'">
+                  {{ _t(field.name) }}
+                  <span v-if="field.mandatory">
+                    *
+                  </span>
+                </label>
+                <input
+                  v-if="
+                    field.field_type === 'string' &&
+                      field.name_key !== 'delivery_area_id'
+                  "
+                  type="text"
+                  class="text-width"
+                  autocomplete="off"
+                  v-model="newAddressDetails[field.name_key]"
+                  v-on:keyup="
+                    search(field.name_key, newAddressDetails[field.name_key])
+                  "
+                  :name="field.name"
+                />
+                <div
+                  class="dropdown"
+                  v-if="filterBuildingArea && field.name_key === 'building'"
+                >
+                  <div id="searchDropdown" class="dropdown-content">
+                    <span
+                      class="showItem color-dashboard-background"
+                      v-for="(area, index) in filterBuildingArea"
+                      :key="index"
+                      v-on:click="selectBuilding(area)"
+                    >
+                      {{ area }}
+                    </span>
+                  </div>
+                </div>
+                <span
+                  class="validation-errors text-capitalize"
+                  v-if="errors[field.name_key]"
+                >
+                  {{ errors[field.name_key] }}
+                </span>
+              </div>
             </div>
           </div>
         </form>
@@ -117,11 +113,15 @@
 import { mapState, mapActions, mapGetters } from 'vuex'
 // import InformationPopup from '@/components/pos/content/InformationPopup'
 import { CoolSelect } from 'vue-cool-select'
+import * as CONST from '@/constants'
+// import mapLocationSelector from 'vue-google-maps-location-selector'
+
 export default {
   name: 'CreateCustomerAddress',
   props: {},
   components: {
     CoolSelect,
+    // mapLocationSelector,
   },
   data() {
     return {
@@ -129,17 +129,24 @@ export default {
       errors: {},
       add_delivery_area: '',
       reOpenAddress: '',
+      filterBuildingArea: false,
     }
   },
   computed: {
     ...mapGetters('location', ['_t']),
     ...mapGetters('customer', ['deliveryAreaNames']),
     ...mapState({
+      fields: state =>
+        state.customer.crm_fields ? state.customer.crm_fields['_ADDRESS'] : [],
+      buildingAreas: state => state.customer.buildingAreas,
+      crm_fields: state => state.customer.crm_fields,
+      mandatory_fields: state => state.customer.mandatory_fields,
       newAddressDetails: state => state.customer.editInformation,
       customer_title: state => state.customer.modalStatus,
       // fetchDeliveryAreas: state => state.customer.fetchDeliveryAreas,
       customerCreateStatus: state => state.customer.responseInformation,
       customerId: state => state.customer.customer._id,
+      store: state => state.location.store,
       deliveryAreas() {
         if (this.deliveryAreaNames) {
           let areas = []
@@ -156,10 +163,66 @@ export default {
     }),
   },
   methods: {
+    selectBuilding(selectedArea) {
+      this.newAddressDetails.building = selectedArea
+      $('#searchDropdown').hide()
+    },
+    search(keyName, searchTerm) {
+      if (keyName !== 'building') {
+        return true
+      }
+      $('#searchLoader').attr('style', 'display:block')
+      $('#searchDropdown').show()
+      let searchedItems = []
+      if (searchTerm.length > 0) {
+        this.buildingAreas.map(item => {
+          if (item.toLowerCase().indexOf(searchTerm.toLowerCase()) != -1) {
+            searchedItems.push(item)
+          }
+        })
+        this.filterBuildingArea = searchedItems
+      } else {
+        this.filterBuildingArea = this.buildingAreas
+      }
+    },
+    /* locationUpdated(latlng) {
+      if (this.newAddressDetails.location_coordinates === null) {
+        let location_coordinate = {
+          ...this.newAddressDetails,
+          location_coordinates: { lat: latlng.lat, lng: latlng.lng },
+        }
+        this.$store.commit('customer/SET_EDIT_DETAILS', location_coordinate)
+      } else {
+        this.newAddressDetails.location_coordinates.lat = latlng.lat
+        this.newAddressDetails.location_coordinates.lng = latlng.lng
+      }
+      // eslint-disable-next-line no-console
+      console.log(this.latitude, this.longitude)
+    },*/
+    getWithoutSpaceLength(data) {
+      if ($.trim(data).length == 0) {
+        return false
+      }
+      return true
+    },
     checkForm: function(modalStatus) {
+      // eslint-disable-next-line no-debugger
+      debugger
       this.errors = {}
       this.errors.count = 0
-      if (!this.selectedDeliveryArea) {
+      this.mandatory_fields.forEach(field => {
+        if (field.group === CONST.CUSTOMER_ADDRESS) {
+          if (
+            !this.newAddressDetails[field.name_key] ||
+            !this.getWithoutSpaceLength(this.newAddressDetails[field.name_key])
+          ) {
+            this.errors[field.name_key] =
+              this._t(field.name_key) + ' ' + this._t('is required')
+            this.errors.count = 1
+          }
+        }
+      })
+      /*if (!this.selectedDeliveryArea) {
         this.errors.delivery_area_id = 'Delivery area required'
         this.errors.count = 1
       }
@@ -189,7 +252,7 @@ export default {
         this.errors.building =
           'Building/Villa should be not more than 15 characters'
         this.errors.count = 1
-      }
+      }*/
       if (this.errors.count === 0) {
         let addAddress = $('#add_address')
         addAddress.modal('toggle')
@@ -201,11 +264,19 @@ export default {
         //   }
         // })
         // eslint-disable-next-line no-console
+        /*if (
+          this.newAddressDetails.location_coordinates === null ||
+          this.newAddressDetails.location_coordinates.lat === 0
+        ) {
+          // eslint-disable-next-line max-len
+          this.newAddressDetails.location_coordinates.lat = this.store.location_coordinates.lat
+          // eslint-disable-next-line max-len
+          this.newAddressDetails.location_coordinates.lng = this.store.location_coordinates.lng
+        }*/
         const formData = {
           ...this.newAddressDetails,
           delivery_area_id: areaId,
-          lat_lng_available: false,
-          location_coordinates: { lat: 0, lng: 0 },
+          // lat_lng_available: true,
         }
         // eslint-disable-next-line no-console
         console.log(formData, 'ffff')
@@ -236,13 +307,30 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-.getAreaId {
-  width: 55.6795rem !important;
-}
 @import '@/assets/scss/pixels_rem.scss';
 @import '@/assets/scss/variables.scss';
 @import '@/assets/scss/mixins.scss';
+.getAreaId {
+  width: $px889 !important;
+}
+.validation-errors {
+  color: red;
+}
 #add_address {
+  .map-container {
+    height: 14.4rem;
+    //width: 55.4rem;
+    /*left: 13.5rem;
+    top: 10px;*/
+  }
+  #coordinate {
+    height: 1.8rem !important;
+    width: 2rem !important;
+    padding: unset !important;
+  }
+  .hidden {
+    display: none;
+  }
   .modal-dialog {
     /*margin: 0;*/
 
@@ -276,56 +364,23 @@ export default {
         /*display: grid;*/
         grid-template-rows: max-content 1fr max-content;
         overflow-y: auto;
-
-        .left-form,
         .right-form {
-          padding: 10px;
-
-          .name-from {
-            display: grid;
-            grid-template-columns: 1fr;
-
-            .validation-error {
-              position: static;
-            }
-          }
-
-          .alternate-phone-from {
-            display: grid;
-            grid-template-columns: 1fr;
-
-            .validation-error {
-              position: static;
-            }
-          }
-
-          .gender {
-            display: grid;
-            grid-template-columns: 1fr;
-
-            .validation-error {
-              position: static;
-            }
-          }
-
-          .landmark {
-            display: grid;
-            grid-template-columns: 1fr;
-
-            .validation-error {
-              position: static;
-            }
-          }
+          min-width: 100%;
+        }
+        .left-form {
+          padding: 10px 10px 10px 0;
+          min-width: $px448;
+          max-width: $px448;
         }
       }
+    }
 
-      .modal-footer {
-        z-index: 10;
-      }
-      select,
-      input {
-        width: 100% !important;
-      }
+    .modal-footer {
+      z-index: 10;
+    }
+    select,
+    input {
+      width: 100% !important;
     }
   }
 }

@@ -25,24 +25,36 @@ export default {
   },
   watch: {},
   methods: {
-    validateSection() {
+    validateSection(skipItem) {
       const section = this.$store.getters['combo/current_combo_section']
       const selectedItems = this.$store.getters[
         'combo/current_combo_selected_items'
       ]
-
+      console.log('selected items', selectedItems)
       let selectedItemsInCurrentSection = []
       if (section.qty) {
         this.currentSection = section
         //check if selectedItems contains == section.for_items
         section.for_items.forEach(itemId => {
-          if (selectedItems[itemId]) {
-            selectedItemsInCurrentSection.push(itemId)
+          if (selectedItems[itemId] && itemId !== skipItem) {
+            selectedItemsInCurrentSection.push({
+              itemId: itemId,
+              qty: selectedItems[itemId],
+            })
           }
         })
-        if (selectedItemsInCurrentSection.length < section.qty) {
-          return section.qty - selectedItemsInCurrentSection.length
-        } else if (selectedItemsInCurrentSection.length == section.qty) {
+
+        let qtySelectedInCurrentSection = 0
+        selectedItemsInCurrentSection.forEach(
+          itm => (qtySelectedInCurrentSection += itm.qty)
+        )
+        console.log(
+          'quantity selected in current section',
+          qtySelectedInCurrentSection
+        )
+        if (qtySelectedInCurrentSection < section.qty) {
+          return section.qty - qtySelectedInCurrentSection
+        } else if (qtySelectedInCurrentSection == section.qty) {
           return true
         } else {
           return false

@@ -135,6 +135,7 @@ const actions = {
       userAgent = window.navigator.userAgent.toLowerCase(),
       safari = /safari/.test(userAgent),
       ios = /dims_kot_app/.test(userAgent)
+    // ios = true
     // ios = /android|iphone|ipod|ipad/.test(userAgent)
     /*ios =
         /android|iPad|iPhone|iPod/.test(userAgent) ||
@@ -292,7 +293,6 @@ const actions = {
       localStorage.setItem('store_id', '')
 
       commit(mutation.RESET)
-      commit(mutation.LOGOUT_ACTION, '')
 
       commit('order/RESET', true, { root: true })
       commit('checkout/RESET', true, { root: true })
@@ -310,10 +310,13 @@ const actions = {
       commit('invoice/RESET', true, { root: true })
       commit('dinein/RESET', null, { root: true })
 
-      DataService.setContext({
-        brand: null,
-        store: null,
-      })
+      if (msg != 'token_not_exists') {
+        commit(mutation.LOGOUT_ACTION, '')
+        DataService.setContext({
+          brand: null,
+          store: null,
+        })
+      }
 
       if (localStorage.getItem('token') || msg == 'token_not_exists') {
         AuthService.logout(msg).then(() => {})

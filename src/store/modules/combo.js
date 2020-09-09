@@ -119,9 +119,13 @@ const actions = {
   validate_combo_items: ({ state, getters, commit, rootGetters }) => {
     let errors = {}
     let sectionItems = {}
+    //sections
     getters.current_combo.combo_items.forEach(section => {
+      //section items
       section.for_items.forEach(itemId => {
+        //check if itemId exists in current combo selection
         if (state.currentComboSelectedItems[itemId]) {
+          //prepare data structure if not already created
           if (!sectionItems[section._id['$oid']]) {
             sectionItems[section._id['$oid']] = {
               items: [],
@@ -129,13 +133,25 @@ const actions = {
               name: section.name,
             }
           }
-          sectionItems[section._id['$oid']].items.push(itemId)
+          //push item id to section items
+          sectionItems[section._id['$oid']].items.push({
+            itemId: itemId,
+            qty: state.currentComboSelectedItems[itemId],
+          })
         }
       })
     })
+    //sections
     getters.current_combo.combo_items.forEach(originalSection => {
+      //get section from the selected items
       const section = sectionItems[originalSection._id['$oid']]
-      if (!section || section.items.length != originalSection.qty) {
+      //get total qty of section items
+      let qty = 0
+      if (section) {
+        section.items.forEach(itm => (qty += itm.qty))
+      }
+
+      if (!section || qty != originalSection.qty) {
         errors[originalSection._id['$oid']] = rootGetters['location/_t'](
           `Please select ${originalSection.qty} item(s) from ${originalSection.name}`
         )
@@ -174,6 +190,7 @@ const getters = {
     for (const itemId in combo.selectedItems) {
       const item = rootGetters['category/itemById'](itemId)
       if (item) {
+        item.quantity = combo.selectedItems[itemId]
         items.push(item)
       }
     }
@@ -202,8 +219,8 @@ const getters = {
     //return only those which has true value
     let trueSelection = {}
     for (const i in state.currentComboSelectedItems) {
-      if (state.currentComboSelectedItems[i] === true) {
-        trueSelection[i] = true
+      if (state.currentComboSelectedItems[i] !== false) {
+        trueSelection[i] = state.currentComboSelectedItems[i]
       }
     }
     return trueSelection

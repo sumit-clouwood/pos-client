@@ -16,7 +16,7 @@
         class="modal-content color-dashboard-background modal-content-wrapper footerStyle"
       >
         <Header />
-        <HeaderDetails v-show="!current_combo_selected_item" />
+        <HeaderDetails />
         <Content />
         <Footer />
       </div>

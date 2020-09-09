@@ -25,7 +25,10 @@
               class="btn btn-success btn-large color-text-invert color-secondary"
               data-dismiss="modal"
               @click="
-                setDefaultSettingsGlobalAddUpdate({ nearest_landmark: '' })
+                setDefaultSettingsGlobalAddUpdate({
+                  nearest_landmark: '',
+                  // location_coordinates: { lat: 0, lng: 0 },
+                })
               "
             >
               {{ _t('+ Add Address') }}

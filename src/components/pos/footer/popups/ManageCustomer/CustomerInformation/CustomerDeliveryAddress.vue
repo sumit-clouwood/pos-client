@@ -7,7 +7,12 @@
         data-toggle="modal"
         data-target="#add_address"
         data-dismiss="modal"
-        @click="setDefaultSettingsGlobalAddUpdate({ nearest_landmark: '' })"
+        @click="
+          setDefaultSettingsGlobalAddUpdate({
+            nearest_landmark: '',
+            // location_coordinates: { lat: 0, lng: 0 },
+          })
+        "
       >
         {{ _t('+ Add Address') }}
       </button>

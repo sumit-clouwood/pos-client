@@ -31,7 +31,10 @@
             +
           </button>
         </div>
-        <div class="POSItemOptions_quantity_submit btn-set-quantity">
+        <div
+          class="POSItemOptions_quantity_submit btn-set-quantity"
+          v-show="!current_combo"
+        >
           <button @click="updateItemQty()" class="color-main color-text-invert">
             <img src="img/pos/right.png" alt="check" /> {{ _t('Set Quantity') }}
           </button>
@@ -42,11 +45,17 @@
   </div>
 </template>
 <script>
+/* eslint-disable no-console */
+
 import { mapGetters, mapState } from 'vuex'
+import Cart from '@/mixins/Cart'
+
 export default {
   name: 'Header',
+  mixins: [Cart],
   computed: {
     ...mapGetters('location', ['_t']),
+    ...mapGetters('combo', ['current_combo', 'current_combo_selected_item']),
     ...mapState('order', ['item', 'orderSource']),
     quantity: {
       get() {
@@ -70,17 +79,46 @@ export default {
       return allowed
     },
     updateFormQuantity(action) {
-      if (action == '+') {
-        this.$store.commit(
-          'orderForm/updateQuantity',
-          this.$store.getters['orderForm/quantity'] + 1
-        )
+      //if it is combo item
+      if (this.current_combo) {
+        // check if current quantity + items selected for this section < allowed quantity for this section
+
+        if (action == '+') {
+          let qty = this.validateSection(this.current_combo_selected_item._id)
+          //add qty of this item
+          console.log('remaining qty to choose', qty)
+          if (qty !== false && qty !== true) {
+            //previously selected quantity is less than requried quantity
+            //get quantity of current item from previous selection, and subtract it from qty, because
+            //we are recalculating quantity for current item
+
+            let formQty = this.$store.getters['orderForm/quantity'] + 1
+            console.log('form quantity', formQty)
+            if (qty >= formQty) {
+              this.$store.commit('orderForm/updateQuantity', formQty)
+            }
+          }
+        } else {
+          if (this.$store.getters['orderForm/quantity'] > 1) {
+            this.$store.commit(
+              'orderForm/updateQuantity',
+              this.$store.getters['orderForm/quantity'] - 1
+            )
+          }
+        }
       } else {
-        if (this.$store.getters['orderForm/quantity'] > 1) {
+        if (action == '+') {
           this.$store.commit(
             'orderForm/updateQuantity',
-            this.$store.getters['orderForm/quantity'] - 1
+            this.$store.getters['orderForm/quantity'] + 1
           )
+        } else {
+          if (this.$store.getters['orderForm/quantity'] > 1) {
+            this.$store.commit(
+              'orderForm/updateQuantity',
+              this.$store.getters['orderForm/quantity'] - 1
+            )
+          }
         }
       }
     },

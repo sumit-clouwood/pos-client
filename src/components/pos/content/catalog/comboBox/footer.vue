@@ -29,6 +29,7 @@ import Cart from '@/mixins/Cart'
 export default {
   computed: {
     ...mapGetters('location', ['_t']),
+    ...mapGetters('orderForm', ['quantity']),
     ...mapGetters('combo', ['combo_errors']),
   },
   mixins: [Cart],

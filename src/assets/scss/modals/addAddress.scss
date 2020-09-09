@@ -5,17 +5,14 @@
     max-width: $px960;
 
     .modal-content {
-      .modal-header {
-      }
-
       .modal-body {
         .left-form,
         .right-form {
           > div {
             margin-bottom: $px25;
             position: relative;
-            display: flex;
-            align-items: center;
+            // display: flex;
+            // align-items: center;
 
             input {
               width: $px315;
@@ -81,9 +78,6 @@
             }
           }
         }
-      }
-
-      .modal-footer {
       }
     }
   }

@@ -328,7 +328,8 @@ const actions = {
   //Create A JSON Request to send in Local Server API for Generating Invoices from a software.
   printingServerInvoiceRaw({ rootState, dispatch }, orderData) {
     // eslint-disable-next-line no-console
-    console.log('IN', rootState.checkout.paymentAction)
+    console.log('IN', rootState.checkout.paymentAction, orderData)
+    // eslint-disable-next-line no-debugger
     let dt = rootState.auth.deviceType
     let isIOS = dt.osType
     if (

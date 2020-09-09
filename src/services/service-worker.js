@@ -3,7 +3,7 @@
 /* eslint-disable no-console */
 //appVersion has production build number . staging build number . int build number . bugfix
 //Reason: fixed msg 13
-var appVersion = '7.9.34.23'
+var appVersion = '7.9.35.29'
 
 var clientUrl = ''
 
@@ -86,6 +86,21 @@ function setupCache() {
         new workbox.expiration.Plugin({
           maxAgeSeconds: 60 * 60 * 24 * 365,
           maxEntries: 30,
+        }),
+      ],
+    })
+  )
+  //s3 bucket
+  workbox.routing.registerRoute(
+    /\.amazonaws\.com/,
+    new workbox.strategies.CacheFirst({
+      cacheName: 'dimsphotos',
+      plugins: [
+        new workbox.cacheableResponse.Plugin({
+          statuses: [0, 200],
+        }),
+        new workbox.expiration.Plugin({
+          maxAgeSeconds: 60 * 60 * 24 * 90,
         }),
       ],
     })
@@ -473,21 +488,30 @@ var Sync = {
         syncedObjects.push(obj.sync())
       })
       try {
-        await Promise.all(syncedObjects)
-        Sync.inprocess = false
-        enabledConsole &&
-          console.log(
-            1,
-            1,
-            'sw:',
-            'All synced',
-            'sync inprocess',
-            Sync.inprocess
-          )
-        client.postMessage({
-          msg: 'sync',
-          data: { status: 'done' },
-        })
+        Promise.all(syncedObjects)
+          .then(() => {
+            client.postMessage({
+              msg: 'sync',
+              data: { status: 'done' },
+            })
+          })
+          .catch(error => {
+            enabledConsole &&
+              console.log(1, 1, 'sw:', 'Sync failed', 'sync error', error)
+          })
+          .finally(() => {
+            Sync.inprocess = false
+            enabledConsole &&
+              console.log(
+                1,
+                1,
+                'sw:',
+                'Sync event completed',
+                'sync inprocess',
+                Sync.inprocess
+              )
+          })
+
         resolve()
       } catch (error) {
         Sync.inprocess = false
@@ -649,7 +673,7 @@ var Sync = {
                       'sw:',
                       'New token successful, resend request'
                     )
-                  this.request(requestUrl, method, payload)
+                  return this.request(requestUrl, method, payload)
                 })
                 .catch(error => {
                   enabledConsole &&
@@ -669,6 +693,7 @@ var Sync = {
           })
           .catch(error => {
             enabledConsole && console.log(1, 'sw:', 'Fetch error', error)
+            reject(error)
           })
       })
     })
