@@ -90,21 +90,6 @@ function setupCache() {
       ],
     })
   )
-  //s3 bucket
-  workbox.routing.registerRoute(
-    /\.amazonaws\.com/,
-    new workbox.strategies.CacheFirst({
-      cacheName: 'dimsphotos',
-      plugins: [
-        new workbox.cacheableResponse.Plugin({
-          statuses: [0, 200],
-        }),
-        new workbox.expiration.Plugin({
-          maxAgeSeconds: 60 * 60 * 24 * 90,
-        }),
-      ],
-    })
-  )
 
   workbox.routing.registerRoute(
     /^https:\/\/stackpath\.bootstrapcdn\.com/,
@@ -488,30 +473,21 @@ var Sync = {
         syncedObjects.push(obj.sync())
       })
       try {
-        Promise.all(syncedObjects)
-          .then(() => {
-            client.postMessage({
-              msg: 'sync',
-              data: { status: 'done' },
-            })
-          })
-          .catch(error => {
-            enabledConsole &&
-              console.log(1, 1, 'sw:', 'Sync failed', 'sync error', error)
-          })
-          .finally(() => {
-            Sync.inprocess = false
-            enabledConsole &&
-              console.log(
-                1,
-                1,
-                'sw:',
-                'Sync event completed',
-                'sync inprocess',
-                Sync.inprocess
-              )
-          })
-
+        await Promise.all(syncedObjects)
+        Sync.inprocess = false
+        enabledConsole &&
+          console.log(
+            1,
+            1,
+            'sw:',
+            'All synced',
+            'sync inprocess',
+            Sync.inprocess
+          )
+        client.postMessage({
+          msg: 'sync',
+          data: { status: 'done' },
+        })
         resolve()
       } catch (error) {
         Sync.inprocess = false
@@ -673,7 +649,7 @@ var Sync = {
                       'sw:',
                       'New token successful, resend request'
                     )
-                  return this.request(requestUrl, method, payload)
+                  this.request(requestUrl, method, payload)
                 })
                 .catch(error => {
                   enabledConsole &&
@@ -693,7 +669,6 @@ var Sync = {
           })
           .catch(error => {
             enabledConsole && console.log(1, 'sw:', 'Fetch error', error)
-            reject(error)
           })
       })
     })
