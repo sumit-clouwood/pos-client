@@ -44,6 +44,7 @@
 <script>
 import { mapGetters, mapState, mapActions } from 'vuex'
 import Progress from '@/components/util/Progress'
+import bootstrap from '@/bootstrap'
 import md5 from 'js-md5'
 export default {
   name: 'Lockpad',
@@ -81,7 +82,13 @@ export default {
         .dispatch('auth/filterUserInOffline', md5(this.pincode))
         .then(user => {
           if (user) {
-            this.$router.replace({ name: 'HomeDefault' })
+            this.$router.replace({
+              name: 'BrandHome',
+              params: {
+                brand_id: this.brandId,
+                store_id: this.storeId,
+              },
+            })
             localStorage.setItem('offline_mode_login', true)
             this.$store.commit('auth/SET_OFFLINE_PIN', this.pincode)
             this.$store.commit('sync/status', false)
@@ -116,17 +123,22 @@ export default {
           })
           .then(() => {
             this.$router.replace({ name: 'HomeDefault' })
+            bootstrap.loadUI(this.$store)
+            this.$store.commit('sync/reload', true)
+            this.$store.dispatch('checkout/reset', true)
+            this.$store.commit('order/CLEAR_SELECTED_ORDER')
             localStorage.setItem('offline_mode_login', false)
           })
-          .catch(error => {
+          .catch(({ error }) => {
             if (
               error.message === 'Network Error' ||
               JSON.stringify(error.message).match('Network Error')
             ) {
               this.loginOffline()
             } else {
-              this.error = error.response.data.error
-              this.showError = true
+              // eslint-disable-next-line no-console
+              console.log(error)
+              this.error = this.showError = true
               this.pincode = ''
               setTimeout(() => {
                 this.showError = false

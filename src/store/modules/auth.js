@@ -191,16 +191,19 @@ const actions = {
           commit('context/SET_BRAND_ID', brand, {
             root: true,
           })
-          commit('context/SET_STORE_ID', store, {
-            root: true,
-          })
 
-          DataService.setContext({
-            brand: rootGetters['context/brand'],
-            store: rootGetters['context/store'],
+          dispatch('getUserDetails', response.data.user.user_id).then(data => {
+            const storeId = data.item.brand_stores[0]
+            commit('context/SET_STORE_ID', storeId, {
+              root: true,
+            })
+            localStorage.setItem('store_id', storeId)
+            DataService.setContext({
+              brand: rootGetters['context/brand'],
+              store: rootGetters['context/store'],
+            })
+            resolve()
           })
-          dispatch('getUserDetails', response.data.user.user_id)
-          resolve()
         })
         .catch(error => {
           reject(error)
@@ -387,39 +390,41 @@ const actions = {
       user.item = state.storeUsers.filter(user => {
         return user.e_swipe_card === encryptedPin
       })[0]
+      const brandId = localStorage.getItem('brand_id')
+      const storeId = localStorage.getItem('store_id')
       if (!user.item) {
         reject('Invalid user credentials')
+      } else if (!brandId || !storeId) {
+        reject('Brand or store not found')
       } else {
-        commit(mutation.USER_DETAILS, user)
-        dispatch('setCurrentRole')
-        let randomToken =
-          Math.random()
-            .toString(36)
-            .slice(2)
-            .toUpperCase() +
-          Math.random()
-            .toString(36)
-            .slice(2)
-        localStorage.setItem('token', randomToken)
-        commit(mutation.SET_TOKEN, randomToken)
+        if (!user.item.brand_stores.includes(storeId)) {
+          reject('Forbidden, store is not accessible')
+        } else {
+          commit(mutation.USER_DETAILS, user)
+          dispatch('setCurrentRole')
+          let randomToken =
+            Math.random()
+              .toString(36)
+              .slice(2)
+              .toUpperCase() +
+            Math.random()
+              .toString(36)
+              .slice(2)
+          localStorage.setItem('token', randomToken)
+          commit(mutation.SET_TOKEN, randomToken)
+          commit('context/SET_BRAND_ID', brandId, {
+            root: true,
+          })
+          commit('context/SET_STORE_ID', storeId, {
+            root: true,
+          })
 
-        if (
-          localStorage.getItem('brand_id') &&
-          localStorage.getItem('store_id')
-        ) {
-          commit('context/SET_BRAND_ID', localStorage.getItem('brand_id'), {
-            root: true,
+          DataService.setContext({
+            brand: rootGetters['context/brand'],
+            store: rootGetters['context/store'],
           })
-          commit('context/SET_STORE_ID', localStorage.getItem('store_id'), {
-            root: true,
-          })
+          resolve(user)
         }
-
-        DataService.setContext({
-          brand: rootGetters['context/brand'],
-          store: rootGetters['context/store'],
-        })
-        resolve(user)
       }
     })
   },
