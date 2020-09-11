@@ -123,11 +123,12 @@ export default {
           })
           .then(() => {
             this.$router.replace({ name: 'HomeDefault' })
-            bootstrap.loadUI(this.$store)
-            this.$store.commit('sync/reload', true)
-            this.$store.dispatch('checkout/reset', true)
-            this.$store.commit('order/CLEAR_SELECTED_ORDER')
-            localStorage.setItem('offline_mode_login', false)
+            this.$store.dispatch('location/fetch').then(() => {
+              bootstrap.loadUI(this.$store)
+              this.$store.dispatch('checkout/reset', true)
+              this.$store.commit('order/CLEAR_SELECTED_ORDER')
+              localStorage.setItem('offline_mode_login', false)
+            })
           })
           .catch(({ error }) => {
             if (
