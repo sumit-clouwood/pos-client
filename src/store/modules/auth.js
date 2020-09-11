@@ -176,7 +176,7 @@ const actions = {
         .catch(error => reject(error))
     })
   },
-  pinlogin({ commit, dispatch, rootGetters }, { pincode, brand, store }) {
+  pinlogin({ commit, dispatch }, { pincode, brand, store }) {
     return new Promise((resolve, reject) => {
       AuthService.pinlogin({
         //email: state.cashierEmail,
@@ -192,16 +192,7 @@ const actions = {
             root: true,
           })
 
-          dispatch('getUserDetails', response.data.user.user_id).then(data => {
-            const storeId = data.item.brand_stores[0]
-            commit('context/SET_STORE_ID', storeId, {
-              root: true,
-            })
-            localStorage.setItem('store_id', storeId)
-            DataService.setContext({
-              brand: rootGetters['context/brand'],
-              store: rootGetters['context/store'],
-            })
+          dispatch('getUserDetails', response.data.user.user_id).then(() => {
             resolve()
           })
         })
@@ -329,11 +320,21 @@ const actions = {
     })
   },
 
-  getUserDetails({ commit, dispatch }, userId) {
+  getUserDetails({ commit, dispatch, rootGetters }, userId) {
     return new Promise((resolve, reject) => {
       if (userId) {
         AuthService.userDetails(userId).then(response => {
           commit(mutation.USER_DETAILS, response.data)
+          // Set Store ID's here when the User is being loaded
+          const storeId = response.data.item.brand_stores[0]
+          commit('context/SET_STORE_ID', storeId, {
+            root: true,
+          })
+          localStorage.setItem('store_id', storeId)
+          DataService.setContext({
+            brand: rootGetters['context/brand'],
+            store: rootGetters['context/store'],
+          })
 
           dispatch('fetchRoles').then(() => {
             dispatch('setCurrentRole')
