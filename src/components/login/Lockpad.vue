@@ -130,16 +130,15 @@ export default {
               localStorage.setItem('offline_mode_login', false)
             })
           })
-          .catch(({ error }) => {
+          .catch(error => {
             if (
-              error.message === 'Network Error' ||
+              (error && error.message === 'Network Error') ||
               JSON.stringify(error.message).match('Network Error')
             ) {
               this.loginOffline()
             } else {
-              // eslint-disable-next-line no-console
-              console.log(error)
-              this.error = this.showError = true
+              this.error = error.response.data.error
+              this.showError = true
               this.pincode = ''
               setTimeout(() => {
                 this.showError = false
