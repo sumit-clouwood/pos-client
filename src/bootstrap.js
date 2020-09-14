@@ -94,77 +94,89 @@ export default {
   //this function is loaded when pos is loaded, called from App
   initLoadUI() {
     DataService.setLang(this.store.state.location.locale)
+    const self = this
     return new Promise((resolve, reject) => {
       this.store
         .dispatch('location/fetch')
         .then(locationDetails => {
-          this.updateLoading('store')
-          this.store.dispatch('payment/fetchAll').then(() => {})
-          this.store.dispatch('tax/openItemTaxes')
-          this.store.dispatch('surcharge/fetchAll').then(() => {})
-          this.store.dispatch('discount/fetchAll').then(() => {})
-          this.store.dispatch('dinein/fetchAll')
-
-          this.store
-            .dispatch('category/fetchAll')
+          self
+            .validateSubscription(self.store)
             .then(() => {
-              let storeIds = []
-              //this check is for superadmin but I believe we should only check store_group accesstype to
-              //load multiple stores at once, but problem is super admin don't have this, so we need to check
-              //if not all, store or countries then load, I ll revise it with Yuvraj and Sohin and ll check only 'store_group' access type
-              if (
-                !['all', 'store', 'country'].includes(
-                  locationDetails.userDetails.brand_access_type
-                )
-              ) {
-                if (
-                  locationDetails.availableStoreGroups &&
-                  locationDetails.availableStoreGroups.length &&
-                  locationDetails.userDetails.brand_access_type !==
-                    'store_group'
-                ) {
-                  storeIds = locationDetails.availableStoreGroups.forEach(
-                    group => {
-                      storeIds = [...storeIds, group.group_stores]
+              this.updateLoading('store')
+              this.store.dispatch('payment/fetchAll').then(() => {})
+              this.store.dispatch('tax/openItemTaxes')
+              this.store.dispatch('surcharge/fetchAll').then(() => {})
+              this.store.dispatch('discount/fetchAll').then(() => {})
+              this.store.dispatch('dinein/fetchAll')
+
+              this.store
+                .dispatch('category/fetchAll')
+                .then(() => {
+                  let storeIds = []
+                  //this check is for superadmin but I believe we should only check store_group accesstype to
+                  //load multiple stores at once, but problem is super admin don't have this, so we need to check
+                  //if not all, store or countries then load, I ll revise it with Yuvraj and Sohin and ll check only 'store_group' access type
+                  if (
+                    !['all', 'store', 'country'].includes(
+                      locationDetails.userDetails.brand_access_type
+                    )
+                  ) {
+                    if (
+                      locationDetails.availableStoreGroups &&
+                      locationDetails.availableStoreGroups.length &&
+                      locationDetails.userDetails.brand_access_type !==
+                        'store_group'
+                    ) {
+                      storeIds = locationDetails.availableStoreGroups.forEach(
+                        group => {
+                          storeIds = [...storeIds, group.group_stores]
+                        }
+                      )
+                    } else if (
+                      locationDetails.userDetails.brand_access_type ===
+                      'store_group'
+                    ) {
+                      storeIds = locationDetails.stores
                     }
-                  )
-                } else if (
-                  locationDetails.userDetails.brand_access_type ===
-                  'store_group'
-                ) {
-                  storeIds = locationDetails.stores
-                }
-              }
+                  }
 
-              if (storeIds && storeIds.length) {
-                this.store.dispatch(
-                  'discount/fetchMultistore',
-                  locationDetails.stores
-                )
-                this.store.dispatch(
-                  'customer/fetchMultiStore',
-                  locationDetails.stores
-                )
-                this.store.dispatch(
-                  'category/fetchMultistore',
-                  locationDetails.stores
-                )
-                this.store.dispatch(
-                  'modifier/fetchMultistore',
-                  locationDetails.stores
-                )
-              }
-              this.updateLoading('catalog')
-              this.store.dispatch('modifier/fetchAll').then(() => {
-                this.updateLoading('modifiers')
+                  if (storeIds && storeIds.length) {
+                    this.store.dispatch(
+                      'discount/fetchMultistore',
+                      locationDetails.stores
+                    )
+                    this.store.dispatch(
+                      'customer/fetchMultiStore',
+                      locationDetails.stores
+                    )
+                    this.store.dispatch(
+                      'category/fetchMultistore',
+                      locationDetails.stores
+                    )
+                    this.store.dispatch(
+                      'modifier/fetchMultistore',
+                      locationDetails.stores
+                    )
+                  }
+                  this.updateLoading('catalog')
+                  this.store.dispatch('modifier/fetchAll').then(() => {
+                    this.updateLoading('modifiers')
 
-                this.store.commit('sync/loaded', true)
-                this.store.dispatch('payment/setTranslations').then(() => {})
-                resolve()
-              })
-              this.store.dispatch('printingServer/getKitchens').then(() => {})
+                    this.store.commit('sync/loaded', true)
+                    this.store
+                      .dispatch('payment/setTranslations')
+                      .then(() => {})
+                    resolve()
+                  })
+                  this.store
+                    .dispatch('printingServer/getKitchens')
+                    .then(() => {})
+                })
+                .catch(error => reject(error))
             })
-            .catch(error => reject(error))
+            .catch(() => {
+              reject('subscription')
+            })
         })
         .catch(error => reject(error))
     })
