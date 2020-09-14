@@ -149,45 +149,42 @@ export default {
     },
     setup() {
       this.subscriptionError = false
-      bootstrap
-        .validateSubscription(this.$store)
-        .then(() => {
-          const interval = setInterval(() => {
-            this.progressIncrement += 10
-            if (this.progressIncrement > 100) {
-              this.progressIncrement = 0
-            }
-          }, 1000)
-          bootstrap
-            .setup(this.$store)
-            .then(() => {
-              setTimeout(() => {
-                clearInterval(interval)
-                this.progressIncrement = 100
-              }, 100)
-              setTimeout(() => {
-                this.loading = false
-              }, 300)
 
-              this.setupServiceWorker()
-              this.setupRoutes()
-              this.setupExternalScripts()
-            })
-            .catch(error => {
-              //this.errored = error
-              //setTimeout(() => {
-              this.loading = false
-              console.log(error, ', dispatch logout')
-              //this.$store.dispatch('auth/logout', error)
-              this.errored = ''
-              //}, 1000 * 10)
-            })
+      const interval = setInterval(() => {
+        this.progressIncrement += 10
+        if (this.progressIncrement > 100) {
+          this.progressIncrement = 0
+        }
+      }, 1000)
+      bootstrap
+        .setup(this.$store)
+        .then(() => {
+          setTimeout(() => {
+            clearInterval(interval)
+            this.progressIncrement = 100
+          }, 100)
+          setTimeout(() => {
+            this.loading = false
+          }, 300)
+
+          this.setupServiceWorker()
+          this.setupRoutes()
+          this.setupExternalScripts()
         })
-        .catch(() => {
+        .catch(error => {
+          //this.errored = error
+          //setTimeout(() => {
           this.loading = false
-          this.subscriptionError = this._t(
-            'Store subscription has been expired.'
-          )
+          if (error === 'subscription') {
+            this.subscriptionError = this._t(
+              'Store subscription has been expired.'
+            )
+          } else {
+            console.log(error, ', dispatch logout')
+          }
+          //this.$store.dispatch('auth/logout', error)
+          this.errored = ''
+          //}, 1000 * 10)
         })
     },
     resetTokenNumber() {
