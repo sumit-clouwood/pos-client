@@ -280,30 +280,32 @@ const actions = {
         .catch(error => reject(error))
     })
   },
-  logout({ commit }, msg) {
+  resetModules({ commit }) {
+    commit('order/RESET', true, { root: true })
+    commit('checkout/RESET', true, { root: true })
+    commit('customer/RESET', {}, { root: true })
+    commit('invoice/RESET', true, { root: true })
+    commit('dinein/RESET', null, { root: true })
+    commit('holdOrders/RESET', true, { root: true })
+    commit('announcement/RESET', true, { root: true })
+    commit('discount/RESET', true, { root: true })
+    commit('category/RESET', true, { root: true })
+    commit('modifier/RESET', true, { root: true })
+    commit('surcharge/RESET', true, { root: true })
+  },
+  logout({ commit, dispatch }, msg) {
     return new Promise(resolve => {
       localStorage.setItem('token', '')
       localStorage.setItem('brand_id', '')
       localStorage.setItem('store_id', '')
-
       commit(mutation.RESET)
 
-      commit('order/RESET', true, { root: true })
-      commit('checkout/RESET', true, { root: true })
+      commit('payment/RESET', true, { root: true })
+      dispatch('resetModules')
+
       commit('context/RESET', null, { root: true })
-      commit('customer/RESET', {}, { root: true })
       commit('sync/reset', {}, { root: true })
       commit('location/RESET', true, { root: true })
-      commit('holdOrders/RESET', true, { root: true })
-      commit('announcement/RESET', true, { root: true })
-      commit('discount/RESET', true, { root: true })
-      commit('category/RESET', true, { root: true })
-      commit('modifier/RESET', true, { root: true })
-      commit('payment/RESET', true, { root: true })
-      commit('surcharge/RESET', true, { root: true })
-      commit('invoice/RESET', true, { root: true })
-      commit('dinein/RESET', null, { root: true })
-
       if (msg != 'token_not_exists') {
         commit(mutation.LOGOUT_ACTION, '')
         DataService.setContext({

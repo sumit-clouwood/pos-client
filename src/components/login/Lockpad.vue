@@ -110,12 +110,18 @@ export default {
         })
     },
     loadCompleteUi() {
+      this.$store.dispatch('auth/resetModules')
+
       this.$store.dispatch('location/fetch').then(() => {
         bootstrap
           .loadUI(this.$store)
           .then(() => {
             this.$store.dispatch('checkout/reset', true)
-            this.$store.commit('order/CLEAR_SELECTED_ORDER')
+
+            bootstrap.loadApiData('customer')
+
+            bootstrap.loadApiData('order')
+
             localStorage.setItem('offline_mode_login', false)
             this.$router.replace({
               name: 'BrandHome',
