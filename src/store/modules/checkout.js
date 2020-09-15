@@ -1186,6 +1186,9 @@ const actions = {
                   'SET_ORDER_NUMBER',
                   rootState.order.selectedOrder.item.order_no
                 )
+                dispatch('printingServer/printingServerInvoiceRaw', state.order, {
+                  root: true,
+                })
                 if (rootState.order.splitted || rootState.order.splitBill) {
                   commit('order/SET_SPLITTED', true, { root: true })
                   //mark items as paid in current execution
@@ -1194,9 +1197,6 @@ const actions = {
                     state.order.items.length,
                     { root: true }
                   )
-                  dispatch('printingServer/printingServerInvoiceRaw', state.order, {
-                    root: true,
-                  })
                   dispatch('order/markSplitItemsPaid', null, {
                     root: true,
                   }).then(() => {
