@@ -1194,6 +1194,9 @@ const actions = {
                     state.order.items.length,
                     { root: true }
                   )
+                  dispatch('printingServer/printingServerInvoiceRaw', state.order, {
+                    root: true,
+                  })
                   dispatch('order/markSplitItemsPaid', null, {
                     root: true,
                   }).then(() => {
