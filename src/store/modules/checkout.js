@@ -23,7 +23,7 @@ const state = {
   route: null,
   orderCreationSource: '',
   orderItemsPayload: {},
-  dineInSplitedItems: undefined,
+  dineInSplitedItems: false,
 }
 
 // getters
@@ -1091,18 +1091,23 @@ const actions = {
             let msg = rootGetters['location/_t']('Dinein Order has been paid')
             if (action === 'dine-in-place-order') {
               if (getters.complete) {
-                //after split paid we create a new order with remaining items so at end
+                //after split paid we crefate a new order with remaining items so at end
                 //it will reach to this add/create dine in method and show split pay msg
                 msg = rootGetters['location/_t']('Dinein Order has been placed')
+                commit('SPLITED_ITEM', false, { root: true })
               } else {
+                commit('SPLITED_ITEM', true, { root: true })
                 msg = rootGetters['location/_t'](
                   'Payment done for selected item(s).'
                 )
               }
               //Invoice APP API Call with Custom Request JSON
-              dispatch('printingServer/printingServerInvoiceRaw', state.order, {
-                root: true,
-              })
+              if (!state.dineInSplitedItems) {
+                dispatch('printingServer/printingServerInvoiceRaw', state.order, {
+                  root: true,
+                })
+              }
+
               let resetFull = false
               if (getters.complete) {
                 resetFull = true
@@ -1149,7 +1154,6 @@ const actions = {
         if (route === 'updateOrder') {
           order = { ...order, ...data }
           msg = 'Dinein order has been updated'
-          commit('SPLITED_ITEM', { ...order })
         }
         //delete order.order_system_status
         delete order.new_real_transition_order_no
