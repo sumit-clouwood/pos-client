@@ -1091,12 +1091,12 @@ const actions = {
             let msg = rootGetters['location/_t']('Dinein Order has been paid')
             if (action === 'dine-in-place-order') {
               if (getters.complete) {
-                //after split paid we crefate a new order with remaining items so at end
+                //after split paid we create a new order with remaining items so at end
                 //it will reach to this add/create dine in method and show split pay msg
                 msg = rootGetters['location/_t']('Dinein Order has been placed')
-                commit('SPLITED_ITEM', false, { root: true })
+                commit('SPLITED_ITEM', false)
               } else {
-                commit('SPLITED_ITEM', true, { root: true })
+                commit('SPLITED_ITEM', true)
                 msg = rootGetters['location/_t'](
                   'Payment done for selected item(s).'
                 )
