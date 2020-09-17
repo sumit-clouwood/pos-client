@@ -12,7 +12,9 @@
         <div v-for="(field, key) in fields" :key="key">
           <div
             class="left-form"
-            v-if="field.name_key !== 'location_coordinates'"
+            v-if="
+              field.name_key !== 'location_coordinates' && field.item_status
+            "
           >
             <div>
               <label>
@@ -36,6 +38,11 @@
                 "
                 :name="field.name"
               />
+              <textarea
+                id="styled"
+                v-if="field.field_type === 'textarea'"
+                v-model="newCustomerDetails[field.name_key]"
+              ></textarea>
               <input
                 class="text-width"
                 v-if="
@@ -344,6 +351,13 @@ input {
 }
 .text-width {
   /*width: 20.5vw !important;*/
+}
+textarea#styled {
+  width: 293px;
+  height: 70px;
+  border: 1px solid #e4e7eb;
+  padding: 5px;
+  border-radius: 2px;
 }
 .hidden {
   display: none;

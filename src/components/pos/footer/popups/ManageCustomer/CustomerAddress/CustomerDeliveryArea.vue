@@ -11,7 +11,7 @@
       :class="{ active: activeIndex === index }"
       @click="setActiveCustomer(address, index)"
     >
-      <div>
+      <div v-if="address">
         <p class="color-text-invert">
           <!--<span
             v-if="!getDeliveryArea(address.delivery_area_id)"
@@ -21,14 +21,15 @@
           </span>-->
           <span class="color-text">{{ _t('Store') }}: {{ storeName }}</span
           ><br />
-          <span class="color-text-invert">
+          <span class="color-text-invert" v-if="address.delivery_area_id">
             {{ _t('Area') }}:
             {{ getDeliveryArea(address.delivery_area_id) }}
           </span>
           <br />
-          {{ address.flat_number }}, {{ address.building }},
-          {{ address.street }},
-          {{ address.city }}
+          <span v-if="address.flat_number">{{ address.flat_number }}, </span>
+          <span v-if="address.building">{{ address.building }}, </span>
+          <span v-if="address.street">{{ address.street }}, </span>
+          <span v-if="address.city">{{ address.city }} </span>
           <span class="color-text-invert" v-if="address.min_order_value">
             <br />
             {{ _t('Min order') }}
@@ -93,15 +94,19 @@ export default {
   },
   methods: {
     setActiveCustomer(address, index) {
-      address.delivery_area = this.getDeliveryArea(address.delivery_area_id)
-      this.activeIndex = index
-      this.selectedAddress(address)
-        .then(() => {
-          if (this.msg && this.msg.message.length > 0) {
-            this.msg.message = ''
-          }
-        })
-        .catch(error => (this.error = error))
+      if (address) {
+        address.delivery_area = address.delivery_area_id
+          ? this.getDeliveryArea(address.delivery_area_id)
+          : ''
+        this.activeIndex = index
+        this.selectedAddress(address)
+          .then(() => {
+            if (this.msg && this.msg.message.length > 0) {
+              this.msg.message = ''
+            }
+          })
+          .catch(error => (this.error = error))
+      }
     },
     ...mapActions('customer', ['selectedAddress']),
   },
@@ -127,6 +132,9 @@ export default {
   position: absolute;
   bottom: 0;
   right: 5px;
+}
+.order-location.option-contain.cu-delivery-area-location:empty {
+  display: none;
 }
 .addOrders {
   overflow-y: auto !important;

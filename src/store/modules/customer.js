@@ -9,6 +9,7 @@ const state = {
   customer_list: [],
   customer: false,
   crm_fields: undefined,
+  all_crm_fields: [],
   mandatory_fields: [],
   multistore: false,
   multistoreDeliveryArea: {},
@@ -17,6 +18,7 @@ const state = {
   paginate: {},
   lastOrder: false,
   pastOrders: false,
+  crm_address_fields: [],
   // customerLastOrderDetails: false,
   pastOrdersPaginate: {},
   params: {
@@ -85,7 +87,7 @@ const getters = {
   },
   // eslint-disable-next-line no-unused-vars
   getDeliveryArea: state => addressId => {
-    return addressId ? addressId.split('|').join(', ') : 'NA'
+    return addressId && addressId != '' ? addressId.split('|').join(', ') : 'NA'
   },
   getCustomerAddresses: (state, getters) => {
     if (state.customer && state.customer.customer_addresses) {
@@ -141,7 +143,7 @@ const actions = {
       })
     })
   },
-  fetchCRMCustomerFields({ commit }) {
+  fetchCRMCustomerFields({ commit, dispatch }) {
     // return new Promise((resolve, reject) => {
     CustomerService.fetchCRMFields().then(response => {
       let fields_by_group = {
@@ -150,10 +152,12 @@ const actions = {
         _ADDRESS: [],
       }
       let mandate_fields = []
+      let all_fields = []
       if (response.data.data) {
         // eslint-disable-next-line no-debugger
         // debugger
         response.data.data.forEach(field => {
+          all_fields[field.name_key] = ''
           if (field.mandatory) mandate_fields.push(field)
           if (field.group === CONST.GENERAL_INFORMATION) {
             fields_by_group.GENERAL_INFORMATION.push(field)
@@ -163,26 +167,38 @@ const actions = {
             fields_by_group._ADDRESS.push(field)
           }
         })
+        commit('SET_CUSTOMER_FIELDS', {
+          group: fields_by_group,
+          all_fields: all_fields,
+        })
+        commit('SET_CUSTOMER_MANDATORY_FIELDS', mandate_fields)
+        dispatch('address_fields')
       }
-      // eslint-disable-next-line no-console
-      console.log(fields_by_group, 'responseresponse crm')
-      commit('SET_CUSTOMER_FIELDS', fields_by_group)
-      commit('SET_CUSTOMER_MANDATORY_FIELDS', mandate_fields)
     })
     // })
+  },
+  address_fields({ state, commit }) {
+    let crm_fields = []
+    if (state.crm_fields) {
+      state.crm_fields['_ADDRESS'].forEach(field => {
+        crm_fields[field.name_key] = ''
+      })
+    }
+    commit('CRM_ADDRESS_FIELD', crm_fields)
   },
   fetchAllCustomers({ commit, dispatch }) {
     commit(mutation.FETCH_ALL, 'brand_customers_main_tbl')
     dispatch('fetchAll')
   },
-  addCustomer({ dispatch }) {
+  addCustomer({ dispatch, state }) {
     const params = [
       {
-        nearest_landmark: '',
+        // nearest_landmark: '',
         is_web_admin: false,
+        ...state.all_crm_fields,
         // lat_lng_available: true,
         // location_coordinates: { lat: 0, lng: 0 },
-        alternative_phone: '',
+        /*alternative_phone: '',
         phone_number: '',
         gender: 'undisclosed',
         birthday: '',
@@ -191,7 +207,7 @@ const actions = {
         street: '',
         building: '',
         flat_number: '',
-        email: '',
+        email: '',*/
       },
     ]
     dispatch('setDefaultSettingsGlobalAddUpdate', ...params)
@@ -452,8 +468,12 @@ const actions = {
     })
   },
 
-  setDefaultSettingsGlobalAddUpdate({ commit }, setDefaultSettings) {
-    commit(mutation.SET_ADD_DETAILS, setDefaultSettings)
+  setDefaultSettingsGlobalAddUpdate({ commit, state }, setDefaultSettings) {
+    if (setDefaultSettings === 'address') {
+      commit(mutation.SET_ADD_DETAILS, state.crm_address_fields)
+    } else {
+      commit(mutation.SET_ADD_DETAILS, setDefaultSettings)
+    }
   },
 
   fetchDeliveryArea({ commit, rootGetters }, query) {
@@ -652,7 +672,13 @@ const mutations = {
   [mutation.SET_ERROR](state, error) {
     state.error = error
   },
-  SET_CUSTOMER_FIELDS: (state, fields) => (state.crm_fields = fields),
+  SET_CUSTOMER_FIELDS: (state, fields) => {
+    state.crm_fields = fields.group
+    state.all_crm_fields = fields.all_fields
+  },
+  CRM_ADDRESS_FIELD: (state, fields) => {
+    state.crm_address_fields = fields
+  },
   SET_CUSTOMER_MANDATORY_FIELDS: (state, mandate_fields) =>
     (state.mandatory_fields = mandate_fields),
   [mutation.LOYALTY](state, loyalty) {

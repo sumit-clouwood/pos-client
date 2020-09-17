@@ -13,68 +13,75 @@
         </div>
         <form class="modal-body row form-block">
           <div v-for="(field, key) in fields" :key="key">
-            <div
-              v-if="field.name_key === 'delivery_area_id'"
-              class="right-form"
-            >
-              <div style="display: grid; grid-template-columns: 1fr;">
-                <label>
-                  {{ _t(field.name) }}
-                  <span v-if="field.mandatory">
-                    *
-                  </span>
-                </label>
-                <cool-select
-                  v-if="field.name_key === 'delivery_area_id'"
-                  class="getAreaId text-width"
-                  :items="deliveryAreas"
-                  v-model="selectedDeliveryArea"
-                />
-              </div>
-            </div>
-            <div v-else class="left-form">
-              <div>
-                <label v-if="field.name_key !== 'location_coordinates'">
-                  {{ _t(field.name) }}
-                  <span v-if="field.mandatory">
-                    *
-                  </span>
-                </label>
-                <input
-                  v-if="
-                    field.field_type === 'string' &&
-                      field.name_key !== 'delivery_area_id'
-                  "
-                  type="text"
-                  class="text-width"
-                  autocomplete="off"
-                  v-model="newAddressDetails[field.name_key]"
-                  v-on:keyup="
-                    search(field.name_key, newAddressDetails[field.name_key])
-                  "
-                  :name="field.name"
-                />
-                <div
-                  class="dropdown"
-                  v-if="filterBuildingArea && field.name_key === 'building'"
-                >
-                  <div id="searchDropdown" class="dropdown-content">
-                    <span
-                      class="showItem color-dashboard-background"
-                      v-for="(area, index) in filterBuildingArea"
-                      :key="index"
-                      v-on:click="selectBuilding(area)"
-                    >
-                      {{ area }}
+            <div v-if="field.item_status">
+              <div
+                v-if="field.name_key === 'delivery_area_id'"
+                class="right-form"
+              >
+                <div style="display: grid; grid-template-columns: 1fr;">
+                  <label>
+                    {{ _t(field.name) }}
+                    <span v-if="field.mandatory">
+                      *
                     </span>
-                  </div>
+                  </label>
+                  <cool-select
+                    v-if="field.name_key === 'delivery_area_id'"
+                    class="getAreaId text-width"
+                    :items="deliveryAreas"
+                    v-model="selectedDeliveryArea"
+                  />
                 </div>
-                <span
-                  class="validation-errors text-capitalize"
-                  v-if="errors[field.name_key]"
-                >
-                  {{ errors[field.name_key] }}
-                </span>
+              </div>
+              <div v-else class="left-form">
+                <div>
+                  <label v-if="field.name_key !== 'location_coordinates'">
+                    {{ _t(field.name) }}
+                    <span v-if="field.mandatory">
+                      *
+                    </span>
+                  </label>
+                  <textarea
+                    id="styled"
+                    v-if="field.field_type === 'textarea'"
+                    v-model="newAddressDetails[field.name_key]"
+                  ></textarea>
+                  <input
+                    v-if="
+                      field.field_type === 'string' &&
+                        field.name_key !== 'delivery_area_id'
+                    "
+                    type="text"
+                    class="text-width"
+                    autocomplete="off"
+                    v-model="newAddressDetails[field.name_key]"
+                    v-on:keyup="
+                      search(field.name_key, newAddressDetails[field.name_key])
+                    "
+                    :name="field.name"
+                  />
+                  <div
+                    class="dropdown"
+                    v-if="filterBuildingArea && field.name_key === 'building'"
+                  >
+                    <div id="searchDropdown" class="dropdown-content">
+                      <span
+                        class="showItem color-dashboard-background"
+                        v-for="(area, index) in filterBuildingArea"
+                        :key="index"
+                        v-on:click="selectBuilding(area)"
+                      >
+                        {{ area }}
+                      </span>
+                    </div>
+                  </div>
+                  <span
+                    class="validation-errors text-capitalize"
+                    v-if="errors[field.name_key]"
+                  >
+                    {{ errors[field.name_key] }}
+                  </span>
+                </div>
               </div>
             </div>
           </div>
@@ -257,7 +264,10 @@ export default {
         let addAddress = $('#add_address')
         addAddress.modal('toggle')
         // addAddress.click()
-        let areaId = this.selectedDeliveryArea.split(', ').join('|')
+        let areaId = ''
+        if (this.selectedDeliveryArea) {
+          areaId = this.selectedDeliveryArea.split(', ').join('|')
+        }
         // this.fetchDeliveryAreas.forEach(element => {
         //   if (this.selectedDeliveryArea === element.delivery_area) {
         //     areaId = element._id
@@ -315,6 +325,13 @@ export default {
 }
 .validation-errors {
   color: red;
+}
+textarea#styled {
+  width: 293px;
+  height: 70px;
+  border: 1px solid #e4e7eb;
+  padding: 5px;
+  border-radius: 2px;
 }
 #add_address {
   .map-container {
