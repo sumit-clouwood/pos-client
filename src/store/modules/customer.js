@@ -93,6 +93,11 @@ const getters = {
     if (state.customer && state.customer.customer_addresses) {
       let avilableCustomerAddress = state.customer.customer_addresses.map(
         address => {
+          if (!address.delivery_area_id) {
+            address.min_order_value = 0
+            address.special_order_surcharge = 0
+            return address
+          }
           let checkDeliveryArea = getters.checkDeliveryArea(
             address.delivery_area_id,
             state.deliveryAreas
@@ -127,11 +132,10 @@ const getters = {
     return state.fetchDeliveryAreas
     // return areaId ? areaId.split('|').join(', ') : ''
   },
+  crmAddressFields: state => state.crm_address_fields,
   // eslint-disable-next-line no-unused-vars
   getElementByAreaId: state => (deliveryArea, element) => {
     let deliveryAreaArr = deliveryArea ? deliveryArea.split('|') : []
-    // eslint-disable-next-line no-console
-    console.log(deliveryAreaArr)
     return deliveryAreaArr[deliveryAreaArr.length - element]
   },
 }

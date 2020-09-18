@@ -19,8 +19,8 @@
           >
             Inactive
           </span>-->
-          <span class="color-text">{{ _t('Store') }}: {{ storeName }}</span
-          ><br />
+          <span class="color-text"> {{ _t('Store') }}: {{ storeName }} </span>
+          <br />
           <span class="color-text-invert" v-if="address.delivery_area_id">
             {{ _t('Area') }}:
             {{ getDeliveryArea(address.delivery_area_id) }}
@@ -30,6 +30,9 @@
           <span v-if="address.building">{{ address.building }}, </span>
           <span v-if="address.street">{{ address.street }}, </span>
           <span v-if="address.city">{{ address.city }} </span>
+          <span v-if="address.permanent_address">
+            {{ address.permanent_address }}
+          </span>
           <span class="color-text-invert" v-if="address.min_order_value">
             <br />
             {{ _t('Min order') }}
@@ -88,9 +91,13 @@ export default {
           ? state.location.locationData.country_name
           : '',
     }),*/
-    ...mapGetters('customer', ['getDeliveryArea']),
+    ...mapGetters('customer', [
+      'getDeliveryArea',
+      'crmAddressFields',
+      'getCustomerAddresses',
+    ]),
     ...mapGetters('location', ['_t', 'formatPrice']),
-    ...mapGetters('customer', ['getCustomerAddresses']),
+    // ...mapGetters('customer', ['getCustomerAddresses']),
   },
   methods: {
     setActiveCustomer(address, index) {
