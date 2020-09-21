@@ -2,6 +2,7 @@
 import db from '@/services/network/DB'
 import DataService from '@/services/DataService'
 import NetworkService from '@/services/NetworkService'
+import LocationService from '@/services/data/LocationService'
 import Fingerprint2 from 'fingerprintjs2'
 import * as CONST from '@/constants'
 
@@ -11,6 +12,20 @@ export default {
   lastSynced: null,
   syncInterval: 10, //300 sec = 5 min
 
+  validateSubscription(store) {
+    this.store = store
+    return new Promise((resolve, reject) => {
+      LocationService.validateStoreSubscription()
+        .then(response => {
+          if (response.data && response.data.is_expired) {
+            reject()
+          } else {
+            resolve()
+          }
+        })
+        .catch(error => reject(error))
+    })
+  },
   setup(store) {
     this.store = store
     return new Promise((resolve, reject) => {
