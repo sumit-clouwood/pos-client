@@ -16,6 +16,12 @@ other components are nested within.
         </p>
         <p>Technical info: {{ errored }}</p>
       </section>
+      <div v-else-if="subscriptionError">
+        <div class="subscription-error">
+          <h3>{{ subscriptionError }}</h3>
+          <p>{{ _t('Please renew your subscription to keep using POS.') }}</p>
+        </div>
+      </div>
       <div v-else-if="loading">
         <ul class="ullist-inventory-location loading-view pl-0 pt-2">
           <li class="p-3">
@@ -23,13 +29,9 @@ other components are nested within.
               <Preloader />
               <h2 class="text-center blue-middle">Loading Data...</h2>
               <ul class="loading-modules">
-                <li
-                  v-for="(val, key) in modules"
-                  :key="key"
-                  style="text-transform:capitalize"
-                >
+                <li v-for="(val, key) in modules" :key="key">
                   Loading {{ key }}
-                  <div class="progress">
+                  <div class="progress" style="text-transform:capitalize">
                     <div
                       class="progress-bar progressIncrement"
                       role="progressbar"
@@ -77,6 +79,7 @@ export default {
       progressIncrement: 0,
       orderId: null,
       tableId: null,
+      subscriptionError: false,
     }
   },
   methods: {
@@ -145,35 +148,46 @@ export default {
       }, 3000)
     },
     setup() {
-      const interval = setInterval(() => {
-        this.progressIncrement += 10
-        if (this.progressIncrement > 100) {
-          this.progressIncrement = 0
-        }
-      }, 1000)
+      this.subscriptionError = false
       bootstrap
-        .setup(this.$store)
+        .validateSubscription(this.$store)
         .then(() => {
-          setTimeout(() => {
-            clearInterval(interval)
-            this.progressIncrement = 100
-          }, 100)
-          setTimeout(() => {
-            this.loading = false
-          }, 300)
+          const interval = setInterval(() => {
+            this.progressIncrement += 10
+            if (this.progressIncrement > 100) {
+              this.progressIncrement = 0
+            }
+          }, 1000)
+          bootstrap
+            .setup(this.$store)
+            .then(() => {
+              setTimeout(() => {
+                clearInterval(interval)
+                this.progressIncrement = 100
+              }, 100)
+              setTimeout(() => {
+                this.loading = false
+              }, 300)
 
-          this.setupServiceWorker()
-          this.setupRoutes()
-          this.setupExternalScripts()
+              this.setupServiceWorker()
+              this.setupRoutes()
+              this.setupExternalScripts()
+            })
+            .catch(error => {
+              //this.errored = error
+              //setTimeout(() => {
+              this.loading = false
+              console.log(error, ', dispatch logout')
+              //this.$store.dispatch('auth/logout', error)
+              this.errored = ''
+              //}, 1000 * 10)
+            })
         })
-        .catch(error => {
-          //this.errored = error
-          //setTimeout(() => {
+        .catch(() => {
           this.loading = false
-          console.log(error, ', dispatch logout')
-          //this.$store.dispatch('auth/logout', error)
-          this.errored = ''
-          //}, 1000 * 10)
+          this.subscriptionError = this._t(
+            'Store subscription has been expired.'
+          )
         })
     },
     resetTokenNumber() {
@@ -295,7 +309,7 @@ export default {
     ...mapState('sync', ['modules']),
     ...mapState('context', ['currentRoute']),
     ...mapGetters('auth', ['loggedIn']),
-    ...mapGetters('location', ['isTokenManager']),
+    ...mapGetters('location', ['isTokenManager', '_t']),
     ...mapState('order', ['orderType']),
     ...mapState('sync', ['online']),
     ...mapState('location', ['timezoneString', 'openHours']),
@@ -342,3 +356,10 @@ export default {
 }
 //vanilla js
 </script>
+<style lang="scss" scoped>
+.subscription-error {
+  text-align: center;
+  width: 100%;
+  padding-top: 150px;
+}
+</style>
