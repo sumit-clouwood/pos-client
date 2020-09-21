@@ -197,9 +197,18 @@
                 <div class="runningtimes">
                   <div class="order-address" v-if="order.order_building">
                     <div class="order-delivery-area">
-                      {{ order.order_flat_number }}, {{ order.order_building }},
-                      {{ order.order_street }},
-                      {{ order.order_city }}
+                      <span v-if="order.order_flat_number"
+                        >{{ order.order_flat_number }},</span
+                      >
+                      <span v-if="order.order_building"
+                        >{{ order.order_building }},</span
+                      >
+                      <span v-if="order.order_street"
+                        >{{ order.order_street }},</span
+                      >
+                      <span v-if="order.order_city">{{
+                        order.order_city
+                      }}</span>
                     </div>
                   </div>
                   <span

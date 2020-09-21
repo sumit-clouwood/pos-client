@@ -19,6 +19,7 @@ const state = {
   lastOrder: false,
   pastOrders: false,
   crm_address_fields: [],
+  isBrandHasDeliveryOrder: true,
   // customerLastOrderDetails: false,
   pastOrdersPaginate: {},
   params: {
@@ -135,8 +136,11 @@ const getters = {
   crmAddressFields: state => state.crm_address_fields,
   // eslint-disable-next-line no-unused-vars
   getElementByAreaId: state => (deliveryArea, element) => {
-    let deliveryAreaArr = deliveryArea ? deliveryArea.split('|') : []
-    return deliveryAreaArr[deliveryAreaArr.length - element]
+    if (deliveryArea) {
+      let deliveryAreaArr = deliveryArea ? deliveryArea.split('|') : []
+      return deliveryAreaArr[deliveryAreaArr.length - element]
+    }
+    return ''
   },
 }
 const actions = {
@@ -162,6 +166,9 @@ const actions = {
         // debugger
         response.data.data.forEach(field => {
           all_fields[field.name_key] = ''
+          if (field.name_key === 'delivery_area_id' && !field.item_status) {
+            commit('IS_BRAND_HAS_DELIVERY_ORDER', false)
+          }
           if (field.mandatory) mandate_fields.push(field)
           if (field.group === CONST.GENERAL_INFORMATION) {
             fields_by_group.GENERAL_INFORMATION.push(field)
@@ -682,6 +689,9 @@ const mutations = {
   },
   CRM_ADDRESS_FIELD: (state, fields) => {
     state.crm_address_fields = fields
+  },
+  IS_BRAND_HAS_DELIVERY_ORDER: (state, status) => {
+    state.isBrandHasDeliveryOrder = status
   },
   SET_CUSTOMER_MANDATORY_FIELDS: (state, mandate_fields) =>
     (state.mandatory_fields = mandate_fields),

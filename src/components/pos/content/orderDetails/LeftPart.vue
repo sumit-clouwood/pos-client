@@ -174,10 +174,18 @@
           _t('Order Delivery Address:')
         }}</span>
         <p class="color-text">
-          {{ orderDetails.item.order_flat_number }},
-          {{ orderDetails.item.order_building }},
-          {{ orderDetails.item.order_street }},
-          {{ orderDetails.item.order_city }}
+          <span v-if="orderDetails.item.order_flat_number"
+            >{{ orderDetails.item.order_flat_number }},</span
+          >
+          <span v-if="orderDetails.item.order_building"
+            >{{ orderDetails.item.order_building }},</span
+          >
+          <span v-if="orderDetails.item.order_street"
+            >{{ orderDetails.item.order_street }},</span
+          >
+          <span v-if="orderDetails.item.order_city">{{
+            orderDetails.item.order_city
+          }}</span>
         </p>
       </div>
     </div>

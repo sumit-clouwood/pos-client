@@ -137,6 +137,7 @@ const actions = {
   },
 
   validateEvent({ commit, rootState, dispatch }, { action, data }) {
+
     if (state.processing === true) {
       // eslint-disable-next-line
       console.log('Dual event detected')
@@ -781,7 +782,7 @@ const actions = {
 
                 order = {
                   cashier_id: rootState.auth.userDetails.item._id,
-                  customer: '',
+                  customer: !rootState.isBrandHasDeliveryOrder ? rootState.customer.customerId : '',
                   customer_address_id: '',
                   referral: '',
                   transition_order_no: transitionOrderNo,
