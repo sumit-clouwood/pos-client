@@ -435,10 +435,12 @@ const actions = {
           ) {
             let customerId = actionDetails.customer || response.data.id
             dispatch('fetchSelectedCustomer', customerId).then(customer => {
-              dispatch('selectedAddress', customer.customer_addresses[0])
-              commit('location/SET_MODAL', '#order-confirmation', {
-                root: true,
-              })
+              if (state.isBrandHasDeliveryOrder) {
+                dispatch('selectedAddress', customer.customer_addresses[0])
+                commit('location/SET_MODAL', '#order-confirmation', {
+                  root: true,
+                })
+              }
             })
           }
 
