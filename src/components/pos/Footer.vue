@@ -211,6 +211,7 @@
             data-toggle="modal"
             data-dismiss="modal"
             @click="add_customer_address"
+            v-if="isBrandHasDeliveryOrder"
           >
             <!--<a
             class="footer-slider-list-item-link"
@@ -509,7 +510,7 @@ export default {
   },
   computed: {
     ...mapState('checkout', ['print', 'paymentMsgStatus']),
-    ...mapState('customer', ['responseInformation']),
+    ...mapState('customer', ['responseInformation', 'isBrandHasDeliveryOrder']),
     ...mapState('order', [
       'orderType',
       'cartType',
@@ -522,7 +523,6 @@ export default {
     ...mapState('dinein', ['availableTables', 'covers']),
     ...mapState('sync', ['online']),
     ...mapGetters('location', ['formatPrice', '_t']),
-
     ...mapState({
       loyaltyCard: state => state.customer.loyalty.card,
       paymentError: state => state.checkoutForm.error,
