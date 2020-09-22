@@ -10,7 +10,7 @@
           </h4>
           <div>
             <label class="container-checkbox"
-              >Store Time
+              >{{ _t('Store Time') }}
               <input
                 type="checkbox"
                 @click="getBSStoreTime"
@@ -287,6 +287,21 @@
                       border-right: 1px dashed #000"
                     >
                       {{ BSData.REPORT_MODIFY_REASON_QUANTITY }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td
+                      style="border-right: 1px dashed #000;
+                      border-left: 1px dashed #000;
+                      text-align: left;padding: 0.3rem;"
+                    >
+                      {{ _t('Refunded Orders') }}
+                    </td>
+                    <td
+                      style="padding-left: 10px;
+                      border-right: 1px dashed #000"
+                    >
+                      {{ BSData.REPORT_ORDER_REFUND_REASON_QUANTITY }}
                     </td>
                   </tr>
                   <tr>
