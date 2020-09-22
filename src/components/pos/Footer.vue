@@ -210,8 +210,8 @@
             class="footer-slider-list-item color-secondary"
             data-toggle="modal"
             data-dismiss="modal"
+            :class="{ deactive_class: !isBrandHasDeliveryOrder }"
             @click="add_customer_address"
-            v-if="isBrandHasDeliveryOrder"
           >
             <!--<a
             class="footer-slider-list-item-link"
@@ -626,6 +626,11 @@ export default {
 }
 .hide {
   display: none !important;
+}
+.deactive_class {
+  /*background: rgba(250, 248, 248, 0.97) !important;*/
+  opacity: 0.5;
+  pointer-events: none;
 }
 </style>
 <style lang="sass" scoped>
