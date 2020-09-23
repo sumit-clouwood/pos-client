@@ -19,7 +19,7 @@ other components are nested within.
       <div v-else-if="subscriptionError">
         <div class="subscription-error">
           <h3>{{ subscriptionError }}</h3>
-          <p>{{ _t('Please renew your subscription to keep using POS.') }}</p>
+          <p>{{ _t('Please contact your store owner for access.') }}</p>
         </div>
       </div>
       <div v-else-if="loading">
