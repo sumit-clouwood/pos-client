@@ -294,8 +294,6 @@ export default {
     ...mapGetters('deliveryManager', ['orders', 'drivers']),
   },
   created() {
-    // eslint-disable-next-line no-console
-    console.log(this.orders)
     this.jeeblyEnabled = this.store.jeebly && this.brand.jeebly ? true : false
     this.tawseelEnabled =
       this.store.tawseel && this.brand.tawseel ? true : false

@@ -122,6 +122,19 @@
             </div>
           </button>
           <button
+            v-if="isOrderFromBrandWebOnlinePayment(selectedOrder)"
+            type="button"
+            class="button btn btn-danger color-button color-text-invert"
+            data-toggle="modal"
+            @click="refundAllowed(true)"
+            data-target=".cancel-order"
+          >
+            <div class="button-content-container">
+              <div class="button-icon-container"></div>
+              <div class="button-caption">{{ _t('Refund') }}</div>
+            </div>
+          </button>
+          <button
             type="button"
             class="button btn btn-danger color-button color-text-invert"
             data-dismiss="modal"
@@ -145,7 +158,7 @@
 <script>
 /* global hideModal */
 import { mapState, mapGetters, mapActions } from 'vuex'
-
+import * as CONST from '@/constants'
 import Invoice from '@/components/pos/content/cart/payNow/Invoice'
 import Receipt from '@/components/pos/content/orderDetails/rightContent/Receipt'
 import History from '@/components/pos/content/orderDetails/rightContent/History'
@@ -179,6 +192,33 @@ export default {
     ...mapGetters('auth', ['multistore', 'allowed']),
   },
   methods: {
+    isOrderFromBrandWebOnlinePayment(order) {
+      if (order) {
+        if (
+          order.item.order_source === CONST.ORDER_SOURCE_WEBSITE &&
+          order.item.order_system_status === CONST.ORDER_SYSTEM_STATUS_NORMAL
+        ) {
+          for (var op of order.item.order_payments) {
+            let found = order.lookups.brand_payment_types['_id'][op.entity_id]
+            if (found) {
+              if (found.type === CONST.PAYMENT_TYPE_ONLINE_ID) {
+                return true
+              }
+            }
+          }
+          /*return order.item.order_payments.find(
+            payment => payment.name === CONST.PAYMENT_TYPE_ONLINE_ID
+          )*/
+        } else {
+          return false
+        }
+      }
+    },
+    refundAllowed(status) {
+      this.$store.commit('customer/IS_REFUND_ALLOW', status, {
+        root: true,
+      })
+    },
     ...mapActions('customer', ['fetchSelectedCustomer']),
     ...mapActions('deliveryManager', ['printInvoice']),
     fetchCustomer(customerId) {

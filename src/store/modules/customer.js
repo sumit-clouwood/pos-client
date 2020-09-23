@@ -15,6 +15,7 @@ const state = {
   multistoreDeliveryArea: {},
   customerId: null,
   customer_group: {},
+  isRefundAllow: false,
   paginate: {},
   lastOrder: false,
   pastOrders: false,
@@ -694,6 +695,9 @@ const mutations = {
   },
   IS_BRAND_HAS_DELIVERY_ORDER: (state, status) => {
     state.isBrandHasDeliveryOrder = status
+  },
+  IS_REFUND_ALLOW: (state, status) => {
+    state.isRefundAllow = status
   },
   SET_CUSTOMER_MANDATORY_FIELDS: (state, mandate_fields) =>
     (state.mandatory_fields = mandate_fields),
