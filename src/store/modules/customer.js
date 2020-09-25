@@ -253,26 +253,34 @@ const actions = {
           }
           commit(mutation.SET_LOADING, false)
         })
-        .catch(error => reject(error))
+        .catch(error => {
+          commit(mutation.SET_LOADING, false)
+          reject(error)
+        })
       //fetch customer deliver areas
-      resolve()
+      // resolve()
       dispatch('fetchDeliveryArea', '')
       dispatch('fetchCRMCustomerFields')
       // get Customer Group
       CustomerService.customerGroupList().then(response => {
         commit(mutation.SET_CUSTOMER_GROUP, response.data.data)
       })
-      CustomerService.customerBuildings().then(buildingAreas => {
-        if (buildingAreas.data.data) {
-          let obj = Object.values(buildingAreas.data.data)
-          commit(mutation.BUILDING_AREA, obj)
-        }
-      })
+      CustomerService.customerBuildings()
+        .then(buildingAreas => {
+          if (buildingAreas.data.data) {
+            let obj = Object.values(buildingAreas.data.data)
+            commit(mutation.BUILDING_AREA, obj)
+          }
+        })
+        .catch(error => {
+          commit(mutation.SET_LOADING, false)
+          reject(error)
+        })
     })
   },
 
   setPageNumber: function({ commit, dispatch }, pageNumber) {
-    commit(mutation.SET_LOADING, true)
+    // commit(mutation.SET_LOADING, true)
     commit(mutation.SET_CURRENT_PAGE_NO, pageNumber)
     dispatch('fetchAll').then(() => {
       commit(mutation.SET_LOADING, false)
@@ -302,7 +310,7 @@ const actions = {
   searchCustomer: function({ commit, dispatch }, searchTerms) {
     return new Promise((resolve, reject) => {
       commit(mutation.CUSTOMER_LIST, [])
-      commit(mutation.SET_LOADING, true)
+      // commit(mutation.SET_LOADING, true)
       commit(mutation.SET_SEARCH_TERMS, searchTerms)
       dispatch('fetchAll')
         .then(response => {
