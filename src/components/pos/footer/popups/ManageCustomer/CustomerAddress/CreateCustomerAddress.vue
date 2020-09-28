@@ -37,19 +37,30 @@
                 <div>
                   <label v-if="field.name_key !== 'location_coordinates'">
                     {{ _t(field.name) }}
+                    <i
+                      class="fa fa-question-circle"
+                      aria-hidden="true"
+                      v-if="field.field_desc"
+                      :title="_t(field.field_desc)"
+                    >
+                    </i>
                     <span v-if="field.mandatory">
                       *
                     </span>
                   </label>
                   <textarea
+                    :maxlength="field.max"
+                    :minlength="field.min"
                     id="styled"
                     v-if="field.field_type === 'textarea'"
                     v-model="newAddressDetails[field.name_key]"
                   ></textarea>
                   <input
+                    :maxlength="field.max"
+                    :minlength="field.min"
                     v-if="
                       field.field_type === 'string' &&
-                        field.name_key !== 'delivery_area_id'
+                        !drop_downs.includes(field.name_key)
                     "
                     type="text"
                     class="text-width"
@@ -58,6 +69,20 @@
                     v-on:keyup="
                       search(field.name_key, newAddressDetails[field.name_key])
                     "
+                    :name="field.name"
+                  />
+                  <input
+                    :maxlength="field.max"
+                    :minlength="field.min"
+                    class="text-width"
+                    v-if="
+                      field.field_type === 'numeric' &&
+                        !drop_downs.includes(field.name_key)
+                    "
+                    type="text"
+                    autocomplete="off"
+                    v-model="newAddressDetails[field.name_key]"
+                    @keypress="Num.toNumberOnly($event)"
                     :name="field.name"
                   />
                   <div
@@ -79,7 +104,7 @@
                     class="validation-errors text-capitalize"
                     v-if="errors[field.name_key]"
                   >
-                    {{ errors[field.name_key] }}
+                    {{ errors[field.name_key].replace(/_|\s/g, ' ') }}
                   </span>
                 </div>
               </div>
@@ -132,6 +157,7 @@ export default {
   },
   data() {
     return {
+      drop_downs: ['delivery_area_id'],
       selectedDeliveryArea: null,
       errors: {},
       add_delivery_area: '',

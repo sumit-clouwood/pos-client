@@ -19,11 +19,20 @@
             <div>
               <label>
                 {{ _t(field.name) }}
+                <i
+                  class="fa fa-question-circle"
+                  aria-hidden="true"
+                  v-if="field.field_desc"
+                  :title="_t(field.field_desc)"
+                >
+                </i>
                 <span v-if="field.mandatory">
                   *
                 </span>
               </label>
               <input
+                :maxlength="field.max"
+                :minlength="field.min"
                 v-if="
                   field.field_type === 'string' &&
                     !drop_downs.includes(field.name_key) &&
@@ -39,11 +48,15 @@
                 :name="field.name"
               />
               <textarea
+                :maxlength="field.max"
+                :minlength="field.min"
                 id="styled"
                 v-if="field.field_type === 'textarea'"
                 v-model="newCustomerDetails[field.name_key]"
               ></textarea>
               <input
+                :maxlength="field.max"
+                :minlength="field.min"
                 class="text-width"
                 v-if="
                   field.field_type === 'numeric' &&
@@ -119,7 +132,7 @@
                 class="validation-error text-capitalize"
                 v-if="errors[field.name_key]"
               >
-                {{ errors[field.name_key] }}
+                {{ errors[field.name_key].replace(/_|\s/g, ' ') }}
               </span>
             </div>
           </div>

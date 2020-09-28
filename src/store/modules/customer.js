@@ -159,6 +159,7 @@ const actions = {
         GENERAL_INFORMATION: [],
         ADDITIONAL_INFORMATION: [],
         _ADDRESS: [],
+        OTHER_INFORMATION: [],
       }
       let mandate_fields = []
       let all_fields = []
@@ -166,7 +167,7 @@ const actions = {
         // eslint-disable-next-line no-debugger
         // debugger
         response.data.data.forEach(field => {
-          all_fields[field.name_key] = ''
+          all_fields[field.name_key] = field.default_value || ''
           if (field.name_key === 'delivery_area_id' && !field.item_status) {
             commit('IS_BRAND_HAS_DELIVERY_ORDER', false)
           }
@@ -175,6 +176,8 @@ const actions = {
             fields_by_group.GENERAL_INFORMATION.push(field)
           } else if (field.group === CONST.ADDITIONAL_INFORMATION) {
             fields_by_group.ADDITIONAL_INFORMATION.push(field)
+          } else if (field.group === CONST.OTHER_INFORMATION) {
+            fields_by_group.OTHER_INFORMATION.push(field)
           } else if (field.group === CONST.CUSTOMER_ADDRESS) {
             fields_by_group._ADDRESS.push(field)
           }

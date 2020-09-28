@@ -302,7 +302,7 @@ const actions = {
 
       commit('payment/RESET', true, { root: true })
       dispatch('resetModules')
-
+      commit('customer/IS_BRAND_HAS_DELIVERY_ORDER', true)
       commit('context/RESET', null, { root: true })
       commit('sync/reset', {}, { root: true })
       commit('location/RESET', true, { root: true })
