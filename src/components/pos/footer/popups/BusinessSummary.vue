@@ -573,8 +573,16 @@ export default {
       this.$store.dispatch('reports/businessSummary', {}, { root: true })
     },
     printBS() {
+      let dt = this.$store.state.auth.deviceType
+      let isIOS = dt.osType
+      if (!isIOS) {
+        this.$htmlToPaper('print_bs')
+      } else {
+        const urlParams = new URLSearchParams(window.location.search)
+        urlParams.set('iosprint', '1')
+        window.location.search = urlParams
+      }
       // Pass the element id here
-      this.$htmlToPaper('print_bs')
     },
   },
   styles: [
