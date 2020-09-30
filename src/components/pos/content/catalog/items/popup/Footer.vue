@@ -4,7 +4,7 @@
     <div class="btn-announce apply_btn">
       <AddModifierOrderButton @error="error" />
       <RemoveFromComboButton
-        v-if="combo_item_with_mods"
+        v-if="current_combo_selected_item"
       ></RemoveFromComboButton>
     </div>
   </div>
@@ -12,6 +12,8 @@
 
 <script>
 //this footer ll be always called by the catalog and modifiers items only
+import { mapGetters } from 'vuex'
+
 import AddModifierOrderButton from './footer/AddModifierOrderButton'
 import RemoveFromComboButton from './footer/RemoveFromComboButton'
 export default {
@@ -27,6 +29,7 @@ export default {
     RemoveFromComboButton,
   },
   computed: {
+    ...mapGetters('combo', ['current_combo_selected_item']),
     combo_item_with_mods() {
       const item = this.$store.getters['combo/current_combo_selected_item']
       if (

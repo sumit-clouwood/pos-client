@@ -173,7 +173,6 @@ const actions = {
       section
     )
     if (checkAPIPermission) {
-      console.log(params, 'response')
       DMService.getDMOrderDetails(...params)
         .then(response => {
           commit(mutation.SET_LOADING, true)

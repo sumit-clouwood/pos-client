@@ -10,15 +10,29 @@
           {{ _t(index.replace(/_/g, ' ')) }}
         </h5>
         <div v-for="(field, key) in fields" :key="key">
-          <div class="left-form">
+          <div
+            class="left-form"
+            v-if="
+              field.name_key !== 'location_coordinates' && field.item_status
+            "
+          >
             <div>
-              <label v-if="field.name_key !== 'location_coordinates'">
+              <label>
                 {{ _t(field.name) }}
+                <i
+                  class="fa fa-question-circle"
+                  aria-hidden="true"
+                  v-if="field.field_desc"
+                  :title="_t(field.field_desc)"
+                >
+                </i>
                 <span v-if="field.mandatory">
                   *
                 </span>
               </label>
               <input
+                :maxlength="field.max"
+                :minlength="field.min"
                 v-if="
                   field.field_type === 'string' &&
                     !drop_downs.includes(field.name_key) &&
@@ -33,51 +47,16 @@
                 "
                 :name="field.name"
               />
-              <div v-if="field.name_key === 'location_coordinates'">
-                <div class="coordinates">
-                  <label>
-                    {{ _t('Coordinates Available') }}
-                    <span v-if="field.mandatory">
-                      *
-                    </span>
-                  </label>
-                  <label>
-                    <input
-                      type="checkbox"
-                      v-model="newCustomerDetails.lat_lng_available"
-                      name="coordinates"
-                      id="coordinate"
-                    />
-                    <label for="coordinate"></label>
-                  </label>
-                </div>
-                <map-location-selector
-                  :zoom="15"
-                  :latitude="store.location_coordinates.lat"
-                  :longitude="store.location_coordinates.lng"
-                  @locationUpdated="locationUpdated"
-                >
-                </map-location-selector>
-                <label>{{ _t('Latitude') }}</label>
-                <input
-                  v-if="newCustomerDetails.location_coordinates"
-                  class="text-width"
-                  type="text"
-                  autocomplete="off"
-                  v-model="newCustomerDetails.location_coordinates.lat"
-                  name="lat"
-                />
-                <label>{{ _t('Longitude') }}</label>
-                <input
-                  v-if="newCustomerDetails.location_coordinates"
-                  class="text-width"
-                  type="text"
-                  autocomplete="off"
-                  v-model="newCustomerDetails.location_coordinates.lng"
-                  name="lng"
-                />
-              </div>
+              <textarea
+                :maxlength="field.max"
+                :minlength="field.min"
+                id="styled"
+                v-if="field.field_type === 'textarea'"
+                v-model="newCustomerDetails[field.name_key]"
+              ></textarea>
               <input
+                :maxlength="field.max"
+                :minlength="field.min"
                 class="text-width"
                 v-if="
                   field.field_type === 'numeric' &&
@@ -105,7 +84,7 @@
                 </div>
               </div>
               <select
-                class="selectpicker text-width"
+                class="selectpicker"
                 v-if="field.name_key === 'gender'"
                 v-model="newCustomerDetails.gender"
               >
@@ -141,11 +120,19 @@
                 v-model="newCustomerDetails.birthday"
                 class="text-width"
               ></datetime>
+              <!--<map-location-selector
+                v-if="field.name_key === 'delivery_area_id'"
+                :zoom="15"
+                :latitude="store.location_coordinates.lat"
+                :longitude="store.location_coordinates.lng"
+                @locationUpdated="locationUpdated"
+              >
+              </map-location-selector>-->
               <span
                 class="validation-error text-capitalize"
                 v-if="errors[field.name_key]"
               >
-                {{ errors[field.name_key] }}
+                {{ errors[field.name_key].replace(/_|\s/g, ' ') }}
               </span>
             </div>
           </div>
@@ -159,7 +146,7 @@
 import { mapState, mapGetters } from 'vuex'
 import { Datetime } from 'vue-datetime'
 import { CoolSelect } from 'vue-cool-select'
-import mapLocationSelector from 'vue-google-maps-location-selector'
+// import mapLocationSelector from 'vue-google-maps-location-selector'
 
 function getWithoutSpaceLength(data) {
   if ($.trim(data).length == 0) {
@@ -175,7 +162,7 @@ export default {
   components: {
     Datetime,
     CoolSelect,
-    mapLocationSelector,
+    // mapLocationSelector,
   },
   data() {
     return {
@@ -231,12 +218,20 @@ export default {
     }),
   },
   methods: {
-    locationUpdated(latlng) {
-      this.newCustomerDetails.location_coordinates.lat = latlng.lat
-      this.newCustomerDetails.location_coordinates.lng = latlng.lng
+    /*locationUpdated(latlng) {
+      if (this.newCustomerDetails.location_coordinates === null) {
+        let location_coordinate = {
+          ...this.newCustomerDetails,
+          location_coordinates: { lat: latlng.lat, lng: latlng.lng },
+        }
+        this.$store.commit('customer/SET_EDIT_DETAILS', location_coordinate)
+      } else {
+        this.newCustomerDetails.location_coordinates.lat = latlng.lat
+        this.newCustomerDetails.location_coordinates.lng = latlng.lng
+      }
       // eslint-disable-next-line no-console
       console.log(this.latitude, this.longitude)
-    },
+    },*/
     search(keyName, searchTerm) {
       if (keyName !== 'building') {
         return true
@@ -271,7 +266,8 @@ export default {
       console.log(this.mandatory_fields)
       this.errors = {}
       this.errors.count = 0
-      this.mandatory_fields.forEach(field => {
+      this.mandatory_fields.forEach(field_item => {
+        let field = field_item.name_key
         if (
           (field === 'phone_number' || field === 'alternative_phone') &&
           $.trim(this.newCustomerDetails[field]).length < 10
@@ -312,13 +308,18 @@ export default {
       return this.errors
     },
     getData() {
-      // eslint-disable-next-line no-debugger
-      debugger
       if (this.selectedDeliveryArea) {
         let areaId = this.selectedDeliveryArea.split(', ').join('|')
         return { ...this.newCustomerDetails, delivery_area_id: areaId }
       }
-      return { ...this.newCustomerDetails, delivery_area_id: false }
+      // eslint-disable-next-line no-console
+      /*if (this.newCustomerDetails.location_coordinates.lat === 0) {
+        // eslint-disable-next-line max-len
+        this.newCustomerDetails.location_coordinates.lat = this.store.location_coordinates.lat
+        // eslint-disable-next-line max-len
+        this.newCustomerDetails.location_coordinates.lng = this.store.location_coordinates.lng
+      }*/
+      return { ...this.newCustomerDetails, delivery_area_id: '' }
     },
     validEmail: function(email) {
       let re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
@@ -342,22 +343,43 @@ export default {
   },
 }
 </script>
-<style scoped lang="css">
+<style scoped lang="scss">
+@import '@/assets/scss/pixels_rem.scss';
+@import '@/assets/scss/variables.scss';
 .map-container {
-  height: 50vh;
-  width: 54vw;
-  left: 189px;
-  bottom: 25px;
+  height: 14.4rem;
+  width: 55.4rem;
+  left: 13.5rem;
+  top: 10px;
 }
 .getAreaId {
   display: inline-block !important;
   width: 55.6795rem !important;
 }
+input {
+  width: 21.0875rem !important;
+}
 .coordinates label {
   padding: unset;
 }
 .text-width {
-  width: 20.5vw !important;
+  /*width: 20.5vw !important;*/
+}
+textarea#styled {
+  width: 293px;
+  height: 70px;
+  border: 1px solid #e4e7eb;
+  padding: 5px;
+  border-radius: 2px;
+}
+.hidden {
+  display: none;
+}
+input.vdatetime-input.btn.schedule-input.btn-large.datepicker-here {
+  width: 100% !important;
+}
+input.vdatetime-input {
+  width: $px342 !important;
 }
 .coordinates {
   margin-bottom: 22px;

@@ -23,6 +23,7 @@ const state = {
   route: null,
   orderCreationSource: '',
   orderItemsPayload: {},
+  dineInSplitedItems: false,
 }
 
 // getters
@@ -136,6 +137,7 @@ const actions = {
   },
 
   validateEvent({ commit, rootState, dispatch }, { action, data }) {
+
     if (state.processing === true) {
       // eslint-disable-next-line
       console.log('Dual event detected')
@@ -459,7 +461,10 @@ const actions = {
     return Promise.resolve(order)
   },
 
-  addItemsToOrder({ rootState, dispatch, state, rootGetters }, { order, action }) {
+  addItemsToOrder(
+    { rootState, dispatch, state, rootGetters },
+    { order, action }
+  ) {
     order.items = []
     let item_discounts = []
     let itemModifiers = []
@@ -573,7 +578,6 @@ const actions = {
         }
 
         order.items.push(orderItem)
-
       }
     })
 
@@ -601,7 +605,6 @@ const actions = {
     order.item_modifiers = itemModifiers
 
     return dispatch('orderItemsHook', order)
-
   },
 
   injectDineInItemsData({ rootState }, order) {
@@ -653,7 +656,7 @@ const actions = {
     })
   },
 
-  prepareComboItems( { rootGetters }, order) {
+  prepareComboItems({ rootGetters }, order) {
     return new Promise(resolve => {
       //prepare combo items here
       let comboItems = []
@@ -664,10 +667,19 @@ const actions = {
         //item is combo here
         if (item.type == CONSTANTS.COMBO_ITEM_TYPE) {
           //get items from combo and prepare them as checkout
-          const itemsInCombo = rootGetters['combo/find_combo_items'](item.originalItem)
+          const itemsInCombo = rootGetters['combo/find_combo_items'](
+            item.originalItem
+          )
 
-          const perItemPrice = Num.round(item.price / itemsInCombo.length)
-          const perItemTax = Num.round(item.tax / itemsInCombo.length)
+          let qtys = 0
+          itemsInCombo.forEach(itemInCombo => {
+            let qty = itemInCombo.quantity || 1
+            qtys += qty
+          })
+
+          const perItemPrice = Num.round(item.price / qtys)
+          const perItemTax = Num.round(item.tax / qtys)
+
           itemsInCombo.forEach(itemInCombo => {
             let orderItem = {
               name: itemInCombo.name,
@@ -686,7 +698,9 @@ const actions = {
             }
             comboItems.push(orderItem)
             //set modifiers
-            let modifiersForItemInCombo = rootGetters['combo/find_combo_item_modifiers'](item.originalItem, itemInCombo)
+            let modifiersForItemInCombo = rootGetters[
+              'combo/find_combo_item_modifiers'
+            ](item.originalItem, itemInCombo)
             modifiersForItemInCombo.forEach(modifier => {
               let newModifier = {
                 entity_id: modifier._id,
@@ -701,17 +715,40 @@ const actions = {
               comboItemsModifiers.push(newModifier)
             })
 
-            latestOrderIndex ++
+            latestOrderIndex++
           })
           //fix last item price
-          const priceDiff = item.price - perItemPrice * itemsInCombo.length
-          const taxDiff = item.tax - perItemTax * itemsInCombo.length
+          const itemsPrices = perItemPrice * qtys
+          const itemsTaxes = perItemTax * qtys
+
+          // change main item price
+          // item.price = itemsPrices
+          // item.tax = itemsTaxes
+
+          // change sub items price
+          // if price diff is 0.1 and qty is 3, there ll be mismatch
+          const priceDiff = item.price - itemsPrices
+          const taxDiff = item.tax - itemsTaxes
+
+          const lastItem = comboItems[comboItems.length - 1]
+          if (lastItem.qty > 1) {
+            //decrease quantity of last item by 1
+            //create a new 1 item and adjust price there
+            let newLastItem = { ...lastItem }
+            comboItems[comboItems.length - 1].qty =
+              comboItems[comboItems.length - 1].qty - 1
+            //add new item
+            newLastItem.qty = 1
+            newLastItem.no = newLastItem.no + 1
+            comboItems.push(newLastItem)
+          }
 
           comboItems[comboItems.length - 1].price += priceDiff
+
           comboItems[comboItems.length - 1].tax += taxDiff
         }
       })
-      
+
       order.items = [...order.items, ...comboItems]
       order.item_modifiers = [...order.item_modifiers, ...comboItemsModifiers]
       resolve(order)
@@ -745,7 +782,7 @@ const actions = {
 
                 order = {
                   cashier_id: rootState.auth.userDetails.item._id,
-                  customer: '',
+                  customer: !rootState.isBrandHasDeliveryOrder ? rootState.customer.customerId : '',
                   customer_address_id: '',
                   referral: '',
                   transition_order_no: transitionOrderNo,
@@ -1058,15 +1095,20 @@ const actions = {
                 //after split paid we create a new order with remaining items so at end
                 //it will reach to this add/create dine in method and show split pay msg
                 msg = rootGetters['location/_t']('Dinein Order has been placed')
+                commit('SPLITED_ITEM', false)
               } else {
+                commit('SPLITED_ITEM', true)
                 msg = rootGetters['location/_t'](
                   'Payment done for selected item(s).'
                 )
               }
               //Invoice APP API Call with Custom Request JSON
-              dispatch('printingServer/printingServerInvoiceRaw', state.order, {
-                root: true,
-              })
+              if (!state.dineInSplitedItems) {
+                dispatch('printingServer/printingServerInvoiceRaw', state.order, {
+                  root: true,
+                })
+              }
+
               let resetFull = false
               if (getters.complete) {
                 resetFull = true
@@ -1149,6 +1191,9 @@ const actions = {
                   'SET_ORDER_NUMBER',
                   rootState.order.selectedOrder.item.order_no
                 )
+                dispatch('printingServer/printingServerInvoiceRaw', state.order, {
+                  root: true,
+                })
                 if (rootState.order.splitted || rootState.order.splitBill) {
                   commit('order/SET_SPLITTED', true, { root: true })
                   //mark items as paid in current execution
@@ -1160,6 +1205,19 @@ const actions = {
                   dispatch('order/markSplitItemsPaid', null, {
                     root: true,
                   }).then(() => {
+                    /*dispatch('injectDineInItemsData', order).then(order => {
+                      order.items = order.items.map(item => {
+                        delete item.originalItem
+                        return item
+                      })
+                      dispatch('printingServer/printingServerInvoiceRaw', order, {
+                        root: true,
+                      })
+                    })*/
+
+                    /*dispatch('printingServer/printingServerInvoiceRaw', order, {
+                      root: true,
+                    })*/
                     if (!getters.complete) {
                       dispatch('splitOrder', {
                         action: action,
@@ -1826,7 +1884,7 @@ const actions = {
     dispatch('surcharge/reset', {}, { root: true })
     if (full && getters.complete) {
       dispatch('order/reset', {}, { root: true })
-      dispatch('combo/reset',true, { root: true })
+      dispatch('combo/reset', true, { root: true })
       dispatch('customer/reset', true, { root: true })
       dispatch('location/reset', {}, { root: true })
     }
@@ -2078,6 +2136,9 @@ const mutations = {
   },
   ['ORDER_CREATION_SOURCE'](state, route) {
     state.orderCreationSource = route
+  },
+  ['SPLITED_ITEM'](state, splitItems) {
+    state.dineInSplitedItems = splitItems
   },
   [mutation.ORDER_ITEM](state, orderItemsPayload) {
     console.log(orderItemsPayload, 'orderItemsPayload')

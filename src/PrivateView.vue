@@ -16,6 +16,12 @@ other components are nested within.
         </p>
         <p>Technical info: {{ errored }}</p>
       </section>
+      <div v-else-if="subscriptionError">
+        <div class="subscription-error">
+          <h3>{{ subscriptionError }}</h3>
+          <p>{{ _t('Please contact your store owner for access.') }}</p>
+        </div>
+      </div>
       <div v-else-if="loading">
         <ul class="ullist-inventory-location loading-view pl-0 pt-2">
           <li class="p-3">
@@ -23,13 +29,9 @@ other components are nested within.
               <Preloader />
               <h2 class="text-center blue-middle">Loading Data...</h2>
               <ul class="loading-modules">
-                <li
-                  v-for="(val, key) in modules"
-                  :key="key"
-                  style="text-transform:capitalize"
-                >
+                <li v-for="(val, key) in modules" :key="key">
                   Loading {{ key }}
-                  <div class="progress">
+                  <div class="progress" style="text-transform:capitalize">
                     <div
                       class="progress-bar progressIncrement"
                       role="progressbar"
@@ -77,6 +79,7 @@ export default {
       progressIncrement: 0,
       orderId: null,
       tableId: null,
+      subscriptionError: false,
     }
   },
   methods: {
@@ -145,6 +148,8 @@ export default {
       }, 3000)
     },
     setup() {
+      this.subscriptionError = false
+
       const interval = setInterval(() => {
         this.progressIncrement += 10
         if (this.progressIncrement > 100) {
@@ -170,7 +175,13 @@ export default {
           //this.errored = error
           //setTimeout(() => {
           this.loading = false
-          console.log(error, ', dispatch logout')
+          if (error === 'subscription') {
+            this.subscriptionError = this._t(
+              'Store subscription has been expired.'
+            )
+          } else {
+            console.log(error, ', dispatch logout')
+          }
           //this.$store.dispatch('auth/logout', error)
           this.errored = ''
           //}, 1000 * 10)
@@ -295,7 +306,7 @@ export default {
     ...mapState('sync', ['modules']),
     ...mapState('context', ['currentRoute']),
     ...mapGetters('auth', ['loggedIn']),
-    ...mapGetters('location', ['isTokenManager']),
+    ...mapGetters('location', ['isTokenManager', '_t']),
     ...mapState('order', ['orderType']),
     ...mapState('sync', ['online']),
     ...mapState('location', ['timezoneString', 'openHours']),
@@ -342,3 +353,10 @@ export default {
 }
 //vanilla js
 </script>
+<style lang="scss" scoped>
+.subscription-error {
+  text-align: center;
+  width: 100%;
+  padding-top: 150px;
+}
+</style>

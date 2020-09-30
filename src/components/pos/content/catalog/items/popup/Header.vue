@@ -1,14 +1,25 @@
 <template>
-  <div class="modal-header color-secondary" v-if="item">
-    <h5 class="modal-title color-text-invert" id="POSItemOptionsTitle">
-      {{ dt(item) }}
+  <div class="modal-header color-secondary">
+    <h5
+      class="modal-title color-text-invert"
+      id="POSItemOptionsTitle"
+      v-if="modifierItem"
+    >
+      {{ dt(modifierItem) }}
+    </h5>
+    <h5
+      class="modal-title color-text-invert"
+      id="POSItemOptionsTitle"
+      v-else-if="current_combo_selected_item"
+    >
+      {{ dt(current_combo_selected_item) }}
     </h5>
     <CloseButton />
   </div>
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 import CloseButton from './header/CloseButton'
 
 export default {
@@ -16,8 +27,9 @@ export default {
   props: {},
   computed: {
     ...mapState({
-      item: state => state.modifier.item,
+      modifierItem: state => state.modifier.item,
     }),
+    ...mapGetters('combo', ['current_combo_selected_item']),
   },
   components: {
     CloseButton,

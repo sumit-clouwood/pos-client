@@ -1,7 +1,7 @@
 <template>
-  <div class="modal-details color-dashboard-background" v-if="item">
+  <div class="modal-details color-dashboard-background">
     <div class="POSItemOptions_pricequantity">
-      <div class="POSItemOptions_price" v-if="!current_combo">
+      <div class="POSItemOptions_price" v-if="item && !current_combo">
         <label class="POSItemOptions_label color-text-invert">{{
           _t('Price')
         }}</label>
@@ -9,7 +9,7 @@
           {{ formatPrice(item.value * quantity) }}
         </div>
       </div>
-      <Quantity />
+      <Quantity v-if="item || current_combo_selected_item" />
     </div>
   </div>
 </template>
@@ -27,7 +27,7 @@ export default {
     }),
     ...mapGetters('location', ['formatPrice', '_t']),
     ...mapGetters('orderForm', ['quantity']),
-    ...mapState('combo', ['current_combo']),
+    ...mapGetters('combo', ['current_combo', 'current_combo_selected_item']),
   },
   components: {
     Quantity,

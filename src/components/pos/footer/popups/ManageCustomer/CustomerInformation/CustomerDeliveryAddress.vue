@@ -1,5 +1,5 @@
 <template>
-  <div id="delivery-area-address">
+  <div id="delivery-area-address" v-if="isBrandHasDeliveryOrder">
     <div class="order-address-details color-main add-address-wrapper ">
       <button
         class="color-main color-text-invert add-address-wrapper"
@@ -7,12 +7,7 @@
         data-toggle="modal"
         data-target="#add_address"
         data-dismiss="modal"
-        @click="
-          setDefaultSettingsGlobalAddUpdate({
-            nearest_landmark: '',
-            location_coordinates: { lat: 0, lng: 0 },
-          })
-        "
+        @click="setDefaultSettingsGlobalAddUpdate('address')"
       >
         {{ _t('+ Add Address') }}
       </button>
@@ -22,7 +17,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
+import { mapActions, mapGetters, mapState } from 'vuex'
 import CustomerDeliveryArea from '../CustomerAddress/CustomerDeliveryArea'
 
 export default {
@@ -31,6 +26,7 @@ export default {
     CustomerDeliveryArea,
   },
   computed: {
+    ...mapState('customer', ['isBrandHasDeliveryOrder']),
     ...mapGetters('location', ['_t']),
   },
   methods: {

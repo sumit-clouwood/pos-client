@@ -14,6 +14,7 @@ const state = {
   backgroundSync: false,
   lastFetch: 0,
   offlineSync: false,
+  isLoading: false,
 
   modules: {
     store: CONST.LOADING_STATUS_LOADING,
@@ -42,6 +43,7 @@ const getters = {
         return seconds
     }
   },
+  loadingData: state => state.isLoading,
 }
 
 // actions
@@ -51,6 +53,9 @@ const actions = {
     if (status === 'done') {
       dispatch('dinein/fetchAll', { silent: true }, { root: true })
     }
+  },
+  setLoader({ commit }, payload) {
+    commit('SET_IS_LOADING', payload)
   },
 }
 
@@ -97,6 +102,9 @@ const mutations = {
   },
   updateOfflineSync(state, status) {
     state.offlineSync = status
+  },
+  SET_IS_LOADING(state, payload) {
+    state.isLoading = payload
   },
 }
 

@@ -90,7 +90,14 @@
             ><span>{{ _t('Transactions') }}</span></a
           >
         </li>
-        <li v-if="!isWaiter() && !isCarhop() && permitted('delivery', 'root')">
+        <li
+          v-if="
+            !isWaiter() &&
+              !isCarhop() &&
+              permitted('delivery', 'root') &&
+              isBrandHasDeliveryOrder
+          "
+        >
           <router-link :to="'/delivery-manager' + store">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -489,6 +496,7 @@ export default {
         return this.$store.commit('location/SET_LOCALE', val)
       },
     },
+    ...mapState('customer', ['isBrandHasDeliveryOrder']),
     ...mapGetters('context', ['store']),
     ...mapGetters('auth', ['waiter', 'carhop', 'allowed']),
     ...mapState('location', ['availableLanguages', 'language']),

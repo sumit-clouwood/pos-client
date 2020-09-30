@@ -210,6 +210,7 @@
             class="footer-slider-list-item color-secondary"
             data-toggle="modal"
             data-dismiss="modal"
+            :class="{ deactive_class: !isBrandHasDeliveryOrder }"
             @click="add_customer_address"
           >
             <!--<a
@@ -509,7 +510,7 @@ export default {
   },
   computed: {
     ...mapState('checkout', ['print', 'paymentMsgStatus']),
-    ...mapState('customer', ['responseInformation']),
+    ...mapState('customer', ['responseInformation', 'isBrandHasDeliveryOrder']),
     ...mapState('order', [
       'orderType',
       'cartType',
@@ -522,7 +523,6 @@ export default {
     ...mapState('dinein', ['availableTables', 'covers']),
     ...mapState('sync', ['online']),
     ...mapGetters('location', ['formatPrice', '_t']),
-
     ...mapState({
       loyaltyCard: state => state.customer.loyalty.card,
       paymentError: state => state.checkoutForm.error,
@@ -626,6 +626,11 @@ export default {
 }
 .hide {
   display: none !important;
+}
+.deactive_class {
+  /*background: rgba(250, 248, 248, 0.97) !important;*/
+  opacity: 0.5;
+  pointer-events: none;
 }
 </style>
 <style lang="sass" scoped>

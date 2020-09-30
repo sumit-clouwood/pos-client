@@ -9,12 +9,12 @@
         @click="selectMethod"
       ></carousel>
     </div>
-    <template v-for="method in methods">
+    <template v-for="(method, index) in methods">
       <link
         v-for="(entry, key) in method"
         rel="prefetch"
         :href="entry.icon"
-        :key="key"
+        :key="key + index"
       />
     </template>
     <link rel="prefetch" href="img/icons/backarrow.svg" />

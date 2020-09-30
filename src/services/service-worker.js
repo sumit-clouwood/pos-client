@@ -3,7 +3,7 @@
 /* eslint-disable no-console */
 //appVersion has production build number . staging build number . int build number . bugfix
 //Reason: fixed msg 13
-var appVersion = '7.9.34.24'
+var appVersion = '7.10.35.34'
 
 var clientUrl = ''
 
@@ -86,6 +86,21 @@ function setupCache() {
         new workbox.expiration.Plugin({
           maxAgeSeconds: 60 * 60 * 24 * 365,
           maxEntries: 30,
+        }),
+      ],
+    })
+  )
+  //s3 bucket
+  workbox.routing.registerRoute(
+    /\.amazonaws\.com/,
+    new workbox.strategies.CacheFirst({
+      cacheName: 'dimsphotos',
+      plugins: [
+        new workbox.cacheableResponse.Plugin({
+          statuses: [0, 200],
+        }),
+        new workbox.expiration.Plugin({
+          maxAgeSeconds: 60 * 60 * 24 * 90,
         }),
       ],
     })
@@ -313,41 +328,6 @@ var EventListener = {
                     resolve(compositeResponse)
                   })
               })
-            })
-        )
-      } else {
-        //intercept normal css
-        event.respondWith(
-          caches
-            .match(event.request, { ignoreSearch: true })
-            .then(function(response) {
-              // serve from cache
-              // caches.match() always resolves
-              // but in case of success response will have value
-              if (response !== undefined) {
-                return response
-              } else {
-                // no response found in cache
-                // fetch online version
-                return fetch(event.request)
-                  .then(function(response) {
-                    // response may be used only once
-                    // we need to save clone to put one copy in cache
-                    // and serve second one
-                    let responseClone = response.clone()
-
-                    caches.open('v1').then(function(cache) {
-                      cache.put(event.request, responseClone)
-                    })
-                    return response
-                  })
-                  .catch(function() {
-                    //online request failed due to network problem
-                    // provide fallback
-                    console.log('fallback', event.request)
-                    return caches.match(event.request)
-                  })
-              }
             })
         )
       }

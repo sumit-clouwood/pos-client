@@ -85,7 +85,6 @@ export default {
   watch: {},
   computed: {
     ...mapGetters('deliveryManager', ['onlineOrders', 'drivers', 'params']),
-    ...mapGetters('context', ['store']),
     ...mapGetters('auth', ['waiter', 'carhop']),
     vlocale: {
       get() {
@@ -103,7 +102,6 @@ export default {
       username: state =>
         state.auth.userDetails ? state.auth.userDetails.name : '',
     }),
-    ...mapState('context'),
     ...mapGetters('location', ['_t', 'permitted']),
   },
   methods: {

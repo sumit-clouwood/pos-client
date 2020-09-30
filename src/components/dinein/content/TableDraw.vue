@@ -810,6 +810,9 @@ export default {
       let dis = this
       let user_agent = this.$store.state.auth.deviceType.userAgent
       let checkIpad = user_agent.search('ipad')
+      if (checkIpad < 0) {
+        checkIpad = user_agent.search('macintosh')
+      }
       this.tableTextTransform = checkIpad < 0 ? true : false
       d3.selectAll('.dinein_table').each((d, i, a) => {
         let data = d

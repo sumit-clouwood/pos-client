@@ -60,7 +60,7 @@
 
 <script>
 /* eslint-disable no-console */
-/* global hideModal */
+/* global hideModal showModal $ */
 import { mapGetters } from 'vuex'
 import Checkbox from '@/components/util/form/CheckBox2.vue'
 import Cart from '@/mixins/Cart'
@@ -106,10 +106,12 @@ export default {
     bus.$on('addComboItemWithModifiers', () => {
       const item = this.$store.getters['combo/current_combo_selected_item']
       let items = { ...this.$store.state.combo.currentComboSelectedItems }
-      items[item._id] = true
+      items[item._id] = this.$store.getters['orderForm/quantity']
       this.$store.commit('combo/SET_CURRENT_COMBO_SELECTED_ITEMS', items)
+      console.log('items after addition', items)
       this.comboItemSelection = items
       this.validateSelection(item)
+      this.$store.commit('orderForm/updateQuantity', 1)
     })
     bus.$on('removeComboItemWithModifiers', () => {
       const item = this.$store.getters['combo/current_combo_selected_item']
@@ -129,14 +131,20 @@ export default {
     selectItemForCombo(item) {
       //this is hook function which doesn't update actual selection
       //what it does is peform any action post selection
-
       //set current selected item
       this.$store.commit('combo/SET_CURRENT_COMBO_SELECTED_ITEM', item)
       //associate modifiers to item, and show popup, this is not selection of modifiers [note]
       this.setupItemModifiers(item)
       //if item has modifiers don't select it
-      if (!this.$store.getters['modifier/hasModifiers'](item)) {
-        this.validateSelection(item)
+
+      if (this.$store.getters['modifier/hasModifiers'](item)) {
+        //dosomthing here
+      } else {
+        //reset modifier item
+        this.$store.commit('modifier/SET_ITEM', false)
+        showModal('#POSItemOptions')
+        $('#POSItemOptions').css({ 'z-index': 9999 })
+        //        this.validateSelection(item)
       }
     },
     validateSelection(item) {

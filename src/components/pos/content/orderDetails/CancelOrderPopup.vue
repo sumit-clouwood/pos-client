@@ -164,6 +164,7 @@ export default {
       'errors',
       'inventoryBehavior',
     ]),
+    ...mapState('customer', ['isRefundAllow']),
     ...mapGetters('context', ['store']),
   },
   methods: {
@@ -209,7 +210,7 @@ export default {
         }
       }
       let orderType = 'call_center'
-      let actionTrigger = 'cancel_order'
+      let actionTrigger = this.isRefundAllow ? 'refund_order' : 'cancel_order'
       this.updateOrderCancelAction({
         order,
         orderType,
@@ -217,6 +218,9 @@ export default {
         params: data,
       })
         .then(res => {
+          this.$store.commit('customer/IS_REFUND_ALLOW', false, {
+            root: true,
+          })
           if (res.data.status != 'form_errors') {
             $('#cancellationReason').hide()
             $('#orderDetailsPopup').hide()

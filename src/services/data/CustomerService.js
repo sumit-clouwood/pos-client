@@ -29,7 +29,7 @@ export default {
 
   fetchCRMFields() {
     return DataService.get(
-      `/model/brand_crm_fields?limit=100&ascending=1&page=1&item_status=true&byColumn=0&orderBy=group&page_id=brand_crm_fields_main_tbl`,
+      `/model/brand_crm_fields?limit=100&ascending=1&page=1&byColumn=0&orderBy=group&page_id=brand_crm_fields_main_tbl`,
       'brand'
     )
   },
