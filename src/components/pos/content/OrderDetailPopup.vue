@@ -79,6 +79,7 @@
             class="button text-button btn btn-success color-main color-text-invert"
             data-toggle="modal"
             data-target=".cancel-order"
+            @click="refundAllowed(false)"
           >
             <div class="button-content-container">
               <div class="button-icon-container"></div>
