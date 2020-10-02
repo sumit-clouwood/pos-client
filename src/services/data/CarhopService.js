@@ -10,9 +10,10 @@ export default {
       datequery = ''
     }
     const storeId = Store.state.location.store._id
-
-    return DataService.get(
-      `/model/orders?&limit=${limit}&ascending=1&page=${page}&byColumn=1&cashier_id=${userId}&orderBy=${orderBy}&order_status=${orderStatus}&order_system_status=normal&order_type=carhop&store_id=${storeId}${datequery}`
-    )
+    let URl = `/model/orders?&limit=${limit}&ascending=1&page=${page}&byColumn=1&cashier_id=${userId}&orderBy=${orderBy}&order_status=${orderStatus}&order_system_status=normal&order_type=carhop&store_id=${storeId}${datequery}`
+    if (orderStatus === 'finished') {
+      URl = `/model/orders?&limit=${limit}&ascending=1&page=${page}&byColumn=1&cashier_id=${userId}&orderBy=${orderBy}&page_id=carhop_completed_orders&order_system_status=normal&store_id=${storeId}${datequery}`
+    }
+    return DataService.get(URl)
   },
 }

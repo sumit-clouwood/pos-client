@@ -13,6 +13,7 @@
         {{ _t('Running Orders') }}
       </button>
       <button
+        v-if="allowed(PERMS.CARHOP_COMPLETED_ORDERS)"
         type=""
         class="tables-btn-style"
         :class="{ active: orderStatus === 'finished' }"
@@ -35,6 +36,7 @@ export default {
   computed: {
     ...mapGetters('location', ['_t']),
     ...mapState('carhop', ['orderStatus']),
+    ...mapGetters('auth', ['allowed']),
   },
   methods: {
     ...mapActions('carhop', ['fetchOrders']),
