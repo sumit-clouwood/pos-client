@@ -38,12 +38,15 @@
         <img src="~@/assets/images/close.png" class="rem" alt="back" />
       </div>
     </div>
+    <loader v-show="loadingData" />
   </div>
 </template>
 
 <script>
 import { mapGetters, mapState, mapActions } from 'vuex'
 import Progress from '@/components/util/Progress'
+import bootstrap from '@/bootstrap'
+import Loader from '@/components/util/Loader.vue'
 import md5 from 'js-md5'
 export default {
   name: 'Lockpad',
@@ -63,9 +66,10 @@ export default {
     ...mapGetters('context', ['store']),
     ...mapState('context', ['brandId', 'storeId']),
     ...mapState('sync', ['online']),
+    ...mapGetters('sync', ['loadingData']),
     ...mapActions('auth', ['filterUserInOffline']),
   },
-  components: { Progress },
+  components: { Progress, Loader },
   methods: {
     addDigit(event) {
       if (event.target.classList.contains('num')) {
@@ -81,7 +85,13 @@ export default {
         .dispatch('auth/filterUserInOffline', md5(this.pincode))
         .then(user => {
           if (user) {
-            this.$router.replace({ name: 'HomeDefault' })
+            this.$router.replace({
+              name: 'BrandHome',
+              params: {
+                brand_id: this.brandId,
+                store_id: this.storeId,
+              },
+            })
             localStorage.setItem('offline_mode_login', true)
             this.$store.commit('auth/SET_OFFLINE_PIN', this.pincode)
             this.$store.commit('sync/status', false)
@@ -99,6 +109,35 @@ export default {
           this.processing = false
         })
     },
+    loadCompleteUi() {
+      this.$store.dispatch('auth/resetModules')
+
+      this.$store.dispatch('location/fetch').then(() => {
+        bootstrap
+          .loadUI(this.$store)
+          .then(() => {
+            this.$store.dispatch('checkout/reset', true)
+
+            bootstrap.loadApiData('customer')
+
+            bootstrap.loadApiData('order')
+
+            localStorage.setItem('offline_mode_login', false)
+            this.$router.replace({
+              name: 'BrandHome',
+              params: {
+                brand_id: this.brandId,
+                store_id: this.storeId,
+              },
+            })
+          })
+          .finally(() => {
+            this.$store.dispatch('sync/setLoader', false, {
+              root: true,
+            })
+          })
+      })
+    },
     login() {
       if (!this.pincode) {
         return false
@@ -115,12 +154,14 @@ export default {
             store: this.store_id,
           })
           .then(() => {
-            this.$router.replace({ name: 'HomeDefault' })
-            localStorage.setItem('offline_mode_login', false)
+            this.$store.dispatch('sync/setLoader', true, {
+              root: true,
+            })
+            this.loadCompleteUi()
           })
           .catch(error => {
             if (
-              error.message === 'Network Error' ||
+              (error && error.message === 'Network Error') ||
               JSON.stringify(error.message).match('Network Error')
             ) {
               this.loginOffline()
@@ -130,6 +171,8 @@ export default {
               this.pincode = ''
               setTimeout(() => {
                 this.showError = false
+                this.error = ''
+                this.pincode = ''
               }, 3000)
             }
           })

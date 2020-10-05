@@ -102,7 +102,7 @@
                 v-else
                 @click="fetchSelectedCustomer(customer._id)"
                 data-toggle="modal"
-                data-target="#add-to-order"
+                :data-target="addressPopup"
                 data-dismiss="modal"
                 class="br-table-btn order-add color-icon-table-neutral-button color-text-invert"
               >
@@ -125,7 +125,6 @@ import { bus } from '@/eventBus'
 /* global $ */
 export default {
   name: 'ManageCustomerContent',
-  props: [''],
   components: {
     Preloader,
   },
@@ -133,9 +132,12 @@ export default {
     ...mapState({
       customerDetails: state => state.customer.customer_list,
     }),
-    ...mapState('customer', ['loading']),
+    ...mapState('customer', ['loading', 'isBrandHasDeliveryOrder']),
     ...mapState('order', ['orderType']),
     ...mapGetters('location', ['_t']),
+    addressPopup() {
+      return !this.isBrandHasDeliveryOrder ? '' : '#add-to-order'
+    },
   },
   data: function() {
     return {

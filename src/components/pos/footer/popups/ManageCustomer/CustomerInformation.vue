@@ -100,15 +100,17 @@ export default {
     }),
     ...mapGetters('location', ['_t']),
     ...mapState('checkoutForm', ['msg']),
-    ...mapState('customer', ['customerLoading']),
+    ...mapState('customer', ['customerLoading', 'isBrandHasDeliveryOrder']),
   },
   methods: {
     updateModalSelection(modalName, subjectName) {
-      this.updateModalSelectionDelivery(modalName)
-      if (this.msg.message.length > 0) {
-        $('#payment-msg').modal('show')
-      } else {
-        $(subjectName).modal('hide')
+      if (this.isBrandHasDeliveryOrder) {
+        this.updateModalSelectionDelivery(modalName)
+        if (this.msg.message.length > 0) {
+          $('#payment-msg').modal('show')
+        } else {
+          $(subjectName).modal('hide')
+        }
       }
     },
     ...mapActions('customer', ['setPastOrderPageNumber']),
@@ -125,7 +127,6 @@ div#display-order .modal-dialog {
 @import '@/assets/scss/pixels_rem.scss';
 @import '@/assets/scss/variables.scss';
 @import '@/assets/scss/mixins.scss';
-
 @include responsive(mobile) {
   #display-order {
     .modal-dialog {
@@ -272,6 +273,11 @@ div#display-order .modal-dialog {
   }
   .place-new-order-wrapper {
     width: 100% !important;
+  }
+}
+@media only screen and (min-width: 599px) {
+  #place-new-order {
+    font-size: unset !important;
   }
 }
 </style>

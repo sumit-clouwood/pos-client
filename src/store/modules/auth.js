@@ -176,7 +176,7 @@ const actions = {
         .catch(error => reject(error))
     })
   },
-  pinlogin({ commit, dispatch, rootGetters }, { pincode, brand, store }) {
+  pinlogin({ commit, dispatch }, { pincode, brand, store }) {
     return new Promise((resolve, reject) => {
       AuthService.pinlogin({
         //email: state.cashierEmail,
@@ -191,16 +191,10 @@ const actions = {
           commit('context/SET_BRAND_ID', brand, {
             root: true,
           })
-          commit('context/SET_STORE_ID', store, {
-            root: true,
-          })
 
-          DataService.setContext({
-            brand: rootGetters['context/brand'],
-            store: rootGetters['context/store'],
+          dispatch('getUserDetails', response.data.user.user_id).then(() => {
+            resolve()
           })
-          dispatch('getUserDetails', response.data.user.user_id)
-          resolve()
         })
         .catch(error => {
           reject(error)
@@ -286,30 +280,32 @@ const actions = {
         .catch(error => reject(error))
     })
   },
-  logout({ commit }, msg) {
+  resetModules({ commit }) {
+    commit('order/RESET', true, { root: true })
+    commit('checkout/RESET', true, { root: true })
+    commit('customer/RESET', {}, { root: true })
+    commit('invoice/RESET', true, { root: true })
+    commit('dinein/RESET', null, { root: true })
+    commit('holdOrders/RESET', true, { root: true })
+    commit('announcement/RESET', true, { root: true })
+    commit('discount/RESET', true, { root: true })
+    commit('category/RESET', true, { root: true })
+    commit('modifier/RESET', true, { root: true })
+    commit('surcharge/RESET', true, { root: true })
+  },
+  logout({ commit, dispatch }, msg) {
     return new Promise(resolve => {
       localStorage.setItem('token', '')
       localStorage.setItem('brand_id', '')
       localStorage.setItem('store_id', '')
-
       commit(mutation.RESET)
 
-      commit('order/RESET', true, { root: true })
-      commit('checkout/RESET', true, { root: true })
+      commit('payment/RESET', true, { root: true })
+      dispatch('resetModules')
+      commit('customer/IS_BRAND_HAS_DELIVERY_ORDER', true)
       commit('context/RESET', null, { root: true })
-      commit('customer/RESET', {}, { root: true })
       commit('sync/reset', {}, { root: true })
       commit('location/RESET', true, { root: true })
-      commit('holdOrders/RESET', true, { root: true })
-      commit('announcement/RESET', true, { root: true })
-      commit('discount/RESET', true, { root: true })
-      commit('category/RESET', true, { root: true })
-      commit('modifier/RESET', true, { root: true })
-      commit('payment/RESET', true, { root: true })
-      commit('surcharge/RESET', true, { root: true })
-      commit('invoice/RESET', true, { root: true })
-      commit('dinein/RESET', null, { root: true })
-
       if (msg != 'token_not_exists') {
         commit(mutation.LOGOUT_ACTION, '')
         DataService.setContext({
@@ -326,12 +322,23 @@ const actions = {
     })
   },
 
-  getUserDetails({ commit, dispatch }, userId) {
+  getUserDetails({ commit, dispatch, rootGetters }, userId) {
     return new Promise((resolve, reject) => {
       if (userId) {
         AuthService.userDetails(userId).then(response => {
           commit(mutation.USER_DETAILS, response.data)
-
+          // Set Store ID's here when the User is being loaded
+          const storeId = response.data.item.brand_stores[0]
+          if (storeId) {
+            commit('context/SET_STORE_ID', storeId, {
+              root: true,
+            })
+            localStorage.setItem('store_id', storeId)
+            DataService.setContext({
+              brand: rootGetters['context/brand'],
+              store: rootGetters['context/store'],
+            })
+          }
           dispatch('fetchRoles').then(() => {
             dispatch('setCurrentRole')
             dispatch('fetchAllStoreUsers')
@@ -387,39 +394,41 @@ const actions = {
       user.item = state.storeUsers.filter(user => {
         return user.e_swipe_card === encryptedPin
       })[0]
+      const brandId = localStorage.getItem('brand_id')
+      const storeId = localStorage.getItem('store_id')
       if (!user.item) {
         reject('Invalid user credentials')
+      } else if (!brandId || !storeId) {
+        reject('Brand or store not found')
       } else {
-        commit(mutation.USER_DETAILS, user)
-        dispatch('setCurrentRole')
-        let randomToken =
-          Math.random()
-            .toString(36)
-            .slice(2)
-            .toUpperCase() +
-          Math.random()
-            .toString(36)
-            .slice(2)
-        localStorage.setItem('token', randomToken)
-        commit(mutation.SET_TOKEN, randomToken)
+        if (!user.item.brand_stores.includes(storeId)) {
+          reject('Forbidden, store is not accessible')
+        } else {
+          commit(mutation.USER_DETAILS, user)
+          dispatch('setCurrentRole')
+          let randomToken =
+            Math.random()
+              .toString(36)
+              .slice(2)
+              .toUpperCase() +
+            Math.random()
+              .toString(36)
+              .slice(2)
+          localStorage.setItem('token', randomToken)
+          commit(mutation.SET_TOKEN, randomToken)
+          commit('context/SET_BRAND_ID', brandId, {
+            root: true,
+          })
+          commit('context/SET_STORE_ID', storeId, {
+            root: true,
+          })
 
-        if (
-          localStorage.getItem('brand_id') &&
-          localStorage.getItem('store_id')
-        ) {
-          commit('context/SET_BRAND_ID', localStorage.getItem('brand_id'), {
-            root: true,
+          DataService.setContext({
+            brand: rootGetters['context/brand'],
+            store: rootGetters['context/store'],
           })
-          commit('context/SET_STORE_ID', localStorage.getItem('store_id'), {
-            root: true,
-          })
+          resolve(user)
         }
-
-        DataService.setContext({
-          brand: rootGetters['context/brand'],
-          store: rootGetters['context/store'],
-        })
-        resolve(user)
       }
     })
   },

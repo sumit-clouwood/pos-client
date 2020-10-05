@@ -11,7 +11,7 @@
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="exampleModalLongTitle">
-            {{ _t('Cancel Order') }}
+            {{ _t(cancelOrRefund) }}
           </h5>
           <button
             type="button"
@@ -89,12 +89,14 @@
               >
                 <div class="select-driver">{{ _t('Supervisor Password') }}</div>
                 <div>
-                  <input
-                    autocomplete="off"
-                    type="password"
-                    class="input-search-driver"
-                    v-model="supervisorPassword"
-                  />
+                  <form>
+                    <input
+                      autocomplete="off"
+                      type="password"
+                      class="input-search-driver"
+                      v-model="supervisorPassword"
+                    />
+                  </form>
                 </div>
                 <p
                   v-if="errors && errors.supervisor_password"
@@ -164,6 +166,10 @@ export default {
       'errors',
       'inventoryBehavior',
     ]),
+    cancelOrRefund() {
+      return this.isRefundAllow ? 'Refund Order' : 'Cancel Order'
+    },
+    ...mapState('customer', ['isRefundAllow']),
     ...mapGetters('context', ['store']),
   },
   methods: {
@@ -209,7 +215,7 @@ export default {
         }
       }
       let orderType = 'call_center'
-      let actionTrigger = 'cancel_order'
+      let actionTrigger = this.isRefundAllow ? 'refund_order' : 'cancel_order'
       this.updateOrderCancelAction({
         order,
         orderType,
@@ -218,6 +224,9 @@ export default {
       })
         .then(res => {
           if (res.data.status != 'form_errors') {
+            this.$store.commit('customer/IS_REFUND_ALLOW', false, {
+              root: true,
+            })
             $('#cancellationReason').hide()
             $('#orderDetailsPopup').hide()
 

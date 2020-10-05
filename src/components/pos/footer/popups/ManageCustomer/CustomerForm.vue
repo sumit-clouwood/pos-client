@@ -12,16 +12,27 @@
         <div v-for="(field, key) in fields" :key="key">
           <div
             class="left-form"
-            v-if="field.name_key !== 'location_coordinates'"
+            v-if="
+              field.name_key !== 'location_coordinates' && field.item_status
+            "
           >
             <div>
               <label>
                 {{ _t(field.name) }}
+                <i
+                  class="fa fa-question-circle"
+                  aria-hidden="true"
+                  v-if="field.field_desc"
+                  :title="_t(field.field_desc)"
+                >
+                </i>
                 <span v-if="field.mandatory">
                   *
                 </span>
               </label>
               <input
+                :maxlength="field.max"
+                :minlength="field.min"
                 v-if="
                   field.field_type === 'string' &&
                     !drop_downs.includes(field.name_key) &&
@@ -36,7 +47,16 @@
                 "
                 :name="field.name"
               />
+              <textarea
+                :maxlength="field.max"
+                :minlength="field.min"
+                id="styled"
+                v-if="field.field_type === 'textarea'"
+                v-model="newCustomerDetails[field.name_key]"
+              ></textarea>
               <input
+                :maxlength="field.max"
+                :minlength="field.min"
                 class="text-width"
                 v-if="
                   field.field_type === 'numeric' &&
@@ -112,7 +132,7 @@
                 class="validation-error text-capitalize"
                 v-if="errors[field.name_key]"
               >
-                {{ errors[field.name_key] }}
+                {{ errors[field.name_key].replace(/_|\s/g, ' ') }}
               </span>
             </div>
           </div>
@@ -344,6 +364,13 @@ input {
 }
 .text-width {
   /*width: 20.5vw !important;*/
+}
+textarea#styled {
+  width: 293px;
+  height: 70px;
+  border: 1px solid #e4e7eb;
+  padding: 5px;
+  border-radius: 2px;
 }
 .hidden {
   display: none;

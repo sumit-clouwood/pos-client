@@ -9,14 +9,18 @@ const state = {
   customer_list: [],
   customer: false,
   crm_fields: undefined,
+  all_crm_fields: [],
   mandatory_fields: [],
   multistore: false,
   multistoreDeliveryArea: {},
   customerId: null,
   customer_group: {},
+  isRefundAllow: false,
   paginate: {},
   lastOrder: false,
   pastOrders: false,
+  crm_address_fields: [],
+  isBrandHasDeliveryOrder: true,
   // customerLastOrderDetails: false,
   pastOrdersPaginate: {},
   params: {
@@ -85,12 +89,17 @@ const getters = {
   },
   // eslint-disable-next-line no-unused-vars
   getDeliveryArea: state => addressId => {
-    return addressId ? addressId.split('|').join(', ') : 'NA'
+    return addressId && addressId != '' ? addressId.split('|').join(', ') : 'NA'
   },
   getCustomerAddresses: (state, getters) => {
     if (state.customer && state.customer.customer_addresses) {
       let avilableCustomerAddress = state.customer.customer_addresses.map(
         address => {
+          if (!address.delivery_area_id) {
+            address.min_order_value = 0
+            address.special_order_surcharge = 0
+            return address
+          }
           let checkDeliveryArea = getters.checkDeliveryArea(
             address.delivery_area_id,
             state.deliveryAreas
@@ -125,12 +134,14 @@ const getters = {
     return state.fetchDeliveryAreas
     // return areaId ? areaId.split('|').join(', ') : ''
   },
+  crmAddressFields: state => state.crm_address_fields,
   // eslint-disable-next-line no-unused-vars
   getElementByAreaId: state => (deliveryArea, element) => {
-    let deliveryAreaArr = deliveryArea ? deliveryArea.split('|') : []
-    // eslint-disable-next-line no-console
-    console.log(deliveryAreaArr)
-    return deliveryAreaArr[deliveryAreaArr.length - element]
+    if (deliveryArea) {
+      let deliveryAreaArr = deliveryArea ? deliveryArea.split('|') : []
+      return deliveryAreaArr[deliveryAreaArr.length - element]
+    }
+    return ''
   },
 }
 const actions = {
@@ -141,48 +152,68 @@ const actions = {
       })
     })
   },
-  fetchCRMCustomerFields({ commit }) {
+  fetchCRMCustomerFields({ commit, dispatch }) {
     // return new Promise((resolve, reject) => {
     CustomerService.fetchCRMFields().then(response => {
       let fields_by_group = {
         GENERAL_INFORMATION: [],
         ADDITIONAL_INFORMATION: [],
         _ADDRESS: [],
+        OTHER_INFORMATION: [],
       }
       let mandate_fields = []
+      let all_fields = []
       if (response.data.data) {
         // eslint-disable-next-line no-debugger
         // debugger
         response.data.data.forEach(field => {
+          all_fields[field.name_key] = field.default_value || ''
+          if (field.name_key === 'delivery_area_id' && !field.item_status) {
+            commit('IS_BRAND_HAS_DELIVERY_ORDER', false)
+          }
           if (field.mandatory) mandate_fields.push(field)
           if (field.group === CONST.GENERAL_INFORMATION) {
             fields_by_group.GENERAL_INFORMATION.push(field)
           } else if (field.group === CONST.ADDITIONAL_INFORMATION) {
             fields_by_group.ADDITIONAL_INFORMATION.push(field)
+          } else if (field.group === CONST.OTHER_INFORMATION) {
+            fields_by_group.OTHER_INFORMATION.push(field)
           } else if (field.group === CONST.CUSTOMER_ADDRESS) {
             fields_by_group._ADDRESS.push(field)
           }
         })
+        commit('SET_CUSTOMER_FIELDS', {
+          group: fields_by_group,
+          all_fields: all_fields,
+        })
+        commit('SET_CUSTOMER_MANDATORY_FIELDS', mandate_fields)
+        dispatch('address_fields')
       }
-      // eslint-disable-next-line no-console
-      console.log(fields_by_group, 'responseresponse crm')
-      commit('SET_CUSTOMER_FIELDS', fields_by_group)
-      commit('SET_CUSTOMER_MANDATORY_FIELDS', mandate_fields)
     })
     // })
+  },
+  address_fields({ state, commit }) {
+    let crm_fields = []
+    if (state.crm_fields) {
+      state.crm_fields['_ADDRESS'].forEach(field => {
+        crm_fields[field.name_key] = ''
+      })
+    }
+    commit('CRM_ADDRESS_FIELD', crm_fields)
   },
   fetchAllCustomers({ commit, dispatch }) {
     commit(mutation.FETCH_ALL, 'brand_customers_main_tbl')
     dispatch('fetchAll')
   },
-  addCustomer({ dispatch }) {
+  addCustomer({ dispatch, state }) {
     const params = [
       {
-        nearest_landmark: '',
+        // nearest_landmark: '',
         is_web_admin: false,
+        ...state.all_crm_fields,
         // lat_lng_available: true,
         // location_coordinates: { lat: 0, lng: 0 },
-        alternative_phone: '',
+        /*alternative_phone: '',
         phone_number: '',
         gender: 'undisclosed',
         birthday: '',
@@ -191,7 +222,7 @@ const actions = {
         street: '',
         building: '',
         flat_number: '',
-        email: '',
+        email: '',*/
       },
     ]
     dispatch('setDefaultSettingsGlobalAddUpdate', ...params)
@@ -225,26 +256,34 @@ const actions = {
           }
           commit(mutation.SET_LOADING, false)
         })
-        .catch(error => reject(error))
+        .catch(error => {
+          commit(mutation.SET_LOADING, false)
+          reject(error)
+        })
       //fetch customer deliver areas
-      resolve()
+      // resolve()
       dispatch('fetchDeliveryArea', '')
       dispatch('fetchCRMCustomerFields')
       // get Customer Group
       CustomerService.customerGroupList().then(response => {
         commit(mutation.SET_CUSTOMER_GROUP, response.data.data)
       })
-      CustomerService.customerBuildings().then(buildingAreas => {
-        if (buildingAreas.data.data) {
-          let obj = Object.values(buildingAreas.data.data)
-          commit(mutation.BUILDING_AREA, obj)
-        }
-      })
+      CustomerService.customerBuildings()
+        .then(buildingAreas => {
+          if (buildingAreas.data.data) {
+            let obj = Object.values(buildingAreas.data.data)
+            commit(mutation.BUILDING_AREA, obj)
+          }
+        })
+        .catch(error => {
+          commit(mutation.SET_LOADING, false)
+          reject(error)
+        })
     })
   },
 
   setPageNumber: function({ commit, dispatch }, pageNumber) {
-    commit(mutation.SET_LOADING, true)
+    // commit(mutation.SET_LOADING, true)
     commit(mutation.SET_CURRENT_PAGE_NO, pageNumber)
     dispatch('fetchAll').then(() => {
       commit(mutation.SET_LOADING, false)
@@ -274,7 +313,7 @@ const actions = {
   searchCustomer: function({ commit, dispatch }, searchTerms) {
     return new Promise((resolve, reject) => {
       commit(mutation.CUSTOMER_LIST, [])
-      commit(mutation.SET_LOADING, true)
+      // commit(mutation.SET_LOADING, true)
       commit(mutation.SET_SEARCH_TERMS, searchTerms)
       dispatch('fetchAll')
         .then(response => {
@@ -408,10 +447,12 @@ const actions = {
           ) {
             let customerId = actionDetails.customer || response.data.id
             dispatch('fetchSelectedCustomer', customerId).then(customer => {
-              dispatch('selectedAddress', customer.customer_addresses[0])
-              commit('location/SET_MODAL', '#order-confirmation', {
-                root: true,
-              })
+              if (state.isBrandHasDeliveryOrder) {
+                dispatch('selectedAddress', customer.customer_addresses[0])
+                commit('location/SET_MODAL', '#order-confirmation', {
+                  root: true,
+                })
+              }
             })
           }
 
@@ -452,8 +493,12 @@ const actions = {
     })
   },
 
-  setDefaultSettingsGlobalAddUpdate({ commit }, setDefaultSettings) {
-    commit(mutation.SET_ADD_DETAILS, setDefaultSettings)
+  setDefaultSettingsGlobalAddUpdate({ commit, state }, setDefaultSettings) {
+    if (setDefaultSettings === 'address') {
+      commit(mutation.SET_ADD_DETAILS, state.crm_address_fields)
+    } else {
+      commit(mutation.SET_ADD_DETAILS, setDefaultSettings)
+    }
   },
 
   fetchDeliveryArea({ commit, rootGetters }, query) {
@@ -652,7 +697,19 @@ const mutations = {
   [mutation.SET_ERROR](state, error) {
     state.error = error
   },
-  SET_CUSTOMER_FIELDS: (state, fields) => (state.crm_fields = fields),
+  SET_CUSTOMER_FIELDS: (state, fields) => {
+    state.crm_fields = fields.group
+    state.all_crm_fields = fields.all_fields
+  },
+  CRM_ADDRESS_FIELD: (state, fields) => {
+    state.crm_address_fields = fields
+  },
+  IS_BRAND_HAS_DELIVERY_ORDER: (state, status) => {
+    state.isBrandHasDeliveryOrder = status
+  },
+  IS_REFUND_ALLOW: (state, status) => {
+    state.isRefundAllow = status
+  },
   SET_CUSTOMER_MANDATORY_FIELDS: (state, mandate_fields) =>
     (state.mandatory_fields = mandate_fields),
   [mutation.LOYALTY](state, loyalty) {

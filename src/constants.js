@@ -26,6 +26,7 @@ export const ORDER_HISTORY_TYPE_RECORD_COLLECTED_BY_USER =
   'Collected by Cashier'
 export const ORDER_SYSTEM_STATUS_CANCELLED = 'cancelled'
 export const ORDER_SYSTEM_STATUS_MODIFIED = 'modified'
+export const ORDER_SYSTEM_STATUS_NORMAL = 'normal'
 
 /* PAYMENT RELATED CONSTANTS */
 
@@ -75,8 +76,10 @@ export const ORDER_STATUS_READY = 'ready'
 export const ORDER_STATUS_ON_A_WAY_TO_FINISH = 'on-a-way'
 export const ORDER_STATUS_FINISHED = 'finished'
 export const ORDER_STATUS_COMPLETED = 'completed'
-export const ORDER_SOURCE_POS = 'cashier_app'
 export const ORDER_PAYMENT_TYPE_LOYALTY = 'Loyalty Points'
+export const ORDER_SOURCE_POS = 'cashier_app'
+export const PAYMENT_TYPE_ONLINE_ID = 'online'
+export const ORDER_SOURCE_WEBSITE = 'online'
 
 export const PERCENTAGE = 'percentage'
 export const VALUE = 'value'
@@ -107,3 +110,4 @@ export const COMBO_ITEM_TYPE = 'combo_item'
 export const GENERAL_INFORMATION = 'gi'
 export const ADDITIONAL_INFORMATION = 'ai'
 export const CUSTOMER_ADDRESS = 'addi'
+export const OTHER_INFORMATION = 'oi'

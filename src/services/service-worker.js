@@ -3,7 +3,7 @@
 /* eslint-disable no-console */
 //appVersion has production build number . staging build number . int build number . bugfix
 //Reason: fixed msg 13
-var appVersion = '7.10.35.33'
+var appVersion = '7.10.35.34'
 
 var clientUrl = ''
 
@@ -86,6 +86,21 @@ function setupCache() {
         new workbox.expiration.Plugin({
           maxAgeSeconds: 60 * 60 * 24 * 365,
           maxEntries: 30,
+        }),
+      ],
+    })
+  )
+  //s3 bucket
+  workbox.routing.registerRoute(
+    /\.amazonaws\.com/,
+    new workbox.strategies.CacheFirst({
+      cacheName: 'dimsphotos',
+      plugins: [
+        new workbox.cacheableResponse.Plugin({
+          statuses: [0, 200],
+        }),
+        new workbox.expiration.Plugin({
+          maxAgeSeconds: 60 * 60 * 24 * 90,
         }),
       ],
     })

@@ -37,6 +37,7 @@
               <span class="color-text-invert">{{ _t('Take Away') }}</span>
             </div>
             <div
+              v-if="isBrandHasDeliveryOrder"
               class="option-contain"
               :class="{ active: selectedOrderType.OTApi === 'call_center' }"
               @click="
@@ -128,6 +129,7 @@ export default {
     }
   },
   computed: {
+    ...mapState('customer', ['isBrandHasDeliveryOrder']),
     ...mapGetters('location', ['_t']),
     ...mapGetters('auth', ['multistore']),
     ...mapState('order', ['orderType']),

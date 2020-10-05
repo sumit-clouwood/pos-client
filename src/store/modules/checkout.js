@@ -23,7 +23,7 @@ const state = {
   route: null,
   orderCreationSource: '',
   orderItemsPayload: {},
-  dineInSplitedItems: undefined,
+  dineInSplitedItems: false,
 }
 
 // getters
@@ -137,6 +137,7 @@ const actions = {
   },
 
   validateEvent({ commit, rootState, dispatch }, { action, data }) {
+
     if (state.processing === true) {
       // eslint-disable-next-line
       console.log('Dual event detected')
@@ -781,7 +782,7 @@ const actions = {
 
                 order = {
                   cashier_id: rootState.auth.userDetails.item._id,
-                  customer: '',
+                  customer: !rootState.isBrandHasDeliveryOrder ? rootState.customer.customerId : '',
                   customer_address_id: '',
                   referral: '',
                   transition_order_no: transitionOrderNo,
@@ -1094,15 +1095,20 @@ const actions = {
                 //after split paid we create a new order with remaining items so at end
                 //it will reach to this add/create dine in method and show split pay msg
                 msg = rootGetters['location/_t']('Dinein Order has been placed')
+                commit('SPLITED_ITEM', false)
               } else {
+                commit('SPLITED_ITEM', true)
                 msg = rootGetters['location/_t'](
                   'Payment done for selected item(s).'
                 )
               }
               //Invoice APP API Call with Custom Request JSON
-              dispatch('printingServer/printingServerInvoiceRaw', state.order, {
-                root: true,
-              })
+              if (!state.dineInSplitedItems) {
+                dispatch('printingServer/printingServerInvoiceRaw', state.order, {
+                  root: true,
+                })
+              }
+
               let resetFull = false
               if (getters.complete) {
                 resetFull = true
@@ -1149,7 +1155,6 @@ const actions = {
         if (route === 'updateOrder') {
           order = { ...order, ...data }
           msg = 'Dinein order has been updated'
-          commit('SPLITED_ITEM', { ...order })
         }
         //delete order.order_system_status
         delete order.new_real_transition_order_no
@@ -1186,6 +1191,9 @@ const actions = {
                   'SET_ORDER_NUMBER',
                   rootState.order.selectedOrder.item.order_no
                 )
+                dispatch('printingServer/printingServerInvoiceRaw', state.order, {
+                  root: true,
+                })
                 if (rootState.order.splitted || rootState.order.splitBill) {
                   commit('order/SET_SPLITTED', true, { root: true })
                   //mark items as paid in current execution
@@ -1206,6 +1214,7 @@ const actions = {
                         root: true,
                       })
                     })*/
+
                     /*dispatch('printingServer/printingServerInvoiceRaw', order, {
                       root: true,
                     })*/
