@@ -171,7 +171,7 @@ const actions = {
           if (field.name_key === 'delivery_area_id' && !field.item_status) {
             commit('IS_BRAND_HAS_DELIVERY_ORDER', false)
           }
-          if (field.mandatory) mandate_fields.push(field)
+          if (field.mandatory && field.item_status) mandate_fields.push(field)
           if (field.group === CONST.GENERAL_INFORMATION) {
             fields_by_group.GENERAL_INFORMATION.push(field)
           } else if (field.group === CONST.ADDITIONAL_INFORMATION) {

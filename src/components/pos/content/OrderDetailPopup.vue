@@ -232,7 +232,7 @@ export default {
       })
     },
     printInvoiceDisableKitchenPrint(details) {
-      if (details.order.item && details.order.item.go_order_customer) {
+      if (details.order.item && details.order.customer) {
         let customer = {
           customerData: details.order.customer,
           pastOrders: '',
