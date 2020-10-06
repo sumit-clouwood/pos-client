@@ -232,7 +232,6 @@ export default {
       })
     },
     printInvoiceDisableKitchenPrint(details) {
-      console.log(details, 'details.order.item')
       if (details.order.item && details.order.item.go_order_customer) {
         let customer = {
           customerData: details.order.customer,
