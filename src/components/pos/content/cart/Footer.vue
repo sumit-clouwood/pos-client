@@ -8,9 +8,7 @@
       <div class="item surcharges">
         <div class="sub-total-text">
           {{ _t('Surcharges') }}
-          <span
-            class="text-danger remove-surcharge"
-            @click="removeSurcharge"
+          <span class="text-danger remove-surcharge" @click="removeSurcharge"
             >( <i class="fa fa-close"></i> )</span
           >
         </div>
