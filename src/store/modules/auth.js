@@ -292,6 +292,7 @@ const actions = {
     commit('category/RESET', true, { root: true })
     commit('modifier/RESET', true, { root: true })
     commit('surcharge/RESET', true, { root: true })
+    commit('payment/RESET', true, { root: true })
   },
   logout({ commit, dispatch }, msg) {
     return new Promise(resolve => {
@@ -300,7 +301,6 @@ const actions = {
       localStorage.setItem('store_id', '')
       commit(mutation.RESET)
 
-      commit('payment/RESET', true, { root: true })
       dispatch('resetModules')
       commit('customer/IS_BRAND_HAS_DELIVERY_ORDER', true)
       commit('context/RESET', null, { root: true })

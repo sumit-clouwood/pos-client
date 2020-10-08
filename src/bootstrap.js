@@ -78,15 +78,19 @@ export default {
               await Promise.all([
                 this.store.dispatch('modifier/fetchAll'),
                 this.store.dispatch('tax/fetchAll'),
-                this.store.dispatch('payment/fetchAll'),
                 this.store.dispatch('surcharge/fetchAll'),
                 this.store.dispatch('discount/fetchAll'),
-                this.store.dispatch('dinein/fetchAll'),
-                this.store.dispatch('carhop/initFetch'),
               ])
-
               this.store.commit('sync/loaded', true)
               resolve()
+
+              this.store.dispatch('payment/fetchAll'),
+                this.store.dispatch('customer/fetchAll'),
+                this.store.dispatch('dinein/fetchAll'),
+                this.store.dispatch('carhop/initFetch'),
+                this.store.dispatch('invoice/printRules').then(() => {
+                  this.store.dispatch('invoice/fetchTemplates')
+                })
             })
             .catch(error => reject(error))
         })
