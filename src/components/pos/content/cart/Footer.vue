@@ -8,9 +8,6 @@
       <div class="item surcharges">
         <div class="sub-total-text">
           {{ _t('Surcharges') }}
-          <span class="text-danger remove-surcharge" @click="removeSurcharge"
-            >( <i class="fa fa-close"></i> )</span
-          >
         </div>
         <div class="sub-total-num">{{ formatPrice(surcharge || 0) }}</div>
       </div>
@@ -48,7 +45,7 @@
 </template>
 
 <script>
-import { mapGetters, mapState, mapActions } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 
 export default {
   name: 'CartFooter',
@@ -70,7 +67,6 @@ export default {
     totalWrapperHendlerChange() {
       this.$store.dispatch('totalWrapperHendlerChange')
     },
-    ...mapActions('surcharge', ['removeSurcharge']),
   },
 }
 </script>
