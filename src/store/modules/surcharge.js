@@ -79,7 +79,11 @@ const actions = {
       resolve()
     })
   },
-
+  removeSurcharge({ dispatch }) {
+    dispatch('reset')
+    dispatch('order/surchargeCalculation')
+    dispatch('fetchAll')
+  },
   fetchAll({ commit, rootState }) {
     SurchargeService.fetchAll(rootState.order.orderType.OTApi).then(
       response => {

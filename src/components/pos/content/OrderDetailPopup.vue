@@ -79,6 +79,7 @@
             class="button text-button btn btn-success color-main color-text-invert"
             data-toggle="modal"
             data-target=".cancel-order"
+            @click="refundAllowed(false)"
           >
             <div class="button-content-container">
               <div class="button-icon-container"></div>
@@ -231,6 +232,14 @@ export default {
       })
     },
     printInvoiceDisableKitchenPrint(details) {
+      if (details.order.item && details.order.customer) {
+        let customer = {
+          customerData: details.order.customer,
+          pastOrders: '',
+          deliveryAreas: details.order.item.order_delivery_area,
+        }
+        this.$store.commit('customer/SELECTED_CUSTOMER', customer)
+      }
       let dt = this.$store.state.auth.deviceType
       let isIOS = dt.osType
       if (isIOS) {
