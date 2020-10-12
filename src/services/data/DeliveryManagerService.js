@@ -14,7 +14,9 @@ export default {
       `/model/users?no_limit=true&byColumn=0&brand_role=${roleId}`
     )
   },
-
+  getDeliveryServices(brand_id) {
+    return DataService.get(`/model/orders/get_drivers?brand_id=${brand_id}`)
+  },
   getGlobalDetails(model) {
     return DataService.get(`/model/${model}?no_limit=true`, 'brand')
   },
