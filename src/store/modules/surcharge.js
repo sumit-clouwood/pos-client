@@ -2,6 +2,7 @@ import SurchargeService from '@/services/data/SurchargeService'
 import * as mutation from './surcharge/mutation-types'
 import * as CONST from '@/constants'
 import Num from '@/plugins/helpers/Num.js'
+import * as PERMS from '@/const/permissions'
 
 const state = {
   surcharges: [],
@@ -79,10 +80,51 @@ const actions = {
       resolve()
     })
   },
-  removeSurcharge({ dispatch }) {
+  removeSurcharge({ dispatch, rootGetters, rootState }) {
+    if (
+      rootGetters['auth/allowed'](PERMS.CAN_REMOVE_SURCHRAGES) &&
+      rootGetters['auth/allowed'](PERMS.CAN_REMOVE_DELIVERY_SURCHRAGES)
+    ) {
+      dispatch('removeMenuSurcharge')
+      // dispatch('removeDeliveryAreaSurcharge')
+    } else if (
+      rootGetters['auth/allowed'](PERMS.CAN_REMOVE_DELIVERY_SURCHRAGES)
+    ) {
+      // dispatch('removeDeliveryAreaSurcharge')
+    } else if (rootGetters['auth/allowed'](PERMS.CAN_REMOVE_SURCHRAGES)) {
+      dispatch('removeMenuSurcharge')
+    }
+    // eslint-disable-next-line no-console
+    console.log(
+      rootGetters['order/deliverySurcharge'],
+      rootState.customer.address,
+      'deliverySurcharge'
+    )
+  },
+  removeMenuSurcharge({ dispatch }) {
     dispatch('reset')
     dispatch('order/surchargeCalculation')
     dispatch('fetchAll')
+  },
+  removeDeliveryAreaSurcharge({ rootState, commit, dispatch }) {
+    let address_without_surcharge = { ...rootState.customer.address }
+    // let area = { ...rootState.customer.fetchDeliveryAreas }
+    if (address_without_surcharge.delivery_area) {
+      let areas = []
+      rootState.customer.fetchDeliveryAreas.forEach(delivery_area => {
+        let area = { ...delivery_area }
+        if (area.delivery_area === address_without_surcharge.delivery_area_id) {
+          area.special_order_surcharge = 0
+        }
+        areas.push(area)
+      })
+      commit('customer/GET_DELIVERY_AREAS', areas)
+
+      address_without_surcharge.special_order_surcharge = 0
+      dispatch('customer/selectedAddress', address_without_surcharge, {
+        root: true,
+      })
+    }
   },
   fetchAll({ commit, rootState }) {
     SurchargeService.fetchAll(rootState.order.orderType.OTApi).then(
