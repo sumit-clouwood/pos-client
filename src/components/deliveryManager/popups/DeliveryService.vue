@@ -109,7 +109,7 @@ export default {
     ...mapState({
       branch: state => state.deliveryManager.availableStores,
     }),
-    ...mapGetters('deliveryManager', ['onlineOrders', 'drivers']),
+    ...mapGetters('deliveryManager', ['onlineOrders', 'deliveryServiceDriver']),
     activeServices: function() {
       // `this` points to the vm instance
       let jeebly = this.brand.jeebly && this.store.jeebly ? true : false
@@ -134,7 +134,7 @@ export default {
     },
     SubmitOrder(deliveryService) {
       this.loading = true
-      var driver = this.drivers.filter(function(el) {
+      var driver = this.deliveryServiceDriver.filter(function(el) {
         return el.name == deliveryService
       })
       this.selectDriver = driver[0]
