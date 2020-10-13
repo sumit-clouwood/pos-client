@@ -61,6 +61,7 @@ export default {
     return {
       stores: false,
       storeId: null,
+      loadedOnce: false,
     }
   },
   computed: {
@@ -78,6 +79,11 @@ export default {
   },
   methods: {
     selectedStoreId(storeId) {
+      //show the loader only when switching the store, don't show it right after login when there are multiple stores
+      if (this.loadedOnce) {
+        this.$store.commit('sync/SET_IS_LOADING', true)
+      }
+
       this.$store.commit('context/SET_BRAND_ID', this.brand._id, { root: true })
       this.$store.commit('context/SET_STORE_ID', storeId, { root: true })
       localStorage.setItem('brand_id', this.brand._id)
@@ -88,10 +94,14 @@ export default {
         store: this.$store.getters['context/store'],
       })
       $('#multiStoresModal').modal('hide')
-      this.$store.dispatch('location/fetch')
-      bootstrap.fetchData()
-      bootstrap.loadUI(this.$store)
-      this.$store.commit('sync/reload', true)
+      //to reload location api as well, pass sw as an argument
+      bootstrap.loadUI('sw').then(() => {
+        //first time loaded
+        this.loadedOnce = true
+
+        this.$store.commit('sync/reload', true)
+        this.$store.commit('sync/SET_IS_LOADING', false)
+      })
       this.$store.dispatch('checkout/reset', true)
       this.$store.commit('order/CLEAR_SELECTED_ORDER')
     },

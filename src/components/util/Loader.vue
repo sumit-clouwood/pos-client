@@ -1,8 +1,8 @@
 <template>
-  <div id="overlay" class="fade-in">
+  <div id="overlay" class="fade-in" v-show="loadingData">
     <div class="spinner"></div>
     <br />
-    {{ _t(status) }}...
+    <h3>{{ _t(status) }}...</h3>
   </div>
 </template>
 
@@ -18,6 +18,7 @@ export default {
   },
   computed: {
     ...mapGetters('location', ['_t']),
+    ...mapGetters('sync', ['loadingData']),
   },
 }
 </script>

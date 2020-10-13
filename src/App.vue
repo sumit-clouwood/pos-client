@@ -11,10 +11,12 @@
     <!-- Public view -->
     <public-view v-else class="public-view"></public-view>
     <app-notification></app-notification>
+    <loader></loader>
   </div>
 </template>
 <script>
 import PublicView from './PublicView'
+import Loader from '@/components/util/Loader.vue'
 import PrivateView from './PrivateView'
 import AppNotification from './AppNotification'
 // import DmItemOnline from './components/pos/header/popups/OnlineOrder.vue'
@@ -25,6 +27,7 @@ import DataService from '@/services/DataService'
 export default {
   name: 'App',
   components: {
+    Loader,
     PublicView,
     PrivateView,
     AppNotification,

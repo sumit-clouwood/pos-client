@@ -38,7 +38,6 @@
         <img src="~@/assets/images/close.png" class="rem" alt="back" />
       </div>
     </div>
-    <loader v-show="loadingData" />
   </div>
 </template>
 
@@ -46,7 +45,6 @@
 import { mapGetters, mapState, mapActions } from 'vuex'
 import Progress from '@/components/util/Progress'
 import bootstrap from '@/bootstrap'
-import Loader from '@/components/util/Loader.vue'
 import md5 from 'js-md5'
 export default {
   name: 'Lockpad',
@@ -69,7 +67,7 @@ export default {
     ...mapGetters('sync', ['loadingData']),
     ...mapActions('auth', ['filterUserInOffline']),
   },
-  components: { Progress, Loader },
+  components: { Progress },
   methods: {
     addDigit(event) {
       if (event.target.classList.contains('num')) {
