@@ -61,11 +61,11 @@ export default {
     return {
       stores: false,
       storeId: null,
-      loadedOnce: false,
     }
   },
   computed: {
     ...mapState('location', ['store', 'brand']),
+    ...mapState('sync', ['loaded']),
     ...mapGetters('context', [
       'isStoreSelected',
       'haveMultipleStores',
@@ -80,7 +80,7 @@ export default {
   methods: {
     selectedStoreId(storeId) {
       //show the loader only when switching the store, don't show it right after login when there are multiple stores
-      if (this.loadedOnce) {
+      if (this.loaded) {
         this.$store.commit('sync/SET_IS_LOADING', true)
       }
 
@@ -96,9 +96,6 @@ export default {
       $('#multiStoresModal').modal('hide')
       //to reload location api as well, pass sw as an argument
       bootstrap.loadUI('sw').then(() => {
-        //first time loaded
-        this.loadedOnce = true
-
         this.$store.commit('sync/reload', true)
         this.$store.commit('sync/SET_IS_LOADING', false)
       })
