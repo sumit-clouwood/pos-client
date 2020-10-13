@@ -58,7 +58,9 @@ const state = {
 // getters
 const getters = {
   deliverySurcharge: (state, getters, rootState) => {
-    if (rootState.customer.address) {
+    let isDeliverySurchargeRemoved =
+      rootState.surcharge.isDeliverySurchargeRemoved
+    if (rootState.customer.address && !isDeliverySurchargeRemoved) {
       return rootState.customer.address.special_order_surcharge || 0
     }
     return 0

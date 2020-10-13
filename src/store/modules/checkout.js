@@ -254,9 +254,12 @@ const actions = {
       deliveryAreaId
     )
     console.log(deliveryArea, 'delivery area, dd')
+    let isDeliverySurchargeRemoved = rootState.surcharge.isDeliverySurchargeRemoved
     if (deliveryArea) {
-      if (deliveryArea.special_order_surcharge) {
+      if (deliveryArea.special_order_surcharge && !isDeliverySurchargeRemoved) {
         order.delivery_surcharge = deliveryArea.special_order_surcharge
+      } else {
+        order.delivery_surcharge = 0
       }
     }
     //add delivery surcharges

@@ -48,9 +48,11 @@ const state = {
 
 const getters = {
   findDeliveryArea: state => areaId => {
-    return state.fetchDeliveryAreas.find(
-      deliveryArea => deliveryArea.delivery_area === areaId
-    )
+    if (state.fetchDeliveryAreas) {
+      return state.fetchDeliveryAreas.find(
+        deliveryArea => deliveryArea.delivery_area === areaId
+      )
+    }
   },
   customer: state => {
     return state.customer
