@@ -322,23 +322,12 @@ const actions = {
     })
   },
 
-  getUserDetails({ commit, dispatch, rootGetters }, userId) {
+  getUserDetails({ commit, dispatch }, userId) {
     return new Promise((resolve, reject) => {
       if (userId) {
         AuthService.userDetails(userId).then(response => {
           commit(mutation.USER_DETAILS, response.data)
-          // Set Store ID's here when the User is being loaded
-          const storeId = response.data.item.brand_stores[0]
-          if (storeId) {
-            commit('context/SET_STORE_ID', storeId, {
-              root: true,
-            })
-            localStorage.setItem('store_id', storeId)
-            DataService.setContext({
-              brand: rootGetters['context/brand'],
-              store: rootGetters['context/store'],
-            })
-          }
+
           dispatch('fetchRoles').then(() => {
             dispatch('setCurrentRole')
             dispatch('fetchAllStoreUsers')
