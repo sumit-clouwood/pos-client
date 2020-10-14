@@ -130,7 +130,6 @@ export default {
       $('#Delivery-Service')
         .dialog()
         .toggle('close')
-      // this.pauseSound()
     },
     SubmitOrder(deliveryService) {
       this.loading = true

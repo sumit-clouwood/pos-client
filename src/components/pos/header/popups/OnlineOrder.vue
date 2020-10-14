@@ -286,14 +286,10 @@ export default {
       this.pauseSound()
     }
   },
-  /*destroyed() {
-    // eslint-disable-next-line no-console
-    console.log('destroyed')
-    this.pauseSound()
-  },*/
   methods: {
     ...mapActions('deliveryManager', ['showOrderDetails']),
     updateOrder(data) {
+      this.$store.commit('deliveryManager/SET_LOADING', true)
       this.updateOrderAction(data)
         .then(() => {
           this.$store.dispatch('deliveryManager/getOnlineOrders')
@@ -310,21 +306,12 @@ export default {
       $('#online-order')
         .dialog()
         .dialog('close')
-      // this.pauseSound()
     },
     playSound() {
       // eslint-disable-next-line prettier/prettier
       audio.play()
       this.isAudioPlaying = true
     },
-    // pauseSound() {
-    //   // eslint-disable-next-line no-console
-    //   console.log('pause', this.audio)
-    //   $('#online-order').modal('hide')
-    //   clearTimeout(this.interval)
-    //   this.audio.pause()
-    //   this.isAudioPlaying = false
-    // },
     onlineOrderSetup() {
       let scope = this
       let storeId = this.store ? this.store._id : this.$route.params.store_id
@@ -363,11 +350,14 @@ export default {
       })
     },
     pauseSound() {
-      audio.pause()
-      this.isAudioPlaying = false
+      this.pause()
       $('#online-order')
         .dialog()
         .dialog('close')
+    },
+    pause() {
+      audio.pause()
+      this.isAudioPlaying = false
     },
     getOnlineOrders() {
       // eslint-disable-next-line no-console
@@ -375,12 +365,14 @@ export default {
       this.$store.dispatch('deliveryManager/getOnlineOrders').then(() => {
         // eslint-disable-next-line no-console
         // eslint-disable-next-line no-console
-        console.log(scope.onlineOrders)
+        console.log(scope.onlineOrders, 'onlineOrders')
         if (scope.onlineOrders.count > 0) {
           $('#online-order')
             .dialog()
             .dialog('open')
           if (!scope.isAudioPlaying) scope.playSound()
+        } else {
+          // if (scope.isAudioPlaying) scope.pause()
         }
         // clearTimeout(scope.interval)
       })
@@ -389,19 +381,6 @@ export default {
     ...mapActions('order', ['selectedOrderDetails', 'updateOrderAction']),
   },
   created() {
-    // // let scope = this
-    // this.audio = new Audio('/sounds/doorbell.ogg')
-    // this.audio.load()
-    // this.audio.addEventListener(
-    //   'ended',
-    //   function() {
-    //     // this.interval = setTimeout(function() {
-    //     //   // eslint-disable-next-line no-console
-    //     //   console.log('this.interval')
-    //     // }, 1000)
-    //   },
-    //   false
-    // )
     this.onlineOrderSetup()
     this.getOnlineOrders()
     // eslint-disable-next-line no-console
