@@ -45,6 +45,7 @@
 import { mapGetters, mapState, mapActions } from 'vuex'
 import Progress from '@/components/util/Progress'
 import bootstrap from '@/bootstrap'
+import DataService from '@/services/DataService'
 import md5 from 'js-md5'
 export default {
   name: 'Lockpad',
@@ -111,6 +112,20 @@ export default {
       this.$store.dispatch('auth/resetModules')
 
       this.$store.dispatch('location/fetch').then(() => {
+        // Set Store ID's here when the User is being loaded
+        const storeId = this.$store.state.auth.userDetails.item.brand_stores[0]
+        if (storeId) {
+          this.$store.commit('context/SET_STORE_ID', storeId, {
+            root: true,
+          })
+          localStorage.setItem('store_id', storeId)
+
+          DataService.setContext({
+            brand: this.$store.getters['context/brand'],
+            store: this.$store.getters['context/store'],
+          })
+        }
+
         bootstrap
           .loadUI(this.$store)
           .then(() => {
