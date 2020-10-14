@@ -135,6 +135,7 @@ const mutations = {
       state.surcharges = []
     }
     state.surchargeAmounts = []
+    state.isDeliverySurchargeRemoved = false
   },
   IS_DELIVERY_SURCHARGE_REMOVED(state, status) {
     state.isDeliverySurchargeRemoved = status
