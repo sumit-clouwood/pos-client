@@ -104,7 +104,7 @@
                               </span>
                             </div>
                           </div>
-                          <div>
+                          <div v-if="branch[order.store_id]">
                             {{ branch[order.store_id]['name'] }}
                           </div>
                           <div></div>
