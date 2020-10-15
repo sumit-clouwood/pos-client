@@ -108,7 +108,8 @@ export default {
   },
   computed: {
     ...mapState({
-      currentCategory: state => state.category.category._id,
+      currentCategory: state =>
+        state.category.category ? state.category.category._id : undefined,
     }),
     ...mapGetters('context', ['store']),
     ...mapState('context', ['storeId']),
