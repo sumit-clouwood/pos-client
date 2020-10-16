@@ -60,14 +60,12 @@ const getters = {
     }
 
     if (items && items.length) {
-      if (!state.category) {
-        return []
-      }
+      let category = state.category || state.categories[0]
 
       return items.filter(
         item =>
           item[CONSTANTS.REFERENCE_FIELD_ITEM_TO_CATEGORY] ===
-            state.category[CONSTANTS.REFERENCE_FIELD_CATEGORY_TO_ITEM] &&
+            category[CONSTANTS.REFERENCE_FIELD_CATEGORY_TO_ITEM] &&
           !item[CONSTANTS.REFERENCE_FIELD_ITEM_TO_SUBCATEGORY]
       )
     }
