@@ -512,8 +512,6 @@ export default {
         this.errors = { guest_lname: ['Last name is required'] }
         this.errorsCount = 1
       }
-      // eslint-disable-next-line no-debugger
-      // debugger
     },
     addNewReservation: function() {
       this.setStartDate()

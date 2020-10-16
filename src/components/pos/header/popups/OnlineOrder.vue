@@ -365,10 +365,6 @@ export default {
     getOnlineOrders() {
       let scope = this
       this.$store.dispatch('deliveryManager/getOnlineOrders').then(() => {
-        // eslint-disable-next-line no-console
-        console.log(scope.onlineOrders, 'onlineOrders')
-        // eslint-disable-next-line no-debugger
-        // debugger
         if (scope.onlineOrders.count > 0) {
           $('#online-order')
             .dialog()
