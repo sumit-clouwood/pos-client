@@ -5,11 +5,7 @@
       class="dm-ready-order-wrapper"
       id="dm-order-acceptance"
       v-bind:style="{
-        display:
-          availableModules.includes(CONST.MODULE_MANUAL_ACCEPTANCE) == true &&
-          listType == 'Awaiting Acceptance'
-            ? 'grid'
-            : 'none',
+        display: showAcceptance ? 'grid' : 'none',
       }"
     >
       <Preloader :msg="_t('Loading new orders') + '...'" v-if="loading" />
@@ -19,10 +15,7 @@
       class="dm-ready-order-wrapper"
       id="dm-new-order"
       v-bind:style="{
-        display:
-          availableModules.includes(CONST.MODULE_MANUAL_ACCEPTANCE) == true
-            ? 'none'
-            : 'grid',
+        display: this.params.pageId == 'home_delivery_new' ? 'grid' : 'none',
       }"
     >
       <Preloader :msg="_t('Loading new orders') + '...'" v-if="loading" />
@@ -86,7 +79,7 @@
                   <div id="my-dropdown" class="dropdown-content cursor-pointer">
                     <span
                       class="dropdown"
-                      v-for="driver in drivers"
+                      v-for="driver in driversNew"
                       :key="driver._id"
                       v-on:click="selectedDriver(driver)"
                       >{{ driver.name }}</span
@@ -233,6 +226,15 @@ export default {
   },
   computed: {
     ...mapGetters('deliveryManager', ['drivers']),
+    driversNew: function() {
+      let deliveryService = ['Jeebly', 'One Click']
+      var newDrivers = this.drivers
+      newDrivers = newDrivers.filter(item => {
+        return !deliveryService.includes(item.name)
+      })
+      // eslint-disable-next-line no-console
+      return newDrivers
+    },
     ...mapState('deliveryManager', [
       'driverBucket',
       'params',
@@ -241,6 +243,37 @@ export default {
     ]),
     ...mapGetters('location', ['_t']),
     ...mapState('context', ['availableModules']),
+    showAcceptance: function() {
+      // eslint-disable-next-line no-console
+      console.log(this.params)
+      // eslint-disable-next-line no-console
+      console.log(this.listType)
+      if (
+        this.availableModules.includes(CONST.MODULE_MANUAL_ACCEPTANCE) ==
+          true &&
+        this.listType == 'Awaiting Acceptance' &&
+        this.params.pageId == 'home_delivery_acceptance'
+      )
+        return true
+      else return false
+    },
+  },
+  beforeMount() {
+    if (
+      this.availableModules.includes(CONST.MODULE_MANUAL_ACCEPTANCE) == false
+    ) {
+      this.$store.commit(
+        'deliveryManager/SET_DM_PAGE_ID',
+        'home_delivery_new',
+        { root: true }
+      )
+    }
+    let deliveryService = ['jeebly', 'one click']
+    this.drivers = this.drivers.filter(item => {
+      // eslint-disable-next-line no-console
+      console.log(item.name)
+      return !deliveryService.includes(item.name)
+    })
   },
   updated() {
     if (this.listType == 'Waiting for Pick') {
@@ -251,7 +284,9 @@ export default {
   },
   mounted() {
     if (
-      this.availableModules.includes(CONST.MODULE_MANUAL_ACCEPTANCE) == true
+      this.availableModules.includes(CONST.MODULE_MANUAL_ACCEPTANCE) == true &&
+      this.params.pageId ==
+        'home_delivery_acceptance                                       '
     ) {
       // eslint-disable-next-line no-console
       console.log('why')
