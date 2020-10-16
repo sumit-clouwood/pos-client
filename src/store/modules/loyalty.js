@@ -1,5 +1,5 @@
 import * as mutation from './loyalty/mutation-types'
-// import LoyaltyService from '@/services/data/LoyaltyService'
+import LoyaltyService from '@/services/data/LoyaltyService'
 
 const state = {
   loyalty: false,
@@ -7,17 +7,17 @@ const state = {
 }
 const getters = {}
 const actions = {
-  /*fetchAll({ commit, rootState }) {
+  fetchAll({ commit, rootState }) {
     const params = [rootState.location.location]
     LoyaltyService.checkLoyaltyLocation(...params).then(response => {
       commit(mutation.LOYALTY, response.data.data)
     })
-  },*/
-  /* searchCustomer({ commit }, searchTerm) {
+  },
+  searchCustomer({ commit }, searchTerm) {
     LoyaltyService.searchCustomer(searchTerm).then(response => {
       commit(mutation.LOYALTY_CUSTOMERS, response.data)
     })
-  },*/
+  },
 }
 const mutations = {
   [mutation.LOYALTY](state, loyalty) {
