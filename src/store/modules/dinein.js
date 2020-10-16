@@ -657,10 +657,12 @@ const mutations = {
   [mutation.SELECTED_AREA](state, activeArea) {
     state.tablesOnArea = false
     state.activeArea = activeArea
-    state.tablesOnArea =
-      state.tables && state.tables.length > 0
-        ? state.tables.filter(table => table.area_id === activeArea._id)
-        : false
+    if (activeArea) {
+      state.tablesOnArea =
+        state.tables && state.tables.length > 0
+          ? state.tables.filter(table => table.area_id === activeArea._id)
+          : false
+    }
   },
   [mutation.LOADING](state, loadingStatus) {
     state.loading = loadingStatus
