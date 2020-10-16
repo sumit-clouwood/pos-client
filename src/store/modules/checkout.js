@@ -1572,6 +1572,9 @@ const actions = {
           if (response.data.status === 'ok') {
             commit('order/SET_ORDER_ID', response.data.id, { root: true })
             commit('SET_ORDER_NUMBER', response.data.order_no)
+            commit('deliveryManager/LIST_TYPE', 'New Orders', { root: true })
+            commit('deliveryManager/SET_DM_ORDER_STATUS', 'in-progress', { root:  true })
+            commit('deliveryManager/SET_DM_PAGE_ID', 'home_delivery_new', { root:  true })
 
             const msg = rootGetters['location/_t']('Order placed Successfully')
             dispatch('setMessage', {

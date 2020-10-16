@@ -209,7 +209,6 @@ const actions = {
     }
   },
   getDeliveryServiceDriver({ commit, rootGetters }) {
-    console.log(rootGetters['context/brand'])
     let brandId = rootGetters['context/brand'].replace('/', '')
     DMService.getDeliveryServices(brandId).then(response => {
       commit(mutation.SERVICE_DRIVERS, response.data.data)
