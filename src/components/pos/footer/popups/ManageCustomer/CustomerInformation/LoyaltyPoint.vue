@@ -30,8 +30,8 @@ export default {
     ...mapGetters('location', ['_t']),
     ...mapState({
       loyalty: state =>
-        state.customer.loyalty.card.balance
-          ? state.customer.loyalty.card.balance
+        state.customer.customerLoyalty.card
+          ? state.customer.customerLoyalty.card.balance
           : 0,
     }),
   },

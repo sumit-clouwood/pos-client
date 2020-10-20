@@ -613,7 +613,7 @@ export default {
     ...mapState('sync', ['online']),
     ...mapGetters('location', ['formatPrice', '_t']),
     ...mapState({
-      loyaltyCard: state => state.customer.loyalty.card,
+      loyaltyCard: state => state.customer.customerLoyalty.card,
       paymentError: state => state.checkoutForm.error,
     }),
     ...mapState({ selectedCustomer: state => state.customer.customer.name }),
