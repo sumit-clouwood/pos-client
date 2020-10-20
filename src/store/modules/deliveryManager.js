@@ -156,6 +156,7 @@ const actions = {
     { commit, state, dispatch, rootGetters },
     dmautoloader = true
   ) {
+    console.log(state.params)
     if (!dmautoloader) return dmautoloader
     commit(mutation.SET_LOADING, true)
     // return new Promise((resolve, reject) => {
@@ -233,7 +234,7 @@ const actions = {
           .then(response => {
             commit(mutation.SET_LOADING, true)
             if (response.data) {
-              commit(mutation.SET_DM_ORDERS, response.data)
+              // commit(mutation.SET_DM_ORDERS, response.data)
               let onlineOrders = {
                 count: response.data.count,
                 orders: response.data.data,
