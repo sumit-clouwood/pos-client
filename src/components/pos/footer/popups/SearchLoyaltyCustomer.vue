@@ -15,7 +15,13 @@
             {{ _t('Loyalty') }}
           </h4>
         </div>
-        <progressbar v-if="customer_loading" />
+        <progressbar
+          v-if="customer_loading"
+          :init="10"
+          :step="10"
+          :interval="1"
+          :range="100"
+        />
         <form class="modal-body add-note-wrap" autocomplete="off">
           <p class="color-text-invert">{{ _t('Jump to customer') }}</p>
           <div class="add-note-area">
