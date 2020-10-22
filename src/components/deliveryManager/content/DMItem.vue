@@ -64,7 +64,26 @@
                     convertDatetime(order.real_created_datetime, timezoneString)
                   }}
                 </div>
-                <div class="button-block" style="visibility: visible;">
+                <div
+                  class="button-block"
+                  v-if="processedOrder.includes(order._id)"
+                >
+                  <button
+                    class="button text-button btn btn-success"
+                    type="button"
+                  >
+                    <div class="button-content-container">
+                      <div class="button-icon-container">
+                        <!---->
+                      </div>
+                      <div class="button-caption" :style="{ opacity: 1 }">
+                        <i class="fa fa-circle-o-notch fa-spin"></i>
+                        {{ _t('wait') }}
+                      </div>
+                    </div>
+                  </button>
+                </div>
+                <div v-else class="button-block" style="visibility: visible;">
                   <div v-if="actionDetails.action != ''">
                     <span
                       v-if="
@@ -267,6 +286,7 @@ export default {
       dateTime: '',
       err: null,
       activeIndex: [],
+      processedOrder: [],
     }
   },
   components: {
@@ -310,6 +330,9 @@ export default {
   methods: {
     ...mapActions('deliveryManager', ['showOrderDetails']),
     updateOrder(data) {
+      this.processedOrder.push(data.order._id)
+      // eslint-disable-next-line no-console
+      console.log(this.processedOrder)
       // if (this.activeIndex.includes(data.order._id)) {
       //   const index = this.activeIndex.indexOf(data.order._id)
       //   if (index > -1) {
@@ -358,7 +381,6 @@ tbody {
   grid-row-end: 2;
   overflow: auto;
   display: grid;
-  grid-template-columns: 1fr 1fr;
   grid-column-gap: $px10;
   grid-row-gap: $px10;
   padding: $px40 $px60;
