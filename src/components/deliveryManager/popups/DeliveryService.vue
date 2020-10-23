@@ -90,7 +90,7 @@ export default {
         },
         {
           name: 'Careem Now',
-          id: 'careem_now',
+          id: 'careem',
           discription: '',
           img: 'img/delivery-services/careemNow.png',
         },
@@ -122,10 +122,11 @@ export default {
       let tawseel = this.brand.tawseel && this.store.tawseel ? true : false
       let one_click =
         this.brand.one_click && this.store.one_click ? true : false
+      let careem = this.brand.careem && this.store.careem ? true : false
       return {
         jeebly: jeebly,
         tawseel: tawseel,
-        one_click: one_click,
+        careem: careem,
       }
     },
   },
