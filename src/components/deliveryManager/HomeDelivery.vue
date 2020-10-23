@@ -227,7 +227,7 @@ export default {
   computed: {
     ...mapGetters('deliveryManager', ['drivers']),
     driversNew: function() {
-      let deliveryService = ['Jeebly', 'One Click']
+      let deliveryService = ['Jeebly', 'One Click', 'Careem Now']
       var newDrivers = this.drivers
       newDrivers = newDrivers.filter(item => {
         return !deliveryService.includes(item.name)
@@ -245,9 +245,9 @@ export default {
     ...mapState('context', ['availableModules']),
     showAcceptance: function() {
       // eslint-disable-next-line no-console
-      // console.log(this.params)
-      // // eslint-disable-next-line no-console
-      // console.log(this.listType)
+      console.log(this.params)
+      //eslint-disable-next-line no-console
+      console.log(this.listType)
       if (
         this.availableModules.includes(CONST.MODULE_MANUAL_ACCEPTANCE) ==
           true &&
