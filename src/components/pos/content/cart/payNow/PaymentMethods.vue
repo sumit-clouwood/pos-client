@@ -119,7 +119,8 @@ export default {
           if (this.selectedModal == '#manage-customer') {
             showModal('#search-loyalty-customer')
           } else {
-            this.$store.dispatch('checkoutForm/calculateSpendLoyalty')
+            this.$store.dispatch('checkoutForm/calculateLoyaltyAmountForItem')
+            // this.$store.dispatch('checkoutForm/calculateSpendLoyalty')
             showModal('#loyalty-payment')
           }
         }

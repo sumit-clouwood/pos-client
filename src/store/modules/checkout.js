@@ -320,7 +320,7 @@ const actions = {
         const amount = !isNaN(payment.amount) ? payment.amount : 0
 
         if (payment.method.name === CONSTANTS.ORDER_PAYMENT_TYPE_LOYALTY) {
-          orderPoints = rootState.checkoutForm.loyaltyPoints
+          orderPoints = rootState.checkoutForm.loyaltyAmount
         } else {
           orderPoints = amount
         }

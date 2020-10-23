@@ -12,38 +12,44 @@
         <div class="modal-body add-email-wrap">
           <div class="add-note-area color-text-invert">
             <p v-if="loyaltyBalance > 0">
-              {{ _t('Loyalty Balance (Points)') }}:
-              <span class="color-text">{{ formatPrice(loyaltyBalance) }}</span>
+              {{ _t('Customer Loyalty Balance') }}:
+              <b class="color-text">{{ formatPrice(loyaltyBalance) }}</b>
             </p>
-            <p
-              class="color-text-invert"
-              v-if="loyalty.loyalty_order_alert != null"
-            >
-              {{ loyalty.loyalty_order_alert }}
+            <p class="color-text-invert" v-if="brand.min_order">
+              {{ _t('Minimum order amount should be') }}:
+              <b class="color-text">{{ formatPrice(brand.min_order) }}</b>
             </p>
-            <div
-              v-if="loyalty.loyalty_order_alert == null && loyaltyBalance > 0"
-            >
+            <div v-if="brand.min_order >= 1 && loyaltyBalance > 0">
               <hr />
               <p class="color-text-invert">
                 {{ _t('You can spend min') }}
                 <b class="color-text"
-                  >{{ loyalty.minimum_redeem ? loyalty.minimum_redeem : 0 }}
-                  {{ _t('Point(s)') }}</b
+                  >{{ brand.minimum_redeem ? brand.minimum_redeem : 0 }}
+                  {{ _t('Loyalty') }}</b
                 >
                 {{ _t('and max') }}
                 <b class="color-text"
-                  >{{ loyalty.maximum_redeem ? loyalty.maximum_redeem : 0 }}
-                  {{ _t('Point(s)') }}</b
+                  >{{ brand.maximum_redeem ? brand.maximum_redeem : 0 }}
+                  {{ _t('Loyalty') }}</b
                 >
               </p>
+              <div class="item_box">
+                <p
+                  class="color-text-invert"
+                  v-for="(item, key) in customerLoyaltyItem"
+                  :key="key"
+                >
+                  {{ dt(item) }}:
+                  <b class="color-text">{{ item.loyalty_ammount }}</b>
+                </p>
+              </div>
               <p class="color-text-invert">
-                {{ _t('Points you can spend') }}:
-                <b class="color-text">{{ points }}</b>
-              </p>
-              <p class="color-text-invert">
-                {{ _t('Amount respective to loyalty points') }}:
-                <b class="color-text">{{ amount }}</b>
+                {{ _t('You can redeem maximum loyalty') }}:
+                <b class="color-text">
+                  {{ _t('Amount') }}: {{ loyaltyAmount }},
+
+                  {{ _t('Point(s)') }}: {{ loyaltyPoints }}
+                </b>
               </p>
             </div>
             <div v-else>
@@ -64,7 +70,7 @@
               {{ _t('Close') }}
             </button>
             <button
-              v-if="loyalty.loyalty_order_alert == null && !isLoyaltyUsed"
+              v-if="brand.min_order >= 1 && !isLoyaltyUsed"
               class="btn btn-success btn-large popup-btn-save color-text-invert color-main"
               type="button"
               id="gift-card-btn"
@@ -87,32 +93,43 @@ import { mapState, mapActions, mapGetters } from 'vuex'
 
 export default {
   name: 'Loyalty',
+  data() {
+    return {
+      total_loyalty_redeem: 0,
+    }
+  },
   computed: {
     ...mapGetters('location', ['formatPrice', '_t']),
+    ...mapState('location', ['brand']),
+    ...mapState('checkoutForm', [
+      'payments',
+      'loyaltyAmount',
+      'loyaltyPoints',
+      'customerLoyaltyItem',
+    ]),
+    ...mapGetters('order', ['items']),
     ...mapState({
       loyaltyBalance: state =>
-        state.customer.loyalty.card.balance
-          ? state.customer.loyalty.card.balance
+        state.customer.customerLoyalty.card
+          ? state.customer.customerLoyalty.card.balance
           : 0,
-      loyalty: state => state.customer.loyalty.details,
+      loyalty: state => state.customer.customerLoyalty.details,
     }),
+    isLoyaltyUsed() {
+      let loyaltyUsed = 0
+      if (this.payments) {
+        // eslint-disable-next-line no-debugger,no-console
+        console.log(this.payments)
+        this.payments.forEach(element => {
+          if (element.method.name == 'Loyalty Points') {
+            loyaltyUsed = 1
+          }
+        })
+      }
+      return loyaltyUsed
+    },
     ...mapState({
-      amount: state =>
-        state.checkoutForm.loyaltyAmount ? state.checkoutForm.loyaltyAmount : 0,
-      points: state =>
-        state.checkoutForm.loyaltyPoints ? state.checkoutForm.loyaltyPoints : 0,
-      card: state => state.customer.loyalty.card,
-      isLoyaltyUsed: state => {
-        let loyaltyUsed = 0
-        if (state.checkoutForm.payments) {
-          state.checkoutForm.payments.forEach(element => {
-            if (element.method.name == 'Loyalty Points') {
-              loyaltyUsed = 1
-            }
-          })
-        }
-        return loyaltyUsed
-      },
+      card: state => state.customer.customerLoyalty.card,
     }),
   },
   methods: {
@@ -120,7 +137,7 @@ export default {
       this.$store.commit('checkoutForm/SET_PROCESSING', false)
     },
     payByLoyalty() {
-      this.$store.dispatch('checkoutForm/setAmount', this.amount)
+      this.$store.dispatch('checkoutForm/setAmount', this.loyaltyAmount)
       this.$store.dispatch('checkoutForm/setLoyaltyCard', this.card)
     },
     ...mapActions('checkoutForm', ['calculateSpendLoyalty']),
@@ -141,6 +158,14 @@ export default {
       }
 
       .modal-body {
+        .item_box {
+          border: 1px solid #c5bbbb;
+          padding: 10px;
+          line-height: 1.7;
+          max-height: 110px;
+          overflow: scroll;
+          margin: 15px 0;
+        }
       }
 
       .modal-footer {
