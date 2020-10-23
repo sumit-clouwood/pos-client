@@ -72,6 +72,10 @@ export default {
     return new Promise((resolve, reject) => {
       this.reloadSystem(caller)
         .then(() => {
+          this.store.dispatch('auth/fetchRoles').then(() => {
+            this.store.dispatch('auth/setCurrentRole')
+            this.store.dispatch('auth/fetchAllStoreUsers')
+          })
           this.store
             .dispatch('category/fetchAll')
             .then(async () => {
@@ -91,6 +95,11 @@ export default {
                 this.store.dispatch('invoice/printRules').then(() => {
                   this.store.dispatch('invoice/fetchTemplates')
                 })
+
+              this.store.dispatch(
+                'announcement/fetchAll',
+                this.store.state.auth.userDetails
+              )
             })
             .catch(error => reject(error))
         })
@@ -109,6 +118,11 @@ export default {
           self
             .validateSubscription(self.store)
             .then(() => {
+              this.store.dispatch('auth/fetchRoles').then(() => {
+                this.store.dispatch('auth/setCurrentRole')
+                this.store.dispatch('auth/fetchAllStoreUsers')
+              })
+
               this.updateLoading('store')
               this.store.dispatch('payment/fetchAll').then(() => {})
               this.store.dispatch('tax/openItemTaxes')
@@ -178,6 +192,10 @@ export default {
                   this.store
                     .dispatch('printingServer/getKitchens')
                     .then(() => {})
+                  this.store.dispatch(
+                    'announcement/fetchAll',
+                    this.store.state.auth.userDetails
+                  )
                 })
                 .catch(error => reject(error))
             })

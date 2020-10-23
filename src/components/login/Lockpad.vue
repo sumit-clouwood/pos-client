@@ -111,45 +111,44 @@ export default {
     loadCompleteUi() {
       this.$store.dispatch('auth/resetModules')
 
-      this.$store.dispatch('location/fetch').then(() => {
-        // Set Store ID's here when the User is being loaded
-        const storeId = this.$store.state.auth.userDetails.item.brand_stores[0]
-        if (storeId) {
-          this.$store.commit('context/SET_STORE_ID', storeId, {
+      // eslint-disable-next-line no-console
+      console.log('user', this.$store.state.auth.userDetails.item)
+      const storeId = this.$store.state.auth.userDetails.item.brand_stores[0]
+      if (storeId) {
+        this.$store.commit('context/SET_STORE_ID', storeId, {
+          root: true,
+        })
+        localStorage.setItem('store_id', storeId)
+
+        DataService.setContext({
+          brand: this.$store.getters['context/brand'],
+          store: this.$store.getters['context/store'],
+        })
+      }
+
+      bootstrap
+        .loadUI('sw')
+        .then(() => {
+          this.$store.dispatch('checkout/reset', true)
+
+          bootstrap.loadApiData('customer')
+
+          bootstrap.loadApiData('order')
+
+          localStorage.setItem('offline_mode_login', false)
+          this.$router.replace({
+            name: 'BrandHome',
+            params: {
+              brand_id: this.brandId,
+              store_id: this.storeId,
+            },
+          })
+        })
+        .finally(() => {
+          this.$store.dispatch('sync/setLoader', false, {
             root: true,
           })
-          localStorage.setItem('store_id', storeId)
-
-          DataService.setContext({
-            brand: this.$store.getters['context/brand'],
-            store: this.$store.getters['context/store'],
-          })
-        }
-
-        bootstrap
-          .loadUI(this.$store)
-          .then(() => {
-            this.$store.dispatch('checkout/reset', true)
-
-            bootstrap.loadApiData('customer')
-
-            bootstrap.loadApiData('order')
-
-            localStorage.setItem('offline_mode_login', false)
-            this.$router.replace({
-              name: 'BrandHome',
-              params: {
-                brand_id: this.brandId,
-                store_id: this.storeId,
-              },
-            })
-          })
-          .finally(() => {
-            this.$store.dispatch('sync/setLoader', false, {
-              root: true,
-            })
-          })
-      })
+        })
     },
     login() {
       if (!this.pincode) {

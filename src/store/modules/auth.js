@@ -165,13 +165,12 @@ const actions = {
 
           localStorage.setItem('token', response.data.token)
           //wait for localstorage to be updated
-          setTimeout(() => {
+          dispatch('getUserDetails', response.data.user.user_id).then(() => {
             dispatch('location/setContext', null, { root: true }).then(() => {
               commit(mutation.SET_TOKEN, response.data.token)
               resolve(response.data.token)
             })
-          }, 100)
-          //resolve()
+          })
         })
         .catch(error => reject(error))
     })
@@ -322,20 +321,11 @@ const actions = {
     })
   },
 
-  getUserDetails({ commit, dispatch }, userId) {
+  getUserDetails({ commit }, userId) {
     return new Promise((resolve, reject) => {
       if (userId) {
         AuthService.userDetails(userId).then(response => {
           commit(mutation.USER_DETAILS, response.data)
-
-          dispatch('fetchRoles').then(() => {
-            dispatch('setCurrentRole')
-            dispatch('fetchAllStoreUsers')
-          })
-
-          dispatch('announcement/fetchAll', response.data, {
-            root: true,
-          }).then(() => {})
           resolve(response.data)
         })
       } else {
