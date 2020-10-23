@@ -88,6 +88,12 @@ export default {
           discription: '',
           img: 'img/delivery-services/oneClick.png',
         },
+        {
+          name: 'Careem Now',
+          id: 'careem_now',
+          discription: '',
+          img: 'img/delivery-services/careemNow.png',
+        },
       ],
     }
   },
