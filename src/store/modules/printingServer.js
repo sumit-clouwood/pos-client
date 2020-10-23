@@ -271,6 +271,7 @@ const actions = {
         Object.assign(jsonResponse, { kitchens: state.kitchens })
         // eslint-disable-next-line no-console
         console.log(jsonResponse, 'ff')
+        localStorage.setItem('orderInvoiceColData', '')
         localStorage.setItem(
           'orderInvoiceColData',
           JSON.stringify(jsonResponse)
@@ -350,7 +351,7 @@ const actions = {
         'initiateWebView',
         Math.floor(Math.random() * 100 + 1)
       )
-      localStorage.setItem('orderInvoiceColData', '')
+      // localStorage.setItem('orderInvoiceColData', '')
     }
     let printingServers = state.printingservers
     if ((printingServers || isIOS) && orderData) {
