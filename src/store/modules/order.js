@@ -674,10 +674,6 @@ const actions = {
       item.modifiable = false
       item.note = stateItem.note ? stateItem.note : ''
       console.log('adding simple item to cart', item)
-      // eslint-disable-next-line no-debugger
-      // debugger
-
-      console.log('adding simple item to cart', item)
       dispatch('prepareItem', { item: item }).then(item => {
         commit(mutation.SET_ITEM, item)
         //add item to cart
@@ -687,9 +683,6 @@ const actions = {
           resolve()
         })
       })
-
-      // eslint-disable-next-line no-debugger
-      // debugger
     })
   },
 
@@ -1425,8 +1418,6 @@ const actions = {
         '_id'
       )
       console.log('menu item', menuItem)
-      // eslint-disable-next-line no-debugger
-      // debugger
       if (menuItem) {
         console.log('adding item: ', menuItem, item)
         await dispatch('addItemToCart', { menuItem: menuItem, orderItem: item })

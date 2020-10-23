@@ -327,14 +327,11 @@ const actions = {
                     })
                   }
                   commit(mutation.MULTI_STORE_IDS, multiStoreIds)
-                  dispatch('auth/getUserDetails', storedata.data.user_id, {
-                    root: true,
-                  }).then(response => {
-                    resolve({
-                      userDetails: response.item,
-                      stores: multiStoreIds,
-                      availableStoreGroups: availableStoreGroups,
-                    })
+                  //we already get user details when logging in, no need to get it again
+                  resolve({
+                    userDetails: rootState.auth.userDetails.item,
+                    stores: multiStoreIds,
+                    availableStoreGroups: availableStoreGroups,
                   })
                 })
                 .catch(error => {

@@ -72,21 +72,34 @@ export default {
     return new Promise((resolve, reject) => {
       this.reloadSystem(caller)
         .then(() => {
+          this.store.dispatch('auth/fetchRoles').then(() => {
+            this.store.dispatch('auth/setCurrentRole')
+            this.store.dispatch('auth/fetchAllStoreUsers')
+          })
           this.store
             .dispatch('category/fetchAll')
             .then(async () => {
               await Promise.all([
                 this.store.dispatch('modifier/fetchAll'),
                 this.store.dispatch('tax/fetchAll'),
-                this.store.dispatch('payment/fetchAll'),
                 this.store.dispatch('surcharge/fetchAll'),
                 this.store.dispatch('discount/fetchAll'),
-                this.store.dispatch('dinein/fetchAll'),
-                this.store.dispatch('carhop/initFetch'),
               ])
-
               this.store.commit('sync/loaded', true)
               resolve()
+
+              this.store.dispatch('payment/fetchAll'),
+                this.store.dispatch('customer/fetchAll'),
+                this.store.dispatch('dinein/fetchAll'),
+                this.store.dispatch('carhop/initFetch'),
+                this.store.dispatch('invoice/printRules').then(() => {
+                  this.store.dispatch('invoice/fetchTemplates')
+                })
+
+              this.store.dispatch(
+                'announcement/fetchAll',
+                this.store.state.auth.userDetails
+              )
             })
             .catch(error => reject(error))
         })
@@ -105,6 +118,11 @@ export default {
           self
             .validateSubscription(self.store)
             .then(() => {
+              this.store.dispatch('auth/fetchRoles').then(() => {
+                this.store.dispatch('auth/setCurrentRole')
+                this.store.dispatch('auth/fetchAllStoreUsers')
+              })
+
               this.updateLoading('store')
               this.store.dispatch('payment/fetchAll').then(() => {})
               this.store.dispatch('tax/openItemTaxes')
@@ -174,6 +192,10 @@ export default {
                   this.store
                     .dispatch('printingServer/getKitchens')
                     .then(() => {})
+                  this.store.dispatch(
+                    'announcement/fetchAll',
+                    this.store.state.auth.userDetails
+                  )
                 })
                 .catch(error => reject(error))
             })

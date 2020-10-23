@@ -391,13 +391,6 @@ export default {
     return {
       currentBrand: this.$store.state.location.brand,
       referral: false,
-      currentStore: this.$store.state.location.store,
-      current_locale: this.$store.state.location.locale,
-      company_logo:
-        this.$store.state.location.brand &&
-        this.$store.state.location.brand.company_logo
-          ? this.$store.state.location.brand.company_logo
-          : '',
     }
   },
   mounted() {
@@ -609,6 +602,18 @@ export default {
       )
 
       return order
+    },
+    currentStore() {
+      return this.$store.state.location.store
+    },
+    current_locale() {
+      return this.$store.state.location.locale
+    },
+    company_logo() {
+      return this.$store.state.location.brand &&
+        this.$store.state.location.brand.company_logo
+        ? this.$store.state.location.brand.company_logo
+        : ''
     },
   },
   methods: {

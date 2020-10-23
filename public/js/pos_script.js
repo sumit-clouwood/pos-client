@@ -114,8 +114,6 @@ $(document).ready(function() {
   })
 
   $(document).mouseup(function(e) {
-    // eslint-disable-next-line
-    // debugger
     var popup = $(
       '.setting-dropdown, .setting-dropdown-transaction, #setting-icon'
     )

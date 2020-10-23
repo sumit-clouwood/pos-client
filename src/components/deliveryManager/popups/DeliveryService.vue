@@ -143,9 +143,6 @@ export default {
         return el.name == deliveryService
       })
       this.selectDriver = driver[0]
-      // eslint-disable-next-line no-console
-      console.log(this.selectDriver)
-      // eslint-disable-next-line no-debugger
       this.$store.commit(
         'deliveryManager/SET_SELECTED_DM_DRIVER',
         this.selectDriver._id

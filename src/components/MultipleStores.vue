@@ -83,9 +83,12 @@ export default {
       if (this.loaded) {
         this.$store.commit('sync/SET_IS_LOADING', true)
       }
+      //reset all previous data
+      this.$store.dispatch('auth/resetModules')
 
       this.$store.commit('context/SET_BRAND_ID', this.brand._id, { root: true })
       this.$store.commit('context/SET_STORE_ID', storeId, { root: true })
+      this.$store.commit('dinein/SELECTED_AREA', false)
       localStorage.setItem('brand_id', this.brand._id)
       localStorage.setItem('store_id', storeId)
 

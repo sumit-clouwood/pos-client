@@ -95,6 +95,9 @@ const getters = {
   },
   getCustomerAddresses: (state, getters) => {
     if (state.customer && state.customer.customer_addresses) {
+      /*let aa = state.deliveryAreas
+      // eslint-disable-next-line no-console
+      console.log(aa)*/
       let avilableCustomerAddress = state.customer.customer_addresses.map(
         address => {
           if (!address.delivery_area_id) {
@@ -104,7 +107,7 @@ const getters = {
           }
           let checkDeliveryArea = getters.checkDeliveryArea(
             address.delivery_area_id,
-            state.deliveryAreas
+            state.fetchDeliveryAreas
           )
 
           if (checkDeliveryArea) {
@@ -166,8 +169,6 @@ const actions = {
       let mandate_fields = []
       let all_fields = []
       if (response.data.data) {
-        // eslint-disable-next-line no-debugger
-        // debugger
         response.data.data.forEach(field => {
           all_fields[field.name_key] = field.default_value || ''
           if (field.name_key === 'delivery_area_id' && !field.item_status) {
@@ -410,6 +411,7 @@ const actions = {
     customerDetails.pastOrders = false
     commit(mutation.SELECTED_CUSTOMER, customerDetails)
     commit('order/SET_REFERRAL', false, { root: true })
+    commit('surcharge/IS_DELIVERY_SURCHARGE_REMOVED', false, { root: true })
     dispatch('reset', true)
   },
   selectedAddress({ commit, dispatch }, address) {

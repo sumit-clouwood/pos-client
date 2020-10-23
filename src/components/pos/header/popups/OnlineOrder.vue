@@ -285,6 +285,9 @@ export default {
     if (!this.onlineOrders.count) {
       this.pauseSound()
     }
+    /*if (this.onlineOrders.count && !this.isAudioPlaying) {
+      this.playSound()
+    }*/
   },
   methods: {
     ...mapActions('deliveryManager', ['showOrderDetails']),
@@ -360,19 +363,13 @@ export default {
       this.isAudioPlaying = false
     },
     getOnlineOrders() {
-      // eslint-disable-next-line no-console
       let scope = this
       this.$store.dispatch('deliveryManager/getOnlineOrders').then(() => {
-        // eslint-disable-next-line no-console
-        // eslint-disable-next-line no-console
-        console.log(scope.onlineOrders, 'onlineOrders')
         if (scope.onlineOrders.count > 0) {
           $('#online-order')
             .dialog()
             .dialog('open')
           if (!scope.isAudioPlaying) scope.playSound()
-        } else {
-          // if (scope.isAudioPlaying) scope.pause()
         }
         // clearTimeout(scope.interval)
       })
@@ -391,6 +388,45 @@ export default {
 
 <style lang="scss" scoped>
 @import '@/assets/scss/variables.scss';
+
+.table-responsive {
+  max-height: 65vh;
+}
+.order-item {
+  margin: 0;
+}
+.table tr {
+  border-top: 1px solid #dee2e6;
+}
+.table tr td {
+  border-top: none;
+}
+.order-item .order-header {
+  grid-template-columns: 1.5fr 2fr;
+}
+.order_price,
+#online-order .button-block {
+  text-align: right;
+}
+.order_time,
+#online-order .button-block {
+  padding-top: 12px;
+}
+.main-item {
+  color: #808282;
+  margin-bottom: 4px;
+}
+.order-item .order-body .order-items-list .modifiers {
+  font-size: 14px;
+  color: #808282;
+}
+.order-footer {
+  min-height: 40px;
+}
+.button-block span {
+  margin: 0;
+}
+
 .order-delivery-area {
   width: 95% !important;
   margin: auto;
@@ -398,7 +434,27 @@ export default {
 .active {
   background-color: blueviolet;
 }
-
+@media only screen and (max-width: 960px) and (min-width: 320px) {
+  .modal {
+    position: fixed !important;
+  }
+}
+@media (max-width: 767px) {
+  tbody {
+    grid-template-columns: 1fr 1fr !important;
+  }
+  .table tr {
+    margin-bottom: 10px;
+  }
+}
+@media (max-width: 568px) {
+  tbody {
+    grid-template-columns: 1fr !important;
+  }
+  tbody {
+    display: table-row-group;
+  }
+}
 tbody {
   grid-row-start: 1;
   grid-row-end: 2;
@@ -406,7 +462,7 @@ tbody {
   display: grid;
   grid-column-gap: $px10;
   grid-row-gap: $px10;
-  padding: $px40 $px60;
+  padding: $px16 $px8;
   word-break: break-word;
   grid-template-columns: 1fr 1fr 1fr;
 }
@@ -415,6 +471,9 @@ tbody {
 }
 #online-order .modal-dialog {
   max-width: 88.5rem;
+}
+.online-order-modal {
+  z-index: 999;
 }
 .runningtimes {
   width: 100%;

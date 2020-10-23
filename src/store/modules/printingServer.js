@@ -329,7 +329,6 @@ const actions = {
   printingServerInvoiceRaw({ rootState, dispatch }, orderData) {
     // eslint-disable-next-line no-console
     console.log('IN', rootState.checkout.paymentAction, orderData)
-    // eslint-disable-next-line no-debugger
     let dt = rootState.auth.deviceType
     let isIOS = dt.osType
     if (
