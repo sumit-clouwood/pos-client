@@ -127,6 +127,7 @@ export default {
         jeebly: jeebly,
         tawseel: tawseel,
         careem: careem,
+        one_click: one_click,
       }
     },
   },
