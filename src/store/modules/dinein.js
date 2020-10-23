@@ -736,6 +736,7 @@ const mutations = {
   [mutation.RESET](state) {
     state.areas = false
     state.dineInTabType = 'all'
+    state.activeArea = false
   },
   [mutation.PROCESSING_SPLIT](state, status) {
     state.processingSplit = status
