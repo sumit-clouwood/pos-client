@@ -74,7 +74,11 @@
             </div>
           </div>
           <button
-            v-if="allowed(PERMS.CANCEL_ORDER)"
+            v-if="
+              allowed(PERMS.CANCEL_ORDER) &&
+                typeof selectedOrder.item !== 'undefined' &&
+                selectedOrder.item.order_system_status !== 'requires_acceptance'
+            "
             type="button"
             class="button text-button btn btn-success color-main color-text-invert"
             data-toggle="modal"

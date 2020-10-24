@@ -104,7 +104,7 @@
                               </span>
                             </div>
                           </div>
-                          <div>
+                          <div v-if="branch[order.store_id]">
                             {{ branch[order.store_id]['name'] }}
                           </div>
                           <div></div>
@@ -285,15 +285,14 @@ export default {
     if (!this.onlineOrders.count) {
       this.pauseSound()
     }
+    /*if (this.onlineOrders.count && !this.isAudioPlaying) {
+      this.playSound()
+    }*/
   },
-  /*destroyed() {
-    // eslint-disable-next-line no-console
-    console.log('destroyed')
-    this.pauseSound()
-  },*/
   methods: {
     ...mapActions('deliveryManager', ['showOrderDetails']),
     updateOrder(data) {
+      this.$store.commit('deliveryManager/SET_LOADING', true)
       this.updateOrderAction(data)
         .then(() => {
           this.$store.dispatch('deliveryManager/getOnlineOrders')
@@ -310,21 +309,12 @@ export default {
       $('#online-order')
         .dialog()
         .dialog('close')
-      // this.pauseSound()
     },
     playSound() {
       // eslint-disable-next-line prettier/prettier
       audio.play()
       this.isAudioPlaying = true
     },
-    // pauseSound() {
-    //   // eslint-disable-next-line no-console
-    //   console.log('pause', this.audio)
-    //   $('#online-order').modal('hide')
-    //   clearTimeout(this.interval)
-    //   this.audio.pause()
-    //   this.isAudioPlaying = false
-    // },
     onlineOrderSetup() {
       let scope = this
       let storeId = this.store ? this.store._id : this.$route.params.store_id
@@ -363,19 +353,18 @@ export default {
       })
     },
     pauseSound() {
-      audio.pause()
-      this.isAudioPlaying = false
+      this.pause()
       $('#online-order')
         .dialog()
         .dialog('close')
     },
+    pause() {
+      audio.pause()
+      this.isAudioPlaying = false
+    },
     getOnlineOrders() {
-      // eslint-disable-next-line no-console
       let scope = this
       this.$store.dispatch('deliveryManager/getOnlineOrders').then(() => {
-        // eslint-disable-next-line no-console
-        // eslint-disable-next-line no-console
-        console.log(scope.onlineOrders)
         if (scope.onlineOrders.count > 0) {
           $('#online-order')
             .dialog()
@@ -389,19 +378,6 @@ export default {
     ...mapActions('order', ['selectedOrderDetails', 'updateOrderAction']),
   },
   created() {
-    // // let scope = this
-    // this.audio = new Audio('/sounds/doorbell.ogg')
-    // this.audio.load()
-    // this.audio.addEventListener(
-    //   'ended',
-    //   function() {
-    //     // this.interval = setTimeout(function() {
-    //     //   // eslint-disable-next-line no-console
-    //     //   console.log('this.interval')
-    //     // }, 1000)
-    //   },
-    //   false
-    // )
     this.onlineOrderSetup()
     this.getOnlineOrders()
     // eslint-disable-next-line no-console
@@ -412,6 +388,45 @@ export default {
 
 <style lang="scss" scoped>
 @import '@/assets/scss/variables.scss';
+
+.table-responsive {
+  max-height: 65vh;
+}
+.order-item {
+  margin: 0;
+}
+.table tr {
+  border-top: 1px solid #dee2e6;
+}
+.table tr td {
+  border-top: none;
+}
+.order-item .order-header {
+  grid-template-columns: 1.5fr 2fr;
+}
+.order_price,
+#online-order .button-block {
+  text-align: right;
+}
+.order_time,
+#online-order .button-block {
+  padding-top: 12px;
+}
+.main-item {
+  color: #808282;
+  margin-bottom: 4px;
+}
+.order-item .order-body .order-items-list .modifiers {
+  font-size: 14px;
+  color: #808282;
+}
+.order-footer {
+  min-height: 40px;
+}
+.button-block span {
+  margin: 0;
+}
+
 .order-delivery-area {
   width: 95% !important;
   margin: auto;
@@ -419,7 +434,27 @@ export default {
 .active {
   background-color: blueviolet;
 }
-
+@media only screen and (max-width: 960px) and (min-width: 320px) {
+  .modal {
+    position: fixed !important;
+  }
+}
+@media (max-width: 767px) {
+  tbody {
+    grid-template-columns: 1fr 1fr !important;
+  }
+  .table tr {
+    margin-bottom: 10px;
+  }
+}
+@media (max-width: 568px) {
+  tbody {
+    grid-template-columns: 1fr !important;
+  }
+  tbody {
+    display: table-row-group;
+  }
+}
 tbody {
   grid-row-start: 1;
   grid-row-end: 2;
@@ -427,7 +462,7 @@ tbody {
   display: grid;
   grid-column-gap: $px10;
   grid-row-gap: $px10;
-  padding: $px40 $px60;
+  padding: $px16 $px8;
   word-break: break-word;
   grid-template-columns: 1fr 1fr 1fr;
 }
@@ -436,6 +471,9 @@ tbody {
 }
 #online-order .modal-dialog {
   max-width: 88.5rem;
+}
+.online-order-modal {
+  z-index: 999;
 }
 .runningtimes {
   width: 100%;

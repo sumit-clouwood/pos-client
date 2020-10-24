@@ -69,8 +69,10 @@ const actions = {
       typeof state.transactionOrders !== undefined &&
       state.transactionOrders
     ) {
-      let firstOrder = state.transactionOrders[0]._id
-      dispatch('order/selectedOrderDetails', firstOrder, { root: true }) //Set First Order as Selected
+      if (state.transactionOrders.length) {
+        let firstOrder = state.transactionOrders[0]._id
+        dispatch('order/selectedOrderDetails', firstOrder, { root: true }) //Set First Order as Selected
+      }
     }
   },
 

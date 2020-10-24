@@ -165,13 +165,12 @@ const actions = {
 
           localStorage.setItem('token', response.data.token)
           //wait for localstorage to be updated
-          setTimeout(() => {
+          dispatch('getUserDetails', response.data.user.user_id).then(() => {
             dispatch('location/setContext', null, { root: true }).then(() => {
               commit(mutation.SET_TOKEN, response.data.token)
               resolve(response.data.token)
             })
-          }, 100)
-          //resolve()
+          })
         })
         .catch(error => reject(error))
     })
@@ -292,6 +291,7 @@ const actions = {
     commit('category/RESET', true, { root: true })
     commit('modifier/RESET', true, { root: true })
     commit('surcharge/RESET', true, { root: true })
+    commit('payment/RESET', true, { root: true })
   },
   logout({ commit, dispatch }, msg) {
     return new Promise(resolve => {
@@ -300,7 +300,6 @@ const actions = {
       localStorage.setItem('store_id', '')
       commit(mutation.RESET)
 
-      commit('payment/RESET', true, { root: true })
       dispatch('resetModules')
       commit('customer/IS_BRAND_HAS_DELIVERY_ORDER', true)
       commit('context/RESET', null, { root: true })
@@ -322,31 +321,11 @@ const actions = {
     })
   },
 
-  getUserDetails({ commit, dispatch, rootGetters }, userId) {
+  getUserDetails({ commit }, userId) {
     return new Promise((resolve, reject) => {
       if (userId) {
         AuthService.userDetails(userId).then(response => {
           commit(mutation.USER_DETAILS, response.data)
-          // Set Store ID's here when the User is being loaded
-          const storeId = response.data.item.brand_stores[0]
-          if (storeId) {
-            commit('context/SET_STORE_ID', storeId, {
-              root: true,
-            })
-            localStorage.setItem('store_id', storeId)
-            DataService.setContext({
-              brand: rootGetters['context/brand'],
-              store: rootGetters['context/store'],
-            })
-          }
-          dispatch('fetchRoles').then(() => {
-            dispatch('setCurrentRole')
-            dispatch('fetchAllStoreUsers')
-          })
-
-          dispatch('announcement/fetchAll', response.data, {
-            root: true,
-          }).then(() => {})
           resolve(response.data)
         })
       } else {

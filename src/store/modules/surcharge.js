@@ -2,10 +2,12 @@ import SurchargeService from '@/services/data/SurchargeService'
 import * as mutation from './surcharge/mutation-types'
 import * as CONST from '@/constants'
 import Num from '@/plugins/helpers/Num.js'
+import * as PERMS from '@/const/permissions'
 
 const state = {
   surcharges: [],
   surchargeAmounts: [],
+  isDeliverySurchargeRemoved: false,
 }
 
 const getters = {
@@ -79,7 +81,26 @@ const actions = {
       resolve()
     })
   },
-
+  removeSurcharge({ dispatch, rootGetters, commit }) {
+    if (rootGetters['auth/allowed'](PERMS.CAN_REMOVE_SURCHRAGES)) {
+      dispatch('removeMenuSurcharge')
+    }
+    if (rootGetters['auth/allowed'](PERMS.CAN_REMOVE_DELIVERY_SURCHRAGES)) {
+      commit('IS_DELIVERY_SURCHARGE_REMOVED', true)
+      rootGetters['order/deliverySurcharge']
+    }
+    // eslint-disable-next-line no-console
+    // console.log(
+    //   rootGetters['order/deliverySurcharge'],
+    //   rootState.customer.address,
+    //   'deliverySurcharge'
+    // )
+  },
+  removeMenuSurcharge({ dispatch }) {
+    dispatch('reset')
+    dispatch('order/surchargeCalculation')
+    dispatch('fetchAll')
+  },
   fetchAll({ commit, rootState }) {
     SurchargeService.fetchAll(rootState.order.orderType.OTApi).then(
       response => {
@@ -114,6 +135,10 @@ const mutations = {
       state.surcharges = []
     }
     state.surchargeAmounts = []
+    state.isDeliverySurchargeRemoved = false
+  },
+  IS_DELIVERY_SURCHARGE_REMOVED(state, status) {
+    state.isDeliverySurchargeRemoved = status
   },
 }
 

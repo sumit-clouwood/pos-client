@@ -13,12 +13,14 @@ const state = {
   passwordVerification: '',
   modalView: '#supervisor-password',
   totalPayments: { value: 0, count: 0 },
+  loader: false,
 }
 
 const getters = {}
 
 const actions = {
   businessSummary({ commit, state }) {
+    commit('LOADER', true)
     let data = {
       date_from: state.date_from,
       date_to: state.date_to,
@@ -27,13 +29,10 @@ const actions = {
       time_mode: state.time_mode,
       supervisor_password: state.supervisor_password,
     }
-    // eslint-disable-next-line no-undef,no-console
-    console.log(data, 'data passing')
     return new Promise((resolve, reject) => {
       ReportService.fetchBusinessSummery(data)
         .then(response => {
-          // eslint-disable-next-line no-undef,no-console
-          console.log(response.data, 'responseresponseresponse')
+          commit('LOADER', false)
           if (response.data.status === 'form_errors') {
             let superPassword = response.data.form_errors.supervisor_password[0]
             commit(mutation.PASSWORD_VERIFICATION, superPassword)
@@ -46,6 +45,7 @@ const actions = {
           }
         })
         .catch(er => {
+          commit('LOADER', false)
           // commit(mutation.PASSWORD_VERIFICATION, er.data.error)
           reject(er)
         })
@@ -128,6 +128,9 @@ const mutations = {
   },
   [mutation.MODAL_VIEW](state, modalview) {
     state.modalView = modalview
+  },
+  LOADER(state, status) {
+    state.loader = status
   },
   [mutation.PASSWORD_VERIFICATION](state, passwordVerification) {
     // eslint-disable-next-line no-console

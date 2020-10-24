@@ -239,8 +239,6 @@ export default {
       return true
     },
     checkForm: function(modalStatus) {
-      // eslint-disable-next-line no-debugger
-      debugger
       this.errors = {}
       this.errors.count = 0
       this.mandatory_fields.forEach(field => {
