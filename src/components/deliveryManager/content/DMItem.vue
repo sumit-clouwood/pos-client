@@ -29,7 +29,10 @@
                   : '',
               ]"
               @click="
-                ;(jeeblyEnabled || tawseelEnabled || oneClickEnabled) &&
+                ;(jeeblyEnabled ||
+                  tawseelEnabled ||
+                  oneClickEnabled ||
+                  careemNowEnabled) &&
                 actionDetails.action == 'delivery_ready' &&
                 order.driver == ''
                   ? AssigneeOrder({
@@ -319,6 +322,8 @@ export default {
       this.store.tawseel && this.brand.tawseel ? true : false
     this.oneClickEnabled =
       this.store.one_click && this.brand.one_click ? true : false
+    this.careemNowEnabled =
+      this.store.careem && this.brand.careem ? true : false
     this.activeIndex = this.jeeblyOrder
   },
   updated() {
