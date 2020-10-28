@@ -19,7 +19,7 @@
               {{ _t('Minimum order amount should be') }}:
               <b class="color-text">{{ formatPrice(brand.min_order) }}</b>
             </p>
-            <div v-if="brand.min_order >= 1 && loyaltyBalance > 0">
+            <div v-if="loyaltyBalance > 0">
               <hr />
               <p class="color-text-invert">
                 {{ _t('You can spend min') }}
@@ -60,6 +60,15 @@
           </div>
         </div>
         <div class="modal-footer">
+          <p
+            v-if="parseFloat(brand.min_order) > loyaltyAmount"
+            class="text-danger"
+          >
+            <span v-if="customerLoyaltyItem.length && loyaltyAmount < 0.01">
+              {{ _t("Items doesn't have loyalty program, ") }}</span
+            >
+            <span>{{ _t('Please add more items') }}</span>
+          </p>
           <div class="btn-announce">
             <button
               type="button"
@@ -70,7 +79,9 @@
               {{ _t('Close') }}
             </button>
             <button
-              v-if="brand.min_order >= 1 && !isLoyaltyUsed"
+              v-if="
+                parseFloat(brand.min_order) < loyaltyAmount && !isLoyaltyUsed
+              "
               class="btn btn-success btn-large popup-btn-save color-text-invert color-main"
               type="button"
               id="gift-card-btn"
@@ -159,6 +170,7 @@ export default {
 
       .modal-body {
         .item_box {
+          display: none;
           border: 1px solid #c5bbbb;
           padding: 10px;
           line-height: 1.7;

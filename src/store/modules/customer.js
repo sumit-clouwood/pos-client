@@ -1,6 +1,6 @@
 import * as mutation from './customer/mutation-types'
 import CustomerService from '@/services/data/CustomerService'
-import LookupData from '@/plugins/helpers/LookupData'
+// import LookupData from '@/plugins/helpers/LookupData'
 import OrderService from '@/services/data/OrderService'
 import MultistoreHelper from '@/plugins/helpers/Multistore.js'
 import * as CONST from '@/constants'
@@ -37,7 +37,7 @@ const state = {
   loading: false,
   customerLoading: false,
   error: false,
-  loyalty: { card: false, details: false, points: false },
+  customerLoyalty: { card: undefined, details: undefined, points: undefined },
   deliveryAreas: false,
   fetchDeliveryAreas: false,
   editInformation: {},
@@ -53,6 +53,14 @@ const getters = {
         deliveryArea => deliveryArea.delivery_area === areaId
       )
     }
+  },
+  storeLoyaltyPrograms: (state, getters, rootState) => brandLoyaltyProgram => {
+    let brandLoyalties = Object.values(brandLoyaltyProgram._id)
+    return brandLoyalties.filter(loyalty => {
+      if (loyalty.brand_stores.includes(rootState.context.storeId)) {
+        return loyalty
+      }
+    })
   },
   customer: state => {
     return state.customer
@@ -157,6 +165,7 @@ const actions = {
       })
     })
   },
+
   fetchCRMCustomerFields({ commit, dispatch }) {
     // return new Promise((resolve, reject) => {
     CustomerService.fetchCRMFields().then(response => {
@@ -195,6 +204,7 @@ const actions = {
     })
     // })
   },
+
   address_fields({ state, commit }) {
     let crm_fields = []
     if (state.crm_fields) {
@@ -204,34 +214,8 @@ const actions = {
     }
     commit('CRM_ADDRESS_FIELD', crm_fields)
   },
-  fetchAllCustomers({ commit, dispatch }) {
-    commit(mutation.FETCH_ALL, 'brand_customers_main_tbl')
-    dispatch('fetchAll')
-  },
-  addCustomer({ dispatch, state }) {
-    const params = [
-      {
-        // nearest_landmark: '',
-        is_web_admin: false,
-        ...state.all_crm_fields,
-        // lat_lng_available: true,
-        // location_coordinates: { lat: 0, lng: 0 },
-        /*alternative_phone: '',
-        phone_number: '',
-        gender: 'undisclosed',
-        birthday: '',
-        customer_group: '',
-        delivery_area_id: '',
-        street: '',
-        building: '',
-        flat_number: '',
-        email: '',*/
-      },
-    ]
-    dispatch('setDefaultSettingsGlobalAddUpdate', ...params)
-  },
-  fetchAll({ commit, rootState, dispatch, state }) {
-    commit(mutation.SET_LOADING, true)
+
+  fetchCustomers({ commit, rootState }) {
     return new Promise((resolve, reject) => {
       const params = [
         rootState.context.storeId,
@@ -263,25 +247,43 @@ const actions = {
           commit(mutation.SET_LOADING, false)
           reject(error)
         })
+    })
+  },
+
+  addCustomer({ dispatch, state }) {
+    const params = [
+      {
+        is_web_admin: false,
+        ...state.all_crm_fields,
+      },
+    ]
+    dispatch('setDefaultSettingsGlobalAddUpdate', ...params)
+  },
+
+  fetchAll({ commit, dispatch }) {
+    commit(mutation.SET_LOADING, true)
+    return new Promise((resolve, reject) => {
+      dispatch('fetchCustomers').then(() => {
+        dispatch('fetchDeliveryArea', '')
+        dispatch('fetchCRMCustomerFields')
+        // get Customer Group
+        CustomerService.customerGroupList().then(response => {
+          commit(mutation.SET_CUSTOMER_GROUP, response.data.data)
+        })
+        CustomerService.customerBuildings()
+          .then(buildingAreas => {
+            if (buildingAreas.data.data) {
+              let obj = Object.values(buildingAreas.data.data)
+              commit(mutation.BUILDING_AREA, obj)
+            }
+          })
+          .catch(error => {
+            commit(mutation.SET_LOADING, false)
+            reject(error)
+          })
+      })
       //fetch customer deliver areas
       // resolve()
-      dispatch('fetchDeliveryArea', '')
-      dispatch('fetchCRMCustomerFields')
-      // get Customer Group
-      CustomerService.customerGroupList().then(response => {
-        commit(mutation.SET_CUSTOMER_GROUP, response.data.data)
-      })
-      CustomerService.customerBuildings()
-        .then(buildingAreas => {
-          if (buildingAreas.data.data) {
-            let obj = Object.values(buildingAreas.data.data)
-            commit(mutation.BUILDING_AREA, obj)
-          }
-        })
-        .catch(error => {
-          commit(mutation.SET_LOADING, false)
-          reject(error)
-        })
     })
   },
 
@@ -298,6 +300,7 @@ const actions = {
     let customerId = state.customer._id
     dispatch('fetchSelectedCustomer', customerId)
   },
+
   getMorePastOrder({ commit, state }, pageNumber) {
     const params = [
       '',
@@ -313,6 +316,7 @@ const actions = {
       commit(mutation.PAST_ORDERS, response.data.data)
     })
   },
+
   searchCustomer: function({ commit, dispatch }, searchTerms) {
     return new Promise((resolve, reject) => {
       commit(mutation.CUSTOMER_LIST, [])
@@ -339,7 +343,10 @@ const actions = {
     }
   },
 
-  fetchSelectedCustomer({ state, commit, dispatch, rootGetters }, customerId) {
+  fetchSelectedCustomer(
+    { state, commit, dispatch, rootGetters, rootState },
+    customerId
+  ) {
     commit(mutation.SET_CUSTOMER_LOADING, true)
     dispatch('location/updateModalSelectionDelivery', '#loyalty-payment', {
       root: true,
@@ -368,26 +375,35 @@ const actions = {
                 response.data.collected_data.page_lookups
               )
             }
-            let loyalty = {},
-              orderType = null,
+            let loyalty = {}
+            /* orderType = null,
               orderCurrency = null,
               orderAmount = null
-            orderType = rootGetters['order/orderType']
             orderCurrency = rootGetters['location/currency']
-            orderAmount = rootGetters['checkoutForm/orderTotal']
-
+            orderAmount = rootGetters['checkoutForm/orderTotal']*/
+            let orderCurrency = rootGetters['location/currency']
+            // let orderType = rootGetters['order/orderType']
             if (response.data.collected_data) {
-              loyalty.card = response.data.collected_data.loyalty_cards
+              let loyaltyCards = response.data.collected_data.loyalty_cards
+              loyalty.card = loyaltyCards.find(
+                card => card.currency === rootGetters['location/currency']
+              )
             }
-            loyalty.details = state.lookups.brand_loyalty_programs
+            let brandLoyalties = Object.values(
+              state.lookups.brand_loyalty_programs._id
+            )
+            loyalty.details = brandLoyalties.filter(loyalty => {
+              if (
+                loyalty.brand_stores.includes(rootState.context.storeId) &&
+                loyalty.currency === orderCurrency
+              ) {
+                return loyalty
+              }
+            })
 
             commit(mutation.LOYALTY, loyalty)
-            commit(mutation.LOYALTY_FILTER, {
-              loyalty,
-              orderType,
-              orderCurrency,
-              orderAmount,
-            })
+            // commit(mutation.LOYALTY_FILTER, orderType)
+
             commit(mutation.SELECTED_CUSTOMER, {
               customerData: response.data.item,
               pastOrders: response.data.collected_data
@@ -414,6 +430,7 @@ const actions = {
     commit('surcharge/IS_DELIVERY_SURCHARGE_REMOVED', false, { root: true })
     dispatch('reset', true)
   },
+
   selectedAddress({ commit, dispatch }, address) {
     //let deliveryArea = getters.findDeliveryArea(address.delivery_area_id)
     //const subtotal = rootGetters['order/subTotal']
@@ -547,6 +564,7 @@ const actions = {
       }
     })
   },
+
   setCustomerAddressById({ dispatch, state, getters }, addressId) {
     return new Promise(resolve => {
       let customerAddress = state.customer || false
@@ -572,7 +590,7 @@ const actions = {
       multistore: rootGetters['auth/multistore'],
     })
     commit(mutation.LOYALTY, false)
-    commit(mutation.LOYALTY_FILTER)
+    // commit(mutation.LOYALTY_FILTER)
   },
 }
 
@@ -716,79 +734,27 @@ const mutations = {
   },
   SET_CUSTOMER_MANDATORY_FIELDS: (state, mandate_fields) =>
     (state.mandatory_fields = mandate_fields),
-  [mutation.LOYALTY](state, loyalty) {
-    if (loyalty) {
-      if (loyalty.card && loyalty.card.length) {
-        state.loyalty.card = loyalty.card[0]
-      }
-
-      if (loyalty.details) {
-        let loyaltyDetails = LookupData.get({
-          collection: loyalty.details._id,
-          matchWith: state.loyalty.card.program,
-          selection: false,
-        })
-        state.loyalty.details = loyaltyDetails ? loyaltyDetails : false
-      }
+  [mutation.LOYALTY](state, user_loyalty) {
+    if (user_loyalty) {
+      state.customerLoyalty = user_loyalty
     } else {
+      state.customerLoyalty.card = undefined
+      state.customerLoyalty.details = undefined
+      state.customerLoyalty.points = undefined
+    }
+    // eslint-disable-next-line no-console
+    console.log(state.loyalty, 'state.loyalty', state.customerLoyalty)
+  },
+  /*[mutation.LOYALTY_FILTER](state, orderType) {
+    // eslint-disable-next-line no-debugger
+    debugger
+    let order_type_spend = orderType + '_spend_points'
+    if (state.loyalty.details[order_type_spend] !== true) {
       state.loyalty.card = false
       state.loyalty.details = false
       state.loyalty.points = false
     }
-  },
-  [mutation.LOYALTY_FILTER](
-    state,
-    // eslint-disable-next-line no-unused-vars
-    { loyalty, orderType, orderCurrency, orderAmount } = {
-      loyalty: null,
-      orderType: null,
-      orderCurrency: null,
-      orderAmount: null,
-    }
-  ) {
-    if (loyalty) {
-      if (
-        orderType == 'walk_in' &&
-        state.loyalty.details.walk_in_spend_points !== true
-      ) {
-        state.loyalty.card = false
-        state.loyalty.details = false
-        state.loyalty.points = false
-      }
-      if (
-        orderType == 'call_center' &&
-        state.loyalty.details.call_center_spend_points !== true
-      ) {
-        state.loyalty.card = false
-        state.loyalty.details = false
-        state.loyalty.points = false
-      }
-      if (
-        orderType == 'dine_in' &&
-        state.loyalty.details.dine_in_spend_points !== true
-      ) {
-        state.loyalty.card = false
-        state.loyalty.details = false
-        state.loyalty.points = false
-      }
-      if (state.loyalty.details.currency != orderCurrency) {
-        state.loyalty.card = false
-        state.loyalty.details = false
-        state.loyalty.points = false
-      } else {
-        // if (state.loyalty.details.min_order > orderAmount) {
-        //   state.loyalty.card = false
-        //   state.loyalty.details = false
-        //   state.loyalty.points = false
-        // } else {
-        /* do noting */
-      }
-    } else {
-      state.loyalty.card = false
-      state.loyalty.details = false
-      state.loyalty.points = false
-    }
-  },
+  }*/
 }
 
 export default {
