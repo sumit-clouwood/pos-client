@@ -445,6 +445,8 @@ export default {
 .order-delivery-area {
   width: 95% !important;
   margin: auto;
+  max-height: 41px;
+  overflow: scroll;
 }
 .active {
   background-color: blueviolet;

@@ -4,6 +4,7 @@ import Num from '@/plugins/helpers/Num.js'
 import * as CONSTANTS from '@/constants'
 // import { compressToBase64 } from 'lz-string'
 import OrderHelper from '@/plugins/helpers/Order'
+// import * as CONST from '@/constants'
 /* eslint-disable */
 // initial state
 const state = {
@@ -313,14 +314,14 @@ const actions = {
 
   paymentsHook({ rootState, getters, rootGetters, commit }, { action, order }) {
     let totalPaid = 0
-
     if (rootState.checkoutForm.payments.length) {
       order.order_payments = rootState.checkoutForm.payments.map(payment => {
         let orderPoints = 0
-        const amount = !isNaN(payment.amount) ? payment.amount : 0
+        let amount = !isNaN(payment.amount) ? payment.amount : 0
 
         if (payment.method.name === CONSTANTS.ORDER_PAYMENT_TYPE_LOYALTY) {
-          orderPoints = rootState.checkoutForm.loyaltyAmount
+          amount = parseFloat(rootState.checkoutForm.loyaltyAmount)
+          orderPoints = rootState.checkoutForm.loyaltyPoints
         } else {
           orderPoints = amount
         }
@@ -337,12 +338,12 @@ const actions = {
         totalPaid += amount
         //Yuvraj, have a check here
         if (payment.method.type == CONSTANTS.LOYALTY) {
-          if (parseFloat(rootState.customer.loyalty.balance) > 0) {
+          /*if (parseFloat(rootState.customer.customerLoyalty.card.balance) > 0) {
             order.loyalty_customer = {
-              balance: rootState.customer.loyalty.balance,
+              balance: rootState.customer.customerLoyalty.card.balance,
               redeemed_amount_value: rootState.checkoutForm.loyaltyAmount,
             }
-          }
+          }*/
           order.customer = rootState.customer.customerId
         }
         return paymentPart

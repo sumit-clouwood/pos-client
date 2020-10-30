@@ -294,21 +294,26 @@ const actions = {
       }
     })
   },
-  validateLoyaltyPayment({ commit, getters }) {
+  validateLoyaltyPayment({ commit, getters, rootGetters }) {
     return new Promise((resolve, reject) => {
-      if (parseFloat(state.amount) != parseFloat(state.loyaltyAmount)) {
-        if (parseFloat(state.loyaltyAmount) <= 0.01) {
-          commit('SET_ERROR', 'You dont have loyalty amount.')
-        } else if (getters.isLoyaltyUsed === 1) {
-          commit('SET_ERROR', 'Loyalty can be used only ones in order')
-        } else {
-          let amount = isNaN(state.loyaltyAmount) ? 0 : state.loyaltyAmount
-          commit('SET_ERROR', 'You can add only below amount')
-          commit('SET_ERROR_AMOUNT', amount)
-        }
-        reject()
-      } else {
+      let orderType = rootGetters['order/orderType']
+      if (orderType === CONST.ORDER_TYPE_CALL_CENTER) {
         resolve()
+      } else {
+        if (parseFloat(state.amount) != parseFloat(state.loyaltyAmount)) {
+          if (parseFloat(state.loyaltyAmount) <= 0.01) {
+            commit('SET_ERROR', 'You dont have loyalty amount.')
+          } else if (getters.isLoyaltyUsed === 1) {
+            commit('SET_ERROR', 'Loyalty can be used only ones in order')
+          } else {
+            let amount = isNaN(state.loyaltyAmount) ? 0 : state.loyaltyAmount
+            commit('SET_ERROR', 'You can add only below amount')
+            commit('SET_ERROR_AMOUNT', amount)
+          }
+          reject()
+        } else {
+          resolve()
+        }
       }
     })
   },
@@ -467,7 +472,7 @@ const actions = {
     commit('LOYALTY_POINTS', redeem_point)
     commit('CUSTOMER_LOYALTY_ITEM', loyalty_items)
   },
-  calculateSpendLoyalty({ commit, rootState, rootGetters }) {
+  /*calculateSpendLoyalty({ commit, rootState, rootGetters }) {
     // eslint-disable-next-line no-debugger
     // debugger
     const loyalty = rootState.customer.customerLoyalty.card
@@ -486,11 +491,11 @@ const actions = {
             }
           })
           // commented below logic after discuss with sohin no use of money_spent
-          /*if (loyalty_action) {
+          /!*if (loyalty_action) {
             total_redeem_amount_for_items +=
               Math.floor(item.netPrice / loyalty_action.money_spent) *
               loyalty_action.one_point_redeems_to
-          }*/
+          }*!/
           let loyalty_for_item = 0
           if (loyalty_action && customer_loyalty_balance > 0.001) {
             var redeem_amount =
@@ -524,7 +529,7 @@ const actions = {
     }
     commit('LOYALTY_AMOUNT', amount)
     commit('LOYALTY_POINTS', redeem_point)
-  },
+  },*/
 
   reset({ commit }) {
     commit('RESET')
@@ -639,6 +644,10 @@ const mutations = {
   setMethod(state, method) {
     state.method = method
     state.showCalc = true
+  },
+  setPaymentMethodLoyalty(state, method) {
+    state.method = method
+    // state.showCalc = true
   },
   addAmount(state, { amount, method }) {
     state.decimalExists = false

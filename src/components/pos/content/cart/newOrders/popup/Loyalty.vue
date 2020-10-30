@@ -113,8 +113,6 @@
               class="btn btn-success btn-large popup-btn-save color-text-invert color-main"
               type="button"
               id="delivery_area_loyalty"
-              data-toggle="modal"
-              data-target="#Gift-card-payemnt-details"
               @click="payByLoyalty"
             >
               {{ _t('Add') }}
@@ -143,7 +141,7 @@
   </div>
 </template>
 <script>
-import { mapActions, mapGetters, mapState } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 /* global $ */
 import * as CONST from '@/constants'
 export default {
@@ -165,6 +163,7 @@ export default {
       'customerLoyaltyItem',
     ]),
     ...mapGetters('order', ['items']),
+    ...mapGetters('payment', ['methods']),
     ...mapState({
       loyaltyBalance: state =>
         state.customer.customerLoyalty.card
@@ -238,16 +237,28 @@ export default {
         this.$store.commit('checkoutForm/LOYALTY_POINTS', loyalty_change_amount)
         this.$store.commit('checkoutForm/LOYALTY_AMOUNT', loyalty_change_amount)
         $('#loyalty-payment').modal('hide')
+        if (this.methods && this.methods.loyalty) {
+          let loyalty_card = this.methods.loyalty.find(
+            payment => payment.type === CONST.LOYALTY
+          )
+          // eslint-disable-next-line no-console
+          console.log(loyalty_card, 'loyalty_card')
+          this.$store.commit(
+            'checkoutForm/setPaymentMethodLoyalty',
+            loyalty_card
+          )
+          this.$store.dispatch('checkoutForm/addAmount')
+        }
       } else {
         this.$store.commit('checkoutForm/LOYALTY_POINTS', this.loyaltyAmount)
         this.$store.dispatch('checkoutForm/setAmount', this.loyaltyAmount)
       }
       this.$store.dispatch('checkoutForm/setLoyaltyCard', this.card)
     },
-    ...mapActions('checkoutForm', ['calculateSpendLoyalty']),
+    // ...mapActions('checkoutForm', ['calculateSpendLoyalty']),
   },
   updated() {
-    this.calculateSpendLoyalty
+    // this.calculateSpendLoyalty
   },
 }
 </script>

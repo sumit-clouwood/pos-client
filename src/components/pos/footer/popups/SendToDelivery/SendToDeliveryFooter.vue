@@ -18,7 +18,12 @@
             :title="_t('Click here to apply loyalty, your loyalty balance is ') + formatPrice(loyaltyCard.balance)"
           ></i>
           <br />
-          <span class="font-weight-bold"> {{ _t('APPLIED') }}: {{ formatPrice(loyaltyAmount) }} </span>
+          <span class="font-weight-bold" v-if="loyaltyAmount > 0">
+            {{ loyaltyPoints }} {{ _t('Points') }} | {{ formatPrice(loyaltyAmount) }}
+          </span>
+          <span class="font-weight-bold" v-else>
+           0 {{ _t('Points used') }}
+          </span>
         </div>
       </div>
       <div class="referal">
