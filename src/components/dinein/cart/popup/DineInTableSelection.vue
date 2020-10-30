@@ -1,5 +1,4 @@
 <template>
-  <!-- Select Discount  -->
   <div class="modal fade" id="dine-in-table-selection" role="dialog">
     <div class="modal-dialog modal-dialog-centered">
       <!-- Modal content-->
@@ -68,7 +67,6 @@
       </div>
     </div>
   </div>
-  <!-- End Select Discount -->
 </template>
 
 <script>

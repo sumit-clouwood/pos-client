@@ -545,7 +545,6 @@
       </div>
     </div>
   </div>
-  <!-- End Select Discount -->
 </template>
 <script>
 import { mapGetters, mapState } from 'vuex'

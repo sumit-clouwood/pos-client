@@ -1,19 +1,39 @@
+<!-- eslint-disable -->
 <template>
   <div>
     <div class="modal-footer showpropermsg">
+      <div
+        data-toggle="modal"
+        data-target="#loyalty-payment"
+        class="footer-slider-list-item color-secondary"
+        :class="[{ loyalty_delivery: loyaltyCard }]"
+        @click="calculateLoyaltyAmount"
+        v-if="loyaltyCard && parseFloat(loyaltyCard.balance) > 0"
+      >
+        <div role="button" class="footer-slider-list-item-link color-text-invert">
+          {{ _t('Apply loyalty') }}
+          <i
+            class="fa fa-question-circle"
+            aria-hidden="true"
+            :title="_t('Click here to apply loyalty, your loyalty balance is ') + formatPrice(loyaltyCard.balance)"
+          ></i>
+          <br />
+          <span class="font-weight-bold"> {{ _t('APPLIED') }}: {{ formatPrice(loyaltyAmount) }} </span>
+        </div>
+      </div>
       <div class="referal">
         <button
           type="button"
           data-value=""
           id="referal-btn"
           class="btn referal-btn dropdown-toggle shorten-sentence color-text color-secondary"
-          data-toggle="dropdown"
-          aria-haspopup="true"
-          aria-expanded="false"
+          data-toggle="modal"
+          data-target="#select-referral"
         >
-          {{ changedReferral.referralName }}</button
-        ><!--<span><img src="images/referal-down.png"></span>-->
-        <p v-if="errors !== ''" class="errors text-danger">{{ errors }}</p>
+          {{ changedReferral ? changedReferral.referralName : _t('Referral') }}
+        </button>
+        <!--<span><img src="images/referal-down.png"></span>-->
+        <!--
         <p v-if="msg" class="text-info">{{ msg }}</p>
         <div id="referralDropdown" class="dropdown-menu" v-if="getReferrals">
           <a
@@ -35,7 +55,7 @@
         </div>
         <div class="dropdown-menu color-text-invert" v-if="!getReferrals">
           {{ _t('Nothing found') }}
-        </div>
+        </div>-->
       </div>
       <datetime
         type="datetime"
@@ -62,13 +82,16 @@
         auto
       ></datetime>
       <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
+
+    </div>
+    <div class="delivery_order_process_errors">
+      <p v-if="errors !== ''" class="errors text-danger">{{ errors }}</p>
     </div>
     <div class="btn-announce">
-      <button
-        type="button"
-        class="btn btn-danger cancel-announce color-icon-table-neutral-button"
-        data-dismiss="modal"
-      >
+        <button
+          type="button"
+          data-dismiss="modal"
+          class="btn btn-danger cancel-announce color-text-invert color-button">
         {{ _t('Close') }}
       </button>
       <button
@@ -97,7 +120,7 @@ export default {
   },
   data() {
     return {
-      changedReferral: { referralName: 'Referral' },
+      // changedReferral: { referralName: 'Referral' },
       futureDateTime: '',
       minDatetime: null,
       maxDatetime: null,
@@ -118,18 +141,28 @@ export default {
       getReferrals: state => state.location.referrals,
     }),
     ...mapState('customer', ['address']),
+    ...mapState('checkoutForm', ['loyaltyAmount', 'loyaltyPoints']),
+    ...mapState({
+      loyaltyCard: state => state.customer.customerLoyalty.card,
+      changedReferral: state => state.order.referral,
+      selectedCustomer: state => state.customer.customer.name,
+    }),
     ...mapState('order', ['needSupervisorAccess']),
     ...mapGetters('order', ['subTotal']),
     ...mapGetters('location', ['_t', 'formatPrice']),
   },
   methods: {
-    selectedReferral(referral) {
+    calculateLoyaltyAmount() {
+      this.$store.dispatch('checkoutForm/calculateLoyaltyAmountForItem')
+      // this.$store.dispatch('loyaltyHendlerChange')
+    },
+    /*selectedReferral(referral) {
       this.changedReferral = referral
       this.$store.commit('order/SET_REFERRAL', this.changedReferral)
-    },
+    },*/
     placeOrder() {
       hidePayNow()
-      if (this.changedReferral.referralName === 'Referral') {
+      if (!this.changedReferral) {
         this.errors = 'Please select referral to proceed.'
       } else if (
         typeof this.address.min_order_value !== 'undefined' &&
@@ -234,7 +267,7 @@ export default {
       }
       .vdatetime > input {
         width: 95% !important;
-        margin-left: 0px !important;
+        margin-left: 0 !important;
       }
       .showpropermsg .text-danger {
         position: absolute;
@@ -264,5 +297,33 @@ export default {
   border-bottom: 1px solid #ddd;
   margin: 0;
   font-weight: bold;
+}
+.loyalty_delivery {
+  span {
+    font-size: 12px;
+    text-align: center;
+  }
+  color: white;
+  width: 160px;
+  height: 3.125rem;
+  font-weight: bold;
+  text-align: center;
+  cursor: pointer;
+  border-radius: 3px;
+  background-color: #ef6a05;
+  padding: 1px 12px;
+}
+.cancel-announce {
+  font-size: unset !important;
+  width: auto !important;
+}
+.vdatetime > input {
+  margin-left: unset !important;
+}
+.delivery_order_process_errors {
+  .errors {
+    text-align: center;
+    font-size: 15px;
+  }
 }
 </style>

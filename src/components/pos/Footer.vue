@@ -454,6 +454,7 @@
     <AddNote />
     <item-note></item-note>
     <Discount />
+    <Referral />
     <SendToDelivery />
     <ManageCustomer v-if="online" />
     <OfflineManageCustomer v-else />
@@ -539,11 +540,13 @@ import DineInCoverSelection from '@/components/dinein/cart/popup/DineInCoverSele
 import * as CONST from '@/constants'
 
 import { mapState, mapGetters, mapActions } from 'vuex'
+import Referral from '@/components/pos/footer/popups/Referrals'
 /* global $ */
 export default {
   name: 'Footer',
   props: {},
   components: {
+    Referral,
     DineIn,
     AddNote,
     itemNote,
