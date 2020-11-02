@@ -106,7 +106,8 @@
             </button>
             <button
               v-if="
-                parseFloat(brand.min_order) < parseFloat(subTotal) &&
+                this.loyaltyBalance > 0 &&
+                  parseFloat(brand.min_order) < parseFloat(subTotal) &&
                   !isLoyaltyUsed &&
                   orderType === CONST.ORDER_TYPE_CALL_CENTER
               "
@@ -119,7 +120,8 @@
             </button>
             <button
               v-if="
-                parseFloat(brand.min_order) < parseFloat(subTotal) &&
+                this.loyaltyBalance > 0 &&
+                  parseFloat(brand.min_order) < parseFloat(subTotal) &&
                   !isLoyaltyUsed &&
                   orderType !== CONST.ORDER_TYPE_CALL_CENTER
               "
@@ -207,6 +209,10 @@ export default {
     }),
   },
   methods: {
+    canAddLoyalty() {
+      let min_bal = parseFloat(this.brand.min_order) < parseFloat(this.subTotal)
+      return this.loyaltyBalance > 0 && min_bal && !this.isLoyaltyUsed
+    },
     getLoyaltyAmount($event) {
       const keyCode = $event.keyCode ? $event.keyCode : $event.which
       this.error = false
