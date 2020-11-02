@@ -84,7 +84,7 @@
               </span>
             </div>
             <div
-              v-if="parseFloat(brand.min_order) > loyaltyAmount"
+              v-if="parseFloat(brand.min_order) > parseFloat(subTotal)"
               class="text-danger errors-loyalty"
             >
               <span v-if="customerLoyaltyItem.length && loyaltyAmount < 0.01">
@@ -106,7 +106,7 @@
             </button>
             <button
               v-if="
-                parseFloat(brand.min_order) < loyaltyAmount &&
+                parseFloat(brand.min_order) < parseFloat(subTotal) &&
                   !isLoyaltyUsed &&
                   orderType === CONST.ORDER_TYPE_CALL_CENTER
               "
@@ -119,7 +119,7 @@
             </button>
             <button
               v-if="
-                parseFloat(brand.min_order) < loyaltyAmount &&
+                parseFloat(brand.min_order) < parseFloat(subTotal) &&
                   !isLoyaltyUsed &&
                   orderType !== CONST.ORDER_TYPE_CALL_CENTER
               "
@@ -162,7 +162,7 @@ export default {
       'loyaltyPoints',
       'customerLoyaltyItem',
     ]),
-    ...mapGetters('order', ['items']),
+    ...mapGetters('order', ['items', 'subTotal']),
     ...mapGetters('payment', ['methods']),
     ...mapState({
       loyaltyBalance: state =>

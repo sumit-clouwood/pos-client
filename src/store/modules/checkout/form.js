@@ -404,7 +404,7 @@ const actions = {
 
   calculateLoyaltyAmountForItem({ commit, rootState, rootGetters }) {
     const loyalty_card = rootState.customer.customerLoyalty.card
-    let loyalty_balance = parseFloat(loyalty_card.balance)
+    let loyalty_balance = loyalty_card ? parseFloat(loyalty_card.balance) : 0
     const loyalty = rootState.customer.customerLoyalty.details
     let maxRedeem = parseFloat(rootState.location.brand.maximum_redeem)
     let items = rootGetters['order/items']
