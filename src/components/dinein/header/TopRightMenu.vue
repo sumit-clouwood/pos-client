@@ -34,7 +34,7 @@
       >
         {{ _t('Waiting') }}
       </button>-->
-      <button
+      <!--<button
         type
         id="resrvation-orders"
         class="tables-btn-style"
@@ -47,7 +47,7 @@
         "
       >
         {{ _t('Reservation') }}
-      </button>
+      </button>-->
       <button
         type
         id="running-orders"
