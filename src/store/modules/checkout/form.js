@@ -429,7 +429,7 @@ const actions = {
           }
         })
         let loyalty_for_item = 0
-        let loyalty_apply_on_price = parseFloat(item.netPrice)
+        let loyalty_apply_on_price = parseFloat(item.netPrice) * item.quantity
         if (loyalty_action && loyalty_balance > 0.001) {
           if (!loyalty_details_ids.includes(loyalty_action._id)) {
             total_of_one_point_redeem = loyalty_action.one_point_redeems_to
