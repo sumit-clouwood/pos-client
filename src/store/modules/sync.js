@@ -48,6 +48,7 @@ const getters = {
 
 // actions
 const actions = {
+  // eslint-disable-next-line no-unused-vars
   offlineSync({ commit, dispatch }, status) {
     commit('updateOfflineSync', status)
     if (status === 'done') {

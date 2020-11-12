@@ -88,6 +88,7 @@ const getters = {
 // actions
 const actions = {
   //coming from login
+  // eslint-disable-next-line no-unused-vars
   setContext({ state, commit, rootGetters, dispatch }) {
     return new Promise(resolve => {
       LocationService.getLocationData().then(storedata => {
@@ -138,9 +139,10 @@ const actions = {
               router.push(URL)
               router.go(router.currentRoute)
             }
-            dispatch('auth/getUserDetails', storedata.data.user_id, {
-              root: true,
-            })
+            //No need to call get userdetails again, we are already coming from login, where getuser details is already called
+            // dispatch('auth/getUserDetails', storedata.data.user_id, {
+            //   root: true,
+            // })
           } else {
             showModal('#multiStores')
           }
@@ -326,12 +328,29 @@ const actions = {
                     })
                   }
                   commit(mutation.MULTI_STORE_IDS, multiStoreIds)
-                  //we already get user details when logging in, no need to get it again
-                  resolve({
-                    userDetails: rootState.auth.userDetails.item,
-                    stores: multiStoreIds,
-                    availableStoreGroups: availableStoreGroups,
-                  })
+                  // if user was already logged in, and refresh the browser,
+                  // in that case login api ll not hit and it ll not fetch the user details
+                  // so in that case we specifically  need to fetch the user details
+                  // hence we check user name here, if not found load customer details for current
+                  // store user
+
+                  if (!rootState.auth.userDetails.item.name) {
+                    dispatch('auth/getUserDetails', storedata.data.user_id, {
+                      root: true,
+                    }).then(response => {
+                      resolve({
+                        userDetails: response.item,
+                        stores: multiStoreIds,
+                        availableStoreGroups: availableStoreGroups,
+                      })
+                    })
+                  } else {
+                    resolve({
+                      userDetails: rootState.auth.userDetails.item,
+                      stores: multiStoreIds,
+                      availableStoreGroups: availableStoreGroups,
+                    })
+                  }
                 })
                 .catch(error => {
                   console.log('device registration failed', error)
