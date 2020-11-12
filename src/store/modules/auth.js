@@ -305,6 +305,7 @@ const actions = {
       commit('context/RESET', null, { root: true })
       commit('sync/reset', {}, { root: true })
       commit('location/RESET', true, { root: true })
+      commit('location/USER_SHORT_DETAILS', true, { root: true }) // added  here because it should not reset when checkout, its hide user details
       if (msg != 'token_not_exists') {
         commit(mutation.LOGOUT_ACTION, '')
         DataService.setContext({

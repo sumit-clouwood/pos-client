@@ -114,7 +114,7 @@ const actions = {
       }
       orderData.order_referral = orderReferral
     }
-    orderData.real_created_datetime = created_date
+    // orderData.real_created_datetime = created_date //commented because date time not showing when print invoice
     orderData.created_at = null
     //Final JSON
     /*get selected table no*/

@@ -275,7 +275,6 @@ const actions = {
 
           commit(mutation.SET_LOCATION, state.store.address)
           commit(mutation.SET_CURRENCY, state.store.currency)
-
           let userDetails = {}
           userDetails.username = storedata.data.username
           userDetails.userId = storedata.data.user_id
@@ -494,8 +493,6 @@ const mutations = {
   },
   [mutation.RESET](state, full = false) {
     state.setModal = '#manage-customer'
-    state.userShortDetails = false
-
     if (full) {
       state.currency = 'AED'
       state.locale = 'en-US'
