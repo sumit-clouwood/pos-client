@@ -54,7 +54,8 @@
         v-if="
           (brand.jeebly && store.jeebly) ||
             (brand.tawseel && store.tawseel) ||
-            (brand.one_click && store.one_click)
+            (brand.one_click && store.one_click) ||
+            (brand.careem && store.careem)
         "
         class="btn btn-success"
         data-related="future-order"

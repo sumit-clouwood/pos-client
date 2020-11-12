@@ -286,6 +286,14 @@ export default {
             this._t('Valid email') + ' ' + this._t('is required.')
           this.errors.count = 1
         }
+        // eslint-disable-next-line no-console
+        console.log(
+          'customer details',
+          this.selectedDeliveryArea,
+          this.newCustomerDetails
+        )
+        this.newCustomerDetails['delivery_area_id'] = this.selectedDeliveryArea
+
         if (
           !this.newCustomerDetails[field] ||
           !getWithoutSpaceLength(this.newCustomerDetails[field])

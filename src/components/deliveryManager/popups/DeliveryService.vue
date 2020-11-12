@@ -88,6 +88,12 @@ export default {
           discription: '',
           img: 'img/delivery-services/oneClick.png',
         },
+        {
+          name: 'Careem Now',
+          id: 'careem',
+          discription: '',
+          img: 'img/delivery-services/careemNow.png',
+        },
       ],
     }
   },
@@ -109,16 +115,18 @@ export default {
     ...mapState({
       branch: state => state.deliveryManager.availableStores,
     }),
-    ...mapGetters('deliveryManager', ['onlineOrders', 'drivers']),
+    ...mapGetters('deliveryManager', ['onlineOrders', 'deliveryServiceDriver']),
     activeServices: function() {
       // `this` points to the vm instance
       let jeebly = this.brand.jeebly && this.store.jeebly ? true : false
       let tawseel = this.brand.tawseel && this.store.tawseel ? true : false
       let one_click =
         this.brand.one_click && this.store.one_click ? true : false
+      let careem = this.brand.careem && this.store.careem ? true : false
       return {
         jeebly: jeebly,
         tawseel: tawseel,
+        careem: careem,
         one_click: one_click,
       }
     },
@@ -130,17 +138,13 @@ export default {
       $('#Delivery-Service')
         .dialog()
         .toggle('close')
-      // this.pauseSound()
     },
     SubmitOrder(deliveryService) {
       this.loading = true
-      var driver = this.drivers.filter(function(el) {
+      var driver = this.deliveryServiceDriver.filter(function(el) {
         return el.name == deliveryService
       })
       this.selectDriver = driver[0]
-      // eslint-disable-next-line no-console
-      console.log(this.selectDriver)
-      // eslint-disable-next-line no-debugger
       this.$store.commit(
         'deliveryManager/SET_SELECTED_DM_DRIVER',
         this.selectDriver._id

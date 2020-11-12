@@ -51,6 +51,7 @@ const getters = {
         )
       }
     }
+    return []
   },
   categoryItems: (state, getters, rootState, rootGetters) => {
     let items = state.items
@@ -58,11 +59,13 @@ const getters = {
       items = state.multistoreItems[rootState.context.storeId]
     }
 
-    if (items) {
+    if (items && items.length) {
+      let category = state.category || state.categories[0]
+
       return items.filter(
         item =>
           item[CONSTANTS.REFERENCE_FIELD_ITEM_TO_CATEGORY] ===
-            state.category[CONSTANTS.REFERENCE_FIELD_CATEGORY_TO_ITEM] &&
+            category[CONSTANTS.REFERENCE_FIELD_CATEGORY_TO_ITEM] &&
           !item[CONSTANTS.REFERENCE_FIELD_ITEM_TO_SUBCATEGORY]
       )
     }
@@ -97,10 +100,10 @@ const getters = {
     let items = []
     const categoryItems = getters.categoryItems
     const subcategoryItems = getters.subcategoryItems
-    if (categoryItems.length) {
+    if (categoryItems && categoryItems.length) {
       items = categoryItems
     }
-    if (subcategoryItems.length) {
+    if (subcategoryItems && subcategoryItems.length) {
       items = categoryItems.concat(subcategoryItems)
     }
 

@@ -275,7 +275,6 @@ const actions = {
 
           commit(mutation.SET_LOCATION, state.store.address)
           commit(mutation.SET_CURRENCY, state.store.currency)
-
           let userDetails = {}
           userDetails.username = storedata.data.username
           userDetails.userId = storedata.data.user_id
@@ -327,14 +326,11 @@ const actions = {
                     })
                   }
                   commit(mutation.MULTI_STORE_IDS, multiStoreIds)
-                  dispatch('auth/getUserDetails', storedata.data.user_id, {
-                    root: true,
-                  }).then(response => {
-                    resolve({
-                      userDetails: response.item,
-                      stores: multiStoreIds,
-                      availableStoreGroups: availableStoreGroups,
-                    })
+                  //we already get user details when logging in, no need to get it again
+                  resolve({
+                    userDetails: rootState.auth.userDetails.item,
+                    stores: multiStoreIds,
+                    availableStoreGroups: availableStoreGroups,
                   })
                 })
                 .catch(error => {
@@ -497,8 +493,6 @@ const mutations = {
   },
   [mutation.RESET](state, full = false) {
     state.setModal = '#manage-customer'
-    state.userShortDetails = false
-
     if (full) {
       state.currency = 'AED'
       state.locale = 'en-US'

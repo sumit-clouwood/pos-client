@@ -22,7 +22,10 @@
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
-        <div class="modal-body">
+        <div class="modal-body" v-if="loader">
+          <Preloader />
+        </div>
+        <div v-else class="modal-body">
           <div class="upper">
             <div class="autocomplete-container">
               <form class="modifyperms-container">
@@ -67,6 +70,7 @@
 
 <script>
 /* global showModal hideModal */
+import Preloader from '@/components/util/Preloader'
 import { mapGetters, mapState } from 'vuex'
 export default {
   name: 'SupervisorPassword',
@@ -75,7 +79,9 @@ export default {
       supervisorPassword: '',
     }
   },
-  components: {},
+  components: {
+    Preloader,
+  },
   computed: {
     requiredSupervisor() {
       return (
@@ -85,8 +91,7 @@ export default {
     },
     ...mapGetters('location', ['_t']),
     ...mapGetters('context', ['store']),
-    ...mapState('reports', ['passwordVerification']),
-    ...mapState('reports', ['modalView']),
+    ...mapState('reports', ['passwordVerification', 'loader', 'modalView']),
   },
   methods: {
     setPassword() {

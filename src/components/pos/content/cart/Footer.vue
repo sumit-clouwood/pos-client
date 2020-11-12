@@ -6,7 +6,9 @@
         <div class="sub-total-num">{{ formatPrice(subTotal || 0) }}</div>
       </div>
       <div class="item surcharges">
-        <div class="sub-total-text">{{ _t('Surcharges') }}</div>
+        <div class="sub-total-text">
+          {{ _t('Surcharges') }}
+        </div>
         <div class="sub-total-num">{{ formatPrice(surcharge || 0) }}</div>
       </div>
       <div class="item discounts">
@@ -82,6 +84,9 @@ export default {
         }
       }
     }
+  }
+  .remove-surcharge {
+    cursor: pointer;
   }
 }
 </style>

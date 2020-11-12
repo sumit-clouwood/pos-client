@@ -81,6 +81,9 @@ export default {
   methods: {
     payNow() {
       this.$store.commit('checkoutForm/setAction', 'pay')
+      /*this.$store.commit('checkout/SET_PAYMENT_ACTION', 'dine-in-paid-order', {
+        root: true,
+      })*/
       this.items.find(element => {
         if (typeof element.cover_name == 'undefined') {
           this.checkCover = false

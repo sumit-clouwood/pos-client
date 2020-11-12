@@ -38,7 +38,6 @@
         <img src="~@/assets/images/close.png" class="rem" alt="back" />
       </div>
     </div>
-    <loader v-show="loadingData" />
   </div>
 </template>
 
@@ -46,7 +45,7 @@
 import { mapGetters, mapState, mapActions } from 'vuex'
 import Progress from '@/components/util/Progress'
 import bootstrap from '@/bootstrap'
-import Loader from '@/components/util/Loader.vue'
+import DataService from '@/services/DataService'
 import md5 from 'js-md5'
 export default {
   name: 'Lockpad',
@@ -69,7 +68,7 @@ export default {
     ...mapGetters('sync', ['loadingData']),
     ...mapActions('auth', ['filterUserInOffline']),
   },
-  components: { Progress, Loader },
+  components: { Progress },
   methods: {
     addDigit(event) {
       if (event.target.classList.contains('num')) {
@@ -112,31 +111,44 @@ export default {
     loadCompleteUi() {
       this.$store.dispatch('auth/resetModules')
 
-      this.$store.dispatch('location/fetch').then(() => {
-        bootstrap
-          .loadUI(this.$store)
-          .then(() => {
-            this.$store.dispatch('checkout/reset', true)
+      // eslint-disable-next-line no-console
+      console.log('user', this.$store.state.auth.userDetails.item)
+      const storeId = this.$store.state.auth.userDetails.item.brand_stores[0]
+      if (storeId) {
+        this.$store.commit('context/SET_STORE_ID', storeId, {
+          root: true,
+        })
+        localStorage.setItem('store_id', storeId)
 
-            bootstrap.loadApiData('customer')
+        DataService.setContext({
+          brand: this.$store.getters['context/brand'],
+          store: this.$store.getters['context/store'],
+        })
+      }
 
-            bootstrap.loadApiData('order')
+      bootstrap
+        .loadUI('sw')
+        .then(() => {
+          this.$store.dispatch('checkout/reset', true)
 
-            localStorage.setItem('offline_mode_login', false)
-            this.$router.replace({
-              name: 'BrandHome',
-              params: {
-                brand_id: this.brandId,
-                store_id: this.storeId,
-              },
-            })
+          bootstrap.loadApiData('customer')
+
+          bootstrap.loadApiData('order')
+
+          localStorage.setItem('offline_mode_login', false)
+          this.$router.replace({
+            name: 'BrandHome',
+            params: {
+              brand_id: this.brandId,
+              store_id: this.storeId,
+            },
           })
-          .finally(() => {
-            this.$store.dispatch('sync/setLoader', false, {
-              root: true,
-            })
+        })
+        .finally(() => {
+          this.$store.dispatch('sync/setLoader', false, {
+            root: true,
           })
-      })
+        })
     },
     login() {
       if (!this.pincode) {

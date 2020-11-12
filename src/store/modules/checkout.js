@@ -254,9 +254,12 @@ const actions = {
       deliveryAreaId
     )
     console.log(deliveryArea, 'delivery area, dd')
+    let isDeliverySurchargeRemoved = rootState.surcharge.isDeliverySurchargeRemoved
     if (deliveryArea) {
-      if (deliveryArea.special_order_surcharge) {
+      if (deliveryArea.special_order_surcharge && !isDeliverySurchargeRemoved) {
         order.delivery_surcharge = deliveryArea.special_order_surcharge
+      } else {
+        order.delivery_surcharge = 0
       }
     }
     //add delivery surcharges
@@ -1569,6 +1572,9 @@ const actions = {
           if (response.data.status === 'ok') {
             commit('order/SET_ORDER_ID', response.data.id, { root: true })
             commit('SET_ORDER_NUMBER', response.data.order_no)
+            commit('deliveryManager/LIST_TYPE', 'New Orders', { root: true })
+            commit('deliveryManager/SET_DM_ORDER_STATUS', 'in-progress', { root:  true })
+            commit('deliveryManager/SET_DM_PAGE_ID', 'home_delivery_new', { root:  true })
 
             const msg = rootGetters['location/_t']('Order placed Successfully')
             dispatch('setMessage', {

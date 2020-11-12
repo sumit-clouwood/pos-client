@@ -29,6 +29,7 @@ const state = {
     pageId: 'home_delivery_acceptance',
   },
   drivers: [],
+  deliveryServiceDriver: [],
   driverBucket: [],
   driver: null,
   driverId: null,
@@ -38,6 +39,12 @@ const state = {
 const getters = {
   drivers: (state, getters, rootState) =>
     state.drivers.filter(
+      driver =>
+        driver.brand_stores.includes(rootState.context.storeId) ||
+        driver.brand_access_type === 'all'
+    ),
+  deliveryServiceDriver: (state, getters, rootState) =>
+    state.deliveryServiceDriver.filter(
       driver =>
         driver.brand_stores.includes(rootState.context.storeId) ||
         driver.brand_access_type === 'all'
@@ -149,6 +156,7 @@ const actions = {
     { commit, state, dispatch, rootGetters },
     dmautoloader = true
   ) {
+    console.log(state.params)
     if (!dmautoloader) return dmautoloader
     commit(mutation.SET_LOADING, true)
     // return new Promise((resolve, reject) => {
@@ -182,6 +190,7 @@ const actions = {
             commit(mutation.SET_LOADING, false)
             /*if (section === 'delivery_home') {*/
             dispatch('getDrivers')
+            dispatch('getDeliveryServiceDriver')
             // }
           }
         })
@@ -199,6 +208,12 @@ const actions = {
         commit(mutation.DRIVERS, response.data.data)
       })
     }
+  },
+  getDeliveryServiceDriver({ commit, rootGetters }) {
+    let brandId = rootGetters['context/brand'].replace('/', '')
+    DMService.getDeliveryServices(brandId).then(response => {
+      commit(mutation.SERVICE_DRIVERS, response.data.data)
+    })
   },
   getOnlineOrders({ rootGetters, commit, state }) {
     const params = [
@@ -219,7 +234,7 @@ const actions = {
           .then(response => {
             commit(mutation.SET_LOADING, true)
             if (response.data) {
-              commit(mutation.SET_DM_ORDERS, response.data)
+              // commit(mutation.SET_DM_ORDERS, response.data)
               let onlineOrders = {
                 count: response.data.count,
                 orders: response.data.data,
@@ -449,6 +464,9 @@ const mutations = {
   [mutation.DRIVERS](state, drivers) {
     state.drivers = drivers
   },
+  [mutation.SERVICE_DRIVERS](state, drivers) {
+    state.deliveryServiceDriver = drivers
+  },
   [mutation.SET_DM_PAGE_ID](state, pageId) {
     state.params.pageId = pageId
   },
@@ -495,7 +513,6 @@ const mutations = {
   },
   [mutation.SET_ONLINE_ORDERS](state, onlineOrders) {
     state.onlineOrders = onlineOrders
-    console.log(state.onlineOrders, 'state.onlineOrders')
   },
 }
 

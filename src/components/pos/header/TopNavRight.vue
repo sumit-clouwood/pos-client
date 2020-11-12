@@ -51,19 +51,6 @@ import LanguageMenu from '@/components/util/LanguageMenu'
 
 import bootstrap from '@/bootstrap'
 import OnlineOrder from './popups/OnlineOrder'
-// var audio = new Audio('/sound/doorbell.ogg')
-// var nopromise = {
-//   catch: new Function(),
-// }
-// audio.load()
-// audio.addEventListener(
-//   'ended',
-//   function() {
-//     this.currentTime = 0
-//     this.load()(this.play() || nopromise).catch(function() {})
-//   },
-//   false
-// )
 export default {
   name: 'TopNavRight',
   props: {},
@@ -149,39 +136,12 @@ export default {
       bootstrap.loadUI(this.$store)
       this.$store.dispatch('location/changeLanguage', locale)
     },
-
-    // onlineOrders() {
-    //   if (this.latestOnlineOrders == 0) {
-    //     if (
-    //       localStorage.getItem('onlineOrders') != 'undefined' &&
-    //       JSON.parse(localStorage.getItem('onlineOrders')) != null
-    //     ) {
-    //       this.onlineOrdersCount = JSON.parse(
-    //         localStorage.getItem('onlineOrders')
-    //       ).length
-    //     } else {
-    //       this.onlineOrdersCount = 0
-    //     }
-    //   } else {
-    //     this.onlineOrdersCount = this.latestOnlineOrders
-    //   }
-    // },
     baseurl(link) {
       return (
         window.location.href.replace(new RegExp('/pos/.*'), '/' + link) +
         this.$store.getters['context/brand']
       )
     },
-    /*dineInUrl(link) {
-      return window.location.href.replace(new RegExp('/dine-in/.*'), '/' + link)
-    },*/
-    /*...mapActions('customer', ['fetchCustomerAddress']),*/
-    // playSound() {
-    //   this.$store.dispatch('order/playSound', {})
-    // },
-    // pauseSound() {
-    //   (audio.pause() || nopromise).catch(function(){});
-    // },
     ...mapGetters('order', ['getLatestOnlineOrders']),
   },
   mounted() {
