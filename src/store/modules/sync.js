@@ -51,7 +51,9 @@ const actions = {
   offlineSync({ commit, dispatch }, status) {
     commit('updateOfflineSync', status)
     if (status === 'done') {
-      dispatch('dinein/fetchAll', { silent: true }, { root: true })
+      //this ll call dine in apis every time when offlien sync is done, offline sync happens every 60 mins
+      // that means every 60 mins these dinein apis ll be called, that needs to be optimized.
+      //dispatch('dinein/fetchAll', { silent: true }, { root: true })
     }
   },
   setLoader({ commit }, payload) {
