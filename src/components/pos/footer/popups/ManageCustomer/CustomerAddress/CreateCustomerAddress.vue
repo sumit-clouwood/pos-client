@@ -241,6 +241,7 @@ export default {
     checkForm: function(modalStatus) {
       this.errors = {}
       this.errors.count = 0
+      this.newAddressDetails['delivery_area_id'] = this.selectedDeliveryArea
       this.mandatory_fields.forEach(field => {
         if (field.group === CONST.CUSTOMER_ADDRESS) {
           if (
