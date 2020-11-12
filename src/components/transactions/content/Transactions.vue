@@ -150,7 +150,7 @@ export default {
     this.fetchOrders()
     this.interval = setInterval(() => {
       this.fetchOrders()
-    }, 1000 * 20)
+    }, 1000 * 60)
   },
   destroyed() {
     clearInterval(this.interval)

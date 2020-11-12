@@ -55,7 +55,7 @@ export default {
     this.$store.dispatch('carhop/initFetch')
     this.interval = setInterval(() => {
       this.$store.dispatch('carhop/initFetch', false)
-    }, 1000 * 20)
+    }, 1000 * 60)
   },
   beforeDestroy() {
     clearInterval(this.interval)
