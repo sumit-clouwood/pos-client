@@ -414,6 +414,7 @@ export default {
   computed: {
     ...mapState('checkout', ['print']),
     ...mapGetters('location', ['_t', 'isTokenManager', 'getReferral']),
+    ...mapState('location', ['userShortDetails']),
     ...mapState('location', ['timezoneString']),
     ...mapState('dinein', ['selectedTableRservationData']),
     ...mapState('order', ['orderType']),
@@ -489,8 +490,8 @@ export default {
       return this.current_time.format('Do MMMM YYYY')
     },
     placed_by: function() {
-      return this.$store.state.location.userShortDetails.username
-        ? this.$store.state.location.userShortDetails.username
+      return this.userShortDetails.username
+        ? this.userShortDetails.username
         : this.$store.state.auth.userDetails.item.name
     },
     tokenNumber() {
