@@ -52,6 +52,11 @@ other components are nested within.
       </div>
       <router-view v-else />
     </div>
+    <div v-else>
+      <p>
+        Please wait while we are loading store(s)
+      </p>
+    </div>
   </div>
 </template>
 <script>
@@ -316,12 +321,12 @@ export default {
   },
   //life cycle hooks
   mounted() {
-    if (!this.$store.state.context.storeId) {
-      this.errored = 'Please provide brand id and store id in url'
-      this.storeContext = false
-    } else {
-      this.storeContext = true
-    }
+    // if (!this.$store.state.context.storeId) {
+    //   this.errored = 'Please provide brand id and store id in url'
+    //   this.storeContext = false
+    // } else {
+    //   this.storeContext = true
+    // }
 
     if (this.$route.params.order_id) {
       this.orderId = this.$route.params.order_id
