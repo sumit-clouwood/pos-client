@@ -134,7 +134,7 @@ export default {
                 if (this.$store.getters['checkout/complete']) {
                   //Reset Cart and set states and redirect to dine in.
                   this.$store.commit('dinein/SET_COVER', '')
-                  this.$store.dispatch('order/beforeRedirectResetCartDineIn')
+                  // this.$store.dispatch('order/beforeRedirectResetCartDineIn')
                 }
               })
               .catch(response => {
