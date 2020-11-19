@@ -48,19 +48,14 @@
                 {{ template.deliver_to_label }}
               </div>
               <div>
-                <strong>{{ customer.name }}</strong>
-              </div>
-              <div>
-                <strong>{{ customer.phone }}</strong>
-              </div>
-              <br />
-              <div>
                 {{ order.order_flat_number }} {{ order.order_building }}
               </div>
               <div>
                 {{ order.order_street }} {{ order.order_nearest_landmark }}
               </div>
-              <div>{{ get_delivery_area_name(order.order_delivery_area) }}</div>
+              <div>
+                <span>{{ getDeliveryArea(order.order_delivery_area) }}</span>
+              </div>
             </td>
           </tr>
           <tr class="left-aligned">
@@ -84,6 +79,12 @@
             <th colspan="3">
               {{ template.customer_label }}
               <span class="float-right">{{ customer.name }}</span>
+            </th>
+          </tr>
+          <tr v-if="crm_module_enabled && customer" class="left-aligned">
+            <th colspan="3">
+              {{ _t('Contact') }}
+              <span class="float-right">{{ customer.phone }}</span>
             </th>
           </tr>
           <tr class="left-aligned">
@@ -414,6 +415,7 @@ export default {
   computed: {
     ...mapState('checkout', ['print']),
     ...mapGetters('location', ['_t', 'isTokenManager', 'getReferral']),
+    ...mapGetters('customer', ['getDeliveryArea']),
     ...mapState('location', ['userShortDetails']),
     ...mapState('location', ['timezoneString']),
     ...mapState('dinein', ['selectedTableRservationData']),
@@ -740,14 +742,14 @@ export default {
     translate_payment_type(item) {
       return this.translate_entity(item, 'name')
     },
-    get_delivery_area_name(delivery_area_id) {
+    /*get_delivery_area_name(delivery_area_id) {
       var found = this.$store.state.customer.fetchDeliveryAreas.find(
         item => item._id == delivery_area_id
       )
       if (found) {
         return found.text
       }
-    },
+    },*/
     toDataURL(src, callback, outputFormat) {
       var img = new Image()
       img.crossOrigin = 'Anonymous'
