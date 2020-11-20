@@ -102,24 +102,47 @@
         </p>
       </div>
     </div>
-    <div v-if="orderDetails.customer">
+    <div
+      v-if="
+        orderDetails.customer ||
+          (orderDetails.item && orderDetails.item.guest_checkout)
+      "
+    >
       <div class="details-item">
         <span class="details-item-name color-text-invert">{{
           _t('Customer Name:')
         }}</span>
-        <p class="color-text">{{ orderDetails.customer.name }}</p>
+        <p class="color-text">
+          {{
+            orderDetails.item.guest_checkout
+              ? orderDetails.item.guest_customer.name
+              : orderDetails.customer.name
+          }}
+        </p>
       </div>
       <div class="details-item">
         <span class="details-item-name color-text-invert">{{
           _t('Customer Phone Number:')
         }}</span>
-        <p class="color-text">{{ orderDetails.customer.phone_number }}</p>
+        <p class="color-text">
+          {{
+            orderDetails.item.guest_checkout
+              ? orderDetails.item.guest_customer.phone_number
+              : orderDetails.customer.phone_number
+          }}
+        </p>
       </div>
       <div class="details-item">
         <span class="details-item-name color-text-invert">{{
           _t('Customer Email:')
         }}</span>
-        <p class="color-text">{{ orderDetails.customer.email }}</p>
+        <p class="color-text">
+          {{
+            orderDetails.item.guest_checkout
+              ? orderDetails.item.guest_customer.email
+              : orderDetails.customer.email
+          }}
+        </p>
       </div>
       <div class="details-item">
         <span class="details-item-name color-text-invert"
@@ -253,6 +276,9 @@ export default {
       })
     },
     getPlacedBy(orderDetail) {
+      if (orderDetail.item.guest_checkout) {
+        return this._t('Guest')
+      }
       let name = 'N/A'
       if (orderDetail) {
         name = Object.values(orderDetail.lookups.users._id)[0]['name']

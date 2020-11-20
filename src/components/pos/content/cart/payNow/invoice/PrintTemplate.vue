@@ -492,6 +492,9 @@ export default {
       return this.current_time.format('Do MMMM YYYY')
     },
     placed_by: function() {
+      if (this.order.guest_checkout) {
+        return this._t('Guest')
+      }
       return this.userShortDetails.username
         ? this.userShortDetails.username
         : this.$store.state.auth.userDetails.item.name
@@ -519,6 +522,12 @@ export default {
     // that means there should be no customer in that order
     customer() {
       if (this.order) {
+        if (this.order.guest_checkout) {
+          return {
+            ...this.order.guest_customer,
+            phone: this.order.guest_customer.phone_number,
+          }
+        }
         if (this.$store.state.customer.offlineData) {
           return {
             name: this.$store.state.customer.offlineData.name,
