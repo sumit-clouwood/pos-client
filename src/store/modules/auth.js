@@ -162,15 +162,20 @@ const actions = {
             reject(response.data.error)
             return false
           }
-
           localStorage.setItem('token', response.data.token)
           //wait for localstorage to be updated
-          dispatch('getUserDetails', response.data.user.user_id).then(() => {
+          setTimeout(() => {
             dispatch('location/setContext', null, { root: true }).then(() => {
-              commit(mutation.SET_TOKEN, response.data.token)
-              resolve(response.data.token)
+              dispatch('getUserDetails', response.data.user.user_id).then(
+                () => {
+                  commit(mutation.SET_TOKEN, response.data.token)
+                  resolve(response.data.token)
+                }
+              )
             })
-          })
+          }, 100)
+
+          //wait for localstorage to be updated
         })
         .catch(error => reject(error))
     })
