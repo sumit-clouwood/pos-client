@@ -133,7 +133,7 @@
 
       .main-orders-list-item {
         min-height: $px100;
-        height: 100%;
+        height: unset;
         border: 1px solid $gray-middle;
         border-radius: $card-border-radius;
         background-color: $white;
