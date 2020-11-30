@@ -118,6 +118,7 @@ export default {
           }).then(() => {
             let errorData = this.customerCreateStatus
             this.displayValidationErrors(errorData)
+            $('#customer').modal('hide')
           })
         }
         if (modalStatus == 'Edit') {

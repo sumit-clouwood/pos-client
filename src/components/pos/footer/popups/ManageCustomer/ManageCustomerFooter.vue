@@ -23,7 +23,6 @@
         @click="addCustomerForm"
         data-toggle="modal"
         data-target="#customer"
-        data-dismiss="modal"
       >
         {{ _t('Create New Customer') }}
       </button>
@@ -67,6 +66,7 @@ export default {
       $('#post_announcement').attr('disabled', false) //Disable Save button if pressed
       $('#customer input, #customer select').val('')
       $('.nogeneral').show()
+      $('#manage-customer').modal('hide')
       $('.customerAddressWrapper').show()
     },
     ...mapActions('customer', ['setPageNumber', 'addCustomer']),
