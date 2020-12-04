@@ -26,7 +26,7 @@
       <div
         class="food-menu-item"
         :class="{
-          ' color-dashboard-background': item.image != '',
+          'color-dashboard-background': item.image != '',
         }"
         :style="{ background: item.image == '' ? item.item_color : '' }"
         v-for="item in items"
@@ -162,25 +162,13 @@ export default {
   clip-path: polygon(0px 0px, 0px 100%, 45% 0px);
   background: rgba(220, 220, 220, 0.9);
 }
+
 .color-dashboard-background {
   .food-menu-item {
-    .food-menu-item-text {
-      display: unset !important;
-      margin-top: $px16 !important;
-      margin-bottom: 0 !important;
-      white-space: nowrap !important;
-      overflow: hidden !important;
-      text-overflow: ellipsis !important;
-    }
-    .item-image-only {
-      display: flex !important;
-      margin-top: unset !important;
-      margin-bottom: unset !important;
-      word-break: break-word !important;
-      white-space: unset !important;
-      overflow: unset !important;
-      text-overflow: unset !important;
-    }
+    height: $food-menu-item-height !important;
+    display: flex !important;
+    flex-wrap: wrap !important;
+    overflow: hidden !important;
   }
 }
 
@@ -201,7 +189,7 @@ export default {
       right: 0;
       bottom: 0;
       left: 0;
-      background-color: darkblue;
+      background-color: $blue-dark;
     }
     &.active {
       top: 0;
@@ -223,9 +211,9 @@ export default {
       height: 4em !important;
       padding: 0 10px;
       margin: 0;
-      display: grid;
-      align-items: center;
-      grid-template-columns: auto 1fr max-content;
+      display: grid !important;
+      align-items: center !important;
+      grid-template-columns: auto 1fr max-content !important;
       grid-gap: 20px;
       border-radius: 0;
       border: none;
