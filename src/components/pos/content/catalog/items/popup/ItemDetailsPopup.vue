@@ -429,8 +429,9 @@ export default {
   margin: 0.5rem auto;
   margin-bottom: 2rem;
   /deep/ .quantity-component {
-    display: grid;
-    grid-template-columns: 37% 60%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     /deep/ .lbl-quantity {
       font-size: 1.3rem !important;
       color: black !important;
@@ -444,9 +445,11 @@ export default {
         width: 2rem;
         border: 1px solid #e3e7f2;
         border-radius: 0px;
+        height: 100%;
       }
       .qty {
         width: 3rem;
+        height: 100%;
       }
       .btn-set-quantity button {
         color: #fff;
@@ -458,6 +461,7 @@ export default {
         margin: auto;
         font-size: 1.1rem !important;
         margin-left: 2rem !important;
+        height: 100%;
       }
       .POSItemOptions_quantity_inputs {
         width: 7.1875rem;
