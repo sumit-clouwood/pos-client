@@ -851,8 +851,8 @@ const actions = {
 
               //add future order
               if (rootState.order.futureOrder) {
-                order.future_order = 1
-                order.future_order_date = rootState.order.futureOrder
+                // order.future_order = 1
+                order.future_order_datetime = rootState.order.futureOrder
               }
 
               order.order_discounts = []

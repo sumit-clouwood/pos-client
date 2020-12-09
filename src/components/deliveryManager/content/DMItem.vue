@@ -152,9 +152,10 @@
                 </div>
                 <span
                   class="order-id cursor-pointer"
-                  v-if="order.aggregator_data.order_id"
+                  v-if="order.aggregator_data && order.aggregator_data.order_id"
                 >
-                  Talabat Order no # {{ order.aggregator_data.order_id }}
+                  {{ _t('Talabat Order no') }} #
+                  {{ order.aggregator_data.order_id }}
                 </span>
                 <div>
                   {{ branch[order.store_id]['name'] }}
@@ -166,7 +167,7 @@
                   "
                   :style="{ opacity: 1 }"
                 >
-                  Order Assigned to delivery service
+                  {{ _t('Order Assigned to delivery service') }}
                 </div>
                 <div></div>
               </div>

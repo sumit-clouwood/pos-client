@@ -49,7 +49,11 @@ const getters = {
         driver.brand_stores.includes(rootState.context.storeId) ||
         driver.brand_access_type === 'all'
     ),
-  orders: state => state.orders.filter(order => order.deleted === false),
+  orders: state => {
+    if (!state.orders.length) return []
+    return state.orders.filter(order => order.deleted === false)
+  },
+  // orders: state => state.orders,
   onlineOrders: state => state.onlineOrders,
   currentDriverOrders: (state, getters) => {
     if (state.driverId) {
@@ -81,6 +85,7 @@ const getters = {
       totalDeliveryTime: 0,
       driverId: driver._id,
     }
+    if (!state.orders.length) return data
     state.orders.forEach(order => {
       if (order.driver == driver._id) {
         data.orders.push(order)
@@ -437,12 +442,14 @@ const mutations = {
     state.loading = status
   },
   [mutation.SET_DM_ORDERS](state, orderDetails) {
-    state.orders = orderDetails.data.map(order => {
-      order.deleted = false
-      return order
-    })
-    let stores = orderDetails.page_lookups.stores
-    state.availableStores = stores._id
+    if (orderDetails.count) {
+      state.orders = orderDetails.data.map(order => {
+        order.deleted = false
+        return order
+      })
+      let stores = orderDetails.page_lookups.stores
+      state.availableStores = stores._id
+    } else return orderDetails
   },
   [mutation.SET_SELECTED_DM_ORDERS](state, selectedOrderDetails) {
     state.selectedOrder = selectedOrderDetails
@@ -481,6 +488,7 @@ const mutations = {
     }
   },
   [mutation.DM_RESTORE_ORDERS](state) {
+    if (!state.orders.length) return []
     state.orders = state.orders.map(order => {
       order.deleted = false
       return order

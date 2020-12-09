@@ -268,12 +268,6 @@ export default {
         { root: true }
       )
     }
-    let deliveryService = ['jeebly', 'one click']
-    this.drivers = this.drivers.filter(item => {
-      // eslint-disable-next-line no-console
-      console.log(item.name)
-      return !deliveryService.includes(item.name)
-    })
   },
   updated() {
     if (this.listType == 'Waiting for Pick') {
