@@ -809,11 +809,17 @@ export default {
     setTableProperties() {
       let dis = this
       let user_agent = this.$store.state.auth.deviceType.userAgent
+      // let user_agent =
+      //   'mozilla/5.0 (windows nt 6.1; wow64)applewebkit/537.36 (khtml, like gecko) chrome/47.0.2526.80 safari/537.36 dimspos.app 1.0.0.0'
       let checkIpad = user_agent.search('ipad')
+      let checkWindowsApp = user_agent.search('dimspos.app')
       if (checkIpad < 0) {
         checkIpad = user_agent.search('macintosh')
       }
       this.tableTextTransform = checkIpad < 0 ? true : false
+      if (checkWindowsApp > 0) {
+        this.tableTextTransform = false
+      }
       d3.selectAll('.dinein_table').each((d, i, a) => {
         let data = d
         let angleX = parseInt(data.table_position_coordinate.angle)
