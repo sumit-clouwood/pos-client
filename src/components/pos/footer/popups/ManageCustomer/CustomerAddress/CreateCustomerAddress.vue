@@ -313,8 +313,6 @@ export default {
           delivery_area_id: areaId,
           // lat_lng_available: true,
         }
-        // eslint-disable-next-line no-console
-        console.log(formData, 'ffff')
         if (modalStatus == 'Add') {
           this.createAction({
             data: formData,
