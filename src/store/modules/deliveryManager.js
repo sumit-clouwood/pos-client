@@ -449,7 +449,7 @@ const mutations = {
       })
       let stores = orderDetails.page_lookups.stores
       state.availableStores = stores._id
-    } else return orderDetails
+    } else state.orders = orderDetails
   },
   [mutation.SET_SELECTED_DM_ORDERS](state, selectedOrderDetails) {
     state.selectedOrder = selectedOrderDetails

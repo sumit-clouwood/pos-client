@@ -209,6 +209,7 @@ export default {
     updateOrderStatus(orderStatus) {
       this.$store.commit('deliveryManager/LIST_TYPE', orderStatus.title)
       this.$store.commit('deliveryManager/SECTION', orderStatus.section)
+      this.$store.commit('deliveryManager/SET_DM_ORDERS', [])
       if (orderStatus.section) {
         this.$store.dispatch('deliveryManager/updateDMOrderStatus', orderStatus)
         deliveryTabs(orderStatus.dataRelated)
