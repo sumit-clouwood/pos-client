@@ -278,6 +278,9 @@ export default {
       // 'availableStores',
       // 'deliveryOrderStatus',
     ]),
+    privateContext() {
+      return this.$store.state.auth.token
+    },
   },
   updated() {
     // eslint-disable-next-line no-console
@@ -342,9 +345,10 @@ export default {
                 storeId,
                 scope.isAudioPlaying
               )
-              $('#online-order')
-                .dialog()
-                .dialog('open')
+              if (scope.privateContext)
+                $('#online-order')
+                  .dialog()
+                  .dialog('open')
               if (!scope.isAudioPlaying) scope.playSound()
               // clearTimeout(scope.interval)
             }
@@ -365,7 +369,7 @@ export default {
     getOnlineOrders() {
       let scope = this
       this.$store.dispatch('deliveryManager/getOnlineOrders').then(() => {
-        if (scope.onlineOrders.count > 0) {
+        if (scope.onlineOrders.count > 0 && scope.privateContext) {
           $('#online-order')
             .dialog()
             .dialog('open')
