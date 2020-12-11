@@ -287,7 +287,7 @@ export default {
       }*/
       if (this.errors.count === 0) {
         let addAddress = $('#add_address')
-        addAddress.modal('toggle')
+        addAddress.modal('hide')
         // addAddress.click()
         let areaId = ''
         if (this.selectedDeliveryArea) {
@@ -321,7 +321,7 @@ export default {
             model: 'customer_addresses',
             customer: this.customerId,
           })
-          addAddress.modal('toggle')
+          addAddress.modal('hide')
           $('#add-to-order').modal('toggle')
         }
         if (modalStatus == 'Edit') {
@@ -332,8 +332,10 @@ export default {
             data: formData,
           }
           this.updateAction(actionDetails)
-          addAddress.modal('toggle')
+          addAddress.modal('hide')
         }
+      } else {
+        // addAddress.modal('show')
       }
     },
 
