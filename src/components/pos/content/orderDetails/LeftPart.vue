@@ -169,12 +169,7 @@
           _t('Delivery Area:')
         }}</span>
         <p class="color-text">
-          {{
-            getLookupData({
-              lookupFrom: 'delivery_areas',
-              id: orderDetails.item.order_delivery_area,
-            })
-          }}
+          {{ getDeliveryArea(orderDetails.item.order_delivery_area) }}
         </p>
       </div>
       <div class="details-item">
@@ -233,6 +228,7 @@ export default {
   },
   computed: {
     ...mapGetters('location', ['_t']),
+    ...mapGetters('customer', ['getDeliveryArea']),
     ...mapState('location', ['timezoneString']),
   },
   updated() {
