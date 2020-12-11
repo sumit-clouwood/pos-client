@@ -26,7 +26,7 @@
               </p>
               <p class="price-qty">
                 @ {{ formatPrice(item.price) }} x {{ item.qty }} &nbsp; - &nbsp;
-                {{ getItemDiscountValue(order.item_discounts).name }}
+                {{ getItemDiscountValue(order.item_discounts, item).name }}
               </p>
               <a
                 href="javascript:void(0)"
@@ -50,7 +50,7 @@
             <span>{{
               formatPrice(
                 item.price * item.qty -
-                  getItemDiscountValue(order.item_discounts).value || 0
+                  getItemDiscountValue(order.item_discounts, item).value || 0
               )
             }}</span>
           </div>
@@ -88,13 +88,15 @@ export default {
       )
       return itemData[column]
     },
-    getItemDiscountValue(discounts) {
+    getItemDiscountValue(discounts, item) {
       let value = ''
       let name = ''
       discounts.map(function(discount) {
-        let type = discount.type === 'percentage' ? '%' : ''
-        name += '(' + discount.name + ' (' + discount.rate + type + '))'
-        value += discount.price
+        if (item.no == discount.for_item) {
+          let type = discount.type === 'percentage' ? '%' : ''
+          name += '(' + discount.name + ' (' + discount.rate + type + '))'
+          value += discount.price
+        }
       })
       return { name, value }
     },
