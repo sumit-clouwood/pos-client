@@ -1485,6 +1485,9 @@ div {
           box-shadow: none;
         }
       }
+      &.tdraw {
+        height: $px90;
+      }
     }
   }
 }
