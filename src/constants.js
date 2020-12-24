@@ -111,3 +111,13 @@ export const GENERAL_INFORMATION = 'gi'
 export const ADDITIONAL_INFORMATION = 'ai'
 export const CUSTOMER_ADDRESS = 'addi'
 export const OTHER_INFORMATION = 'oi'
+
+export const PAGE_ID_DELIVERY_HOME = 'delivery_home'
+export const PAGE_ID_WAITER = 'dine-in'
+export const PAGE_ID_CARHOP = 'carhop'
+
+export const POS_START_PATHS = [
+  PAGE_ID_DELIVERY_HOME,
+  PAGE_ID_WAITER,
+  PAGE_ID_CARHOP,
+]

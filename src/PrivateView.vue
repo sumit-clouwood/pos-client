@@ -9,19 +9,20 @@ other components are nested within.
     <!--<router-link to="/about">About</router-link>-->
     <!--</div>-->
     <div v-if="loggedIn && storeContext">
-      <section v-if="errored">
-        <p>
-          We're sorry, we're not able to proceed at the moment, please try back
-          later
-        </p>
-        <p>Technical info: {{ errored }}</p>
-      </section>
-      <div v-else-if="subscriptionError">
-        <div class="subscription-error">
-          <h3>{{ subscriptionError }}</h3>
-          <p>{{ _t('Please contact your store owner for access.') }}</p>
+      <div v-if="userError">
+        <div class="center-error">
+          <h3>{{ userError }}</h3>
+          <p>{{ userErrorInstructions }}</p>
         </div>
       </div>
+      <section v-else-if="systemError" class="center-error">
+        <h3>
+          We're sorry, we're not able to proceed at the moment, please try back
+          later.
+        </h3>
+        <h5>Technical info:</h5>
+        <p v-html="systemError"></p>
+      </section>
       <div v-else-if="loading">
         <ul class="ullist-inventory-location loading-view pl-0 pt-2">
           <li class="p-3">
@@ -80,7 +81,8 @@ export default {
     return {
       storeContext: true,
       loading: true,
-      errored: false,
+      systemError: false,
+      userError: false,
       progressIncrement: 0,
       orderId: null,
       tableId: null,
@@ -177,19 +179,24 @@ export default {
           this.setupExternalScripts()
         })
         .catch(error => {
-          //this.errored = error
-          //setTimeout(() => {
           this.loading = false
+          console.trace(error)
           if (error === 'subscription') {
-            this.subscriptionError = this._t(
-              'Store subscription has been expired.'
+            this.userError = this._t('Store subscription has been expired.')
+            this.userErrorInstructions = this._t(
+              'Please contact your store owner for access.'
+            )
+          }
+
+          //this.$store.dispatch('auth/logout', error)
+          if (error.data && error.data.error) {
+            this.userError = error.data.error
+            this.userErrorInstructions = this._t(
+              'Please contact your store owner.'
             )
           } else {
-            console.log(error, ', dispatch logout')
+            this.systemError = error.stack
           }
-          //this.$store.dispatch('auth/logout', error)
-          this.errored = ''
-          //}, 1000 * 10)
         })
     },
     resetTokenNumber() {
@@ -359,7 +366,7 @@ export default {
 //vanilla js
 </script>
 <style lang="scss" scoped>
-.subscription-error {
+.center-error {
   text-align: center;
   width: 100%;
   padding-top: 150px;

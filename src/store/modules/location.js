@@ -131,14 +131,20 @@ const actions = {
         let path = storedata.data.start_path
         if (path != null) {
           if (availabeStores.length === 1) {
-            if (path !== 'pos') {
+            if (CONST.POS_START_PATHS.includes(path)) {
               if (path === 'delivery_home') {
                 path = 'delivery-manager'
               }
-              let URL = path + rootGetters['context/store']
-              router.push(URL)
-              router.go(router.currentRoute)
+            } else {
+              //for development env we don't need to set pos as start path but for production we need it
+              path = ''
+              if (process.env.NODE_ENV === 'production') {
+                path = 'pos'
+              }
             }
+
+            let URL = path + rootGetters['context/store']
+            router.replace(URL)
             //No need to call get userdetails again, we are already coming from login, where getuser details is already called
             // dispatch('auth/getUserDetails', storedata.data.user_id, {
             //   root: true,
@@ -195,7 +201,7 @@ const actions = {
     return new Promise((resolve, reject) => {
       LocationService.getLocationData()
         .then(storedata => {
-          if (typeof storedata.data.available_stores != undefined) {
+          if (typeof storedata.data.available_stores !== 'undefined') {
             commit(
               'context/SET_STORES_LENGTH',
               storedata.data.available_stores.length,
