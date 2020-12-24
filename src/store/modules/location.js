@@ -136,11 +136,7 @@ const actions = {
                 path = 'delivery-manager'
               }
             } else {
-              //for development env we don't need to set pos as start path but for production we need it
               path = ''
-              if (process.env.NODE_ENV === 'production') {
-                path = 'pos'
-              }
             }
 
             let URL = path + rootGetters['context/store']
