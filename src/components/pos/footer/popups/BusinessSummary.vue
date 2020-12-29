@@ -578,7 +578,7 @@ export default {
         this.$htmlToPaper('print_bs')
       } else {
         const urlParams = new URLSearchParams(window.location.search)
-        urlParams.set('iosprint', '1')
+        urlParams.set('iosprint_bs', '1')
         window.location.search = urlParams
       }
       // Pass the element id here

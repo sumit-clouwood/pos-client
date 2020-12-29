@@ -392,11 +392,7 @@ div#delivery-manager .modal-footer {
  padding:35px;
  border:solid 1px #e4e7eb;
  border-radius:4px;
- overflow:hidden;
- margin:0 auto;
- padding:35px;
- border:solid 1px #e4e7eb;
- border-radius:4px; }
+ }
 
 .dm-ready-order-wrap > .dm-ready-order-right {
  width:40%;
