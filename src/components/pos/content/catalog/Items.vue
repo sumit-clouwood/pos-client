@@ -63,7 +63,7 @@
         v-model="currentItem"
         @resetCurrentItem="resetCurrentItem"
       />
-
+      <scale-popup></scale-popup>
       <!-- <Popup /> -->
     </div>
     <div
@@ -87,6 +87,7 @@ import ItemDetailsPopup from './items/popup/ItemDetailsPopup'
 // import Popup from './items/Popup'
 import Scroll from '@/mixins/Scroll'
 import Cart from '@/mixins/Cart'
+import ScalePopup from './items/popup/ScalePopup.vue'
 // import btnBack from '../../../mobileComponents/mobileElements/btnBack'
 
 export default {
@@ -97,6 +98,7 @@ export default {
   mixins: [Scroll, Cart],
   components: {
     ItemDetailsPopup,
+    ScalePopup,
   },
   data() {
     return {
@@ -131,12 +133,16 @@ export default {
       this.$store.dispatch('combo/reset', true)
       this.$store.commit('orderForm/clearSelection')
 
-      if (item.item_type === CONST.COMBO_ITEM_TYPE) {
-        this.$store.commit('combo/SET_CURRENT_COMBO', item)
-        showModal('#combox-box-popup')
-      } else {
-        // if (!item.is_upselling)
-        return this.itemsAddToCart(item)
+      switch (item.item_type) {
+        case CONST.COMBO_ITEM_TYPE:
+          this.$store.commit('combo/SET_CURRENT_COMBO', item)
+          showModal('#combox-box-popup')
+          break
+        case CONST.SCALE_ITEM_TYPE:
+          showModal('#scale-popup')
+          break
+        default:
+          return this.itemsAddToCart(item)
       }
     },
   },
