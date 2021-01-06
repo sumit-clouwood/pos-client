@@ -9,7 +9,8 @@
         </div>
         <form class="modal-body add-note-wrap" autocomplete="off">
           <p class="color-text-invert">{{ _t('Enter Measurement Unit') }}</p>
-          <div class="add-note-area <!--loyalty-search-->">
+          <div class="add-note-area">
+            {{ current_item['measurement_unit'] }}
             <input
               autocomplete="off"
               type="text"
@@ -54,6 +55,7 @@ export default {
   name: 'ScalePopup',
   computed: {
     ...mapGetters('location', ['_t']),
+    ...mapGetters('category', ['current_item']),
   },
 }
 </script>

@@ -26,6 +26,7 @@ const state = {
   upSelling: [],
   isUpSellingModify: false,
   upSellingParentItem: false,
+  measurementUnits: {},
 }
 
 // getters, computed properties
@@ -140,6 +141,7 @@ const getters = {
     })
     return images
   },
+  current_item: state => state.item,
 }
 
 // actions, often async
@@ -198,6 +200,11 @@ const actions = {
           dispatch('printingServer/fetchAllKitchens', {}, { root: true })
         })
         .catch(error => reject(error))
+
+      //load measurement units in parallel
+      CategoryService.loadMeasurementUnits(storeId).then(response => {
+        commit('SET_MEASUREMENT_UNITS', response)
+      })
     })
   },
 

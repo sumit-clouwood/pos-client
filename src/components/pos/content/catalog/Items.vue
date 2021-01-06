@@ -131,6 +131,7 @@ export default {
   methods: {
     addToOrder(item) {
       this.$store.dispatch('combo/reset', true)
+      this.$store.commit('category/SET_ITEM', item)
       this.$store.commit('orderForm/clearSelection')
 
       switch (item.item_type) {

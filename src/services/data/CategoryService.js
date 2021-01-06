@@ -22,4 +22,11 @@ export default {
     }
     return DataService.getT(apiUrl)
   },
+  loadMeasurementUnits(storeId) {
+    const apiUrl = '/model/brand_scale_units?no_limit=true'
+    if (storeId) {
+      return DataService.getT(`/${storeId}${apiUrl}`, 'brand')
+    }
+    return DataService.getT(apiUrl)
+  },
 }
