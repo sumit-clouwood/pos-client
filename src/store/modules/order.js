@@ -1920,6 +1920,7 @@ const mutations = {
 
     state.splittedItems = {}
     state.item = false
+    state.futureOrder = false
     state.orderId = null
     state.orderData = null
     //reset order souce when order is completed
