@@ -31,6 +31,30 @@ const state = {
 
 // getters, computed properties
 const getters = {
+  measurement_units: state => state.measurementUnits,
+  find_measurement_unit: (state, getters) => unitId => {
+    if (!getters.measurement_units.data) {
+      return false
+    }
+    return getters.measurement_units.data.find(unit => unit._id == unitId)
+  },
+  find_measurement_unit_byname: (state, getters) => unitName => {
+    if (!getters.measurement_units.data) {
+      return false
+    }
+    //we ll need to provide some kind of mapping from 'g' to 'grams'
+    return getters.measurement_units.data.find(
+      unit =>
+        unit.unit.toLowerCase() == unitName.toLowerCase() ||
+        (unit.unit_code &&
+          unit.unit_code.toLowerCase() == unitName.toLowerCase())
+    )
+  },
+  measurement_unit_name: (state, getters) => unitId => {
+    return getters.find_measurement_unit(unitId)
+      ? getters.find_measurement_unit(unitId)['unit']
+      : ''
+  },
   categories: (state, getters, rootState, rootGetters) => {
     let categories = state.categories
     if (rootGetters['auth/multistore']) {
@@ -203,7 +227,7 @@ const actions = {
 
       //load measurement units in parallel
       CategoryService.loadMeasurementUnits(storeId).then(response => {
-        commit('SET_MEASUREMENT_UNITS', response)
+        commit('SET_MEASUREMENT_UNITS', response.data)
       })
     })
   },
@@ -273,6 +297,9 @@ const mutations = {
     }
   },
 
+  [mutation.SET_MEASUREMENT_UNITS](state, units) {
+    state.measurementUnits = units
+  },
   [mutation.SET_SUBCATEGORY](state, subcategory) {
     state.subcategory = subcategory
     state.item = null

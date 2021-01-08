@@ -8,18 +8,33 @@
           </h4>
         </div>
         <form class="modal-body add-note-wrap" autocomplete="off">
-          <p class="color-text-invert">{{ _t('Enter Measurement Unit') }}</p>
           <div class="add-note-area">
-            {{ current_item['measurement_unit'] }}
+            <select
+              autocomplete="off"
+              class="inputSearch dropdown"
+              v-model="measurementUnit"
+            >
+              <option
+                v-for="measurement in measurement_units.data"
+                :value="measurement.unit_code || measurement.unit"
+                :key="measurement._id"
+              >
+                {{ measurement.unit }}
+              </option>
+            </select>
+          </div>
+
+          <div class="add-note-area">
             <input
               autocomplete="off"
               type="text"
-              :placeholder="_t('Measurement')"
+              :placeholder="_t('0.00')"
               class="inputSearch"
-              v-model="measurement"
+              v-model="measurementValue"
             />
           </div>
           <span
+            v-if="error"
             class="loyalty-error text-danger loyalty-customer-error color-warning"
           >
             {{ error }}
@@ -32,8 +47,9 @@
                 class="btn btn-success btn-large color-text-invert color-main"
                 type="button"
                 id="save-note"
+                @click="addToCart"
               >
-                {{ _t('Select') }}
+                {{ _t('Add to Cart') }}
               </button>
               <button
                 type="button"
@@ -50,13 +66,69 @@
   </div>
 </template>
 <script>
+/* global  hideModal  */
 import { mapGetters } from 'vuex'
+import Cart from '@/mixins/Cart'
 export default {
   name: 'ScalePopup',
+  data() {
+    return {
+      measurementValue: '',
+      error: false,
+    }
+  },
   computed: {
     ...mapGetters('location', ['_t']),
-    ...mapGetters('category', ['current_item']),
+    ...mapGetters('category', [
+      'current_item',
+      'find_measurement_unit',
+      'find_measurement_unit_byname',
+      'measurement_units',
+      'measurement_unit_name',
+    ]),
+    measurementUnit() {
+      if (this.current_item) {
+        const measurement = this.find_measurement_unit(
+          this.current_item.measurement_unit
+        )
+        return measurement ? measurement.unit_code || measurement.unit : ''
+      }
+      return ''
+    },
   },
+  methods: {
+    addToCart() {
+      this.error = ''
+      if (!this.measurementValue) {
+        this.error = 'Please enter measurement value'
+        return false
+      }
+
+      const meansurement = this.find_measurement_unit_byname(
+        this.measurementUnit
+      )
+      if (!meansurement) {
+        this.error = `Sorry measurement unit ${this.measurementUnit} not supported`
+        return false
+      }
+
+      let item = { ...this.current_item }
+      if (meansurement._id !== item.measurement_unit) {
+        const itemMeasurementUnit = this.find_measurement_unit(
+          item.measurement_unit
+        )
+        this.error = `Sorry, this item expects measurement in ${itemMeasurementUnit.unit}`
+        return false
+      }
+
+      item.measurement_value = this.measurementValue
+
+      hideModal('#scale-popup')
+      this.measurementValue = ''
+      return this.itemsAddToCart(item)
+    },
+  },
+  mixins: [Cart],
 }
 </script>
 <!-- eslint-disable max-len -->
@@ -66,6 +138,8 @@ export default {
 @import '@/assets/scss/mixins.scss';
 .dropdown {
   position: relative;
+  width: 100%;
+  border: 2px solid #efefef;
 }
 
 .inputSearch {

@@ -63,7 +63,6 @@
         v-model="currentItem"
         @resetCurrentItem="resetCurrentItem"
       />
-      <scale-popup></scale-popup>
       <!-- <Popup /> -->
     </div>
     <div
@@ -87,7 +86,6 @@ import ItemDetailsPopup from './items/popup/ItemDetailsPopup'
 // import Popup from './items/Popup'
 import Scroll from '@/mixins/Scroll'
 import Cart from '@/mixins/Cart'
-import ScalePopup from './items/popup/ScalePopup.vue'
 // import btnBack from '../../../mobileComponents/mobileElements/btnBack'
 
 export default {
@@ -98,7 +96,6 @@ export default {
   mixins: [Scroll, Cart],
   components: {
     ItemDetailsPopup,
-    ScalePopup,
   },
   data() {
     return {

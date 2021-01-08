@@ -160,7 +160,9 @@
               "
               :key="'item' + key"
             >
-              <td class="first-col" valign="top">{{ item.qty }}</td>
+              <td class="first-col" valign="top">
+                {{ item.qty }} {{ measurement_unit(item) }}
+              </td>
               <td>
                 <div class="food-title">
                   {{ translate_item(item) }}
