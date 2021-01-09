@@ -23,7 +23,8 @@ export default {
             resolve()
           }
         })
-        .catch(error => reject(error))
+        // .catch(error => reject(error))
+        .catch(resolve())
     })
   },
   setup(store) {
