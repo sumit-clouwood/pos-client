@@ -4,8 +4,11 @@ export default {
   checkLoyaltyLocation() {
     //alert(locationId)
     // return DataService.get(`/auth/get/loyalty/points?location_id=${locationId}`)
-    return DataService.get('/model/brand_loyalty_programs' +
-        '?query=&limit=100&ascending=1&page=1&byColumn=0&orderBy=name&page_id=brand_loyalty_programs_main_tbl','brand')
+    return DataService.get(
+      '/model/brand_loyalty_programs' +
+        '?query=&limit=100&ascending=1&page=1&byColumn=0&orderBy=name&page_id=brand_loyalty_programs_main_tbl',
+      'brand'
+    )
   },
   loyaltyCreateCustomer(data) {
     return DataService.post(
