@@ -4,6 +4,7 @@ import LoyaltyService from '@/services/data/LoyaltyService'
 const state = {
   loyalty: false,
   loyaltyCustomerList: false,
+  customer_status: '',
 }
 const getters = {}
 const actions = {
@@ -11,6 +12,14 @@ const actions = {
     const params = [rootState.location.location]
     LoyaltyService.checkLoyaltyLocation(...params).then(response => {
       commit(mutation.LOYALTY, response.data.data)
+    })
+  },
+  createCustomer({ commit }, data) {
+    return new Promise(resolve => {
+      return LoyaltyService.loyaltyCreateCustomer(data).then(response => {
+        commit('CREATE_CUSTOMER_STATES', response.data)
+        resolve(response)
+      })
     })
   },
   searchCustomer({ commit }, searchTerm) {
@@ -26,6 +35,8 @@ const mutations = {
   [mutation.LOYALTY_CUSTOMERS](state, customerList) {
     state.loyaltyCustomerList = customerList
   },
+  CREATE_CUSTOMER_STATES: (state, customer_status) =>
+    (state.customer_status = customer_status),
 }
 
 export default {

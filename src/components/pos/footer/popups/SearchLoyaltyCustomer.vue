@@ -69,7 +69,7 @@
               data-toggle="modal"
               data-dismiss="modal"
               class="cursor-pointer blue-middle color-text-invert"
-              @click="loyaltyAddCustomer('#customer')"
+              @click="loyaltyAddCustomer('#customer-loyalty')"
             >
               {{ _t('Create Customer') }}
             </div>
@@ -136,12 +136,12 @@ export default {
       this.$store.dispatch('loyaltyHendlerChange')
     },
     loyaltyAddCustomer: function(target) {
+      // eslint-disable-next-line no-debugger
       // this.$store.commit('loyalty/LOYALTY', true)
-      this.addCustomer()
-      $('#post_announcement').attr('disabled', false) //Disable Save button if pressed
-      $('#customer input, #customer select').val('')
+      // $('#create-loyalty-customer').attr('disabled', false) //Disable Save button if pressed
+      $('#customer-loyalty input').val('')
       $(target).modal('show')
-      $('.nogeneral').hide()
+      // $('.nogeneral').hide()
     },
 
     addLoyalty: function() {
