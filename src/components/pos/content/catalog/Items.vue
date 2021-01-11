@@ -1,5 +1,11 @@
 <template>
   <div class="food-items">
+    <input
+      type="text"
+      id="ios_scale_value"
+      v-model="iosScaleValue"
+      autocomplete="off"
+    />
     <div
       class="food-top-arrow food-arrow"
       v-show="showScrollUp"
@@ -103,6 +109,7 @@ export default {
       entity: 'entityItem',
       margin: 17.5,
       keepEntitiesInScroll: 0,
+      iosScaleValue: '',
     }
   },
   computed: {
