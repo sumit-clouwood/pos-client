@@ -645,6 +645,17 @@ const actions = {
 
       item.quantity = quantity
 
+      //if item.measurement_unit and item.measurement_value
+      if (item.item_type === CONST.SCALE_ITEM_TYPE && item.measurement_value) {
+        //item.originalValue = item.value
+        //item.value = item.value * item.measurement_value
+        item.quantity = Num.round(item.measurement_value)
+        const measurementUnit = rootGetters['category/find_measurement_unit'](
+          item.measurement_unit
+        )
+        item.measurement_unit = measurementUnit.unit
+      }
+
       dispatch('prepareItemTax', {
         item: item,
         type: data ? data.type : null,

@@ -39,7 +39,15 @@
         <div
           class="main-orders-list-item-subtitle color-text-invert item-exclude"
         >
-          <div v-html="formatItemDiscount(item)"></div>
+          <div
+            v-html="
+              formatItemDiscount(item) +
+                ' ' +
+                (item.item_type === CONST.SCALE_ITEM_TYPE
+                  ? item.measurement_unit
+                  : '')
+            "
+          ></div>
         </div>
         <div
           :id="'sub_dsc' + item.orderIndex"
@@ -173,7 +181,7 @@ export default {
       currentItem: state => state.order.item._id,
     }),
     ...mapState('order', ['orderType', 'selectedOrder', 'orderId']),
-    ...mapGetters('category', ['subcategoryImage']),
+    ...mapGetters('category', ['subcategoryImage', 'find_measurement_unit']),
     ...mapGetters('combo', ['find_combo_items', 'find_combo_item_modifiers']),
     ...mapGetters('modifier', ['hasModifiers']),
     ...mapGetters('order', [

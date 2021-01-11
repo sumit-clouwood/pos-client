@@ -490,6 +490,8 @@
       v-if="brand && brand.move_table && availableTables && cartType !== 'hold'"
     />
     <alert-popup></alert-popup>
+    <scale-popup></scale-popup>
+
   </div>
 </template>
 
@@ -537,6 +539,8 @@ import UpSelliing from '@/components/pos/content/catalog/upSelling/UpSelling'
 import genericOpenItem from '@/components/pos/openItem/genericItem'
 import DineInTableSelection from '@/components/dinein/cart/popup/DineInTableSelection'
 import DineInCoverSelection from '@/components/dinein/cart/popup/DineInCoverSelection.vue'
+import ScalePopup from '@/components/pos/content/catalog/items/popup/ScalePopup.vue'
+
 import * as CONST from '@/constants'
 
 import { mapState, mapGetters, mapActions } from 'vuex'
@@ -590,6 +594,7 @@ export default {
     genericOpenItem,
     DineInTableSelection,
     DineInCoverSelection,
+    ScalePopup,
   },
   data() {
     return {
