@@ -186,10 +186,7 @@ export default {
             this.userErrorInstructions = this._t(
               'Please contact your store owner for access.'
             )
-          }
-
-          //this.$store.dispatch('auth/logout', error)
-          if (error.data && error.data.error) {
+          } else if (error.data && error.data.error) {
             this.userError = error.data.error
             this.userErrorInstructions = this._t(
               'Please contact your store owner.'
