@@ -23,6 +23,9 @@ other components are nested within.
         <h5>Technical info:</h5>
         <p v-html="systemError"></p>
       </section>
+      <div v-if="userError || systemError" class="center-error">
+        Logging out in {{ secondsToLogout }} seconds
+      </div>
       <div v-else-if="loading">
         <ul class="ullist-inventory-location loading-view pl-0 pt-2">
           <li class="p-3">
@@ -87,6 +90,8 @@ export default {
       orderId: null,
       tableId: null,
       subscriptionError: false,
+      secondsToLogout: 20,
+      userErrorInstructions: '',
     }
   },
   methods: {
@@ -155,6 +160,7 @@ export default {
       }, 3000)
     },
     setup() {
+      this.secondsToLogout = 20
       this.subscriptionError = false
 
       const interval = setInterval(() => {
@@ -181,6 +187,15 @@ export default {
         .catch(error => {
           this.loading = false
           console.trace(error)
+          //logout here after 10 sec
+          const logoutInterval = setInterval(() => {
+            this.secondsToLogout--
+            if (this.secondsToLogout <= 0) {
+              clearInterval(logoutInterval)
+              this.$store.dispatch('auth/logout')
+            }
+          }, 1000)
+
           if (error === 'subscription') {
             this.userError = this._t('Store subscription has been expired.')
             this.userErrorInstructions = this._t(
