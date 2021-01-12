@@ -257,8 +257,10 @@ const actions = {
 
           if (storedata.data.store) {
             commit(mutation.SET_STORE, storedata.data.store)
-          } else {
+          } else if (storedata.data.available_stores) {
             commit(mutation.SET_STORE, storedata.data.available_stores[0])
+          } else {
+            return reject(`Sorry no store belongs to current logged in user`)
           }
 
           if (state.store && state.store._id) {

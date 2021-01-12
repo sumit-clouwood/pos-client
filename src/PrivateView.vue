@@ -194,8 +194,10 @@ export default {
             this.userErrorInstructions = this._t(
               'Please contact your store owner.'
             )
-          } else {
+          } else if (error.stack) {
             this.systemError = error.stack
+          } else {
+            this.userError = error
           }
         })
     },
