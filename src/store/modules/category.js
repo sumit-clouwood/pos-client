@@ -27,10 +27,16 @@ const state = {
   isUpSellingModify: false,
   upSellingParentItem: false,
   measurementUnits: {},
+  itemMeasurementUnit: '',
+  itemMeasurementValue: '',
+  scaleData: '',
 }
 
 // getters, computed properties
 const getters = {
+  scale_data: state => state.scaleData,
+  item_measurement_unit: state => state.itemMeasurementUnit,
+  item_measurement_value: state => state.itemMeasurementValue,
   measurement_units: state => state.measurementUnits,
   find_measurement_unit: (state, getters) => unitId => {
     if (!getters.measurement_units.data) {
@@ -265,6 +271,12 @@ const actions = {
     commit('updateSearchTerm', '')
     commit(mutation.SET_SUBCATEGORY, subcategory)
   },
+  setScaleData({ commit }, value) {
+    commit('SET_SCALE_DATA', value)
+    let [unitValue, unitName] = value.split(' ')
+    commit('setItemMeasurementUnit', unitName)
+    commit('setItemMeasurementValue', unitValue)
+  },
 }
 // mutations
 //state should be only changed through mutation and these are synchronous
@@ -357,9 +369,17 @@ const mutations = {
     state.taxData = []
     state.taxAmount = {}
   },
-
+  SET_SCALE_DATA(state, data) {
+    state.scaleData = data
+  },
   setBarcode(state, code) {
     state.barcode = code
+  },
+  setItemMeasurementUnit(state, unit) {
+    state.itemMeasurementUnit = unit
+  },
+  setItemMeasurementValue(state, value) {
+    state.itemMeasurementValue = value
   },
 }
 
