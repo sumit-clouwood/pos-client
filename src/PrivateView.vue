@@ -23,9 +23,10 @@ other components are nested within.
         <h5>Technical info:</h5>
         <p v-html="systemError"></p>
       </section>
-      <div v-if="userError || systemError" class="center-error">
-        Logging out in {{ secondsToLogout }} seconds
-      </div>
+      <h5 v-if="userError || systemError" class="center-error">
+        Logging out in
+        <span class="text-danger">{{ secondsToLogout }}</span> seconds
+      </h5>
       <div v-else-if="loading">
         <ul class="ullist-inventory-location loading-view pl-0 pt-2">
           <li class="p-3">
@@ -90,7 +91,7 @@ export default {
       orderId: null,
       tableId: null,
       subscriptionError: false,
-      secondsToLogout: 20,
+      secondsToLogout: 30,
       userErrorInstructions: '',
     }
   },
@@ -160,7 +161,7 @@ export default {
       }, 3000)
     },
     setup() {
-      this.secondsToLogout = 20
+      this.secondsToLogout = 30
       this.subscriptionError = false
 
       const interval = setInterval(() => {
