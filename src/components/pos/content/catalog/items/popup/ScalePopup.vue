@@ -19,7 +19,7 @@
                 :value="measurement.unit_code || measurement.unit"
                 :key="measurement._id"
               >
-                {{ measurement.unit }}
+                {{ measurement.name }}
               </option>
             </select>
           </div>
