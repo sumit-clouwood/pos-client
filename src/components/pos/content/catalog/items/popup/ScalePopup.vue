@@ -19,7 +19,7 @@
                 :value="measurement.unit_code || measurement.unit"
                 :key="measurement._id"
               >
-                {{ measurement.unit }}
+                {{ measurement.name }}
               </option>
             </select>
           </div>
@@ -27,7 +27,7 @@
           <div class="add-note-area">
             <input
               autocomplete="off"
-              type="text"
+              type="number"
               :placeholder="_t('0.00')"
               class="inputSearch"
               v-model="measurementValue"
@@ -73,7 +73,6 @@ export default {
   name: 'ScalePopup',
   data() {
     return {
-      measurementValue: '',
       error: false,
     }
   },
@@ -85,15 +84,31 @@ export default {
       'find_measurement_unit_byname',
       'measurement_units',
       'measurement_unit_name',
+      'item_measurement_unit',
+      'item_measurement_value',
     ]),
-    measurementUnit() {
-      if (this.current_item) {
-        const measurement = this.find_measurement_unit(
-          this.current_item.measurement_unit
-        )
-        return measurement ? measurement.unit_code || measurement.unit : ''
-      }
-      return ''
+    measurementValue: {
+      get() {
+        return this.item_measurement_value
+      },
+      set(value) {
+        this.$store.commit('category/setItemMeasurementValue', value)
+      },
+    },
+    measurementUnit: {
+      get() {
+        if (!this.item_measurement_unit && this.current_item) {
+          const measurement = this.find_measurement_unit(
+            this.current_item.measurement_unit
+          )
+          return measurement ? measurement.unit_code || measurement.unit : ''
+        }
+
+        return this.item_measurement_unit
+      },
+      set(value) {
+        this.$store.commit('category/setItemMeasurementUnit', value)
+      },
     },
   },
   methods: {

@@ -23,6 +23,10 @@ other components are nested within.
         <h5>Technical info:</h5>
         <p v-html="systemError"></p>
       </section>
+      <h5 v-if="userError || systemError" class="center-error">
+        Logging out in
+        <span class="text-danger">{{ secondsToLogout }}</span> seconds
+      </h5>
       <div v-else-if="loading">
         <ul class="ullist-inventory-location loading-view pl-0 pt-2">
           <li class="p-3">
@@ -87,6 +91,8 @@ export default {
       orderId: null,
       tableId: null,
       subscriptionError: false,
+      secondsToLogout: 30,
+      userErrorInstructions: '',
     }
   },
   methods: {
@@ -155,6 +161,7 @@ export default {
       }, 3000)
     },
     setup() {
+      this.secondsToLogout = 30
       this.subscriptionError = false
 
       const interval = setInterval(() => {
@@ -181,21 +188,29 @@ export default {
         .catch(error => {
           this.loading = false
           console.trace(error)
+          //logout here after 10 sec
+          const logoutInterval = setInterval(() => {
+            this.secondsToLogout--
+            if (this.secondsToLogout <= 0) {
+              clearInterval(logoutInterval)
+              this.$store.dispatch('auth/logout')
+            }
+          }, 1000)
+
           if (error === 'subscription') {
             this.userError = this._t('Store subscription has been expired.')
             this.userErrorInstructions = this._t(
               'Please contact your store owner for access.'
             )
-          }
-
-          //this.$store.dispatch('auth/logout', error)
-          if (error.data && error.data.error) {
+          } else if (error.data && error.data.error) {
             this.userError = error.data.error
             this.userErrorInstructions = this._t(
               'Please contact your store owner.'
             )
-          } else {
+          } else if (error.stack) {
             this.systemError = error.stack
+          } else {
+            this.userError = error
           }
         })
     },

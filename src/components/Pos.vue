@@ -5,6 +5,9 @@
     <Content />
     <Footer />
     <mobileIndex />
+    <div class="hidden-data">
+      <input type="text" id="ios_scale_value" autocomplete="off" />
+    </div>
   </div>
 </template>
 
@@ -33,39 +36,10 @@ import { mapState, mapGetters } from 'vuex'
 export default {
   name: 'Pos',
   computed: {
-    ...mapState('category', ['categories']),
+    ...mapState('category', ['categories', 'scale_data']),
     ...mapState('auth', ['role']),
     ...mapGetters('context', ['store']),
     ...mapGetters('auth', ['carhop', 'waiter']),
-  },
-  // mounted() {
-  //   if (this.waiter) {
-  //     if (
-  //       this.$route.path !== 'undefined' &&
-  //       !this.$route.path.match('dine-in')
-  //     ) {
-  //       this.$router.replace('/dine-in' + this.store + '/')
-  //     }
-  //   } else if (this.carhop) {
-  //     this.$router.replace('/carhop' + this.store + '/')
-  //   } else {
-  //     this.$router.replace(this.store)
-  //   }
-  // },
-  created() {
-    // if (localStorage.getItem('token')) {
-    //   let user_session_loop = setInterval(() => {
-    //     let user_token = this.$store.state.auth.token
-    //     if (user_token && user_token !== localStorage.getItem('token')) {
-    //       this.$store.dispatch('auth/logout', 'tab logout reset')
-    //     }
-    //     // eslint-disable-next-line
-    //     //console.log('user_token is ' + user_token + 'Ls token is ' + localStorage.getItem('token'))
-    //     if (localStorage.getItem('token') === '') {
-    //       clearInterval(user_session_loop)
-    //     }
-    //   }, 5000)
-    // }
   },
   components: {
     Menu,
@@ -79,6 +53,31 @@ export default {
   //data passed to this component by its parent is contained inside props
   props: {
     msg: String,
+  },
+  methods: {
+    populateScaleData(val) {
+      console.log('new value', val)
+      //this.$store.dispatch('category/setScaleData', val)
+    },
+  },
+  mounted() {
+    let self = this
+    const input = document.getElementById('ios_scale_value')
+
+    const descriptor = Object.getOwnPropertyDescriptor(
+      Object.getPrototypeOf(input),
+      'value'
+    )
+
+    Object.defineProperty(input, 'value', {
+      set: function(data) {
+        self.$store.dispatch('category/setScaleData', data)
+        return descriptor.set.apply(this, arguments)
+      },
+      get: function() {
+        return descriptor.get.apply(this)
+      },
+    })
   },
 }
 </script>
