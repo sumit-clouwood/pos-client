@@ -4,7 +4,7 @@
     <Header />
     <Content />
     <Footer />
-    <mobileIndex />
+    <mobileIndex v-if="device == 'mobile'" />
     <div class="hidden-data">
       <input type="text" id="ios_scale_value" autocomplete="off" />
     </div>
@@ -40,6 +40,7 @@ export default {
     ...mapState('auth', ['role']),
     ...mapGetters('context', ['store']),
     ...mapGetters('auth', ['carhop', 'waiter']),
+    ...mapGetters(['device']),
   },
   components: {
     Menu,
