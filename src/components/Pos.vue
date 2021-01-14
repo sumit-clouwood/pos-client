@@ -6,7 +6,7 @@
     <Footer />
     <mobileIndex />
     <div class="hidden-data">
-      <input type="text" id="ios_scale_value" autocomplete="off" />
+      <input type="hidden" id="ios_scale_value" autocomplete="off" />
     </div>
   </div>
 </template>
