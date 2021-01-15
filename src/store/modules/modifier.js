@@ -309,18 +309,11 @@ const actions = {
     commit(mutation.SET_ITEM, item)
   },
   //active item and index already been set to order.item
-  setActiveItem({ commit, getters, dispatch, rootState, rootGetters }) {
+  setActiveItem({ commit, dispatch, rootState, rootGetters }) {
     //pop needs all modifiers available for this item so we need to fetch modifier from modifeir store
     //but first we need to get active order so we can find exact item from modifiers
 
     const orderItem = rootState.order.item
-
-    //check if item has modifiers
-    if (!getters.hasModifiers(orderItem)) {
-      commit(mutation.SET_ITEM, false)
-      commit('orderForm/clearSelection', null, { root: true })
-      return false
-    }
     let stateModifiers = state.itemModifiers
 
     if (rootGetters['auth/multistore']) {

@@ -793,15 +793,19 @@ const actions = {
     item.netPrice = orderItem.netPrice
     commit(mutation.SET_ITEM, item)
 
-    // if (item.modifiable) {
     dispatch('orderForm/setItem', { item: item }, { root: true })
     dispatch('discount/setItem', { item: item }, { root: true })
     if (item.item_type === CONST.COMBO_ITEM_TYPE) {
       dispatch('combo/setItem', { item: item }, { root: true })
     } else {
-      dispatch('modifier/setActiveItem', { item: item }, { root: true })
+      if (item.modifiable) {
+        commit('modifier/SET_ITEM', state.item, { root: true })
+        dispatch('modifier/setActiveItem', { item: item }, { root: true })
+      } else {
+        //reset modifier item
+        commit('modifier/SET_ITEM', false, { root: true })
+      }
     }
-    // }
   },
   recalculateOrderTotals({
     rootState,
