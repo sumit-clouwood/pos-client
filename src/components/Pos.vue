@@ -85,4 +85,7 @@ export default {
 .user-profile {
   align-self: center;
 }
+.hidden-data {
+  display: none;
+}
 </style>
