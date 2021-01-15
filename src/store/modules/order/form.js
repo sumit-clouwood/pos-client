@@ -89,13 +89,14 @@ const mutations = {
   populateSelection(state, modifierGroups) {
     console.log('populating modifiers selection')
     let radios = {}
-    modifierGroups.forEach(model => {
-      if (model.type === 'checkbox') {
-        state.checkboxes.push(model)
-      } else if (model.type === 'radio') {
-        radios[model.itemId + '-' + model.groupId] = model.modifierId
-      }
-    })
+    modifierGroups &&
+      modifierGroups.forEach(model => {
+        if (model.type === 'checkbox') {
+          state.checkboxes.push(model)
+        } else if (model.type === 'radio') {
+          radios[model.itemId + '-' + model.groupId] = model.modifierId
+        }
+      })
     console.log('setting up radio state')
 
     state.radios = radios
