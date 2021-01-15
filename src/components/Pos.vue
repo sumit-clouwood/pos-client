@@ -6,7 +6,7 @@
     <Footer />
     <mobileIndex v-if="device == 'mobile'" />
     <div class="hidden-data">
-      <input type="text" id="ios_scale_value" autocomplete="off" />
+      <input type="hidden" id="ios_scale_value" autocomplete="off" />
     </div>
   </div>
 </template>
@@ -85,5 +85,8 @@ export default {
 <style scoped>
 .user-profile {
   align-self: center;
+}
+.hidden-data {
+  display: none;
 }
 </style>
