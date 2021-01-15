@@ -71,6 +71,8 @@ export default {
         showModal('#POSItemOptions')
         $('#POSItemOptions').css({ 'z-index': 9999 })
       } else {
+        //reset modifiers item
+        this.$store.commit('modifier/SET_ITEM', false)
         console.log('no not have modifiers')
         if (item.open_item === true) {
           //show popup for open item
