@@ -40,6 +40,10 @@ const actions = {
             return false
           } else {
             commit(mutation.BUSINESS_SUMMERY, response.data)
+            localStorage.setItem(
+              'business_summery',
+              JSON.stringify(response.data)
+            )
             commit(mutation.MODAL_VIEW, '#business-summary')
             resolve(response.data)
           }
