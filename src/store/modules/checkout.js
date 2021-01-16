@@ -461,10 +461,6 @@ const actions = {
 
     order.amount_changed = Num.round(changedAmount).toFixed(2)
 
-    if (order.total_paid != order.balance_due) {
-      order.total_paid = order.balance_due
-    }
-    
     return Promise.resolve(order)
   },
 
@@ -899,8 +895,16 @@ const actions = {
                         delete item.originalItem
                         return item
                       })
-                      commit(mutation.SET_ORDER, order)
+                      //temp fix
+                      if (order.total_paid != order.balance_due) {
+                        let diff = Num.round(order.balance_due - order.total_paid)
+                        order.order_payments[0].collected = parseFloat(order.order_payments[0].collected) + diff
+                        order.order_payments[0].param2 = order.order_payments[0].collected
+                        order.total_paid = order.balance_due
 
+                      }
+                      commit(mutation.SET_ORDER, order)
+                      
                       dispatch('createOrder', { action: action, data: data })
                         .then(response => {
                           //reset order start time
