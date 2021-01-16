@@ -461,6 +461,10 @@ const actions = {
 
     order.amount_changed = Num.round(changedAmount).toFixed(2)
 
+    if (order.total_paid != order.balance_due) {
+      order.total_paid = order.balance_due
+    }
+    
     return Promise.resolve(order)
   },
 
