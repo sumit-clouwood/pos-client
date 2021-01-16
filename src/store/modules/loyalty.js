@@ -5,6 +5,7 @@ const state = {
   loyalty: false,
   loyaltyCustomerList: false,
   customer_status: '',
+  loader: false,
 }
 const getters = {}
 const actions = {
@@ -15,11 +16,18 @@ const actions = {
     })
   },
   createCustomer({ commit }, data) {
-    return new Promise(resolve => {
-      return LoyaltyService.loyaltyCreateCustomer(data).then(response => {
-        commit('CREATE_CUSTOMER_STATES', response.data)
-        resolve(response)
-      })
+    commit('LOADER', true)
+    return new Promise((resolve, reject) => {
+      return LoyaltyService.loyaltyCreateCustomer(data)
+        .then(response => {
+          commit('CREATE_CUSTOMER_STATES', response.data)
+          resolve(response)
+          commit('LOADER', false)
+        })
+        .catch(err => {
+          reject(err)
+          commit('LOADER', false)
+        })
     })
   },
   searchCustomer({ commit }, searchTerm) {
@@ -37,6 +45,7 @@ const mutations = {
   },
   CREATE_CUSTOMER_STATES: (state, customer_status) =>
     (state.customer_status = customer_status),
+  LOADER: (state, loader) => (state.loader = loader),
 }
 
 export default {

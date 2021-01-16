@@ -13,7 +13,7 @@
               &times;
             </button>
           </div>
-
+          <preloader v-if="loader"></preloader>
           <!--Customer form-->
           <CustomerForm ref="form" />
           <!--Customer form-->
@@ -50,10 +50,12 @@
 /*global $ */
 import { mapActions, mapGetters, mapState } from 'vuex'
 import CustomerForm from './LoyaltyCustomerForm'
+import Preloader from '@/components/util/progressbar'
 
 export default {
   name: 'CreateLoyaltyCustomer',
   components: {
+    Preloader,
     CustomerForm,
   },
   data() {
@@ -63,13 +65,14 @@ export default {
   },
   computed: {
     ...mapGetters('location', ['_t']),
-    ...mapState('loyalty', ['customer_status']),
+    ...mapState('loyalty', ['customer_status', 'loader']),
   },
   methods: {
     ...mapActions('loyalty', ['createCustomer']),
     displayValidationErrors(errorData) {
       let error = ''
       let validationError = {}
+      // eslint-disable-next-line no-debugger
       if (errorData && errorData['status'] == 'form_errors') {
         $.each(errorData['message'], function(key, val) {
           $.each(val, function(index, data) {
@@ -99,18 +102,14 @@ export default {
     customerAction() {
       const errors = this.$refs.form.validate()
       if (errors.count === 0) {
-        $('#create-loyalty-customer').attr('disabled', true) //Disable Save button if pressed
+        // $('#create-loyalty-customer').attr('disabled', true) //Disable Save button if pressed
         const customerData = this.$refs.form.getData()
-        this.createCustomer(customerData)
-          .then(() => {
-            let errorData = this.customer_status
-            this.displayValidationErrors(errorData)
-            $('#create-loyalty-customer').attr('disabled', false)
-            $('#customer-loyalty').modal('hide')
-          })
-          .catch(() => {
-            $('#create-loyalty-customer').attr('disabled', false)
-          })
+        this.createCustomer(customerData).then(() => {
+          let errorData = this.customer_status
+          this.displayValidationErrors(errorData)
+          $('#create-loyalty-customer').attr('disabled', false)
+          $('#customer-loyalty').modal('hide')
+        })
       }
     },
   },

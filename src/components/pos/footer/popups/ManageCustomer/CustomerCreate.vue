@@ -13,9 +13,11 @@
               &times;
             </button>
           </div>
-
+          <div class="modal-body" v-if="loading">
+            <preloader></preloader>
+          </div>
           <!--Customer form-->
-          <CustomerForm ref="form" />
+          <CustomerForm v-else ref="form" />
           <!--Customer form-->
 
           <div class="modal-footer">
@@ -55,10 +57,12 @@
 import { mapActions, mapState, mapGetters } from 'vuex'
 import InformationPopup from '@/components/pos/content/InformationPopup'
 import CustomerForm from './CustomerForm'
+import Preloader from '@/components/util/Preloader'
 
 export default {
   name: 'CreateNewCustomer',
   components: {
+    Preloader,
     InformationPopup,
     CustomerForm,
   },
@@ -69,6 +73,7 @@ export default {
   },
   computed: {
     ...mapGetters('location', ['_t']),
+    ...mapState('customer', ['loading']),
     ...mapState({
       customer_title: state => state.customer.modalStatus,
       customerCreateStatus: state => state.customer.responseInformation,

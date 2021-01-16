@@ -448,6 +448,7 @@ const actions = {
   },
 
   createAction({ commit, dispatch }, actionDetails) {
+    commit(mutation.SET_LOADING, true)
     return new Promise((resolve, reject) => {
       const params = [
         actionDetails.data,
