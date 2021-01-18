@@ -521,6 +521,7 @@ const actions = {
         }
         
         if (item.measurement_weight) {
+          orderItem.qty = 1
           orderItem.measurement_weight = item.measurement_weight
         }
 

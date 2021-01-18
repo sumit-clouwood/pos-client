@@ -589,6 +589,12 @@ const actions = {
 
       //calculated item tax, it should be unrounded for precision
       item.tax = Num.round(item.grossPrice - item.netPrice)
+      if (item.item_type === CONST.SCALE_ITEM_TYPE && item.measurement_value) {
+        item.unit_price = Num.round(
+          item.originalValue / ((100 + item.tax_sum) / 100)
+        )
+        item.unit_tax = Num.round(item.originalValue - item.unit_price)
+      }
 
       resolve(item)
     })
