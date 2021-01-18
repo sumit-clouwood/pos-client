@@ -109,7 +109,7 @@
           <template v-for="(item, key) in order.items">
             <tr v-if="item.type == 'combo_item'" :key="key">
               <td class="first-col" valign="top">
-                {{ item.qty }} {{ measurement_unit(item) }}
+                {{ qtyString(item) }} {{ measurement_unit(item) }}
               </td>
               <td>
                 <div class="food-title">
@@ -161,7 +161,7 @@
               :key="'item' + key"
             >
               <td class="first-col" valign="top">
-                {{ item.qty }} {{ measurement_unit(item) }}
+                {{ qtyString(item) }} {{ measurement_unit(item) }}
               </td>
               <td>
                 <div class="food-title">
@@ -383,6 +383,7 @@ import Preloader from '@/components/util/Preloader'
 import { mapGetters, mapState } from 'vuex'
 var moment = require('moment')
 import DateTime from '@/mixins/DateTime'
+import * as CONST from '@/constants'
 
 export default {
   name: 'PrintTemplate',
@@ -631,6 +632,13 @@ export default {
     },
   },
   methods: {
+    qtyString(item) {
+      if (item.type === CONST.SCALE_ITEM_TYPE) {
+        return item.measurement_weight
+      } else {
+        return item.qty
+      }
+    },
     loadFromCollection(orderEntities, key, map, getter, keysToLoad) {
       if (!Array.isArray(orderEntities) || !key || !map) {
         return orderEntities

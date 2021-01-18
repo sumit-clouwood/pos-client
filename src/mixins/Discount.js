@@ -19,7 +19,7 @@ export default {
               item.discount.value + this.itemModifiersPrice(item)
             ) +
             ' x ' +
-            item.quantity
+            this.qtyString(item)
 
           discountStr = this.formatPrice(item.discount.value)
         }
@@ -27,7 +27,7 @@ export default {
         if (item.discount.type === CONST.FIXED) {
           return (
             '<s>' +
-            this.formatPrice(this.itemGrossPrice(item)) +
+            this.formatPrice(this.itemUnitPrice(item)) +
             '</s> ' +
             discountInfo +
             ' ( ' +
@@ -39,9 +39,9 @@ export default {
         } else {
           return (
             '@ ' +
-            this.formatPrice(this.itemGrossPrice(item)) +
+            this.formatPrice(this.itemUnitPrice(item)) +
             ' x ' +
-            item.quantity +
+            this.qtyString(item) +
             ' - ' +
             discountInfo +
             ' ( ' +
@@ -52,9 +52,23 @@ export default {
           )
         }
       }
-      return `@ ${this.formatPrice(this.itemGrossPrice(item))} x ${
-        item.quantity
-      }`
+      return `@ ${this.formatPrice(
+        this.itemUnitPrice(item)
+      )} x ${this.qtyString(item)}`
+    },
+    itemUnitPrice(item) {
+      if (item.item_type === CONST.SCALE_ITEM_TYPE) {
+        return item.originalValue
+      } else {
+        return this.itemGrossPrice(item)
+      }
+    },
+    qtyString(item) {
+      if (item.item_type === CONST.SCALE_ITEM_TYPE) {
+        return item.measurement_value + ' ' + item.measurement_unit
+      } else {
+        return item.quantity
+      }
     },
   },
 }
