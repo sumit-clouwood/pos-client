@@ -115,11 +115,7 @@
                 <div class="food-title">
                   {{ translate_item(item) }}
                   <span
-                    >({{
-                      format_number(
-                        parseFloat(item.price) + parseFloat(item.tax)
-                      )
-                    }})&#x200E;</span
+                    >({{ format_number(item_gross_price(item)) }})&#x200E;</span
                   >
                 </div>
                 <template v-for="(combo_item, i) in order.items">
@@ -167,11 +163,7 @@
                 <div class="food-title">
                   {{ translate_item(item) }}
                   <span
-                    >({{
-                      format_number(
-                        parseFloat(item.price) + parseFloat(item.tax)
-                      )
-                    }})&#x200E;</span
+                    >({{ format_number(item_gross_price(item)) }})&#x200E;</span
                   >
                 </div>
                 <template v-for="(modifier, i) in order.item_modifiers">
@@ -632,6 +624,14 @@ export default {
     },
   },
   methods: {
+    item_gross_price(item) {
+      if (item.type === CONST.SCALE_ITEM_TYPE) {
+        let cost = parseFloat(item.unit_price) + parseFloat(item.unit_tax)
+        return cost + ' / ' + item.measurement_weight
+      } else {
+        return parseFloat(item.price) + parseFloat(item.tax)
+      }
+    },
     qtyString(item) {
       if (item.type === CONST.SCALE_ITEM_TYPE) {
         return item.measurement_weight

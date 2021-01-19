@@ -525,6 +525,11 @@ const actions = {
           orderItem.measurement_weight = item.measurement_weight
         }
 
+        if (item.unit_price) {
+          orderItem.unit_price = item.unit_price
+          orderItem.unit_tax = item.unit_tax
+        }
+
         //we are sending item price and modifier prices separtely but sending
         //item discount as total of both discounts
         // eslint-disable-next-line no-console
