@@ -67,6 +67,7 @@
 </template>
 <script>
 /* global  hideModal  */
+/* eslint-disable no-console */
 import { mapGetters } from 'vuex'
 import Cart from '@/mixins/Cart'
 export default {
@@ -87,6 +88,7 @@ export default {
       'item_measurement_unit',
       'item_measurement_value',
     ]),
+
     measurementValue: {
       get() {
         return this.item_measurement_value
@@ -97,13 +99,6 @@ export default {
     },
     measurementUnit: {
       get() {
-        if (!this.item_measurement_unit && this.current_item) {
-          const measurement = this.find_measurement_unit(
-            this.current_item.measurement_unit
-          )
-          return measurement ? measurement.unit_code || measurement.unit : ''
-        }
-
         return this.item_measurement_unit
       },
       set(value) {
@@ -112,6 +107,51 @@ export default {
     },
   },
   methods: {
+    findItemMeasurementUnit(
+      itemMeasurementUnit,
+      scaleMeasurementUnit,
+      measurementUnits
+    ) {
+      const measurement = this.find_measurement_unit(itemMeasurementUnit)
+      if (measurement.unit_code == scaleMeasurementUnit) {
+        return scaleMeasurementUnit
+      }
+      console.log(
+        measurement.unit_code,
+        scaleMeasurementUnit,
+        measurementUnits.data
+      )
+      //get all base units
+      const noSubUnit = measurementUnits.data.find(unit => !unit.sub_unit)
+      const base_units = measurementUnits.data.filter(
+        unit => unit.sub_unit == noSubUnit._id
+      )
+      console.log('base units', base_units)
+
+      let associative_units = {}
+      base_units.forEach(baseunit => {
+        associative_units = this.recurrsiveUnits(
+          baseunit,
+          measurementUnits.data
+        )
+      })
+      console.log(associative_units)
+      //now search in associative units
+    },
+    recurrsiveUnits(baseUnit, units, output = {}) {
+      //miligram, units, {}
+      //gram, units, {miligram}
+      //kg, units, {miligram: grams: kg}
+
+      output[baseUnit.unit_code] = {}
+
+      let parentUnit = units.find(unit => unit.sub_unit == baseUnit._id)
+      if (parentUnit) {
+        output[baseUnit.unit_code][parentUnit.unit_code] = {}
+        return this.recurrsiveUnits(parentUnit, units, output)
+      }
+      return output
+    },
     addToCart() {
       this.error = ''
       if (!this.measurementValue) {
@@ -119,24 +159,35 @@ export default {
         return false
       }
 
-      const meansurement = this.find_measurement_unit_byname(
+      const measurement = this.find_measurement_unit_byname(
         this.measurementUnit
       )
-      if (!meansurement) {
+      if (!measurement) {
         this.error = `Sorry measurement unit ${this.measurementUnit} not supported`
         return false
       }
-
+      let currentMeasurementValue = this.measurementValue
       let item = { ...this.current_item }
-      if (meansurement._id !== item.measurement_unit) {
-        const itemMeasurementUnit = this.find_measurement_unit(
-          item.measurement_unit
-        )
-        this.error = `Sorry, this item expects measurement in ${itemMeasurementUnit.unit}`
-        return false
+      if (measurement._id !== item.measurement_unit) {
+        //convert here, we receive 'STARUnitKG' from scale but we have 'STARUnitG' as product unit
+        if (measurement.unit_code == 'STARUnitKG') {
+          //convert measurement value (kg) to grams
+          //multiply with 1000
+          currentMeasurementValue *= 1000
+        } else if (measurement.unit_code == 'STARUnitG') {
+          //convert measurement value (g) to kilograms
+          //divide by 1000
+          currentMeasurementValue /= 1000
+        } else {
+          const itemMeasurementUnit = this.find_measurement_unit(
+            item.measurement_unit
+          )
+          this.error = `Sorry, this item expects measurement in ${itemMeasurementUnit.unit}`
+          return false
+        }
       }
 
-      item.measurement_value = this.measurementValue
+      item.measurement_value = currentMeasurementValue
 
       hideModal('#scale-popup')
       this.measurementValue = ''
@@ -144,6 +195,21 @@ export default {
     },
   },
   mixins: [Cart],
+  watch: {
+    current_item(val) {
+      if (val) {
+        const measurement = this.find_measurement_unit(
+          this.current_item.measurement_unit
+        )
+        if (measurement) {
+          this.$store.commit(
+            'category/setItemMeasurementUnit',
+            measurement.unit_code
+          )
+        }
+      }
+    },
+  },
 }
 </script>
 <!-- eslint-disable max-len -->
