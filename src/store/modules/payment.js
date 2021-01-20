@@ -1,6 +1,7 @@
 import PaymentService from '@/services/data/PaymentService'
 import * as mutation from './payment/mutation-types'
 import * as CONST from '@/constants'
+import { isObjectEmpty } from '@/util.js'
 
 // initial state
 const state = {
@@ -166,7 +167,10 @@ const actions = {
       }
     }
     commit(mutation.SET_METHODS, methods)
-    commit('checkoutForm/setMethod', getters.cash, { root: true })
+    //IF NOT ALREADY SET THEN SET ONLY, OTHERWISE IT LL OVERRIDE
+    if (isObjectEmpty(rootGetters['checkoutForm/payment_method'])) {
+      commit('checkoutForm/setMethod', getters.cash, { root: true })
+    }
   },
   setTranslations({ commit, rootState }) {
     let allItems = []

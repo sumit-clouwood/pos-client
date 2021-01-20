@@ -51,7 +51,7 @@ export default {
       this.$store.dispatch('checkoutForm/validatePayment').then(() => {
         if (this.method.type == CONST.GIFT_CARD) {
           this.$store.dispatch('loyaltyPaymentHendlerChange')
-        } else if (this.method.reference_code) {
+        } else if (this.method.type == CONST.CARD) {
           this.$store.dispatch('methodCardHendlerChange')
         } else {
           //cash payments
