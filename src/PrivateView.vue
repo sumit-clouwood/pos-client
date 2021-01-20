@@ -91,7 +91,8 @@ export default {
       orderId: null,
       tableId: null,
       subscriptionError: false,
-      secondsToLogout: 73      userErrorInstructions: '',
+      secondsToLogout: 30,
+      userErrorInstructions: '',
     }
   },
   methods: {
