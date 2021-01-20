@@ -47,7 +47,10 @@
               </div>
               <span
                 class="color-text-invert delivery-loyalty"
-                v-if="orderType === CONST.ORDER_TYPE_CALL_CENTER"
+                v-if="
+                  orderType === CONST.ORDER_TYPE_CALL_CENTER &&
+                    parseFloat(loyaltyAmount) > 0.01
+                "
               >
                 {{ _t('You can redeem maximum loyalty') }}
                 <form>
@@ -65,15 +68,12 @@
                     {{ loyaltyPoints }}
                   </b>
                 </form>
-                <span
-                  v-if="parseFloat(loyaltyAmount) < 0.01"
-                  class="text-danger"
-                >
-                  {{ _t('Selected items are not eligible for loyalty') }}
-                </span>
                 <span v-if="error" class="text-danger">
                   {{ _t(error) }}: {{ loyaltyAmount }}
                 </span>
+              </span>
+              <span v-if="parseFloat(loyaltyAmount) < 0.01" class="text-danger"
+                >{{ _t('Selected items are not eligible for loyalty') }}
               </span>
               <span class="color-text-invert" v-else>
                 {{ _t('You can redeem maximum loyalty') }}:
@@ -115,17 +115,18 @@
                 parseFloat(loyaltyAmount) > 0 &&
                   loyaltyBalance > 0 &&
                   parseFloat(brand.min_order) < parseFloat(subTotal) &&
-                  !isLoyaltyUsed &&
-                  orderType === CONST.ORDER_TYPE_CALL_CENTER
+                  !isLoyaltyUsed
               "
               class="btn btn-success btn-large popup-btn-save color-text-invert color-main"
               type="button"
+              data-toggle="modal"
               id="delivery_area_loyalty"
+              data-dismiss="modal"
               @click="payByLoyalty"
             >
               {{ _t('Add') }}
             </button>
-            <button
+            <!--<button
               v-if="
                 this.loyaltyBalance > 0 &&
                   parseFloat(brand.min_order) < parseFloat(subTotal) &&
@@ -141,7 +142,7 @@
               @click="payByLoyalty"
             >
               {{ _t('Add') }}
-            </button>
+            </button>-->
           </div>
           <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
         </div>
