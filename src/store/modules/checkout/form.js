@@ -41,6 +41,7 @@ const state = {
 
 // getters
 const getters = {
+  payment_method: state => state.method,
   validate: (state, getters) => {
     if (getters.payable <= 0) return true
     return getters.orderTotal && !getters.payable
@@ -104,7 +105,7 @@ const actions = {
         return dispatch('validateGiftPayment')
       } else if (state.method.type == CONST.LOYALTY) {
         return dispatch('validateLoyaltyPayment')
-      } else if (state.method.reference_code) {
+      } else if (state.method.type == CONST.CARD) {
         if (!getters.validateAggregator) {
           if (state.tipAmount) {
             return dispatch('setTipAmountErrors')
