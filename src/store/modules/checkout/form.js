@@ -239,13 +239,13 @@ const actions = {
     })
   },
 
-  addCardAmount({ commit, getters, rootGetters, dispatch }, code) {
+  addCardAmount({ commit, getters, rootGetters, dispatch }, code = '') {
     if (parseFloat(state.amount) > 0) {
       return new Promise(resolve => {
         commit('addCardAmount', {
           amount: state.amount,
           method: state.method,
-          code: 'Card-' + code,
+          code: 'Card' + (code ? '-' + code : ''),
         })
 
         commit('showCalc', false)
