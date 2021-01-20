@@ -161,7 +161,7 @@ export default {
       }, 3000)
     },
     setup() {
-      this.secondsToLogout = 30
+      this.secondsToLogout = 3
       this.subscriptionError = false
 
       const interval = setInterval(() => {
