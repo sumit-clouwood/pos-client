@@ -906,8 +906,9 @@ const actions = {
                         delete item.originalItem
                         return item
                       })
+                      
                       commit(mutation.SET_ORDER, order)
-
+                      
                       dispatch('createOrder', { action: action, data: data })
                         .then(response => {
                           //reset order start time
