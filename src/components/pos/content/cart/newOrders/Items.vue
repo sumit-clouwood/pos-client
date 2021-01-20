@@ -39,15 +39,7 @@
         <div
           class="main-orders-list-item-subtitle color-text-invert item-exclude"
         >
-          <div
-            v-html="
-              formatItemDiscount(item) +
-                ' ' +
-                (item.item_type === CONST.SCALE_ITEM_TYPE
-                  ? item.measurement_unit
-                  : '')
-            "
-          ></div>
+          <div v-html="formatItemDiscount(item)"></div>
         </div>
         <div
           :id="'sub_dsc' + item.orderIndex"

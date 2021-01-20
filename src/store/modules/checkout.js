@@ -520,6 +520,16 @@ const actions = {
         if (item.measurement_unit) {
           orderItem.measurement_unit = item.measurement_unit
         }
+        
+        if (item.measurement_weight) {
+          orderItem.qty = 1
+          orderItem.measurement_weight = item.measurement_weight
+        }
+
+        if (item.unit_price) {
+          orderItem.unit_price = item.unit_price
+          orderItem.unit_tax = item.unit_tax
+        }
 
         //we are sending item price and modifier prices separtely but sending
         //item discount as total of both discounts
