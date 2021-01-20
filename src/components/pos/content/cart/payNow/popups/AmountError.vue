@@ -15,7 +15,7 @@
             {{ _t('Payment Error') }}
           </h4>
         </div>
-        <div class="modal-body change-amount-option text-danger">
+        <div class="modal-body change-option-amount text-danger">
           <div class="amount-change-wrap">
             <p class="error-text">
               {{ error }}
@@ -56,6 +56,10 @@ export default {
 }
 </script>
 <style lang="sass" scoped>
+.change-option-amount
+  min-height: 0 !important
+  margin-bottom: 0px !important
+  display: block !important
 .error-text
   padding-bottom: 16px
   font-size: 16px
