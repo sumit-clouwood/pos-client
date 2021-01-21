@@ -16,7 +16,7 @@
             {{ formatPrice(item.value * quantity) }}
           </div>
         </div>
-        <Quantity />
+        <Quantity v-if="item.item_type !== CONST.SCALE_ITEM_TYPE" />
       </div>
     </div>
   </div>

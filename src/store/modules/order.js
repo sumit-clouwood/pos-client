@@ -589,6 +589,12 @@ const actions = {
 
       //calculated item tax, it should be unrounded for precision
       item.tax = Num.round(item.grossPrice - item.netPrice)
+      if (item.item_type === CONST.SCALE_ITEM_TYPE && item.measurement_value) {
+        item.unit_price = Num.round(
+          item.originalValue / ((100 + item.tax_sum) / 100)
+        )
+        item.unit_tax = Num.round(item.originalValue - item.unit_price)
+      }
 
       resolve(item)
     })
@@ -647,13 +653,14 @@ const actions = {
 
       //if item.measurement_unit and item.measurement_value
       if (item.item_type === CONST.SCALE_ITEM_TYPE && item.measurement_value) {
-        //item.originalValue = item.value
-        //item.value = item.value * item.measurement_value
-        item.quantity = Num.round(item.measurement_value)
+        item.originalValue = item.value
+        item.value = item.value * item.measurement_value
+        //item.quantity = Num.round(item.measurement_value)
         const measurementUnit = rootGetters['category/find_measurement_unit'](
           item.measurement_unit
         )
         item.measurement_unit = measurementUnit.unit
+        item.measurement_weight = item.measurement_value
       }
 
       dispatch('prepareItemTax', {
