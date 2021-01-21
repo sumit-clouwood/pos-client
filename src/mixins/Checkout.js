@@ -20,9 +20,32 @@ export default {
               reject()
             } else {
               //cash payments
-              this.addPayment()
-                .then(payable => resolve(payable))
-                .catch(error => reject(error))
+              if (this.method.type == 'card') {
+                //card payment but reference code was off
+                this.$store
+                  .dispatch('checkoutForm/addCardAmount')
+                  .then(payable => {
+                    if (
+                      payable <= 0.1 ||
+                      this.$store.state.checkoutForm.action == 'pay'
+                    ) {
+                      if (this.needSupervisorAccess) {
+                        showModal('#modificationReason')
+                      } else {
+                        if (this.$store.getters['checkoutForm/validate']) {
+                          this.executePayment(
+                            this.$store.state.order.orderType.OTApi
+                          )
+                        }
+                      }
+                    }
+                  })
+                  .catch(error => (this.error = error))
+              } else {
+                this.addPayment()
+                  .then(payable => resolve(payable))
+                  .catch(error => reject(error))
+              }
             }
           })
           .catch(() => reject())

@@ -54,7 +54,9 @@ export default {
     payable(newval) {
       if (!newval) {
         //this method ll call the forcash inside
-        this.$store.dispatch('checkoutForm/setCashMethod')
+        if (!this.orderTotal) {
+          this.$store.dispatch('checkoutForm/setCashMethod')
+        }
       }
     },
   },
@@ -68,6 +70,7 @@ export default {
     ...mapGetters(['payNowCalcHendler']),
     ...mapGetters({
       payable: 'checkoutForm/payable',
+      orderTotal: 'checkoutForm/orderTotal',
     }),
     ...mapState('payment', ['methods']),
   },

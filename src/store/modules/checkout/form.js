@@ -39,6 +39,7 @@ const state = {
 
 // getters
 const getters = {
+  payment_method: state => state.method,
   validate: (state, getters) => {
     if (getters.payable <= 0) return true
     return getters.orderTotal && !getters.payable
@@ -101,7 +102,7 @@ const actions = {
         return dispatch('validateGiftPayment')
       } else if (state.method.type == CONST.LOYALTY) {
         return dispatch('validateLoyaltyPayment')
-      } else if (state.method.reference_code) {
+      } else if (state.method.type == CONST.CARD) {
         if (!getters.validateAggregator) {
           if (state.tipAmount) {
             return dispatch('setTipAmountErrors')
@@ -239,13 +240,13 @@ const actions = {
     })
   },
 
-  addCardAmount({ commit, getters, rootGetters, dispatch }, code) {
+  addCardAmount({ commit, getters, rootGetters, dispatch }, code = '') {
     if (parseFloat(state.amount) > 0) {
       return new Promise(resolve => {
         commit('addCardAmount', {
           amount: state.amount,
           method: state.method,
-          code: 'Card-' + code,
+          code: 'Card' + (code ? '-' + code : ''),
         })
 
         commit('showCalc', false)
