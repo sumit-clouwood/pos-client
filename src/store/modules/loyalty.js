@@ -15,13 +15,16 @@ const actions = {
       commit(mutation.LOYALTY, response.data.data)
     })
   },
-  createCustomer({ commit }, data) {
+  createCustomer({ commit, dispatch }, data) {
     commit('LOADER', true)
     return new Promise((resolve, reject) => {
       return LoyaltyService.loyaltyCreateCustomer(data)
         .then(response => {
           commit('CREATE_CUSTOMER_STATES', response.data)
           resolve(response)
+          dispatch('customer/fetchSelectedCustomer', response.data.id, {
+            root: true,
+          })
           commit('LOADER', false)
         })
         .catch(err => {
