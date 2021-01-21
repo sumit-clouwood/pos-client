@@ -83,7 +83,11 @@ export default {
 @import '@/assets/scss/pixels_rem.scss';
 @import '@/assets/scss/variables.scss';
 @import '@/assets/scss/mixins.scss';
-
+#order-confirmation {
+  .modal-content {
+    display: flex !important;
+  }
+}
 @include responsive(mobile) {
   #order-confirmation {
     .modal-dialog {

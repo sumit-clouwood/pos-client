@@ -115,7 +115,6 @@
                 parseFloat(loyaltyAmount) > 0 &&
                   loyaltyBalance > 0 &&
                   parseFloat(brand.min_order) < parseFloat(subTotal) &&
-                  !isLoyaltyUsed &&
                   orderType === CONST.ORDER_TYPE_CALL_CENTER
               "
               class="btn btn-success btn-large popup-btn-save color-text-invert color-main"
