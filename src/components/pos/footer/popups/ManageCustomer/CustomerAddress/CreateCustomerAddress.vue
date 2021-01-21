@@ -178,7 +178,7 @@ export default {
       customer_title: state => state.customer.modalStatus,
       // fetchDeliveryAreas: state => state.customer.fetchDeliveryAreas,
       customerCreateStatus: state => state.customer.responseInformation,
-      customerId: state => state.customer.customer._id,
+      customerId: state => state.customer.customerId,
       store: state => state.location.store,
       deliveryAreas() {
         if (this.deliveryAreaNames) {
