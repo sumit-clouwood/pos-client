@@ -109,17 +109,13 @@
           <template v-for="(item, key) in order.items">
             <tr v-if="item.type == 'combo_item'" :key="key">
               <td class="first-col" valign="top">
-                {{ item.qty }} {{ measurement_unit(item) }}
+                {{ qtyString(item) }} {{ measurement_unit(item) }}
               </td>
               <td>
                 <div class="food-title">
                   {{ translate_item(item) }}
                   <span
-                    >({{
-                      format_number(
-                        parseFloat(item.price) + parseFloat(item.tax)
-                      )
-                    }})&#x200E;</span
+                    >({{ format_number(item_gross_price(item)) }})&#x200E;</span
                   >
                 </div>
                 <template v-for="(combo_item, i) in order.items">
@@ -160,16 +156,14 @@
               "
               :key="'item' + key"
             >
-              <td class="first-col" valign="top">{{ item.qty }}</td>
+              <td class="first-col" valign="top">
+                {{ qtyString(item) }} {{ measurement_unit(item) }}
+              </td>
               <td>
                 <div class="food-title">
                   {{ translate_item(item) }}
                   <span
-                    >({{
-                      format_number(
-                        parseFloat(item.price) + parseFloat(item.tax)
-                      )
-                    }})&#x200E;</span
+                    >({{ format_number(item_gross_price(item)) }})&#x200E;</span
                   >
                 </div>
                 <template v-for="(modifier, i) in order.item_modifiers">
@@ -381,6 +375,7 @@ import Preloader from '@/components/util/Preloader'
 import { mapGetters, mapState } from 'vuex'
 var moment = require('moment')
 import DateTime from '@/mixins/DateTime'
+import * as CONST from '@/constants'
 
 export default {
   name: 'PrintTemplate',
@@ -629,6 +624,21 @@ export default {
     },
   },
   methods: {
+    item_gross_price(item) {
+      if (item.type === CONST.SCALE_ITEM_TYPE) {
+        let cost = parseFloat(item.unit_price) + parseFloat(item.unit_tax)
+        return cost + ' / ' + item.measurement_weight
+      } else {
+        return parseFloat(item.price) + parseFloat(item.tax)
+      }
+    },
+    qtyString(item) {
+      if (item.type === CONST.SCALE_ITEM_TYPE) {
+        return item.measurement_weight
+      } else {
+        return item.qty
+      }
+    },
     loadFromCollection(orderEntities, key, map, getter, keysToLoad) {
       if (!Array.isArray(orderEntities) || !key || !map) {
         return orderEntities

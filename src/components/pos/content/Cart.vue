@@ -13,7 +13,6 @@
         <i class="fa fa-angle-right" aria-hidden="true"></i>
       </div>
     </div>
-    <div v-show="loading">Scanning Barcode...</div>
     <!--
     <form autocomplete="off">
       <input

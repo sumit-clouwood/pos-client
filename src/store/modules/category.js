@@ -26,10 +26,41 @@ const state = {
   upSelling: [],
   isUpSellingModify: false,
   upSellingParentItem: false,
+  measurementUnits: {},
+  itemMeasurementUnit: '',
+  itemMeasurementValue: '',
+  scaleData: '',
 }
 
 // getters, computed properties
 const getters = {
+  scale_data: state => state.scaleData,
+  item_measurement_unit: state => state.itemMeasurementUnit,
+  item_measurement_value: state => state.itemMeasurementValue,
+  measurement_units: state => state.measurementUnits,
+  find_measurement_unit: (state, getters) => unitId => {
+    if (!getters.measurement_units.data) {
+      return false
+    }
+    return getters.measurement_units.data.find(unit => unit._id == unitId)
+  },
+  find_measurement_unit_byname: (state, getters) => unitName => {
+    if (!getters.measurement_units.data) {
+      return false
+    }
+    //we ll need to provide some kind of mapping from 'g' to 'grams'
+    return getters.measurement_units.data.find(
+      unit =>
+        unit.unit.toLowerCase() == unitName.toLowerCase() ||
+        (unit.unit_code &&
+          unit.unit_code.toLowerCase() == unitName.toLowerCase())
+    )
+  },
+  measurement_unit_name: (state, getters) => unitId => {
+    return getters.find_measurement_unit(unitId)
+      ? getters.find_measurement_unit(unitId)['unit']
+      : ''
+  },
   categories: (state, getters, rootState, rootGetters) => {
     let categories = state.categories
     if (rootGetters['auth/multistore']) {
@@ -140,6 +171,7 @@ const getters = {
     })
     return images
   },
+  current_item: state => state.item,
 }
 
 // actions, often async
@@ -198,6 +230,11 @@ const actions = {
           dispatch('printingServer/fetchAllKitchens', {}, { root: true })
         })
         .catch(error => reject(error))
+
+      //load measurement units in parallel
+      CategoryService.loadMeasurementUnits(storeId).then(response => {
+        commit('SET_MEASUREMENT_UNITS', response.data)
+      })
     })
   },
 
@@ -234,6 +271,12 @@ const actions = {
     commit('updateSearchTerm', '')
     commit(mutation.SET_SUBCATEGORY, subcategory)
   },
+  setScaleData({ commit }, value) {
+    commit('SET_SCALE_DATA', value)
+    let [unitValue, unitName] = value.split(' ')
+    commit('setItemMeasurementUnit', unitName)
+    commit('setItemMeasurementValue', unitValue)
+  },
 }
 // mutations
 //state should be only changed through mutation and these are synchronous
@@ -266,6 +309,9 @@ const mutations = {
     }
   },
 
+  [mutation.SET_MEASUREMENT_UNITS](state, units) {
+    state.measurementUnits = units
+  },
   [mutation.SET_SUBCATEGORY](state, subcategory) {
     state.subcategory = subcategory
     state.item = null
@@ -323,9 +369,17 @@ const mutations = {
     state.taxData = []
     state.taxAmount = {}
   },
-
+  SET_SCALE_DATA(state, data) {
+    state.scaleData = data
+  },
   setBarcode(state, code) {
     state.barcode = code
+  },
+  setItemMeasurementUnit(state, unit) {
+    state.itemMeasurementUnit = unit
+  },
+  setItemMeasurementValue(state, value) {
+    state.itemMeasurementValue = value
   },
 }
 

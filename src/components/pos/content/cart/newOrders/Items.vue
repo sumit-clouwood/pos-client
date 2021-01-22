@@ -173,7 +173,7 @@ export default {
       currentItem: state => state.order.item._id,
     }),
     ...mapState('order', ['orderType', 'selectedOrder', 'orderId']),
-    ...mapGetters('category', ['subcategoryImage']),
+    ...mapGetters('category', ['subcategoryImage', 'find_measurement_unit']),
     ...mapGetters('combo', ['find_combo_items', 'find_combo_item_modifiers']),
     ...mapGetters('modifier', ['hasModifiers']),
     ...mapGetters('order', [

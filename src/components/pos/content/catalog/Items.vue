@@ -63,7 +63,6 @@
         v-model="currentItem"
         @resetCurrentItem="resetCurrentItem"
       />
-
       <!-- <Popup /> -->
     </div>
     <div
@@ -129,14 +128,19 @@ export default {
   methods: {
     addToOrder(item) {
       this.$store.dispatch('combo/reset', true)
+      this.$store.commit('category/SET_ITEM', item)
       this.$store.commit('orderForm/clearSelection')
 
-      if (item.item_type === CONST.COMBO_ITEM_TYPE) {
-        this.$store.commit('combo/SET_CURRENT_COMBO', item)
-        showModal('#combox-box-popup')
-      } else {
-        // if (!item.is_upselling)
-        return this.itemsAddToCart(item)
+      switch (item.item_type) {
+        case CONST.COMBO_ITEM_TYPE:
+          this.$store.commit('combo/SET_CURRENT_COMBO', item)
+          showModal('#combox-box-popup')
+          break
+        case CONST.SCALE_ITEM_TYPE:
+          showModal('#scale-popup')
+          break
+        default:
+          return this.itemsAddToCart(item)
       }
     },
   },

@@ -8,6 +8,7 @@ import TimezoneService from '@/services/data/TimezoneService'
 import * as CONST from '@/constants'
 import router from '../../router'
 import moment from 'moment-timezone'
+import { isObjectEmpty } from '@/util.js'
 /* global $ showModal */
 // initial state
 const state = {
@@ -90,8 +91,13 @@ const actions = {
   //coming from login
   // eslint-disable-next-line no-unused-vars
   setContext({ state, commit, rootGetters, dispatch }) {
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
       LocationService.getLocationData().then(storedata => {
+        if (!storedata.data || isObjectEmpty(storedata.data)) {
+          return reject(
+            `Sorry! current store doesn't belong to you. Please select correct store`
+          )
+        }
         let availabeStores = storedata.data.available_stores
         if (!router.currentRoute.params.store_id && availabeStores.length > 1) {
           $('#multiStoresModal').css({ 'background-color': 'grey' })
@@ -257,8 +263,12 @@ const actions = {
 
           if (storedata.data.store) {
             commit(mutation.SET_STORE, storedata.data.store)
-          } else {
+          } else if (storedata.data.available_stores) {
             commit(mutation.SET_STORE, storedata.data.available_stores[0])
+          } else {
+            return reject(
+              `Sorry! Store doesn't belong to current logged in user`
+            )
           }
 
           if (state.store && state.store._id) {
