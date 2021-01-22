@@ -73,10 +73,12 @@ export default {
     return new Promise((resolve, reject) => {
       this.reloadSystem(caller)
         .then(() => {
-          this.store.dispatch('auth/fetchRoles').then(() => {
-            this.store.dispatch('auth/setCurrentRole')
-            this.store.dispatch('auth/fetchAllStoreUsers')
-          })
+          if (caller != 'orderStart') {
+            this.store.dispatch('auth/fetchRoles').then(() => {
+              this.store.dispatch('auth/setCurrentRole')
+              this.store.dispatch('auth/fetchAllStoreUsers')
+            })
+          }
           this.store
             .dispatch('category/fetchAll')
             .then(async () => {
@@ -88,19 +90,20 @@ export default {
               ])
               this.store.commit('sync/loaded', true)
               resolve()
-
-              this.store.dispatch('payment/fetchAll'),
-                this.store.dispatch('customer/fetchAll'),
-                this.store.dispatch('dinein/fetchAll'),
-                this.store.dispatch('carhop/initFetch'),
+              if (caller != 'orderStart') {
+                this.store.dispatch('payment/fetchAll')
+                this.store.dispatch('customer/fetchAll')
+                this.store.dispatch('dinein/fetchAll')
+                this.store.dispatch('carhop/initFetch')
                 this.store.dispatch('invoice/printRules').then(() => {
                   this.store.dispatch('invoice/fetchTemplates')
                 })
 
-              this.store.dispatch(
-                'announcement/fetchAll',
-                this.store.state.auth.userDetails
-              )
+                this.store.dispatch(
+                  'announcement/fetchAll',
+                  this.store.state.auth.userDetails
+                )
+              }
             })
             .catch(error => reject(error))
         })

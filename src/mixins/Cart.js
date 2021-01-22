@@ -101,6 +101,11 @@ export default {
       this.$store.commit('order/RESET_SPLIT_BILL')
       //load data only when new order is starting
       if (!this.$store.state.order.items.length) {
+        //set default payment method to cash
+        this.$store.commit(
+          'checkoutForm/setMethod',
+          this.$store.getters['payment/cash']
+        )
         this.$store.commit('sync/reload', true)
         bootstrap.loadUI('orderStart').then(() => {})
       }
