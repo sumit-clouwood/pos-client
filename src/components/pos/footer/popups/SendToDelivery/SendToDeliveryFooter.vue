@@ -3,14 +3,17 @@
   <div>
     <div class="modal-footer showpropermsg">
       <div
-        data-toggle="modal"
-        data-target="#loyalty-payment"
         class="footer-slider-list-item color-secondary"
-        :class="[{ loyalty_delivery: loyaltyCard }]"
+        :class="[{ loyalty_delivery: loyaltyCard, active: loyalty_active }]"
         @click="calculateLoyaltyAmount"
         v-if="loyaltyCard && parseFloat(loyaltyCard.balance) > 0"
       >
-        <div role="button" class="footer-slider-list-item-link color-text-invert">
+        <div role="button" class="footer-slider-list-item-link color-text-invert" v-if="loyalty_active">
+          {{ _t('Applied Loyalty') }}
+          <br />
+          {{ formatPrice(loyaltyAmount) }}
+        </div>
+        <div v-else role="button" class="footer-slider-list-item-link color-text-invert">
           {{ _t('Apply loyalty') }}
           <i
             class="fa fa-question-circle"
@@ -19,7 +22,7 @@
           ></i>
           <br />
           <span class="font-weight-bold" v-if="loyaltyAmount > 0">
-            {{ loyaltyPoints }} {{ _t('Points') }} | {{ formatPrice(loyaltyAmount) }}
+            {{ _t('Balance') }} : {{ formatPrice(loyaltyCard.balance) }}
           </span>
           <span class="font-weight-bold" v-else>
            0 {{ _t('Points used') }}
@@ -117,6 +120,7 @@ import moment from 'moment-timezone'
 
 import { Datetime } from 'vue-datetime'
 import { mapState, mapActions, mapGetters } from 'vuex'
+import * as CONST from '@/constants'
 export default {
   name: 'SendToDeliveryFooter',
   props: {},
@@ -142,6 +146,9 @@ export default {
       }
       return false
     },
+    loyalty_active() {
+      return parseFloat(this.loyaltyAmount) > 0.01 ? true : false
+    },
     ...mapState({
       getReferrals: state => state.location.referrals,
     }),
@@ -150,15 +157,31 @@ export default {
     ...mapState({
       loyaltyCard: state => state.customer.customerLoyalty.card,
       changedReferral: state => state.order.referral,
+      loyaltyAmount: state => state.checkoutForm.loyaltyAmount,
       selectedCustomer: state => state.customer.customer.name,
     }),
     ...mapState('order', ['needSupervisorAccess']),
     ...mapGetters('order', ['subTotal']),
     ...mapGetters('location', ['_t', 'formatPrice']),
+    ...mapGetters('payment', ['methods']),
   },
   methods: {
     calculateLoyaltyAmount() {
       this.$store.dispatch('checkoutForm/calculateLoyaltyAmountForItem')
+      this.loyalty_active = true
+      if (
+        this.methods &&
+        this.methods.loyalty &&
+        parseFloat(this.loyaltyAmount) > 0.01
+      ) {
+        let loyalty_card = this.methods.loyalty.find(
+          payment => payment.type === CONST.LOYALTY
+        )
+        // eslint-disable-next-line no-console
+        console.log(loyalty_card, 'loyalty_card')
+        this.$store.commit('checkoutForm/setPaymentMethodLoyalty', loyalty_card)
+        this.$store.dispatch('checkoutForm/addAmount')
+      }
       // this.$store.dispatch('loyaltyHendlerChange')
     },
     /*selectedReferral(referral) {
@@ -315,8 +338,11 @@ export default {
   text-align: center;
   cursor: pointer;
   border-radius: 3px;
-  background-color: #ef6a05;
+  background-color: #4e535d;
   padding: 1px 12px;
+  &.active {
+    background-color: #ef6a05;
+  }
 }
 .cancel-announce {
   font-size: unset !important;

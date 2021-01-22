@@ -63,13 +63,13 @@ const getters = {
   // eslint-disable-next-line no-unused-vars
   isLoyaltyUsed: state => {
     let loyaltyUsed = 0
-    // if (state.payments) {
-    //   state.payments.forEach(element => {
-    //     if (element.method.name == 'Loyalty Points') {
-    //       loyaltyUsed = 1
-    //     }
-    //   })
-    // }
+    if (state.payments) {
+      state.payments.forEach(element => {
+        if (element.method.name == 'Loyalty Points') {
+          loyaltyUsed = 1
+        }
+      })
+    }
     return loyaltyUsed
   },
   validateAggregator: (state, getters, rootState, rootGetters) => {
@@ -301,11 +301,10 @@ const actions = {
       if (orderType === CONST.ORDER_TYPE_CALL_CENTER) {
         resolve()
       } else {
-        if (parseFloat(state.amount) != parseFloat(state.loyaltyAmount)) {
+        if (parseFloat(state.amount) > parseFloat(state.loyaltyAmount)) {
           if (parseFloat(state.loyaltyAmount) <= 0.01) {
-            commit('SET_ERROR', 'You dont have loyalty amount.')
-          } else if (getters.isLoyaltyUsed === 1) {
-            commit('SET_ERROR', 'Loyalty can be used only ones in order')
+            commit('SET_ERROR', 'You do not have loyalty amount.')
+            commit('SET_ERROR_AMOUNT', 0)
           } else {
             let amount = isNaN(state.loyaltyAmount) ? 0 : state.loyaltyAmount
             commit('SET_ERROR', `You can't add more than ${amount} loyalty`)
@@ -313,7 +312,13 @@ const actions = {
           }
           reject()
         } else {
-          resolve()
+          if (getters.isLoyaltyUsed === 1) {
+            commit(
+              'SET_ERROR',
+              'You already applied loyalty, please remove from payment breakdown and apply again'
+            )
+            reject()
+          } else resolve()
         }
       }
     })
@@ -403,8 +408,9 @@ const actions = {
     commit('showPayBreak', true)
   },
 
-  calculateLoyaltyAmountForItem({ commit, rootState, rootGetters }) {
+  calculateLoyaltyAmountForItem({ commit, rootState, rootGetters, dispatch }) {
     const loyalty_card = rootState.customer.customerLoyalty.card
+    // const methods = rootState.payment.methods
     let loyalty_balance = loyalty_card ? parseFloat(loyalty_card.balance) : 0
     const loyalty = rootState.customer.customerLoyalty.details
     let maxRedeem = parseFloat(rootState.location.brand.maximum_redeem)
@@ -472,6 +478,21 @@ const actions = {
     commit('LOYALTY_AMOUNT', amount)
     commit('LOYALTY_POINTS', redeem_point)
     commit('CUSTOMER_LOYALTY_ITEM', loyalty_items)
+
+    /*Added amount directly (before that wee are using this for popup,I will do it in single commit after deployment*/
+    // if (state.forceCash) {
+    // eslint-disable-next-line no-debugger
+    // if (methods && methods.loyalty) {
+    //   let loyalty_card = methods.loyalty.find(
+    //     payment => payment.type === CONST.LOYALTY
+    //   )
+    //   // eslint-disable-next-line no-console
+    //   console.log(loyalty_card, 'loyalty_card method')
+    //   commit('setPaymentMethodLoyalty', loyalty_card)
+    // }
+    dispatch('setAmount', Num.round(amount))
+    dispatch('setLoyaltyCard', loyalty_card)
+    // }
   },
   /*calculateSpendLoyalty({ commit, rootState, rootGetters }) {
     // eslint-disable-next-line no-debugger
@@ -777,7 +798,9 @@ const mutations = {
   SET_ERROR_AMOUNT(state, errorAmount) {
     state.errorAmount = errorAmount
   },
-
+  EMPTY_PAYMENTS(state, payment = []) {
+    state.payments = payment
+  },
   RESET(state, status = 'complete') {
     state.payments = []
     state.LoyaltyPopup = false

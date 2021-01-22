@@ -151,9 +151,10 @@ export default {
         this.loyaltyHendlerChange()
         this.fetchSelectedCustomer(this.customerId)
           .then(() => {
+            // this.searchTerm = ''
+            this.$store.dispatch('checkoutForm/calculateLoyaltyAmountForItem')
             $('#search-loyalty-customer').modal('toggle')
             this.customer_loading = false
-            // this.searchTerm = ''
           })
           .catch(() => {
             // alert(1)

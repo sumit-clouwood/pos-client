@@ -228,6 +228,7 @@ const actions = {
 
       CustomerService.customerList(...params)
         .then(response => {
+          commit(mutation.SET_LOADING, false)
           if (!isNaN(response.data.count)) {
             let totalPages = Math.ceil(
               parseInt(response.data.count) / parseInt(state.params.page_size)
@@ -241,7 +242,6 @@ const actions = {
           } else {
             reject(response.data.data)
           }
-          commit(mutation.SET_LOADING, false)
         })
         .catch(error => {
           commit(mutation.SET_LOADING, false)
@@ -356,6 +356,7 @@ const actions = {
       if (customerId) {
         CustomerService.fetchCustomer(customerId)
           .then(response => {
+            commit(mutation.SET_LOADING, false)
             commit(mutation.SET_CUSTOMER_LOADING, false)
             let totalPages = 0
             let totleOrders = false
@@ -390,18 +391,23 @@ const actions = {
                 card => card.currency === rootGetters['location/currency']
               )
             }
-            let brandLoyalties = Object.values(
-              state.lookups.brand_loyalty_programs._id
-            )
-            loyalty.details = brandLoyalties.filter(loyalty => {
-              if (
-                loyalty.brand_stores.includes(rootState.context.storeId) &&
-                loyalty.currency === orderCurrency
-              ) {
-                return loyalty
-              }
-            })
-
+            if (state.lookups.brand_loyalty_programs) {
+              let brandLoyalties = Object.values(
+                state.lookups.brand_loyalty_programs._id
+              )
+              loyalty.details = brandLoyalties.filter(loyalty => {
+                if (
+                  loyalty.brand_stores.includes(rootState.context.storeId) &&
+                  loyalty.currency === orderCurrency
+                ) {
+                  return loyalty
+                }
+              })
+            }
+            if (!loyalty.card) {
+              commit('checkoutForm/EMPTY_PAYMENTS', [], { root: true })
+              commit('checkoutForm/LOYALTY_AMOUNT', 0, { root: true })
+            }
             commit(mutation.LOYALTY, loyalty)
             // commit(mutation.LOYALTY_FILTER, orderType)
 
@@ -431,6 +437,8 @@ const actions = {
     commit(mutation.SELECTED_CUSTOMER, customerDetails)
     commit('order/SET_REFERRAL', false, { root: true })
     commit('surcharge/IS_DELIVERY_SURCHARGE_REMOVED', false, { root: true })
+    commit('checkoutForm/LOYALTY_AMOUNT', 0, { root: true })
+    commit('checkoutForm/EMPTY_PAYMENTS', [], { root: true })
     dispatch('reset', true)
   },
 
