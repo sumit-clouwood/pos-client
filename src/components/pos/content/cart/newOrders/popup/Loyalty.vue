@@ -47,7 +47,10 @@
               </div>
               <span
                 class="color-text-invert delivery-loyalty"
-                v-if="orderType === CONST.ORDER_TYPE_CALL_CENTER"
+                v-if="
+                  orderType === CONST.ORDER_TYPE_CALL_CENTER &&
+                    parseFloat(loyaltyAmount) > 0.01
+                "
               >
                 {{ _t('You can redeem maximum loyalty') }}
                 <form>
@@ -65,12 +68,6 @@
                     {{ loyaltyPoints }}
                   </b>
                 </form>
-                <span
-                  v-if="parseFloat(loyaltyAmount) < 0.01"
-                  class="text-danger"
-                >
-                  {{ _t('Selected items are not eligible for loyalty') }}
-                </span>
                 <span v-if="error" class="text-danger">
                   {{ _t(error) }}: {{ loyaltyAmount }}
                 </span>
@@ -82,6 +79,9 @@
 
                   {{ _t('Point(s)') }}: {{ loyaltyPoints }}
                 </b>
+              </span>
+              <span v-if="parseFloat(loyaltyAmount) < 0.01" class="text-danger">
+                {{ _t('Selected items are not eligible for loyalty') }}
               </span>
             </div>
             <div v-else>
@@ -115,7 +115,6 @@
                 parseFloat(loyaltyAmount) > 0 &&
                   loyaltyBalance > 0 &&
                   parseFloat(brand.min_order) < parseFloat(subTotal) &&
-                  !isLoyaltyUsed &&
                   orderType === CONST.ORDER_TYPE_CALL_CENTER
               "
               class="btn btn-success btn-large popup-btn-save color-text-invert color-main"
@@ -127,7 +126,8 @@
             </button>
             <button
               v-if="
-                this.loyaltyBalance > 0 &&
+                parseFloat(loyaltyAmount) > 0.01 &&
+                  loyaltyBalance > 0 &&
                   parseFloat(brand.min_order) < parseFloat(subTotal) &&
                   !isLoyaltyUsed &&
                   orderType !== CONST.ORDER_TYPE_CALL_CENTER

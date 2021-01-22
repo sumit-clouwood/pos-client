@@ -173,6 +173,7 @@ export default {
     display: flex !important;
     flex-wrap: wrap !important;
     overflow: hidden !important;
+    min-width: 122px;
   }
 }
 

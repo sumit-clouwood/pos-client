@@ -470,7 +470,7 @@
     <CartAmountChange />
     <amount-error></amount-error>
     <ModificationPermissions v-if="needSupervisorAccess" />
-
+    <create-loyalty-customer></create-loyalty-customer>
     <CartPaymentMsg />
     <CartTipAmount />
     <GiftCard />
@@ -545,11 +545,13 @@ import * as CONST from '@/constants'
 
 import { mapState, mapGetters, mapActions } from 'vuex'
 import Referral from '@/components/pos/footer/popups/Referrals'
+import CreateLoyaltyCustomer from '@/components/pos/footer/popups/ManageCustomer/CreateLoyaltyCustomer'
 /* global $ */
 export default {
   name: 'Footer',
   props: {},
   components: {
+    CreateLoyaltyCustomer,
     Referral,
     DineIn,
     AddNote,

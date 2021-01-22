@@ -356,6 +356,7 @@ const actions = {
       if (customerId) {
         CustomerService.fetchCustomer(customerId)
           .then(response => {
+            commit(mutation.SET_CUSTOMER_LOADING, false)
             let totalPages = 0
             let totleOrders = false
             if (response.data.item && response.data.item.total_orders) {
@@ -413,10 +414,12 @@ const actions = {
                 ? response.data.collected_data.page_lookups.delivery_areas._id
                 : null,
             })
-            commit(mutation.SET_CUSTOMER_LOADING, false)
             resolve(response.data.item)
           })
-          .catch(error => reject(error))
+          .catch(error => {
+            commit(mutation.SET_CUSTOMER_LOADING, false)
+            reject(error)
+          })
       }
     })
   },
@@ -448,6 +451,7 @@ const actions = {
   },
 
   createAction({ commit, dispatch }, actionDetails) {
+    commit(mutation.SET_LOADING, true)
     return new Promise((resolve, reject) => {
       const params = [
         actionDetails.data,

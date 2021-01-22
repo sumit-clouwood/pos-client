@@ -178,7 +178,8 @@ export default {
       customer_title: state => state.customer.modalStatus,
       // fetchDeliveryAreas: state => state.customer.fetchDeliveryAreas,
       customerCreateStatus: state => state.customer.responseInformation,
-      customerId: state => state.customer.customer._id,
+      customerId: state => state.customer.customerId,
+      customer: state => state.customer.customer,
       store: state => state.location.store,
       deliveryAreas() {
         if (this.deliveryAreaNames) {
@@ -317,7 +318,7 @@ export default {
           this.createAction({
             data: formData,
             model: 'customer_addresses',
-            customer: this.customerId,
+            customer: this.customerId || this.customer._id,
           })
           addAddress.modal('hide')
           $('#add-to-order').modal('toggle')

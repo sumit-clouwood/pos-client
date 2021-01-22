@@ -308,7 +308,7 @@ const actions = {
             commit('SET_ERROR', 'Loyalty can be used only ones in order')
           } else {
             let amount = isNaN(state.loyaltyAmount) ? 0 : state.loyaltyAmount
-            commit('SET_ERROR', 'You can add only below amount')
+            commit('SET_ERROR', `You can't add more than ${amount} loyalty`)
             commit('SET_ERROR_AMOUNT', amount)
           }
           reject()
