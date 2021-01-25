@@ -50,14 +50,14 @@
       }
       > span {
         position: absolute;
-        top: -$px12;
-        color: #fff;
-        right: -$px10;
-        background: red;
-        padding: $px1;
-        border-radius: 50%;
-        height: $px30;
-        width: $px30;
+        top: 5px;
+        color: #ffffff;
+        right: 5px;
+        background: #cc3532;
+        padding: 0.125rem;
+        height: 2rem;
+        width: 2rem;
+        font-size: 14px;
         text-align: center;
         display: grid;
         align-items: center;

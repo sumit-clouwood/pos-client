@@ -1,19 +1,47 @@
+<!-- eslint-disable -->
 <template>
   <div>
     <div class="modal-footer showpropermsg">
+      <div
+        class="footer-slider-list-item color-secondary"
+        :class="[{ loyalty_delivery: loyaltyCard, active: loyalty_active }]"
+        @click="calculateLoyaltyAmount"
+        v-if="loyaltyCard && parseFloat(loyaltyCard.balance) > 0"
+      >
+        <div role="button" class="footer-slider-list-item-link color-text-invert" v-if="loyalty_active">
+          {{ _t('Applied Loyalty') }}
+          <br />
+          {{ formatPrice(loyaltyAmount) }}
+        </div>
+        <div v-else role="button" class="footer-slider-list-item-link color-text-invert">
+          {{ _t('Apply loyalty') }}
+          <i
+            class="fa fa-question-circle"
+            aria-hidden="true"
+            :title="_t('Click here to apply loyalty, your loyalty balance is ') + formatPrice(loyaltyCard.balance)"
+          ></i>
+          <br />
+          <span class="font-weight-bold" v-if="loyaltyAmount > 0">
+            {{ _t('Balance') }} : {{ formatPrice(loyaltyCard.balance) }}
+          </span>
+          <span class="font-weight-bold" v-else>
+           0 {{ _t('Points used') }}
+          </span>
+        </div>
+      </div>
       <div class="referal">
         <button
           type="button"
           data-value=""
           id="referal-btn"
           class="btn referal-btn dropdown-toggle shorten-sentence color-text color-secondary"
-          data-toggle="dropdown"
-          aria-haspopup="true"
-          aria-expanded="false"
+          data-toggle="modal"
+          data-target="#select-referral"
         >
-          {{ changedReferral.referralName }}</button
-        ><!--<span><img src="images/referal-down.png"></span>-->
-        <p v-if="errors !== ''" class="errors text-danger">{{ errors }}</p>
+          {{ changedReferral ? changedReferral.referralName : _t('Referral') }}
+        </button>
+        <!--<span><img src="images/referal-down.png"></span>-->
+        <!--
         <p v-if="msg" class="text-info">{{ msg }}</p>
         <div id="referralDropdown" class="dropdown-menu" v-if="getReferrals">
           <a
@@ -35,7 +63,7 @@
         </div>
         <div class="dropdown-menu color-text-invert" v-if="!getReferrals">
           {{ _t('Nothing found') }}
-        </div>
+        </div>-->
       </div>
       <datetime
         type="datetime"
@@ -62,13 +90,16 @@
         auto
       ></datetime>
       <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
+
+    </div>
+    <div class="delivery_order_process_errors">
+      <p v-if="errors !== ''" class="errors text-danger">{{ errors }}</p>
     </div>
     <div class="btn-announce">
-      <button
-        type="button"
-        class="btn btn-danger cancel-announce color-icon-table-neutral-button"
-        data-dismiss="modal"
-      >
+        <button
+          type="button"
+          data-dismiss="modal"
+          class="btn btn-danger cancel-announce color-text-invert color-button">
         {{ _t('Close') }}
       </button>
       <button
@@ -89,6 +120,7 @@ import moment from 'moment-timezone'
 
 import { Datetime } from 'vue-datetime'
 import { mapState, mapActions, mapGetters } from 'vuex'
+import * as CONST from '@/constants'
 export default {
   name: 'SendToDeliveryFooter',
   props: {},
@@ -97,7 +129,7 @@ export default {
   },
   data() {
     return {
-      changedReferral: { referralName: 'Referral' },
+      // changedReferral: { referralName: 'Referral' },
       futureDateTime: '',
       minDatetime: null,
       maxDatetime: null,
@@ -114,22 +146,51 @@ export default {
       }
       return false
     },
+    loyalty_active() {
+      return parseFloat(this.loyaltyAmount) > 0.01 ? true : false
+    },
     ...mapState({
       getReferrals: state => state.location.referrals,
     }),
     ...mapState('customer', ['address']),
+    ...mapState('checkoutForm', ['loyaltyAmount', 'loyaltyPoints']),
+    ...mapState({
+      loyaltyCard: state => state.customer.customerLoyalty.card,
+      changedReferral: state => state.order.referral,
+      loyaltyAmount: state => state.checkoutForm.loyaltyAmount,
+      selectedCustomer: state => state.customer.customer.name,
+    }),
     ...mapState('order', ['needSupervisorAccess']),
     ...mapGetters('order', ['subTotal']),
     ...mapGetters('location', ['_t', 'formatPrice']),
+    ...mapGetters('payment', ['methods']),
   },
   methods: {
-    selectedReferral(referral) {
+    calculateLoyaltyAmount() {
+      this.$store.dispatch('checkoutForm/calculateLoyaltyAmountForItem')
+      this.loyalty_active = true
+      if (
+        this.methods &&
+        this.methods.loyalty &&
+        parseFloat(this.loyaltyAmount) > 0.01
+      ) {
+        let loyalty_card = this.methods.loyalty.find(
+          payment => payment.type === CONST.LOYALTY
+        )
+        // eslint-disable-next-line no-console
+        console.log(loyalty_card, 'loyalty_card')
+        this.$store.commit('checkoutForm/setPaymentMethodLoyalty', loyalty_card)
+        this.$store.dispatch('checkoutForm/addAmount')
+      }
+      // this.$store.dispatch('loyaltyHendlerChange')
+    },
+    /*selectedReferral(referral) {
       this.changedReferral = referral
       this.$store.commit('order/SET_REFERRAL', this.changedReferral)
-    },
+    },*/
     placeOrder() {
       hidePayNow()
-      if (this.changedReferral.referralName === 'Referral') {
+      if (!this.changedReferral) {
         this.errors = 'Please select referral to proceed.'
       } else if (
         typeof this.address.min_order_value !== 'undefined' &&
@@ -234,7 +295,7 @@ export default {
       }
       .vdatetime > input {
         width: 95% !important;
-        margin-left: 0px !important;
+        margin-left: 0 !important;
       }
       .showpropermsg .text-danger {
         position: absolute;
@@ -264,5 +325,36 @@ export default {
   border-bottom: 1px solid #ddd;
   margin: 0;
   font-weight: bold;
+}
+.loyalty_delivery {
+  span {
+    font-size: 12px;
+    text-align: center;
+  }
+  color: white;
+  width: 160px;
+  height: 3.125rem;
+  font-weight: bold;
+  text-align: center;
+  cursor: pointer;
+  border-radius: 3px;
+  background-color: #4e535d;
+  padding: 1px 12px;
+  &.active {
+    background-color: #ef6a05;
+  }
+}
+.cancel-announce {
+  font-size: unset !important;
+  width: auto !important;
+}
+.vdatetime > input {
+  margin-left: unset !important;
+}
+.delivery_order_process_errors {
+  .errors {
+    text-align: center;
+    font-size: 15px;
+  }
 }
 </style>

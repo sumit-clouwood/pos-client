@@ -228,7 +228,7 @@ export default {
     ...mapGetters(['footerMenuHendler']),
     ...mapGetters('location', ['formatPrice', '_t']),
     ...mapState({
-      loyaltyCard: state => state.customer.loyalty.card,
+      loyaltyCard: state => state.customer.customerLoyalty.card,
       selectedCustomer: state => state.customer.customer.name,
     }),
     ...mapState({

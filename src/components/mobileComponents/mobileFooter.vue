@@ -169,7 +169,7 @@ export default {
       },
     }),
     ...mapState({
-      loyaltyCard: state => state.customer.loyalty.card,
+      loyaltyCard: state => state.customer.customerLoyalty.card,
     }),
     ...mapState({ selectedCustomer: state => state.customer.customer.name }),
     ...mapGetters('order', ['items', 'orderTotal']),

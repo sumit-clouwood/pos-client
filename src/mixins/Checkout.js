@@ -14,7 +14,7 @@ export default {
               reject()
             } else if (this.method.type == CONST.LOYALTY) {
               //show loyalty popup if needed
-              reject()
+              this.addPayment().then(payable => resolve(payable))
             } else if (this.method.reference_code) {
               showModal('#card-payemnt')
               reject()

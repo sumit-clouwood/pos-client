@@ -155,7 +155,9 @@ export default {
     },
     showDetails(item) {
       this.currentItem = item
-      showModal('#item-details-popup')
+      this.$nextTick(() => {
+        showModal('#item-details-popup')
+      })
     },
     IsImageOk(img) {
       if (!img.complete) {

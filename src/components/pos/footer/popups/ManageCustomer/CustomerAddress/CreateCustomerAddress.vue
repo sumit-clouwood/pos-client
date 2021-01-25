@@ -178,7 +178,8 @@ export default {
       customer_title: state => state.customer.modalStatus,
       // fetchDeliveryAreas: state => state.customer.fetchDeliveryAreas,
       customerCreateStatus: state => state.customer.responseInformation,
-      customerId: state => state.customer.customer._id,
+      customerId: state => state.customer.customerId,
+      customer: state => state.customer.customer,
       store: state => state.location.store,
       deliveryAreas() {
         if (this.deliveryAreaNames) {
@@ -287,7 +288,7 @@ export default {
       }*/
       if (this.errors.count === 0) {
         let addAddress = $('#add_address')
-        addAddress.modal('toggle')
+        addAddress.modal('hide')
         // addAddress.click()
         let areaId = ''
         if (this.selectedDeliveryArea) {
@@ -313,15 +314,13 @@ export default {
           delivery_area_id: areaId,
           // lat_lng_available: true,
         }
-        // eslint-disable-next-line no-console
-        console.log(formData, 'ffff')
         if (modalStatus == 'Add') {
           this.createAction({
             data: formData,
             model: 'customer_addresses',
-            customer: this.customerId,
+            customer: this.customerId || this.customer._id,
           })
-          addAddress.modal('toggle')
+          addAddress.modal('hide')
           $('#add-to-order').modal('toggle')
         }
         if (modalStatus == 'Edit') {
@@ -332,8 +331,10 @@ export default {
             data: formData,
           }
           this.updateAction(actionDetails)
-          addAddress.modal('toggle')
+          addAddress.modal('hide')
         }
+      } else {
+        // addAddress.modal('show')
       }
     },
 

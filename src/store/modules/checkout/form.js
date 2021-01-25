@@ -35,6 +35,8 @@ const state = {
   processing: false,
   paymentButton: 'add',
   errorAmount: '',
+  customerRemainingLoyalty: 0,
+  customerLoyaltyItem: 0,
 }
 
 // getters
@@ -58,6 +60,7 @@ const getters = {
   payable: (state, getters) => {
     return getters.orderTotal - getters.paid
   },
+  // eslint-disable-next-line no-unused-vars
   isLoyaltyUsed: state => {
     let loyaltyUsed = 0
     if (state.payments) {
@@ -292,21 +295,31 @@ const actions = {
       }
     })
   },
-  validateLoyaltyPayment({ commit, getters }) {
+  validateLoyaltyPayment({ commit, getters, rootGetters }) {
     return new Promise((resolve, reject) => {
-      if (parseFloat(state.amount) != parseFloat(state.loyaltyAmount)) {
-        if (parseFloat(state.loyaltyAmount) <= 0.01) {
-          commit('SET_ERROR', 'You dont have loyalty amount.')
-        } else if (getters.isLoyaltyUsed === 1) {
-          commit('SET_ERROR', 'Loyalty can be used only ones in order')
-        } else {
-          let amount = isNaN(state.loyaltyAmount) ? 0 : state.loyaltyAmount
-          commit('SET_ERROR', 'You can add only below amount')
-          commit('SET_ERROR_AMOUNT', amount)
-        }
-        reject()
-      } else {
+      let orderType = rootGetters['order/orderType']
+      if (orderType === CONST.ORDER_TYPE_CALL_CENTER) {
         resolve()
+      } else {
+        if (parseFloat(state.amount) > parseFloat(state.loyaltyAmount)) {
+          if (parseFloat(state.loyaltyAmount) <= 0.01) {
+            commit('SET_ERROR', 'You do not have loyalty amount.')
+            commit('SET_ERROR_AMOUNT', 0)
+          } else {
+            let amount = isNaN(state.loyaltyAmount) ? 0 : state.loyaltyAmount
+            commit('SET_ERROR', `You can't add more than ${amount} loyalty`)
+            commit('SET_ERROR_AMOUNT', amount)
+          }
+          reject()
+        } else {
+          if (getters.isLoyaltyUsed === 1) {
+            commit(
+              'SET_ERROR',
+              'You already applied loyalty, please remove from payment breakdown and apply again'
+            )
+            reject()
+          } else resolve()
+        }
       }
     })
   },
@@ -395,60 +408,150 @@ const actions = {
     commit('showPayBreak', true)
   },
 
-  calculateSpendLoyalty({ commit, rootState, getters }) {
-    const loyalty = rootState.customer.loyalty.card
-    const loyaltyDetails = rootState.customer.loyalty.details
-    let orderTotal = parseFloat(getters.orderTotal)
-    let amount = 0,
-      oneLoyaltyPoint = 0
-    if (loyaltyDetails && loyalty) {
-      oneLoyaltyPoint = parseFloat(loyaltyDetails.one_point_redeems_to)
-      if (orderTotal > 0) {
-        let { maxRedeem, minRedeem, loyaltyAmountByPoints } = {
-          maxRedeem: parseFloat(
-            loyaltyDetails.maximum_redeem * loyaltyDetails.one_point_redeems_to
-          ),
-          minRedeem: parseFloat(
-            loyaltyDetails.minimum_redeem * loyaltyDetails.one_point_redeems_to
-          ),
-          loyaltyAmountByPoints: parseFloat(
-            loyalty.balance * loyaltyDetails.one_point_redeems_to
-          ),
-        }
-        orderTotal = parseFloat(getters.orderTotal).toFixed(2)
-        if (loyaltyAmountByPoints > 0) {
-          if (loyaltyAmountByPoints >= orderTotal) {
-            if (orderTotal <= maxRedeem) {
-              amount = orderTotal
-            } else {
-              amount = maxRedeem
-            }
-          }
+  calculateLoyaltyAmountForItem({ commit, rootState, rootGetters, dispatch }) {
+    const loyalty_card = rootState.customer.customerLoyalty.card
+    // const methods = rootState.payment.methods
+    let loyalty_balance = loyalty_card ? parseFloat(loyalty_card.balance) : 0
+    const loyalty = rootState.customer.customerLoyalty.details
+    let maxRedeem = parseFloat(rootState.location.brand.maximum_redeem)
+    let items = rootGetters['order/items']
+    let orderType = rootGetters['order/orderType']
+    let order_type_spend = orderType + '_spend_points'
+    let loyalty_items = []
+    let amount = 0
+    let redeem_point = 0
+    let total_of_one_point_redeem = 0
+    let total_redeem_amount_for_items = 0
+    let loyalty_details_ids = []
+    // eslint-disable-next-line no-debugger
+    // debugger
+    items.forEach(item => {
+      if (loyalty && item) {
+        let loyalty_action = loyalty.find(loyalty => {
           if (
-            loyaltyAmountByPoints <= orderTotal &&
-            loyaltyAmountByPoints >= minRedeem
+            loyalty.for_items.includes(item._id) &&
+            loyalty[order_type_spend] === true
           ) {
-            if (
-              orderTotal >= minRedeem &&
-              orderTotal <= maxRedeem &&
-              loyaltyAmountByPoints >= orderTotal
-            ) {
-              amount = orderTotal
-            }
-            if (
-              orderTotal >= minRedeem &&
-              orderTotal <= maxRedeem &&
-              loyaltyAmountByPoints <= orderTotal
-            ) {
-              amount = loyaltyAmountByPoints
-            }
+            return loyalty
           }
+        })
+        let loyalty_for_item = 0
+        let loyalty_apply_on_price = parseFloat(item.netPrice) * item.quantity
+        if (loyalty_action && loyalty_balance > 0.001) {
+          if (!loyalty_details_ids.includes(loyalty_action._id)) {
+            total_of_one_point_redeem = loyalty_action.one_point_redeems_to
+          }
+
+          loyalty_details_ids.push(loyalty_action._id)
+          let redeem_amount_for_item =
+            loyalty_apply_on_price * loyalty_action.one_point_redeems_to
+          if (redeem_amount_for_item >= loyalty_apply_on_price) {
+            loyalty_for_item =
+              loyalty_balance <= loyalty_apply_on_price
+                ? loyalty_balance
+                : loyalty_apply_on_price
+          } else {
+            loyalty_for_item =
+              loyalty_balance <= redeem_amount_for_item
+                ? loyalty_balance
+                : redeem_amount_for_item
+          }
+          total_redeem_amount_for_items += loyalty_for_item
+
+          loyalty_balance -= parseFloat(loyalty_for_item)
+          item.loyalty_ammount = loyalty_for_item
+          loyalty_items.push(item)
+        } else {
+          item.loyalty_ammount = 0
+          loyalty_items.push(item)
         }
       }
+    })
+    if (total_redeem_amount_for_items > 0 && loyalty_card.balance > 0) {
+      amount =
+        total_redeem_amount_for_items <= maxRedeem
+          ? total_redeem_amount_for_items
+          : maxRedeem
+      amount = loyalty_card.balance <= amount ? loyalty_card.balance : amount
+      redeem_point = amount / total_of_one_point_redeem
     }
-    commit('loyaltyAmount', amount)
-    commit('loyaltyPoints', { amount, oneLoyaltyPoint })
+    commit('LOYALTY_AMOUNT', amount)
+    commit('LOYALTY_POINTS', redeem_point)
+    commit('CUSTOMER_LOYALTY_ITEM', loyalty_items)
+
+    /*Added amount directly (before that wee are using this for popup,I will do it in single commit after deployment*/
+    // if (state.forceCash) {
+    // eslint-disable-next-line no-debugger
+    // if (methods && methods.loyalty) {
+    //   let loyalty_card = methods.loyalty.find(
+    //     payment => payment.type === CONST.LOYALTY
+    //   )
+    //   // eslint-disable-next-line no-console
+    //   console.log(loyalty_card, 'loyalty_card method')
+    //   commit('setPaymentMethodLoyalty', loyalty_card)
+    // }
+    dispatch('setAmount', Num.round(amount))
+    dispatch('setLoyaltyCard', loyalty_card)
+    // }
   },
+  /*calculateSpendLoyalty({ commit, rootState, rootGetters }) {
+    // eslint-disable-next-line no-debugger
+    // debugger
+    const loyalty = rootState.customer.customerLoyalty.card
+    const loyaltyDetails = rootState.customer.customerLoyalty.details
+    let items = rootGetters['order/items']
+    let customer_loyalty_balance = { ...parseFloat(loyalty.balance) }
+    let amount = 0
+    let redeem_point
+    if (loyaltyDetails && loyalty) {
+      let total_redeem_amount_for_items = 0
+      items.forEach(item => {
+        if (item) {
+          let loyalty_action = loyaltyDetails.find(loyalty => {
+            if (loyalty.for_items.includes(item._id)) {
+              return loyalty
+            }
+          })
+          // commented below logic after discuss with sohin no use of money_spent
+          /!*if (loyalty_action) {
+            total_redeem_amount_for_items +=
+              Math.floor(item.netPrice / loyalty_action.money_spent) *
+              loyalty_action.one_point_redeems_to
+          }*!/
+          let loyalty_for_item = 0
+          if (loyalty_action && customer_loyalty_balance > 0.001) {
+            var redeem_amount =
+              item.netPrice * loyalty_action.one_point_redeems_to
+            loyalty_for_item =
+              customer_loyalty_balance <= redeem_amount
+                ? customer_loyalty_balance
+                : redeem_amount
+            total_redeem_amount_for_items +=
+              loyalty_for_item >= item.netPrice
+                ? item.netPrice
+                : loyalty_for_item
+
+            customer_loyalty_balance -= total_redeem_amount_for_items
+            redeem_point +=
+              total_redeem_amount_for_items /
+              loyalty_action.one_point_redeems_to
+          }
+        }
+      })
+      total_redeem_amount_for_items = parseFloat(total_redeem_amount_for_items)
+      let maxRedeem = parseFloat(rootState.location.brand.maximum_redeem)
+      if (total_redeem_amount_for_items > 0 && customer_loyalty_balance > 0) {
+        amount =
+          total_redeem_amount_for_items <= maxRedeem
+            ? total_redeem_amount_for_items
+            : maxRedeem
+        amount =
+          customer_loyalty_balance <= amount ? customer_loyalty_balance : amount
+      }
+    }
+    commit('LOYALTY_AMOUNT', amount)
+    commit('LOYALTY_POINTS', redeem_point)
+  },*/
 
   reset({ commit }) {
     commit('RESET')
@@ -548,23 +651,25 @@ const mutations = {
   setLoyaltyCard(state, val) {
     state.loyaltyCard = val
   },
-  loyaltyAmount(state, val) {
+  LOYALTY_AMOUNT(state, val) {
     state.loyaltyAmount = parseFloat(val).toFixed(2)
   },
-  loyaltyPoints(state, { amount, oneLoyaltyPoint }) {
-    /**
-     * loyalty amount to points
-     * logic : amount/one_point_redeems_to  =  points used
-     */
-    if (amount && oneLoyaltyPoint) {
-      state.loyaltyPoints = (amount / oneLoyaltyPoint).toFixed(2)
-    } else {
-      state.loyaltyPoints = 0
-    }
+  LOYALTY_POINTS(state, loyaltyPoint) {
+    state.loyaltyPoints = loyaltyPoint
+  },
+  CUSTOMER_REMAINING_LOYALTY(state, loyaltyPoint) {
+    state.customerRemainingLoyalty = loyaltyPoint
+  },
+  CUSTOMER_LOYALTY_ITEM(state, items) {
+    state.customerLoyaltyItem = items
   },
   setMethod(state, method) {
     state.method = method
     state.showCalc = true
+  },
+  setPaymentMethodLoyalty(state, method) {
+    state.method = method
+    // state.showCalc = true
   },
   addAmount(state, { amount, method }) {
     state.decimalExists = false
@@ -693,7 +798,9 @@ const mutations = {
   SET_ERROR_AMOUNT(state, errorAmount) {
     state.errorAmount = errorAmount
   },
-
+  EMPTY_PAYMENTS(state, payment = []) {
+    state.payments = payment
+  },
   RESET(state, status = 'complete') {
     state.payments = []
     state.LoyaltyPopup = false

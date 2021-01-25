@@ -9,7 +9,6 @@ export default {
   data() {
     return {
       currentPage: 1,
-      currentSlide: 'cash',
       positionX: 0,
       dragging: false,
       dragX: '',
@@ -22,6 +21,11 @@ export default {
       return this.width / this.perPage
     },
     ...mapState('checkoutForm', ['method']),
+    currentSlide() {
+      if (this.method && this.method.type !== 'cash') {
+        return this.method.type
+      } else return 'cash'
+    },
   },
   methods: {
     imagePath(key) {

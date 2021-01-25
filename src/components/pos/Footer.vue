@@ -126,86 +126,88 @@
               <span>{{ _t('New Orders') }}</span>
             </a>
           </li>
-          <li
-            data-toggle="modal"
-            data-target="#search-loyalty-customer"
-            class="footer-slider-list-item color-secondary"
-            :class="[{ loyaltyApplied: loyaltyCard }]"
-            @click="loyaltyHendlerChange"
-          >
-            <a
-              role="button"
-              class="footer-slider-list-item-link color-text-invert"
+          <template v-if="enabled(CONST.MODULE_LOYALTY)">
+            <li
+              data-toggle="modal"
+              data-target="#search-loyalty-customer"
+              class="footer-slider-list-item color-secondary"
+              :class="[{ loyaltyApplied: loyaltyCard }]"
+              @click="loyaltyHendlerChange"
             >
-              <svg
-                v-if="!loyaltyCard"
-                version="1.1"
-                id="Capa_1"
-                xmlns="http://www.w3.org/2000/svg"
-                xmlns:xlink="http://www.w3.org/1999/xlink"
-                x="0px"
-                y="0px"
-                viewBox="0 0 448 512"
-                style="enable-background:new 0 0 512 512;"
-                xml:space="preserve"
-                fill="#fff"
+              <a
+                role="button"
+                class="footer-slider-list-item-link color-text-invert"
               >
-                <g>
-                  <g>
-                    <path
-                      d="M47.054,302h-32c-8.291,0-15,6.709-15,15v180c0,8.291,6.709,15,15,15h32c24.814,0,45-20.186,45-45V347
-			C92.054,322.186,71.869,302,47.054,302z"
-                    />
-                  </g>
-                </g>
-                <g>
-                  <g>
-                    <path
-                      d="M507.554,331.099c-1.8-2.999-4.199-5.4-6.899-7.5c-11.045-9.662-29.654-8.749-40.499,3.001l-68.101,78.6l-2.1,2.399
-			c-8.399,9.3-20.4,14.401-32.999,14.401h-116.4c-8.401,0-15-6.601-15-15c0-8.401,6.599-15,15-15h91.5c16.5,0,30-13.5,30-30v-0.3
-			c-0.3-16.5-13.5-29.7-30-29.7h-54.3c-8.996,0-18.636-3.303-26.4-9.901c-36.599-32.1-90-34.2-129.3-6.899v184.499
-			c29.7,8.101,60.3,12.301,91.199,12.301h133.801c32.999,0,64.2-15.601,84-42.001l72.001-96
-			C513.56,360.21,514.352,341.3,507.554,331.099z"
-                    />
-                  </g>
-                </g>
-                <g>
-                  <g>
-                    <path
-                      d="M402.264,28.995C385.627,10.297,362.564,0,337.324,0c-28.172,0-52.593,13.321-70.622,38.522
-			c-1.352,1.889-2.617,3.779-3.802,5.649c-1.184-1.871-2.449-3.76-3.801-5.649C241.07,13.321,216.649,0,188.477,0
-			c-25.24,0-48.303,10.297-64.939,28.994C107.75,46.738,99.054,70.459,99.054,95.788c0,27.525,10.681,52.924,33.611,79.934
-			c20.009,23.565,48.708,47.788,81.938,75.836c12.28,10.365,24.979,21.083,38.473,32.778c2.819,2.443,6.321,3.665,9.824,3.665
-			c3.502,0,7.005-1.222,9.824-3.665c13.492-11.693,26.189-22.41,38.469-32.773c21.342-18.014,39.773-33.57,55.767-48.66
-			c31.053-29.298,59.787-62.553,59.787-107.114C426.747,70.46,418.052,46.739,402.264,28.995z"
-                    />
-                  </g>
-                </g>
-              </svg>
-              <!--<img
-                src="img/pos/loyalty.svg"
-                :alt="_t('Loyalty')"
-                v-if="!loyaltyCard"
-              />-->
-              <span v-if="!loyaltyCard">{{ _t('Loyalty') }}</span>
-              <span v-if="loyaltyCard">
-                <span>
-                  {{
-                    isNaN(loyaltyCard.balance)
-                      ? 0
-                      : formatPrice(loyaltyCard.balance)
-                  }}
-                  {{ _t('Loyalty') }}</span
+                <svg
+                  v-if="!loyaltyCard"
+                  version="1.1"
+                  id="Capa_1"
+                  xmlns="http://www.w3.org/2000/svg"
+                  xmlns:xlink="http://www.w3.org/1999/xlink"
+                  x="0px"
+                  y="0px"
+                  viewBox="0 0 448 512"
+                  style="enable-background:new 0 0 512 512;"
+                  xml:space="preserve"
+                  fill="#fff"
                 >
-                <br />
-                <span class="shorten-sentence">
-                  {{ selectedCustomer }}
+                  <g>
+                    <g>
+                      <path
+                        d="M47.054,302h-32c-8.291,0-15,6.709-15,15v180c0,8.291,6.709,15,15,15h32c24.814,0,45-20.186,45-45V347
+        C92.054,322.186,71.869,302,47.054,302z"
+                      />
+                    </g>
+                  </g>
+                  <g>
+                    <g>
+                      <path
+                        d="M507.554,331.099c-1.8-2.999-4.199-5.4-6.899-7.5c-11.045-9.662-29.654-8.749-40.499,3.001l-68.101,78.6l-2.1,2.399
+        c-8.399,9.3-20.4,14.401-32.999,14.401h-116.4c-8.401,0-15-6.601-15-15c0-8.401,6.599-15,15-15h91.5c16.5,0,30-13.5,30-30v-0.3
+        c-0.3-16.5-13.5-29.7-30-29.7h-54.3c-8.996,0-18.636-3.303-26.4-9.901c-36.599-32.1-90-34.2-129.3-6.899v184.499
+        c29.7,8.101,60.3,12.301,91.199,12.301h133.801c32.999,0,64.2-15.601,84-42.001l72.001-96
+        C513.56,360.21,514.352,341.3,507.554,331.099z"
+                      />
+                    </g>
+                  </g>
+                  <g>
+                    <g>
+                      <path
+                        d="M402.264,28.995C385.627,10.297,362.564,0,337.324,0c-28.172,0-52.593,13.321-70.622,38.522
+        c-1.352,1.889-2.617,3.779-3.802,5.649c-1.184-1.871-2.449-3.76-3.801-5.649C241.07,13.321,216.649,0,188.477,0
+        c-25.24,0-48.303,10.297-64.939,28.994C107.75,46.738,99.054,70.459,99.054,95.788c0,27.525,10.681,52.924,33.611,79.934
+        c20.009,23.565,48.708,47.788,81.938,75.836c12.28,10.365,24.979,21.083,38.473,32.778c2.819,2.443,6.321,3.665,9.824,3.665
+        c3.502,0,7.005-1.222,9.824-3.665c13.492-11.693,26.189-22.41,38.469-32.773c21.342-18.014,39.773-33.57,55.767-48.66
+        c31.053-29.298,59.787-62.553,59.787-107.114C426.747,70.46,418.052,46.739,402.264,28.995z"
+                      />
+                    </g>
+                  </g>
+                </svg>
+                <!--<img
+                  src="img/pos/loyalty.svg"
+                  :alt="_t('Loyalty')"
+                  v-if="!loyaltyCard"
+                />-->
+                <span v-if="!loyaltyCard">{{ _t('Loyalty') }}</span>
+                <span v-if="loyaltyCard">
+                  <span>
+                    {{
+                      isNaN(loyaltyCard.balance)
+                        ? 0
+                        : formatPrice(loyaltyCard.balance)
+                    }}
+                    {{ _t('Loyalty') }}</span
+                  >
+                  <br />
+                  <span class="shorten-sentence">
+                    {{ selectedCustomer }}
+                  </span>
+                  <!--<br />
+                <span>{{ selectedCustomer }}</span>-->
                 </span>
-                <!--<br />
-              <span>{{ selectedCustomer }}</span>-->
-              </span>
-            </a>
-          </li>
+              </a>
+            </li>
+          </template>
           <li
             class="footer-slider-list-item color-secondary"
             data-toggle="modal"
@@ -454,6 +456,7 @@
     <AddNote />
     <item-note></item-note>
     <Discount />
+    <Referral />
     <SendToDelivery />
     <ManageCustomer v-if="online" />
     <OfflineManageCustomer v-else />
@@ -469,7 +472,7 @@
     <CartAmountChange />
     <amount-error></amount-error>
     <ModificationPermissions v-if="needSupervisorAccess" />
-
+    <create-loyalty-customer></create-loyalty-customer>
     <CartPaymentMsg />
     <CartTipAmount />
     <GiftCard />
@@ -543,11 +546,15 @@ import ScalePopup from '@/components/pos/content/catalog/items/popup/ScalePopup.
 import * as CONST from '@/constants'
 
 import { mapState, mapGetters, mapActions } from 'vuex'
+import Referral from '@/components/pos/footer/popups/Referrals'
+import CreateLoyaltyCustomer from '@/components/pos/footer/popups/ManageCustomer/CreateLoyaltyCustomer'
 /* global $ */
 export default {
   name: 'Footer',
   props: {},
   components: {
+    CreateLoyaltyCustomer,
+    Referral,
     DineIn,
     AddNote,
     itemNote,
@@ -614,8 +621,9 @@ export default {
     ...mapState('dinein', ['availableTables', 'covers']),
     ...mapState('sync', ['online']),
     ...mapGetters('location', ['formatPrice', '_t']),
+    ...mapGetters('modules', ['enabled']),
     ...mapState({
-      loyaltyCard: state => state.customer.loyalty.card,
+      loyaltyCard: state => state.customer.customerLoyalty.card,
       paymentError: state => state.checkoutForm.error,
     }),
     ...mapState({ selectedCustomer: state => state.customer.customer.name }),

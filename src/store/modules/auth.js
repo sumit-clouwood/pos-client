@@ -308,7 +308,7 @@ const actions = {
       commit(mutation.RESET)
 
       dispatch('resetModules')
-      commit('customer/IS_BRAND_HAS_DELIVERY_ORDER', true)
+      commit('customer/IS_BRAND_HAS_DELIVERY_ORDER', true, { root: true })
       commit('context/RESET', null, { root: true })
       commit('sync/reset', {}, { root: true })
       commit('location/RESET', true, { root: true })

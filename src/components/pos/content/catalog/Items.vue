@@ -24,14 +24,14 @@
       <!-- <div class="bg">bg</div> -->
       <!--      <btnBack :param="'item'" />-->
       <div
+        class="food-menu-item"
         :class="{
-          'food-menu-item': true,
-          ' color-dashboard-background': item.image != '',
+          'color-dashboard-background': item.image != '',
         }"
         :style="{ background: item.image == '' ? item.item_color : '' }"
         v-for="item in items"
         :key="item._id"
-        :value="dt(item)"
+        :title="dt(item)"
         @click.prevent="addToOrder(item)"
         ref="entityItem"
       >
@@ -167,6 +167,16 @@ export default {
   background: rgba(220, 220, 220, 0.9);
 }
 
+.color-dashboard-background {
+  .food-menu-item {
+    height: $food-menu-item-height !important;
+    display: flex !important;
+    flex-wrap: wrap !important;
+    overflow: hidden !important;
+    min-width: 122px;
+  }
+}
+
 @include responsive(mobile) {
   .food-menu {
     height: 100%;
@@ -184,7 +194,7 @@ export default {
       right: 0;
       bottom: 0;
       left: 0;
-      background-color: darkblue;
+      background-color: $blue-dark;
     }
     &.active {
       top: 0;
@@ -206,9 +216,9 @@ export default {
       height: 4em !important;
       padding: 0 10px;
       margin: 0;
-      display: grid;
-      align-items: center;
-      grid-template-columns: auto 1fr max-content;
+      display: grid !important;
+      align-items: center !important;
+      grid-template-columns: auto 1fr max-content !important;
       grid-gap: 20px;
       border-radius: 0;
       border: none;

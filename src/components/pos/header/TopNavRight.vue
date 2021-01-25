@@ -90,12 +90,16 @@ export default {
         state.auth.userDetails ? state.auth.userDetails.name : '',
     }),
     ...mapGetters('location', ['_t', 'permitted']),
+    privateContext() {
+      return this.$store.state.auth.token
+    },
   },
   methods: {
     showOnlineOrders() {
-      $('#online-order')
-        .dialog()
-        .dialog('open')
+      if (this.privateContext)
+        $('#online-order')
+          .dialog()
+          .dialog('open')
     },
     logoutCashier() {
       localStorage.setItem('token', '')

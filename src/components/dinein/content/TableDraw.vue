@@ -207,7 +207,7 @@
                 v-model.number="guests"
                 @keyup="chairsValidation"
                 @change="chairsValidation"
-                class="form-control qty"
+                class="form-control qty tdraw"
                 name="quantity"
               />
               <!--<input type="text" name="quantity" value="1" min="1" class="qty">-->

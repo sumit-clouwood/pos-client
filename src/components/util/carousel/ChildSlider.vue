@@ -173,6 +173,13 @@ export default {
           @media only screen and (min-width: 961px) and (max-width: 1023px) {
             width: 94px !important;
           }
+          label {
+            white-space: nowrap !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+            width: 90%;
+            margin-left: auto;
+          }
         }
 
         &.active {

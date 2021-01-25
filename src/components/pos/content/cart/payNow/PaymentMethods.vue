@@ -66,6 +66,7 @@ export default {
       payments: state => state.checkoutForm.payments,
       forceCash: state => state.checkoutForm.forceCash,
       selectedModal: state => state.location.setModal,
+      loyaltyCard: state => state.customer.customerLoyalty.card,
     }),
     ...mapGetters(['payNowCalcHendler']),
     ...mapGetters({
@@ -122,8 +123,10 @@ export default {
           if (this.selectedModal == '#manage-customer') {
             showModal('#search-loyalty-customer')
           } else {
-            this.$store.dispatch('checkoutForm/calculateSpendLoyalty')
-            showModal('#loyalty-payment')
+            this.$store.dispatch('checkoutForm/calculateLoyaltyAmountForItem')
+            // this.$store.dispatch('checkoutForm/calculateSpendLoyalty')
+            // showModal('#loyalty-payment')
+            // added loyalty direct
           }
         }
       }

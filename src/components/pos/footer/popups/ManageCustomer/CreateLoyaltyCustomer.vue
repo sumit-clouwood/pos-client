@@ -1,23 +1,21 @@
 <template>
   <!-- Add customer model -->
   <div>
-    <div class="modal fade " id="customer" role="dialog">
+    <div class="modal fade " id="customer-loyalty" role="dialog">
       <div class="modal-dialog modal-dialog-centered">
         <!-- Modal content-->
         <div class="modal-content color-dashboard-background">
           <div class="modal-header customer-header color-secondary">
             <h4 class="customer-title color-text">
-              {{ customer_title }} {{ _t('customer') }}
+              {{ _t('Create customer') }}
             </h4>
             <button type="button" class="close color-text" data-dismiss="modal">
               &times;
             </button>
           </div>
-          <div class="modal-body" v-if="loading">
-            <preloader></preloader>
-          </div>
+          <preloader v-if="loader"></preloader>
           <!--Customer form-->
-          <CustomerForm v-else ref="form" />
+          <CustomerForm ref="form" />
           <!--Customer form-->
 
           <div class="modal-footer">
@@ -25,8 +23,8 @@
               <button
                 class="btn btn-success btn-large color-main"
                 type="button"
-                id="post_announcement"
-                v-on:click="customerAction(customer_title)"
+                id="create-loyalty-customer"
+                v-on:click="customerAction()"
               >
                 {{ _t('Save') }}
               </button>
@@ -44,26 +42,20 @@
         </div>
       </div>
     </div>
-    <InformationPopup
-      :responseInformation="customerCreateStatus.message.flash_message"
-      title="Information"
-    />
   </div>
   <!-- End customer Model -->
 </template>
 
 <script>
 /*global $ */
-import { mapActions, mapState, mapGetters } from 'vuex'
-import InformationPopup from '@/components/pos/content/InformationPopup'
-import CustomerForm from './CustomerForm'
-import Preloader from '@/components/util/Preloader'
+import { mapActions, mapGetters, mapState } from 'vuex'
+import CustomerForm from './LoyaltyCustomerForm'
+import Preloader from '@/components/util/progressbar'
 
 export default {
-  name: 'CreateNewCustomer',
+  name: 'CreateLoyaltyCustomer',
   components: {
     Preloader,
-    InformationPopup,
     CustomerForm,
   },
   data() {
@@ -73,17 +65,14 @@ export default {
   },
   computed: {
     ...mapGetters('location', ['_t']),
-    ...mapState('customer', ['loading']),
-    ...mapState({
-      customer_title: state => state.customer.modalStatus,
-      customerCreateStatus: state => state.customer.responseInformation,
-    }),
+    ...mapState('loyalty', ['customer_status', 'loader']),
   },
   methods: {
-    ...mapActions('customer', ['createAction', 'updateAction']),
+    ...mapActions('loyalty', ['createCustomer']),
     displayValidationErrors(errorData) {
       let error = ''
       let validationError = {}
+      // eslint-disable-next-line no-debugger
       if (errorData && errorData['status'] == 'form_errors') {
         $.each(errorData['message'], function(key, val) {
           $.each(val, function(index, data) {
@@ -103,45 +92,24 @@ export default {
         }
         this.$store.commit('customer/SET_RESPONSE_MESSAGES', validationError)
         $('#close-customer').click()
-        $('#customer').modal('hide')
+        $('#customer-loyalty').modal('toggle')
         $('#information-popup').modal('show')
       } else {
-        $('#post_announcement').attr('disabled', false)
+        $('#create-loyalty-customer').attr('disabled', false)
         $('#information-popup').modal('show')
       }
     },
-    customerAction(modalStatus) {
+    customerAction() {
       const errors = this.$refs.form.validate()
       if (errors.count === 0) {
-        $('#post_announcement').attr('disabled', true) //Disable Save button if pressed
+        // $('#create-loyalty-customer').attr('disabled', true) //Disable Save button if pressed
         const customerData = this.$refs.form.getData()
-        if (modalStatus == 'Add') {
-          this.createAction({
-            data: customerData,
-            model: 'brand_customers',
-            customer: false,
-          }).then(() => {
-            let errorData = this.customerCreateStatus
-            this.displayValidationErrors(errorData)
-            $('#customer').modal('hide')
-          })
-        }
-        if (modalStatus == 'Edit') {
-          let actionDetails = {
-            id: localStorage.getItem('editItemKey'),
-            action: 'edit',
-            model: 'brand_customers',
-            data: customerData,
-          }
-          this.updateAction(actionDetails)
-          $('#close-customer').click()
-          $('#post_announcement').attr('disabled', false)
-          $('#information-popup').modal('show')
-        }
-        /*if (
-                      this.customerCreateStatus &&
-                      this.customerCreateStatus.status === 'ok'
-                    ) {}*/
+        this.createCustomer(customerData).then(() => {
+          let errorData = this.customer_status
+          this.displayValidationErrors(errorData)
+          $('#create-loyalty-customer').attr('disabled', false)
+          $('#customer-loyalty').modal('hide')
+        })
       }
     },
   },
@@ -153,7 +121,7 @@ export default {
 @import '@/assets/scss/mixins.scss';
 
 @include responsive(mobile) {
-  #post_announcement {
+  #create-loyalty-customer {
     background-color: $green-middle;
     border: none;
   }

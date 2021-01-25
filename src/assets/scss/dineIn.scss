@@ -1479,11 +1479,14 @@ div {
     input {
       &.qty {
         border: 1px solid #d8dce1;
-        height: $px60;
+        height: $px79;
 
         &:focus {
           box-shadow: none;
         }
+      }
+      &.tdraw {
+        height: $px90;
       }
     }
   }

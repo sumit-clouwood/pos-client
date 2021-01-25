@@ -61,7 +61,18 @@
                               {{ order.balance_due + ' ' + order.currency }}
                             </div>
                           </div>
-                          <div class="order_time">
+                          <div
+                            class="order_time"
+                            v-if="order.future_order_datetime !== ''"
+                          >
+                            {{
+                              convertDatetime(
+                                order.future_order_datetime,
+                                timezoneString
+                              )
+                            }}
+                          </div>
+                          <div class="order_time" v-else>
                             {{
                               convertDatetime(
                                 order.real_created_datetime,
@@ -278,6 +289,9 @@ export default {
       // 'availableStores',
       // 'deliveryOrderStatus',
     ]),
+    privateContext() {
+      return this.$store.state.auth.token
+    },
   },
   updated() {
     // eslint-disable-next-line no-console
@@ -342,9 +356,10 @@ export default {
                 storeId,
                 scope.isAudioPlaying
               )
-              $('#online-order')
-                .dialog()
-                .dialog('open')
+              if (scope.privateContext)
+                $('#online-order')
+                  .dialog()
+                  .dialog('open')
               if (!scope.isAudioPlaying) scope.playSound()
               // clearTimeout(scope.interval)
             }
@@ -365,7 +380,7 @@ export default {
     getOnlineOrders() {
       let scope = this
       this.$store.dispatch('deliveryManager/getOnlineOrders').then(() => {
-        if (scope.onlineOrders.count > 0) {
+        if (scope.onlineOrders.count > 0 && scope.privateContext) {
           $('#online-order')
             .dialog()
             .dialog('open')
@@ -430,6 +445,8 @@ export default {
 .order-delivery-area {
   width: 95% !important;
   margin: auto;
+  max-height: 41px;
+  overflow: scroll;
 }
 .active {
   background-color: blueviolet;
