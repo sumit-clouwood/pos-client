@@ -103,7 +103,7 @@ export default {
         }
         this.$store.commit('customer/SET_RESPONSE_MESSAGES', validationError)
         $('#close-customer').click()
-        $('#customer').modal('toggle')
+        $('#customer').modal('hide')
         $('#information-popup').modal('show')
       } else {
         $('#post_announcement').attr('disabled', false)
