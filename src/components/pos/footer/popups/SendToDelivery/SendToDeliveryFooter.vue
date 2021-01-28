@@ -161,12 +161,23 @@ export default {
       selectedCustomer: state => state.customer.customer.name,
     }),
     ...mapState('order', ['needSupervisorAccess']),
+    ...mapState('sync', ['online']),
     ...mapGetters('order', ['subTotal']),
     ...mapGetters('location', ['_t', 'formatPrice']),
     ...mapGetters('payment', ['methods']),
   },
   methods: {
     calculateLoyaltyAmount() {
+      if (!this.online) {
+        this.$store.commit('order/setAlert', {
+          type: 'error',
+          title: this._t('Check your network connection'),
+          msg: this._t('Loyalty will not work on offline mode'),
+        })
+        $('#alert-popup').modal('show')
+        this.$store.commit('checkoutForm/forceCash', true)
+        return false
+      }
       this.$store.dispatch('checkoutForm/calculateLoyaltyAmountForItem')
       this.loyalty_active = true
       if (
