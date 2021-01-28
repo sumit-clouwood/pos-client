@@ -415,10 +415,6 @@ const actions = {
     let loyalty_balance = loyalty_card ? parseFloat(loyalty_card.balance) : 0
     const loyalty = rootState.customer.customerLoyalty.details
     let maxRedeem = parseFloat(rootState.location.brand.maximum_redeem)
-    // eslint-disable-next-line no-debugger
-    debugger
-    // eslint-disable-next-line no-unused-vars
-    let total_order_amount = parseFloat(rootGetters['order/orderTotal'])
     let items = rootGetters['order/items']
     let orderType = rootGetters['order/orderType']
     let order_type_spend = orderType + '_spend_points'
@@ -442,16 +438,19 @@ const actions = {
         })
         let loyalty_for_item = 0
         let loyalty_apply_on_price = 0
-        if (orderDiscount) {
-          loyalty_apply_on_price = parseFloat(
-            rootGetters['order/itemGrossPriceDiscounted'](item)
-          )
-        } else {
-          loyalty_apply_on_price = parseFloat(
-            rootGetters['order/itemGrossPriceDiscounted'](item)
-          )
-        }
         if (loyalty_action && loyalty_balance > 0.001) {
+          if (orderDiscount) {
+            loyalty_apply_on_price = parseFloat(
+              rootGetters['discount/getOrderDiscountItemAmount'](
+                item,
+                orderDiscount
+              )
+            )
+          } else {
+            loyalty_apply_on_price = parseFloat(
+              rootGetters['order/itemGrossPriceDiscounted'](item)
+            )
+          }
           if (!loyalty_details_ids.includes(loyalty_action._id)) {
             total_of_one_point_redeem = loyalty_action.one_point_redeems_to
           }

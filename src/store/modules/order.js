@@ -350,11 +350,6 @@ const getters = {
   items: state => state.items,
 
   orderType: state => state.orderType.OTApi,
-
-  /*getOrderDiscountItemAmount: state => (item, order_discount) => {
-    /!*order discount: 100*!/
-    /!* total item/ 100*!/
-  },*/
 }
 
 // actions
