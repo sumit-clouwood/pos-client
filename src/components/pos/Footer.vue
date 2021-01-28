@@ -129,7 +129,7 @@
           <template v-if="enabled(CONST.MODULE_LOYALTY)">
             <li
               data-toggle="modal"
-              data-target="#search-loyalty-customer"
+              :data-target="loaylty_apply_modal"
               class="footer-slider-list-item color-secondary"
               :class="[{ loyaltyApplied: loyaltyCard }]"
               @click="loyaltyHendlerChange"
@@ -604,6 +604,7 @@ export default {
       title: '',
       status: 0,
       message: '',
+      loaylty_apply_modal: '#search-loyalty-customer',
     }
   },
   computed: {
@@ -676,7 +677,20 @@ export default {
     },
 
     loyaltyHendlerChange() {
-      this.$store.dispatch('loyaltyHendlerChange')
+      if (this.online) {
+        this.loaylty_apply_modal = '#search-loyalty-customer'
+        this.$store.dispatch('loyaltyHendlerChange')
+      } else {
+        this.loaylty_apply_modal = ''
+        this.$store.commit('order/setAlert', {
+          type: 'error',
+          title: this._t('Check your network connection'),
+          msg: this._t('Loyalty will not work on offline mode'),
+        })
+        $('#alert-popup').modal('show')
+        this.$store.commit('checkoutForm/forceCash', true)
+        return false
+      }
     },
     newOrders() {
       this.vbutton = 'hold'

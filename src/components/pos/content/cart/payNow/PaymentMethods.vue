@@ -68,6 +68,8 @@ export default {
       selectedModal: state => state.location.setModal,
       loyaltyCard: state => state.customer.customerLoyalty.card,
     }),
+    ...mapGetters('location', ['_t']),
+    ...mapState('sync', ['online']),
     ...mapGetters(['payNowCalcHendler']),
     ...mapGetters({
       payable: 'checkoutForm/payable',
@@ -119,7 +121,7 @@ export default {
       this.methodCardHendlerChange(slide.priority)
 
       if (this.$store.getters['checkoutForm/payable'] > 0) {
-        if (slide.type == CONST.LOYALTY) {
+        if (slide.type == CONST.LOYALTY && this.online) {
           if (this.selectedModal == '#manage-customer') {
             showModal('#search-loyalty-customer')
           } else {
@@ -128,15 +130,23 @@ export default {
             // showModal('#loyalty-payment')
             // added loyalty direct
           }
+        } else {
+          this.setErrorMessage(
+            'Check your network connection',
+            'Loyalty will not work on offline mode'
+          )
         }
       }
       return ''
     },
-    setErrorMessage() {
+    setErrorMessage(
+      title = 'Partial Payment error',
+      msg = 'Partial Payments not allowed for Aggregator types'
+    ) {
       this.$store.commit('order/setAlert', {
         type: 'error',
-        title: 'Partial Payment error',
-        msg: 'Partial Payments not allowed for Aggregator types',
+        title: this._t(title),
+        msg: this._t(msg),
       })
       $('#alert-popup').modal('show')
       this.$store.commit('checkoutForm/forceCash', true)
