@@ -179,7 +179,7 @@ export default {
         return false
       }
       this.$store.dispatch('checkoutForm/calculateLoyaltyAmountForItem')
-      this.loyalty_active = true
+      // this.loyalty_active = true
       if (
         this.methods &&
         this.methods.loyalty &&
@@ -188,8 +188,6 @@ export default {
         let loyalty_card = this.methods.loyalty.find(
           payment => payment.type === CONST.LOYALTY
         )
-        // eslint-disable-next-line no-console
-        console.log(loyalty_card, 'loyalty_card')
         this.$store.commit('checkoutForm/setPaymentMethodLoyalty', loyalty_card)
         this.$store.dispatch('checkoutForm/addAmount')
       }
