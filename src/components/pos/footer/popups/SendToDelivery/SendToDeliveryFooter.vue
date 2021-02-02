@@ -250,8 +250,12 @@ export default {
                 errors = response.error
               }
               this.errors = errors
-
-              $('#payment-msg').modal('hide')
+              /* Added this handle because error msg not showing when click on confirmation popup, */
+              if (typeof response == 'string') {
+                $('#payment-msg').modal('show')
+              } else {
+                $('#payment-msg').modal('hide')
+              }
               $('#order-confirmation').modal('show')
               setTimeout(function() {
                 $('#confirm_announcement').prop('disabled', false)
