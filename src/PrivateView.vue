@@ -9,12 +9,14 @@ other components are nested within.
     <!--<router-link to="/about">About</router-link>-->
     <!--</div>-->
     <div v-if="loggedIn && storeContext">
+      <!-- if there is a user error show user error -->
       <div v-if="userError">
         <div class="center-error">
           <h3>{{ userError }}</h3>
           <p>{{ userErrorInstructions }}</p>
         </div>
       </div>
+      <!-- else if there is a system error show user error -->
       <section v-else-if="systemError" class="center-error">
         <h3>
           We're sorry, we're not able to proceed at the moment, please try back
@@ -23,10 +25,14 @@ other components are nested within.
         <h5>Technical info:</h5>
         <p v-html="systemError"></p>
       </section>
-      <h5 v-if="showForceLogout">
-        Logging out in
-        <span class="text-danger">{{ secondsToLogout }}</span> seconds
-      </h5>
+      <!-- check if there is any user or system error -->
+      <template v-if="userError || systemError">
+        <h5 v-if="showForceLogout">
+          Logging out in
+          <span class="text-danger">{{ secondsToLogout }}</span> seconds
+        </h5>
+      </template>
+      <!-- there is no system or user error, check loading -->
       <div v-else-if="loading">
         <ul class="ullist-inventory-location loading-view pl-0 pt-2">
           <li class="p-3">
@@ -209,15 +215,16 @@ export default {
             } else {
               this.userError = error
             }
+
+            //logout here after 3 sec
+            const logoutInterval = setInterval(() => {
+              this.secondsToLogout--
+              if (this.secondsToLogout <= 0) {
+                clearInterval(logoutInterval)
+                this.$store.dispatch('auth/logout', 'token_not_exists')
+              }
+            }, 1000)
           }
-          //logout here after 3 sec
-          const logoutInterval = setInterval(() => {
-            this.secondsToLogout--
-            if (this.secondsToLogout <= 0) {
-              clearInterval(logoutInterval)
-              this.$store.dispatch('auth/logout')
-            }
-          }, 1000)
         })
     },
     resetTokenNumber() {
