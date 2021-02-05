@@ -199,7 +199,6 @@
 <script>
 /* global $ */
 import { mapState, mapGetters, mapActions } from 'vuex'
-import AuthService from '@/services/data/AuthService'
 import bootstrap from '@/bootstrap'
 import SwitchStore from '@/components/commonButtons/SwitchStore'
 import TopSidebarMenu from '@/components/util/TopSidebarMenu'
@@ -334,12 +333,7 @@ export default {
       $('.btn-menu-close ').removeClass('active')
       $('#bkgOverlay').fadeOut()
     },
-    logoutCashier() {
-      localStorage.setItem('token', '')
-      this.$store.commit('auth/SET_TOKEN', '')
-      this.$store.commit('auth/LOGOUT_ACTION', 'switchCashier')
-      AuthService.logout().then(() => {})
-    },
+
     /*...mapActions('customer', ['fetchCustomerAddress']),*/
   },
   mounted() {

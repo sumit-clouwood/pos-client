@@ -171,9 +171,11 @@ export default {
           this.progressIncrement = 0
         }
       }, 1000)
+      console.log('bootstrap.setup')
       bootstrap
         .setup(this.$store)
         .then(() => {
+          console.log('all apis loaded')
           setTimeout(() => {
             clearInterval(interval)
             this.progressIncrement = 100
@@ -214,7 +216,7 @@ export default {
               this.secondsToLogout--
               if (this.secondsToLogout <= 0) {
                 clearInterval(logoutInterval)
-                this.$store.dispatch('auth/logout', 'token_not_exists')
+                this.$store.dispatch('auth/logout')
               }
             }, 1000)
           }
@@ -262,11 +264,6 @@ export default {
   },
   created() {},
   watch: {
-    currentRoute(any) {
-      if (any) {
-        this.$router.replace(any)
-      }
-    },
     // eslint-disable-next-line no-unused-vars
     $route(to, from) {
       // this.$store.commit('deliveryManager/LIST_TYPE', 'New Orders')
@@ -349,6 +346,8 @@ export default {
   },
   //life cycle hooks
   mounted() {
+    console.log('In private view mounted')
+
     // if (!this.$store.state.context.storeId) {
     //   this.errored = 'Please provide brand id and store id in url'
     //   this.storeContext = false
@@ -365,15 +364,7 @@ export default {
       this.tableId = this.$route.params.table_id
     }
 
-    if (
-      (this.$store.state.auth.logoutAction === 'switchCashier' ||
-        localStorage.getItem('logoutAction') === 'switchCashier') &&
-      this.apisLoaded
-    ) {
-      this.loading = false
-    } else {
-      this.setup()
-    }
+    this.setup()
 
     let vh = window.innerHeight * 0.01
     // Then we set the value in the --vh custom property to the root of the document

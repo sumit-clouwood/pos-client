@@ -16,7 +16,6 @@ const state = {
   cashiers: [],
   cashierEmail: '',
   searchKeyword: '',
-  logoutAction: '',
   brandAccessType: false,
   availableStoreGroups: false,
   storeGroupId: false,
@@ -183,21 +182,17 @@ const actions = {
         .catch(error => reject(error))
     })
   },
-  pinlogin({ commit, dispatch }, { pincode, brand, store }) {
+  pinlogin({ commit, dispatch, rootGetters }, { pincode }) {
     return new Promise((resolve, reject) => {
-      AuthService.pinlogin({
-        //email: state.cashierEmail,
-        store_id: store,
-        brand_id: brand,
+      let data = {
         swipe_card: pincode,
-      })
+      }
+      data['store_id'] = rootGetters['context/store_id']
+      data['brand_id'] = rootGetters['context/brand_id']
+      AuthService.pinlogin(data)
         .then(response => {
           localStorage.setItem('token', response.data.token)
           commit(mutation.SET_TOKEN, response.data.token)
-
-          commit('context/SET_BRAND_ID', brand, {
-            root: true,
-          })
 
           dispatch('getUserDetails', response.data.user.user_id).then(() => {
             resolve()
@@ -301,7 +296,7 @@ const actions = {
     commit('surcharge/RESET', true, { root: true })
     commit('payment/RESET', true, { root: true })
   },
-  logout({ commit, dispatch }, msg) {
+  logout({ commit, dispatch, rootGetters }, data = {}) {
     return new Promise(resolve => {
       localStorage.setItem('token', '')
       localStorage.setItem('brand_id', '')
@@ -310,21 +305,19 @@ const actions = {
 
       dispatch('resetModules')
       commit('customer/IS_BRAND_HAS_DELIVERY_ORDER', true, { root: true })
-      commit('context/RESET', null, { root: true })
       commit('sync/reset', {}, { root: true })
       commit('location/RESET', true, { root: true })
       commit('location/USER_SHORT_DETAILS', true, { root: true }) // added  here because it should not reset when checkout, its hide user details
-      if (msg != 'token_not_exists') {
-        commit(mutation.LOGOUT_ACTION, '')
-        DataService.setContext({
-          brand: null,
-          store: null,
-        })
-      }
 
-      if (localStorage.getItem('token') || msg == 'token_not_exists') {
-        AuthService.logout(msg).then(() => {})
-      }
+      //preserve brand_id which is needed for switch cashier api
+      commit('context/RESET', data, { root: true })
+
+      DataService.setContext({
+        brand: rootGetters['context/brand'],
+        store: rootGetters['context/store'],
+      })
+
+      AuthService.logout().then(() => {})
 
       resolve()
     })
@@ -432,11 +425,6 @@ const actions = {
 const mutations = {
   [mutation.SET_TOKEN](state, token) {
     state.token = token
-  },
-
-  [mutation.LOGOUT_ACTION](state, action) {
-    state.logoutAction = action
-    localStorage.setItem('logoutAction', action)
   },
 
   [mutation.SET_CASHIER_EMAIL](state, email) {

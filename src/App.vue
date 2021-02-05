@@ -45,23 +45,23 @@ export default {
     privateContext() {
       this.setupRouting()
     },
-    online: 'switchCashierOnline',
+    //online: 'switchCashierOnline',
   },
 
   methods: {
-    switchCashierOnline() {
-      if (this.online && localStorage.getItem('offline_mode_login'))
-        this.$store
-          .dispatch('auth/pinlogin', {
-            pincode: this.$store.state.auth.offlinePinCode,
-            brand: this.$store.state.context.brandId,
-            store: this.$store.state.context.storeId,
-          })
-          .then(() => {
-            localStorage.setItem('offline_mode_login', false)
-            this.$store.commit('auth/SET_OFFLINE_PIN', '')
-          })
-    },
+    // switchCashierOnline() {
+    //   if (this.online && localStorage.getItem('offline_mode_login'))
+    //     this.$store
+    //       .dispatch('auth/pinlogin', {
+    //         pincode: this.$store.state.auth.offlinePinCode,
+    //         brand: this.$store.state.context.brandId,
+    //         store: this.$store.state.context.storeId,
+    //       })
+    //       .then(() => {
+    //         localStorage.setItem('offline_mode_login', false)
+    //         this.$store.commit('auth/SET_OFFLINE_PIN', '')
+    //       })
+    // },
     setup() {
       this.setupRouting()
       this.$store.dispatch('auth/checkLogin')
