@@ -202,7 +202,13 @@ const getters = {
     })
     return Num.round(subTotal)
   },
-
+  subTotalWithTaxes: (state, getters) => {
+    let subTotal = 0
+    getters.items.forEach(item => {
+      subTotal += parseFloat(getters.itemGrossPrice(item)) * item.quantity
+    })
+    return Num.round(subTotal)
+  },
   itemGrossDiscount: (state, getters) => item => {
     if (item.discountRate) {
       //if value type discount

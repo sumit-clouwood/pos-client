@@ -441,10 +441,7 @@ const actions = {
         if (loyalty_action && loyalty_balance > 0.001) {
           if (orderDiscount) {
             loyalty_apply_on_price = parseFloat(
-              rootGetters['discount/getOrderDiscountItemAmount'](
-                item,
-                orderDiscount
-              )
+              rootGetters['discount/getOrderDiscountItemAmount'](item)
             )
           } else {
             loyalty_apply_on_price = parseFloat(
