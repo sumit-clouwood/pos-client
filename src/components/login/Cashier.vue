@@ -2,6 +2,7 @@
   <div
     class="content-wrapper"
     :style="{ 'background-image': 'url(' + bg + ')' }"
+    v-if="!loggedIn"
   >
     <div class="admin-login-wrapper">
       <div class="login-wrapper">
@@ -56,6 +57,9 @@ export default {
           ? state.location.store.address + ', ' + state.location.store.city
           : null,
     }),
+    loggedIn() {
+      return this.$store.state.auth.token
+    },
   },
   components: {
     Lockpad,

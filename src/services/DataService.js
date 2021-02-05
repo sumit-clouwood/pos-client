@@ -101,7 +101,7 @@ export default {
 
   fetchFromServer(url, resolve, reject) {
     if (!localStorage.getItem('token')) {
-      this.store.dispatch('auth/logout', 'token_not_exists')
+      this.store.dispatch('auth/logout')
       return Promise.reject('token expired or not found, logout')
     }
 
@@ -167,7 +167,7 @@ export default {
   getLive(url, level) {
     url = this.getContextUrl(url, level)
     if (!localStorage.getItem('token')) {
-      this.store.dispatch('auth/logout', 'token_not_exists')
+      this.store.dispatch('auth/logout')
       return Promise.reject('token expired or not found, logout')
     }
 
@@ -211,7 +211,7 @@ export default {
 
   post(url, data, level) {
     if (!localStorage.getItem('token')) {
-      this.store.dispatch('auth/logout', 'token_not_exists')
+      this.store.dispatch('auth/logout')
       return Promise.reject('token expired or not found, logout')
     }
 

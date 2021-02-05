@@ -41,6 +41,9 @@ const getters = {
       return ''
     }
   },
+  brand_id: state => state.brandId,
+  store_id: state => state.storeId,
+
   storeName: state => storeId =>
     state.multiStores.find(store => store._id == storeId).name,
 }
@@ -81,11 +84,19 @@ const mutations = {
   [mutation.SET_ROUTE](state, any) {
     state.currentRoute = any
   },
-  [mutation.RESET](state) {
-    state.store = null
-    state.brand = null
-    state.storeId = null
-    state.brandId = null
+  [mutation.RESET](state, data) {
+    if (data && data.preserve && data.preserve.includes('brand_id')) {
+      //preserve brand
+    } else {
+      state.brand = null
+      state.brandId = null
+    }
+    if (data && data.preserve && data.preserve.includes('store_id')) {
+      //preserve brand
+    } else {
+      state.store = null
+      state.storeId = null
+    }
   },
   [mutation.SET_MULTI_STORES](state, multiStores) {
     state.multiStores = multiStores
