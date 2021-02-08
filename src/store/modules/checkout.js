@@ -1590,12 +1590,13 @@ const actions = {
             commit('deliveryManager/LIST_TYPE', 'New Orders', { root: true })
             commit('deliveryManager/SET_DM_ORDER_STATUS', 'in-progress', { root:  true })
             commit('deliveryManager/SET_DM_PAGE_ID', 'home_delivery_new', { root:  true })
-
             const msg = rootGetters['location/_t']('Order placed Successfully')
             dispatch('setMessage', {
               result: 'success',
               msg: msg,
             }).then(() => {
+              /*delivery manager redirection stop working than I add route here*/
+              commit(mutation.SET_ROUTE, { name: 'DeliveryManager' })
               resolve(response.data)
               commit(mutation.PRINT, true)
               // dispatch('iosWebviewPrintAction', { orderData: state.order })
@@ -1895,6 +1896,8 @@ const actions = {
     // example update (NOT MODIFY) dine in order
     //AT THIS TIME ORDER HAS BEEN RESET SO WE DON'T HAVE ANY ORDER DATA EXCEPT ROUTE
     commit('context/SET_ROUTE', state.route, { root: true })
+    /*after set context route reset route from here*/
+    commit(mutation.SET_ROUTE, null)
   },
   reset({ state, commit, dispatch, getters }, full = true) {
     if (['dine-in-order-preview'].includes(state.paymentAction)) {
