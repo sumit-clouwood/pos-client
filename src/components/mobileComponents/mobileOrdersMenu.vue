@@ -8,7 +8,7 @@
         class="footer-slider-list-item color-secondary"
         data-toggle="modal"
         data-target="#manage-customer"
-        v-show="!carhop && !waiter"
+        v-show="!carhop && !waiter && !cashier_walkin"
       >
         <!--@click="openManageCustomer"-->
         <svg
@@ -68,7 +68,7 @@
         </a>
       </div>
       <div
-        v-show="!carhop && !waiter"
+        v-show="!carhop && !waiter && !cashier_walkin"
         class="footer-slider-list-item"
         data-toggle="modal"
         data-dismiss="modal"
@@ -125,7 +125,7 @@
         class="footer-slider-list-item"
         data-toggle="modal"
         data-target="#dining-option"
-        v-show="!carhop && !waiter"
+        v-show="!carhop && !waiter && !cashier_walkin"
       >
         <svg
           width="15"
@@ -237,7 +237,7 @@ export default {
           ? '#manage-customer'
           : state.location.setModal,
     }),
-    ...mapGetters('auth', ['waiter', 'carhop']),
+    ...mapGetters('auth', ['waiter', 'carhop', 'cashier_walkin']),
     ...mapState('order', ['orderType', 'cartType']),
   },
   methods: {
