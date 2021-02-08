@@ -121,20 +121,22 @@ export default {
       this.methodCardHendlerChange(slide.priority)
 
       if (this.$store.getters['checkoutForm/payable'] > 0) {
-        if (slide.type == CONST.LOYALTY && this.online) {
-          if (this.selectedModal == '#manage-customer') {
-            showModal('#search-loyalty-customer')
+        if (slide.type == CONST.LOYALTY) {
+          if (this.online) {
+            if (this.selectedModal == '#manage-customer') {
+              showModal('#search-loyalty-customer')
+            } else {
+              this.$store.dispatch('checkoutForm/calculateLoyaltyAmountForItem')
+              // this.$store.dispatch('checkoutForm/calculateSpendLoyalty')
+              // showModal('#loyalty-payment')
+              // added loyalty direct
+            }
           } else {
-            this.$store.dispatch('checkoutForm/calculateLoyaltyAmountForItem')
-            // this.$store.dispatch('checkoutForm/calculateSpendLoyalty')
-            // showModal('#loyalty-payment')
-            // added loyalty direct
+            this.setErrorMessage(
+              'Check your network connection',
+              'Loyalty will not work on offline mode'
+            )
           }
-        } else {
-          this.setErrorMessage(
-            'Check your network connection',
-            'Loyalty will not work on offline mode'
-          )
         }
       }
       return ''
