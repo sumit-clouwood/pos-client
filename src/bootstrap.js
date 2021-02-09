@@ -23,8 +23,9 @@ export default {
             resolve()
           }
         })
-        // .catch(error => reject(error))
-        .catch(resolve())
+        .catch(error => {
+          reject(error)
+        })
     })
   },
   setup(store) {
@@ -207,7 +208,9 @@ export default {
               reject('subscription')
             })
         })
-        .catch(error => reject(error))
+        .catch(error => {
+          reject(error)
+        })
     })
   },
 

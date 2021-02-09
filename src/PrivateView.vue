@@ -23,7 +23,7 @@ other components are nested within.
         <h5>Technical info:</h5>
         <p v-html="systemError"></p>
       </section>
-      <h5 v-if="userError || systemError" class="center-error">
+      <h5 v-if="showForceLogout">
         Logging out in
         <span class="text-danger">{{ secondsToLogout }}</span> seconds
       </h5>
@@ -93,6 +93,7 @@ export default {
       subscriptionError: false,
       secondsToLogout: 30,
       userErrorInstructions: '',
+      showForceLogout: false,
     }
   },
   methods: {
@@ -161,8 +162,9 @@ export default {
       }, 3000)
     },
     setup() {
-      this.secondsToLogout = 3
+      this.secondsToLogout = 30
       this.subscriptionError = false
+      this.showForceLogout = false
 
       const interval = setInterval(() => {
         this.progressIncrement += 10
@@ -188,7 +190,27 @@ export default {
         .catch(error => {
           this.loading = false
           console.trace(error)
-          //logout here after 10 sec
+
+          if (error === 'subscription') {
+            //this.showForceLogout = false
+            this.userError = this._t('Store subscription has been expired.')
+            this.userErrorInstructions = this._t(
+              'Please contact your store owner for access.'
+            )
+          } else {
+            //this.showForceLogout = true
+            if (error.data && error.data.error) {
+              this.userError = error.data.error
+              this.userErrorInstructions = this._t(
+                'Please contact your store owner.'
+              )
+            } else if (error.stack) {
+              this.systemError = error.stack
+            } else {
+              this.userError = error
+            }
+          }
+          //logout here after 3 sec
           const logoutInterval = setInterval(() => {
             this.secondsToLogout--
             if (this.secondsToLogout <= 0) {
@@ -196,22 +218,6 @@ export default {
               this.$store.dispatch('auth/logout')
             }
           }, 1000)
-
-          if (error === 'subscription') {
-            this.userError = this._t('Store subscription has been expired.')
-            this.userErrorInstructions = this._t(
-              'Please contact your store owner for access.'
-            )
-          } else if (error.data && error.data.error) {
-            this.userError = error.data.error
-            this.userErrorInstructions = this._t(
-              'Please contact your store owner.'
-            )
-          } else if (error.stack) {
-            this.systemError = error.stack
-          } else {
-            this.userError = error
-          }
         })
     },
     resetTokenNumber() {
