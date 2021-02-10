@@ -66,6 +66,9 @@ const actions = {
           .loadStore()
           .then(() => {
             resolve()
+            dispatch('sync/setLoader', false, {
+              root: true,
+            })
           })
           .catch(error => {
             reject(error)

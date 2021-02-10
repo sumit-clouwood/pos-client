@@ -193,7 +193,7 @@ export default {
       } else {
         //USER has only one store
         this.store.commit('context/SET_STORE_ID', user.item.brand_stores[0])
-        this.store.commit('context/CURRENT_STORE', userstores[0])
+        this.store.commit('context/SET_CURRENT_STORE', userstores[0])
         //set context to dataservice
       }
     }
@@ -415,7 +415,7 @@ export default {
         return
       }
 
-      this.store.commit('sync/status', status)
+      $store.commit('sync/status', status)
       if (process.env.NODE_ENV === 'production' && msg === 'on') {
         const nowTime = new Date().getTime() //miliseconds
 
