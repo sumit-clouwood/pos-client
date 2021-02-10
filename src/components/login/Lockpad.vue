@@ -63,7 +63,6 @@ export default {
     ...mapGetters('context', ['store']),
     ...mapState('context', ['brandId', 'storeId']),
     ...mapState('sync', ['online']),
-    ...mapGetters('sync', ['loadingData']),
     ...mapActions('auth', ['filterUserInOffline']),
   },
   components: { Progress },
