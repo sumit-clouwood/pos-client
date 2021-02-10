@@ -5,30 +5,34 @@ import * as PERMS from '@/const/permissions'
 //import db from '@/services/network/DB'
 
 // initial state
-const state = {
-  token: null,
-  deviceId: null,
-  refreshToken: null,
-  rolePermissions: null,
-  userDetails: { item: false },
-  permissions: false,
-  waiters: [],
-  cashiers: [],
-  cashierEmail: '',
-  searchKeyword: '',
-  brandAccessType: false,
-  availableStoreGroups: false,
-  storeGroupId: false,
-  storeUsers: [],
-  role: null,
-  cashierRoleId: false,
-  offlinePinCode: null,
-  deviceType: false,
+const getDefaults = () => {
+  return {
+    token: null,
+    deviceId: null,
+    refreshToken: null,
+    rolePermissions: null,
+    userDetails: { item: false },
+    permissions: false,
+    waiters: [],
+    cashiers: [],
+    cashierEmail: '',
+    searchKeyword: '',
+    brandAccessType: false,
+    availableStoreGroups: false,
+    storeGroupId: false,
+    storeUsers: [],
+    role: null,
+    cashierRoleId: false,
+    offlinePinCode: null,
+    deviceType: false,
+    currentLoggedInUserId: undefined,
+  }
 }
-
+const state = getDefaults()
 // getters
 
 const getters = {
+  current_user: state => state.userDetails.item,
   allowed: state => resource => {
     if (!state.role) {
       //super admin
@@ -154,7 +158,7 @@ const actions = {
     localStorage.setItem('objDevice', JSON.stringify(objDevice))
     commit(mutation.DEVICE_TYPE, objDevice)
   },
-  login({ commit, dispatch }, data) {
+  login({ commit }, data) {
     return new Promise((resolve, reject) => {
       AuthService.login(data)
         .then(response => {
@@ -162,19 +166,12 @@ const actions = {
             reject(response.data.error)
             return false
           }
+          commit('SET_CURRENT_LOGGED_IN_USER_ID', response.data.user.user_id)
           localStorage.setItem('token', response.data.token)
           //wait for localstorage to be updated
           setTimeout(() => {
-            dispatch('location/setContext', null, { root: true })
-              .then(() => {
-                dispatch('getUserDetails', response.data.user.user_id).then(
-                  () => {
-                    commit(mutation.SET_TOKEN, response.data.token)
-                    resolve(response.data.token)
-                  }
-                )
-              })
-              .catch(error => reject(error))
+            commit(mutation.SET_TOKEN, response.data.token)
+            resolve(response.data.token)
           }, 100)
 
           //wait for localstorage to be updated
@@ -182,7 +179,7 @@ const actions = {
         .catch(error => reject(error))
     })
   },
-  pinlogin({ commit, dispatch, rootGetters }, { pincode }) {
+  pinlogin({ commit, rootGetters }, { pincode }) {
     return new Promise((resolve, reject) => {
       let data = {
         swipe_card: pincode,
@@ -191,12 +188,9 @@ const actions = {
       data['brand_id'] = rootGetters['context/brand_id']
       AuthService.pinlogin(data)
         .then(response => {
+          commit('SET_CURRENT_LOGGED_IN_USER_ID', response.data.user.user_id)
           localStorage.setItem('token', response.data.token)
           commit(mutation.SET_TOKEN, response.data.token)
-
-          dispatch('getUserDetails', response.data.user.user_id).then(() => {
-            resolve()
-          })
         })
         .catch(error => {
           reject(error)
@@ -323,16 +317,15 @@ const actions = {
     })
   },
 
-  getUserDetails({ commit }, userId) {
-    return new Promise((resolve, reject) => {
-      if (userId) {
-        AuthService.userDetails(userId).then(response => {
-          commit(mutation.USER_DETAILS, response.data)
-          resolve(response.data)
-        })
-      } else {
-        reject()
+  getUserDetails({ commit, state }, userId) {
+    return new Promise(resolve => {
+      if (!userId) {
+        userId = state.currentLoggedInUserId
       }
+      AuthService.userDetails(userId).then(response => {
+        commit(mutation.USER_DETAILS, response.data)
+        resolve(response.data)
+      })
     })
   },
   fetchRoles({ commit, getters }) {
@@ -467,12 +460,7 @@ const mutations = {
     state.searchKeyword = value
   },
   [mutation.RESET](state) {
-    state.token = null
-    state.deviceId = null
-    state.refreshToken = null
-    state.rolePermissions = null
-    state.userDetails = false
-    state.permissions = false
+    Object.assign(state, getDefaults())
   },
   [mutation.SET_STORE_USERS](state, storeUsers) {
     state.storeUsers = storeUsers
@@ -482,6 +470,9 @@ const mutations = {
   },
   [mutation.SET_OFFLINE_PIN](state, offlinePinCode) {
     state.offlinePinCode = offlinePinCode
+  },
+  SET_CURRENT_LOGGED_IN_USER_ID(state, id) {
+    state.currentLoggedInUserId = id
   },
 }
 

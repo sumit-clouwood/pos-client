@@ -8,7 +8,8 @@ other components are nested within.
     <!--<router-link to="/">Home</router-link> |-->
     <!--<router-link to="/about">About</router-link>-->
     <!--</div>-->
-    <div v-if="loggedIn && storeContext">
+
+    <div v-if="loggedIn">
       <!-- if there is a user error show user error -->
       <div v-if="userError">
         <div class="center-error">
@@ -33,6 +34,12 @@ other components are nested within.
         </h5>
       </template>
       <!-- there is no system or user error, check loading -->
+      <div
+        v-else-if="haveMultipleStores && !storeId"
+        class="multiplestore-selection"
+      >
+        <MultipleStores />
+      </div>
       <div v-else-if="loading">
         <ul class="ullist-inventory-location loading-view pl-0 pt-2">
           <li class="p-3">
@@ -72,6 +79,7 @@ other components are nested within.
 </template>
 <script>
 /* eslint-disable no-console */
+/* global showModal */
 import * as CONST from '@/constants'
 import Cookie from '@/mixins/Cookie'
 import ResizeMixin from '@/mixins/ResizeHandler'
@@ -79,17 +87,18 @@ import bootstrap from '@/bootstrap'
 import Preloader from '@/components/util/Preloader'
 import { mapState, mapGetters } from 'vuex'
 import moment from 'moment-timezone'
+import MultipleStores from '@/components/MultipleStores'
 
 export default {
   name: 'PrivateView',
   props: {},
   components: {
     Preloader,
+    MultipleStores,
   },
   mixins: [Cookie, ResizeMixin],
   data: function() {
     return {
-      storeContext: true,
       loading: true,
       systemError: false,
       userError: false,
@@ -176,17 +185,22 @@ export default {
         .setup(this.$store)
         .then(() => {
           console.log('all apis loaded')
-          setTimeout(() => {
-            clearInterval(interval)
-            this.progressIncrement = 100
-          }, 100)
-          setTimeout(() => {
-            this.loading = false
-          }, 300)
+          //if multistores show the store selector
+          if (this.$store.state.context.storesLength > 1 && !this.store_id) {
+            showModal('#multiStoresModal')
+          } else {
+            setTimeout(() => {
+              clearInterval(interval)
+              this.progressIncrement = 100
+            }, 100)
+            setTimeout(() => {
+              this.loading = false
+            }, 300)
 
-          this.setupServiceWorker()
-          this.setupRoutes()
-          this.setupExternalScripts()
+            this.setupServiceWorker()
+            this.setupRoutes()
+            this.setupExternalScripts()
+          }
         })
         .catch(error => {
           this.loading = false
@@ -264,6 +278,15 @@ export default {
   },
   created() {},
   watch: {
+    storeId(newVal, oldVal) {
+      if (newVal && newVal !== oldVal) {
+        //load store data again, clear old data first and then load new data
+        //reset items, discounts, surcharges everything because each one can be store dependent
+        this.$store.dispatch('context/loadStore').then(() => {
+          this.loading = false
+        })
+      }
+    },
     // eslint-disable-next-line no-unused-vars
     $route(to, from) {
       // this.$store.commit('deliveryManager/LIST_TYPE', 'New Orders')
@@ -334,12 +357,14 @@ export default {
         state.location.store ? state.location.store.default_language : false,
     }),
     ...mapState('sync', ['modules']),
-    ...mapState('context', ['currentRoute']),
+    ...mapState('context', ['currentRoute', 'storeId']),
     ...mapGetters('auth', ['loggedIn']),
     ...mapGetters('location', ['isTokenManager', '_t']),
     ...mapState('order', ['orderType']),
     ...mapState('sync', ['online']),
     ...mapState('location', ['timezoneString', 'openHours']),
+    ...mapGetters('context', ['isStoreSelected', 'haveMultipleStores']),
+
     apisLoaded() {
       return this.$store.state.location.brand
     },
@@ -347,13 +372,6 @@ export default {
   //life cycle hooks
   mounted() {
     console.log('In private view mounted')
-
-    // if (!this.$store.state.context.storeId) {
-    //   this.errored = 'Please provide brand id and store id in url'
-    //   this.storeContext = false
-    // } else {
-    //   this.storeContext = true
-    // }
 
     if (this.$route.params.order_id) {
       this.orderId = this.$route.params.order_id

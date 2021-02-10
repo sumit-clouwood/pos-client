@@ -3,34 +3,38 @@ import CategoryService from '@/services/data/CategoryService'
 import * as mutation from './category/mutation-types'
 import * as CONSTANTS from '@/constants'
 // initial state
-const state = {
-  categoryImagePath: '',
-  subcategoryImagePath: '',
-  itemImagePath: '',
-  category: {},
-  categories: [],
-  subcategories: [],
-  items: [],
-  multistoreCategories: {},
-  multistoreSubcategories: {},
-  multistoreItems: {},
-  subcategory: null,
-  categoryItems: [],
-  subcategoryItems: [],
-  item: null,
-  taxData: [],
-  taxAmount: {},
-  Items: {},
-  searchTerm: '',
-  barcode: false,
-  upSelling: [],
-  isUpSellingModify: false,
-  upSellingParentItem: false,
-  measurementUnits: {},
-  itemMeasurementUnit: '',
-  itemMeasurementValue: '',
-  scaleData: '',
+const getDefaults = () => {
+  return {
+    categoryImagePath: '',
+    subcategoryImagePath: '',
+    itemImagePath: '',
+    category: {},
+    categories: [],
+    subcategories: [],
+    items: [],
+    multistoreCategories: {},
+    multistoreSubcategories: {},
+    multistoreItems: {},
+    subcategory: null,
+    categoryItems: [],
+    subcategoryItems: [],
+    item: null,
+    taxData: [],
+    taxAmount: {},
+    Items: {},
+    searchTerm: '',
+    barcode: false,
+    upSelling: [],
+    isUpSellingModify: false,
+    upSellingParentItem: false,
+    measurementUnits: {},
+    itemMeasurementUnit: '',
+    itemMeasurementValue: '',
+    scaleData: '',
+  }
 }
+
+const state = getDefaults()
 
 // getters, computed properties
 const getters = {
@@ -354,20 +358,7 @@ const mutations = {
     state.upSellingParentItem = item
   },
   [mutation.RESET](state) {
-    state.categoryImagePath = ''
-    state.subcategoryImagePath = ''
-    state.searchTerm = ''
-    state.itemImagePath = ''
-    state.categories = []
-    state.category = {}
-    state.subcategories = []
-    state.subcategory = null
-    state.categoryItems = []
-    state.subcategoryItems = []
-    state.item = null
-    state.items = []
-    state.taxData = []
-    state.taxAmount = {}
+    Object.assign(state, getDefaults())
   },
   SET_SCALE_DATA(state, data) {
     state.scaleData = data

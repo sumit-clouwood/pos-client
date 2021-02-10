@@ -1,5 +1,7 @@
 // initial state
 import * as mutation from './context/mutation-types'
+import DataService from '@/services/DataService'
+import bootstrap from '@/bootstrap'
 
 const state = {
   brandId: process.env.VUE_APP_BRAND_ID,
@@ -11,10 +13,12 @@ const state = {
   storesLength: 1,
   currentRoute: null,
   availableModules: null,
+  currentStore: undefined,
 }
 
 // getters
 const getters = {
+  current_store: state => state.currentStore,
   isStoreSelected(state) {
     return state.selectedStore
   },
@@ -50,6 +54,25 @@ const getters = {
 
 // actions
 const actions = {
+  loadStore({ dispatch, getters }) {
+    return new Promise((resolve, reject) => {
+      dispatch('auth/resetModules', null, { root: true })
+      DataService.setContext({
+        brand: getters.brand,
+        store: getters.store,
+      })
+      bootstrap.validateSubscription().then(() => {
+        bootstrap
+          .loadStore()
+          .then(() => {
+            resolve()
+          })
+          .catch(error => {
+            reject(error)
+          })
+      })
+    })
+  },
   getStoresByGroupID({ state, commit, rootState }, groupId) {
     let availableGroups = rootState.auth.availableStoreGroups.find(
       group => group._id == groupId
@@ -97,6 +120,11 @@ const mutations = {
       state.store = null
       state.storeId = null
     }
+    state.multiStores = null
+    state.selectedStore = false
+    state.storesLength = 1
+    state.currentRoute = null
+    state.availableModules = null
   },
   [mutation.SET_MULTI_STORES](state, multiStores) {
     state.multiStores = multiStores
@@ -106,6 +134,9 @@ const mutations = {
   },
   [mutation.SET_STORES_LENGTH](state, storeLength) {
     state.storesLength = storeLength
+  },
+  SET_CURRENT_STORE(state, store) {
+    state.currentStore = store
   },
 }
 
