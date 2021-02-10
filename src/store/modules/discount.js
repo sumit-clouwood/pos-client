@@ -122,6 +122,38 @@ const getters = {
   orderDiscount: (state, getters) => discountId => {
     return getters.orderDiscounts.find(discount => discount._id == discountId)
   },
+
+  getOrderDiscountItemAmount: (
+    state,
+    getters,
+    rootState,
+    rootGetters
+  ) => item => {
+    let items = rootGetters['order/items']
+    let net_discount_on_order =
+      parseFloat(getters.taxDiscountAmount) +
+      parseFloat(getters.orderDiscountWithoutTax)
+    let sub_total = rootGetters['order/subTotalWithTaxes']
+    let order_discounts = (net_discount_on_order * 100) / sub_total
+    let item_amount = 0
+    if (items.length > 0) {
+      item_amount =
+        (item.value * item.quantity * parseFloat(100 - order_discounts)) / 100
+      return item_amount
+    } else {
+      return item_amount
+    }
+    /*if (items.length > 0) {
+      let discount_for_single_item = parseFloat(discount_amount) / items.length
+      return (
+        item.value * item.quantity - discount_for_single_item * item.quantity
+      )
+    } else {
+      return 0
+    }*/
+    /*order discount: 100*/
+    /* total item/ 100*/
+  },
   itemDiscount: (state, getters) => discountId => {
     return getters.itemDiscounts.find(discount => discount._id == discountId)
   },

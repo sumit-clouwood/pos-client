@@ -25,6 +25,7 @@ const state = {
   orderCreationSource: '',
   orderItemsPayload: {},
   dineInSplitedItems: false,
+  loaylty_earn_points: []
 }
 
 // getters
@@ -1103,6 +1104,7 @@ const actions = {
           if (response.data.status === 'ok') {
             commit('order/SET_ORDER_ID', response.data.id, { root: true })
             commit('SET_ORDER_NUMBER', response.data.order_no)
+            commit('LOAYLTY_EARN_POINTS', response.data.loyalty_cards_with_points)
             //we are not printing so reset manually here
             let msg = rootGetters['location/_t']('Dinein Order has been paid')
             if (action === 'dine-in-place-order') {
@@ -1541,6 +1543,7 @@ const actions = {
           if (response.data.status === 'ok') {
             commit('order/SET_ORDER_ID', response.data.id, { root: true })
             commit('SET_ORDER_NUMBER', response.data.order_no)
+            commit('LOAYLTY_EARN_POINTS', response.data.loyalty_cards_with_points)
             dispatch('setToken', response.data.token_number)
             const msg = rootGetters['location/_t']('Order placed Successfully')
             dispatch('setMessage', {
@@ -1587,12 +1590,13 @@ const actions = {
             commit('deliveryManager/LIST_TYPE', 'New Orders', { root: true })
             commit('deliveryManager/SET_DM_ORDER_STATUS', 'in-progress', { root:  true })
             commit('deliveryManager/SET_DM_PAGE_ID', 'home_delivery_new', { root:  true })
-
             const msg = rootGetters['location/_t']('Order placed Successfully')
             dispatch('setMessage', {
               result: 'success',
               msg: msg,
             }).then(() => {
+              /*delivery manager redirection stop working than I add route here*/
+              commit(mutation.SET_ROUTE, { name: 'DeliveryManager' })
               resolve(response.data)
               commit(mutation.PRINT, true)
               // dispatch('iosWebviewPrintAction', { orderData: state.order })
@@ -1622,6 +1626,7 @@ const actions = {
           if (response.data.status === 'ok') {
             commit('order/SET_ORDER_ID', response.data.id, { root: true })
             commit('SET_ORDER_NUMBER', response.data.order_no)
+            commit('LOAYLTY_EARN_POINTS', response.data.loyalty_cards_with_points)
             //we are not printing so reset manually here
             dispatch('reset')
 
@@ -1711,6 +1716,7 @@ const actions = {
           if (response.data.status === 'ok') {
             commit('order/SET_ORDER_ID', response.data.id, { root: true })
             commit('SET_ORDER_NUMBER', response.data.order_no)
+            commit('LOAYLTY_EARN_POINTS', response.data.loyalty_cards_with_points)
             //we are not printing so reset manually here
             dispatch('setToken', response.data.token_number)
             let msg = rootGetters['location/_t']('Carhop Order has been placed')
@@ -1890,6 +1896,8 @@ const actions = {
     // example update (NOT MODIFY) dine in order
     //AT THIS TIME ORDER HAS BEEN RESET SO WE DON'T HAVE ANY ORDER DATA EXCEPT ROUTE
     commit('context/SET_ROUTE', state.route, { root: true })
+    /*after set context route reset route from here*/
+    commit(mutation.SET_ROUTE, null)
   },
   reset({ state, commit, dispatch, getters }, full = true) {
     if (['dine-in-order-preview'].includes(state.paymentAction)) {
@@ -2155,6 +2163,12 @@ const mutations = {
   ['ORDER_CREATION_SOURCE'](state, route) {
     state.orderCreationSource = route
   },
+  ['LOAYLTY_EARN_POINTS'](state, loyalty_points) {
+    state.loaylty_earn_points = loyalty_points || []
+    let order = { ...state.order }
+    order.loaylty_earn_points = state.loaylty_earn_points
+    state.order = order
+  },
   ['SPLITED_ITEM'](state, splitItems) {
     state.dineInSplitedItems = splitItems
   },
@@ -2180,6 +2194,7 @@ const mutations = {
   },*/
   [mutation.RESET](state, full = true) {
     state.paidAmount = 0
+    state.loaylty_earn_points = []
     state.payableAmount = 0
     state.pendingAmount = 0
     state.print = false

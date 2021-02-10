@@ -352,7 +352,7 @@
               </td>
             </tr>
             <tr
-              v-for="(cards_with_point, key) in order.loyalty_cards_with_points"
+              v-for="(cards_with_point, key) in order.loaylty_earn_points"
               :key="'loyalty' + key"
             >
               <td colspan="2">

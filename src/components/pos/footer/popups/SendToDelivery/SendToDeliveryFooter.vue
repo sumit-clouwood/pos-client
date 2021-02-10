@@ -161,14 +161,25 @@ export default {
       selectedCustomer: state => state.customer.customer.name,
     }),
     ...mapState('order', ['needSupervisorAccess']),
+    ...mapState('sync', ['online']),
     ...mapGetters('order', ['subTotal']),
     ...mapGetters('location', ['_t', 'formatPrice']),
     ...mapGetters('payment', ['methods']),
   },
   methods: {
     calculateLoyaltyAmount() {
+      if (!this.online) {
+        this.$store.commit('order/setAlert', {
+          type: 'error',
+          title: this._t('Check your network connection'),
+          msg: this._t('Loyalty will not work on offline mode'),
+        })
+        $('#alert-popup').modal('show')
+        this.$store.commit('checkoutForm/forceCash', true)
+        return false
+      }
       this.$store.dispatch('checkoutForm/calculateLoyaltyAmountForItem')
-      this.loyalty_active = true
+      // this.loyalty_active = true
       if (
         this.methods &&
         this.methods.loyalty &&
@@ -177,8 +188,6 @@ export default {
         let loyalty_card = this.methods.loyalty.find(
           payment => payment.type === CONST.LOYALTY
         )
-        // eslint-disable-next-line no-console
-        console.log(loyalty_card, 'loyalty_card')
         this.$store.commit('checkoutForm/setPaymentMethodLoyalty', loyalty_card)
         this.$store.dispatch('checkoutForm/addAmount')
       }
@@ -241,8 +250,12 @@ export default {
                 errors = response.error
               }
               this.errors = errors
-
-              $('#payment-msg').modal('hide')
+              /* Added this handle because error msg not showing when click on confirmation popup, */
+              if (typeof response == 'string') {
+                $('#payment-msg').modal('show')
+              } else {
+                $('#payment-msg').modal('hide')
+              }
               $('#order-confirmation').modal('show')
               setTimeout(function() {
                 $('#confirm_announcement').prop('disabled', false)

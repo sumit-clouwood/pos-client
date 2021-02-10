@@ -65,22 +65,22 @@
         </form>
         <div class="modal-footer">
           <div class="btn-announce">
-            <div
-              data-toggle="modal"
-              data-dismiss="modal"
-              class="cursor-pointer blue-middle color-text-invert"
-              @click="loyaltyAddCustomer('#customer-loyalty')"
-            >
-              {{ _t('Create Customer') }}
-            </div>
             <div class="btn-loyalty">
-              <button
+              <!--<button
                 @click="addLoyalty"
                 class="btn btn-success btn-large color-text-invert color-main"
                 type="button"
                 id="save-note"
               >
                 {{ _t('Select') }}
+              </button>-->
+              <button
+                data-toggle="modal"
+                data-dismiss="modal"
+                class="btn btn-success btn-large color-text-invert color-main"
+                @click="loyaltyAddCustomer('#customer-loyalty')"
+              >
+                {{ _t('Create Customer') }}
               </button>
               <button
                 type="button"

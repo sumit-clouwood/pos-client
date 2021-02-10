@@ -409,6 +409,7 @@ const actions = {
   },
 
   calculateLoyaltyAmountForItem({ commit, rootState, rootGetters, dispatch }) {
+    const orderDiscount = rootState.discount.appliedOrderDiscount
     const loyalty_card = rootState.customer.customerLoyalty.card
     // const methods = rootState.payment.methods
     let loyalty_balance = loyalty_card ? parseFloat(loyalty_card.balance) : 0
@@ -436,8 +437,17 @@ const actions = {
           }
         })
         let loyalty_for_item = 0
-        let loyalty_apply_on_price = parseFloat(item.netPrice) * item.quantity
+        let loyalty_apply_on_price = 0
         if (loyalty_action && loyalty_balance > 0.001) {
+          if (orderDiscount) {
+            loyalty_apply_on_price = parseFloat(
+              rootGetters['discount/getOrderDiscountItemAmount'](item)
+            )
+          } else {
+            loyalty_apply_on_price = parseFloat(
+              rootGetters['order/itemGrossPriceDiscounted'](item)
+            )
+          }
           if (!loyalty_details_ids.includes(loyalty_action._id)) {
             total_of_one_point_redeem = loyalty_action.one_point_redeems_to
           }
