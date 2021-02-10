@@ -5,7 +5,7 @@ import NetworkService from '@/services/NetworkService'
 import LocationService from '@/services/data/LocationService'
 import Fingerprint2 from 'fingerprintjs2'
 import * as CONST from '@/constants'
-
+import $store from './store'
 export default {
   store: null,
 
@@ -28,14 +28,17 @@ export default {
         })
     })
   },
+  //starting point of app loading, it is called from the private
   setup(store) {
+    //remove current context
     this.store = store
+    this.store.commit('context/RESET')
     return new Promise((resolve, reject) => {
       this.setupDB()
         .then(idb => {
           console.log('dbsetup, now feth data')
           this.store.commit('sync/setIdb', idb)
-          this.fetchData()
+          this.fetchLoggedInUser()
             .then(() => {
               resolve()
             })
@@ -55,7 +58,7 @@ export default {
   },
 
   updateLoading(key) {
-    this.store.commit('sync/updateLoading', {
+    $store.commit('sync/updateLoading', {
       key: key,
       status: CONST.LOADING_STATUS_DONE,
     })
@@ -70,7 +73,6 @@ export default {
     return Promise.resolve()
   },
   loadUI(caller) {
-    DataService.setLang(this.store.state.location.locale)
     return new Promise((resolve, reject) => {
       this.reloadSystem(caller)
         .then(() => {
@@ -113,107 +115,97 @@ export default {
     })
   },
   //this function is loaded when pos is loaded, called from App
-  initLoadUI() {
-    DataService.setLang(this.store.state.location.locale)
-    const self = this
+  loadStore() {
+    DataService.setLang(
+      $store.getters['context/current_store'].default_language
+    )
     return new Promise((resolve, reject) => {
-      this.store
-        .dispatch('location/fetch')
-        .then(locationDetails => {
-          self
-            .validateSubscription(self.store)
-            .then(() => {
-              this.store.dispatch('auth/fetchRoles').then(() => {
-                this.store.dispatch('auth/setCurrentRole')
-                this.store.dispatch('auth/fetchAllStoreUsers')
-              })
+      $store.dispatch('auth/fetchRoles').then(() => {
+        $store.dispatch('auth/setCurrentRole')
+        $store.dispatch('auth/fetchAllStoreUsers')
+      })
 
-              this.updateLoading('store')
-              this.store.dispatch('payment/fetchAll').then(() => {})
-              this.store.dispatch('tax/openItemTaxes')
-              this.store.dispatch('surcharge/fetchAll').then(() => {})
-              this.store.dispatch('discount/fetchAll').then(() => {})
-              this.store.dispatch('dinein/fetchAll')
+      this.updateLoading('store')
+      $store.dispatch('payment/fetchAll').then(() => {})
+      $store.dispatch('tax/openItemTaxes')
+      $store.dispatch('surcharge/fetchAll').then(() => {})
+      $store.dispatch('discount/fetchAll').then(() => {})
+      $store.dispatch('dinein/fetchAll')
+      const user = $store.getters['auth/current_user']
+      $store
+        .dispatch('category/fetchAll')
+        .then(() => {
+          let storeIds = []
+          //this check is for superadmin but I believe we should only check store_group accesstype to
+          //load multiple stores at once, but problem is super admin don't have this, so we need to check
+          //if not all, store or countries then load, I ll revise it with Yuvraj and Sohin and ll check only 'store_group' access type
+          if (!['all', 'store', 'country'].includes(user.brand_access_type)) {
+            if (user.brand_access_type === 'store_group') {
+              storeIds = user.brand_stores
+            }
+          }
 
-              this.store
-                .dispatch('category/fetchAll')
-                .then(() => {
-                  let storeIds = []
-                  //this check is for superadmin but I believe we should only check store_group accesstype to
-                  //load multiple stores at once, but problem is super admin don't have this, so we need to check
-                  //if not all, store or countries then load, I ll revise it with Yuvraj and Sohin and ll check only 'store_group' access type
-                  if (
-                    !['all', 'store', 'country'].includes(
-                      locationDetails.userDetails.brand_access_type
-                    )
-                  ) {
-                    if (
-                      locationDetails.availableStoreGroups &&
-                      locationDetails.availableStoreGroups.length &&
-                      locationDetails.userDetails.brand_access_type !==
-                        'store_group'
-                    ) {
-                      storeIds = locationDetails.availableStoreGroups.forEach(
-                        group => {
-                          storeIds = [...storeIds, group.group_stores]
-                        }
-                      )
-                    } else if (
-                      locationDetails.userDetails.brand_access_type ===
-                      'store_group'
-                    ) {
-                      storeIds = locationDetails.stores
-                    }
-                  }
+          if (storeIds && storeIds.length) {
+            $store.dispatch('discount/fetchMultistore', user.brand_stores)
+            $store.dispatch('customer/fetchMultiStore', user.brand_stores)
+            $store.dispatch('category/fetchMultistore', user.brand_stores)
+            $store.dispatch('modifier/fetchMultistore', user.brand_stores)
+          }
+          this.updateLoading('catalog')
+          $store.dispatch('modifier/fetchAll').then(() => {
+            this.updateLoading('modifiers')
 
-                  if (storeIds && storeIds.length) {
-                    this.store.dispatch(
-                      'discount/fetchMultistore',
-                      locationDetails.stores
-                    )
-                    this.store.dispatch(
-                      'customer/fetchMultiStore',
-                      locationDetails.stores
-                    )
-                    this.store.dispatch(
-                      'category/fetchMultistore',
-                      locationDetails.stores
-                    )
-                    this.store.dispatch(
-                      'modifier/fetchMultistore',
-                      locationDetails.stores
-                    )
-                  }
-                  this.updateLoading('catalog')
-                  this.store.dispatch('modifier/fetchAll').then(() => {
-                    this.updateLoading('modifiers')
-
-                    this.store.commit('sync/loaded', true)
-                    this.store
-                      .dispatch('payment/setTranslations')
-                      .then(() => {})
-                    resolve()
-                  })
-                  this.store
-                    .dispatch('printingServer/getKitchens')
-                    .then(() => {})
-                  this.store.dispatch(
-                    'announcement/fetchAll',
-                    this.store.state.auth.userDetails
-                  )
-                })
-                .catch(error => reject(error))
-            })
-            .catch(() => {
-              reject('subscription')
-            })
+            $store.commit('sync/loaded', true)
+            $store.dispatch('payment/setTranslations').then(() => {})
+            resolve()
+          })
+          $store.dispatch('printingServer/getKitchens').then(() => {})
+          $store.dispatch(
+            'announcement/fetchAll',
+            $store.state.auth.userDetails
+          )
         })
-        .catch(error => {
-          reject(error)
-        })
+        .catch(error => reject(error))
     })
   },
+  //this ll be called from private view, we ll have user id from user login
+  async fetchLoggedInUser() {
+    const user = await this.store.dispatch('auth/getUserDetails')
+    const userRole =
+      user.collected_data.page_lookups.admin_roles._id[user.item.admin_role]
+        .name
+    if (userRole === 'Super Admin') {
+      //we need to restrict access for user
+    } else {
+      this.store.commit(
+        'context/SET_STORES_LENGTH',
+        user.item.brand_stores.length
+      )
+      this.store.commit('context/SET_BRAND_ID', user.item.brand_id)
 
+      let userstores = []
+      for (var i in user.collected_data.page_lookups.root_stores._id) {
+        userstores.push(user.collected_data.page_lookups.root_stores._id[i])
+      }
+      if (user.item.brand_stores.length > 1) {
+        //find stores from lookup
+        this.store.commit('context/SET_MULTI_STORES', userstores)
+      } else {
+        //USER has only one store
+        this.store.commit('context/SET_STORE_ID', user.item.brand_stores[0])
+        this.store.commit('context/CURRENT_STORE', userstores[0])
+        //set context to dataservice
+      }
+    }
+    return user
+  },
+  /* abondoned */
+  fetchStore() {
+    //load store info here
+    //if we have store id in url, it ll load ui menu in store context, otherwise in user context
+    return this.store.dispatch('location/fetch')
+  },
+  /* abondoned */
   fetchData() {
     return new Promise((resolve, reject) => {
       this.detectBrowser().then(deviceId => {

@@ -9,9 +9,8 @@ import * as CONST from '@/constants'
 import router from '../../router'
 import moment from 'moment-timezone'
 import { isObjectEmpty } from '@/util.js'
-/* global $ showModal */
 // initial state
-const state = {
+const getDefaults = () => ({
   currency: 'AED',
   multiStoreIds: false,
   locale: 'en-US',
@@ -33,7 +32,9 @@ const state = {
   openHours: null,
   brandStores: false,
   jeeblyOrder: [],
-}
+})
+
+const state = getDefaults()
 
 // getters
 const getters = {
@@ -100,8 +101,6 @@ const actions = {
         }
         let availabeStores = storedata.data.available_stores
         if (!router.currentRoute.params.store_id && availabeStores.length > 1) {
-          $('#multiStoresModal').css({ 'background-color': 'grey' })
-          $('#multiStoresModal').modal('show')
           commit('context/SET_STORES_LENGTH', availabeStores.length, {
             root: true,
           })
@@ -151,8 +150,6 @@ const actions = {
             // dispatch('auth/getUserDetails', storedata.data.user_id, {
             //   root: true,
             // })
-          } else {
-            showModal('#multiStores')
           }
         } else {
           let currentURL = window.location.href
@@ -522,23 +519,8 @@ const mutations = {
   [mutation.MULTI_STORE_IDS](state, multiStoreIds) {
     state.multiStoreIds = multiStoreIds
   },
-  [mutation.RESET](state, full = false) {
-    state.setModal = '#manage-customer'
-    if (full) {
-      state.currency = 'AED'
-      state.locale = 'en-US'
-      state.timezone = 'Asia/Dubai'
-      state.timezoneString = 'Asia/Dubai'
-      state.brand = null
-      state.store = null
-      state.availableLanguages = null
-      state.languageDirection = null
-      state.translations = null
-      state.location = null
-      state.referrals = false
-      state.permissions = false
-      state.apiDate = ''
-    }
+  [mutation.RESET](state) {
+    Object.assign(state, getDefaults())
   },
   [mutation.SET_DATE](state, dateAPI) {
     state.apiDate = dateAPI
