@@ -160,13 +160,7 @@ export default {
           .dispatch('auth/pinlogin', {
             pincode: this.pincode,
           })
-          .then(() => {
-            this.$router.replace({
-              name: 'BrandHome',
-              brand_id: this.$store.getters['context/brand_id'],
-              store_id: this.$store.getters['context/store_id'],
-            })
-          })
+          .then(() => {})
           .catch(error => {
             if (
               (error && error.message === 'Network Error') ||
