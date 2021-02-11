@@ -48,7 +48,7 @@
             <small class="date" style="text-transform: uppercase">
               {{ todayTime }} </small
             ><br />
-            <small>{{ user.name }}</small>
+            <small>{{ _t('Printed by') }}: {{ user.name }}</small>
           </div>
           <div class="business-summary-wrapper" style="text-align: center">
             <div class="table-responsive">
