@@ -14,6 +14,7 @@ const state = {
   currentRoute: null,
   availableModules: null,
   currentStore: undefined,
+  loadStoreFromContext: false,
 }
 
 // getters
@@ -54,6 +55,12 @@ const getters = {
 
 // actions
 const actions = {
+  updateContext({ getters }) {
+    DataService.setContext({
+      store: getters.store,
+      brand: getters.brand,
+    })
+  },
   loadStore({ dispatch, getters }) {
     return new Promise((resolve, reject) => {
       dispatch('auth/resetModules', null, { root: true })
@@ -61,6 +68,10 @@ const actions = {
         brand: getters.brand,
         store: getters.store,
       })
+      //from Yuvraj's code in location.js
+      dispatch('location/formatDate')
+      dispatch('auth/checkDevice', '', { root: true })
+
       bootstrap.validateSubscription().then(() => {
         bootstrap
           .loadStore()
@@ -90,6 +101,19 @@ const actions = {
     }
     localStorage.setItem('groupStores', JSON.stringify(groupStores))
     commit('SET_MULTI_STORES', groupStores)
+  },
+  setBrandContext({ dispatch, commit }, brandId) {
+    commit('SET_BRAND_ID', brandId)
+    dispatch('updateContext')
+  },
+  setStoreContext({ dispatch, commit }, storeId) {
+    commit('SET_STORE_ID', storeId)
+    dispatch('updateContext')
+  },
+  setBrandStoreContext({ dispatch, commit }, { brandId, storeId }) {
+    commit('SET_BRAND_ID', brandId)
+    commit('SET_STORE_ID', storeId)
+    dispatch('updateContext')
   },
 }
 
@@ -128,6 +152,7 @@ const mutations = {
     state.storesLength = 1
     state.currentRoute = null
     state.availableModules = null
+    state.loadStoreFromContext = false
   },
   [mutation.SET_MULTI_STORES](state, multiStores) {
     state.multiStores = multiStores
@@ -140,6 +165,9 @@ const mutations = {
   },
   SET_CURRENT_STORE(state, store) {
     state.currentStore = store
+  },
+  LOAD_STORE_FROM_CONTEXT(state, context) {
+    state.loadStoreFromContext = context
   },
 }
 
