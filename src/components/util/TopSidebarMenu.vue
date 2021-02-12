@@ -172,7 +172,7 @@
           </router-link>
         </li>
         <li v-if="enabledModule('switchCashier') && !isWaiter() && !isCarhop()">
-          <router-link :to="'/cashier-login' + store"
+          <router-link :to="'/cashier-login' + brandContext"
             ><svg
               xmlns="http://www.w3.org/2000/svg"
               width="24"
@@ -507,6 +507,9 @@ export default {
         state.auth && state.auth.userDetails ? state.auth.userDetails.name : '',
     }),
     ...mapGetters('location', ['_t', 'permitted']),
+    ...mapGetters({
+      brandContext: ['context/brand'],
+    }),
   },
   methods: {
     ...mapActions('invoice', ['setPrinterConfigurationKey']),

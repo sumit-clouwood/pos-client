@@ -19,7 +19,7 @@ export default {
       LocationService.validateStoreSubscription()
         .then(response => {
           if (response.data && response.data.is_expired) {
-            reject('subscription')
+            reject()
           } else {
             resolve()
           }
@@ -29,9 +29,10 @@ export default {
         })
     })
   },
-  //starting point of app loading, it is called from the private
+  loadStore() {
+    return this.fetchData()
+  },
   setup(store) {
-    //remove current context
     this.store = store
     return new Promise((resolve, reject) => {
       this.setupDB()
@@ -56,83 +57,165 @@ export default {
       this.setNetwork()
     })
   },
+  async fetchLoggedInUser() {
+    return new Promise((resolve, reject) => {
+      const currentStoreId = $store.getters['context/store_id']
+      this.detectBrowser().then(deviceId => {
+        this.store.dispatch('auth/auth', deviceId).then(() => {
+          $store
+            .dispatch('auth/getUserDetails')
+            .then(user => {
+              if (
+                !user.item.brand_stores.length &&
+                user.item.brand_access_type === 'all'
+              ) {
+                //context already set from app.vue
 
+                if (!user.item.brand_id) {
+                  //mostly its superadmin which don't have brand_stores
+                  //load the store from api if it is in url
+                  if ($store.getters['context/store_id']) {
+                    $store.commit('context/LOAD_STORE_FROM_CONTEXT', true)
+                    resolve()
+                  } else {
+                    reject('Please select store id')
+                  }
+                } else {
+                  $store.commit('context/RESET')
+                  //it is store owner with all stores access, in that case we might need to load the stores by brand id
+                  //set brand context id here, so this user can pick store from only its own brand
+                  $store.dispatch('context/setBrandContext', user.item.brand_id)
+                  //set multiselect here for stores
+                  //check if store in context doesn't belong to current brand then reset store context and present multi select here
+                  $store.commit('context/LOAD_STORE_FROM_CONTEXT', false)
+                  //it is store owner with all stores access, in that case we might need to load the stores by brand id
+                  //set brand context id here, so this user can pick store from only its own brand
+                  $store.dispatch('context/setBrandContext', user.item.brand_id)
+
+                  DataService.getT('/ui_menu?&menu_needed=false', false).then(
+                    response => {
+                      $store.commit(
+                        'context/SET_STORES_LENGTH',
+                        response.data.available_stores.length
+                      )
+                      $store.commit(
+                        'context/SET_MULTI_STORES',
+                        response.data.available_stores
+                      )
+                      resolve()
+                    }
+                  )
+                }
+              } else {
+                $store.commit('context/RESET')
+                $store.commit('context/LOAD_STORE_FROM_CONTEXT', false)
+                $store.commit(
+                  'context/SET_STORES_LENGTH',
+                  user.item.brand_stores.length
+                )
+                $store.dispatch('context/setBrandContext', user.item.brand_id)
+
+                let userstores = []
+                for (var i in user.collected_data.page_lookups.root_stores
+                  ._id) {
+                  userstores.push(
+                    user.collected_data.page_lookups.root_stores._id[i]
+                  )
+                }
+                if (user.item.brand_stores.length > 1) {
+                  //find stores from lookup
+                  $store.commit('context/SET_MULTI_STORES', userstores)
+                } else {
+                  //USER has only one store
+                  $store.dispatch(
+                    'context/setStoreContext',
+                    user.item.brand_stores[0]
+                  )
+                  $store.commit('context/SET_CURRENT_STORE', userstores[0])
+                  //if storeid is same, getter ll not act, in that case load store from context
+                  if (currentStoreId === user.item.brand_stores[0]) {
+                    $store.commit('context/LOAD_STORE_FROM_CONTEXT', true)
+                  }
+                }
+                resolve(user)
+              }
+            })
+            .catch(error => {
+              reject(error)
+            })
+        })
+      })
+    })
+  },
   updateLoading(key) {
-    $store.commit('sync/updateLoading', {
+    this.store.commit('sync/updateLoading', {
       key: key,
       status: CONST.LOADING_STATUS_DONE,
     })
   },
   //this function is called when we recieve msg from service worker i.e token updated
   // also loaded when we click on a category to load new data
-
+  reloadSystem(caller) {
+    if (caller === 'sw') {
+      //reload ui menu as token updated
+      return this.store.dispatch('location/fetch')
+    }
+    return Promise.resolve()
+  },
   loadUI(caller) {
+    DataService.setLang(this.store.state.location.locale)
     return new Promise((resolve, reject) => {
-      if (caller != 'orderStart') {
-        this.store.dispatch('auth/fetchRoles').then(() => {
-          this.store.dispatch('auth/setCurrentRole')
-          this.store.dispatch('auth/fetchAllStoreUsers')
-        })
-      }
-      this.store
-        .dispatch('category/fetchAll')
-        .then(async () => {
-          await Promise.all([
-            this.store.dispatch('modifier/fetchAll'),
-            this.store.dispatch('tax/fetchAll'),
-            this.store.dispatch('surcharge/fetchAll'),
-            this.store.dispatch('discount/fetchAll'),
-          ])
-          this.store.commit('sync/loaded', true)
-          resolve()
+      this.reloadSystem(caller)
+        .then(() => {
           if (caller != 'orderStart') {
-            this.store.dispatch('payment/fetchAll')
-            this.store.dispatch('customer/fetchAll')
-            this.store.dispatch('dinein/fetchAll')
-            this.store.dispatch('carhop/initFetch')
-            this.store.dispatch('invoice/printRules').then(() => {
-              this.store.dispatch('invoice/fetchTemplates')
+            this.store.dispatch('auth/fetchRoles').then(() => {
+              this.store.dispatch('auth/setCurrentRole')
+              this.store.dispatch('auth/fetchAllStoreUsers')
             })
-
-            this.store.dispatch(
-              'announcement/fetchAll',
-              this.store.state.auth.userDetails
-            )
           }
+          this.store
+            .dispatch('category/fetchAll')
+            .then(async () => {
+              await Promise.all([
+                this.store.dispatch('modifier/fetchAll'),
+                this.store.dispatch('tax/fetchAll'),
+                this.store.dispatch('surcharge/fetchAll'),
+                this.store.dispatch('discount/fetchAll'),
+              ])
+              this.store.commit('sync/loaded', true)
+              resolve()
+              if (caller != 'orderStart') {
+                this.store.dispatch('payment/fetchAll')
+                this.store.dispatch('customer/fetchAll')
+                this.store.dispatch('dinein/fetchAll')
+                this.store.dispatch('carhop/initFetch')
+                this.store.dispatch('invoice/printRules').then(() => {
+                  this.store.dispatch('invoice/fetchTemplates')
+                })
+
+                this.store.dispatch(
+                  'announcement/fetchAll',
+                  this.store.state.auth.userDetails
+                )
+              }
+            })
+            .catch(error => reject(error))
         })
         .catch(error => reject(error))
-
       //continue loading other service in parallel
     })
   },
   //this function is loaded when pos is loaded, called from App
-  loadStore() {
+  initLoadUI() {
+    DataService.setLang($store.state.location.locale)
+    const self = this
     return new Promise((resolve, reject) => {
-      this.fetchStore()
-        .then(() => {
-          DataService.setLang(
-            $store.getters['context/current_store'].default_language
-          )
-
-          const user = $store.getters['auth/current_user']
-          $store
-            .dispatch('category/fetchAll')
+      $store
+        .dispatch('location/fetch')
+        .then(locationDetails => {
+          self
+            .validateSubscription(self.store)
             .then(() => {
-              let storeIds = []
-              //this check is for superadmin but I believe we should only check store_group accesstype to
-              //load multiple stores at once, but problem is super admin don't have this, so we need to check
-              //if not all, store or countries then load, I ll revise it with Yuvraj and Sohin and ll check only 'store_group' access type
-
-              this.updateLoading('catalog')
-              $store.dispatch('modifier/fetchAll').then(() => {
-                this.updateLoading('modifiers')
-
-                $store.commit('sync/loaded', true)
-                resolve()
-              })
-              //Fetch all kitchens & Printing Servers on POS and save into states.
-              $store.dispatch('payment/setTranslations').then(() => {})
-              $store.dispatch('printingServer/fetchAllKitchens')
               $store.dispatch('auth/fetchRoles').then(() => {
                 $store.dispatch('auth/setCurrentRole')
                 $store.dispatch('auth/fetchAllStoreUsers')
@@ -140,144 +223,108 @@ export default {
 
               this.updateLoading('store')
               $store.dispatch('payment/fetchAll').then(() => {})
-
-              $store.dispatch('dinein/fetchAll')
-              if (
-                !['all', 'store', 'country'].includes(user.brand_access_type)
-              ) {
-                if (user.brand_access_type === 'store_group') {
-                  storeIds = user.brand_stores
-                }
-              }
-              if (storeIds && storeIds.length) {
-                $store.dispatch('discount/fetchMultistore', user.brand_stores)
-                $store.dispatch('customer/fetchMultiStore', user.brand_stores)
-                $store.dispatch('category/fetchMultistore', user.brand_stores)
-                $store.dispatch('modifier/fetchMultistore', user.brand_stores)
-              }
               $store.dispatch('tax/openItemTaxes')
-
               $store.dispatch('surcharge/fetchAll').then(() => {})
               $store.dispatch('discount/fetchAll').then(() => {})
-              $store.dispatch('printingServer/getKitchens').then(() => {})
-              $store.dispatch(
-                'announcement/fetchAll',
-                $store.state.auth.userDetails
-              )
+              $store.dispatch('dinein/fetchAll')
 
-              //do other tasks here
-              $store.dispatch('location/setupStore')
+              $store
+                .dispatch('category/fetchAll')
+                .then(() => {
+                  let storeIds = []
+                  //this check is for superadmin but I believe we should only check store_group accesstype to
+                  //load multiple stores at once, but problem is super admin don't have this, so we need to check
+                  //if not all, store or countries then load, I ll revise it with Yuvraj and Sohin and ll check only 'store_group' access type
+                  if (
+                    !['all', 'store', 'country'].includes(
+                      locationDetails.userDetails.brand_access_type
+                    )
+                  ) {
+                    if (
+                      locationDetails.availableStoreGroups &&
+                      locationDetails.availableStoreGroups.length &&
+                      locationDetails.userDetails.brand_access_type !==
+                        'store_group'
+                    ) {
+                      storeIds = locationDetails.availableStoreGroups.forEach(
+                        group => {
+                          storeIds = [...storeIds, group.group_stores]
+                        }
+                      )
+                    } else if (
+                      locationDetails.userDetails.brand_access_type ===
+                      'store_group'
+                    ) {
+                      storeIds = locationDetails.stores
+                    }
+                  }
+
+                  if (storeIds && storeIds.length) {
+                    $store.dispatch(
+                      'discount/fetchMultistore',
+                      locationDetails.stores
+                    )
+                    $store.dispatch(
+                      'customer/fetchMultiStore',
+                      locationDetails.stores
+                    )
+                    $store.dispatch(
+                      'category/fetchMultistore',
+                      locationDetails.stores
+                    )
+                    $store.dispatch(
+                      'modifier/fetchMultistore',
+                      locationDetails.stores
+                    )
+                  }
+                  this.updateLoading('catalog')
+                  $store.dispatch('modifier/fetchAll').then(() => {
+                    this.updateLoading('modifiers')
+
+                    $store.commit('sync/loaded', true)
+                    $store.dispatch('payment/setTranslations').then(() => {})
+                    resolve()
+                  })
+                  $store.dispatch('printingServer/getKitchens').then(() => {})
+                  $store.dispatch(
+                    'announcement/fetchAll',
+                    $store.state.auth.userDetails
+                  )
+                })
+                .catch(error => reject(error))
             })
-            .catch(error => reject(error))
+            .catch(() => {
+              reject('subscription')
+            })
         })
         .catch(error => {
           reject(error)
         })
     })
   },
-  //this ll be called from private view, we ll have user id from user login
-  async fetchLoggedInUser() {
-    return new Promise((resolve, reject) => {
-      $store
-        .dispatch('auth/getUserDetails')
-        .then(user => {
-          if (
-            !user.item.brand_stores.length &&
-            user.item.brand_access_type === 'all'
-          ) {
-            //context already set from app.vue
 
-            if (!user.item.brand_id) {
-              //mostly its superadmin which don't have brand_stores
-              //load the store from api if it is in url
-              if ($store.getters['context/store_id']) {
-                $store.commit('context/LOAD_STORE_FROM_CONTEXT', true)
-              } else {
-                reject('Please select store id')
-              }
-            } else {
-              //it is store owner with all stores access, in that case we might need to load the stores by brand id
-              //set brand context id here, so this user can pick store from only its own brand
-              $store.dispatch('context/setBrandContext', user.item.brand_id)
-              //set multiselect here for stores
-              //check if store in context doesn't belong to current brand then reset store context and present multi select here
-            }
-          } else {
-            $store.commit('context/LOAD_STORE_FROM_CONTEXT', false)
-            $store.commit(
-              'context/SET_STORES_LENGTH',
-              user.item.brand_stores.length
-            )
-            $store.dispatch('context/setBrandContext', user.item.brand_id)
-
-            let userstores = []
-            for (var i in user.collected_data.page_lookups.root_stores._id) {
-              userstores.push(
-                user.collected_data.page_lookups.root_stores._id[i]
-              )
-            }
-            if (user.item.brand_stores.length > 1) {
-              //find stores from lookup
-              $store.commit('context/SET_MULTI_STORES', userstores)
-            } else {
-              //USER has only one store
-              $store.dispatch(
-                'context/setStoreContext',
-                user.item.brand_stores[0]
-              )
-              $store.commit('context/SET_CURRENT_STORE', userstores[0])
-              //set context to dataservice
-            }
-          }
-          resolve(user)
-        })
-        .catch(error => {
-          reject(error)
-        })
-    })
-  },
-  async fetchStore() {
-    //load store info here
-    //if we have store id in url, it ll load ui menu in store context, otherwise in user context
-    const deviceId = await this.detectBrowser()
-    return $store.dispatch('location/getStore', deviceId)
-  },
-  /* abondoned */
   fetchData() {
     return new Promise((resolve, reject) => {
-      this.detectBrowser().then(deviceId => {
-        this.store
-          .dispatch('auth/auth', deviceId)
-          .then(() => {
-            DataService.setContext({
-              store: this.store.getters['context/store'],
-              brand: this.store.getters['context/brand'],
-            })
-
-            this.initLoadUI()
-              .then(() => {
-                //lets resolve the promise so pos can be loaded, other things ll be loaded later
-                resolve()
-                this.loadApiData('catalog')
-
-                this.loadApiData('customer')
-
-                //delayed loading data
-                this.loadApiData('order')
-              })
-              .catch(error => {
-                console.log('UI Failed', error)
-                reject(error)
-              })
-            // store.dispatch('loyalty/fetchAll', response)
-            // store.dispatch(
-            //   'deliveryManager/fetchDMOrderDetail',
-            //   response
-            // )
-            // store.dispatch('deliveryManager/getDispatchOrder', response)
-          })
-          .catch(error => reject(error))
+      DataService.setContext({
+        store: $store.getters['context/store'],
+        brand: $store.getters['context/brand'],
       })
+
+      this.initLoadUI()
+        .then(() => {
+          //lets resolve the promise so pos can be loaded, other things ll be loaded later
+          resolve()
+          this.loadApiData('catalog')
+
+          this.loadApiData('customer')
+
+          //delayed loading data
+          this.loadApiData('order')
+        })
+        .catch(error => {
+          console.log('UI Failed', error)
+          reject(error)
+        })
     })
   },
 
@@ -288,12 +335,12 @@ export default {
           resolve()
           break
         case 'customer':
-          $store.dispatch('customer/fetchAll').then(() => {})
+          this.store.dispatch('customer/fetchAll').then(() => {})
           resolve()
           break
         case 'order':
-          $store.dispatch('invoice/printRules').then(() => {
-            $store.dispatch('invoice/fetchTemplates')
+          this.store.dispatch('invoice/printRules').then(() => {
+            this.store.dispatch('invoice/fetchTemplates')
           })
           resolve()
           break
@@ -452,7 +499,7 @@ export default {
         return
       }
 
-      $store.commit('sync/status', status)
+      this.store.commit('sync/status', status)
       if (process.env.NODE_ENV === 'production' && msg === 'on') {
         const nowTime = new Date().getTime() //miliseconds
 
@@ -479,7 +526,7 @@ export default {
         }
       } else {
         //system gone offline
-        $store.dispatch('sync/offlineSync', false)
+        this.store.dispatch('sync/offlineSync', false)
       }
     })
   },
