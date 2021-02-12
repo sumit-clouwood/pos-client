@@ -1,11 +1,5 @@
 <template>
   <div>
-    <!-- Private view -->
-    <MultipleStores
-      v-show="
-        haveMultipleStores && !isStoreSelected && !this.$route.params.store_id
-      "
-    />
     <!-- user is logged in, there is a store id in url or the user is not admin  -->
     <private-view v-if="privateContext" class="private-view"></private-view>
     <!-- Public view -->
@@ -19,9 +13,7 @@ import PublicView from './PublicView'
 import Loader from '@/components/util/Loader.vue'
 import PrivateView from './PrivateView'
 import AppNotification from './AppNotification'
-// import DmItemOnline from './components/pos/header/popups/OnlineOrder.vue'
-import { mapGetters, mapState } from 'vuex'
-import MultipleStores from '@/components/MultipleStores'
+import { mapState } from 'vuex'
 
 import DataService from '@/services/DataService'
 export default {
@@ -31,10 +23,8 @@ export default {
     PublicView,
     PrivateView,
     AppNotification,
-    MultipleStores,
   },
   computed: {
-    ...mapGetters('context', ['isStoreSelected', 'haveMultipleStores']),
     ...mapState('sync', ['online']),
     privateContext() {
       return this.$store.state.auth.token
@@ -45,23 +35,23 @@ export default {
     privateContext() {
       this.setupRouting()
     },
-    online: 'switchCashierOnline',
+    //online: 'switchCashierOnline',
   },
 
   methods: {
-    switchCashierOnline() {
-      if (this.online && localStorage.getItem('offline_mode_login'))
-        this.$store
-          .dispatch('auth/pinlogin', {
-            pincode: this.$store.state.auth.offlinePinCode,
-            brand: this.$store.state.context.brandId,
-            store: this.$store.state.context.storeId,
-          })
-          .then(() => {
-            localStorage.setItem('offline_mode_login', false)
-            this.$store.commit('auth/SET_OFFLINE_PIN', '')
-          })
-    },
+    // switchCashierOnline() {
+    //   if (this.online && localStorage.getItem('offline_mode_login'))
+    //     this.$store
+    //       .dispatch('auth/pinlogin', {
+    //         pincode: this.$store.state.auth.offlinePinCode,
+    //         brand: this.$store.state.context.brandId,
+    //         store: this.$store.state.context.storeId,
+    //       })
+    //       .then(() => {
+    //         localStorage.setItem('offline_mode_login', false)
+    //         this.$store.commit('auth/SET_OFFLINE_PIN', '')
+    //       })
+    // },
     setup() {
       this.setupRouting()
       this.$store.dispatch('auth/checkLogin')

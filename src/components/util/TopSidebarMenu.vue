@@ -171,9 +171,7 @@
           </router-link>
         </li>
         <li v-if="enabledModule('switchCashier') && !isWaiter() && !isCarhop()">
-          <router-link
-            :to="'/cashier-login' + store"
-            @click.native="logoutCashier"
+          <router-link :to="'/cashier-login' + brandContext"
             ><svg
               xmlns="http://www.w3.org/2000/svg"
               width="24"
@@ -457,7 +455,6 @@
 <script>
 /* global $ */
 import { mapState, mapGetters, mapActions } from 'vuex'
-import AuthService from '@/services/data/AuthService'
 //import SwitchStore from '@/components/commonButtons/SwitchStore'
 import SupervisorPasswordView from './SupervisorPassword'
 import avatar from '@/components/mobileComponents/mobileElements/avatar'
@@ -509,6 +506,9 @@ export default {
         state.auth && state.auth.userDetails ? state.auth.userDetails.name : '',
     }),
     ...mapGetters('location', ['_t', 'permitted']),
+    ...mapGetters({
+      brandContext: ['context/brand'],
+    }),
   },
   methods: {
     ...mapActions('invoice', ['setPrinterConfigurationKey']),
@@ -569,12 +569,7 @@ export default {
         this.onlineOrdersCount = this.latestOnlineOrders
       }
     },
-    logoutCashier() {
-      localStorage.setItem('token', '')
-      this.$store.commit('auth/SET_TOKEN', '')
-      this.$store.commit('auth/LOGOUT_ACTION', 'switchCashier')
-      AuthService.logout().then(() => {})
-    },
+
     /*...mapActions('customer', ['fetchCustomerAddress']),*/
   },
   mounted() {

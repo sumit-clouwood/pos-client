@@ -330,6 +330,9 @@ export default {
       this.isAudioPlaying = true
     },
     onlineOrderSetup() {
+      if (process.env.VUE_APP_SOCKET_DISABLE) {
+        return false
+      }
       let scope = this
       let storeId = this.store ? this.store._id : this.$route.params.store_id
       this.$socket.$subscribe('online-order-channel', payload => {

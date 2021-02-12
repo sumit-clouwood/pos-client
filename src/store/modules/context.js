@@ -1,5 +1,7 @@
 // initial state
 import * as mutation from './context/mutation-types'
+import DataService from '@/services/DataService'
+import bootstrap from '@/bootstrap'
 
 const state = {
   brandId: process.env.VUE_APP_BRAND_ID,
@@ -11,10 +13,13 @@ const state = {
   storesLength: 1,
   currentRoute: null,
   availableModules: null,
+  currentStore: undefined,
+  loadStoreFromContext: false,
 }
 
 // getters
 const getters = {
+  current_store: state => state.currentStore,
   isStoreSelected(state) {
     return state.selectedStore
   },
@@ -41,12 +46,42 @@ const getters = {
       return ''
     }
   },
+  brand_id: state => state.brandId,
+  store_id: state => state.storeId,
+
   storeName: state => storeId =>
     state.multiStores.find(store => store._id == storeId).name,
 }
 
 // actions
 const actions = {
+  updateContext({ getters }) {
+    DataService.setContext({
+      store: getters.store,
+      brand: getters.brand,
+    })
+  },
+  loadStore({ dispatch, getters }) {
+    return new Promise((resolve, reject) => {
+      dispatch('auth/resetModules', null, { root: true })
+      DataService.setContext({
+        brand: getters.brand,
+        store: getters.store,
+      })
+
+      bootstrap
+        .loadStore()
+        .then(() => {
+          resolve()
+          dispatch('sync/setLoader', false, {
+            root: true,
+          })
+        })
+        .catch(error => {
+          reject(error)
+        })
+    })
+  },
   getStoresByGroupID({ state, commit, rootState }, groupId) {
     let availableGroups = rootState.auth.availableStoreGroups.find(
       group => group._id == groupId
@@ -61,6 +96,19 @@ const actions = {
     }
     localStorage.setItem('groupStores', JSON.stringify(groupStores))
     commit('SET_MULTI_STORES', groupStores)
+  },
+  setBrandContext({ dispatch, commit }, brandId) {
+    commit('SET_BRAND_ID', brandId)
+    dispatch('updateContext')
+  },
+  setStoreContext({ dispatch, commit }, storeId) {
+    commit('SET_STORE_ID', storeId)
+    dispatch('updateContext')
+  },
+  setBrandStoreContext({ dispatch, commit }, { brandId, storeId }) {
+    commit('SET_BRAND_ID', brandId)
+    commit('SET_STORE_ID', storeId)
+    dispatch('updateContext')
   },
 }
 
@@ -81,11 +129,25 @@ const mutations = {
   [mutation.SET_ROUTE](state, any) {
     state.currentRoute = any
   },
-  [mutation.RESET](state) {
-    state.store = null
-    state.brand = null
-    state.storeId = null
-    state.brandId = null
+  [mutation.RESET](state, data) {
+    if (data && data.preserve && data.preserve.includes('brand_id')) {
+      //preserve brand
+    } else {
+      state.brand = null
+      state.brandId = null
+    }
+    if (data && data.preserve && data.preserve.includes('store_id')) {
+      //preserve brand
+    } else {
+      state.store = null
+      state.storeId = null
+    }
+    state.multiStores = null
+    state.selectedStore = false
+    state.storesLength = 1
+    state.currentRoute = null
+    state.availableModules = null
+    state.loadStoreFromContext = false
   },
   [mutation.SET_MULTI_STORES](state, multiStores) {
     state.multiStores = multiStores
@@ -95,6 +157,12 @@ const mutations = {
   },
   [mutation.SET_STORES_LENGTH](state, storeLength) {
     state.storesLength = storeLength
+  },
+  SET_CURRENT_STORE(state, store) {
+    state.currentStore = store
+  },
+  LOAD_STORE_FROM_CONTEXT(state, context) {
+    state.loadStoreFromContext = context
   },
 }
 

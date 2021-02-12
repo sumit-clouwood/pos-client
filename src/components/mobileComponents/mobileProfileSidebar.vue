@@ -232,7 +232,7 @@
                 />
               </svg>
             </div>
-            <router-link :to="'/cashier-login' + store">
+            <router-link :to="'/cashier-login' + brandContext">
               <div class="profile-menu-item-text">
                 {{ _t('Switch') + ' ' + _t('Cashier') }}
               </div>
@@ -439,6 +439,9 @@ export default {
     ...mapState('location', ['availableLanguages', 'language']),
     ...mapState('dinein', ['dineInTabType', 'activeArea']),
     ...mapState('sync', ['online']),
+    ...mapGetters({
+      brandContext: ['context/brand'],
+    }),
     ...mapState({
       latestOnlineOrders: state =>
         state.order.onlineOrders ? state.order.onlineOrders.length : 0,

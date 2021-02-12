@@ -53,8 +53,6 @@
 <script>
 /* global $ */
 import { mapGetters, mapState } from 'vuex'
-import DataService from '@/services/DataService'
-import bootstrap from '@/bootstrap'
 export default {
   name: 'MultiStore',
   data() {
@@ -84,26 +82,14 @@ export default {
         this.$store.commit('sync/SET_IS_LOADING', true)
       }
       //reset all previous data
-      this.$store.dispatch('auth/resetModules')
+      this.$store.commit('context/SET_STORE_ID', storeId)
+      this.$store.commit(
+        'context/SET_CURRENT_STORE',
+        this.multipleStores.find(store => store._id === storeId)
+      )
 
-      this.$store.commit('context/SET_BRAND_ID', this.brand._id, { root: true })
-      this.$store.commit('context/SET_STORE_ID', storeId, { root: true })
-      this.$store.commit('dinein/SELECTED_AREA', false)
-      localStorage.setItem('brand_id', this.brand._id)
-      localStorage.setItem('store_id', storeId)
-
-      DataService.setContext({
-        brand: this.$store.getters['context/brand'],
-        store: this.$store.getters['context/store'],
-      })
       $('#multiStoresModal').modal('hide')
       //to reload location api as well, pass sw as an argument
-      bootstrap.loadUI('sw').then(() => {
-        this.$store.commit('sync/reload', true)
-        this.$store.commit('sync/SET_IS_LOADING', false)
-      })
-      this.$store.dispatch('checkout/reset', true)
-      this.$store.commit('order/CLEAR_SELECTED_ORDER')
     },
   },
 }

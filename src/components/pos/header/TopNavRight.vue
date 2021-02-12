@@ -44,7 +44,6 @@
 /*global $ */
 import { mapState, mapGetters, mapActions } from 'vuex'
 import * as CONST from '@/constants'
-import AuthService from '@/services/data/AuthService'
 import SwitchStore from '@/components/commonButtons/SwitchStore'
 import TopSidebarMenu from '@/components/util/TopSidebarMenu'
 import LanguageMenu from '@/components/util/LanguageMenu'
@@ -101,13 +100,7 @@ export default {
           .dialog()
           .dialog('open')
     },
-    logoutCashier() {
-      localStorage.setItem('token', '')
-      this.$store.commit('auth/SET_TOKEN', '')
-      this.$store.commit('auth/LOGOUT_ACTION', 'switchCashier')
-      //this.$router.push({ path: '/cashier-login/' + this.storeUrl })
-      AuthService.logout().then(() => {})
-    },
+
     enabledModule(option) {
       switch (option) {
         case 'switchCashier':

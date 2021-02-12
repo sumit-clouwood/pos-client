@@ -8,25 +8,47 @@ other components are nested within.
     <!--<router-link to="/">Home</router-link> |-->
     <!--<router-link to="/about">About</router-link>-->
     <!--</div>-->
-    <div v-if="loggedIn && storeContext">
-      <div v-if="userError">
-        <div class="center-error">
-          <h3>{{ userError }}</h3>
-          <p>{{ userErrorInstructions }}</p>
-        </div>
+    <div v-if="haveMultipleStores" class="multiplestore-selection">
+      <div v-if="showDebug">
+        Showing multiple stores selector
       </div>
-      <section v-else-if="systemError" class="center-error">
-        <h3>
-          We're sorry, we're not able to proceed at the moment, please try back
-          later.
-        </h3>
-        <h5>Technical info:</h5>
-        <p v-html="systemError"></p>
-      </section>
-      <h5 v-if="showForceLogout">
-        Logging out in
-        <span class="text-danger">{{ secondsToLogout }}</span> seconds
-      </h5>
+      <MultipleStores />
+    </div>
+    <div v-if="loggedIn">
+      <div
+        v-if="showDebug"
+        style="position: absolute; background-color:#fff; left:500px;"
+        class="debug"
+      >
+        loading status: {{ loading }} <br />
+        haveMultipleStores : {{ haveMultipleStores }} <br />
+        storeId: {{ storeId }}
+      </div>
+      <template v-if="userError || systemError">
+        <!-- if there is a user error show user error -->
+        <div v-if="userError">
+          <div class="center-error">
+            <h3>{{ userError }}</h3>
+            <p>{{ userErrorInstructions }}</p>
+          </div>
+        </div>
+        <!-- else if there is a system error show user error -->
+        <section v-else-if="systemError" class="center-error">
+          <h3>
+            We're sorry, we're not able to proceed at the moment, please try
+            back later.
+          </h3>
+          <h5>Technical info:</h5>
+          <p v-html="systemError"></p>
+        </section>
+        <!-- check if there is any user or system error -->
+        <h5 v-if="showForceLogout">
+          Logging out in
+          <span class="text-danger">{{ secondsToLogout }}</span> seconds
+        </h5>
+      </template>
+      <!-- there is no system or user error, check loading -->
+
       <div v-else-if="loading">
         <ul class="ullist-inventory-location loading-view pl-0 pt-2">
           <li class="p-3">
@@ -59,13 +81,14 @@ other components are nested within.
     </div>
     <div v-else>
       <p>
-        Please wait while we are loading store(s)
+        {{ this._t('Authorization failed') }}
       </p>
     </div>
   </div>
 </template>
 <script>
 /* eslint-disable no-console */
+/* global showModal */
 import * as CONST from '@/constants'
 import Cookie from '@/mixins/Cookie'
 import ResizeMixin from '@/mixins/ResizeHandler'
@@ -73,17 +96,18 @@ import bootstrap from '@/bootstrap'
 import Preloader from '@/components/util/Preloader'
 import { mapState, mapGetters } from 'vuex'
 import moment from 'moment-timezone'
+import MultipleStores from '@/components/MultipleStores'
 
 export default {
   name: 'PrivateView',
   props: {},
   components: {
     Preloader,
+    MultipleStores,
   },
   mixins: [Cookie, ResizeMixin],
   data: function() {
     return {
-      storeContext: true,
       loading: true,
       systemError: false,
       userError: false,
@@ -94,6 +118,7 @@ export default {
       secondsToLogout: 30,
       userErrorInstructions: '',
       showForceLogout: false,
+      interval: undefined,
     }
   },
   methods: {
@@ -144,14 +169,7 @@ export default {
         navigator.serviceWorker.addEventListener('message', event => {
           console.log('*** event received from service worker', event)
           if (event.data.msg == 'token') {
-            console.log('setting new token to client')
-            localStorage.setItem('token', event.data.data)
-            bootstrap.loadUI('sw').then(() => {
-              setTimeout(() => {
-                this.loading = false
-                this.progressIncrement = '100%'
-              }, 100)
-            })
+            console.log('event received from sw', event)
           }
           if (event.data.msg === 'sync') {
             if (event.data.data.status === 'done') {
@@ -162,30 +180,29 @@ export default {
       }, 3000)
     },
     setup() {
-      this.secondsToLogout = 30
+      this.secondsToLogout = 20
       this.subscriptionError = false
       this.showForceLogout = false
 
-      const interval = setInterval(() => {
+      this.interval = setInterval(() => {
         this.progressIncrement += 10
         if (this.progressIncrement > 100) {
           this.progressIncrement = 0
         }
       }, 1000)
+      console.log('bootstrap.setup')
       bootstrap
         .setup(this.$store)
         .then(() => {
-          setTimeout(() => {
-            clearInterval(interval)
-            this.progressIncrement = 100
-          }, 100)
-          setTimeout(() => {
-            this.loading = false
-          }, 300)
-
-          this.setupServiceWorker()
-          this.setupRoutes()
-          this.setupExternalScripts()
+          console.log('all apis loaded')
+          //if multistores show the store selector
+          if (this.$store.state.context.storesLength > 1 && !this.store_id) {
+            showModal('#multiStoresModal')
+          } else {
+            this.setupServiceWorker()
+            this.setupRoutes()
+            this.setupExternalScripts()
+          }
         })
         .catch(error => {
           this.loading = false
@@ -209,15 +226,16 @@ export default {
             } else {
               this.userError = error
             }
+
+            //logout here after 3 sec
+            const logoutInterval = setInterval(() => {
+              this.secondsToLogout--
+              if (this.secondsToLogout <= 0) {
+                clearInterval(logoutInterval)
+                this.$store.dispatch('auth/logout')
+              }
+            }, 1000)
           }
-          //logout here after 3 sec
-          const logoutInterval = setInterval(() => {
-            this.secondsToLogout--
-            if (this.secondsToLogout <= 0) {
-              clearInterval(logoutInterval)
-              this.$store.dispatch('auth/logout')
-            }
-          }, 1000)
         })
     },
     resetTokenNumber() {
@@ -259,12 +277,74 @@ export default {
         }
       }
     },
+    loadStore() {
+      this.loading = true
+      var self = this
+      //load store data again, clear old data first and then load new data
+      //reset items, discounts, surcharges everything because each one can be store dependent
+      this.$store
+        .dispatch('context/loadStore')
+        .then(() => {
+          //if store is loading from the switch cashier screen then change route to brand home
+          if (self.$route.name === 'cashierLogin') {
+            self.$router.replace({
+              name: 'BrandHome',
+              brand_id: self.$store.getters['context/brand_id'],
+              store_id: self.$store.getters['context/store_id'],
+            })
+          }
+        })
+        .catch(error => {
+          console.trace(error)
+
+          if (error === 'subscription') {
+            //this.showForceLogout = false
+            this.userError = this._t('Store subscription has been expired.')
+            this.userErrorInstructions = this._t(
+              'Please contact your store owner for access.'
+            )
+          } else {
+            //this.showForceLogout = true
+            if (error.data && error.data.error) {
+              this.userError = error.data.error
+              this.userErrorInstructions = this._t(
+                'Please contact your store owner.'
+              )
+            } else if (error.stack) {
+              this.systemError = error.stack
+            } else {
+              this.userError = error
+            }
+
+            //logout here after 3 sec
+            const logoutInterval = setInterval(() => {
+              this.secondsToLogout--
+              if (this.secondsToLogout <= 0) {
+                clearInterval(logoutInterval)
+                this.$store.dispatch('auth/logout')
+              }
+            }, 1000)
+          }
+        })
+        .finally(() => {
+          clearInterval(this.interval)
+          this.progressIncrement = 100
+          this.loading = false
+          this.$store.dispatch('sync/setLoader', false)
+        })
+    },
   },
   created() {},
   watch: {
-    currentRoute(any) {
-      if (any) {
-        this.$router.replace(any)
+    storeId(storeId) {
+      if (storeId) {
+        this.loadStore()
+      }
+    },
+    loadStoreFromContext(load) {
+      //load store from context only if user has no stores
+      if (load) {
+        this.loadStore()
       }
     },
     // eslint-disable-next-line no-unused-vars
@@ -337,24 +417,24 @@ export default {
         state.location.store ? state.location.store.default_language : false,
     }),
     ...mapState('sync', ['modules']),
-    ...mapState('context', ['currentRoute']),
+    ...mapState('context', ['currentRoute', 'storeId', 'loadStoreFromContext']),
     ...mapGetters('auth', ['loggedIn']),
     ...mapGetters('location', ['isTokenManager', '_t']),
     ...mapState('order', ['orderType']),
     ...mapState('sync', ['online']),
     ...mapState('location', ['timezoneString', 'openHours']),
+    ...mapGetters('context', ['isStoreSelected', 'haveMultipleStores']),
+
     apisLoaded() {
       return this.$store.state.location.brand
+    },
+    showDebug() {
+      return process.env.VUE_APP_DEBUG
     },
   },
   //life cycle hooks
   mounted() {
-    // if (!this.$store.state.context.storeId) {
-    //   this.errored = 'Please provide brand id and store id in url'
-    //   this.storeContext = false
-    // } else {
-    //   this.storeContext = true
-    // }
+    console.log('In private view mounted')
 
     if (this.$route.params.order_id) {
       this.orderId = this.$route.params.order_id
@@ -365,15 +445,7 @@ export default {
       this.tableId = this.$route.params.table_id
     }
 
-    if (
-      (this.$store.state.auth.logoutAction === 'switchCashier' ||
-        localStorage.getItem('logoutAction') === 'switchCashier') &&
-      this.apisLoaded
-    ) {
-      this.loading = false
-    } else {
-      this.setup()
-    }
+    this.setup()
 
     let vh = window.innerHeight * 0.01
     // Then we set the value in the --vh custom property to the root of the document
