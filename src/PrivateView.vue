@@ -8,11 +8,22 @@ other components are nested within.
     <!--<router-link to="/">Home</router-link> |-->
     <!--<router-link to="/about">About</router-link>-->
     <!--</div>-->
-
+    <div v-if="haveMultipleStores" class="multiplestore-selection">
+      <div v-if="showDebug">
+        Showing multiple stores selector
+      </div>
+      <MultipleStores />
+    </div>
     <div v-if="loggedIn">
-      loading status: {{ loading }} <br />
-      haveMultipleStores : {{ haveMultipleStores }} <br />
-      storeId: {{ storeId }}
+      <div
+        v-if="showDebug"
+        style="position: absolute; background-color:#fff; left:500px;"
+        class="debug"
+      >
+        loading status: {{ loading }} <br />
+        haveMultipleStores : {{ haveMultipleStores }} <br />
+        storeId: {{ storeId }}
+      </div>
       <template v-if="userError || systemError">
         <!-- if there is a user error show user error -->
         <div v-if="userError">
@@ -37,12 +48,7 @@ other components are nested within.
         </h5>
       </template>
       <!-- there is no system or user error, check loading -->
-      <div
-        v-else-if="haveMultipleStores && !storeId"
-        class="multiplestore-selection"
-      >
-        <MultipleStores />
-      </div>
+
       <div v-else-if="loading">
         <ul class="ullist-inventory-location loading-view pl-0 pt-2">
           <li class="p-3">
@@ -174,7 +180,7 @@ export default {
       }, 3000)
     },
     setup() {
-      this.secondsToLogout = 3
+      this.secondsToLogout = 20
       this.subscriptionError = false
       this.showForceLogout = false
 
@@ -324,6 +330,7 @@ export default {
           clearInterval(this.interval)
           this.progressIncrement = 100
           this.loading = false
+          this.$store.dispatch('sync/setLoader', false)
         })
     },
   },
@@ -420,6 +427,9 @@ export default {
 
     apisLoaded() {
       return this.$store.state.location.brand
+    },
+    showDebug() {
+      return process.env.VUE_APP_DEBUG
     },
   },
   //life cycle hooks

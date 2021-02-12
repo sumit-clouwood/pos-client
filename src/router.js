@@ -43,7 +43,7 @@ const router = new Router({
     //   component: Home,
     // },
     {
-      path: '/cashier-login/:brand_id/:store_id',
+      path: '/cashier-login/:brand_id',
       name: 'cashierLogin',
       component: CashierLogin,
     },

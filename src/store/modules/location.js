@@ -32,7 +32,6 @@ const getDefaults = () => ({
   openHours: null,
   brandStores: false,
   jeeblyOrder: [],
-  storeData: undefined,
 })
 
 const state = getDefaults()
@@ -194,152 +193,196 @@ const actions = {
         .catch(er => reject(er))
     })
   },
-  //this function is called before pos load
-  async getStore({ commit, dispatch, rootGetters }, deviceId) {
+  //got through brand/store
+  fetch({ state, commit, dispatch, rootState, rootGetters }) {
+    dispatch('formatDate')
+    dispatch('auth/checkDevice', '', { root: true })
     return new Promise((resolve, reject) => {
       LocationService.getLocationData()
-        .then(response => {
-          //check brand here
-          commit('SET_BRAND', response.data.brand)
+        .then(storedata => {
+          if (typeof storedata.data.available_stores !== 'undefined') {
+            commit(
+              'context/SET_STORES_LENGTH',
+              storedata.data.available_stores.length,
+              { root: true }
+            )
+            commit(
+              'context/SET_MULTI_STORES',
+              storedata.data.available_stores,
+              {
+                root: true,
+              }
+            )
+            commit(
+              'context/SET_AVAILABLE_MODULES',
+              storedata.data.available_modules,
+              {
+                root: true,
+              }
+            )
+            if (
+              storedata.data.available_modules.includes(
+                CONST.MODULE_MANUAL_ACCEPTANCE
+              )
+            ) {
+              commit('deliveryManager/LIST_TYPE', 'Awaiting Acceptance', {
+                root: true,
+              })
+            }
+          }
+          let availableStoreGroups =
+            storedata.data.available_store_groups || false
+          commit('auth/AVAILABLE_STORE_GROUPS', availableStoreGroups, {
+            root: true,
+          })
+          if (storedata.data.brand) {
+            commit(mutation.SET_BRAND, storedata.data.brand)
+          }
+
+          let currentStore = storedata.data.store
+          if (currentStore) {
+            localStorage.setItem(
+              'starting_token',
+              currentStore.token_starting_number
+            )
+            commit('SET_OPEN_HOURS', currentStore.open_hours)
+          }
+
+          commit(mutation.SET_PERMISSION, storedata.data.menu)
+          commit(mutation.SET_LANGUAGE_DIRECTION, storedata.data.direction)
+          commit(mutation.SET_TRASLATIONS, storedata.data.translations)
+          if (!state.availableLanguages) {
+            commit(
+              mutation.SET_AVAILABLE_LANGUAGES,
+              storedata.data.available_lang
+            )
+          }
+
+          if (storedata.data.store) {
+            commit(mutation.SET_STORE, storedata.data.store)
+          } else if (storedata.data.available_stores) {
+            commit(mutation.SET_STORE, storedata.data.available_stores[0])
+          } else {
+            return reject(
+              `Sorry! Store doesn't belong to current logged in user`
+            )
+          }
+
+          if (state.store && state.store._id) {
+            //set context as well
+            commit('context/SET_BRAND_ID', state.brand._id, { root: true })
+            commit('context/SET_STORE_ID', state.store._id, { root: true })
+
+            localStorage.setItem('brand_id', state.brand._id)
+            localStorage.setItem('store_id', state.store._id)
+
+            DataService.setContext({
+              brand: rootGetters['context/brand'],
+              store: rootGetters['context/store'],
+            })
+          } else {
+            return reject('no store found in api data')
+          }
+
+          commit(mutation.SET_LOCATION, state.store.address)
+          commit(mutation.SET_CURRENCY, state.store.currency)
+          let userDetails = {}
+          userDetails.username = storedata.data.username
+          userDetails.userId = storedata.data.user_id
+          userDetails.avatar = storedata.data.avatar
+          commit(mutation.USER_SHORT_DETAILS, userDetails)
+          dispatch('timezone')
+
           commit('modules/SET_ENABLED_MODULES', state.brand.enabled_modules, {
             root: true,
           })
+          // dispatch('getUserDetails', storedata.data.user_id)
+          //  else if (state.store.default_language) {
+          //   locale = state.store.default_language
+          // }
+          // take out else part,as discussed with Alex language ll be dependent on cashier login
 
           if (!rootGetters['modules/enabled'](CONST.MODULE_POS)) {
             console.log('Point of sale not available.')
-            return reject('Point of sale not available.')
-          }
+            reject('Point of sale not available.')
+          } else {
+            if (rootGetters['modules/enabled'](CONST.MODULE_CASHIER_APP)) {
+              LocationService.registerDevice(rootState.auth.deviceId)
+                .then(response => {
+                  commit(mutation.SET_TERMINAL_CODE, response.data.id)
+                  const data = {
+                    id: 1,
+                    token: localStorage.getItem('token'),
+                    branch_n: state.store.branch_n,
+                    terminal_code: state.terminalCode,
+                  }
+                  db.getBucket('auth')
+                    .then(bucket => {
+                      db.put(bucket, data)
+                    })
+                    .catch(error => {
+                      reject(error)
+                    })
 
-          if (!rootGetters['modules/enabled'](CONST.MODULE_CASHIER_APP)) {
-            console.log('Cashier apps not available.')
-            return reject('Cashier apps not not available.')
-          }
+                  dispatch('referrals')
+                  let multiStoreIds = storedata.data.available_stores.map(
+                    store => store._id
+                  )
+                  let storeId = router.currentRoute.params.group_id || false
+                  if (storeId) {
+                    availableStoreGroups.find(group => {
+                      if (group._id === storeId) {
+                        multiStoreIds = group.group_stores
+                      }
+                    })
+                  }
+                  commit(mutation.MULTI_STORE_IDS, multiStoreIds)
+                  // if user was already logged in, and refresh the browser,
+                  // in that case login api ll not hit and it ll not fetch the user details
+                  // so in that case we specifically  need to fetch the user details
+                  // hence we check user name here, if not found load customer details for current
+                  // store user
 
-          //configure store
-          commit('context/SET_CURRENT_STORE', response.data.store, {
-            root: true,
-          })
-          commit('SET_STORE', response.data.store)
-
-          commit('SET_STORE_DATA', response)
-          dispatch(
-            'context/setBrandStoreContext',
-            {
-              brandId: response.data.brand._id,
-              storeId: response.data.store._id,
-            },
-            { root: true }
-          )
-
-          LocationService.registerDevice(deviceId)
-            .then(response => {
-              commit(mutation.SET_TERMINAL_CODE, response.data.id)
-              const data = {
-                id: 1,
-                token: localStorage.getItem('token'),
-                branch_n: state.store.branch_n,
-                terminal_code: state.terminalCode,
-              }
-              db.getBucket('auth')
-                .then(bucket => {
-                  db.put(bucket, data)
+                  if (!rootState.auth.userDetails.item.name) {
+                    dispatch('auth/getUserDetails', storedata.data.user_id, {
+                      root: true,
+                    }).then(response => {
+                      resolve({
+                        userDetails: response.item,
+                        stores: multiStoreIds,
+                        availableStoreGroups: availableStoreGroups,
+                      })
+                    })
+                  } else {
+                    resolve({
+                      userDetails: rootState.auth.userDetails.item,
+                      stores: multiStoreIds,
+                      availableStoreGroups: availableStoreGroups,
+                    })
+                  }
                 })
                 .catch(error => {
-                  reject(error)
+                  console.log('device registration failed', error)
+                  if (typeof error.data !== 'undefined') {
+                    reject(error.data.error)
+                  } else {
+                    reject(
+                      'Device registration not permitted for current login'
+                    )
+                  }
                 })
-              resolve()
-              // if user was already logged in, and refresh the browser,
-              // in that case login api ll not hit and it ll not fetch the user details
-              // so in that case we specifically  need to fetch the user details
-              // hence we check user name here, if not found load customer details for current
-              // store user
-            })
-            .catch(error => {
-              console.log('device registration failed', error)
-              if (typeof error.data !== 'undefined') {
-                reject(error.data.error)
-              } else {
-                reject('Device registration not permitted for current login')
-              }
-            })
+            } else {
+              console.log('Cashier apps not allowed')
+              reject('Cashier apps not allowed')
+            }
+          }
+          // commit(mutation.SET_CURRENCY, response.data.data.currency_symbol)
         })
         .catch(error => {
+          //if refresh token faild log out user here
+          console.log('refresh token failed, logout user', error)
           reject(error)
         })
-    })
-  },
-  //this function is called when pos is loaded
-  setupStore({ state, commit, dispatch, rootState }) {
-    return new Promise(resolve => {
-      const storedata = state.storeData
-      dispatch('referrals')
-
-      if (typeof storedata.data.available_stores !== 'undefined') {
-        commit(
-          'context/SET_AVAILABLE_MODULES',
-          storedata.data.available_modules,
-          {
-            root: true,
-          }
-        )
-        if (
-          storedata.data.available_modules.includes(
-            CONST.MODULE_MANUAL_ACCEPTANCE
-          )
-        ) {
-          commit('deliveryManager/LIST_TYPE', 'Awaiting Acceptance', {
-            root: true,
-          })
-        }
-      }
-      let availableStoreGroups = storedata.data.available_store_groups || false
-      commit('auth/AVAILABLE_STORE_GROUPS', availableStoreGroups, {
-        root: true,
-      })
-
-      let currentStore = storedata.data.store
-      if (currentStore) {
-        localStorage.setItem(
-          'starting_token',
-          currentStore.token_starting_number
-        )
-        commit('SET_OPEN_HOURS', currentStore.open_hours)
-      }
-
-      commit(mutation.SET_PERMISSION, storedata.data.menu)
-      commit(mutation.SET_LANGUAGE_DIRECTION, storedata.data.direction)
-      commit(mutation.SET_TRASLATIONS, storedata.data.translations)
-      if (!state.availableLanguages) {
-        commit(mutation.SET_AVAILABLE_LANGUAGES, storedata.data.available_lang)
-      }
-
-      commit(mutation.SET_LOCATION, state.store.address)
-      commit(mutation.SET_CURRENCY, state.store.currency)
-      let userDetails = {}
-      userDetails.username = storedata.data.username
-      userDetails.userId = storedata.data.user_id
-      userDetails.avatar = storedata.data.avatar
-      commit(mutation.USER_SHORT_DETAILS, userDetails)
-      dispatch('timezone')
-
-      let multiStoreIds = storedata.data.available_stores.map(
-        store => store._id
-      )
-      let storeId = router.currentRoute.params.group_id || false
-      if (storeId) {
-        availableStoreGroups.find(group => {
-          if (group._id === storeId) {
-            multiStoreIds = group.group_stores
-          }
-        })
-      }
-      commit(mutation.MULTI_STORE_IDS, multiStoreIds)
-
-      resolve({
-        userDetails: rootState.auth.userDetails.item,
-        stores: multiStoreIds,
-        availableStoreGroups: availableStoreGroups,
-      })
     })
   },
   timezone({ commit, state }) {
@@ -430,15 +473,9 @@ const mutations = {
   [mutation.SET_MODAL](state, setModal) {
     state.setModal = setModal
   },
-  //SET JUST RESPONSE.DATA.STORE
   [mutation.SET_STORE](state, store) {
     state.store = store
   },
-  //SET RESPONSE
-  SET_STORE_DATA(state, apiResponse) {
-    state.storeData = apiResponse
-  },
-
   [mutation.SET_BRAND](state, brand) {
     state.brand = brand
   },

@@ -68,23 +68,18 @@ const actions = {
         brand: getters.brand,
         store: getters.store,
       })
-      //from Yuvraj's code in location.js
-      dispatch('location/formatDate', null, { root: true })
-      dispatch('auth/checkDevice', '', { root: true })
 
-      bootstrap.validateSubscription().then(() => {
-        bootstrap
-          .loadStore()
-          .then(() => {
-            resolve()
-            dispatch('sync/setLoader', false, {
-              root: true,
-            })
+      bootstrap
+        .loadStore()
+        .then(() => {
+          resolve()
+          dispatch('sync/setLoader', false, {
+            root: true,
           })
-          .catch(error => {
-            reject(error)
-          })
-      })
+        })
+        .catch(error => {
+          reject(error)
+        })
     })
   },
   getStoresByGroupID({ state, commit, rootState }, groupId) {
