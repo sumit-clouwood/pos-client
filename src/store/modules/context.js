@@ -69,7 +69,7 @@ const actions = {
         store: getters.store,
       })
       //from Yuvraj's code in location.js
-      dispatch('location/formatDate')
+      dispatch('location/formatDate', null, { root: true })
       dispatch('auth/checkDevice', '', { root: true })
 
       bootstrap.validateSubscription().then(() => {

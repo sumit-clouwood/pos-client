@@ -174,7 +174,7 @@ export default {
       }, 3000)
     },
     setup() {
-      this.secondsToLogout = 30
+      this.secondsToLogout = 3
       this.subscriptionError = false
       this.showForceLogout = false
 
@@ -276,21 +276,55 @@ export default {
       var self = this
       //load store data again, clear old data first and then load new data
       //reset items, discounts, surcharges everything because each one can be store dependent
-      this.$store.dispatch('context/loadStore').then(() => {
-        this.loading = false
+      this.$store
+        .dispatch('context/loadStore')
+        .then(() => {
+          //if store is loading from the switch cashier screen then change route to brand home
+          if (self.$route.name === 'cashierLogin') {
+            self.$router.replace({
+              name: 'BrandHome',
+              brand_id: self.$store.getters['context/brand_id'],
+              store_id: self.$store.getters['context/store_id'],
+            })
+          }
+        })
+        .catch(error => {
+          console.trace(error)
 
-        //if store is loading from the switch cashier screen then change route to brand home
-        if (self.$route.name === 'cashierLogin') {
-          self.$router.replace({
-            name: 'BrandHome',
-            brand_id: self.$store.getters['context/brand_id'],
-            store_id: self.$store.getters['context/store_id'],
-          })
-        }
+          if (error === 'subscription') {
+            //this.showForceLogout = false
+            this.userError = this._t('Store subscription has been expired.')
+            this.userErrorInstructions = this._t(
+              'Please contact your store owner for access.'
+            )
+          } else {
+            //this.showForceLogout = true
+            if (error.data && error.data.error) {
+              this.userError = error.data.error
+              this.userErrorInstructions = this._t(
+                'Please contact your store owner.'
+              )
+            } else if (error.stack) {
+              this.systemError = error.stack
+            } else {
+              this.userError = error
+            }
 
-        clearInterval(this.interval)
-        this.progressIncrement = 100
-      })
+            //logout here after 3 sec
+            const logoutInterval = setInterval(() => {
+              this.secondsToLogout--
+              if (this.secondsToLogout <= 0) {
+                clearInterval(logoutInterval)
+                this.$store.dispatch('auth/logout')
+              }
+            }, 1000)
+          }
+        })
+        .finally(() => {
+          clearInterval(this.interval)
+          this.progressIncrement = 100
+          this.loading = false
+        })
     },
   },
   created() {},
