@@ -195,7 +195,7 @@ const actions = {
     })
   },
   //this function is called before pos load
-  async getStore({ commit, dispatch, rootGetters, rootState }) {
+  async getStore({ commit, dispatch, rootGetters }, deviceId) {
     return new Promise((resolve, reject) => {
       LocationService.getLocationData()
         .then(response => {
@@ -210,7 +210,7 @@ const actions = {
             return reject('Point of sale not available.')
           }
 
-          if (rootGetters['modules/enabled'](CONST.MODULE_CASHIER_APP)) {
+          if (!rootGetters['modules/enabled'](CONST.MODULE_CASHIER_APP)) {
             console.log('Cashier apps not available.')
             return reject('Cashier apps not not available.')
           }
@@ -219,7 +219,7 @@ const actions = {
           commit('context/SET_CURRENT_STORE', response.data.store, {
             root: true,
           })
-          commit('SET_STORE', response.data.store, { root: true })
+          commit('SET_STORE', response.data.store)
 
           commit('SET_STORE_DATA', response)
           dispatch(
@@ -231,7 +231,7 @@ const actions = {
             { root: true }
           )
 
-          LocationService.registerDevice(rootState.auth.deviceId)
+          LocationService.registerDevice(deviceId)
             .then(response => {
               commit(mutation.SET_TERMINAL_CODE, response.data.id)
               const data = {
@@ -247,7 +247,7 @@ const actions = {
                 .catch(error => {
                   reject(error)
                 })
-
+              resolve()
               // if user was already logged in, and refresh the browser,
               // in that case login api ll not hit and it ll not fetch the user details
               // so in that case we specifically  need to fetch the user details
@@ -269,7 +269,7 @@ const actions = {
     })
   },
   //this function is called when pos is loaded
-  setupStore({ state, commit, dispatch, rootState, rootGetters }) {
+  setupStore({ state, commit, dispatch, rootState }) {
     return new Promise(resolve => {
       const storedata = state.storeData
       dispatch('referrals')

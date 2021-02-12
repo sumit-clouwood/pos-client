@@ -115,9 +115,13 @@ export default {
           this.saveEventOffline({
             request: absUrl,
             response: response.data,
-          }).then(() => {
-            this.setLastUpdate(absUrl, new Date())
           })
+            .then(() => {
+              this.setLastUpdate(absUrl, new Date())
+            })
+            .catch(error => {
+              console.log('offline save event fails', error)
+            })
 
           resolve(response)
         } else {

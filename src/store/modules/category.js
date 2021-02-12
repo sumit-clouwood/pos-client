@@ -230,8 +230,6 @@ const actions = {
               resolve()
             })
           })
-          //Fetch all kitchens & Printing Servers on POS and save into states.
-          dispatch('printingServer/fetchAllKitchens', {}, { root: true })
         })
         .catch(error => reject(error))
 
