@@ -287,8 +287,15 @@ export default {
         .then(() => {
           //if store is loading from the switch cashier screen then change route to brand home
           if (self.$route.name === 'cashierLogin') {
+            //if waiter send it to dine in otherwise end to brandhome/walkin
+            let newRoute = 'BrandHome'
+            if (this.roleName === 'Waiter') {
+              newRoute = 'Dinein'
+            } else if (this.roleName === 'Carhop User') {
+              newRoute = 'Carhop'
+            }
             self.$router.replace({
-              name: 'BrandHome',
+              name: newRoute,
               brand_id: self.$store.getters['context/brand_id'],
               store_id: self.$store.getters['context/store_id'],
             })
@@ -418,7 +425,7 @@ export default {
     }),
     ...mapState('sync', ['modules']),
     ...mapState('context', ['currentRoute', 'storeId', 'loadStoreFromContext']),
-    ...mapGetters('auth', ['loggedIn']),
+    ...mapGetters('auth', ['loggedIn', 'roleName']),
     ...mapGetters('location', ['isTokenManager', '_t']),
     ...mapState('order', ['orderType']),
     ...mapState('sync', ['online']),

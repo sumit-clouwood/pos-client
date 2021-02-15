@@ -113,7 +113,7 @@
           class="btn btn-success color-icon-table-neutral-button font-weight-bold"
           v-if="enabledModule('switchCashier')"
         >
-          {{ _t('Switch Cashier') }}
+          {{ _t('Switch User') }}
         </button>
         <button
           type="button"
@@ -151,7 +151,7 @@ export default {
     enabledModule(option) {
       switch (option) {
         case 'switchCashier':
-          return !this.carhop && !this.waiter
+          return true
       }
     },
     showPopup(modalName) {

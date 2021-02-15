@@ -963,7 +963,9 @@
 <!-- built files will be auto injected -->
 <script>
     setTimeout(()=> {
-    document.getElementById('showNoJs').style.display = 'block'
+        if (document.getElementById('showNoJs')) {
+            document.getElementById('showNoJs').style.display = 'block'
+        }
 }, 1000 * 3)
 </script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDU5bjWb8uv0otMI8cMyZFf52n_Mk_yACY&libraries=places"></script>
