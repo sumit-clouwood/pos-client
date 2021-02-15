@@ -151,7 +151,7 @@ export default {
     enabledModule(option) {
       switch (option) {
         case 'switchCashier':
-          return !this.carhop
+          return true
       }
     },
     showPopup(modalName) {

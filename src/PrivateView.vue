@@ -291,6 +291,8 @@ export default {
             let newRoute = 'BrandHome'
             if (this.roleName === 'Waiter') {
               newRoute = 'Dinein'
+            } else if (this.roleName === 'Carhop User') {
+              newRoute = 'Carhop'
             }
             self.$router.replace({
               name: newRoute,
