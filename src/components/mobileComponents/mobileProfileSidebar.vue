@@ -212,7 +212,7 @@
           </div>
           <div
             class="profile-menu-item"
-            v-if="enabledModule('switchCashier') && !isWaiter() && !isCarhop()"
+            v-if="enabledModule('switchCashier') && !isCarhop()"
           >
             <div class="profile-menu-item-icon">
               <svg
@@ -234,7 +234,7 @@
             </div>
             <router-link :to="'/cashier-login' + brandContext">
               <div class="profile-menu-item-text">
-                {{ _t('Switch') + ' ' + _t('Cashier') }}
+                {{ _t('Switch') + ' ' + _t('User') }}
               </div>
             </router-link>
           </div>
