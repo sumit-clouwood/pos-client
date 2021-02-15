@@ -210,10 +210,7 @@
               </router-link>
             </div>
           </div>
-          <div
-            class="profile-menu-item"
-            v-if="enabledModule('switchCashier') && !isCarhop()"
-          >
+          <div class="profile-menu-item" v-if="enabledModule('switchCashier')">
             <div class="profile-menu-item-icon">
               <svg
                 width="24"

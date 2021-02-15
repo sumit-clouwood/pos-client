@@ -170,7 +170,7 @@
             ><span>{{ _t('Carhop') + ' ' + _t('Orders') }}</span>
           </router-link>
         </li>
-        <li v-if="enabledModule('switchCashier') && !isCarhop()">
+        <li v-if="enabledModule('switchCashier')">
           <router-link :to="'/cashier-login' + brandContext"
             ><svg
               xmlns="http://www.w3.org/2000/svg"
