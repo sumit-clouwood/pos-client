@@ -197,6 +197,7 @@ export default {
           console.log('all apis loaded')
           //if multistores show the store selector
           if (this.$store.state.context.storesLength > 1 && !this.store_id) {
+            this.loading = false
             showModal('#multiStoresModal')
           } else {
             this.setupServiceWorker()
@@ -282,6 +283,13 @@ export default {
       var self = this
       //load store data again, clear old data first and then load new data
       //reset items, discounts, surcharges everything because each one can be store dependent
+      this.interval = setInterval(() => {
+        this.progressIncrement += 10
+        if (this.progressIncrement > 100) {
+          this.progressIncrement = 0
+        }
+      }, 1000)
+
       this.$store
         .dispatch('context/loadStore')
         .then(() => {
@@ -338,6 +346,10 @@ export default {
           this.progressIncrement = 100
           this.loading = false
           this.$store.dispatch('sync/setLoader', false)
+
+          setTimeout(() => {
+            this.progressIncrement = 0
+          }, 1000 * 5)
         })
     },
   },
