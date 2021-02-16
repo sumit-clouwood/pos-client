@@ -6,6 +6,7 @@
     <public-view v-else class="public-view"></public-view>
     <app-notification></app-notification>
     <loader></loader>
+    <div id="appLoaded"></div>
   </div>
 </template>
 <script>
