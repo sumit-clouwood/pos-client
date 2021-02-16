@@ -304,8 +304,10 @@ export default {
             }
             self.$router.replace({
               name: newRoute,
-              brand_id: self.$store.getters['context/brand_id'],
-              store_id: self.$store.getters['context/store_id'],
+              params: {
+                brand_id: self.$store.getters['context/brand_id'],
+                store_id: self.$store.getters['context/store_id'],
+              },
             })
           }
         })
