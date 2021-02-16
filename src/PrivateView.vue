@@ -9,7 +9,7 @@ other components are nested within.
     <!--<router-link to="/about">About</router-link>-->
     <!--</div>-->
     <div v-if="haveMultipleStores" class="multiplestore-selection">
-      <div v-if="showDebug">
+      <div v-if="showDebug" style="position:  absolute; left: 100px;">
         Showing multiple stores selector
       </div>
       <MultipleStores />

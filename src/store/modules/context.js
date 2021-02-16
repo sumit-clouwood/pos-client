@@ -130,12 +130,13 @@ const mutations = {
     state.currentRoute = any
   },
   [mutation.RESET](state, data) {
-    if (data && data.preserve && data.preserve.includes('brand_id')) {
-      //preserve brand
-    } else {
-      state.brand = null
-      state.brandId = null
-    }
+    //don't reset brand in any case
+    // if (data && data.preserve && data.preserve.includes('brand_id')) {
+    //   //preserve brand
+    // } else {
+    //   state.brand = null
+    //   state.brandId = null
+    // }
     if (data && data.preserve && data.preserve.includes('store_id')) {
       //preserve brand
     } else {
