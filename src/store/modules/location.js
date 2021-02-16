@@ -519,8 +519,11 @@ const mutations = {
   [mutation.MULTI_STORE_IDS](state, multiStoreIds) {
     state.multiStoreIds = multiStoreIds
   },
-  [mutation.RESET](state) {
-    Object.assign(state, getDefaults())
+  [mutation.RESET](state, full = false) {
+    state.setModal = '#manage-customer'
+    if (full) {
+      Object.assign(state, getDefaults())
+    }
   },
   [mutation.SET_DATE](state, dateAPI) {
     state.apiDate = dateAPI
