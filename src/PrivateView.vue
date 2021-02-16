@@ -9,7 +9,7 @@ other components are nested within.
     <!--<router-link to="/about">About</router-link>-->
     <!--</div>-->
     <div v-if="haveMultipleStores" class="multiplestore-selection">
-      <div v-if="showDebug">
+      <div v-if="showDebug" style="position:  absolute; left: 100px;">
         Showing multiple stores selector
       </div>
       <MultipleStores />
@@ -197,6 +197,7 @@ export default {
           console.log('all apis loaded')
           //if multistores show the store selector
           if (this.$store.state.context.storesLength > 1 && !this.store_id) {
+            this.loading = false
             showModal('#multiStoresModal')
           } else {
             this.setupServiceWorker()
@@ -282,6 +283,13 @@ export default {
       var self = this
       //load store data again, clear old data first and then load new data
       //reset items, discounts, surcharges everything because each one can be store dependent
+      this.interval = setInterval(() => {
+        this.progressIncrement += 10
+        if (this.progressIncrement > 100) {
+          this.progressIncrement = 0
+        }
+      }, 1000)
+
       this.$store
         .dispatch('context/loadStore')
         .then(() => {
@@ -296,8 +304,10 @@ export default {
             }
             self.$router.replace({
               name: newRoute,
-              brand_id: self.$store.getters['context/brand_id'],
-              store_id: self.$store.getters['context/store_id'],
+              params: {
+                brand_id: self.$store.getters['context/brand_id'],
+                store_id: self.$store.getters['context/store_id'],
+              },
             })
           }
         })
@@ -338,6 +348,10 @@ export default {
           this.progressIncrement = 100
           this.loading = false
           this.$store.dispatch('sync/setLoader', false)
+
+          setTimeout(() => {
+            this.progressIncrement = 0
+          }, 1000 * 5)
         })
     },
   },

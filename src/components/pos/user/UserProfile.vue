@@ -112,6 +112,7 @@
           type="button"
           class="btn btn-success color-icon-table-neutral-button font-weight-bold"
           v-if="enabledModule('switchCashier')"
+          @click="switchCurrentCashier"
         >
           {{ _t('Switch User') }}
         </button>
@@ -157,9 +158,13 @@ export default {
     showPopup(modalName) {
       $(modalName).modal('show')
     },
+
+    switchCurrentCashier() {
+      this.$router.push('/cashier-login/' + this.brand)
+    },
   },
   computed: {
-    ...mapGetters('context', ['store']),
+    ...mapGetters('context', ['store', 'brand']),
     ...mapGetters('auth', ['waiter', 'carhop', 'allowed']),
     ...mapState({
       user: state => state.auth.userDetails.item,

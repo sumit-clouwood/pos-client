@@ -37,7 +37,7 @@
         </div>
         <div class="modal-footer">
           <button
-            v-if="this.$route.params.store_id"
+            v-if="currentStoreId"
             type="button"
             class="tables-btn-style"
             data-dismiss="modal"
@@ -69,6 +69,9 @@ export default {
       'haveMultipleStores',
       'multipleStores',
     ]),
+    ...mapState({
+      currentStoreId: state => state.context.storeId,
+    }),
     ...mapGetters('location', ['_t']),
     ...mapGetters({
       selectedBrand: ['context/brand'],
@@ -78,9 +81,6 @@ export default {
   methods: {
     selectedStoreId(storeId) {
       //show the loader only when switching the store, don't show it right after login when there are multiple stores
-      if (this.loaded) {
-        this.$store.commit('sync/SET_IS_LOADING', true)
-      }
       //reset all previous data
       this.$store.commit('context/SET_STORE_ID', storeId)
       this.$store.commit(
