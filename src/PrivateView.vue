@@ -77,6 +77,7 @@ other components are nested within.
           </li>
         </ul>
       </div>
+      <div v-else-if="multistoreSelector"></div>
       <router-view v-else />
     </div>
     <div v-else>
@@ -119,6 +120,7 @@ export default {
       userErrorInstructions: '',
       showForceLogout: false,
       interval: undefined,
+      multistoreSelector: false,
     }
   },
   methods: {
@@ -180,6 +182,7 @@ export default {
       }, 3000)
     },
     setup() {
+      this.multistoreSelector = false
       this.secondsToLogout = 20
       this.subscriptionError = false
       this.showForceLogout = false
@@ -198,8 +201,10 @@ export default {
           //if multistores show the store selector
           if (this.$store.state.context.storesLength > 1 && !this.store_id) {
             this.loading = false
+            this.multistoreSelector = true
             showModal('#multiStoresModal')
           } else {
+            this.multistoreSelector = false
             this.setupServiceWorker()
             this.setupRoutes()
             this.setupExternalScripts()
@@ -348,7 +353,7 @@ export default {
           this.progressIncrement = 100
           this.loading = false
           this.$store.dispatch('sync/setLoader', false)
-
+          this.multistoreSelector = false
           setTimeout(() => {
             this.progressIncrement = 0
           }, 1000 * 5)
