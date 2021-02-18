@@ -160,7 +160,7 @@ export default {
     },
 
     switchCurrentCashier() {
-      this.$router.push('/cashier-login/' + this.brand)
+      this.$router.push('/cashier-login' + this.brand)
     },
   },
   computed: {
