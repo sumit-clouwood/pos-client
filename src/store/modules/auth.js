@@ -167,7 +167,6 @@ const actions = {
           }
           commit('SET_CURRENT_LOGGED_IN_USER_ID', response.data.user.user_id)
           localStorage.setItem('token', response.data.token)
-          localStorage.setItem('userid', response.data.user.user_id)
           //wait for localstorage to be updated
           setTimeout(() => {
             commit(mutation.SET_TOKEN, response.data.token)
@@ -189,7 +188,6 @@ const actions = {
       AuthService.pinlogin(data)
         .then(response => {
           commit('SET_CURRENT_LOGGED_IN_USER_ID', response.data.user.user_id)
-          localStorage.setItem('userid', response.data.user.user_id)
           localStorage.setItem('token', response.data.token)
           commit(mutation.SET_TOKEN, response.data.token)
         })
@@ -202,7 +200,7 @@ const actions = {
     return new Promise((resolve, reject) => {
       if (localStorage.getItem('token')) {
         commit(mutation.SET_TOKEN, localStorage.getItem('token'))
-        commit('SET_CURRENT_LOGGED_IN_USER_ID', localStorage.getItem('userid'))
+        //get user details again based on current token
 
         if (localStorage.getItem('brand_id')) {
           commit('context/SET_BRAND_ID', localStorage.getItem('brand_id'), {
@@ -324,10 +322,14 @@ const actions = {
       if (!userId) {
         userId = state.currentLoggedInUserId
       }
-      AuthService.userDetails(userId).then(response => {
-        commit(mutation.USER_DETAILS, response.data)
-        resolve(response.data)
-      })
+      if (!userId) {
+        resolve(false)
+      } else {
+        AuthService.userDetails(userId).then(response => {
+          commit(mutation.USER_DETAILS, response.data)
+          resolve(response.data)
+        })
+      }
     })
   },
   fetchRoles({ commit, getters }) {

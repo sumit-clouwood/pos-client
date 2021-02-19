@@ -32,6 +32,7 @@ const getDefaults = () => ({
   openHours: null,
   brandStores: false,
   jeeblyOrder: [],
+  locationData: undefined,
 })
 
 const state = getDefaults()
@@ -193,12 +194,26 @@ const actions = {
         .catch(er => reject(er))
     })
   },
+  async getLocationData({ commit, rootGetters }) {
+    if (state.locationData) {
+      if (
+        state.locationData.data.available_stores.find(
+          _store => _store._id === rootGetters['context/store_id']
+        )
+      ) {
+        return Promise.resolve(state.locationData)
+      }
+    }
+    const locationData = await LocationService.getLocationData()
+    commit('SET_LOCATION_DATA', locationData)
+    return locationData
+  },
   //got through brand/store
   fetch({ state, commit, dispatch, rootState, rootGetters }) {
     dispatch('formatDate')
     dispatch('auth/checkDevice', '', { root: true })
     return new Promise((resolve, reject) => {
-      LocationService.getLocationData()
+      dispatch('getLocationData')
         .then(storedata => {
           if (typeof storedata.data.available_stores !== 'undefined') {
             commit(
@@ -540,6 +555,9 @@ const mutations = {
   [mutation.SET_ORDER_JEEBLY](state, data) {
     state.jeeblyOrder = data
     console.log(state.jeeblyOrder)
+  },
+  SET_LOCATION_DATA(state, data) {
+    state.locationData = data
   },
 }
 
