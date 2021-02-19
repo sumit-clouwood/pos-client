@@ -59,85 +59,189 @@ export default {
   },
   async fetchLoggedInUser() {
     return new Promise((resolve, reject) => {
-      const currentStoreId = $store.getters['context/store_id']
+      const currentStoreId =
+        $store.getters['context/store_id'] || localStorage.getItem('store_id')
       this.detectBrowser().then(deviceId => {
         this.store.dispatch('auth/auth', deviceId).then(() => {
           $store
             .dispatch('auth/getUserDetails')
             .then(user => {
-              if (
-                !user.item.brand_stores.length &&
-                user.item.brand_access_type === 'all'
-              ) {
-                //context already set from app.vue
+              if (user) {
+                if (
+                  !user.item.brand_stores.length &&
+                  user.item.brand_access_type === 'all'
+                ) {
+                  //context already set from app.vue
 
-                if (!user.item.brand_id) {
-                  //mostly its superadmin which don't have brand_stores
-                  //load the store from api if it is in url
-                  if ($store.getters['context/store_id']) {
-                    $store.commit('context/LOAD_STORE_FROM_CONTEXT', true)
-                    resolve()
+                  if (!user.item.brand_id) {
+                    //mostly its superadmin which don't have brand_stores
+                    //load the store from api if it is in url
+                    if ($store.getters['context/store_id']) {
+                      $store.commit('context/LOAD_STORE_FROM_CONTEXT', true)
+                      resolve()
+                    } else {
+                      reject('Please select store id')
+                    }
                   } else {
-                    reject('Please select store id')
+                    $store.commit('context/RESET')
+                    //it is store owner with all stores access, in that case we might need to load the stores by brand id
+                    //set brand context id here, so this user can pick store from only its own brand
+                    $store.dispatch(
+                      'context/setBrandContext',
+                      user.item.brand_id
+                    )
+                    //set multiselect here for stores
+                    //check if store in context doesn't belong to current brand then reset store context and present multi select here
+                    $store.commit('context/LOAD_STORE_FROM_CONTEXT', false)
+                    //it is store owner with all stores access, in that case we might need to load the stores by brand id
+                    //set brand context id here, so this user can pick store from only its own brand
+                    $store.dispatch(
+                      'context/setBrandContext',
+                      user.item.brand_id
+                    )
+
+                    DataService.getT('/ui_menu?&menu_needed=false', false).then(
+                      response => {
+                        $store.commit('location/SET_LOCATION_DATA', response)
+                        $store.commit(
+                          'context/SET_STORES_LENGTH',
+                          response.data.available_stores.length
+                        )
+                        $store.commit(
+                          'context/SET_MULTI_STORES',
+                          response.data.available_stores
+                        )
+                        let selectedStore = undefined
+
+                        if (currentStoreId) {
+                          selectedStore = response.data.available_stores.find(
+                            _store => _store._id === currentStoreId
+                          )
+                        }
+                        if (selectedStore) {
+                          $store.commit(
+                            'context/SET_CURRENT_STORE',
+                            selectedStore
+                          )
+                          //if storeid is same, getter ll not act, in that case load store from context
+                          $store.commit('context/LOAD_STORE_FROM_CONTEXT', true)
+                        }
+
+                        resolve()
+                      }
+                    )
                   }
                 } else {
                   $store.commit('context/RESET')
-                  //it is store owner with all stores access, in that case we might need to load the stores by brand id
-                  //set brand context id here, so this user can pick store from only its own brand
-                  $store.dispatch('context/setBrandContext', user.item.brand_id)
-                  //set multiselect here for stores
-                  //check if store in context doesn't belong to current brand then reset store context and present multi select here
                   $store.commit('context/LOAD_STORE_FROM_CONTEXT', false)
-                  //it is store owner with all stores access, in that case we might need to load the stores by brand id
-                  //set brand context id here, so this user can pick store from only its own brand
+                  $store.commit(
+                    'context/SET_STORES_LENGTH',
+                    user.item.brand_stores.length
+                  )
                   $store.dispatch('context/setBrandContext', user.item.brand_id)
 
-                  DataService.getT('/ui_menu?&menu_needed=false', false).then(
-                    response => {
-                      $store.commit(
-                        'context/SET_STORES_LENGTH',
-                        response.data.available_stores.length
+                  let userstores = []
+                  for (var i in user.collected_data.page_lookups.root_stores
+                    ._id) {
+                    userstores.push(
+                      user.collected_data.page_lookups.root_stores._id[i]
+                    )
+                  }
+                  if (user.item.brand_stores.length > 1) {
+                    //find stores from lookup
+                    $store.commit('context/SET_MULTI_STORES', userstores)
+                    let selectedStore = undefined
+                    if (currentStoreId) {
+                      selectedStore = userstores.find(
+                        _store => _store._id === currentStoreId
                       )
-                      $store.commit(
-                        'context/SET_MULTI_STORES',
-                        response.data.available_stores
-                      )
-                      resolve()
                     }
-                  )
+                    if (selectedStore) {
+                      $store.commit('context/SET_CURRENT_STORE', selectedStore)
+                      //if storeid is same, getter ll not act, in that case load store from context
+                      $store.commit('context/LOAD_STORE_FROM_CONTEXT', true)
+                      $store.dispatch(
+                        'context/setStoreContext',
+                        selectedStore._id
+                      )
+                    }
+                  } else {
+                    //USER has only one store
+                    $store.dispatch(
+                      'context/setStoreContext',
+                      user.item.brand_stores[0]
+                    )
+                    $store.commit('context/SET_CURRENT_STORE', userstores[0])
+                    //if storeid is same, getter ll not act, in that case load store from context
+                    if (currentStoreId === user.item.brand_stores[0]) {
+                      $store.commit('context/LOAD_STORE_FROM_CONTEXT', true)
+                    }
+                  }
+                  resolve(user)
                 }
               } else {
-                $store.commit('context/RESET')
-                $store.commit('context/LOAD_STORE_FROM_CONTEXT', false)
-                $store.commit(
-                  'context/SET_STORES_LENGTH',
-                  user.item.brand_stores.length
-                )
-                $store.dispatch('context/setBrandContext', user.item.brand_id)
+                //user was not found, or user coming from the backend,
+                //if user is coming from the backend we have no user details,
+                //in that case we are dependent on context or ui menu api
 
-                let userstores = []
-                for (var i in user.collected_data.page_lookups.root_stores
-                  ._id) {
-                  userstores.push(
-                    user.collected_data.page_lookups.root_stores._id[i]
+                //get user info from store
+                // check if we have store id otherwise we ll call ui menu
+                let $caller = undefined
+                if ($store.getters['context/store_id']) {
+                  $caller = DataService.getT('/ui_menu?&menu_needed=false')
+                } else {
+                  $caller = DataService.getT(
+                    '/ui_menu?&menu_needed=false',
+                    false
                   )
                 }
-                if (user.item.brand_stores.length > 1) {
-                  //find stores from lookup
-                  $store.commit('context/SET_MULTI_STORES', userstores)
-                } else {
-                  //USER has only one store
+                $caller.then(response => {
+                  $store.commit('location/SET_LOCATION_DATA', response)
                   $store.dispatch(
-                    'context/setStoreContext',
-                    user.item.brand_stores[0]
+                    'context/setBrandContext',
+                    response.data.brand._id
                   )
-                  $store.commit('context/SET_CURRENT_STORE', userstores[0])
-                  //if storeid is same, getter ll not act, in that case load store from context
-                  if (currentStoreId === user.item.brand_stores[0]) {
+                  let selectedStore = null
+                  if (currentStoreId) {
+                    selectedStore = response.data.available_stores.find(
+                      _store => _store._id === currentStoreId
+                    )
+                  }
+
+                  if (response.data.available_stores.length > 1) {
+                    $store.commit(
+                      'context/SET_STORES_LENGTH',
+                      response.data.available_stores.length
+                    )
+                    $store.commit(
+                      'context/SET_MULTI_STORES',
+                      response.data.available_stores
+                    )
+
+                    if (selectedStore) {
+                      $store.commit('context/SET_CURRENT_STORE', selectedStore)
+                      //if storeid is same, getter ll not act, in that case load store from context
+                      $store.commit('context/LOAD_STORE_FROM_CONTEXT', true)
+                      $store.dispatch(
+                        'context/setStoreContext',
+                        selectedStore._id
+                      )
+                    }
+                  } else {
+                    $store.dispatch(
+                      'context/setStoreContext',
+                      response.data.available_stores[0]._id
+                    )
+                    $store.commit(
+                      'context/SET_CURRENT_STORE',
+                      response.data.available_stores[0]
+                    )
+                    //if storeid is same, getter ll not act, in that case load store from context
                     $store.commit('context/LOAD_STORE_FROM_CONTEXT', true)
                   }
-                }
-                resolve(user)
+
+                  resolve()
+                })
               }
             })
             .catch(error => {
