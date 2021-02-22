@@ -82,7 +82,7 @@ export default {
     selectedStoreId(storeId) {
       //show the loader only when switching the store, don't show it right after login when there are multiple stores
       //reset all previous data
-      this.$store.commit('context/SET_STORE_ID', storeId)
+      this.$store.dispatch('context/setStoreContext', storeId)
       this.$store.commit(
         'context/SET_CURRENT_STORE',
         this.multipleStores.find(store => store._id === storeId)

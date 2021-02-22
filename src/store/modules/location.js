@@ -196,12 +196,14 @@ const actions = {
   },
   async getLocationData({ commit, rootGetters }) {
     if (state.locationData) {
-      if (
-        state.locationData.data.available_stores.find(
-          _store => _store._id === rootGetters['context/store_id']
-        )
-      ) {
-        return Promise.resolve(state.locationData)
+      let newLocation = { ...state.locationData }
+      const newStore = newLocation.data.available_stores.find(
+        _store => _store._id === rootGetters['context/store_id']
+      )
+      if (newStore) {
+        newLocation.data.store = newStore
+        commit('SET_LOCATION_DATA', newLocation)
+        return Promise.resolve(newLocation)
       }
     }
     const locationData = await LocationService.getLocationData()

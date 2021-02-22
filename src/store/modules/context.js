@@ -99,10 +99,12 @@ const actions = {
   },
   setBrandContext({ dispatch, commit }, brandId) {
     commit('SET_BRAND_ID', brandId)
+    localStorage.setItem('brand_id', brandId)
     dispatch('updateContext')
   },
   setStoreContext({ dispatch, commit }, storeId) {
     commit('SET_STORE_ID', storeId)
+    localStorage.setItem('store_id', storeId)
     dispatch('updateContext')
   },
   setBrandStoreContext({ dispatch, commit }, { brandId, storeId }) {
