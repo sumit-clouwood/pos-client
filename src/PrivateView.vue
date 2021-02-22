@@ -247,11 +247,7 @@ export default {
             }, 1000)
           }
         })
-        .finally(() => {
-          setTimeout(() => {
-            this.progressIncrement = 0
-          }, 1000 * 2)
-        })
+        .finally(() => {})
     },
     resetTokenNumber() {
       if (!this.$store.state.sync.online) {
@@ -295,6 +291,8 @@ export default {
     loadStore() {
       this.loading = true
       var self = this
+      this.progressIncrement = 0
+      this.$store.commit('sync/reset')
       //load store data again, clear old data first and then load new data
       //reset items, discounts, surcharges everything because each one can be store dependent
       this.interval = setInterval(() => {
@@ -308,25 +306,25 @@ export default {
         .dispatch('context/loadStore')
         .then(() => {
           //if store is loading from the switch cashier screen then change route to brand home
-          if (
-            self.$route.name === 'cashierLogin' ||
-            self.$route.from === 'cashierLogin'
-          ) {
-            //if waiter send it to dine in otherwise end to brandhome/walkin
-            let newRoute = 'BrandHome'
-            if (this.roleName === 'Waiter') {
-              newRoute = 'Dinein'
-            } else if (this.roleName === 'Carhop User') {
-              newRoute = 'Carhop'
-            }
-            self.$router.replace({
-              name: newRoute,
-              params: {
-                brand_id: self.$store.getters['context/brand_id'],
-                store_id: self.$store.getters['context/store_id'],
-              },
-            })
+          // if (
+          //   self.$route.name === 'cashierLogin' ||
+          //   self.$route.from === 'cashierLogin'
+          // ) {
+
+          //if waiter send it to dine in otherwise end to brandhome/walkin
+          let newRoute = 'BrandHome'
+          if (this.roleName === 'Waiter') {
+            newRoute = 'Dinein'
+          } else if (this.roleName === 'Carhop User') {
+            newRoute = 'Carhop'
           }
+          self.$router.replace({
+            name: newRoute,
+            params: {
+              brand_id: self.$store.getters['context/brand_id'],
+              store_id: self.$store.getters['context/store_id'],
+            },
+          })
         })
         .catch(error => {
           console.trace(error)
@@ -366,9 +364,6 @@ export default {
           this.loading = false
           this.$store.dispatch('sync/setLoader', false)
           this.multistoreSelector = false
-          setTimeout(() => {
-            this.progressIncrement = 0
-          }, 1000 * 2)
         })
     },
   },
