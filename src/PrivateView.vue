@@ -197,9 +197,13 @@ export default {
       bootstrap
         .setup(this.$store)
         .then(() => {
-          console.log('all apis loaded')
+          console.log(
+            'all apis loaded',
+            this.$store.state.context.storesLength,
+            this.storeId
+          )
           //if multistores show the store selector
-          if (this.$store.state.context.storesLength > 1 && !this.store_id) {
+          if (this.$store.state.context.storesLength > 1 && !this.storeId) {
             this.loading = false
             this.multistoreSelector = true
             showModal('#multiStoresModal')
@@ -242,6 +246,11 @@ export default {
               }
             }, 1000)
           }
+        })
+        .finally(() => {
+          setTimeout(() => {
+            this.progressIncrement = 0
+          }, 1000 * 2)
         })
     },
     resetTokenNumber() {
@@ -299,7 +308,10 @@ export default {
         .dispatch('context/loadStore')
         .then(() => {
           //if store is loading from the switch cashier screen then change route to brand home
-          if (self.$route.name === 'cashierLogin') {
+          if (
+            self.$route.name === 'cashierLogin' ||
+            self.$route.from === 'cashierLogin'
+          ) {
             //if waiter send it to dine in otherwise end to brandhome/walkin
             let newRoute = 'BrandHome'
             if (this.roleName === 'Waiter') {
@@ -356,7 +368,7 @@ export default {
           this.multistoreSelector = false
           setTimeout(() => {
             this.progressIncrement = 0
-          }, 1000 * 5)
+          }, 1000 * 2)
         })
     },
   },
