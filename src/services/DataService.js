@@ -101,7 +101,7 @@ export default {
 
   fetchFromServer(url, resolve, reject) {
     if (!localStorage.getItem('token')) {
-      this.store.dispatch('auth/logout')
+      this.store.dispatch('auth/logout', { preserve: ['brand_id', 'store_id'] })
       return Promise.reject('token expired or not found, logout')
     }
 

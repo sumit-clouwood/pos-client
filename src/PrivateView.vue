@@ -247,11 +247,7 @@ export default {
             }, 1000)
           }
         })
-        .finally(() => {
-          setTimeout(() => {
-            this.progressIncrement = 0
-          }, 1000 * 2)
-        })
+        .finally(() => {})
     },
     resetTokenNumber() {
       if (!this.$store.state.sync.online) {
@@ -295,6 +291,8 @@ export default {
     loadStore() {
       this.loading = true
       var self = this
+      this.progressIncrement = 0
+      this.$store.commit('sync/reset')
       //load store data again, clear old data first and then load new data
       //reset items, discounts, surcharges everything because each one can be store dependent
       this.interval = setInterval(() => {
@@ -366,9 +364,6 @@ export default {
           this.loading = false
           this.$store.dispatch('sync/setLoader', false)
           this.multistoreSelector = false
-          setTimeout(() => {
-            this.progressIncrement = 0
-          }, 1000 * 2)
         })
     },
   },
