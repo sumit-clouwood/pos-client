@@ -16,7 +16,7 @@ const getDefaults = () => ({
   locale: 'en-US',
   timezone: 'Asia/Dubai',
   timezoneString: 'Asia/Dubai',
-  brand: null,
+  brand: undefined,
   store: null,
   availableLanguages: null,
   languageDirection: null,
@@ -534,10 +534,16 @@ const mutations = {
   [mutation.MULTI_STORE_IDS](state, multiStoreIds) {
     state.multiStoreIds = multiStoreIds
   },
-  [mutation.RESET](state, full = false) {
+  [mutation.RESET](state, data) {
     state.setModal = '#manage-customer'
-    if (full) {
+    let brand = undefined
+    if (data) {
+      //preserve brand
+      if (data.preserve && data.preserve.includes('brand_id')) {
+        brand = { ...state.brand }
+      }
       Object.assign(state, getDefaults())
+      state.brand = brand
     }
   },
   [mutation.SET_DATE](state, dateAPI) {
