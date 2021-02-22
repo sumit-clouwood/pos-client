@@ -301,7 +301,7 @@ const actions = {
       dispatch('resetModules')
       commit('customer/IS_BRAND_HAS_DELIVERY_ORDER', true, { root: true })
       commit('sync/reset', {}, { root: true })
-      commit('location/RESET', true, { root: true })
+      commit('location/RESET', data, { root: true })
       commit('location/USER_SHORT_DETAILS', true, { root: true }) // added  here because it should not reset when checkout, its hide user details
 
       //preserve brand_id which is needed for switch cashier api
