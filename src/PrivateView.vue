@@ -318,13 +318,15 @@ export default {
           } else if (this.roleName === 'Carhop User') {
             newRoute = 'Carhop'
           }
-          self.$router.replace({
-            name: newRoute,
-            params: {
-              brand_id: self.$store.getters['context/brand_id'],
-              store_id: self.$store.getters['context/store_id'],
-            },
-          })
+          if (self.$route.name !== newRoute) {
+            self.$router.replace({
+              name: newRoute,
+              params: {
+                brand_id: self.$store.getters['context/brand_id'],
+                store_id: self.$store.getters['context/store_id'],
+              },
+            })
+          }
         })
         .catch(error => {
           console.trace(error)
