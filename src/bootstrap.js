@@ -389,6 +389,13 @@ export default {
                     $store.dispatch('payment/setTranslations').then(() => {})
                     resolve()
                   })
+                  $store.dispatch('printingServer/getKitchens').then(() => {})
+                  $store.dispatch(
+                    'announcement/fetchAll',
+                    $store.state.auth.userDetails
+                  )
+
+                  $store.dispatch('printingServer/fetchAllKitchens')
                 })
                 .catch(error => reject(error))
             })
