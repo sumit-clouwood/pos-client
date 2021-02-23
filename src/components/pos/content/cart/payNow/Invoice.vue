@@ -106,11 +106,9 @@ export default {
         this.$router.replace({ name: 'DeliveryManager' })
       } else if (this.isPrint) {
         this.isPrint = false
-        if (
-          this.$store.state.order.orderType.OTApi === CONST.ORDER_TYPE_CARHOP
-        ) {
-          this.$router.replace({ name: 'CarhopOrders' })
-        }
+      }
+      if (this.$store.state.order.orderType.OTApi === CONST.ORDER_TYPE_CARHOP) {
+        this.$router.replace({ name: 'CarhopOrders' })
       }
       this.$store.commit('order/RESET_SPLIT_BILL')
     },
