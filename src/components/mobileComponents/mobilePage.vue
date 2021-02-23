@@ -15,7 +15,11 @@
           </div>
         </div>
       </div>
-      <div class="btn-menu" @click="profileHendlerChange">
+      <div
+        v-if="!cashier_walkin"
+        class="btn-menu"
+        @click="profileHendlerChange"
+      >
         <svg
           version="1.1"
           id="Capa_1"
@@ -74,6 +78,7 @@ export default {
     ...mapGetters('order', ['items']),
     ...mapGetters('location', ['_t']),
     ...mapState('order', ['orderType']),
+    ...mapGetters('auth', ['cashier_walkin']),
     ...mapGetters([
       'allCategoryHendler',
       'subCategoryHendler',

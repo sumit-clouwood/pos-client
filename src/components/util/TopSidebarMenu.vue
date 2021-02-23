@@ -5,6 +5,7 @@
       class="nav-icon nav-item setting-icon color-main color-text-invert"
       id="setting-icon"
       @click="openConfigLinks()"
+      v-if="!cashier_walkin"
     >
       <a class="nav-link color-text-invert">
         <svg
@@ -21,7 +22,7 @@
         </svg>
       </a>
     </li>
-    <ul class="setting-dropdown">
+    <ul v-show="!cashier_walkin" class="setting-dropdown">
       <div class="profile-sidebar-header">
         <avatar />
         <div class="btn-close" @click="closeConfigLinks">✖</div>
@@ -495,7 +496,7 @@ export default {
     },
     ...mapState('customer', ['isBrandHasDeliveryOrder']),
     ...mapGetters('context', ['store']),
-    ...mapGetters('auth', ['waiter', 'carhop', 'allowed']),
+    ...mapGetters('auth', ['waiter', 'carhop', 'allowed', 'cashier_walkin']),
     ...mapState('location', ['availableLanguages', 'language']),
     ...mapState('dinein', ['dineInTabType', 'activeArea']),
     ...mapState('sync', ['online']),

@@ -74,6 +74,7 @@ const getters = {
   },
   waiter: (state, getters) => getters.roleName === 'Waiter',
   carhop: (state, getters) => getters.roleName === 'Carhop User',
+  cashier_walkin: (state, getters) => getters.roleName === 'Cashier-Walkin',
   getRole: state => roleName => {
     if (state.rolePermissions) {
       return state.rolePermissions.find(role => role.name === roleName)

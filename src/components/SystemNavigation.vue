@@ -6,7 +6,7 @@
       </a>
     </div>
     <div class="navigation-list-wrapper">
-      <ul class="navigation-list">
+      <ul v-if="!cashier_walkin" class="navigation-list">
         <li
           class="nav-item active-opacity"
           data-toggle="tooltip"
@@ -261,6 +261,7 @@ export default {
       currentStore: ['context/store'],
     }),
     ...mapGetters('location', ['_t', 'permitted']),
+    ...mapGetters('auth', ['cashier_walkin']),
     ...mapState('auth', ['userDetails']),
     /*...mapState({
       profileImage: state =>

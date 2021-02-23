@@ -123,6 +123,11 @@ const router = new Router({
       component: Home,
     },
     {
+      path: '/:iosprinter',
+      name: 'iosApplication',
+      component: Home,
+    },
+    {
       path: '*',
       name: 'HomeDefault',
       component: Home,

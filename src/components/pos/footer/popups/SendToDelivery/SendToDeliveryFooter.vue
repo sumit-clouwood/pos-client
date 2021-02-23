@@ -162,9 +162,10 @@ export default {
     }),
     ...mapState('order', ['needSupervisorAccess']),
     ...mapState('sync', ['online']),
-    ...mapGetters('order', ['subTotal']),
+    ...mapGetters('order', ['subTotal', 'totalTaxWithoutSurchargeTax']),
     ...mapGetters('location', ['_t', 'formatPrice']),
     ...mapGetters('payment', ['methods']),
+    ...mapState('location', ['brand']),
   },
   methods: {
     calculateLoyaltyAmount() {
@@ -207,6 +208,13 @@ export default {
       ) {
         const minOrderValue = this.formatPrice(this.address.min_order_value)
         this.errors = `Minimum order values should be ${minOrderValue} for selected delivery address`
+      } else if (
+        this.loyalty_active &&
+        this.brand.min_order >
+          this.subTotal + parseFloat(this.totalTaxWithoutSurchargeTax)
+      ) {
+        const minOrderValue = this.formatPrice(this.brand.min_order)
+        this.errors = `Minimum order values should be ${minOrderValue} for applying loyalty`
       } else {
         if (this.needSupervisorAccess) {
           this.$store.commit('order/SET_REFERRAL', this.changedReferral)
@@ -251,11 +259,11 @@ export default {
               }
               this.errors = errors
               /* Added this handle because error msg not showing when click on confirmation popup, */
-              if (typeof response == 'string') {
-                $('#payment-msg').modal('show')
-              } else {
-                $('#payment-msg').modal('hide')
-              }
+              // if (typeof response == 'string') {
+              //   $('#payment-msg').modal('show')
+              // } else {
+              $('#payment-msg').modal('hide')
+              // }
               $('#order-confirmation').modal('show')
               setTimeout(function() {
                 $('#confirm_announcement').prop('disabled', false)
