@@ -389,13 +389,6 @@ export default {
                     $store.dispatch('payment/setTranslations').then(() => {})
                     resolve()
                   })
-                  $store.dispatch('printingServer/getKitchens').then(() => {})
-                  $store.dispatch(
-                    'announcement/fetchAll',
-                    $store.state.auth.userDetails
-                  )
-
-                  $store.dispatch('printingServer/fetchAllKitchens')
                 })
                 .catch(error => reject(error))
             })
@@ -420,6 +413,13 @@ export default {
         .then(() => {
           //lets resolve the promise so pos can be loaded, other things ll be loaded later
           resolve()
+          $store.dispatch('printingServer/getKitchens').then(() => {})
+          $store.dispatch(
+            'announcement/fetchAll',
+            $store.state.auth.userDetails
+          )
+
+          $store.dispatch('printingServer/fetchAllKitchens')
           this.loadApiData('catalog')
 
           this.loadApiData('customer')
