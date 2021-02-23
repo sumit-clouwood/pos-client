@@ -37,11 +37,6 @@ const router = new Router({
       name: 'setOrderType',
       component: Home,
     },
-    // {
-    //   path: '/:iosprinter',
-    //   name: 'iosApplication',
-    //   component: Home,
-    // },
     {
       path: '/cashier-login/:brand_id',
       name: 'cashierLogin',
@@ -120,6 +115,11 @@ const router = new Router({
     {
       path: '/:brand_id/:store_id/',
       name: 'BrandHome',
+      component: Home,
+    },
+    {
+      path: '/:iosprinter',
+      name: 'iosApplication',
       component: Home,
     },
     {

@@ -394,6 +394,8 @@ export default {
                     'announcement/fetchAll',
                     $store.state.auth.userDetails
                   )
+
+                  $store.dispatch('printingServer/fetchAllKitchens')
                 })
                 .catch(error => reject(error))
             })
