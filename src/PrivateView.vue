@@ -121,6 +121,14 @@ export default {
       showForceLogout: false,
       interval: undefined,
       multistoreSelector: false,
+      roleRouteChangeBlacklist: [
+        'ModifyBackendOrder',
+        'UpdateDeliveryOrder',
+        'selectGroupForCrmOrder',
+        'selectAddressForCrmOrder',
+        'setOrderType',
+        'DeliveryManager',
+      ],
     }
   },
   methods: {
@@ -209,8 +217,6 @@ export default {
             showModal('#multiStoresModal')
           } else {
             this.multistoreSelector = false
-            this.setupServiceWorker()
-            this.setupRoutes()
             this.setupExternalScripts()
           }
         })
@@ -318,7 +324,10 @@ export default {
           } else if (this.roleName === 'Carhop User') {
             newRoute = 'Carhop'
           }
-          if (self.$route.name !== newRoute) {
+          if (
+            !this.roleRouteChangeBlacklist.includes(self.$route.name) &&
+            self.$route.name !== newRoute
+          ) {
             self.$router.replace({
               name: newRoute,
               params: {
@@ -327,6 +336,9 @@ export default {
               },
             })
           }
+
+          this.setupServiceWorker()
+          this.setupRoutes()
         })
         .catch(error => {
           console.trace(error)
