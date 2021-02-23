@@ -956,18 +956,11 @@
     continue.</strong></noscript>
 
 <!-- add app component to show as main component -->
-<div id="app"><span id="showNoJs" style="display: none;"><a href="#" onclick="location.reload(); return fasle;">Click here</a> If app is not loaded.</span></div>
+<div id="app"></div>
 
 <div class="modal-backdrop fade show" id="transparent-screen"></div>
 
 <!-- built files will be auto injected -->
-<script>
-    setTimeout(()=> {
-        if (!document.getElementById('appLoaded') && document.getElementById('showNoJs')) {
-            document.getElementById('showNoJs').style.display = 'block'
-        }
-}, 1000 * 30)
-</script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDU5bjWb8uv0otMI8cMyZFf52n_Mk_yACY&libraries=places"></script>
 <script src="<%= BASE_URL %>js/jquery.js" type="text/javascript"></script>
 <script src="<%= BASE_URL %>js/jquery-ui.js" type="text/javascript"></script>
