@@ -106,6 +106,39 @@
                       </span>
                     </span>
                     <div
+                      v-else-if="
+                        order.order_system_status == 'requires_acceptance'
+                      "
+                    >
+                      <span
+                        :key="LabelIndex"
+                        style="margin: 0.2rem"
+                        v-for="(label, LabelIndex) in acceptDetails.actionLabel"
+                      >
+                        <button
+                          @click.stop="
+                            updateOrder({
+                              order: order,
+                              orderType: order.order_type,
+                              actionTrigger: acceptDetails.action[LabelIndex],
+                            })
+                          "
+                          class="button text-button btn btn-success"
+                          type="button"
+                        >
+                          <div class="button-content-container">
+                            <div class="button-icon-container">
+                              <!---->
+                            </div>
+                            <div class="button-caption" :style="{ opacity: 1 }">
+                              {{ acceptDetails.actionLabel[LabelIndex] }}
+                            </div>
+                          </div>
+                        </button>
+                      </span>
+                    </div>
+
+                    <div
                       v-else-if="typeof actionDetails.actionLabel == 'object'"
                     >
                       <span
@@ -299,6 +332,12 @@ export default {
       err: null,
       activeIndex: [],
       processedOrder: [],
+      acceptDetails: {
+        moreDetails: false,
+        actionLabel: ['Accept', 'Reject'],
+        action: ['delivery_accept', 'delivery_reject'],
+        nextOrderStatus: 'in-progress',
+      },
     }
   },
   components: {
