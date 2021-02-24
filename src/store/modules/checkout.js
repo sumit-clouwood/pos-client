@@ -625,10 +625,10 @@ const actions = {
   injectDineInItemsData({ rootState }, order) {
     let orderCovers = []
     order.items = order.items.map(oitem => {
-      let itemCover = oitem.originalItem.coverNo
+      let itemCover = oitem.originalItem && oitem.originalItem.coverNo
         ? oitem.originalItem.coverNo
         : rootState.dinein.selectedCover._id
-      let itemCoverName = oitem.originalItem.cover_name
+      let itemCoverName = oitem.originalItem && oitem.originalItem.cover_name
         ? oitem.originalItem.cover_name
         : rootState.dinein.selectedCover.name
 
