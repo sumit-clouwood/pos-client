@@ -39,8 +39,6 @@ const actions = {
     let delivery_area = {} //Delivery Area
     let kitchen_menu_items = []
     let jsonResponse = false
-    // eslint-disable-next-line no-console
-    console.log(orderData, 'orderData')
     //Item according to Kitchens Sections
     let kitchenSectionsItems = state.kitchenitems
     if (kitchenSectionsItems.length) {
@@ -130,8 +128,6 @@ const actions = {
       dispatch('customer/fetchSelectedCustomer', customerId, {
         root: true,
       }).then(customerData => {
-        // eslint-disable-next-line no-console
-        // console.log(customerData, 'customercustomercustomercustomer')
         dispatch('setInvoiceDetails', {
           locationData,
           orderData,
@@ -146,12 +142,6 @@ const actions = {
           crm_module_enabled,
         }).then(response => {
           jsonResponse = response
-          // eslint-disable-next-line no-console
-          console.log(
-            customerData,
-            'customercustomercustomercustomer',
-            jsonResponse
-          )
           dispatch('orderDataMerging', { jsonResponse, printingServers })
         })
       })
@@ -181,22 +171,11 @@ const actions = {
       jsonResponse.windows_app = true
       _order['printingServers'] = printingServers
       _order['orderData'] = jsonResponse
-      // eslint-disable-next-line no-console
-      console.log(window.PrintHandle, 'window.PrintHandle')
-      // eslint-disable-next-line no-console
-      console.log(_order, '_order')
       window.PrintHandle.Print(
         JSON.stringify(_order),
         function callbackfunction(data) {
           // eslint-disable-next-line no-console
-          console.log('callbackfunction')
-          //perform your action in case of success or leave empty
-          // eslint-disable-next-line no-console
-          console.log(
-            data,
-            'callbackfunction result',
-            rootState.payment.appInvoiceData
-          )
+          console.log(rootState ? '' : data)
         }
       )
     }
@@ -225,8 +204,6 @@ const actions = {
         typeof orderData.isReprint != 'undefined' ? orderData.isReprint : 0
     }
 
-    // eslint-disable-next-line no-console
-    console.log(locationData, 'locationData', customerData)
     return new Promise(resolve => {
       let table_no = rootState.dinein.selectedTable
         ? rootState.dinein.selectedTable.number
@@ -264,13 +241,9 @@ const actions = {
 
         Object.assign(jsonResponse, { table_number: table_no })
         // jsonResponse.table_number = table_no
-        // eslint-disable-next-line no-console
-        console.log(jsonResponse, orderData, 'table number section')
       }
       if (isIOS) {
         Object.assign(jsonResponse, { kitchens: state.kitchens })
-        // eslint-disable-next-line no-console
-        console.log(jsonResponse, 'ff')
         localStorage.setItem('orderInvoiceColData', '')
         localStorage.setItem(
           'orderInvoiceColData',
@@ -328,8 +301,6 @@ const actions = {
 
   //Create A JSON Request to send in Local Server API for Generating Invoices from a software.
   printingServerInvoiceRaw({ rootState, dispatch }, orderData) {
-    // eslint-disable-next-line no-console
-    console.log('IN', rootState.checkout.paymentAction, orderData)
     let dt = rootState.auth.deviceType
     let isIOS = dt.osType
     if (
@@ -338,8 +309,6 @@ const actions = {
     ) {
       return false
     }
-    // eslint-disable-next-line no-console
-    console.log(isIOS, JSON.stringify(orderData))
     if (isIOS) {
       // if (!dt.standalone && !dt.browserType) {
       //This is  a uiwebview
@@ -373,8 +342,6 @@ const actions = {
   },
   // eslint-disable-next-line no-empty-pattern
   centeredPopup({ commit }, details) {
-    // eslint-disable-next-line no-console
-    console.log(details)
     setTimeout(function() {
       let LeftPosition = screen.width ? (screen.width - details.w) / 2 : 0
       let TopPosition = screen.height ? (screen.height - details.h) / 2 : 0
@@ -392,20 +359,14 @@ const actions = {
         ',resizable'
       let win = false
       try {
-        // eslint-disable-next-line no-console
-        console.log(settings, 'settings')
         /*win = window.open(details.url, details.winName, settings)
-        // eslint-disable-next-line no-console
-        console.log(details.ipUrl)
         win.onerror = function(msg, url, lineNo, columnNo) {
           // ... handle error ...
-          // eslint-disable-next-line no-console
-          console.log(msg, url, lineNo, columnNo)
           return false
         }*/
       } catch (e) {
         // eslint-disable-next-line no-console
-        console.log(e)
+        console.log(e, settings)
       }
       // let win = window.open(details.url, details.winName, settings)
       commit(mutation.KITCHEN_RESPONSE, win)

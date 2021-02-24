@@ -5,46 +5,49 @@ import OrderService from '@/services/data/OrderService'
 import MultistoreHelper from '@/plugins/helpers/Multistore.js'
 import * as CONST from '@/constants'
 
-const state = {
-  customer_list: [],
-  customer: false,
-  crm_fields: undefined,
-  all_crm_fields: [],
-  mandatory_fields: [],
-  multistore: false,
-  multistoreDeliveryArea: {},
-  customerId: null,
-  customer_group: {},
-  isRefundAllow: false,
-  paginate: {},
-  lastOrder: false,
-  pastOrders: false,
-  crm_address_fields: [],
-  isBrandHasDeliveryOrder: true,
-  // customerLastOrderDetails: false,
-  pastOrdersPaginate: {},
-  params: {
-    page_number: 1,
-    page_size: 10,
-    query: '',
-    past_order_page_number: 1,
-  },
-  responseInformation: { status: 0, message: '' },
-  pageId: 'brand_customers_main_tbl',
-  address: false,
-  allOnlineAddress: false,
-  offlineData: null,
-  loading: false,
-  customerLoading: false,
-  error: false,
-  customerLoyalty: { card: undefined, details: undefined, points: undefined },
-  deliveryAreas: false,
-  fetchDeliveryAreas: false,
-  editInformation: {},
-  modalStatus: 'Add',
-  lookups: false,
-  buildingAreas: false,
+const getDefaults = () => {
+  return {
+    customer_list: [],
+    customer: false,
+    crm_fields: undefined,
+    all_crm_fields: [],
+    mandatory_fields: [],
+    multistore: false,
+    multistoreDeliveryArea: {},
+    customerId: null,
+    customer_group: {},
+    isRefundAllow: false,
+    paginate: {},
+    lastOrder: false,
+    pastOrders: false,
+    crm_address_fields: [],
+    isBrandHasDeliveryOrder: true,
+    // customerLastOrderDetails: false,
+    pastOrdersPaginate: {},
+    params: {
+      page_number: 1,
+      page_size: 10,
+      query: '',
+      past_order_page_number: 1,
+    },
+    responseInformation: { status: 0, message: '' },
+    pageId: 'brand_customers_main_tbl',
+    address: false,
+    allOnlineAddress: false,
+    offlineData: null,
+    loading: false,
+    customerLoading: false,
+    error: false,
+    customerLoyalty: { card: undefined, details: undefined, points: undefined },
+    deliveryAreas: false,
+    fetchDeliveryAreas: false,
+    editInformation: {},
+    modalStatus: 'Add',
+    lookups: false,
+    buildingAreas: false,
+  }
 }
+const state = getDefaults()
 
 const getters = {
   findDeliveryArea: state => areaId => {
@@ -716,11 +719,7 @@ const mutations = {
     if (!force && multistore) {
       return false
     }
-    state.offlineData = null
-    state.address = false
-    state.customer = false
-    state.customerId = null
-    state.loyalty = { card: false, details: false }
+    Object.assign(state, getDefaults())
   },
   [mutation.SET_LOADING](state, status) {
     state.loading = status

@@ -172,7 +172,6 @@ export default {
         .dispatch('auth/pinlogin', { email: this.userKey, pin: this.userPin })
         .then(() => {
           this.$store.dispatch('userCalcHendlerChange', false)
-          this.$router.replace({ name: 'HomeDefault' })
         })
         .catch(error => {
           this.error = error

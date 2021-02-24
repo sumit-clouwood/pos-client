@@ -38,14 +38,17 @@
         <img src="~@/assets/images/close.png" class="rem" alt="back" />
       </div>
     </div>
+    <div class="modal-footer">
+      <button class="email-login" @click="loginByEmail" :disabled="processing">
+        Login by email
+      </button>
+    </div>
   </div>
 </template>
 
 <script>
 import { mapGetters, mapState, mapActions } from 'vuex'
 import Progress from '@/components/util/Progress'
-import bootstrap from '@/bootstrap'
-import DataService from '@/services/DataService'
 import md5 from 'js-md5'
 export default {
   name: 'Lockpad',
@@ -65,7 +68,6 @@ export default {
     ...mapGetters('context', ['store']),
     ...mapState('context', ['brandId', 'storeId']),
     ...mapState('sync', ['online']),
-    ...mapGetters('sync', ['loadingData']),
     ...mapActions('auth', ['filterUserInOffline']),
   },
   components: { Progress },
@@ -108,48 +110,7 @@ export default {
           this.processing = false
         })
     },
-    loadCompleteUi() {
-      this.$store.dispatch('auth/resetModules')
 
-      // eslint-disable-next-line no-console
-      console.log('user', this.$store.state.auth.userDetails.item)
-      const storeId = this.$store.state.auth.userDetails.item.brand_stores[0]
-      if (storeId) {
-        this.$store.commit('context/SET_STORE_ID', storeId, {
-          root: true,
-        })
-        localStorage.setItem('store_id', storeId)
-
-        DataService.setContext({
-          brand: this.$store.getters['context/brand'],
-          store: this.$store.getters['context/store'],
-        })
-      }
-
-      bootstrap
-        .loadUI('sw')
-        .then(() => {
-          this.$store.dispatch('checkout/reset', true)
-
-          bootstrap.loadApiData('customer')
-
-          bootstrap.loadApiData('order')
-
-          localStorage.setItem('offline_mode_login', false)
-          this.$router.replace({
-            name: 'BrandHome',
-            params: {
-              brand_id: this.brandId,
-              store_id: this.storeId,
-            },
-          })
-        })
-        .finally(() => {
-          this.$store.dispatch('sync/setLoader', false, {
-            root: true,
-          })
-        })
-    },
     login() {
       if (!this.pincode) {
         return false
@@ -162,15 +123,8 @@ export default {
         this.$store
           .dispatch('auth/pinlogin', {
             pincode: this.pincode,
-            brand: this.brand_id,
-            store: this.store_id,
           })
-          .then(() => {
-            this.$store.dispatch('sync/setLoader', true, {
-              root: true,
-            })
-            this.loadCompleteUi()
-          })
+          .then(() => {})
           .catch(error => {
             if (
               (error && error.message === 'Network Error') ||
@@ -193,36 +147,19 @@ export default {
           })
       }
     },
+
+    loginByEmail() {
+      this.$router.push({ name: 'HomeDefault' })
+    },
   },
 
   mounted() {
-    if (this.$route.name === 'cashierLogin') {
-      if (this.store) {
-        this.storeUrl = this.store
-        this.brand_id = this.brandId
-        this.store_id = this.storeId
-      }
-
-      history.pushState(null, null, location.href)
-      window.onpopstate = function() {
-        history.go(1)
-      }
-    }
-    //tackle refresh in cashier login
-    if (!this.brand_id) {
-      if (this.$route.params.brand_id) {
-        this.brand_id = this.$route.params.brand_id
-        this.store_id = this.$route.params.store_id
-      } else if (this.$route.params.pathMatch.match('/')) {
-        const [brand_id, store_id] = this.$route.params.pathMatch.split('/')
-        this.brand_id = brand_id
-        this.store_id = store_id
-      }
-    }
-
-    if (!this.brand_id) {
-      this.$store.commit('auth/LOGOUT_ACTION', '')
-    }
+    // if (this.$route.name === 'cashierLogin') {
+    //   history.pushState(null, null, location.href)
+    //   window.onpopstate = function() {
+    //     history.go(1)
+    //   }
+    // }
   },
 
   destroyed() {
@@ -278,7 +215,7 @@ export default {
     border-radius: 0
     font-size: 18px
 
-  .modal-header
+  .modal-header, .modal-footer
     background: #fff
     border-radius: 0
     font-size: 20px
@@ -294,17 +231,7 @@ export default {
       border-left: solid 15px transparent
       border-right: solid 15px transparent
 
-    > input
-      opacity: 0.85
-      border-radius: 4px
-      background-color: #e7e9ea
-      box-shadow: none
-      padding-left: 20px
-      height: 2.5em
-      width: 9em
-      border: medium none
-
-    .unlock
+    .unlock, .email-login
       background: rgba(98, 187, 49, 0.85)
       height: 2.5em
       border: medium none
@@ -316,6 +243,25 @@ export default {
         background: rgba(98, 187, 49, 0.6)
         text-decoration: none
 
+    .email-login
+      width: auto
+      padding-left: 10px
+      padding-right: 10px
+
+  .modal-header
+    > input
+      opacity: 0.85
+      border-radius: 4px
+      background-color: #e7e9ea
+      box-shadow: none
+      padding-left: 20px
+      height: 2.5em
+      width: 9em
+      border: medium none
+
+
+  .modal-footer
+    text-align: center
 
 
   .modal-body-digits
@@ -353,26 +299,4 @@ export default {
       letter-spacing: 2px
       color: #ffffff
       cursor: pointer
-
-  .modal-footer-block
-
-    background: #fff
-    text-align: center
-
-    a
-      color: #515256
-
-    > p
-      font-size: 14px
-      font-weight: 600
-      font-style: normal
-      font-stretch: normal
-      color: #515256
-      line-height: normal
-      letter-spacing: 0.6px
-      margin-bottom: 0
-
-      a
-        display: block
-        padding: 18px 0
 </style>

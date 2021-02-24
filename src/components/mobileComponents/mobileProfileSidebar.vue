@@ -210,10 +210,7 @@
               </router-link>
             </div>
           </div>
-          <div
-            class="profile-menu-item"
-            v-if="enabledModule('switchCashier') && !isWaiter() && !isCarhop()"
-          >
+          <div class="profile-menu-item" v-if="enabledModule('switchCashier')">
             <div class="profile-menu-item-icon">
               <svg
                 width="24"
@@ -232,9 +229,9 @@
                 />
               </svg>
             </div>
-            <router-link :to="'/cashier-login' + store">
+            <router-link :to="'/cashier-login' + brandContext">
               <div class="profile-menu-item-text">
-                {{ _t('Switch') + ' ' + _t('Cashier') }}
+                {{ _t('Switch') + ' ' + _t('User') }}
               </div>
             </router-link>
           </div>
@@ -439,6 +436,9 @@ export default {
     ...mapState('location', ['availableLanguages', 'language']),
     ...mapState('dinein', ['dineInTabType', 'activeArea']),
     ...mapState('sync', ['online']),
+    ...mapGetters({
+      brandContext: ['context/brand'],
+    }),
     ...mapState({
       latestOnlineOrders: state =>
         state.order.onlineOrders ? state.order.onlineOrders.length : 0,

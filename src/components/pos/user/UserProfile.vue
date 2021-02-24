@@ -112,9 +112,9 @@
           type="button"
           class="btn btn-success color-icon-table-neutral-button font-weight-bold"
           v-if="enabledModule('switchCashier')"
-          @click="logoutCashier"
+          @click="switchCurrentCashier"
         >
-          {{ _t('Switch Cashier') }}
+          {{ _t('Switch User') }}
         </button>
         <button
           type="button"
@@ -135,7 +135,6 @@
 <script>
 /* global $ */
 import DateTime from '@/mixins/DateTime'
-import AuthService from '@/services/data/AuthService'
 import ChangeNameEmail from './popups/ChangeNameEmail'
 import ChangePassword from './popups/ChangePassword'
 // import ChangeAvatar from './popups//ChangeAvatar'
@@ -149,26 +148,23 @@ export default {
     // ChangeAvatar,
   },
   methods: {
-    logoutCashier() {
-      localStorage.setItem('token', '')
-      this.$store.commit('auth/SET_TOKEN', '')
-      this.$store.commit('auth/LOGOUT_ACTION', 'switchCashier')
-      this.$router.push('/cashier-login/' + this.store)
-      AuthService.logout().then(() => {})
-    },
     ...mapActions('auth', ['logout']),
     enabledModule(option) {
       switch (option) {
         case 'switchCashier':
-          return !this.carhop && !this.waiter
+          return true
       }
     },
     showPopup(modalName) {
       $(modalName).modal('show')
     },
+
+    switchCurrentCashier() {
+      this.$router.push('/cashier-login' + this.brand)
+    },
   },
   computed: {
-    ...mapGetters('context', ['store']),
+    ...mapGetters('context', ['store', 'brand']),
     ...mapGetters('auth', ['waiter', 'carhop', 'allowed']),
     ...mapState({
       user: state => state.auth.userDetails.item,

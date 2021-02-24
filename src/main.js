@@ -11,10 +11,10 @@ import App from './App.vue'
 import VueSocketIOExt from 'vue-socket.io-extended'
 import io from 'socket.io-client'
 
-const socket = io(process.env.VUE_APP_SOCKET_ENDPOINT)
-
-Vue.use(VueSocketIOExt, socket)
-
+if (!process.env.VUE_APP_SOCKET_DISABLE) {
+  const socket = io(process.env.VUE_APP_SOCKET_ENDPOINT)
+  Vue.use(VueSocketIOExt, socket)
+}
 //import service worker
 import './registerServiceWorker'
 

@@ -16,13 +16,7 @@ export default {
   },
   computed: {
     cashierContext() {
-      if (
-        this.$store.state.auth.logoutAction === 'switchCashier' ||
-        localStorage.getItem('logoutAction') === 'switchCashier'
-      ) {
-        return true
-      }
-      return false
+      return this.$route.name === 'cashierLogin'
     },
     loginContext() {
       return true

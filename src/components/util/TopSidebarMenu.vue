@@ -5,6 +5,7 @@
       class="nav-icon nav-item setting-icon color-main color-text-invert"
       id="setting-icon"
       @click="openConfigLinks()"
+      v-if="!cashier_walkin"
     >
       <a class="nav-link color-text-invert">
         <svg
@@ -21,7 +22,7 @@
         </svg>
       </a>
     </li>
-    <ul class="setting-dropdown">
+    <ul v-show="!cashier_walkin" class="setting-dropdown">
       <div class="profile-sidebar-header">
         <avatar />
         <div class="btn-close" @click="closeConfigLinks">✖</div>
@@ -170,10 +171,8 @@
             ><span>{{ _t('Carhop') + ' ' + _t('Orders') }}</span>
           </router-link>
         </li>
-        <li v-if="enabledModule('switchCashier') && !isWaiter() && !isCarhop()">
-          <router-link
-            :to="'/cashier-login' + store"
-            @click.native="logoutCashier"
+        <li v-if="enabledModule('switchCashier')">
+          <router-link :to="'/cashier-login' + brandContext"
             ><svg
               xmlns="http://www.w3.org/2000/svg"
               width="24"
@@ -185,7 +184,7 @@
                   d="M.178 29.169c0 3.783 3.114 6.866 6.906 6.866 3.793 0 6.907-3.083 6.907-6.866 0-3.783-3.114-6.866-6.907-6.866-3.792 0-6.906 3.083-6.906 6.866zm11.086 0c0 2.3-1.85 4.139-4.18 4.139-2.33 0-4.18-1.84-4.18-4.139 0-2.298 1.85-4.139 4.18-4.139 2.33 0 4.18 1.84 4.18 4.139zM46.364 29.169c0 3.783 3.115 6.866 6.907 6.866s6.907-3.083 6.907-6.866c0-3.783-3.115-6.866-6.907-6.866s-6.907 3.083-6.907 6.866zm11.086 0c0 2.3-1.849 4.139-4.18 4.139-2.33 0-4.179-1.84-4.179-4.139 0-2.3 1.85-4.139 4.18-4.139 2.33 0 4.18 1.84 4.18 4.139zM14.657 3.514a22.854 22.854 0 0 0-8.025 7.758A1.364 1.364 0 0 0 8.95 12.71a20.098 20.098 0 0 1 7.07-6.833C25.254.55 36.89 3.275 42.845 11.881H35.52a1.363 1.363 0 1 0-.038 2.727H45.55c.753 0 1.364-.61 1.364-1.363V3.215a1.363 1.363 0 1 0-2.728-.038v5.938c-6.973-8.772-19.532-11.369-29.53-5.6zM48.749 52.571a22.854 22.854 0 0 0 8.025-7.757 1.364 1.364 0 0 0-2.318-1.437 20.098 20.098 0 0 1-7.07 6.833c-9.234 5.327-20.87 2.6-26.825-6.005h7.325a1.363 1.363 0 1 0 .038-2.728H17.855c-.753 0-1.363.611-1.363 1.364v10.03a1.363 1.363 0 1 0 2.727.038V46.97c6.974 8.773 19.533 11.37 29.53 5.601z"
                 />
               </g></svg
-            ><span>{{ _t('Switch Cashier') }}</span>
+            ><span>{{ _t('Switch User') }} </span>
           </router-link>
         </li>
         <li v-if="!isWaiter() && !isCarhop() && permitted('dashboard', 'root')">
@@ -457,7 +456,6 @@
 <script>
 /* global $ */
 import { mapState, mapGetters, mapActions } from 'vuex'
-import AuthService from '@/services/data/AuthService'
 //import SwitchStore from '@/components/commonButtons/SwitchStore'
 import SupervisorPasswordView from './SupervisorPassword'
 import avatar from '@/components/mobileComponents/mobileElements/avatar'
@@ -498,7 +496,7 @@ export default {
     },
     ...mapState('customer', ['isBrandHasDeliveryOrder']),
     ...mapGetters('context', ['store']),
-    ...mapGetters('auth', ['waiter', 'carhop', 'allowed']),
+    ...mapGetters('auth', ['waiter', 'carhop', 'allowed', 'cashier_walkin']),
     ...mapState('location', ['availableLanguages', 'language']),
     ...mapState('dinein', ['dineInTabType', 'activeArea']),
     ...mapState('sync', ['online']),
@@ -509,6 +507,9 @@ export default {
         state.auth && state.auth.userDetails ? state.auth.userDetails.name : '',
     }),
     ...mapGetters('location', ['_t', 'permitted']),
+    ...mapGetters({
+      brandContext: ['context/brand'],
+    }),
   },
   methods: {
     ...mapActions('invoice', ['setPrinterConfigurationKey']),
@@ -569,12 +570,7 @@ export default {
         this.onlineOrdersCount = this.latestOnlineOrders
       }
     },
-    logoutCashier() {
-      localStorage.setItem('token', '')
-      this.$store.commit('auth/SET_TOKEN', '')
-      this.$store.commit('auth/LOGOUT_ACTION', 'switchCashier')
-      AuthService.logout().then(() => {})
-    },
+
     /*...mapActions('customer', ['fetchCustomerAddress']),*/
   },
   mounted() {

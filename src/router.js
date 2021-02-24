@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 //holds routers
 import Vue from 'vue'
 import Router from 'vue-router'
@@ -9,9 +10,10 @@ import DispatchScreenInit from './views/DispatchScreenInit'
 import CashierLogin from './views/CashierLogin'
 import Carhop from './views/Carhop'
 import UserProfile from './views/UserProfile.vue'
+import Store from './store/index'
 
 Vue.use(Router)
-
+//Routes match from top to bottom, if top matched, it ll not go down
 const router = new Router({
   mode: 'history',
   base: '',
@@ -36,12 +38,7 @@ const router = new Router({
       component: Home,
     },
     {
-      path: '/:iosprinter',
-      name: 'iosApplication',
-      component: Home,
-    },
-    {
-      path: '/cashier-login/*',
+      path: '/cashier-login/:brand_id',
       name: 'cashierLogin',
       component: CashierLogin,
     },
@@ -121,11 +118,29 @@ const router = new Router({
       component: Home,
     },
     {
+      path: '/:iosprinter',
+      name: 'iosApplication',
+      component: Home,
+    },
+    {
       path: '*',
       name: 'HomeDefault',
       component: Home,
     },
   ],
+})
+
+router.beforeEach((to, from, next) => {
+  console.log('Routing going to be ', to.name)
+  //if to is switch cashier, we should reset all the data
+  if (to.name === 'cashierLogin') {
+    //we need brand id for switch cashier so preserve it
+    Store.dispatch('auth/logout', { preserve: ['brand_id', 'store_id'] })
+    next()
+  } else {
+    //resolve immediately
+    next()
+  }
 })
 
 Vue.router = router

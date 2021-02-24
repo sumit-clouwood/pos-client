@@ -5,31 +5,34 @@ import * as PERMS from '@/const/permissions'
 //import db from '@/services/network/DB'
 
 // initial state
-const state = {
-  token: null,
-  deviceId: null,
-  refreshToken: null,
-  rolePermissions: null,
-  userDetails: { item: false },
-  permissions: false,
-  waiters: [],
-  cashiers: [],
-  cashierEmail: '',
-  searchKeyword: '',
-  logoutAction: '',
-  brandAccessType: false,
-  availableStoreGroups: false,
-  storeGroupId: false,
-  storeUsers: [],
-  role: null,
-  cashierRoleId: false,
-  offlinePinCode: null,
-  deviceType: false,
+const getDefaults = () => {
+  return {
+    token: null,
+    deviceId: null,
+    refreshToken: null,
+    rolePermissions: null,
+    userDetails: { item: false },
+    permissions: false,
+    waiters: [],
+    cashiers: [],
+    cashierEmail: '',
+    searchKeyword: '',
+    brandAccessType: false,
+    availableStoreGroups: false,
+    storeGroupId: false,
+    storeUsers: [],
+    role: null,
+    cashierRoleId: false,
+    offlinePinCode: null,
+    deviceType: false,
+    currentLoggedInUserId: undefined,
+  }
 }
-
+const state = getDefaults()
 // getters
 
 const getters = {
+  current_user: state => state.userDetails.item,
   allowed: state => resource => {
     if (!state.role) {
       //super admin
@@ -71,6 +74,7 @@ const getters = {
   },
   waiter: (state, getters) => getters.roleName === 'Waiter',
   carhop: (state, getters) => getters.roleName === 'Carhop User',
+  cashier_walkin: (state, getters) => getters.roleName === 'Cashier-Walkin',
   getRole: state => roleName => {
     if (state.rolePermissions) {
       return state.rolePermissions.find(role => role.name === roleName)
@@ -154,7 +158,7 @@ const actions = {
     localStorage.setItem('objDevice', JSON.stringify(objDevice))
     commit(mutation.DEVICE_TYPE, objDevice)
   },
-  login({ commit, dispatch }, data) {
+  login({ commit }, data) {
     return new Promise((resolve, reject) => {
       AuthService.login(data)
         .then(response => {
@@ -162,19 +166,12 @@ const actions = {
             reject(response.data.error)
             return false
           }
+          commit('SET_CURRENT_LOGGED_IN_USER_ID', response.data.user.user_id)
           localStorage.setItem('token', response.data.token)
           //wait for localstorage to be updated
           setTimeout(() => {
-            dispatch('location/setContext', null, { root: true })
-              .then(() => {
-                dispatch('getUserDetails', response.data.user.user_id).then(
-                  () => {
-                    commit(mutation.SET_TOKEN, response.data.token)
-                    resolve(response.data.token)
-                  }
-                )
-              })
-              .catch(error => reject(error))
+            commit(mutation.SET_TOKEN, response.data.token)
+            resolve(response.data.token)
           }, 100)
 
           //wait for localstorage to be updated
@@ -182,25 +179,18 @@ const actions = {
         .catch(error => reject(error))
     })
   },
-  pinlogin({ commit, dispatch }, { pincode, brand, store }) {
+  pinlogin({ commit, rootGetters }, { pincode }) {
     return new Promise((resolve, reject) => {
-      AuthService.pinlogin({
-        //email: state.cashierEmail,
-        store_id: store,
-        brand_id: brand,
+      let data = {
         swipe_card: pincode,
-      })
+      }
+      data['store_id'] = rootGetters['context/store_id']
+      data['brand_id'] = rootGetters['context/brand_id']
+      AuthService.pinlogin(data)
         .then(response => {
+          commit('SET_CURRENT_LOGGED_IN_USER_ID', response.data.user.user_id)
           localStorage.setItem('token', response.data.token)
           commit(mutation.SET_TOKEN, response.data.token)
-
-          commit('context/SET_BRAND_ID', brand, {
-            root: true,
-          })
-
-          dispatch('getUserDetails', response.data.user.user_id).then(() => {
-            resolve()
-          })
         })
         .catch(error => {
           reject(error)
@@ -211,6 +201,7 @@ const actions = {
     return new Promise((resolve, reject) => {
       if (localStorage.getItem('token')) {
         commit(mutation.SET_TOKEN, localStorage.getItem('token'))
+        //get user details again based on current token
 
         if (localStorage.getItem('brand_id')) {
           commit('context/SET_BRAND_ID', localStorage.getItem('brand_id'), {
@@ -300,7 +291,7 @@ const actions = {
     commit('surcharge/RESET', true, { root: true })
     commit('payment/RESET', true, { root: true })
   },
-  logout({ commit, dispatch }, msg) {
+  logout({ commit, dispatch, rootGetters }, data = {}) {
     return new Promise(resolve => {
       localStorage.setItem('token', '')
       localStorage.setItem('brand_id', '')
@@ -309,35 +300,36 @@ const actions = {
 
       dispatch('resetModules')
       commit('customer/IS_BRAND_HAS_DELIVERY_ORDER', true, { root: true })
-      commit('context/RESET', null, { root: true })
       commit('sync/reset', {}, { root: true })
-      commit('location/RESET', true, { root: true })
+      commit('location/RESET', data, { root: true })
       commit('location/USER_SHORT_DETAILS', true, { root: true }) // added  here because it should not reset when checkout, its hide user details
-      if (msg != 'token_not_exists') {
-        commit(mutation.LOGOUT_ACTION, '')
-        DataService.setContext({
-          brand: null,
-          store: null,
-        })
-      }
 
-      if (localStorage.getItem('token') || msg == 'token_not_exists') {
-        AuthService.logout(msg).then(() => {})
-      }
+      //preserve brand_id which is needed for switch cashier api
+      commit('context/RESET', data, { root: true })
+
+      DataService.setContext({
+        brand: rootGetters['context/brand'],
+        store: rootGetters['context/store'],
+      })
+
+      AuthService.logout().then(() => {})
 
       resolve()
     })
   },
 
-  getUserDetails({ commit }, userId) {
-    return new Promise((resolve, reject) => {
-      if (userId) {
+  getUserDetails({ commit, state }, userId) {
+    return new Promise(resolve => {
+      if (!userId) {
+        userId = state.currentLoggedInUserId
+      }
+      if (!userId) {
+        resolve(false)
+      } else {
         AuthService.userDetails(userId).then(response => {
           commit(mutation.USER_DETAILS, response.data)
           resolve(response.data)
         })
-      } else {
-        reject()
       }
     })
   },
@@ -433,11 +425,6 @@ const mutations = {
     state.token = token
   },
 
-  [mutation.LOGOUT_ACTION](state, action) {
-    state.logoutAction = action
-    localStorage.setItem('logoutAction', action)
-  },
-
   [mutation.SET_CASHIER_EMAIL](state, email) {
     state.cashierEmail = email
   },
@@ -478,12 +465,7 @@ const mutations = {
     state.searchKeyword = value
   },
   [mutation.RESET](state) {
-    state.token = null
-    state.deviceId = null
-    state.refreshToken = null
-    state.rolePermissions = null
-    state.userDetails = false
-    state.permissions = false
+    Object.assign(state, getDefaults())
   },
   [mutation.SET_STORE_USERS](state, storeUsers) {
     state.storeUsers = storeUsers
@@ -493,6 +475,9 @@ const mutations = {
   },
   [mutation.SET_OFFLINE_PIN](state, offlinePinCode) {
     state.offlinePinCode = offlinePinCode
+  },
+  SET_CURRENT_LOGGED_IN_USER_ID(state, id) {
+    state.currentLoggedInUserId = id
   },
 }
 

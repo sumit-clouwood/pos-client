@@ -205,8 +205,6 @@ const actions = {
       brand_order_discounts: allOrderDiscounts,
       brand_payment_types: allPaymentTypes,
     }
-    // eslint-disable-next-line no-console
-    console.log(translationsOnly, 'translationsOnly')
     commit(mutation.APPINVOICEDATA, translationsOnly)
   },
 }

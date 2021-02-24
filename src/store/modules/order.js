@@ -158,6 +158,16 @@ const getters = {
         surchargeTax
     )
   },
+  totalTaxWithoutSurchargeTax: (state, getters) => {
+    const itemsTax = Num.round(getters.totalItemsTax)
+    const modifiersTax = Num.round(getters.totalModifiersTax)
+    const itemTaxDiscount = Num.round(getters.totalItemTaxDiscount)
+    const modifiersTaxDiscount = Num.round(getters.totalModifierTaxDiscount)
+
+    return Num.round(
+      itemsTax - itemTaxDiscount + modifiersTax - modifiersTaxDiscount
+    )
+  },
   orderTotal: (state, getters, rootState, rootGetters) => {
     let amount =
       getters.subTotal +

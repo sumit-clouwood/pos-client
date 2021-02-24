@@ -101,7 +101,7 @@ export default {
 
   fetchFromServer(url, resolve, reject) {
     if (!localStorage.getItem('token')) {
-      this.store.dispatch('auth/logout', 'token_not_exists')
+      this.store.dispatch('auth/logout', { preserve: ['brand_id', 'store_id'] })
       return Promise.reject('token expired or not found, logout')
     }
 
@@ -115,9 +115,13 @@ export default {
           this.saveEventOffline({
             request: absUrl,
             response: response.data,
-          }).then(() => {
-            this.setLastUpdate(absUrl, new Date())
           })
+            .then(() => {
+              this.setLastUpdate(absUrl, new Date())
+            })
+            .catch(error => {
+              console.log('offline save event fails', error)
+            })
 
           resolve(response)
         } else {
@@ -167,7 +171,7 @@ export default {
   getLive(url, level) {
     url = this.getContextUrl(url, level)
     if (!localStorage.getItem('token')) {
-      this.store.dispatch('auth/logout', 'token_not_exists')
+      this.store.dispatch('auth/logout')
       return Promise.reject('token expired or not found, logout')
     }
 
@@ -211,7 +215,7 @@ export default {
 
   post(url, data, level) {
     if (!localStorage.getItem('token')) {
-      this.store.dispatch('auth/logout', 'token_not_exists')
+      this.store.dispatch('auth/logout')
       return Promise.reject('token expired or not found, logout')
     }
 

@@ -5,6 +5,7 @@ import NetworkService from '@/services/NetworkService'
 import LocationService from '@/services/data/LocationService'
 import Fingerprint2 from 'fingerprintjs2'
 import * as CONST from '@/constants'
+import $store from './store'
 
 export default {
   store: null,
@@ -28,6 +29,9 @@ export default {
         })
     })
   },
+  loadStore() {
+    return this.fetchData()
+  },
   setup(store) {
     this.store = store
     return new Promise((resolve, reject) => {
@@ -35,7 +39,7 @@ export default {
         .then(idb => {
           console.log('dbsetup, now feth data')
           this.store.commit('sync/setIdb', idb)
-          this.fetchData()
+          this.fetchLoggedInUser()
             .then(() => {
               resolve()
             })
@@ -53,7 +57,200 @@ export default {
       this.setNetwork()
     })
   },
+  async fetchLoggedInUser() {
+    return new Promise((resolve, reject) => {
+      const currentStoreId =
+        $store.getters['context/store_id'] || localStorage.getItem('store_id')
+      this.detectBrowser().then(deviceId => {
+        this.store.dispatch('auth/auth', deviceId).then(() => {
+          $store
+            .dispatch('auth/getUserDetails')
+            .then(user => {
+              if (user) {
+                if (
+                  !user.item.brand_stores.length &&
+                  user.item.brand_access_type === 'all'
+                ) {
+                  //context already set from app.vue
 
+                  if (!user.item.brand_id) {
+                    //mostly its superadmin which don't have brand_stores
+                    //load the store from api if it is in url
+                    if ($store.getters['context/store_id']) {
+                      $store.commit('context/LOAD_STORE_FROM_CONTEXT', true)
+                      resolve()
+                    } else {
+                      reject('Please select store id')
+                    }
+                  } else {
+                    $store.commit('context/RESET')
+                    //it is store owner with all stores access, in that case we might need to load the stores by brand id
+                    //set brand context id here, so this user can pick store from only its own brand
+                    $store.dispatch(
+                      'context/setBrandContext',
+                      user.item.brand_id
+                    )
+                    //set multiselect here for stores
+                    //check if store in context doesn't belong to current brand then reset store context and present multi select here
+                    $store.commit('context/LOAD_STORE_FROM_CONTEXT', false)
+                    //it is store owner with all stores access, in that case we might need to load the stores by brand id
+                    //set brand context id here, so this user can pick store from only its own brand
+                    $store.dispatch(
+                      'context/setBrandContext',
+                      user.item.brand_id
+                    )
+
+                    DataService.getT('/ui_menu?&menu_needed=false', false).then(
+                      response => {
+                        $store.commit('location/SET_LOCATION_DATA', response)
+                        $store.commit(
+                          'context/SET_STORES_LENGTH',
+                          response.data.available_stores.length
+                        )
+                        $store.commit(
+                          'context/SET_MULTI_STORES',
+                          response.data.available_stores
+                        )
+                        let selectedStore = undefined
+
+                        if (currentStoreId) {
+                          selectedStore = response.data.available_stores.find(
+                            _store => _store._id === currentStoreId
+                          )
+                        }
+                        if (selectedStore) {
+                          $store.commit(
+                            'context/SET_CURRENT_STORE',
+                            selectedStore
+                          )
+                          //if storeid is same, getter ll not act, in that case load store from context
+                          $store.commit('context/LOAD_STORE_FROM_CONTEXT', true)
+                        }
+
+                        resolve()
+                      }
+                    )
+                  }
+                } else {
+                  $store.commit('context/RESET')
+                  $store.commit('context/LOAD_STORE_FROM_CONTEXT', false)
+                  $store.commit(
+                    'context/SET_STORES_LENGTH',
+                    user.item.brand_stores.length
+                  )
+                  $store.dispatch('context/setBrandContext', user.item.brand_id)
+
+                  let userstores = []
+                  for (var i in user.collected_data.page_lookups.root_stores
+                    ._id) {
+                    userstores.push(
+                      user.collected_data.page_lookups.root_stores._id[i]
+                    )
+                  }
+                  if (user.item.brand_stores.length > 1) {
+                    //find stores from lookup
+                    $store.commit('context/SET_MULTI_STORES', userstores)
+                    let selectedStore = undefined
+                    if (currentStoreId) {
+                      selectedStore = userstores.find(
+                        _store => _store._id === currentStoreId
+                      )
+                    }
+                    if (selectedStore) {
+                      $store.commit('context/SET_CURRENT_STORE', selectedStore)
+                      //if storeid is same, getter ll not act, in that case load store from context
+                      $store.commit('context/LOAD_STORE_FROM_CONTEXT', true)
+                      $store.dispatch(
+                        'context/setStoreContext',
+                        selectedStore._id
+                      )
+                    }
+                  } else {
+                    //USER has only one store
+                    $store.dispatch(
+                      'context/setStoreContext',
+                      user.item.brand_stores[0]
+                    )
+                    $store.commit('context/SET_CURRENT_STORE', userstores[0])
+                    //if storeid is same, getter ll not act, in that case load store from context
+                    if (currentStoreId === user.item.brand_stores[0]) {
+                      $store.commit('context/LOAD_STORE_FROM_CONTEXT', true)
+                    }
+                  }
+                  resolve(user)
+                }
+              } else {
+                //user was not found, or user coming from the backend,
+                //if user is coming from the backend we have no user details,
+                //in that case we are dependent on context or ui menu api
+
+                //get user info from store
+                // check if we have store id otherwise we ll call ui menu
+                let $caller = undefined
+                if ($store.getters['context/store_id']) {
+                  $caller = DataService.getT('/ui_menu?&menu_needed=false')
+                } else {
+                  $caller = DataService.getT(
+                    '/ui_menu?&menu_needed=false',
+                    false
+                  )
+                }
+                $caller.then(response => {
+                  $store.commit('location/SET_LOCATION_DATA', response)
+                  $store.dispatch(
+                    'context/setBrandContext',
+                    response.data.brand._id
+                  )
+                  let selectedStore = null
+                  if (currentStoreId) {
+                    selectedStore = response.data.available_stores.find(
+                      _store => _store._id === currentStoreId
+                    )
+                  }
+
+                  if (response.data.available_stores.length > 1) {
+                    $store.commit(
+                      'context/SET_STORES_LENGTH',
+                      response.data.available_stores.length
+                    )
+                    $store.commit(
+                      'context/SET_MULTI_STORES',
+                      response.data.available_stores
+                    )
+
+                    if (selectedStore) {
+                      $store.commit('context/SET_CURRENT_STORE', selectedStore)
+                      //if storeid is same, getter ll not act, in that case load store from context
+                      $store.commit('context/LOAD_STORE_FROM_CONTEXT', true)
+                      $store.dispatch(
+                        'context/setStoreContext',
+                        selectedStore._id
+                      )
+                    }
+                  } else {
+                    $store.dispatch(
+                      'context/setStoreContext',
+                      response.data.available_stores[0]._id
+                    )
+                    $store.commit(
+                      'context/SET_CURRENT_STORE',
+                      response.data.available_stores[0]
+                    )
+                    //if storeid is same, getter ll not act, in that case load store from context
+                    $store.commit('context/LOAD_STORE_FROM_CONTEXT', true)
+                  }
+
+                  resolve()
+                })
+              }
+            })
+            .catch(error => {
+              reject(error)
+            })
+        })
+      })
+    })
+  },
   updateLoading(key) {
     this.store.commit('sync/updateLoading', {
       key: key,
@@ -114,28 +311,28 @@ export default {
   },
   //this function is loaded when pos is loaded, called from App
   initLoadUI() {
-    DataService.setLang(this.store.state.location.locale)
+    DataService.setLang($store.state.location.locale)
     const self = this
     return new Promise((resolve, reject) => {
-      this.store
+      $store
         .dispatch('location/fetch')
         .then(locationDetails => {
           self
             .validateSubscription(self.store)
             .then(() => {
-              this.store.dispatch('auth/fetchRoles').then(() => {
-                this.store.dispatch('auth/setCurrentRole')
-                this.store.dispatch('auth/fetchAllStoreUsers')
+              $store.dispatch('auth/fetchRoles').then(() => {
+                $store.dispatch('auth/setCurrentRole')
+                $store.dispatch('auth/fetchAllStoreUsers')
               })
 
               this.updateLoading('store')
-              this.store.dispatch('payment/fetchAll').then(() => {})
-              this.store.dispatch('tax/openItemTaxes')
-              this.store.dispatch('surcharge/fetchAll').then(() => {})
-              this.store.dispatch('discount/fetchAll').then(() => {})
-              this.store.dispatch('dinein/fetchAll')
+              $store.dispatch('payment/fetchAll').then(() => {})
+              $store.dispatch('tax/openItemTaxes')
+              $store.dispatch('surcharge/fetchAll').then(() => {})
+              $store.dispatch('discount/fetchAll').then(() => {})
+              $store.dispatch('dinein/fetchAll')
 
-              this.store
+              $store
                 .dispatch('category/fetchAll')
                 .then(() => {
                   let storeIds = []
@@ -167,40 +364,31 @@ export default {
                   }
 
                   if (storeIds && storeIds.length) {
-                    this.store.dispatch(
+                    $store.dispatch(
                       'discount/fetchMultistore',
                       locationDetails.stores
                     )
-                    this.store.dispatch(
+                    $store.dispatch(
                       'customer/fetchMultiStore',
                       locationDetails.stores
                     )
-                    this.store.dispatch(
+                    $store.dispatch(
                       'category/fetchMultistore',
                       locationDetails.stores
                     )
-                    this.store.dispatch(
+                    $store.dispatch(
                       'modifier/fetchMultistore',
                       locationDetails.stores
                     )
                   }
                   this.updateLoading('catalog')
-                  this.store.dispatch('modifier/fetchAll').then(() => {
+                  $store.dispatch('modifier/fetchAll').then(() => {
                     this.updateLoading('modifiers')
 
-                    this.store.commit('sync/loaded', true)
-                    this.store
-                      .dispatch('payment/setTranslations')
-                      .then(() => {})
+                    $store.commit('sync/loaded', true)
+                    $store.dispatch('payment/setTranslations').then(() => {})
                     resolve()
                   })
-                  this.store
-                    .dispatch('printingServer/getKitchens')
-                    .then(() => {})
-                  this.store.dispatch(
-                    'announcement/fetchAll',
-                    this.store.state.auth.userDetails
-                  )
                 })
                 .catch(error => reject(error))
             })
@@ -216,39 +404,33 @@ export default {
 
   fetchData() {
     return new Promise((resolve, reject) => {
-      this.detectBrowser().then(deviceId => {
-        this.store
-          .dispatch('auth/auth', deviceId)
-          .then(() => {
-            DataService.setContext({
-              store: this.store.getters['context/store'],
-              brand: this.store.getters['context/brand'],
-            })
-
-            this.initLoadUI()
-              .then(() => {
-                //lets resolve the promise so pos can be loaded, other things ll be loaded later
-                resolve()
-                this.loadApiData('catalog')
-
-                this.loadApiData('customer')
-
-                //delayed loading data
-                this.loadApiData('order')
-              })
-              .catch(error => {
-                console.log('UI Failed', error)
-                reject(error)
-              })
-            // store.dispatch('loyalty/fetchAll', response)
-            // store.dispatch(
-            //   'deliveryManager/fetchDMOrderDetail',
-            //   response
-            // )
-            // store.dispatch('deliveryManager/getDispatchOrder', response)
-          })
-          .catch(error => reject(error))
+      DataService.setContext({
+        store: $store.getters['context/store'],
+        brand: $store.getters['context/brand'],
       })
+
+      this.initLoadUI()
+        .then(() => {
+          //lets resolve the promise so pos can be loaded, other things ll be loaded later
+          resolve()
+          $store.dispatch('printingServer/getKitchens').then(() => {})
+          $store.dispatch(
+            'announcement/fetchAll',
+            $store.state.auth.userDetails
+          )
+
+          $store.dispatch('printingServer/fetchAllKitchens')
+          this.loadApiData('catalog')
+
+          this.loadApiData('customer')
+
+          //delayed loading data
+          this.loadApiData('order')
+        })
+        .catch(error => {
+          console.log('UI Failed', error)
+          reject(error)
+        })
     })
   },
 
