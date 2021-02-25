@@ -178,7 +178,7 @@ export default {
     return axios.get(apiURL + url)
   },
   getT(url, level) {
-    url += '&translations_needed=1&lang=' + this.lang
+    url += '&translations_needed=1&lang=' + this.lang || 'en-US'
     return this.get(url, level)
   },
 

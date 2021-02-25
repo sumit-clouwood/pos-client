@@ -58,6 +58,7 @@ export default {
     })
   },
   async fetchLoggedInUser() {
+    DataService.setLang($store.state.location.locale)
     return new Promise((resolve, reject) => {
       const currentStoreId =
         $store.getters['context/store_id'] || localStorage.getItem('store_id')
