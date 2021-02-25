@@ -197,6 +197,7 @@ const actions = {
   async getLocationData({ commit, rootGetters }) {
     if (
       state.locationData &&
+      state.locationData.data.store &&
       rootGetters['context/store_id'] === state.locationData.data.store._id
     ) {
       return Promise.resolve(state.locationData)
