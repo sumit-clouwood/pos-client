@@ -85,12 +85,7 @@ export default {
                     }
                   } else {
                     $store.commit('context/RESET')
-                    //it is store owner with all stores access, in that case we might need to load the stores by brand id
-                    //set brand context id here, so this user can pick store from only its own brand
-                    $store.dispatch(
-                      'context/setBrandContext',
-                      user.item.brand_id
-                    )
+
                     //set multiselect here for stores
                     //check if store in context doesn't belong to current brand then reset store context and present multi select here
                     $store.commit('context/LOAD_STORE_FROM_CONTEXT', false)
@@ -108,24 +103,40 @@ export default {
                           'context/SET_STORES_LENGTH',
                           response.data.available_stores.length
                         )
-                        $store.commit(
-                          'context/SET_MULTI_STORES',
-                          response.data.available_stores
-                        )
-                        let selectedStore = undefined
-
-                        if (currentStoreId) {
-                          selectedStore = response.data.available_stores.find(
-                            _store => _store._id === currentStoreId
+                        if (response.data.available_stores.length > 1) {
+                          $store.commit(
+                            'context/SET_MULTI_STORES',
+                            response.data.available_stores
                           )
-                        }
-                        if (selectedStore) {
+
+                          let selectedStore = undefined
+
+                          if (currentStoreId) {
+                            selectedStore = response.data.available_stores.find(
+                              _store => _store._id === currentStoreId
+                            )
+                          }
+                          if (selectedStore) {
+                            $store.commit(
+                              'context/SET_CURRENT_STORE',
+                              selectedStore
+                            )
+                            //if storeid is same, getter ll not act, in that case load store from context
+                            $store.commit(
+                              'context/LOAD_STORE_FROM_CONTEXT',
+                              true
+                            )
+                          }
+                        } else {
+                          //if store owner has only one store
+                          $store.dispatch(
+                            'context/setStoreContext',
+                            response.data.available_stores[0]._id
+                          )
                           $store.commit(
                             'context/SET_CURRENT_STORE',
-                            selectedStore
+                            response.data.available_stores[0]
                           )
-                          //if storeid is same, getter ll not act, in that case load store from context
-                          $store.commit('context/LOAD_STORE_FROM_CONTEXT', true)
                         }
 
                         resolve()
