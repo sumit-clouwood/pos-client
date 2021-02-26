@@ -188,7 +188,7 @@ export default {
   transform: translateY(2px)
   opacity: 0
 .modal-body-digits
-  width: 101%
+  width: 100%
 
 .errortrans-leave-to
   transform: translateY(-2px)
