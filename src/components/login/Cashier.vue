@@ -1,10 +1,6 @@
 <template>
-  <div
-    class="content-wrapper"
-    :style="{ 'background-image': 'url(' + bg + ')' }"
-    v-if="!loggedIn"
-  >
-    <div class="admin-login-wrapper">
+  <div class="content-wrapper" :style="screenStyles" v-if="!loggedIn">
+    <div class="admin-login-wrapper" :style="screenWrapperStyle">
       <div class="login-wrapper">
         <div class="store-info">
           <ul class="ullist-admin">
@@ -42,15 +38,27 @@ export default {
   },
 
   computed: {
+    screenStyles() {
+      if (this.bg) {
+        return { 'background-image': 'url(' + this.bg + ')' }
+      }
+      return { 'background-color': 'rgb(81 154 252)' }
+    },
+    screenWrapperStyle() {
+      if (this.bg) {
+        return { 'background-color': 'rgba(25, 25, 25, 0.85)' }
+      }
+      return { 'background-color': 'rgb(81 154 252)' }
+    },
     bg() {
-      return this.$store.getters['location/bgImage'] || 'img/bg.jpg'
+      return this.$store.getters['location/bgImage'] || false
     },
     ...mapState({
       brand: state => (state.location.brand ? state.location.brand.name : null),
       logo: state =>
-        state.location.brand
+        state.location.brand && state.location.brand.company_logo
           ? state.location.brand.company_logo
-          : 'img/profile/broccoli-profile.jpg',
+          : 'img/icons/apple-touch-icon-120x120.png',
       store: state => (state.location.store ? state.location.store.name : null),
       address: state =>
         state.location.store
