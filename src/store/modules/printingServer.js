@@ -328,15 +328,15 @@ const actions = {
       dispatch('printingSetup', orderData)
     }
   },
-  getKitchens({ commit, rootState }) {
+  getKitchens({ commit }) {
     return new Promise(resolve => {
       PrintingServerService.kitchens().then(response => {
         commit(mutation.KITCHENS, response.data)
-        let dt = rootState.auth.deviceType
-        let isIOS = dt.osType
-        if (isIOS) {
-          localStorage.setItem('kitchen_data', JSON.stringify(state.kitchens))
-        }
+        // let dt = rootState.auth.deviceType
+        // let isIOS = dt.osType
+        // if (isIOS) {
+        localStorage.setItem('kitchen_data', JSON.stringify(state.kitchens))
+        // }
         resolve(response.data)
       })
     })
