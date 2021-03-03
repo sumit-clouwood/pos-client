@@ -1338,7 +1338,6 @@ const actions = {
     if (newItems.length) {
       let order = state.order
       order.items = newItems
-
       dispatch('injectCarHopItemsData', order).then(order => {
         order.items = order.items.map(item => {
           delete item.originalItem
@@ -1420,9 +1419,12 @@ const actions = {
                   )
                 }
                 //Invoice APP API Call with Custom Request JSON
+                let checkout_order = rootState.checkout.order
+                let selected_order = rootState.order.selectedOrder.item
+                let updated_order = Object.assign(selected_order, checkout_order)  
                 dispatch(
                   'printingServer/printingServerInvoiceRaw',
-                  rootState.order.selectedOrder.item,
+                  updated_order,
                   {
                     root: true,
                   }

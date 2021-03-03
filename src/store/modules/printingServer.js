@@ -205,9 +205,7 @@ const actions = {
     }
 
     return new Promise(resolve => {
-      let table_no = rootState.dinein.selectedTable
-        ? rootState.dinein.selectedTable.number
-        : false
+      let table_no = ''
       let jsonResponse = {
         status: 'ok',
         brand_logo: locationData.brand.company_logo || '',
@@ -235,8 +233,11 @@ const actions = {
         orderData.order_type === 'DINE-IN' ||
         orderData.order_type === 'dine_in'
       ) {
+        table_no = rootState.dinein.selectedTableRservationData
         if (!table_no) {
-          table_no = rootState.dinein.selectedTableRservationData
+          table_no = rootState.dinein.selectedTable
+            ? rootState.dinein.selectedTable.number
+            : false
         }
 
         Object.assign(jsonResponse, { table_number: table_no })
