@@ -58,7 +58,7 @@ module.exports = {
   lintOnSave: process.env.NODE_ENV !== 'production',
 
   pwa: {
-    name: 'Broccoli Offline PWA',
+    name: 'DimsPOS',
     themeColor: '#4DBA87',
     msTileColor: '#000000',
     appleMobileWebAppCapable: 'yes',
@@ -70,7 +70,6 @@ module.exports = {
       // swSrc is required in InjectManifest mode.
       swSrc: 'src/services/service-worker.js',
       // ...other Workbox options...
-      exclude: [/vendor/],
     },
   },
 }

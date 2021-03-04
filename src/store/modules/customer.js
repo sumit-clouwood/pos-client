@@ -611,6 +611,8 @@ const actions = {
 
 const mutations = {
   [mutation.CUSTOMER_LIST](state, customersDetail) {
+    // eslint-disable-next-line no-console
+    console.log('changing customer info', customersDetail)
     state.customer_list = customersDetail
   },
   [mutation.SET_CUSTOMER_ID](state, id) {
@@ -719,7 +721,11 @@ const mutations = {
     if (!force && multistore) {
       return false
     }
-    Object.assign(state, getDefaults())
+    state.offlineData = null
+    state.address = false
+    state.customer = false
+    state.customerId = null
+    state.loyalty = { card: false, details: false }
   },
   [mutation.SET_LOADING](state, status) {
     state.loading = status
