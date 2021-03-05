@@ -21,7 +21,7 @@
               name="tip"
               min="0"
               value="0"
-              @keypress="isNumberKey(event)"
+              @keydown="isNumberKey($event)"
             />
           </div>
         </div>
@@ -65,14 +65,30 @@ export default {
   },
   methods: {
     addTip() {
+      if (this.tip < 0) {
+        this.tip = 0
+      }
       this.$store.commit('checkoutForm/addTip', this.tip)
       this.tip = 0
     },
     isNumberKey(evt) {
       var charCode = evt.which ? evt.which : evt.keyCode
+      // eslint-disable-next-line no-console
+      console.log(charCode, evt, 'event')
+      if (
+        charCode == 109 ||
+        charCode == 69 ||
+        charCode == 189 ||
+        evt.which == 45
+      ) {
+        evt.preventDefault()
+      }
       if (charCode != 46 && charCode > 31 && (charCode < 48 || charCode > 57)) {
         return false
       }
+      // if (charCode == 109) {
+      //   return false
+      // }
       return true
     },
   },
