@@ -16,12 +16,12 @@
           <div class="tip-amount-wrap">
             <p class="color-text-invert">{{ _t('Enter Tip Amount') }}</p>
             <input
-              v-model.number="tip"
+              v-model="tip"
               type="number"
               name="tip"
               min="0"
               value="0"
-              @keypress="Num.toNumberOnly($event)"
+              @keypress="isNumberKey(event)"
             />
           </div>
         </div>
@@ -67,6 +67,13 @@ export default {
     addTip() {
       this.$store.commit('checkoutForm/addTip', this.tip)
       this.tip = 0
+    },
+    isNumberKey(evt) {
+      var charCode = evt.which ? evt.which : evt.keyCode
+      if (charCode != 46 && charCode > 31 && (charCode < 48 || charCode > 57)) {
+        return false
+      }
+      return true
     },
   },
 }
