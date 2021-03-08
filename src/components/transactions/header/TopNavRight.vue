@@ -77,7 +77,7 @@ export default {
     },
     ...mapGetters('context', ['store', 'haveMultipleStores']),
     ...mapState('location', ['availableLanguages', 'language']),
-    // ...mapGetters('deliveryManager', ['onlineOrders']),
+    //...mapGetters('deliveryManager', ['onlineOrders']),
     ...mapState('sync', ['online']),
     ...mapState({
       username: state =>

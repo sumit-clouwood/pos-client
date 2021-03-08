@@ -48,14 +48,14 @@
             <td class="color-text">{{ customer.email }}</td>
             <td class="color-text">
               <!-- <button
-                          data-toggle="modal"
-                          data-target="#display-order"
-                          data-dismiss="modal"
-                          @click="fetchSelectedCustomer(customer._id)"
-                          class="br-table-btn display-order color-icon-table-neutral-button color-text-invert"
-                        >
-                          {{ _t('Display Order') }}
-                        </button>-->
+                  data-toggle="modal"
+                  data-target="#display-order"
+                  data-dismiss="modal"
+                  @click="fetchSelectedCustomer(customer._id)"
+                  class="br-table-btn display-order color-icon-table-neutral-button color-text-invert"
+                >
+                  {{ _t('Display Order') }}
+                </button>-->
             </td>
             <td>
               <button
