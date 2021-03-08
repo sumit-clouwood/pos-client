@@ -313,7 +313,7 @@ export default {
         })
         .catch(er => {
           this.err = er.data ? er.data.error : er.message
-          $('.information-popup').modal('show')
+          if (this.err) $('.information-popup').modal('show')
         })
     },
     hideOnlineModal() {
@@ -333,41 +333,26 @@ export default {
       if (process.env.VUE_APP_SOCKET_DISABLE) {
         return false
       }
-      let scope = this
-      let storeId = this.store ? this.store._id : this.$route.params.store_id
+      // let scope = this
       this.$socket.$subscribe('online-order-channel', payload => {
         // eslint-disable-next-line no-console
-        console.log(
-          'payload',
-          payload,
-          scope.lastOrderId,
-          payload.data.order_id
-        )
-        if (
-          payload.data.store_id == storeId &&
-          scope.lastOrderId !== payload.data.order_id
-        ) {
-          scope.lastOrderId = payload.data.order_id
-          this.$store.dispatch('deliveryManager/getOnlineOrders').then(() => {
-            // eslint-disable-next-line no-console
-            console.log(payload)
-            if (payload.data.action_id === 'add') {
-              // eslint-disable-next-line no-console
-              console.log(
-                'onlineOrders',
-                scope.onlineOrders.count,
-                storeId,
-                scope.isAudioPlaying
-              )
-              if (scope.privateContext)
-                $('#online-order')
-                  .dialog()
-                  .dialog('open')
-              if (!scope.isAudioPlaying) scope.playSound()
-              // clearTimeout(scope.interval)
-            }
-          })
-        }
+        // console.log(
+        //   'payload',
+        //   payload,
+        //   scope.lastOrderId,
+        //   payload.data.order_id
+        // )
+
+        // this.$store.dispatch('deliveryManager/getOnlineOrders').then(() => {
+        //   if (payload.data.action_id === 'add') {
+        //     if (scope.privateContext)
+        //       $('#online-order')
+        //         .dialog()
+        //         .dialog('open')
+        //     if (!scope.isAudioPlaying) scope.playSound()
+        //   }
+        // })
+        this.getOnlineOrders(payload)
       })
     },
     pauseSound() {
@@ -380,26 +365,33 @@ export default {
       audio.pause()
       this.isAudioPlaying = false
     },
-    getOnlineOrders() {
+    getOnlineOrders(payload) {
       let scope = this
-      this.$store.dispatch('deliveryManager/getOnlineOrders').then(() => {
-        if (scope.onlineOrders.count > 0 && scope.privateContext) {
-          $('#online-order')
-            .dialog()
-            .dialog('open')
-          if (!scope.isAudioPlaying) scope.playSound()
-        }
-        // clearTimeout(scope.interval)
-      })
+      let storeId = this.store ? this.store._id : this.$route.params.store_id
+
+      if (
+        payload.data.store_id == storeId &&
+        scope.lastOrderId !== payload.data.order_id
+      ) {
+        scope.lastOrderId = payload.data.order_id
+        this.$store.dispatch('deliveryManager/getOnlineOrders').then(() => {
+          if (scope.onlineOrders.count > 0 && scope.privateContext) {
+            if (payload.data.action_id === 'add') {
+              $('#online-order')
+                .dialog()
+                .dialog('open')
+              if (!scope.isAudioPlaying) scope.playSound()
+            }
+          }
+          // clearTimeout(scope.interval)
+        })
+      }
     },
     ...mapActions('deliveryManager', ['selectDriver']),
     ...mapActions('order', ['selectedOrderDetails', 'updateOrderAction']),
   },
   created() {
     this.onlineOrderSetup()
-    this.getOnlineOrders()
-    // eslint-disable-next-line no-console
-    console.log(this.onlineOrders)
   },
 }
 </script>
