@@ -530,9 +530,17 @@ export default {
           }
         }
         if (this.order.customer) {
-          return {
-            name: this.$store.state.customer.customer.name,
-            phone: this.$store.state.customer.customer.phone_number,
+          if (this.$store.state.customer.customer) {
+            return {
+              name: this.$store.state.customer.customer.name,
+              phone: this.$store.state.customer.customer.phone_number,
+            }
+          } else {
+            return {
+              name: this.$store.state.order.selectedOrder.customer.name,
+              phone: this.$store.state.order.selectedOrder.customer
+                .phone_number,
+            }
           }
         }
       }
