@@ -1501,31 +1501,32 @@ const actions = {
         const deliveryArea = rootGetters['customer/findDeliveryArea'](
           order.order_delivery_area
         )
-
-        orderAddress.push({
-          building: order.order_building,
-          city: order.order_city,
-          country: order.order_country,
-          created_at: order.created_at,
-          delivery_area: deliveryArea.name,
-          delivery_area_id: order.order_delivery_area,
-          flat_number: order.order_flat_number,
-          nearest_landmark: order.order_nearest_landmark,
-          store_id: order.store_id,
-          street: order.order_street,
-          _id: order._id,
-        })
+        if (order.order_type !== 'dine_in') {
+          orderAddress.push({
+            building: order.order_building,
+            city: order.order_city,
+            country: order.order_country,
+            created_at: order.created_at,
+            delivery_area: deliveryArea.name || '',
+            delivery_area_id: order.order_delivery_area,
+            flat_number: order.order_flat_number,
+            nearest_landmark: order.order_nearest_landmark,
+            store_id: order.store_id,
+            street: order.order_street,
+            _id: order._id,
+          })
+          if (orderAddress.length) {
+            dispatch('customer/selectedAddress', orderAddress, {
+              root: true,
+            })
+            commit('location/SET_MODAL', '#order-confirmation', {
+              root: true,
+            })
+          }
+        }
         dispatch('customer/fetchSelectedCustomer', order.customer, {
           root: true,
         })
-        if (orderAddress.length) {
-          dispatch('customer/selectedAddress', orderAddress, {
-            root: true,
-          })
-          commit('location/SET_MODAL', '#order-confirmation', {
-            root: true,
-          })
-        }
         // commit('location/SET_MODAL', '#order-confirmation')
       }
       let orderData = {

@@ -44,11 +44,9 @@ const getters = {
     if (!price) price = 0.0
     return state.currency + ' ' + Num.round(price, 2).toFixed(2)
   },
-
   getReferral: state => id => {
     return state.referrals.find(referral => referral._id === id)
   },
-
   permitted: state => (pageId, parentId) => {
     typeof parentId == 'undefined' ? null : parentId
     if (state.permissions) {
@@ -74,9 +72,7 @@ const getters = {
     }
     return false
   },
-  /*collectRouteMenu: state => {
 
-  },*/
   _t: state => str => {
     if (state.translations && state.translations[str]) {
       return state.translations[str]
