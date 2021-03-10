@@ -15,7 +15,11 @@
           </tr>
         </tfoot>-->
       <tbody>
-        <tr :key="index" v-for="(order, index) in orders">
+        <tr
+          :key="index"
+          v-for="(order, index) in orders"
+          :class="'class' + order._id"
+        >
           <td
             v-if="order.order_status == orderStatus"
             :class="{ active: activeIndex.includes(order._id) }"
@@ -383,21 +387,24 @@ export default {
   methods: {
     ...mapActions('deliveryManager', ['showOrderDetails']),
     updateOrder(data) {
+      let _class = '.class' + data.order._id
+
+      this.order_status = false
       this.processedOrder.push(data.order._id)
-      // eslint-disable-next-line no-console
-      console.log(this.processedOrder)
-      // if (this.activeIndex.includes(data.order._id)) {
-      //   const index = this.activeIndex.indexOf(data.order._id)
-      //   if (index > -1) {
-      //     this.activeIndex.splice(index, 1)
-      //   }
-      //   this.$store.commit('location/SET_ORDER_JEEBLY', this.activeIndex)
-      // }
       this.updateOrderAction(data)
-        .then(() => {})
+        .then(res => {
+          if (res.data.status === 'ok') {
+            // let item_block = document.getElementsByClassName(_class)
+            for (let el of document.querySelectorAll(_class)) {
+              el.style.visibility = 'hidden'
+              el.style.display = 'none'
+            }
+            // item_block.style.display = 'none'
+          }
+        })
         .catch(er => {
           this.err = er.data ? er.data.error : er.message
-          $('.information-popup').modal('show')
+          if (this.err) $('.information-popup').modal('show')
         })
     },
     AssigneeOrder(data) {
