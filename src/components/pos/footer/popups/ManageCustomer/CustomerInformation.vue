@@ -78,6 +78,7 @@ import CustomerPastOrders from './CustomerInformation/CustomerPastOrders'
 import CustomerDeliveryAddress from './CustomerInformation/CustomerDeliveryAddress'
 import paginate from 'vuejs-paginate'
 import Preloader from '@/components/util/Preloader'
+import * as CONST from '@/constants'
 
 export default {
   name: 'CustomerInformation',
@@ -101,10 +102,11 @@ export default {
     ...mapGetters('location', ['_t']),
     ...mapState('checkoutForm', ['msg']),
     ...mapState('customer', ['customerLoading', 'isBrandHasDeliveryOrder']),
+    ...mapGetters('modules', ['enabled']),
   },
   methods: {
     updateModalSelection(modalName, subjectName) {
-      if (this.isBrandHasDeliveryOrder) {
+      if (this.isBrandHasDeliveryOrder && this.enabled(CONST.MODULE_CRM)) {
         this.updateModalSelectionDelivery(modalName)
         if (this.msg.message.length > 0) {
           $('#payment-msg').modal('show')

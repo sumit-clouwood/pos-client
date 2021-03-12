@@ -1,5 +1,8 @@
 <template>
-  <div id="delivery-area-address" v-if="isBrandHasDeliveryOrder">
+  <div
+    id="delivery-area-address"
+    v-if="isBrandHasDeliveryOrder && enabled(CONST.MODULE_CRM)"
+  >
     <div class="order-address-details color-main add-address-wrapper ">
       <button
         class="color-main color-text-invert add-address-wrapper"
@@ -28,6 +31,7 @@ export default {
   computed: {
     ...mapState('customer', ['isBrandHasDeliveryOrder']),
     ...mapGetters('location', ['_t']),
+    ...mapGetters('modules', ['enabled']),
   },
   methods: {
     ...mapActions('customer', ['setDefaultSettingsGlobalAddUpdate']),

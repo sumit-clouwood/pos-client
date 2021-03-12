@@ -65,7 +65,8 @@
           {{ _t('Nothing found') }}
         </div>-->
       </div>
-      <datetime
+      <div v-if="enabled(CONST.MODULE_FUTURE_ORDERS)">
+        <datetime
         type="datetime"
         title="Schedule"
         placeholder="Schedule"
@@ -89,6 +90,7 @@
         use12-hour
         auto
       ></datetime>
+      </div>
       <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
 
     </div>
@@ -166,6 +168,7 @@ export default {
     ...mapGetters('location', ['_t', 'formatPrice']),
     ...mapGetters('payment', ['methods']),
     ...mapState('location', ['brand']),
+    ...mapGetters('modules', ['enabled']),
   },
   methods: {
     calculateLoyaltyAmount() {

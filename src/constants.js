@@ -60,7 +60,8 @@ export const MODULE_OFFLINE_ORDERS = 'Offline Orders'
 export const MODULE_FUTURE_ORDERS = 'Future Orders'
 export const MODULE_DINE_IN_MENU = 'Dine-In Menu'
 export const MODULE_MANUAL_ACCEPTANCE = 'Order Manual Acceptance'
-
+export const MODULE_CARHOP = 'Carhop Module'
+export const MODULE_TRANSACTION_SCREEN = 'Transactions Screen'
 /* order related constants */
 
 export const ORDER_STATUS_ON_HOLD = 'on-hold'

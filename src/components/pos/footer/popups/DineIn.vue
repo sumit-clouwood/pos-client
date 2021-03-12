@@ -16,6 +16,7 @@
             v-show="orderType.OTApi !== CONST.ORDER_TYPE_CARHOP"
           >
             <div
+              v-if="enabled(CONST.MODULE_DINEIN)"
               class="option-contain"
               :class="{ active: selectedOrderType.OTApi === 'dine_in' }"
               @click="setOrderType({ OTview: 'Dine In', OTApi: 'dine_in' })"
@@ -37,7 +38,7 @@
               <span class="color-text-invert">{{ _t('Take Away') }}</span>
             </div>
             <div
-              v-if="isBrandHasDeliveryOrder"
+              v-if="isBrandHasDeliveryOrder && enabled(CONST.MODULE_CRM)"
               class="option-contain"
               :class="{ active: selectedOrderType.OTApi === 'call_center' }"
               @click="
@@ -47,8 +48,9 @@
               <img src="img/pos/delivery-icon.svg" />
               <span class="color-text-invert">{{ _t('Delivery') }}</span>
             </div>
-            <div
+            <!-- <div
               class="option-contain"
+              v-if="enabled(CONST.MODULE_DINEIN)"
               :class="{ active: selectedOrderType.OTApi === 'event' }"
               @click="showReservationSection()"
             >
@@ -56,7 +58,7 @@
               <span class="color-text-invert">
                 {{ _t('Reservation') }}
               </span>
-            </div>
+            </div> -->
             <div
               class="option-contain"
               :class="{ active: selectedOrderType.OTApi === 'walk_in' }"
@@ -68,7 +70,10 @@
           </div>
           <div
             class="dining-option-block"
-            v-show="orderType.OTApi === CONST.ORDER_TYPE_CARHOP"
+            v-show="
+              orderType.OTApi === CONST.ORDER_TYPE_CARHOP &&
+                enabled(CONST.MODULE_CARHOP)
+            "
           >
             <div
               class="option-contain carhop"
@@ -135,6 +140,7 @@ export default {
     ...mapState('order', ['orderType']),
     ...mapGetters('context', ['store']),
     ...mapState('dinein', ['activeArea']),
+    ...mapGetters('modules', ['enabled']),
   },
   watch: {
     orderType(newVal, oldVal) {

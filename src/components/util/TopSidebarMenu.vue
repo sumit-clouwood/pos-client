@@ -48,7 +48,7 @@
             <span>{{ _t('Walk In') }}</span>
           </a>
         </li>
-        <li v-if="!isCarhop()">
+        <li v-if="!isCarhop() && enabled(CONST.MODULE_DINEIN)">
           <router-link
             :to="'/dine-in' + store"
             role="button"
@@ -69,7 +69,12 @@
           </router-link>
         </li>
         <li
-          v-if="!isWaiter() && !isCarhop() && permitted('transactional_orders')"
+          v-if="
+            !isWaiter() &&
+              !isCarhop() &&
+              permitted('transactional_orders') &&
+              enabled(CONST.MODULE_TRANSACTION_SCREEN)
+          "
           @click="moveTransactionSection(this)"
         >
           <a role="button"
@@ -96,7 +101,8 @@
             !isWaiter() &&
               !isCarhop() &&
               permitted('delivery', 'root') &&
-              isBrandHasDeliveryOrder
+              isBrandHasDeliveryOrder &&
+              enabled(CONST.MODULE_DELIVERY)
           "
         >
           <router-link :to="'/delivery-manager' + store">
@@ -119,7 +125,7 @@
             <span>{{ _t('Delivery Manager') }}</span>
           </router-link>
         </li>
-        <li v-if="!isWaiter()">
+        <li v-if="!isWaiter() && enabled(CONST.MODULE_CARHOP)">
           <router-link :to="'/carhop' + store">
             <svg
               height="24px"
@@ -151,7 +157,7 @@
             ><span>{{ _t('Carhop') }}</span>
           </router-link>
         </li>
-        <li v-if="!isWaiter()">
+        <li v-if="!isWaiter() && enabled(CONST.MODULE_CARHOP)">
           <router-link :to="'/carhop-orders' + store">
             <svg
               height="24px"
@@ -199,7 +205,14 @@
             ><span>{{ _t('Dashboard') }}</span></a
           >
         </li>
-        <li v-if="!isWaiter() && !isCarhop() && permitted('crm', 'root')">
+        <li
+          v-if="
+            !isWaiter() &&
+              !isCarhop() &&
+              permitted('crm', 'root') &&
+              enabled(CONST.MODULE_CRM)
+          "
+        >
           <a :href="crm" target="_self"
             ><svg data-v-0fe42853="" id="crm_icon" viewBox="0 0 22 24">
               <path
@@ -500,6 +513,8 @@ export default {
     ...mapState('location', ['availableLanguages', 'language']),
     ...mapState('dinein', ['dineInTabType', 'activeArea']),
     ...mapState('sync', ['online']),
+    ...mapGetters('modules', ['enabled']),
+
     ...mapState({
       latestOnlineOrders: state =>
         state.order.onlineOrders ? state.order.onlineOrders.length : 0,

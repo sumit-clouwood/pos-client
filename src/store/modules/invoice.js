@@ -21,6 +21,7 @@ const getters = {
         //template id already selected
         templateId = state.templateId
       } else {
+        if (typeof state.rules.data.data == 'undefined') return false
         state.rules.data.data.forEach(rule => {
           if (
             [

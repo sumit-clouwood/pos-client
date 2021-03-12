@@ -68,7 +68,9 @@
         </a>
       </div>
       <div
-        v-show="!carhop && !waiter && !cashier_walkin"
+        v-show="
+          !carhop && !waiter && !cashier_walkin && enabled(CONST.MODULE_CRM)
+        "
         class="footer-slider-list-item"
         data-toggle="modal"
         data-dismiss="modal"
@@ -150,7 +152,7 @@
         class="footer-slider-list-item"
         :class="{ loyaltyApplied: loyaltyCard }"
         @click="loyaltyHendlerChange"
-        v-show="!carhop && !waiter"
+        v-show="!carhop && !waiter && enabled(CONST.MODULE_LOYALTY)"
       >
         <svg
           width="22"
@@ -227,6 +229,7 @@ export default {
   computed: {
     ...mapGetters(['footerMenuHendler']),
     ...mapGetters('location', ['formatPrice', '_t']),
+    ...mapGetters('modules', ['enabled']),
     ...mapState({
       loyaltyCard: state => state.customer.customerLoyalty.card,
       selectedCustomer: state => state.customer.customer.name,

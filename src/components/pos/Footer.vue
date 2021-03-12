@@ -214,7 +214,7 @@
             data-toggle="modal"
             data-dismiss="modal"
             :class="{ deactive_class: !isBrandHasDeliveryOrder }"
-            v-if="!cashier_walkin"
+            v-if="!cashier_walkin && enabled(CONST.MODULE_CRM)"
             @click="add_customer_address"
           >
             <!--<a
@@ -441,7 +441,7 @@
           <crm-btn></crm-btn>
         </div>
         <div
-          v-else-if="orderType.OTApi === 'carhop'"
+          v-else-if="orderType.OTApi === 'carhop' && enabled(CONST.MODULE_CARHOP)"
           class="carhop-order pay-btn-holder"
         >
           <carhop-btn></carhop-btn>

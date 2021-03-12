@@ -42,7 +42,10 @@
             </div>
             <div class="profile-menu-item-text">{{ _t('Walk In') }}</div>
           </div>
-          <div v-if="!isCarhop()" class="profile-menu-item">
+          <div
+            v-if="!isCarhop() && enabled(CONST.MODULE_DINEIN)"
+            class="profile-menu-item"
+          >
             <div class="profile-menu-item-icon">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -68,7 +71,10 @@
           <div
             class="profile-menu-item"
             v-if="
-              !isWaiter() && !isCarhop() && permitted('transactional_orders')
+              !isWaiter() &&
+                !isCarhop() &&
+                permitted('transactional_orders') &&
+                enabled(CONST.MODULE_TRANSACTION_SCREEN)
             "
             @click="moveTransactionSection(this)"
           >
@@ -96,7 +102,12 @@
           </div>
           <div
             class="profile-menu-item"
-            v-if="!isWaiter() && !isCarhop() && permitted('delivery', 'root')"
+            v-if="
+              !isWaiter() &&
+                enabled(CONST.MODULE_DELIVERY) &&
+                !isCarhop() &&
+                permitted('delivery', 'root')
+            "
           >
             <div class="profile-menu-item-icon">
               <svg
@@ -122,7 +133,7 @@
               </div>
             </router-link>
           </div>
-          <div class="profile-menu-item">
+          <div class="profile-menu-item" v-if="enabled(CONST.MODULE_CARHOP)">
             <div class="profile-menu-item-icon">
               <svg
                 height="24px"
@@ -166,7 +177,7 @@
               </router-link>
             </div>
           </div>
-          <div class="profile-menu-item">
+          <div class="profile-menu-item" v-if="enabled(CONST.MODULE_CARHOP)">
             <div class="profile-menu-item-icon">
               <svg
                 height="24px"
@@ -206,7 +217,7 @@
             </div>
             <div class="profile-menu-item-text">
               <router-link :to="'/carhop-orders' + store"
-                >{{ _t('Carhop' + ' ' + _t('Orders')) }}
+                >{{ _t('Carhop') + ' ' + _t('Orders') }}
               </router-link>
             </div>
           </div>
@@ -436,6 +447,7 @@ export default {
     ...mapState('location', ['availableLanguages', 'language']),
     ...mapState('dinein', ['dineInTabType', 'activeArea']),
     ...mapState('sync', ['online']),
+    ...mapGetters('modules', ['enabled']),
     ...mapGetters({
       brandContext: ['context/brand'],
     }),

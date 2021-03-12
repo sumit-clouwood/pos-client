@@ -461,7 +461,7 @@ const actions = {
     //}
   },
 
-  createAction({ commit, dispatch }, actionDetails) {
+  createAction({ commit, dispatch, rootGetters }, actionDetails) {
     commit(mutation.SET_LOADING, true)
     return new Promise((resolve, reject) => {
       const params = [
@@ -483,7 +483,10 @@ const actions = {
           ) {
             let customerId = actionDetails.customer || response.data.id
             dispatch('fetchSelectedCustomer', customerId).then(customer => {
-              if (state.isBrandHasDeliveryOrder) {
+              if (
+                state.isBrandHasDeliveryOrder &&
+                rootGetters.enabled(CONST.MODULE_CRM)
+              ) {
                 dispatch('selectedAddress', customer.customer_addresses[0])
                 commit('location/SET_MODAL', '#order-confirmation', {
                   root: true,

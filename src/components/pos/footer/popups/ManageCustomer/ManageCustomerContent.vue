@@ -122,6 +122,8 @@
 import { mapState, mapGetters } from 'vuex'
 import Preloader from '@/components/util/Preloader'
 import { bus } from '@/eventBus'
+import * as CONST from '@/constants'
+
 /* global $ */
 export default {
   name: 'ManageCustomerContent',
@@ -134,9 +136,12 @@ export default {
     }),
     ...mapState('customer', ['loading', 'isBrandHasDeliveryOrder']),
     ...mapState('order', ['orderType']),
+    ...mapGetters('modules', ['enabled']),
     ...mapGetters('location', ['_t']),
     addressPopup() {
-      return !this.isBrandHasDeliveryOrder ? '' : '#add-to-order'
+      return !this.isBrandHasDeliveryOrder && !this.enabled(CONST.MODULE_CRM)
+        ? ''
+        : '#add-to-order'
     },
   },
   data: function() {
