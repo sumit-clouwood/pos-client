@@ -241,7 +241,10 @@ export default {
       let searchedItems = []
       if (searchTerm.length > 0) {
         this.buildingAreas.map(item => {
-          if (item.toLowerCase().indexOf(searchTerm.toLowerCase()) != -1) {
+          if (
+            item &&
+            item.toLowerCase().indexOf(searchTerm.toLowerCase()) != -1
+          ) {
             searchedItems.push(item)
           }
         })

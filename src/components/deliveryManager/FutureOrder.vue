@@ -11,6 +11,7 @@
       <Preloader :msg="_t('Loading new orders') + '...'" v-if="loading" />
       <DMItem v-else :actionDetails="actionDetails" />
     </div>
+    <OrderDetailsPopup />
   </div>
 </template>
 
@@ -18,6 +19,7 @@
 import DMItem from '@/components/deliveryManager/content/DMItem'
 import { mapState } from 'vuex'
 import Preloader from '@/components/util/progressbar'
+import OrderDetailsPopup from '@/components/pos/content/OrderDetailPopup'
 export default {
   name: 'FutureOrder',
   data() {
@@ -39,6 +41,7 @@ export default {
   components: {
     Preloader,
     DMItem,
+    OrderDetailsPopup,
   },
 }
 </script>

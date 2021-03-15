@@ -25,6 +25,7 @@
               <span class="color-text-invert">{{ _t('Dine In') }}</span>
             </div>
             <div
+              v-if="enabled(CONST.MODULE_DELIVERY)"
               class="option-contain"
               :class="{ active: selectedOrderType.OTApi === 'takeaway' }"
               @click="

@@ -193,16 +193,16 @@ export default {
 
         .modal-footer {
           display: grid;
-          grid-template-columns: 1fr;
+          grid-template-columns: 1fr 1fr;
           width: 100% !important;
           grid-gap: 10px;
           border: none;
 
           .referal {
             width: 100% !important;
-            button {
-              width: 100% !important;
-            }
+            // button {
+            //   // width: 100% !important;
+            // }
 
             .vdatetime {
               order: 1;

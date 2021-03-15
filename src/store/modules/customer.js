@@ -485,7 +485,7 @@ const actions = {
             dispatch('fetchSelectedCustomer', customerId).then(customer => {
               if (
                 state.isBrandHasDeliveryOrder &&
-                rootGetters.enabled(CONST.MODULE_CRM)
+                rootGetters['modules/enabled'](CONST.MODULE_CRM)
               ) {
                 dispatch('selectedAddress', customer.customer_addresses[0])
                 commit('location/SET_MODAL', '#order-confirmation', {

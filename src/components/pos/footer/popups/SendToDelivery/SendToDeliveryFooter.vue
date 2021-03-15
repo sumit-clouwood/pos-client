@@ -97,7 +97,7 @@
     <div class="delivery_order_process_errors">
       <p v-if="errors !== ''" class="errors text-danger">{{ errors }}</p>
     </div>
-    <div class="btn-announce">
+    <div class="btn-announce" v-if="enabled(CONST.MODULE_DELIVERY)">
         <button
           type="button"
           data-dismiss="modal"
@@ -111,6 +111,20 @@
         @click="placeOrder"
       >
         {{ _t('Confirm') }}
+      </button>
+    </div>
+    <div class="btn-disabled-confirmation" v-else>
+     <div class="text-danger">
+      <span>
+        {{ _t(`Delivery manager is disabled so you can't place CRM orders.`) }}
+      </span> 
+      <span> {{ _t('please contact to brand admin') }} </span>
+     </div>
+      <button
+          type="button"
+          data-dismiss="modal"
+          class="btn btn-success btn-large cancel-announce color-text-invert color-button">
+        {{ _t('OK') }}
       </button>
     </div>
   </div>
@@ -291,6 +305,11 @@ export default {
     width: 0.625rem;
     height: 0.625rem;
   }
+}
+.btn-disabled-confirmation {
+  text-align: center;
+  white-space: pre-wrap;
+  margin-bottom: 10px;
 }
 .showpropermsg .text-danger {
   display: initial;
