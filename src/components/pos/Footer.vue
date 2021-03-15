@@ -37,9 +37,10 @@
           <li
             class="footer-slider-list-item color-secondary"
             data-toggle="modal"
+            :class="[{ deactive_class: !enabled(CONST.MODULE_CRM) }]"
             data-target="#manage-customer"
             @click="calculateHeights()"
-            v-if="!cashier_walkin"
+            v-if="!cashier_walkin && enabled(CONST.MODULE_CRM)"
           >
             <a
               class="footer-slider-list-item-link color-text-invert"
@@ -733,6 +734,9 @@ export default {
   },
   mounted() {
     this.$store.commit('dinein/KITCHEN_PRINT', true)
+    if (!this.enabled(CONST.MODULE_CRM)) {
+      this.slide_to_show = 4
+    }
     if (this.cashier_walkin === true) {
       this.slide_to_show = 4
     }
