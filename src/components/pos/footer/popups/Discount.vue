@@ -48,6 +48,10 @@
                 }}
               </p>
               <span class="more color-text">{{ dt(discount) }}</span>
+              <span class="more color-text" v-if="discount.max_discount_value"
+                >Min Cart {{ discount.min_cart_value }} Max Disc
+                {{ discount.max_discount_value }}</span
+              >
             </div>
           </div>
           <div
