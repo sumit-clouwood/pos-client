@@ -118,7 +118,7 @@
       <span>
         {{ _t(`Delivery manager is disabled so you can't place CRM orders.`) }}
       </span> 
-      <span> {{ _t('please contact to brand admin') }} </span>
+      <span> {{ _t('Please contact to brand admin.') }} </span>
      </div>
       <button
           type="button"
