@@ -1,4 +1,4 @@
-/* global $, showModal hideModal */
+/* global $, showModal hideModal payWihPaySky */
 /* eslint-disable no-console */
 import * as CONST from '@/constants'
 
@@ -16,7 +16,43 @@ export default {
               //show loyalty popup if needed
               this.addPayment().then(payable => resolve(payable))
             } else if (this.method.reference_code) {
-              showModal('#card-payemnt')
+              if (this.method.process_payment) {
+                //execute code here
+                payWihPaySky(
+                  {
+                    transactionAmount: this.$store.state.checkoutForm.amount,
+                    transactionType:
+                      this.$store.state.checkoutForm.amount ==
+                      this.$store.state.order.orderTotal
+                        ? 'full'
+                        : 'partial',
+                  },
+                  data => {
+                    this.$store
+                      .dispatch('checkoutForm/addCardAmount', data.code)
+                      .then(payable => {
+                        this.code = ''
+                        if (
+                          payable <= 0.1 ||
+                          this.$store.state.checkoutForm.action == 'pay'
+                        ) {
+                          if (this.needSupervisorAccess) {
+                            showModal('#modificationReason')
+                          } else {
+                            if (this.$store.getters['checkoutForm/validate']) {
+                              this.executePayment(
+                                this.$store.state.order.orderType.OTApi
+                              )
+                            }
+                          }
+                        }
+                      })
+                      .catch(error => (this.error = error))
+                  }
+                )
+              } else {
+                showModal('#card-payemnt')
+              }
               reject()
             } else {
               //cash payments
