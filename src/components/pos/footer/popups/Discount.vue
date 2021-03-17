@@ -48,8 +48,24 @@
                 }}
               </p>
               <span class="more color-text">{{ dt(discount) }}</span>
+              <span class="more color-text" v-if="discount.max_discount_value"
+                >Min Cart {{ discount.min_cart_value }} Max Disc
+                {{ discount.max_discount_value }}</span
+              >
             </div>
           </div>
+        </div>
+        <div class="modal-footer discount-footer">
+          <div class="food-top-arrow food-arrow disable" @click="discountTop">
+            <i class="fa fa-chevron-up" aria-hidden="true"></i>
+          </div>
+          <div
+            class="food-bottom-arrow food-arrow disable"
+            @click="discountBottom"
+          >
+            <i class="fa fa-chevron-down" aria-hidden="true"></i>
+          </div>
+
           <div
             class="error mx-auto"
             v-if="
@@ -65,17 +81,6 @@
             <p class="text-danger text-center">
               <span v-html="_t(orderError)"></span>
             </p>
-          </div>
-        </div>
-        <div class="modal-footer discount-footer">
-          <div class="food-top-arrow food-arrow disable" @click="discountTop">
-            <i class="fa fa-chevron-up" aria-hidden="true"></i>
-          </div>
-          <div
-            class="food-bottom-arrow food-arrow disable"
-            @click="discountBottom"
-          >
-            <i class="fa fa-chevron-down" aria-hidden="true"></i>
           </div>
           <div class="btn-announce">
             <button
