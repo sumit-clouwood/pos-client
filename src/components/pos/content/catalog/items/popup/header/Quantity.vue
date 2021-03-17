@@ -5,32 +5,34 @@
     <label class="POSItemOptions_label color-text-invert lbl-quantity">{{
       _t('Quantity')
     }}</label>
+    <template v-if="show()">
+      <div class="POSItemOptions_quantity_inputs item-count-wrapper">
+        <button
+          class="qtyminus value-qty color-text-invert"
+          @click="updateFormQuantity('-')"
+        >
+          -
+        </button>
+        <input
+          @keydown="Num.toNumberOnly($event)"
+          pattern="[0-9]"
+          @paste.prevent
+          min="1"
+          class="qty color-text-invert"
+          v-model.number="quantity"
+        />
+        <button
+          class="qtyplus value-qty color-text-invert"
+          @click="updateFormQuantity('+')"
+        >
+          +
+        </button>
+      </div>
+    </template>
     <div
       class="POSItemOptions_quantity_wrapper postItem-wrapper inputs-wrapper"
     >
       <template v-if="show()">
-        <div class="POSItemOptions_quantity_inputs item-count-wrapper">
-          <button
-            class="qtyminus value-qty color-text-invert"
-            @click="updateFormQuantity('-')"
-          >
-            -
-          </button>
-          <input
-            @keydown="Num.toNumberOnly($event)"
-            pattern="[0-9]"
-            @paste.prevent
-            min="1"
-            class="qty color-text-invert"
-            v-model.number="quantity"
-          />
-          <button
-            class="qtyplus value-qty color-text-invert"
-            @click="updateFormQuantity('+')"
-          >
-            +
-          </button>
-        </div>
         <div
           class="POSItemOptions_quantity_submit btn-set-quantity"
           v-show="!current_combo"
@@ -158,7 +160,64 @@ export default {
     }
   }
 }
+.POSItemOptions_quantity {
+  // width: 64%;
 
+  .POSItemOptions_label {
+    color: #3d3f43;
+    font-size: $px24;
+    font-weight: normal;
+    letter-spacing: 0.5px;
+  }
+
+  .POSItemOptions_quantity_wrapper {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
+
+    .POSItemOptions_quantity_inputs {
+      width: $px115;
+      border-radius: $btn-border-radius;
+      border: 1px solid $gray-middle;
+      overflow: hidden;
+
+      input {
+        border-radius: 0;
+        border-left: 1px solid $gray-middle;
+        border-right: 1px solid $gray-middle;
+      }
+
+      > * {
+        border: 0 none;
+        background-color: #fff;
+        float: left;
+        width: 33.33%;
+        text-align: center;
+        outline: none;
+        color: #3d3f43;
+        font-size: $px16;
+        font-weight: 600;
+        height: $px40;
+        letter-spacing: 0;
+        line-height: $px40;
+        vertical-align: middle;
+        padding: 0;
+        border-radius: $btn-border-radius;
+      }
+    }
+
+    .POSItemOptions_quantity_submit {
+      button {
+        color: #fff;
+        background: $blue-middle;
+        border-radius: $btn-border-radius;
+        height: $px40;
+        width: $px140;
+        border: 0 none;
+      }
+    }
+  }
+}
 @include responsive(mobile) {
   .POSItemOptions_quantity_inputs {
     width: 50px !important;
