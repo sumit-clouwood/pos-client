@@ -1498,10 +1498,12 @@ const actions = {
       let orderAddress = []
 
       if (order.customer) {
-        const deliveryArea = rootGetters['customer/findDeliveryArea'](
-          order.order_delivery_area
-        )
-        if (order.order_type !== 'dine_in') {
+        //as per discussed we ll send customer address info with only crm order
+        if (order.order_type === CONST.ORDER_TYPE_CALL_CENTER) {
+          const deliveryArea = rootGetters['customer/findDeliveryArea'](
+            order.order_delivery_area
+          )
+
           orderAddress.push({
             building: order.order_building,
             city: order.order_city,

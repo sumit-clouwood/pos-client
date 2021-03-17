@@ -241,7 +241,7 @@ const actions = {
 
     if (
       rootState.order.selectedOrder &&
-      rootState.order.selectedOrder.customer
+      rootState.order.selectedOrder.customer && Array.isArray(rootState.customer.address)
     ) {
       order.customer_address_id = rootState.customer.address[0]._id
       deliveryAreaId = rootState.customer.address[0].delivery_area_id
