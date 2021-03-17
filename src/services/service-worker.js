@@ -698,53 +698,55 @@ var Factory = {
   offlineHandler(request) {
     switch (request.method) {
       case 'POST':
-        if (
-          request.url.endsWith('/dine_in_about_to_finish') ||
-          request.url.endsWith('/dine_in_order_finished')
-        ) {
-          return Dinein
-        }
+        //disable dine in for now
+        // if (
+        //   request.url.endsWith('/dine_in_about_to_finish') ||
+        //   request.url.endsWith('/dine_in_order_finished')
+        // ) {
+        //   return Dinein
+        // }
 
-        if (request.url.endsWith('/reservations/add')) {
-          //make sure its dine in order, reservations may used for other order typs in future
-          if (Sync.formData.assigned_table_id) {
-            return Dinein
-          }
-        }
+        // if (request.url.endsWith('/reservations/add')) {
+        //   //make sure its dine in order, reservations may used for other order typs in future
+        //   if (Sync.formData.assigned_table_id) {
+        //     return Dinein
+        //   }
+        // }
 
         if (request.url.match('/orders/add')) {
-          if (Sync.formData.order_type === 'dine_in') {
-            return Dinein
-          }
+          // if (Sync.formData.order_type === 'dine_in') {
+          //   return Dinein
+          // }
           return Order
         }
 
         if (request.url.endsWith('/update_order_items')) {
-          if (Sync.formData.order_type === 'dine_in') {
-            return Dinein
-          }
+          // if (Sync.formData.order_type === 'dine_in') {
+          //   return Dinein
+          // }
           return Order
         }
 
         if (request.url.match('/deliveryManager/add')) {
-          return DeliveryManager
+          // return DeliveryManager
         }
 
         break
       case 'GET':
-        if (request.url.match('/model/orders/id/')) {
-          return WorkflowOrder
-        }
+        //disable dine in for now
+        // if (request.url.match('/model/orders/id/')) {
+        //   return WorkflowOrder
+        // }
 
-        if (
-          request.url.match(
-            new RegExp(
-              '/model/reservations\\?page_id=(tables_reserved|running_orders)'
-            )
-          )
-        ) {
-          return Dinein
-        }
+        // if (
+        //   request.url.match(
+        //     new RegExp(
+        //       '/model/reservations\\?page_id=(tables_reserved|running_orders)'
+        //     )
+        //   )
+        // ) {
+        //   return Dinein
+        // }
 
         break
     }
