@@ -152,7 +152,7 @@
         :next-text="_t('Next')"
         :container-class="paginationDirection"
         :page-class="_t('page-item')"
-        v-model="page"
+        v-model="params.page"
       >
       </paginate>
     </div>
