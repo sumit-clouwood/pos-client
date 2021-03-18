@@ -208,7 +208,8 @@ h3.order-history-dm {
 
 div#dm-order-history-rec {
   display: none; }
-  div#dm-order-history-rec .order-table table tr th, div#dm-order-history-rec .order-table table tr td {
+  div#dm-order-history-rec .order-table table tr th,
+  div#dm-order-history-rec .order-table table tr td {
     text-align: left !important; }
 
 .dm-ready-order-wrapper-future {
@@ -316,7 +317,8 @@ div#dm-new-order table td {
   div.dm-ready-order-wrapper {
     height: calc(100vh - 17rem); }
 
-  small.delivered-hide > img, .dm-screen-wrap.dine-in-screen {
+  small.delivered-hide > img,
+  .dm-screen-wrap.dine-in-screen {
     display: none; }
 
   li.nav-item.dp-dropbtn > a.active ~ ul.dp-dropdown-content {
@@ -576,7 +578,8 @@ div.order-address {
     padding: 0.125rem;
     min-height: 2.5rem; }
 
-.button .button-content-container .button-caption, .button .button-content-container .button-icon-container {
+.button .button-content-container .button-caption,
+.button .button-content-container .button-icon-container {
   display: inline-block; }
 
 .table-drivers-filter {
@@ -642,7 +645,8 @@ div.order-address {
       padding: 0.3125rem 0.625rem;
       background: rgba(63, 74, 74, 0.05);
       overflow: hidden; }
-      .table-drivers-filter .body .assigning-block .order .store-info .store-name, .table-drivers-filter .body .assigning-block .order .store-info .store-address {
+      .table-drivers-filter .body .assigning-block .order .store-info .store-name,
+      .table-drivers-filter .body .assigning-block .order .store-info .store-address {
         white-space: nowrap;
         text-overflow: ellipsis;
         overflow: hidden; }
@@ -750,7 +754,9 @@ ul.ullist-breadcrump > li {
     color: rgba(63, 74, 74, 0.8);
     text-decoration: underline; }
 
-.dm-ready-order-wrapper, .dm-order-take-away, .dm-future-order {
+.dm-ready-order-wrapper,
+.dm-order-take-away,
+.dm-future-order {
   display: none; }
 
 #dm-new-order {
@@ -763,7 +769,8 @@ ul.ullist-breadcrump > li {
   display: grid;
   background: #fff; }
 
-.dialog-body .right-part, .dialog-body .left-part {
+.dialog-body .right-part,
+.dialog-body .left-part {
   overflow: hidden;
   max-width: 100%;
   border: 0.0625rem solid rgba(63, 74, 74, 0.1);
@@ -796,7 +803,8 @@ section.with-drivers-filter {
   display: grid;
   grid-template-columns: 4fr 1fr; }
 
-.v-menu__activator .dropdown.show:focus, .v-menu__activator .dropdown:hover {
+.v-menu__activator .dropdown.show:focus,
+.v-menu__activator .dropdown:hover {
   background: transparent;
   outline: none; }
 
@@ -950,7 +958,8 @@ tr.dataContentStyle > td > a {
     .dm-manager .navigation .logo {
       display: none; }
 
-  .change-location > button, .left-btn-wrap > button {
+  .change-location > button,
+  .left-btn-wrap > button {
     font-size: 0.625rem;
     padding: 0.3125rem;
     margin-right: 0.3125rem; }
@@ -1005,7 +1014,9 @@ tr.dataContentStyle > td > a {
 
 /*# sourceMappingURL=deliveryManager.css.map */
 .dm-order-screens .pagination-customer-details {
-  position: relative;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
   z-index: 99;
   padding: 0.25rem 4.625rem;
   -webkit-box-shadow: 0 0px 0.0625rem 0 rgba(23, 23, 32, 0.05), 0 0px 0.1875rem 0 rgba(23, 23, 32, 0.05), 0 0px 0.1875rem 0 rgba(23, 23, 32, 0.05), 0 0px 0.375rem 0 rgba(23, 23, 32, 0.05), 0 0px 0.75rem 0 rgba(23, 23, 32, 0.05);

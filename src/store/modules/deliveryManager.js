@@ -193,6 +193,13 @@ const actions = {
             commit(mutation.SET_DM_ORDERS, response.data)
             commit(mutation.SET_TOTAL_ORDER, response.data.count)
             commit(mutation.SET_LOADING, false)
+            if (
+              state.params.page > 1 &&
+              response.data.count <= state.params.limit
+            ) {
+              commit(mutation.SET_DM_PAGE, 1)
+              dispatch('fetchDMOrderDetail')
+            }
             /*if (section === 'delivery_home') {*/
             dispatch('getDrivers')
             dispatch('getDeliveryServiceDriver')

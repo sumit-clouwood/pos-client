@@ -68,12 +68,12 @@
       <div v-if="enabled(CONST.MODULE_FUTURE_ORDERS)">
         <datetime
         type="datetime"
-        title="Schedule"
+        title="Schedule order"
         placeholder="Schedule"
         v-model="futureDateTime"
         input-class="btn schedule-input btn-large datepicker-here color-dashboard-background"
-        :value-zone="timeZone"
-        :zone="timeZone"
+        :value-zone="timezoneString"
+        :zone="timezoneString"
         :format="{
           year: 'numeric',
           month: 'long',
@@ -87,6 +87,7 @@
         :min-datetime="minDatetime"
         :max-datetime="maxDatetime"
         :week-start="7"
+        :hide-backdrop="false"
         use12-hour
         auto
       ></datetime>
@@ -147,11 +148,10 @@ export default {
     return {
       // changedReferral: { referralName: 'Referral' },
       futureDateTime: '',
-      minDatetime: null,
+      minDatetime: new Date().toISOString(),
       maxDatetime: null,
       errors: '',
       msg: '',
-      timeZone: this.$store.state.location.setTimeZone,
     }
   },
   computed: {
@@ -181,7 +181,7 @@ export default {
     ...mapGetters('order', ['subTotal', 'totalTaxWithoutSurchargeTax']),
     ...mapGetters('location', ['_t', 'formatPrice']),
     ...mapGetters('payment', ['methods']),
-    ...mapState('location', ['brand']),
+    ...mapState('location', ['brand', 'timezoneString']),
     ...mapGetters('modules', ['enabled']),
   },
   methods: {
@@ -245,7 +245,7 @@ export default {
             referral: this.changedReferral,
             futureOrder:
               this.futureDateTime != ''
-                ? moment(this.futureDateTime).format('YYYY/MM/DD hh:mm')
+                ? moment.utc(this.futureDateTime).format('YYYY/MM/DD HH:mm')
                 : null,
           })
             .then(response => {
