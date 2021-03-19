@@ -32,6 +32,11 @@ export default {
       },
     }
   },
+  mounted() {
+    this.interval = setInterval(() => {
+      this.$store.dispatch('deliveryManager/fetchDMOrderDetail')
+    }, 1000 * 61)
+  },
   computed: {
     ...mapState('deliveryManager', ['params', 'loading']),
     display_type() {
