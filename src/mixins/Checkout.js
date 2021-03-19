@@ -11,6 +11,12 @@ export default {
       if (typeof payWithPaySky !== 'function') {
         return reject('PaySky is not supported in your browser')
       }
+      this.$store.commit('checkoutForm/SET_MSG', {
+        message: 'Waiting for payment...',
+        result: 'loading',
+      })
+      showModal('#payment-msg')
+
       let auth = { ...this.method }
       delete auth.availability
       payWithPaySky(
@@ -24,6 +30,7 @@ export default {
               : 'partial',
         },
         data => {
+          hideModal('#payment-msg')
           this.$store
             .dispatch('checkoutForm/addCardAmount', data.code)
             .then(payable => {
