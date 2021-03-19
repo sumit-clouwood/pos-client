@@ -124,3 +124,4 @@ export const POS_START_PATHS = [
   PAGE_ID_WAITER,
   PAGE_ID_CARHOP,
 ]
+export const PAYMENT_METHOD_PAYSKY = 'paysky'
