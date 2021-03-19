@@ -8,6 +8,9 @@ import * as CONST from '@/constants'
 export default {
   methods: {
     async paysky(resolve, reject) {
+      if (typeof payWithPaySky !== 'function') {
+        return reject('PaySky is not supported in your browser')
+      }
       let auth = { ...this.method }
       delete auth.availability
       payWithPaySky(
