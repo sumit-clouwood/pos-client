@@ -1,9 +1,49 @@
-/* global $, showModal hideModal */
+/* global $, showModal hideModal payWithPaySky */
 /* eslint-disable no-console */
 import * as CONST from '@/constants'
-
+// function payWithPaySky(data, cb) {
+//   data.code = 1234
+//   cb(data)
+// }
 export default {
   methods: {
+    async paysky(resolve, reject) {
+      let auth = { ...this.method }
+      delete auth.availability
+      payWithPaySky(
+        {
+          auth: auth,
+          transactionAmount: this.$store.state.checkoutForm.amount,
+          transactionType:
+            this.$store.state.checkoutForm.amount ==
+            this.$store.getters['order/orderTotal']
+              ? 'full'
+              : 'partial',
+        },
+        data => {
+          this.$store
+            .dispatch('checkoutForm/addCardAmount', data.code)
+            .then(payable => {
+              this.code = ''
+              if (
+                payable <= 0.1 ||
+                this.$store.state.checkoutForm.action == 'pay'
+              ) {
+                if (this.needSupervisorAccess) {
+                  showModal('#modificationReason')
+                  resolve()
+                } else {
+                  if (this.$store.getters['checkoutForm/validate']) {
+                    this.executePayment(this.$store.state.order.orderType.OTApi)
+                    resolve()
+                  }
+                }
+              }
+            })
+            .catch(error => reject(error))
+        }
+      )
+    },
     async _addAmount() {
       return new Promise((resolve, reject) => {
         this.$store
@@ -16,31 +56,41 @@ export default {
               //show loyalty popup if needed
               this.addPayment().then(payable => resolve(payable))
             } else if (this.method.reference_code) {
-              showModal('#card-payemnt')
-              reject()
+              if (this.method.unique_code === CONST.PAYMENT_METHOD_PAYSKY) {
+                //execute code here
+                this.paysky(resolve, reject)
+              } else {
+                showModal('#card-payemnt')
+                reject()
+              }
             } else {
               //cash payments
               if (this.method.type == 'card') {
-                //card payment but reference code was off
-                this.$store
-                  .dispatch('checkoutForm/addCardAmount')
-                  .then(payable => {
-                    if (
-                      payable <= 0.1 ||
-                      this.$store.state.checkoutForm.action == 'pay'
-                    ) {
-                      if (this.needSupervisorAccess) {
-                        showModal('#modificationReason')
-                      } else {
-                        if (this.$store.getters['checkoutForm/validate']) {
-                          this.executePayment(
-                            this.$store.state.order.orderType.OTApi
-                          )
+                if (this.method.unique_code === CONST.PAYMENT_METHOD_PAYSKY) {
+                  //execute code here
+                  this.paysky(resolve, reject)
+                } else {
+                  //card payment but reference code was off
+                  this.$store
+                    .dispatch('checkoutForm/addCardAmount')
+                    .then(payable => {
+                      if (
+                        payable <= 0.1 ||
+                        this.$store.state.checkoutForm.action == 'pay'
+                      ) {
+                        if (this.needSupervisorAccess) {
+                          showModal('#modificationReason')
+                        } else {
+                          if (this.$store.getters['checkoutForm/validate']) {
+                            this.executePayment(
+                              this.$store.state.order.orderType.OTApi
+                            )
+                          }
                         }
                       }
-                    }
-                  })
-                  .catch(error => (this.error = error))
+                    })
+                    .catch(error => (this.error = error))
+                }
               } else {
                 this.addPayment()
                   .then(payable => resolve(payable))
