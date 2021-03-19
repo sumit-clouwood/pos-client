@@ -8,6 +8,11 @@ import * as CONST from '@/constants'
 export default {
   methods: {
     async paysky(resolve, reject) {
+      this.$store.commit('checkoutForm/SET_MSG', {
+        message: 'Waiting for payment...',
+        result: 'loading',
+      })
+      showModal('#payment-msg')
       let auth = { ...this.method }
       delete auth.availability
       payWithPaySky(
@@ -21,6 +26,7 @@ export default {
               : 'partial',
         },
         data => {
+          hideModal('#payment-msg')
           this.$store
             .dispatch('checkoutForm/addCardAmount', data.code)
             .then(payable => {
