@@ -1,10 +1,16 @@
+/* eslint-disable no-unused-vars */
+// eslint-disable-next-line no-unused-vars
 /* global $, showModal hideModal payWithPaySky */
 /* eslint-disable no-console */
 import * as CONST from '@/constants'
-// function payWithPaySky(data, cb) {
+
+// function payWithPaySky(data, callback) {
+//   data = JSON.parse(data)
 //   data.code = 1234
-//   cb(data)
+//   data.status = 'start'
+//   window[callback]('payWihPaySky', JSON.stringify(data))
 // }
+
 export default {
   methods: {
     async paysky(resolve, reject) {
@@ -17,45 +23,20 @@ export default {
         message: 'Waiting for payment...',
         result: 'loading',
       })
-      showModal('#payment-msg')
 
       let auth = { ...this.method }
       delete auth.availability
-      payWithPaySky(
-        {
-          auth: auth,
-          transactionAmount: this.$store.state.checkoutForm.amount,
-          transactionType:
-            this.$store.state.checkoutForm.amount ==
-            this.$store.getters['order/orderTotal']
-              ? 'full'
-              : 'partial',
-        },
-        data => {
-          alert('call back paysky called')
-          hideModal('#payment-msg')
-          this.$store
-            .dispatch('checkoutForm/addCardAmount', data.code)
-            .then(payable => {
-              this.code = ''
-              if (
-                payable <= 0.1 ||
-                this.$store.state.checkoutForm.action == 'pay'
-              ) {
-                if (this.needSupervisorAccess) {
-                  showModal('#modificationReason')
-                  resolve()
-                } else {
-                  if (this.$store.getters['checkoutForm/validate']) {
-                    this.executePayment(this.$store.state.order.orderType.OTApi)
-                    resolve()
-                  }
-                }
-              }
-            })
-            .catch(error => reject(error))
-        }
-      )
+
+      const paySkyData = JSON.stringify({
+        auth: auth,
+        transactionAmount: this.$store.state.checkoutForm.amount,
+        transactionType:
+          this.$store.state.checkoutForm.amount ==
+          this.$store.getters['order/orderTotal']
+            ? 'full'
+            : 'partial',
+      })
+      payWithPaySky(paySkyData, 'paySkyCallbackAndroid')
     },
     async _addAmount() {
       return new Promise((resolve, reject) => {
