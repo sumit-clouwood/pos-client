@@ -7,33 +7,39 @@
 //   window[callback]('payWihPaySky', JSON.stringify(data))
 // }
 // eslint-disable-next-line no-unused-vars
+function log(data) {
+  localStorage.setItem('logData', localStorage.getItem('logData') + '\n' + data)
+  document.getElementById('debugdiv').innerHTML += data + '\n'
+}
+log('ready to accept response')
+// eslint-disable-next-line no-unused-vars
 function paySkyCallbackAndroid(functionName, data) {
-  alert('call back paysky called')
-  alert(data)
+  log('call back paysky called')
+  log(data)
 
   var jsonData = JSON.parse(data)
 
   if (jsonData.status == true) {
-    alert(functionName)
+    log(functionName)
 
     if (functionName == 'payWihPaySky') {
-      alert(jsonData.state)
+      log(jsonData.state)
       if (jsonData.state == 'start') {
         showModal('#payment-msg')
         //open payment screen code here
-        alert(jsonData.state)
+        log(jsonData.state)
       } else {
         hideModal('#payment-msg')
         if (jsonData.state == 'success') {
           //payment screen close code here
-          alert('success')
-          alert(jsonData.response)
+          log('success')
+          log(jsonData.response)
         } else if (jsonData.state == 'fail') {
           //[nfc_not_found,move_card_fast,unknown_emv_card,card_with_locked_nfc,login_error,payment_error]
-          alert(jsonData.error_type)
-          alert(jsonData.error_message)
+          log(jsonData.error_type)
+          log(jsonData.error_message)
           //payment fail handle here
-          alert('fail')
+          log('fail')
         }
       }
     }
