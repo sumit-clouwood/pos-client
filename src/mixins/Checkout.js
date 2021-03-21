@@ -1,22 +1,15 @@
 /* eslint-disable no-unused-vars */
 // eslint-disable-next-line no-unused-vars
-/* global $, showModal hideModal payWithPaySky */
+/* global $, showModal hideModal AndroidPOS */
 /* eslint-disable no-console */
 import * as CONST from '@/constants'
-
-// function payWithPaySky(data, callback) {
-//   data = JSON.parse(data)
-//   data.code = 1234
-//   data.status = 'start'
-//   window[callback]('payWihPaySky', JSON.stringify(data))
-// }
 
 export default {
   methods: {
     async paysky(resolve, reject) {
-      if (typeof payWithPaySky !== 'function') {
+      alert(typeof AndroidPOS)
+      if (typeof AndroidPOS == 'undefined') {
         let error = 'PaySky is not supported in your browser'
-        alert(error + typeof payWithPaySky)
         return reject(error)
       }
       this.$store.commit('checkoutForm/SET_MSG', {
@@ -36,7 +29,12 @@ export default {
             ? 'full'
             : 'partial',
       })
-      payWithPaySky(paySkyData, 'paySkyCallbackAndroid')
+
+      AndroidPOS.callFunction(
+        'payWithPaySky',
+        paySkyData,
+        'paySkyCallbackAndroid'
+      )
     },
     async _addAmount() {
       return new Promise((resolve, reject) => {
