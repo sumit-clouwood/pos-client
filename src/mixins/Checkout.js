@@ -9,7 +9,9 @@ export default {
   methods: {
     async paysky(resolve, reject) {
       if (typeof payWithPaySky !== 'function') {
-        return reject('PaySky is not supported in your browser')
+        let error = 'PaySky is not supported in your browser'
+        alert(error + typeof payWithPaySky)
+        return reject(error)
       }
       this.$store.commit('checkoutForm/SET_MSG', {
         message: 'Waiting for payment...',
@@ -30,6 +32,7 @@ export default {
               : 'partial',
         },
         data => {
+          alert('call back paysky called')
           hideModal('#payment-msg')
           this.$store
             .dispatch('checkoutForm/addCardAmount', data.code)
