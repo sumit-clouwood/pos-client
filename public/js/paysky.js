@@ -1,5 +1,12 @@
 /* global showModal hideModal*/
 // eslint-disable-next-line no-unused-vars
+// function payWithPaySky(data, callback) {
+//   data = JSON.parse(data)
+//   data.code = 1234
+//   data.status = 'start'
+//   window[callback]('payWihPaySky', JSON.stringify(data))
+// }
+// eslint-disable-next-line no-unused-vars
 function paySkyCallbackAndroid(functionName, data) {
   alert('call back paysky called')
   alert(data)
