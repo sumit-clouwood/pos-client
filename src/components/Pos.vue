@@ -61,11 +61,6 @@ export default {
     },
   },
   mounted() {
-    const plugin = document.createElement('script')
-    plugin.setAttribute('src', '/js/paysky.js')
-    plugin.async = true
-    document.head.appendChild(plugin)
-
     let self = this
     const input = document.getElementById('ios_scale_value')
 
