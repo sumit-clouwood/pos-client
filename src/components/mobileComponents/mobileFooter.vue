@@ -1,7 +1,5 @@
 <template>
   <div class="mobile-footer">
-    <div id="debugdiv">debug</div>
-
     <div
       :class="['btn-cart', { disable: !items.length }]"
       @click="mainOrdersHendlerChange"
