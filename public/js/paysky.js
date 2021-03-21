@@ -33,7 +33,7 @@ function paySkyCallbackAndroid(functionName, data) {
   log(data)
 
   var jsonData = JSON.parse(data)
-
+  log(jsonData)
   if (jsonData.status == true) {
     log(functionName)
 
