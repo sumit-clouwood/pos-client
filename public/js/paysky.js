@@ -8,8 +8,8 @@
 // }
 // eslint-disable-next-line no-unused-vars
 function log(data) {
+  console.log(data)
   localStorage.setItem('logData', localStorage.getItem('logData') + '\n' + data)
-  document.getElementById('debugdiv').innerHTML += data + '\n'
 }
 log('ready to accept response')
 // eslint-disable-next-line no-unused-vars
