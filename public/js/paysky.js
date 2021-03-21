@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* global showModal hideModal*/
 // eslint-disable-next-line no-unused-vars
 // function payWithPaySky(data, callback) {
@@ -7,11 +8,25 @@
 //   window[callback]('payWihPaySky', JSON.stringify(data))
 // }
 // eslint-disable-next-line no-unused-vars
+
+HTMLElement.prototype.prependHtml = function(element) {
+  const div = document.createElement('div')
+  div.innerHTML = element
+  this.insertBefore(div, this.firstChild)
+}
+HTMLElement.prototype.appendHtml = function(element) {
+  const div = document.createElement('div')
+  div.innerHTML = element
+  while (div.children.length > 0) {
+    this.appendChild(div.children[0])
+  }
+}
+
 function log(data) {
   console.log(data)
   localStorage.setItem('logData', localStorage.getItem('logData') + '\n' + data)
+  //document.body.prependHtml(data)
 }
-log('ready to accept response')
 // eslint-disable-next-line no-unused-vars
 function paySkyCallbackAndroid(functionName, data) {
   log('call back paysky called')
@@ -44,7 +59,7 @@ function paySkyCallbackAndroid(functionName, data) {
       }
     }
   } else {
-    alert('failed')
+    log('failed')
   }
 
   // this.$store
