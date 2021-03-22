@@ -306,6 +306,7 @@ const actions = {
     let isIOS = dt.osType
     /*Double print showing for below actions*/
     let stop_duplicate_print_for = [
+      'carhop-update-order',
       'carhop-place-order',
       'dine-in-place-order',
       'carhop-modify-order',
