@@ -1194,6 +1194,13 @@ const actions = {
                 dispatch('printingServer/printingServerInvoiceRaw', state.order, {
                   root: true,
                 })
+                commit(
+                    'checkout/SET_PAYMENT_ACTION',
+                    'dine-in-place-order',
+                    {
+                      root: true,
+                    }
+                )
                 if (rootState.order.splitted || rootState.order.splitBill) {
                   commit('order/SET_SPLITTED', true, { root: true })
                   //mark items as paid in current execution
