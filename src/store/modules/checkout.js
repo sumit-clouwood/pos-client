@@ -1196,7 +1196,7 @@ const actions = {
                 })
                 commit(
                     'checkout/SET_PAYMENT_ACTION',
-                    'dine-in-place-order',
+                    'modify-dine-in-order',
                     {
                       root: true,
                     }
@@ -1418,6 +1418,13 @@ const actions = {
                   {
                     root: true,
                   }
+                )
+                commit(
+                    'checkout/SET_PAYMENT_ACTION',
+                    'carhop-modify-order',
+                    {
+                      root: true,
+                    }
                 )
               }
               commit('order/CLEAR_SELECTED_ORDER', null, { root: true })
@@ -1716,6 +1723,13 @@ const actions = {
             dispatch('printingServer/printingServerInvoiceRaw', state.order, {
               root: true,
             })
+            commit(
+                'checkout/SET_PAYMENT_ACTION',
+                'carhop-place-order',
+                {
+                  root: true,
+                }
+            )
             if (rootState.checkoutForm.action === 'pay') {
               msg = rootGetters['location/_t']('Carhop Order has been Paid')
               commit(mutation.PRINT, true)
