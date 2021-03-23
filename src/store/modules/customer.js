@@ -267,7 +267,6 @@ const actions = {
     commit(mutation.SET_LOADING, true)
     return new Promise((resolve, reject) => {
       dispatch('fetchCustomers').then(() => {
-        dispatch('fetchDeliveryArea', '')
         dispatch('fetchCRMCustomerFields')
         // get Customer Group
         CustomerService.customerGroupList().then(response => {
@@ -284,6 +283,10 @@ const actions = {
             commit(mutation.SET_LOADING, false)
             reject(error)
           })
+
+        dispatch('fetchDeliveryArea', '').then(() => {
+          resolve()
+        })
       })
       //fetch customer deliver areas
       // resolve()
