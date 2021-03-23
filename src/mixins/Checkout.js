@@ -8,9 +8,13 @@ export default {
   methods: {
     async paysky(resolve, reject) {
       if (typeof AndroidPOS == 'undefined') {
-        this.error = this._t('PaySky is not supported in your browser')
-        showModal('#amount-error')
-        return reject()
+        let error = this._t('Sorry! PaySky is not supported')
+        this.$store.commit('checkoutForm/SET_MSG', {
+          message: error,
+          result: 'error',
+        })
+        $('#payment-msg').modal('show')
+        return reject(error)
       }
       this.$store.commit('checkoutForm/SET_MSG', {
         message: 'Waiting for payment...',
