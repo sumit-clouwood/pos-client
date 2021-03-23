@@ -424,7 +424,11 @@ export default {
       this.initLoadUI()
         .then(() => {
           //lets resolve the promise so pos can be loaded, other things ll be loaded later
-          resolve()
+          this.loadApiData('customer').then(() => {
+            //delivery areas are must have for modifying crm order so need to laod customers delivery areas
+            resolve()
+          })
+
           $store.dispatch('printingServer/getKitchens').then(() => {})
           $store.dispatch(
             'announcement/fetchAll',
@@ -433,8 +437,6 @@ export default {
 
           $store.dispatch('printingServer/fetchAllKitchens')
           this.loadApiData('catalog')
-
-          this.loadApiData('customer')
 
           //delayed loading data
           this.loadApiData('order')
