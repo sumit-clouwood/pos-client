@@ -7,10 +7,10 @@ import * as CONST from '@/constants'
 export default {
   methods: {
     async paysky(resolve, reject) {
-      alert(typeof AndroidPOS)
       if (typeof AndroidPOS == 'undefined') {
-        let error = 'PaySky is not supported in your browser'
-        return reject(error)
+        this.error = this._t('PaySky is not supported in your browser')
+        showModal('#amount-error')
+        return reject()
       }
       this.$store.commit('checkoutForm/SET_MSG', {
         message: 'Waiting for payment...',
