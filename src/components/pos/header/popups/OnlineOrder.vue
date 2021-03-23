@@ -53,6 +53,12 @@
                                 data-toggle="modal"
                               >
                                 #{{ order.order_no }}
+                                <span
+                                  class="btn-future"
+                                  v-if="order.future_order_datetime !== ''"
+                                >
+                                  {{ _t('Future Order') }}</span
+                                >
                               </span>
                             </span>
                           </div>
@@ -442,6 +448,14 @@ export default {
   margin: auto;
   max-height: 41px;
   overflow: scroll;
+}
+.btn-future {
+  padding: 0.125rem 0.25rem;
+  border-radius: 4px;
+  margin-left: 0.75rem;
+  font-weight: bold;
+  background: blueviolet;
+  color: #fff;
 }
 .active {
   background-color: blueviolet;

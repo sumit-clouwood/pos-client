@@ -304,8 +304,16 @@ const actions = {
   printingServerInvoiceRaw({ rootState, dispatch }, orderData) {
     let dt = rootState.auth.deviceType
     let isIOS = dt.osType
+    /*Double print showing for below actions*/
+    let stop_duplicate_print_for = [
+      'carhop-update-order',
+      'carhop-place-order',
+      'dine-in-place-order',
+      'carhop-modify-order',
+      'modify-dine-in-order',
+    ]
     if (
-      ['dine-in-place-order'].includes(rootState.checkout.paymentAction) &&
+      stop_duplicate_print_for.includes(rootState.checkout.paymentAction) &&
       !isIOS
     ) {
       return false

@@ -53,7 +53,10 @@
                   {{ errors.cancel_reason }}
                 </p>
               </div>
-              <div class="driver-container">
+              <div
+                class="driver-container"
+                v-if="enabled(CONST.MODULE_INVENTORY)"
+              >
                 <div class="select-driver">{{ _t('Inventory Behavior') }}</div>
                 <form>
                   <input
@@ -143,6 +146,7 @@
 <script>
 import { mapGetters, mapState, mapActions } from 'vuex'
 import InformationPopup from '@/components/pos/content/InformationPopup'
+import * as CONST from '@/constants'
 /* global $ */
 export default {
   name: 'CancelOrderPopup',
@@ -166,6 +170,7 @@ export default {
       'errors',
       'inventoryBehavior',
     ]),
+    ...mapGetters('modules', ['enabled']),
     cancelOrRefund() {
       return this.isRefundAllow ? 'Refund Order' : 'Cancel Order'
     },
@@ -200,14 +205,17 @@ export default {
       }
       this.processing = true
 
-      let data = {
-        cancel_reason: this.showSelectedReason,
-        inventory_behavior: this.showSelectedBehavior,
-      }
+      let data = { cancel_reason: this.showSelectedReason }
       if (
         this.$store.state.location.brand &&
         this.$store.state.location.brand.mandatory_password === true
       ) {
+        data = {
+          cancel_reason: this.showSelectedReason,
+          supervisor_password: this.supervisorPassword,
+        }
+      }
+      if (this.enabled(CONST.MODULE_INVENTORY)) {
         data = {
           cancel_reason: this.showSelectedReason,
           supervisor_password: this.supervisorPassword,

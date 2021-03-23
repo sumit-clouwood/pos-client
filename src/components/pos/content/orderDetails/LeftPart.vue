@@ -48,7 +48,14 @@
         <span class="details-item-name color-text-invert">{{
           _t('Order Duration:')
         }}</span>
-        <p class="color-text">
+        <p
+          class="color-text"
+          v-if="orderDetails.item.future_order_datetime !== ''"
+        >
+          <b>{{ _t('Future Date') }}: </b>{{ future_order_date }} <br />
+          <b>{{ _t('Store Date') }}: </b>{{ store_order_date }}
+        </p>
+        <p class="color-text" v-else>
           <span
             id="runningtime"
             class="timeago elapsedTime delManTime"
@@ -215,6 +222,7 @@
 import LookupData from '@/plugins/helpers/LookupData'
 import { mapGetters, mapState } from 'vuex'
 import DateTime from '@/mixins/DateTime'
+import moment from 'moment-timezone'
 export default {
   name: 'LeftPart',
   props: {
@@ -224,6 +232,8 @@ export default {
     return {
       datetime: '',
       orderTime: '',
+      future_order_date: '',
+      store_order_date: '',
     }
   },
   computed: {
@@ -233,7 +243,10 @@ export default {
   },
   updated() {
     clearInterval(this.orderTime)
-    this.makeDate()
+    if (this.orderDetails && this.orderDetails.item) {
+      this.makeDate(this.orderDetails.item)
+      this.makeDate(this.orderDetails.item)
+    }
     this.orderTime = setInterval(() => {
       $('#runningtime').text(
         this.orderTimer(this.datetime, this.timezoneString)
@@ -245,15 +258,27 @@ export default {
   },
   mixins: [DateTime],
   methods: {
-    makeDate() {
-      if (
-        this.orderDetails.item &&
-        this.orderDetails.item.real_created_datetime
-      )
+    makeDate(datetime) {
+      if (datetime.real_created_datetime)
         this.datetime = this.convertDatetime(
-          this.orderDetails.item.real_created_datetime,
+          datetime.real_created_datetime,
           this.timezoneString,
           'YYYY-MM-DD HH:mm:ss'
+        )
+      if (datetime.future_order_datetime) {
+        let date_time =
+          datetime.future_order_datetime != '' &&
+          typeof datetime.future_order_datetime.$date != 'undefined'
+            ? parseInt(datetime.future_order_datetime.$date.$numberLong)
+            : ''
+        let date = new Date(date_time)
+        this.future_order_date = moment(date).format('Do MMM YYYY,  hh:mm:ss A')
+      }
+      if (datetime.future_order_datetime)
+        this.store_order_date = this.convertDatetime(
+          datetime.future_order_datetime,
+          this.timezoneString,
+          'Do MMM YYYY,  hh:mm:ss A'
         )
     },
     /*timerClock: function() {

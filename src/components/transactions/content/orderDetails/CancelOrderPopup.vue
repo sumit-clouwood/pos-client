@@ -56,7 +56,10 @@
                     >
                   </div>
                 </div>
-                <div class="driver-container">
+                <div
+                  class="driver-container"
+                  v-if="enabled(CONST.MODULE_INVENTORY)"
+                >
                   <div class="select-driver">
                     {{ _t('Inventory Behavior') }}
                   </div>
@@ -188,6 +191,7 @@
 /* global $ */
 import { mapGetters, mapState, mapActions } from 'vuex'
 import InformationPopup from '@/components/pos/content/InformationPopup'
+import * as CONST from '@/constants'
 export default {
   name: 'CancelOrderPopup',
   components: {
@@ -208,6 +212,7 @@ export default {
   computed: {
     ...mapGetters('location', ['_t']),
     ...mapState('order', ['cancellationReason', 'errors', 'inventoryBehavior']),
+    ...mapGetters('modules', ['enabled']),
   },
   methods: {
     selectedReason: function(reason) {
@@ -230,11 +235,14 @@ export default {
         return
       }
       this.processing = true
-      let data = {
-        cancel_reason: this.showSelectedReason,
-        inventory_behavior: this.showSelectedBehavior,
-      }
+      let data = { cancel_reason: this.showSelectedReason }
       if (this.$store.state.location.brand.mandatory_password === true) {
+        data = {
+          cancel_reason: this.showSelectedReason,
+          supervisor_password: this.supervisorPassword,
+        }
+      }
+      if (this.enabled(CONST.MODULE_INVENTORY)) {
         data = {
           cancel_reason: this.showSelectedReason,
           supervisor_password: this.supervisorPassword,

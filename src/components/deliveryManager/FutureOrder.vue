@@ -30,7 +30,16 @@ export default {
         action: ['process_now'],
         nextOrderStatus: 'in-progress',
       },
+      interval: null,
     }
+  },
+  mounted() {
+    this.interval = setInterval(() => {
+      this.$store.dispatch('deliveryManager/fetchDMOrderDetail')
+    }, 1000 * 61)
+  },
+  destroyed() {
+    clearInterval(this.interval)
   },
   computed: {
     ...mapState('deliveryManager', ['params', 'loading']),
