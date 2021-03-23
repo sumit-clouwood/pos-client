@@ -455,8 +455,9 @@ export default {
           resolve()
           break
         case 'customer':
-          this.store.dispatch('customer/fetchAll').then(() => {})
-          resolve()
+          this.store.dispatch('customer/fetchAll').then(() => {
+            resolve()
+          })
           break
         case 'order':
           this.store.dispatch('invoice/printRules').then(() => {
