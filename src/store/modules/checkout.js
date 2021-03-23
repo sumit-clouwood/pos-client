@@ -180,24 +180,7 @@ const actions = {
       order.referral = rootState.order.referral.referralId
     }
 
-    if (
-      rootState.order.orderStatus === CONSTANTS.ORDER_STATUS_IN_DELIVERY ||
-      (rootState.order.orderSource === 'backend' &&
-        rootState.order.orderType.OTApi === CONSTANTS.ORDER_TYPE_CALL_CENTER)
-    ) {
-      //order was modifying from delivery so no need to overwrite info
-      order.customer = rootState.order.selectedOrder.item.customer
-      order.order_building = rootState.order.selectedOrder.item.order_building
-      order.order_street = rootState.order.selectedOrder.item.order_street
-      order.order_flat_number =
-        rootState.order.selectedOrder.item.order_flat_number
-      order.order_nearest_landmark =
-        rootState.order.selectedOrder.item.order_nearest_landmark
-      order.order_city = rootState.order.selectedOrder.item.order_city
-      order.order_country = rootState.order.selectedOrder.item.order_country
-      order.order_delivery_area =
-        rootState.order.selectedOrder.item.order_delivery_area
-    } else if (rootState.customer.offlineData) {
+    if (rootState.customer.offlineData) {
       //offline data was saved
       order.customer = ''
       const address = rootState.customer.offlineData
