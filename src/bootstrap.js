@@ -435,7 +435,7 @@ export default {
             $store.state.auth.userDetails
           )
 
-          $store.dispatch('printingServer/fetchAllKitchens')
+          // $store.dispatch('printingServer/fetchAllKitchens')
           this.loadApiData('catalog')
 
           //delayed loading data

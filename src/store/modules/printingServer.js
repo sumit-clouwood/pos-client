@@ -43,16 +43,21 @@ const actions = {
     let kitchenSectionsItems = state.kitchenitems
     if (kitchenSectionsItems.length) {
       orderData.items.forEach(item => {
-        let itemKitchen = kitchenSectionsItems.find(
-          kitchenItem => kitchenItem._id === item.entity_id
-        )
-        if (itemKitchen) {
-          kitchen_menu_items.push({
-            _id: itemKitchen._id,
-            category: itemKitchen.category,
-            kitchen: itemKitchen.kitchen,
+        let items = rootState.category.items
+        kitchenSectionsItems.filter(kitchenData => {
+          items.filter(menu_item => {
+            if (
+              kitchenData.brand_item_categories.includes(menu_item.category) &&
+              menu_item._id === item.entity_id
+            ) {
+              kitchen_menu_items.push({
+                _id: menu_item._id,
+                category: menu_item.category,
+                kitchen: kitchenData._id,
+              })
+            }
           })
-        }
+        })
       })
     }
     dispatch('convertDatetime', {
@@ -243,6 +248,54 @@ const actions = {
         Object.assign(jsonResponse, { table_number: table_no })
         // jsonResponse.table_number = table_no
       }
+      let customer_info_header = jsonResponse.customer
+        ? {
+            bold: true,
+            label: 'Customer',
+            value: jsonResponse.customer.name,
+          }
+        : false
+      let invoice_header_data = {
+        invoice_top_fields: [
+          {
+            bold: true,
+            label: 'Order Type',
+            value: jsonResponse.order_type,
+          },
+          {
+            bold: true,
+            label: 'Staff',
+            value: jsonResponse.staff,
+          },
+          {
+            bold: false,
+            label: jsonResponse.created_date,
+            value: jsonResponse.created_time,
+          },
+        ],
+        kot_top_fields: [
+          {
+            bold: true,
+            label: 'Order Type',
+            value: jsonResponse.order_type,
+          },
+          {
+            bold: true,
+            label: 'Staff',
+            value: jsonResponse.staff,
+          },
+          {
+            bold: false,
+            label: jsonResponse.created_date,
+            value: jsonResponse.created_time,
+          },
+        ],
+      }
+      if (customer_info_header)
+        Object.assign(invoice_header_data.invoice_top_fields, {
+          customer_info_header,
+        })
+      Object.assign(jsonResponse, invoice_header_data)
       if (isIOS) {
         Object.assign(jsonResponse, { kitchens: state.kitchens })
         localStorage.setItem('orderInvoiceColData', '')
@@ -287,18 +340,20 @@ const actions = {
     return result
   },
   //Fetch All Kitchens
-  fetchAllKitchens({ commit }) {
-    return new Promise((resolve, reject) => {
-      PrintingServerService.allKitchenSectionsItems()
-        .then(response => {
-          if (response.data.menu_items) {
-            commit(mutation.SET_KITCHENS_ITEMS, response.data.menu_items)
-          }
-          resolve()
-        })
-        .catch(error => reject(error))
-    })
-  },
+  // fetchAllKitchens({ commit }) {
+  //   return new Promise((resolve, reject) => {
+  //     PrintingServerService.kitchens()
+  //       .then(response => {
+  //         // eslint-disable-next-line no-debugger
+  //         debugger
+  //         if (response.data.count) {
+  //           commit(mutation.SET_KITCHENS_ITEMS, response.data.menu_items)
+  //         }
+  //         resolve()
+  //       })
+  //       .catch(error => reject(error))
+  //   })
+  // },
 
   //Create A JSON Request to send in Local Server API for Generating Invoices from a software.
   printingServerInvoiceRaw({ rootState, dispatch }, orderData) {
@@ -340,11 +395,8 @@ const actions = {
     return new Promise(resolve => {
       PrintingServerService.kitchens().then(response => {
         commit(mutation.KITCHENS, response.data)
-        // let dt = rootState.auth.deviceType
-        // let isIOS = dt.osType
-        // if (isIOS) {
+        commit(mutation.SET_KITCHENS_ITEMS, response.data.data)
         localStorage.setItem('kitchen_data', JSON.stringify(state.kitchens))
-        // }
         resolve(response.data)
       })
     })
