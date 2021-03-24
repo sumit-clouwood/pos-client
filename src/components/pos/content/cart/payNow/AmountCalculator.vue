@@ -22,7 +22,7 @@
 </template>
 
 <script>
-/* global $ showModal*/
+/* global $ showModal */
 import CheckoutMixin from '@/mixins/Checkout'
 import { mapState, mapGetters } from 'vuex'
 export default {

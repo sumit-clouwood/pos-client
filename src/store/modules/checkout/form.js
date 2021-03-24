@@ -37,10 +37,12 @@ const state = {
   errorAmount: '',
   customerRemainingLoyalty: 0,
   customerLoyaltyItem: 0,
+  transactionTokens: {},
 }
 
 // getters
 const getters = {
+  transaction_token: state => id => state.transactionTokens[id],
   payment_method: state => state.method,
   validate: (state, getters) => {
     if (getters.payable <= 0) return true
@@ -85,6 +87,13 @@ const getters = {
 
 // actions
 const actions = {
+  generateTransactionToken({ commit }, id) {
+    const token = Math.random()
+      .toString(36)
+      .substr(2, 9)
+    commit('SET_TRANSACTION_TOKEN', { id, token })
+    return token
+  },
   validatePayment({ state, dispatch, getters, rootGetters, commit }) {
     const totalPayable = getters.orderTotal
     const paid = getters.paid
@@ -820,6 +829,9 @@ const mutations = {
       state.amount = 0
       state.tipAmount = 0
     }
+  },
+  SET_TRANSACTION_TOKEN(state, { id, token }) {
+    state.transactionTokens[id] = token
   },
 }
 
