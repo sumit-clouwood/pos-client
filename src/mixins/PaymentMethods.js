@@ -14,6 +14,7 @@ export default {
       dragX: '',
       dragY: '',
       aggregatorChild: false,
+      currentSlide: 0,
     }
   },
   computed: {
@@ -21,11 +22,11 @@ export default {
       return this.width / this.perPage
     },
     ...mapState('checkoutForm', ['method']),
-    currentSlide() {
-      if (this.method && this.method.type !== 'cash') {
-        return this.method.type
-      } else return 'cash'
-    },
+    // currentSlide() {
+    //   if (this.method && this.method.type !== 'cash') {
+    //     return this.method.type
+    //   } else return 'cash'
+    // },
   },
   methods: {
     imagePath(key) {

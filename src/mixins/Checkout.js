@@ -1,15 +1,19 @@
 /* eslint-disable no-unused-vars */
 // eslint-disable-next-line no-unused-vars
-/* global $, showModal hideModal AndroidPOS */
+/* global $, showModal hideModal AndroidPOS Eventer */
 /* eslint-disable no-console */
 import * as CONST from '@/constants'
 
 export default {
   methods: {
     async paysky(resolve, reject) {
-      alert(typeof AndroidPOS)
       if (typeof AndroidPOS == 'undefined') {
-        let error = 'PaySky is not supported in your browser'
+        let error = this._t('Sorry! PaySky is not supported')
+        this.$store.commit('checkoutForm/SET_MSG', {
+          message: error,
+          result: 'error',
+        })
+        $('#payment-msg').modal('show')
         return reject(error)
       }
       this.$store.commit('checkoutForm/SET_MSG', {
@@ -19,6 +23,10 @@ export default {
 
       let auth = { ...this.method }
       delete auth.availability
+      this.$store.dispatch('checkoutForm/generateTransactionToken', 'paysky')
+      auth.transaction_token = this.$store.getters[
+        'checkoutForm/transaction_token'
+      ]('paysky')
 
       const paySkyData = JSON.stringify({
         auth: auth,

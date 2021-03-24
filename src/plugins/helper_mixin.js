@@ -3,6 +3,7 @@ import Num from './helpers/Num'
 import DateTime from './helpers/DateTime.js'
 import LookupData from './helpers/LookupData'
 import Trans from './helpers/Trans'
+import Payment from './helpers/Payment'
 
 Vue.mixin({
   data: function() {
@@ -13,6 +14,7 @@ Vue.mixin({
       LookupData: LookupData,
       DateTime: new DateTime(),
       dt: Trans._t,
+      Payment: Payment,
     }
   },
 })
