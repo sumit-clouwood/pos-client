@@ -159,11 +159,20 @@
 import ChildSlider from './carousel/ChildSlider'
 import PaymentMethodsMixin from '@/mixins/PaymentMethods'
 import * as CONST from '@/constants'
+import { bus } from '@/eventBus'
 export default {
   name: 'Carousel',
   mixins: [PaymentMethodsMixin],
   components: {
     ChildSlider,
+  },
+  created() {
+    bus.$on('resetChildSlider', () => {
+      this.show = false
+      this.selectedValue = []
+      this.currentKey = ''
+      this.showAggregator = false
+    })
   },
   mounted() {
     window.addEventListener('mouseup', this.stopDrag)
