@@ -75,6 +75,7 @@
 <script>
 import PaymentMethodsMixin from '@/mixins/PaymentMethods'
 // import * as CONST from '@/constants'
+import { bus } from '@/eventBus'
 export default {
   name: 'ChildSlider',
   mixins: [PaymentMethodsMixin],
@@ -97,6 +98,12 @@ export default {
     slideWidth() {
       return this.width / this.perPage
     },
+  },
+  created() {
+    bus.$on('resetChildSlider', () => {
+      this.currentPage = 1
+      this.currentSlide = 0
+    })
   },
   mounted() {
     const selectedMethodType = this.method.type
