@@ -204,7 +204,7 @@ const actions = {
     let dt = rootState.auth.deviceType
     let isIOS = dt.osType
     if (isIOS) {
-      //Added new field for detecting reprint or new order for IOS and Android App.
+      //Added new fields for detecting reprint or new order for IOS and Android App.
       orderData.isReprint =
         typeof orderData.isReprint != 'undefined' ? orderData.isReprint : 0
     }
