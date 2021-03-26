@@ -8,7 +8,7 @@ function paySkyCallbackAndroid(functionName, data) {
     Eventer.emit('paysky', jsonData, 'checkout')
   }
 }
-const simulate = false
+const simulate = true
 if (simulate) {
   // eslint-disable-next-line no-unused-vars
   var AndroidPOS = {

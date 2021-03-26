@@ -252,13 +252,13 @@ const actions = {
     })
   },
 
-  addCardAmount({ commit, getters, rootGetters, dispatch }, code = '') {
+  addCardAmount({ commit, getters, rootGetters, dispatch }, response) {
     if (parseFloat(state.amount) > 0) {
       return new Promise(resolve => {
         commit('addCardAmount', {
           amount: state.amount,
           method: state.method,
-          code: 'Card' + (code ? '-' + code : ''),
+          response: response,
         })
 
         commit('showCalc', false)
@@ -750,21 +750,31 @@ const mutations = {
       })
     }
   },
-  addCardAmount(state, { amount, method, code }) {
+  addCardAmount(state, { amount, method, response }) {
+    let code = response
+    if (typeof response === 'object') {
+      code = response.code
+    }
     if (parseFloat(amount) > 0) {
-      const index = state.payments.findIndex(
-        payment => payment.method === method && payment.code === code
-      )
+      let index = -1
+      if (typeof response !== 'object') {
+        //for real card payment don't group it
+        index = state.payments.findIndex(
+          payment => payment.method === method && payment.code === code
+        )
+      }
 
       if (index !== -1) {
         let type = state.payments[index]
         type.amount += parseFloat(amount)
         state.payments.splice(index, 1, type)
       } else {
+        //for real payments always push response
         state.payments.push({
           amount: parseFloat(amount),
           method: method,
           code: code,
+          response: response,
         })
       }
     }
