@@ -27,7 +27,7 @@
 import { mapActions, mapGetters, mapState } from 'vuex'
 import * as CONST from '@/constants'
 import Carousel from '@/components/util/Carousel.vue'
-
+import { bus } from '@/eventBus'
 export default {
   name: 'PaymentMethods',
   components: {
@@ -45,10 +45,11 @@ export default {
     forceCash(newVal) {
       if (newVal) {
         this.$refs.paymentmethods.setActive(CONST.CASH)
-        this.$store.commit('checkoutForm/forceCash', false)
         this.$refs.paymentmethods.movePage(1)
         this.$refs.paymentmethods.show = false
         this.$refs.paymentmethods.showAggregator = false
+        this.$store.commit('checkoutForm/forceCash', false)
+        bus.$emit('resetChildSlider')
       }
     },
     payable(newval) {

@@ -56,8 +56,11 @@ export default class Paysky extends AbstractHelper {
               setTimeout(() => {
                 hideModal('#payment-msg')
               }, 2000)
+
+              this.data.response.code = this.data.response.PAN
+
               this.$store
-                .dispatch('checkoutForm/addCardAmount', this.data.response.PAN)
+                .dispatch('checkoutForm/addCardAmount', this.data.response)
                 .then(payable => {
                   if (
                     payable <= 0.1 ||

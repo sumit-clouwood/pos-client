@@ -319,6 +319,10 @@ const actions = {
           param3: payment.code,
         }
 
+        if (payment.response) {
+          paymentPart.response = payment.response
+        }
+
         totalPaid += amount
         //Yuvraj, have a check here
         if (payment.method.type == CONSTANTS.LOYALTY) {
