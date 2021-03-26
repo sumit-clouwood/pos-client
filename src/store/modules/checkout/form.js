@@ -770,12 +770,15 @@ const mutations = {
         state.payments.splice(index, 1, type)
       } else {
         //for real payments always push response
-        state.payments.push({
+        let paymentData = {
           amount: parseFloat(amount),
           method: method,
           code: code,
-          response: response,
-        })
+        }
+        if (typeof response === 'object') {
+          paymentData.response = response
+        }
+        state.payments.push(paymentData)
       }
     }
   },
