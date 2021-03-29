@@ -44,8 +44,12 @@ if (simulatePaySky) {
 
       Eventer.emit('paysky', jsonData, 'checkout')
       setTimeout(() => {
-        jsonData.state = 'success'
+        jsonData.state = 'processing'
         Eventer.emit('paysky', jsonData, 'checkout')
+        setTimeout(() => {
+          jsonData.state = 'success'
+          Eventer.emit('paysky', jsonData, 'checkout')
+        }, 3000)
       }, 3000)
     },
   }
