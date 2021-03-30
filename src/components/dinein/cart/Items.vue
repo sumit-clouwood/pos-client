@@ -40,6 +40,7 @@
       >
         <div>
           <div v-html="formatItemDiscount(item)"></div>
+          <i class="note" v-if="item.note">{{ item.note }}</i>
           <div
             :id="'sub_dsc' + item.orderIndex"
             class="sub_container"
