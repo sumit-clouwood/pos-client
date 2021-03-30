@@ -34,6 +34,7 @@
           class="main-orders-list-item-subtitle color-text-invert item-exclude"
         >
           <div v-html="formatItemDiscount(item)"></div>
+          <i v-if="item.note">{{ item.note }}</i>
         </div>
         <div id="sub_dsc" class="sub_container">
           <div class="subdescription_container">
