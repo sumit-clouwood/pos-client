@@ -29,8 +29,13 @@ export default class Paysky extends AbstractHelper {
       if (this.data.state == 'start') {
         //open payment screen code here
         this.$store.commit('checkoutForm/SET_MSG', {
+          message: this.$store.getters['location/_t']('Please scan your card'),
+        })
+        showModal('#payment-msg')
+      } else if (this.data.state == 'processing') {
+        this.$store.commit('checkoutForm/SET_MSG', {
           message: this.$store.getters['location/_t'](
-            'Processing payment with PaySky'
+            'Card has been scanned. Payment in process...'
           ),
         })
         showModal('#payment-msg')
