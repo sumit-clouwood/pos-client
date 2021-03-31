@@ -269,6 +269,26 @@ const actions = {
           },
           {
             bold: false,
+            label: 'test_date_time',
+            value: jsonResponse.created_date + ' ' + jsonResponse.created_time,
+          },
+          {
+            bold: true,
+            label: 'test_float',
+            value: 2.558,
+          },
+          {
+            bold: true,
+            label: 'test_number',
+            value: 2258,
+          },
+          {
+            bold: false,
+            label: 'test_string',
+            value: 'Hello Lokesh',
+          },
+          {
+            bold: false,
             label: jsonResponse.created_date,
             value: jsonResponse.created_time,
           },
