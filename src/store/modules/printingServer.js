@@ -255,21 +255,20 @@ const actions = {
         ? invoiceTemplate['order_type_label']
         : 'Order Type'
       let make_order_type_value =
-        jsonResponse.order_type
-          .toString()
-          .toLowerCase()
-          .replace(/-/g, '_') + '_label'
+        jsonResponse.order.order_type.toLowerCase().replace(/-/g, '_') +
+        '_label'
       let order_type_value = invoiceTemplate[make_order_type_value]
         ? invoiceTemplate[make_order_type_value]
         : jsonResponse.order_type
-        ? invoiceTemplate['order_type_label']
-        : 'Order Type'
+
       let cutomer_label = invoiceTemplate['customer_label']
         ? invoiceTemplate['customer_label']
         : 'Customer'
+
       let staff_label = invoiceTemplate['staff_label']
         ? invoiceTemplate['staff_label']
         : 'Staff'
+
       let customer_info_header = jsonResponse.customer
         ? {
             bold: true,
@@ -313,10 +312,9 @@ const actions = {
           },
         ],
       }
-      if (customer_info_header)
-        Object.assign(invoice_header_data.invoice_top_fields, {
-          customer_info_header,
-        })
+      if (customer_info_header) {
+        invoice_header_data.invoice_top_fields.push(customer_info_header)
+      }
 
       if (order_dine_in) {
         /*Object.assign(invoice_header_data.invoice_top_fields, {
