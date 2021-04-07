@@ -4,8 +4,13 @@
 // eslint-disable-next-line no-unused-vars
 function paySkyCallbackAndroid(functionName, data) {
   var jsonData = JSON.parse(data)
-  if (functionName == 'payWithPaySky') {
-    Eventer.emit('paysky', jsonData, 'checkout')
+  switch (functionName) {
+    case 'payWithPaySky':
+      Eventer.emit('paysky', jsonData, 'checkout')
+      break
+    case 'printInvoice':
+      Eventer.emit('paysky', jsonData, 'invoice')
+      break
   }
 }
 const simulatePaySky = localStorage.getItem('simulatePaySky')
@@ -42,7 +47,7 @@ if (simulatePaySky !== false) {
           message: 'Approved',
         }
 
-        Eventer.emit('paysky', jsonData, 'checkout')
+        window[cb](func, JSON.stringify(jsonData))
 
         //simulatePaySky = [{"data":{"status":true,"state":"error","error_type":"move_card_fast"},"timeout":2000},{"data":{"status":true,"state":"success"},"timeout":3000}]
 
@@ -52,6 +57,8 @@ if (simulatePaySky !== false) {
           .reduce(function(mypromise, event) {
             return mypromise.then(() => {
               event.data = Object.assign({}, jsonData, event.data)
+              event.func = func
+              event.cb = cb
               return execChainProcess(event)
             })
           }, Promise.resolve())
@@ -60,7 +67,7 @@ if (simulatePaySky !== false) {
             console.log(results)
           })
       } else if (func == 'printInvoice') {
-        Eventer.emit('paysky', { status: true }, 'invoice')
+        window[cb](func, JSON.stringify({ status: true }))
       }
     },
   }
@@ -68,7 +75,7 @@ if (simulatePaySky !== false) {
 function execChainProcess(event) {
   return new Promise(resolve => {
     setTimeout(() => {
-      Eventer.emit('paysky', event.data, 'checkout')
+      window[event.cb](event.func, JSON.stringify(event.data), 'checkout')
       resolve()
     }, event.timeout)
   })
