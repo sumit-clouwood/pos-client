@@ -3,7 +3,9 @@
 
 // eslint-disable-next-line no-unused-vars
 function paySkyCallbackAndroid(functionName, data) {
+  console.log('paysky ', 'callback called by paysky', functionName, data)
   var jsonData = JSON.parse(data)
+  console.log('paysky ', jsonData)
   switch (functionName) {
     case 'payWithPaySky':
       Eventer.emit('paysky', jsonData, 'checkout')
@@ -66,7 +68,7 @@ if (simulatePaySky && simulatePaySky !== false) {
             )
             .then(function(results) {
               // all done here with array of results
-              console.log(results)
+              console.log('paysky ', results)
             })
         }
       } else if (func == 'printInvoice') {
