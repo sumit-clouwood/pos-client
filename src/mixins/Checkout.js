@@ -21,28 +21,40 @@ export default {
         result: 'loading',
       })
 
+      $('#payment-msg').modal('show')
+
       let auth = { ...this.method }
       delete auth.availability
-      this.$store.dispatch('checkoutForm/generateTransactionToken', 'paysky')
-      auth.transaction_token = this.$store.getters[
-        'checkoutForm/transaction_token'
-      ]('paysky')
+      try {
+        this.$store.dispatch('checkoutForm/generateTransactionToken', 'paysky')
+        auth.transaction_token = this.$store.getters[
+          'checkoutForm/transaction_token'
+        ]('paysky')
 
-      const paySkyData = JSON.stringify({
-        auth: auth,
-        transactionAmount: this.$store.state.checkoutForm.amount,
-        transactionType:
-          this.$store.state.checkoutForm.amount ==
-          this.$store.getters['order/orderTotal']
-            ? 'full'
-            : 'partial',
-      })
+        let paySkyData = {
+          auth: auth,
+          transactionAmount: this.$store.state.checkoutForm.amount,
+          transactionType: 'full',
+        }
+        const paySkyDataString = JSON.stringify(paySkyData)
+        if (paySkyDataString) {
+          AndroidPOS.callFunction(
+            'payWithPaySky',
+            paySkyDataString,
+            'paySkyCallbackAndroid'
+          )
 
-      AndroidPOS.callFunction(
-        'payWithPaySky',
-        paySkyData,
-        'paySkyCallbackAndroid'
-      )
+          resolve()
+        } else {
+          reject('Json stringify failed ')
+        }
+      } catch (error) {
+        if (error.stack) {
+          reject(error.stack)
+        } else {
+          reject(error)
+        }
+      }
     },
     async _addAmount() {
       return new Promise((resolve, reject) => {
@@ -98,7 +110,7 @@ export default {
               }
             }
           })
-          .catch(() => reject())
+          .catch(error => reject(error))
       })
     },
     addPayment() {

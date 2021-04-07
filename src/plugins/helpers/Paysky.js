@@ -10,12 +10,22 @@ var Component = Vue.extend({
 })
 export default class Paysky extends AbstractHelper {
   failEvent(errorMsg) {
+    //this.data.error_message is what it gets from api, errorMsg argument is passed implicitly.
     //[nfc_not_found,move_card_fast,unknown_emv_card,card_with_locked_nfc,login_error,payment_error]
     //log(this.data.error_type)
     //log(this.data.error_message)
     //payment fail handle here
-    let msg = this.data.error_message || errorMsg || 'PaySky payment failed'
-    msg += '. Please try again later.'
+
+    let msg = ''
+    switch (this.data.error_type) {
+      case 'move_card_fast':
+        msg = `Don't move card too quickly, please scan it again.`
+        break
+      default:
+        msg = this.data.error_message || errorMsg || 'PaySky payment failed'
+        msg += '. Please try again.'
+    }
+
     this.$store.commit('checkoutForm/SET_MSG', {
       message: this.$store.getters['location/_t'](msg),
       result: 'error',
@@ -24,7 +34,7 @@ export default class Paysky extends AbstractHelper {
   }
 
   exec() {
-    console.log(this.data)
+    //status ll be always true either its error or success
     if (this.data.status == true) {
       if (this.data.state == 'start') {
         //open payment screen code here
