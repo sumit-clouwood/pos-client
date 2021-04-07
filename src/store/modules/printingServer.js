@@ -341,7 +341,7 @@ const actions = {
       localStorage.setItem('orderInvoiceColData', JSON.stringify(jsonResponse))
 
       //check if sunmi app android available
-      if (typeof AndroidPOS == 'undefined') {
+      if (typeof AndroidPOS != 'undefined') {
         AndroidPOS.callFunction(
           'printInvoice',
           JSON.stringify(jsonResponse),
