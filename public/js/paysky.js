@@ -14,7 +14,7 @@ function paySkyCallbackAndroid(functionName, data) {
   }
 }
 const simulatePaySky = localStorage.getItem('simulatePaySky')
-if (simulatePaySky !== false) {
+if (simulatePaySky && simulatePaySky !== false) {
   // eslint-disable-next-line no-unused-vars
   var AndroidPOS = {
     callFunction: function(func, data, cb) {
@@ -49,25 +49,26 @@ if (simulatePaySky !== false) {
 
         window[cb](func, JSON.stringify(jsonData))
 
-        //simulatePaySky = [{"data":{"status":true,"state":"error","error_type":"move_card_fast"},"timeout":2000},{"data":{"status":true,"state":"success"},"timeout":3000}]
+        //simulatePaySky = [{"data":{"status":true,"state":"error","error_type":"move_card_fast"},"timeout":2000},{"data":{"status":true,"state":"processing"},"timeout":3000},{"data":{"status":true,"state":"success"},"timeout":3000}]
 
         const events = JSON.parse(simulatePaySky)
-
-        events
-          .reduce(
-            (mypromise, event) =>
-              mypromise.then(() => {
-                event.data = Object.assign({}, jsonData, event.data)
-                event.func = func
-                event.cb = cb
-                return execChainProcess(event)
-              }),
-            Promise.resolve()
-          )
-          .then(function(results) {
-            // all done here with array of results
-            console.log(results)
-          })
+        if (events && events.length) {
+          events
+            .reduce(
+              (mypromise, event) =>
+                mypromise.then(() => {
+                  event.data = Object.assign({}, jsonData, event.data)
+                  event.func = func
+                  event.cb = cb
+                  return execChainProcess(event)
+                }),
+              Promise.resolve()
+            )
+            .then(function(results) {
+              // all done here with array of results
+              console.log(results)
+            })
+        }
       } else if (func == 'printInvoice') {
         window[cb](func, JSON.stringify({ status: true }))
       }
