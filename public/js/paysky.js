@@ -54,14 +54,16 @@ if (simulatePaySky !== false) {
         const events = JSON.parse(simulatePaySky)
 
         events
-          .reduce(function(mypromise, event) {
-            return mypromise.then(() => {
-              event.data = Object.assign({}, jsonData, event.data)
-              event.func = func
-              event.cb = cb
-              return execChainProcess(event)
-            })
-          }, Promise.resolve())
+          .reduce(
+            (mypromise, event) =>
+              mypromise.then(() => {
+                event.data = Object.assign({}, jsonData, event.data)
+                event.func = func
+                event.cb = cb
+                return execChainProcess(event)
+              }),
+            Promise.resolve()
+          )
           .then(function(results) {
             // all done here with array of results
             console.log(results)
