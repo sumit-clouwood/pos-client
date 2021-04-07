@@ -344,6 +344,14 @@ const actions = {
       }
       //Temp- later remove once IOS KOT App delivers.
       localStorage.setItem('orderInvoiceColData', JSON.stringify(jsonResponse))
+
+      //check if sunmi app android available
+      AndroidPOS.callFunction(
+        'printInvoice',
+        JSON.stringify(jsonResponse),
+        'paySkyCallbackAndroid'
+      )
+
       if (customerData) {
         dispatch('customer/resetCustomer', true, { root: true }).then(() => {
           resolve(jsonResponse)
