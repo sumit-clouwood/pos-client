@@ -34,15 +34,18 @@ export default class Paysky extends AbstractHelper {
   }
 
   exec() {
+    console.log('paysky ', 'Paysky event detected', this.data)
     //status ll be always true either its error or success
     if (this.data.status == true) {
       if (this.data.state == 'start') {
+        console.log('paysky ', 'start')
         //open payment screen code here
         this.$store.commit('checkoutForm/SET_MSG', {
           message: this.$store.getters['location/_t']('Please scan your card'),
         })
         showModal('#payment-msg')
       } else if (this.data.state == 'processing') {
+        console.log('paysky ', 'processing')
         this.$store.commit('checkoutForm/SET_MSG', {
           message: this.$store.getters['location/_t'](
             'Card has been scanned. Payment in process...'
@@ -52,10 +55,12 @@ export default class Paysky extends AbstractHelper {
       } else {
         hideModal('#payment-msg')
         if (this.data.state == 'success') {
+          console.log('paysky ', 'success')
           if (
             this.data.transaction_token ===
             this.$store.getters['checkoutForm/transaction_token']('paysky')
           ) {
+            console.log('paysky ', 'token matched')
             //payment screen close code here
             //log(this.data.response)
             if (this.data.message === 'Approved') {
@@ -77,6 +82,7 @@ export default class Paysky extends AbstractHelper {
               this.$store
                 .dispatch('checkoutForm/addCardAmount', this.data.response)
                 .then(payable => {
+                  console.log('paysky ', 'card amount added via paysky')
                   if (
                     payable <= 0.1 ||
                     this.$store.state.checkoutForm.action == 'pay'
@@ -96,7 +102,10 @@ export default class Paysky extends AbstractHelper {
                     }
                   }
                 })
-                .catch(error => console.log(error))
+                .catch(error => {
+                  console.log(error)
+                  console.log('paysky ', 'Card amount not added')
+                })
             } else {
               this.failEvent()
             }
@@ -104,6 +113,7 @@ export default class Paysky extends AbstractHelper {
             this.failEvent('Transaction authentication failed')
           }
         } else {
+          console.log('paysky ', 'failed')
           this.failEvent()
         }
       }
