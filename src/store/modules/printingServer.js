@@ -341,11 +341,13 @@ const actions = {
       localStorage.setItem('orderInvoiceColData', JSON.stringify(jsonResponse))
 
       //check if sunmi app android available
-      AndroidPOS.callFunction(
-        'printInvoice',
-        JSON.stringify(jsonResponse),
-        'paySkyCallbackAndroid'
-      )
+      if (typeof AndroidPOS == 'undefined') {
+        AndroidPOS.callFunction(
+          'printInvoice',
+          JSON.stringify(jsonResponse),
+          'paySkyCallbackAndroid'
+        )
+      }
 
       if (customerData) {
         dispatch('customer/resetCustomer', true, { root: true }).then(() => {
