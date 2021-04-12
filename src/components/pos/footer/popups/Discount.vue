@@ -178,7 +178,16 @@ export default {
       let discountBlockHeight = $('.select-discount').innerHeight()
       this.discountBlockHeight = discountBlockHeight
       this.discountBlockInitHeight = discountBlockHeight
-      this.discountBlockItemHeight = $('.select-discount-option').innerHeight()
+
+      if (window.PrintHandle) {
+        this.discountBlockItemHeight = $(
+          '.select-discount-option'
+        )[0].scrollHeight
+      } else {
+        this.discountBlockItemHeight = $(
+          '.select-discount-option'
+        ).innerHeight()
+      }
       $(
         '.discount-footer .food-bottom-arrow, .discount-footer .food-top-arrow'
       ).removeClass('disable')
@@ -202,18 +211,33 @@ export default {
           this.discountBlockHeight == this.discountBlockInitHeight ||
           this.discountBlockHeight === 0
         ) {
-          this.discountBlockHeight += parseInt(
-            this.discountBlockInitHeight - 100
-          )
+          this.discountBlockHeight =
+            $('.select-discount-option')[0].scrollTop +
+            parseInt(this.discountBlockInitHeight - 100)
         } else {
-          this.discountBlockHeight += parseInt(this.discountBlockInitHeight)
+          if (window.PrintHandle) {
+            this.discountBlockHeight += 100
+          } else {
+            this.discountBlockHeight += parseInt(this.discountBlockInitHeight)
+          }
         }
       }
-
-      $('.select-discount').animate(
-        { scrollTop: this.discountBlockHeight },
-        1000
-      )
+      // eslint-disable-next-line no-console
+      if (window.PrintHandle) {
+        // eslint-disable-next-line no-console
+        console.log('scrolling to ', this.discountBlockHeight)
+        setTimeout(() => {
+          $('.select-discount-option').animate(
+            { scrollTop: this.discountBlockHeight },
+            1000
+          )
+        }, 300)
+      } else {
+        $('.select-discount').animate(
+          { scrollTop: this.discountBlockHeight },
+          1000
+        )
+      }
 
       if (this.discountBlockHeight >= this.discountBlockItemHeight) {
         $('.discount-footer .food-bottom-arrow').addClass('disable')
@@ -235,10 +259,17 @@ export default {
           this.discountBlockHeight -= parseInt(this.discountBlockInitHeight)
         }
       }
-      $('.select-discount').animate(
-        { scrollTop: this.discountBlockHeight },
-        1000
-      )
+      if (window.PrintHandle) {
+        $('.select-discount-option').animate(
+          { scrollTop: this.discountBlockHeight },
+          1000
+        )
+      } else {
+        $('.select-discount').animate(
+          { scrollTop: this.discountBlockHeight },
+          1000
+        )
+      }
 
       if (this.discountBlockHeight <= 0) {
         this.discountBlockHeight = parseInt(this.discountBlockInitHeight)
