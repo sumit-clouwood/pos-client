@@ -126,6 +126,7 @@ export default {
         'UpdateDeliveryOrder',
         'selectGroupForCrmOrder',
         'selectAddressForCrmOrder',
+        'selectCustomerForTakeawayOrder',
         'setOrderType',
         'DeliveryManager',
       ],

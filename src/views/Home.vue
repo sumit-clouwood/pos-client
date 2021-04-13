@@ -88,6 +88,25 @@ export default {
         addressId: this.addressId,
       })
     }
+
+    if (this.$route.name.match('selectCustomerForTakeawayOrder')) {
+      this.customerId = this.$route.params.customer_id
+      //this.$store.commit('ORDER_TYPE, { OTview: 'Take Away', OTApi: 'takeaway' })
+      this.$store
+        .dispatch('customer/fetchSelectedCustomer', this.customerId)
+        .then(() => {
+          // alert(this.customerId)
+          // this.$store.commit('order/ORDER_TYPE', {
+          //   OTview: 'Take Away',
+          //   OTApi: 'takeaway',
+          // })
+          // this.$store.dispatch('checkoutForm/calculateLoyaltyAmountForItem')
+        })
+      this.$store.commit('order/ORDER_TYPE', {
+        OTview: 'Take Away',
+        OTApi: 'takeaway',
+      })
+    }
     /* Implemented for multistore*/
     if (this.$route.name.match('iosApplication')) {
       localStorage.setItem('IOSPrinters', '')

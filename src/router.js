@@ -33,6 +33,11 @@ const router = new Router({
       component: Home,
     },
     {
+      path: '/:brand_id/:store_id/takeaway-order/:customer_id',
+      name: 'selectCustomerForTakeawayOrder',
+      component: Home,
+    },
+    {
       path: '/:brand_id/:store_id/order-type/:order_type',
       name: 'setOrderType',
       component: Home,
