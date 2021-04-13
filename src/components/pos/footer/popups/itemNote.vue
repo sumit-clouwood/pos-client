@@ -57,7 +57,7 @@ export default {
   computed: {
     ...mapGetters('location', ['_t']),
     ...mapState('checkout', ['print']),
-    ...mapState('order', ['item']),
+    ...mapState('order', ['item', 'noteBeforeItem']),
   },
   watch: {
     print(newVal, oldVal) {
@@ -71,8 +71,12 @@ export default {
   },
   methods: {
     addNoteToItem() {
-      this.$store.dispatch('order/addNoteToItem', this.note)
-      $('#popup-item-note').modal('toggle')
+      if (!this.noteBeforeItem) {
+        this.$store.dispatch('order/addNoteBeforeItem', this.note)
+      } else {
+        this.$store.dispatch('order/addNoteToItem', this.note)
+      }
+      $('#popup-item-note').modal('hide')
     },
     addNoteHendler() {
       this.$store.dispatch('addNoteHendlerChange')
@@ -82,10 +86,13 @@ export default {
 </script>
 <style lang="scss" scoped>
 @import '@/assets/scss/mixins.scss';
-
+#popup-item-note {
+  z-index: 9999 !important;
+}
 @include responsive(mobile) {
   #popup-item-note {
     overflow: hidden !important;
+    z-index: 9999 !important;
   }
   #add-note {
     position: fixed !important;
