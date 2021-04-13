@@ -516,8 +516,6 @@ export default {
     // we output it. If there are no, we use sample customer. If customer is not set on the order -
     // that means there should be no customer in that order
     customer() {
-      // eslint-disable-next-line no-debugger
-      debugger
       if (this.order) {
         if (this.order.guest_checkout) {
           return {
@@ -566,8 +564,6 @@ export default {
     },
     //This is a method to generate fake order for invoice generation. No need to have bottom part of it at the POS
     order() {
-      // eslint-disable-next-line no-debugger
-      debugger
       if (this.dataBeingLoaded) {
         return null
       }
