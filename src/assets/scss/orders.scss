@@ -143,6 +143,11 @@
         grid-template-rows: auto auto 1fr;
         margin-bottom: $px5;
 
+        .note {
+          color: $gray-dark;
+          font-size: $px11;
+        }
+
         .main-orders-list-item-title {
           display: grid;
           grid-template-columns: 1fr auto auto;
@@ -168,7 +173,11 @@
         .main-orders-list-item-subtitle {
           font-size: $px14;
           color: $gray-dark;
-          margin-bottom: $px10;
+          margin-bottom: $px6;
+
+          i {
+            font-size: $px11;
+          }
         }
 
         .main-orders-list-item-buttons {

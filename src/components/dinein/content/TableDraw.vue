@@ -23,6 +23,7 @@
               </div>
               <div class="m-1 table-order-content" v-if="orderDetails">
                 <div
+                  class="table-order"
                   v-for="orderData in orderDetails"
                   :key="orderData.reservationId"
                 >

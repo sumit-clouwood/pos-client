@@ -97,9 +97,15 @@ export default {
             showPaymentBreak()
           }
         })
-        .catch(() => {
+        .catch(error => {
           if (this.error) {
             showModal('#amount-error')
+          } else if (error) {
+            this.$store.commit('checkoutForm/SET_MSG', {
+              message: error,
+              result: 'error',
+            })
+            $('#payment-msg').modal('show')
           }
         })
       this.$store.dispatch('successfullHendlerChange')

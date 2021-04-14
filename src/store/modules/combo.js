@@ -188,7 +188,7 @@ const getters = {
   find_combo_items: (state, getters, rootState, rootGetters) => combo => {
     let items = []
     for (const itemId in combo.selectedItems) {
-      const item = rootGetters['category/itemById'](itemId)
+      const item = { ...rootGetters['category/itemById'](itemId) }
       if (item) {
         item.quantity = combo.selectedItems[itemId]
         items.push(item)
@@ -258,19 +258,28 @@ const getters = {
     }
 
     //set combo pricing based on selected modifiers
+    //get combo item net price as item.value contains with tax value
     let netPrice = item.value / ((100 + item.tax_sum) / 100)
+
+    //modifiers prices are additional prices, so for example if item quantity is 3 and 1 modifier selected with price
+    //that means 3 modifiers are added with that item. so 3x price ll be added.
+    //while adding modifier price, get the quantity of the item for which that modifier was added
+    //multiply that item quantity with modifier price.
+
     if (item.selectedModifiers) {
       //combo contains modifiers
       //get price of each modifier and add to current price
       let modifiersPrice = 0
       for (const itemId in item.selectedModifiers) {
+        const selectedItemQuantity = item.selectedItems[itemId]
         const modifiers = item.selectedModifiers[itemId]
         modifiers.forEach(selectedModifier => {
           const modifier = rootGetters['modifier/findModifier'](
             selectedModifier.modifierId,
             item
           )
-          modifiersPrice += modifier.value
+          //modifier quantity is relative to item quantity
+          modifiersPrice += modifier.value * selectedItemQuantity
         })
       }
       netPrice += modifiersPrice

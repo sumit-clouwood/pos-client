@@ -130,6 +130,7 @@ export default {
       this.$store.dispatch('combo/reset', true)
       this.$store.commit('category/SET_ITEM', item)
       this.$store.commit('orderForm/clearSelection')
+      this.$store.commit('order/NOTE_BEFORE_ITEM', undefined)
 
       switch (item.item_type) {
         case CONST.COMBO_ITEM_TYPE:

@@ -568,6 +568,11 @@ const actions = {
             root: true,
           })
             .then(() => {
+              if (state.selectedTable) {
+                let table_number =
+                  state.selectedTable.number || state.selectedTable.table_number
+                commit(mutation.SELECTED_TABLE_RESERVATION, table_number)
+              }
               resolve()
             })
             .catch(error => reject(error))

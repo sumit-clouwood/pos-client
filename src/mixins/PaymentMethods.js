@@ -14,7 +14,7 @@ export default {
       dragX: '',
       dragY: '',
       aggregatorChild: false,
-      currentSlide: 0,
+      currentSlide: 'cash',
     }
   },
   computed: {

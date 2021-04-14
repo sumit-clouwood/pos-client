@@ -234,6 +234,7 @@ const actions = {
         token_manager: rootState.location.store.token_manager,
         windows_app: false,
       }
+      let order_dine_in = false
       if (
         orderData.order_type === 'DINE-IN' ||
         orderData.order_type === 'dine_in'
@@ -247,11 +248,36 @@ const actions = {
 
         Object.assign(jsonResponse, { table_number: table_no })
         // jsonResponse.table_number = table_no
+        order_dine_in = {
+          bold: true,
+          label: invoiceTemplate['table_number_label']
+            ? invoiceTemplate['table_number_label']
+            : 'Table Number',
+          value: table_no,
+        }
       }
+      let order_type_label = invoiceTemplate['order_type_label']
+        ? invoiceTemplate['order_type_label']
+        : 'Order Type'
+      let make_order_type_value =
+        jsonResponse.order.order_type.toLowerCase().replace(/-/g, '_') +
+        '_label'
+      let order_type_value = invoiceTemplate[make_order_type_value]
+        ? invoiceTemplate[make_order_type_value]
+        : jsonResponse.order_type
+
+      let cutomer_label = invoiceTemplate['customer_label']
+        ? invoiceTemplate['customer_label']
+        : 'Customer'
+
+      let staff_label = invoiceTemplate['staff_label']
+        ? invoiceTemplate['staff_label']
+        : 'Staff'
+
       let customer_info_header = jsonResponse.customer
         ? {
             bold: true,
-            label: 'Customer',
+            label: cutomer_label,
             value: jsonResponse.customer.name,
           }
         : false
@@ -259,12 +285,12 @@ const actions = {
         invoice_top_fields: [
           {
             bold: true,
-            label: 'Order Type',
-            value: jsonResponse.order_type,
+            label: order_type_label,
+            value: order_type_value,
           },
           {
             bold: true,
-            label: 'Staff',
+            label: staff_label,
             value: jsonResponse.staff,
           },
           {
@@ -276,12 +302,12 @@ const actions = {
         kot_top_fields: [
           {
             bold: true,
-            label: 'Order Type',
-            value: jsonResponse.order_type,
+            label: order_type_label,
+            value: order_type_value,
           },
           {
             bold: true,
-            label: 'Staff',
+            label: staff_label,
             value: jsonResponse.staff,
           },
           {
@@ -291,10 +317,17 @@ const actions = {
           },
         ],
       }
-      if (customer_info_header)
-        Object.assign(invoice_header_data.invoice_top_fields, {
-          customer_info_header,
-        })
+      if (customer_info_header) {
+        invoice_header_data.invoice_top_fields.push(customer_info_header)
+      }
+
+      if (order_dine_in) {
+        /*Object.assign(invoice_header_data.invoice_top_fields, {
+          order_dine_in,
+        })*/
+        invoice_header_data.invoice_top_fields.push(order_dine_in)
+      }
+
       Object.assign(jsonResponse, invoice_header_data)
       if (isIOS) {
         Object.assign(jsonResponse, { kitchens: state.kitchens })
@@ -306,6 +339,16 @@ const actions = {
       }
       //Temp- later remove once IOS KOT App delivers.
       localStorage.setItem('orderInvoiceColData', JSON.stringify(jsonResponse))
+
+      //check if sunmi app android available
+      if (typeof AndroidPOS != 'undefined') {
+        AndroidPOS.callFunction(
+          'printInvoice',
+          JSON.stringify(jsonResponse),
+          'paySkyCallbackAndroid'
+        )
+      }
+
       if (customerData) {
         dispatch('customer/resetCustomer', true, { root: true }).then(() => {
           resolve(jsonResponse)

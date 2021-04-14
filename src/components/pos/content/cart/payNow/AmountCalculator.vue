@@ -57,9 +57,15 @@ export default {
             this.$store.dispatch('mainOrdersHendlerChange')
           }
         })
-        .catch(() => {
+        .catch(error => {
           if (this.error) {
             showModal('#amount-error')
+          } else if (error) {
+            this.$store.commit('checkoutForm/SET_MSG', {
+              message: error,
+              result: 'error',
+            })
+            $('#payment-msg').modal('show')
           }
         })
       if (this.$store.state.mobile.device === 'mobile') {

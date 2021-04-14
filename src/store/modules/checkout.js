@@ -332,7 +332,7 @@ const actions = {
               redeemed_amount_value: rootState.checkoutForm.loyaltyAmount,
             }
           }*/
-          order.customer = rootState.customer.customerId
+          if (!order.customer) order.customer = rootState.customer.customerId
         }
         return paymentPart
       })
@@ -819,7 +819,9 @@ const actions = {
                 // eslint-disable-next-line no-console
                 console.log(e)
               }
-
+              if (rootState.customer.customer) {
+                order.customer = rootState.customer.customer._id
+              }
               if (rootGetters['auth/multistore']) {
                 order.multi_store = true
               }

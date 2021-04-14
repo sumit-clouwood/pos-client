@@ -11,18 +11,22 @@
 <script>
 /* global closeModal */
 import { bus } from '@/eventBus'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 export default {
   name: 'AddModifierOrderButton',
   props: {},
   computed: {
     ...mapGetters('location', ['_t']),
     ...mapGetters('combo', ['current_combo']),
+    ...mapState('order', ['noteBeforeItem']),
   },
   methods: {
     addModifierOrder() {
       if (this.current_combo) {
         this.$store.dispatch('combo/selectModifiers').then(() => {
+          if (this.noteBeforeItem) {
+            this.$store.dispatch('order/addNoteToItem', this.noteBeforeItem)
+          }
           closeModal('#POSItemOptions')
           bus.$emit('addComboItemWithModifiers')
         })
@@ -37,6 +41,9 @@ export default {
           .then(() => {
             this.$emit('error', false)
             closeModal('#POSItemOptions')
+            if (this.noteBeforeItem) {
+              this.$store.dispatch('order/addNoteToItem', this.noteBeforeItem)
+            }
           })
           .catch(error => this.$emit('error', error))
       }

@@ -75,13 +75,13 @@
               </span>
             </th>
           </tr>
-          <tr v-if="crm_module_enabled && customer" class="left-aligned">
+          <tr v-if="customer" class="left-aligned">
             <th colspan="3">
               {{ template.customer_label }}
               <span class="float-right">{{ customer.name }}</span>
             </th>
           </tr>
-          <tr v-if="crm_module_enabled && customer" class="left-aligned">
+          <tr v-if="customer" class="left-aligned">
             <th colspan="3">
               {{ _t('Contact') }}
               <span class="float-right">{{ customer.phone }}</span>
@@ -516,6 +516,8 @@ export default {
     // we output it. If there are no, we use sample customer. If customer is not set on the order -
     // that means there should be no customer in that order
     customer() {
+      // eslint-disable-next-line no-debugger
+      debugger
       if (this.order) {
         if (this.order.guest_checkout) {
           return {
@@ -543,6 +545,12 @@ export default {
             }
           }
         }
+        // if (this.$store.state.customer) {
+        //   return {
+        //     name: this.$store.state.customer.name,
+        //     phone: this.$store.state.customer.phone_number,
+        //   }
+        // }
       }
       return null
     },
@@ -558,6 +566,8 @@ export default {
     },
     //This is a method to generate fake order for invoice generation. No need to have bottom part of it at the POS
     order() {
+      // eslint-disable-next-line no-debugger
+      debugger
       if (this.dataBeingLoaded) {
         return null
       }

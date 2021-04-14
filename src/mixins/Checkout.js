@@ -7,7 +7,9 @@ import * as CONST from '@/constants'
 export default {
   methods: {
     async paysky(resolve, reject) {
+      console.log('paysky ', 'Pay by paysky')
       if (typeof AndroidPOS == 'undefined') {
+        console.log('paysky ', 'AndroidPOS not found')
         let error = this._t('Sorry! PaySky is not supported')
         this.$store.commit('checkoutForm/SET_MSG', {
           message: error,
@@ -16,39 +18,66 @@ export default {
         $('#payment-msg').modal('show')
         return reject(error)
       }
+      console.log('paysky ', 'AndroidPOS is present')
       this.$store.commit('checkoutForm/SET_MSG', {
         message: 'Waiting for payment...',
         result: 'loading',
       })
 
+      $('#payment-msg').modal('show')
+
       let auth = { ...this.method }
       delete auth.availability
-      this.$store.dispatch('checkoutForm/generateTransactionToken', 'paysky')
-      auth.transaction_token = this.$store.getters[
-        'checkoutForm/transaction_token'
-      ]('paysky')
 
-      const paySkyData = JSON.stringify({
-        auth: auth,
-        transactionAmount: this.$store.state.checkoutForm.amount,
-        transactionType:
-          this.$store.state.checkoutForm.amount ==
-          this.$store.getters['order/orderTotal']
-            ? 'full'
-            : 'partial',
-      })
+      try {
+        console.log('paysky ', 'generating token')
+        this.$store.dispatch('checkoutForm/generateTransactionToken', 'paysky')
+        auth.transaction_token = this.$store.getters[
+          'checkoutForm/transaction_token'
+        ]('paysky')
 
-      AndroidPOS.callFunction(
-        'payWithPaySky',
-        paySkyData,
-        'paySkyCallbackAndroid'
-      )
+        console.log('paysky ', 'token generated', auth.transaction_token)
+
+        let paySkyData = {
+          auth: auth,
+          transactionAmount: this.$store.state.checkoutForm.amount,
+          transactionType: 'full',
+        }
+        console.log('paysky ', paySkyData)
+        const paySkyDataString = JSON.stringify(paySkyData)
+        console.log('paysky ', paySkyDataString)
+        if (paySkyDataString) {
+          console.log(
+            'paysky ',
+            'calling AndroidPOS.callFunction.payWithPaySky'
+          )
+          AndroidPOS.callFunction(
+            'payWithPaySky',
+            paySkyDataString,
+            'paySkyCallbackAndroid'
+          )
+          console.log('paysky ', 'resolving')
+          resolve()
+        } else {
+          console.log('paysky ', 'stringify failed')
+          reject('Json stringify failed ')
+        }
+      } catch (error) {
+        console.log('paysky ', error)
+        if (error.stack) {
+          reject(error.stack)
+        } else {
+          reject(error)
+        }
+      }
     },
     async _addAmount() {
+      console.log('paysky ', 'Add amount')
       return new Promise((resolve, reject) => {
         this.$store
           .dispatch('checkoutForm/validatePayment')
           .then(() => {
+            console.log('paysky ', 'Payment validated', this.method)
             if (this.method.type == CONST.GIFT_CARD) {
               showModal('#Gift-card-payemnt')
               reject()
@@ -58,6 +87,7 @@ export default {
             } else if (this.method.reference_code) {
               if (this.method.unique_code === CONST.PAYMENT_METHOD_PAYSKY) {
                 //execute code here
+                console.log('paysky ', 'Pay by paysky')
                 this.paysky(resolve, reject)
               } else {
                 showModal('#card-payemnt')
@@ -68,6 +98,7 @@ export default {
               if (this.method.type == 'card') {
                 if (this.method.unique_code === CONST.PAYMENT_METHOD_PAYSKY) {
                   //execute code here
+                  console.log('paysky ', 'Payby Paysky')
                   this.paysky(resolve, reject)
                 } else {
                   //card payment but reference code was off
@@ -98,7 +129,10 @@ export default {
               }
             }
           })
-          .catch(() => reject())
+          .catch(error => {
+            console.log('paysky ', 'Payment not validated')
+            reject(error)
+          })
       })
     },
     addPayment() {
