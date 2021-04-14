@@ -53,6 +53,7 @@ const state = {
   needSupervisorAccess: false,
   newOrder: null,
   alert: {},
+  noteBeforeItem: undefined,
 }
 
 // getters
@@ -384,10 +385,15 @@ const actions = {
   addNoteToItem({ commit }, note) {
     let item = { ...state.item }
     item.note = note
-    //replace item in cart
     commit(mutation.REPLACE_ORDER_ITEM, {
       item: item,
     })
+  },
+  addNoteBeforeItem({ commit }, note) {
+    // let item = { ...state.item }
+    // item.note = note
+    //replace item in cart
+    commit('NOTE_BEFORE_ITEM', note)
   },
 
   prepareModifiersItemCart({ dispatch, commit, rootGetters, rootState }, item) {
@@ -804,6 +810,7 @@ const actions = {
   },
   //index is the new index of an item in cart, if there were 3 items and 1 removed index ll be 0,1
   setActiveItem({ commit, dispatch }, { orderItem }) {
+    commit('NOTE_BEFORE_ITEM', true)
     //get current item
     //this is fired by the items.vue
     let stateItem = state.items.find(
@@ -1910,7 +1917,9 @@ const mutations = {
       return stateItem
     })
   },
-
+  NOTE_BEFORE_ITEM(state, note) {
+    state.noteBeforeItem = note
+  },
   [mutation.ADD_MODIFIERS_TO_ITEM](state, { modifiers, modifierGroups }) {
     console.log(modifierGroups, 'modifierGroups')
     state.item.modifiers = modifiers
