@@ -5,6 +5,7 @@ import moment from 'moment-timezone'
 // import OrderHelper from '@/plugins/helpers/Order'
 import * as PERMS from '@/const/permissions'
 import workflow from '../../plugins/helpers/workflow'
+// import availability from '../../plugins/helpers/Availability'
 
 const state = {
   orders: {
@@ -87,6 +88,9 @@ const getters = {
   getTableNumberById: state => tableId => {
     return state.tablesOnArea.find(table => table._id === tableId)
   },
+  getTableEmptyTime: (state, getters, rootState) => {
+    return rootState.location.store.table_empty_time
+  },
   guestInBillItem: state => (item, guest) => {
     if (
       state.bills &&
@@ -166,7 +170,25 @@ const actions = {
         .catch(er => reject(er))
     })
   },
-
+  getBookedTablesOnClick({ commit, dispatch }, loader = false) {
+    new Promise(async (resolve, reject) => {
+      if (loader) commit(mutation.LOADING, loader)
+      /*localStorage.setItem('reservationId', false)*/
+      await DineInService.getAllBookedTables()
+        .then(response => {
+          //if we have offline bookings data ll be returned always as offline once syced up it ll return original
+          //if we get fresh data we need to save it in cache
+          workflow.storeData({
+            key: 'dinein_reservations',
+            data: response.data,
+          })
+          commit(mutation.BOOKED_TABLES, response.data)
+          if (loader) commit(mutation.LOADING, false)
+        })
+        .catch(er => reject(er))
+      dispatch('getTableStatus')
+    })
+  },
   seOrderData({ commit }, response) {
     let orderDetails = []
     let responseData = response.data.data
@@ -274,6 +296,11 @@ const actions = {
               data: response.data,
             })
           }
+          // eslint-disable-next-line no-console
+          console.log(
+            response.data,
+            'DINE_IN_TABLES, added console log for undefined table number'
+          )
           commit(mutation.DINE_IN_TABLES, response.data)
           commit(mutation.PAGE_LOOKUP, response.data.page_lookups)
           dispatch('getAvailableTables')
@@ -295,7 +322,8 @@ const actions = {
     commit(mutation.COVERS, response.data)
     return Promise.resolve()
   },
-  getTableStatus({ commit, state }) {
+  // eslint-disable-next-line no-unused-vars
+  getTableStatus({ commit, state, getters }) {
     return new Promise(resolve => {
       commit(mutation.TABLE_STATUS, false)
       let tableStatus = {
@@ -304,6 +332,7 @@ const actions = {
         availableSoonCount: 0,
         table: [],
       }
+      let tables_status_update = []
       let orderOnTable = []
       if (state.tablesOnArea) {
         state.tablesOnArea.forEach(table => {
@@ -400,9 +429,38 @@ const actions = {
           // console.log(orderOnTable, 'order no  length')
           commit(mutation.ORDER_ON_TABLES, orderOnTable)
         })
+        /*tables_status_update = Object.assign({}, tableStatus)
+        state.allBookedTables.orders.filter(order => {
+          if (order.status === 'reserved') {
+            // let dateTime = new Availability()
+            let table_book_date_time = availability.timeConvert(
+              order.start_time
+            )
+            let empty_table_time = availability.timeConvert(
+              getters.getTableEmptyTime
+            )
+            let getUTCCurrentTime = availability.timeConvert(
+              availability.getUTCCurrentTime()
+            )
+            if (getUTCCurrentTime > table_book_date_time + empty_table_time) {
+              tables_status_update.table = []
+              tableStatus.table.forEach(ts => {
+                if (ts.id === order.assigned_table_id) {
+                  let new_table = ts
+                  new_table.status.color = '#c1bfbf'
+                  new_table.status.text = 'booked_without_order'
+                  tables_status_update.table.push(new_table)
+                } else {
+                  tables_status_update.table.push(ts)
+                }
+              })
+              // commit('UPDATE_TABLE_STATUS', tables_status_update)
+            }
+          }
+        })*/
       }
       // eslint-disable-next-line no-console
-      console.log('order no item length', tableStatus)
+      console.log('order no item length', tableStatus, tables_status_update)
       commit(mutation.TABLE_STATUS, tableStatus)
       resolve()
     })
@@ -487,12 +545,12 @@ const actions = {
 
         .then(response => {
           commit(mutation.RESERVATION_RESPONSE, response.data)
-          dispatch('getCovers').then(() => {
-            resolve(response)
-            commit(mutation.LOADING, false)
-          })
+          // dispatch('getCovers').then(() => {
+          //   resolve(response)
+          //   commit(mutation.LOADING, false)
+          // }) //update it for optimization
           commit('order/ORDER_TYPE', state.orderType, { root: true })
-          dispatch('getBookedTables', false)
+          dispatch('getBookedTablesOnClick', false) //update it for optimization
         })
         .catch(error => reject(error))
     })
@@ -670,6 +728,9 @@ const mutations = {
   },
   [mutation.ORDER_ON_TABLES](state, orderOnTables) {
     state.orderOnTables = orderOnTables
+  },
+  UPDATE_TABLE_STATUS(state, orderOnTables) {
+    state.orderOnTables.table = orderOnTables
   },
   [mutation.TABLE_SCALE](state, scale) {
     state.tableZoomScale = scale

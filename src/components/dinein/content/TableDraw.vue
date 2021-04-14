@@ -273,6 +273,7 @@ export default {
   name: 'TableDraw',
   computed: {
     ...mapGetters('location', ['_t']),
+    ...mapGetters('dinein', ['getTableEmptyTime']),
     ...mapState('location', ['timezoneString', 'brand']),
     ...mapState('auth', ['userDetails']),
     ...mapState('dinein', [
@@ -327,35 +328,7 @@ export default {
       moveReservation: false,
       validationErrors: false,
       selectedArea: false,
-      /*zoomLevel: {
-        zoomOut: [
-          {
-            x: 1830 - 100,
-            y: 1010 - 100,
-            level: 0.7,
-          },
-          {
-            x: 2100 - 100,
-            y: 1195 - 100,
-            level: 0.6,
-          },
-          {
-            x: 2446 - 100,
-            y: 1360 - 100,
-            level: 0.5,
-          },
-          {
-            x: 2930 - 100,
-            y: 1630 - 100,
-            level: 0.4,
-          },
-          {
-            x: 3677 - 100,
-            y: 2100 - 100,
-            level: 0.4,
-          },
-        ],
-      },*/
+      bookedEmptyTables: [],
     }
   },
   updated() {
@@ -367,6 +340,11 @@ export default {
   },
   mounted() {
     this.tableTextTransform = window.PrintHandle ? false : true
+    let scope = this
+    scope.getBookedEmptyTables()
+    setInterval(() => {
+      scope.getBookedEmptyTables()
+    }, 1000 * 5)
   },
   watch: {
     updateTableArea: function(newValue, oldValue) {
@@ -381,6 +359,27 @@ export default {
     ...mapActions('dinein', ['reservationUpdateStatus', 'dineInRunningOrders']),
     closeMyself() {
       $('#tooltipdata').hide()
+    },
+    /*addZero(x, n) {
+      while (x.toString().length < n) {
+        x = '0' + x
+      }
+      return x
+    },*/
+
+    getUTCCurrentTime() {
+      let d = new Date()
+      let h = d.getUTCHours()
+      let m = d.getUTCMinutes()
+      let s = d.getUTCSeconds()
+      return h + ':' + m + ':' + s
+    },
+    timeConvert(time, separator = ':') {
+      if (time) {
+        let timeSplit = time.split(separator)
+        return parseInt(timeSplit[0]) * 60 + parseInt(timeSplit[1])
+      }
+      return 0
     },
     chairsValidation() {
       if (this.guests < 1) {
@@ -409,8 +408,43 @@ export default {
       // return this.current_time.format('Do MMMM YYYY')
       return moment(date).format('Do MMMM, YYYY')
     },
+    getBookedEmptyTables() {
+      let table = []
+      this.allBookedTables.orders.forEach(order_table => {
+        if (order_table.status === 'reserved') {
+          table[order_table.assigned_table_id] = order_table.start_time
+        }
+      })
+      if (table) {
+        // bookedEmptyTables.filter(table => {
+        // alert(table.number + ' BUSY')
+        // eslint-disable-next-line no-unused-vars
+        let tables_status_update = []
+        this.tableStatus.table.forEach(ts => {
+          let table_book_date_time = table[ts.id]
+            ? this.timeConvert(table[ts.id])
+            : 0
+          let empty_table_time = this.timeConvert(this.getTableEmptyTime)
+          let getUTCCurrentTime = this.timeConvert(this.getUTCCurrentTime())
+          if (getUTCCurrentTime > table_book_date_time + empty_table_time) {
+            if (table_book_date_time) {
+              let new_table = ts
+              new_table.status.color = '#c1bfbf'
+              new_table.status.text = 'booked_without_order'
+              tables_status_update.push(new_table)
+            } else {
+              tables_status_update.push(ts)
+            }
+          }
+        })
+
+        this.$store.commit('dinein/UPDATE_TABLE_STATUS', tables_status_update)
+        this.setTableProperties()
+      }
+      // })
+    },
     getOrderNo(orderId) {
-      //console.log(this.allBookedTables, 'orders')
+      // this.getBookedEmptyTables()
       let order = this.allBookedTables.lookup.orders._id[orderId]
       // let customerName = order && order.customer != null ? order.customer : ''
       return order
@@ -422,7 +456,6 @@ export default {
         : ''
     },
     orderStatus(orderId) {
-      //console.log(this.allBookedTables, 'orders status')
       return this.allBookedTables.lookup.orders._id[orderId].order_status
     },
     hideTableDetails() {
@@ -432,11 +465,13 @@ export default {
     },
     ...mapActions('location', ['getUIMenu']),
     newOrder(reservationId, pos) {
+      // eslint-disable-next-line no-debugger
+      // debugger
       this.$store.commit(
         'dinein/SELECTED_TABLE_RESERVATION',
         this.selectedTableData.number
       )
-      this.getUIMenu()
+      // this.getUIMenu() // disable it for optimization
       let makeId = '#id_' + this.selectedTableId
       $(makeId)
         .find('svg')
@@ -514,7 +549,7 @@ export default {
         .attr('class', 'tables')
         /*.attr('transform', 'translate(10,10)')*/
         .selectAll('.dinein_table')
-        .data(this.tablesOnArea)
+        .data(this.tablesOnArea) /* d = this.tablesOnArea */
         .enter() //data from state tables
         .append('g')
         .attr('class', 'dinein_table_parent')
@@ -567,7 +602,8 @@ export default {
                             } else if (fillcolor.status.color == '#faa03c') {
                               colourTable = '#FAD580'
                             }*/
-            return fillcolor.status.color
+            if (fillcolor) return fillcolor.status.color
+            return '#99ca86'
           })
         d3.select(selectedItem)
           .select('svg>g:last-child')
@@ -582,7 +618,8 @@ export default {
                                 colourChairs = '#fa9304'
                               }
                             }*/
-            return fc.status.color
+            if (fc) return fc.status.color
+            return '#99ca86'
           })
         let makeId = '#id_' + dis.selectedTableId
         $(makeId)
@@ -897,8 +934,10 @@ export default {
         .getBoundingClientRect()
     },
     showOptions(datum, index, all) {
+      // eslint-disable-next-line no-debugger
+      // debugger
       this.$store
-        .dispatch('dinein/getBookedTables', false, { root: true })
+        .dispatch('dinein/getBookedTablesOnClick', false, { root: true })
         .then(() => {
           $('#tooltipdata').hide()
           this.cssClass = 'restricted'

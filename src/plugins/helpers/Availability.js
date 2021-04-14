@@ -97,4 +97,17 @@ export default {
 
     return item.available_days.includes(dayToday)
   },
+  getUTCCurrentTime() {
+    let d = new Date()
+    let h = d.getUTCHours()
+    let m = d.getUTCMinutes()
+    let s = d.getUTCSeconds()
+    return h + ':' + m + ':' + s
+  },
+  timeConvert(time, separator = ':') {
+    if (time) {
+      let timeSplit = time.split(separator)
+      return parseInt(timeSplit[0]) * 60 + parseInt(timeSplit[1])
+    }
+  },
 }

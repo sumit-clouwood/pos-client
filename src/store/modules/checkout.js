@@ -767,6 +767,7 @@ const actions = {
               //send order for payment
               let order = {}
               const orderPlacementTime = rootState.order.startTime
+              let past_order_history = rootState.order.selectedOrder ? rootState.order.selectedOrder.item.order_action_history : []
 
               try {
                 const transitionOrderNo =
@@ -796,6 +797,7 @@ const actions = {
                   order_mode: 'online',
                   //this time can be used to indentify offline order
                   real_created_datetime: orderPlacementTime,
+                  order_action_history: past_order_history,
                   // order_mode: 'online',
                   //remove the modifiers prices from subtotal
                   print_count: 0,
@@ -878,6 +880,10 @@ const actions = {
               //adding tip amount
               order.tip_amount = rootState.checkoutForm.tipAmount
 
+              let action_order = !action ? 'create_order' : action
+              let order_actions = {action: action_order, date_time: orderPlacementTime, order: JSON.stringify(order)}
+              order.order_action_history.push(order_actions)
+
               dispatch('addItemsToOrder', {
                 order: order,
                 action: action,
@@ -896,7 +902,6 @@ const actions = {
                       })
                       
                       commit(mutation.SET_ORDER, order)
-                      
                       dispatch('createOrder', { action: action, data: data })
                         .then(response => {
                           //reset order start time
