@@ -209,10 +209,17 @@ export default {
               padding: 0.3em 0;
           }
 
-
+          .invoice-body tr.spacer p {
+            height:7px; 
+            margin:0;
+            padding:0;
+          }
           .invoice-body tr th {
               word-break: normal;
+              text-align: left;
           }
+           .invoice-body tr td {
+             }
 
           .invoice-body tr td.right-aligned, .invoice-body tr th.right-aligned {
               text-align: right;
@@ -223,8 +230,17 @@ export default {
           }
 
           .invoice-body tr td.first-col {
-              width: 20%;
-              min-width: 20%;
+              width: 7%;
+              min-width: 7%;
+          }
+          
+          .invoice-body tr th.serial {
+              width: 7%;
+              min-width: 7%;
+          }
+          .invoice-body tr td.serial {
+              width: 7%;
+              min-width: 7%;
           }
 
           .invoice-body tr.full-width td {
@@ -250,7 +266,7 @@ export default {
 
           }
 
-          .invoice-body tbody td:nth-child(2) {
+          .invoice-body tbody td:nth-child(3) {
               /*flex-grow: 1;
               flex-shrink:100;*/
           }
@@ -295,9 +311,9 @@ export default {
               margin: 0.3em;
           }
 
-          .invoice-body .table-title th:nth-child(1) {
-              width: 20%;
-              min-width: 20%;
+          .invoice-body .table-title th:nth-child(2) {
+              width: 7%;
+              min-width: 7%;
               text-align: left;
           }
 
@@ -306,7 +322,7 @@ export default {
           }
 
 
-          .invoice-body.rtl .table-title th:nth-child(1) {
+          .invoice-body.rtl .table-title th:nth-child(2) {
               text-align: right;
           }
 
