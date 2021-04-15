@@ -210,7 +210,7 @@ export default {
           }
 
           .invoice-body tr.spacer p {
-            height:7px; 
+            height:3px; 
             margin:0;
             padding:0;
           }
