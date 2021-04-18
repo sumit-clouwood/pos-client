@@ -218,7 +218,10 @@
               class="item-discount table-page-child"
             >
               <template v-if="discount.for_item == item.no">
-                <td class="first-col table-page-child"></td>
+                <td
+                  class="first-col table-page-child"
+                  v-if="showNumbering"
+                ></td>
                 <td class="first-col table-page-child"></td>
                 <td class="table-page-child">
                   <div class="food-extra">
@@ -232,7 +235,7 @@
               </template>
             </tr>
             <tr :key="'note' + key" v-if="item.note">
-              <td class="first-col table-page-child"></td>
+              <td class="first-col table-page-child" v-if="showNumbering"></td>
               <td class="first-col table-page-child"></td>
               <td class="table-page-child">
                 <span class="food-title">{{ _t('Note') }}: </span>
