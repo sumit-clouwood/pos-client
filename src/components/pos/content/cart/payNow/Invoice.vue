@@ -322,7 +322,7 @@ export default {
           }
 
 
-          .invoice-body.rtl .table-title th.qty {
+          .invoice-body.rtl .table-title th {
               text-align: right;
           }
 
