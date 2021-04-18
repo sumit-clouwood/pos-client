@@ -266,7 +266,7 @@ export default {
 
           }
 
-          .invoice-body tbody td:nth-child(3) {
+          .invoice-body tbody td.item-name {
               /*flex-grow: 1;
               flex-shrink:100;*/
           }
@@ -311,7 +311,7 @@ export default {
               margin: 0.3em;
           }
 
-          .invoice-body .table-title th:nth-child(2) {
+          .invoice-body .table-title th.qty {
               width: 7%;
               min-width: 7%;
               text-align: left;
@@ -322,7 +322,7 @@ export default {
           }
 
 
-          .invoice-body.rtl .table-title th:nth-child(2) {
+          .invoice-body.rtl .table-title th.qty {
               text-align: right;
           }
 
