@@ -23,6 +23,7 @@ import DateTime from '@/mixins/DateTime.js'
 
 // initial state
 const state = {
+  // itemDeliveryTime: 0,
   items: [],
   item: false,
   errors: '',
@@ -395,6 +396,14 @@ const actions = {
     //replace item in cart
     commit('NOTE_BEFORE_ITEM', note)
   },
+  /*setItemDeliveryTime({ commit }, time) {
+    commit('setItemDeliveryTime', time)
+    let item = { ...state.item }
+    item.item_delivery_time = time
+    commit(mutation.REPLACE_ORDER_ITEM, {
+      item: item,
+    })
+  },*/
 
   prepareModifiersItemCart({ dispatch, commit, rootGetters, rootState }, item) {
     return new Promise((resolve, reject) => {
@@ -1969,7 +1978,7 @@ const mutations = {
       state.orderStatus = null
       state.orderNote = null
     }
-
+    // state.itemDeliveryTime = 0
     state.splittedItems = {}
     state.item = false
     state.futureOrder = false
@@ -2118,6 +2127,10 @@ const mutations = {
   [mutation.NEED_SUPERVISOR_ACCESS](state, status) {
     state.needSupervisorAccess = status
   },
+  /*
+  setItemDeliveryTime(state, time) {
+    state.itemDeliveryTime = time
+  },*/
 }
 
 export default {

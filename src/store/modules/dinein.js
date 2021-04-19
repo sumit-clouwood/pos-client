@@ -5,7 +5,7 @@ import moment from 'moment-timezone'
 // import OrderHelper from '@/plugins/helpers/Order'
 import * as PERMS from '@/const/permissions'
 import workflow from '../../plugins/helpers/workflow'
-// import availability from '../../plugins/helpers/Availability'
+import availability from '../../plugins/helpers/Availability'
 
 const state = {
   orders: {
@@ -170,7 +170,7 @@ const actions = {
         .catch(er => reject(er))
     })
   },
-  getBookedTablesOnClick({ commit, dispatch }, loader = false) {
+  getBookedTablesOnClick({ state, commit, dispatch }, loader = false) {
     new Promise(async (resolve, reject) => {
       if (loader) commit(mutation.LOADING, loader)
       /*localStorage.setItem('reservationId', false)*/
@@ -182,11 +182,17 @@ const actions = {
             key: 'dinein_reservations',
             data: response.data,
           })
+          if (!state.areas) {
+            dispatch('getDineInArea').then(() => {
+              return resolve()
+            })
+          } else {
+            dispatch('getTableStatus')
+          }
           commit(mutation.BOOKED_TABLES, response.data)
           if (loader) commit(mutation.LOADING, false)
         })
         .catch(er => reject(er))
-      dispatch('getTableStatus')
     })
   },
   seOrderData({ commit }, response) {
@@ -350,7 +356,14 @@ const actions = {
               order => order.assigned_table_id === table._id
             )
           }
-
+          // tables_status_update = Object.assign({}, tableStatus)
+          let empty_reserved_table = []
+          state.allBookedTables.orders.filter(order_table => {
+            if (order_table.status === 'reserved') {
+              empty_reserved_table[order_table.assigned_table_id] =
+                order_table.start_time
+            }
+          })
           if (orders.length) {
             let tableArray = []
             orders.forEach(order => {
@@ -398,8 +411,37 @@ const actions = {
                 CONST.ORDER_STATUS_IN_PROGRESS
               )
             ) {
-              table_details.status.color = '#c84c4c'
-              table_details.status.text = 'unavailable'
+              if (empty_reserved_table && empty_reserved_table[table._id]) {
+                let table_book_date_time = empty_reserved_table[table._id]
+                  ? availability.timeConvert(empty_reserved_table[table._id])
+                  : 0
+                // let table_book_date_time = availability.timeConvert(
+                //   order.start_time
+                // )
+                let empty_table_time = availability.timeConvert(
+                  getters.getTableEmptyTime
+                )
+                let getUTCCurrentTime = availability.timeConvert(
+                  availability.getUTCCurrentTime()
+                )
+                if (
+                  getUTCCurrentTime >
+                  table_book_date_time + empty_table_time
+                ) {
+                  if (table_book_date_time) {
+                    // let new_table = table
+                    table_details.status.color = '#c1bfbf'
+                    table_details.status.text = 'reserved'
+                    // tableStatus.table.push(new_table)
+                  }
+                } else {
+                  table_details.status.color = '#c84c4c'
+                  table_details.status.text = 'unavailable'
+                }
+              } else {
+                table_details.status.color = '#c84c4c'
+                table_details.status.text = 'unavailable'
+              }
             } else if (
               tableArray[table_details.id].includes(CONST.ORDER_STATUS_ON_WAY)
             ) {
@@ -429,35 +471,6 @@ const actions = {
           // console.log(orderOnTable, 'order no  length')
           commit(mutation.ORDER_ON_TABLES, orderOnTable)
         })
-        /*tables_status_update = Object.assign({}, tableStatus)
-        state.allBookedTables.orders.filter(order => {
-          if (order.status === 'reserved') {
-            // let dateTime = new Availability()
-            let table_book_date_time = availability.timeConvert(
-              order.start_time
-            )
-            let empty_table_time = availability.timeConvert(
-              getters.getTableEmptyTime
-            )
-            let getUTCCurrentTime = availability.timeConvert(
-              availability.getUTCCurrentTime()
-            )
-            if (getUTCCurrentTime > table_book_date_time + empty_table_time) {
-              tables_status_update.table = []
-              tableStatus.table.forEach(ts => {
-                if (ts.id === order.assigned_table_id) {
-                  let new_table = ts
-                  new_table.status.color = '#c1bfbf'
-                  new_table.status.text = 'booked_without_order'
-                  tables_status_update.table.push(new_table)
-                } else {
-                  tables_status_update.table.push(ts)
-                }
-              })
-              // commit('UPDATE_TABLE_STATUS', tables_status_update)
-            }
-          }
-        })*/
       }
       // eslint-disable-next-line no-console
       console.log('order no item length', tableStatus, tables_status_update)
