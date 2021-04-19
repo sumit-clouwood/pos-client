@@ -43,7 +43,7 @@
             "
             class="full-width small-padding"
           >
-            <td colspan="3">
+            <td :colspan="colspanFull">
               <div>
                 {{ template.deliver_to_label }}
               </div>
@@ -59,7 +59,7 @@
             </td>
           </tr>
           <tr class="left-aligned">
-            <th colspan="3">
+            <th :colspan="colspanFull">
               {{ template.order_type_label }}
               <span class="float-right">{{ order_type }}</span>
             </th>
@@ -68,7 +68,7 @@
             class="left-aligned"
             v-if="selectedTableRservationData && orderType.OTApi === 'dine_in'"
           >
-            <th colspan="3">
+            <th :colspan="colspanFull">
               {{ template.table_number_label }}
               <span class="float-right">
                 {{ selectedTableRservationData }}
@@ -76,25 +76,25 @@
             </th>
           </tr>
           <tr v-if="customer" class="left-aligned">
-            <th colspan="3">
+            <th :colspan="colspanFirst">
               {{ template.customer_label }}
               <span class="float-right">{{ customer.name }}</span>
             </th>
           </tr>
           <tr v-if="customer" class="left-aligned">
-            <th colspan="3">
+            <th :colspan="colspanFull">
               {{ _t('Contact') }}
               <span class="float-right">{{ customer.phone }}</span>
             </th>
           </tr>
           <tr class="left-aligned">
-            <th colspan="3">
+            <th :colspan="colspanFull">
               {{ template.staff_label }}
               <span class="float-right">{{ placed_by }}</span>
             </th>
           </tr>
           <tr class="left-aligned last-thead">
-            <th colspan="3">
+            <th :colspan="colspanFull">
               {{ created_date }}
               <span class="float-right">{{ created_time }}</span>
             </th>
@@ -102,16 +102,23 @@
         </thead>
         <tbody>
           <tr class="table-title">
-            <th class="first-col">{{ template.qty_label }}</th>
-            <th>{{ template.item_label }}</th>
+            <th class="serial" v-if="showNumbering" valign="top">#</th>
+            <th class="first-col qty">{{ template.qty_label }}</th>
+            <th class="item-name">{{ template.item_label }}</th>
             <th class="right-aligned">{{ template.amount_label }}</th>
+          </tr>
+          <tr :key="'spacer'" class="spacer">
+            <td :colspan="colspanFull"><p>&nbsp;</p></td>
           </tr>
           <template v-for="(item, key) in order.items">
             <tr v-if="item.type == 'combo_item'" :key="key">
-              <td class="first-col" valign="top">
+              <td class="serial" v-if="showNumbering" valign="top">
+                {{ key + 1 }}
+              </td>
+              <td class="first-col qty" valign="top">
                 {{ qtyString(item) }} {{ measurement_unit(item) }}
               </td>
-              <td>
+              <td class="item-name">
                 <div class="food-title">
                   {{ translate_item(item) }}
                   <span
@@ -156,10 +163,13 @@
               "
               :key="'item' + key"
             >
-              <td class="first-col" valign="top">
+              <td class="serial" valign="top" v-if="showNumbering">
+                {{ key + 1 }}
+              </td>
+              <td class="first-col qty" valign="top">
                 {{ qtyString(item) }} {{ measurement_unit(item) }}
               </td>
-              <td>
+              <td class="item-name">
                 <div class="food-title">
                   {{ translate_item(item) }}
                   <span
@@ -191,11 +201,27 @@
               </td>
             </tr>
             <tr
+              v-if="showBarcode && item.barcode"
+              :key="'barcode' + item.no + key"
+            >
+              <td v-if="showNumbering"></td>
+              <td></td>
+              <td>
+                <div>{{ _t('Barcode') }} {{ item.barcode }}</div>
+              </td>
+
+              <td></td>
+            </tr>
+            <tr
               v-for="(discount, key) in order.item_discounts"
               :key="'itemdiscount' + item.no + key"
               class="item-discount table-page-child"
             >
               <template v-if="discount.for_item == item.no">
+                <td
+                  class="first-col table-page-child"
+                  v-if="showNumbering"
+                ></td>
                 <td class="first-col table-page-child"></td>
                 <td class="table-page-child">
                   <div class="food-extra">
@@ -209,12 +235,20 @@
               </template>
             </tr>
             <tr :key="'note' + key" v-if="item.note">
+              <td class="first-col table-page-child" v-if="showNumbering"></td>
               <td class="first-col table-page-child"></td>
               <td class="table-page-child">
                 <span class="food-title">{{ _t('Note') }}: </span>
                 <i>{{ item.note }}</i>
               </td>
               <td class="right-aligned table-page-child"></td>
+            </tr>
+            <tr
+              v-if="item.for_combo === false"
+              :key="'spacer' + key"
+              class="spacer"
+            >
+              <td :colspan="colspanFull"><p>&nbsp;</p></td>
             </tr>
           </template>
         </tbody>
@@ -223,13 +257,13 @@
             v-if="template.show_order_notes && order.order_note"
             class="full-width padding-top"
           >
-            <td colspan="3">
+            <td :colspan="colspanFull">
               {{ template.order_notes_label }}<br />{{ order.order_note }}
             </td>
           </tr>
           <template v-if="template.show_breakdown">
             <tr class="padding-top">
-              <td colspan="2">
+              <td :colspan="colspanFirst">
                 {{ template.sub_total_label }}
               </td>
               <td class="right-aligned">
@@ -240,7 +274,7 @@
               v-for="(surcharge, key) in order.order_surcharges"
               :key="'surcharge' + key"
             >
-              <td colspan="2">
+              <td :colspan="colspanFirst">
                 {{ translate_surcharge(surcharge) }}
               </td>
               <td class="right-aligned">
@@ -251,7 +285,7 @@
               v-for="(order_discount, key) in order.order_discounts"
               :key="'orderdiscount' + key"
             >
-              <td colspan="2">
+              <td :colspan="colspanFirst">
                 {{ translate_order_discount(order_discount) }}
               </td>
               <td class="right-aligned">
@@ -259,7 +293,7 @@
               </td>
             </tr>
             <tr>
-              <td colspan="2">
+              <td :colspan="colspanFirst">
                 {{ template.tax_label }}
               </td>
               <td class="right-aligned">
@@ -267,7 +301,7 @@
               </td>
             </tr>
             <tr v-if="parseFloat(order.delivery_surcharge) > 0">
-              <td colspan="2">
+              <td :colspan="colspanFirst">
                 {{ _t('Delivery Surcharge') }}
               </td>
               <td class="right-aligned">
@@ -275,7 +309,7 @@
               </td>
             </tr>
             <tr class="important">
-              <td colspan="3" class="footTotal">
+              <td :colspan="colspanFull" class="footTotal">
                 {{ template.total_label }}
                 <span class="float-right">
                   {{ order.currency }} {{ format_number(order.balance_due) }}
@@ -287,7 +321,7 @@
               :key="'payment' + key"
               class="footer-cash"
             >
-              <td colspan="2">
+              <td :colspan="colspanFirst">
                 {{ translate_payment_type(order_payment) }}
                 <span v-if="order_payment.param3"
                   >({{ template.card_label }} {{ order_payment.param3 }})</span
@@ -303,7 +337,7 @@
                 !preview && order.order_type !== CONST.ORDER_TYPE_CALL_CENTER
               "
             >
-              <td colspan="3" class="footTotal">
+              <td :colspan="colspanFull" class="footTotal">
                 <div>
                   {{ template.total_paid_label }}
                   <span class="float-right"
@@ -317,7 +351,7 @@
               class="important"
               v-if="order.order_type === CONST.ORDER_TYPE_CALL_CENTER"
             >
-              <td colspan="3" class="footTotal">
+              <td :colspan="colspanFull" class="footTotal">
                 {{ referral_data(order.referral) }}
                 {{
                   referral.referral_type === CONST.REFERRAL_TYPE_COD
@@ -332,7 +366,7 @@
                 !preview && order.order_type !== CONST.ORDER_TYPE_CALL_CENTER
               "
             >
-              <td colspan="2">
+              <td :colspan="colspanFirst">
                 {{ template.tips_label }}
               </td>
               <td class="right-aligned">
@@ -344,7 +378,7 @@
                 !preview && order.order_type !== CONST.ORDER_TYPE_CALL_CENTER
               "
             >
-              <td colspan="2">
+              <td :colspan="colspanFirst">
                 {{ template.changed_label }}
               </td>
               <td class="right-aligned">
@@ -355,7 +389,7 @@
               v-for="(cards_with_point, key) in order.loaylty_earn_points"
               :key="'loyalty' + key"
             >
-              <td colspan="2">
+              <td :colspan="colspanFirst">
                 {{ template.loyalty_points_earned_label }}
               </td>
               <td class="right-aligned">
@@ -415,6 +449,20 @@ export default {
     ...mapState('location', ['timezoneString']),
     ...mapState('dinein', ['selectedTableRservationData']),
     ...mapState('order', ['orderType']),
+
+    showBarcode() {
+      return this.template.show_item_barcode
+    },
+    showNumbering() {
+      return this.template.show_item_nos
+    },
+    colspanFull() {
+      return this.showNumbering ? 4 : 3
+    },
+
+    colspanFirst() {
+      return this.showNumbering ? 3 : 2
+    },
 
     dataBeingLoaded() {
       if (!this.order_to_print || !this.template) {
