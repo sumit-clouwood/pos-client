@@ -672,6 +672,7 @@ const mutations = {
     state.modalStatus = 'Edit'
   },
   [mutation.SET_ADD_DETAILS](state, details) {
+    if ('phone_number' in details) details['phone_number'] = state.params.query
     state.editInformation = details
     state.modalStatus = 'Add'
   },

@@ -60,15 +60,25 @@ const actions = {
         })
       })
     }
-    dispatch('convertDatetime', {
-      datetime: orderData.real_created_datetime,
-      format: 'Do MMMM YYYY',
-    })
-    dispatch('convertDatetime', {
-      datetime: orderData.real_created_datetime,
-      format: 'h:mm:ss A',
-    })
-    //Created Date
+    if (orderData.future_order_datetime) {
+      dispatch('convertDatetime', {
+        datetime: orderData.future_order_datetime,
+        format: 'Do MMMM YYYY',
+      })
+      dispatch('convertDatetime', {
+        datetime: orderData.future_order_datetime,
+        format: 'h:mm:ss A',
+      })
+    } else {
+      dispatch('convertDatetime', {
+        datetime: orderData.real_created_datetime,
+        format: 'Do MMMM YYYY',
+      })
+      dispatch('convertDatetime', {
+        datetime: orderData.real_created_datetime,
+        format: 'h:mm:ss A',
+      })
+    }
     // let timezoneString = locationData.timezoneString
     let created_date = state.createdDateTime.date
     //Created Time

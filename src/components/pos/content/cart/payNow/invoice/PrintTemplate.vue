@@ -516,6 +516,13 @@ export default {
     },
     created_time() {
       if (this.order_to_print) {
+        if (this.order.future_order_datetime) {
+          return this.convertDatetime(
+            this.order.future_order_datetime,
+            this.timezoneString,
+            'h:mm:ss A'
+          )
+        }
         return this.convertDatetime(
           this.order.real_created_datetime,
           this.timezoneString,
@@ -526,6 +533,13 @@ export default {
     },
     created_date() {
       if (this.order_to_print) {
+        if (this.order.future_order_datetime) {
+          return this.convertDatetime(
+            this.order.future_order_datetime,
+            this.timezoneString,
+            'Do MMMM YYYY'
+          )
+        }
         return this.convertDatetime(
           this.order.real_created_datetime,
           this.timezoneString,
@@ -564,8 +578,6 @@ export default {
     // we output it. If there are no, we use sample customer. If customer is not set on the order -
     // that means there should be no customer in that order
     customer() {
-      // eslint-disable-next-line no-debugger
-      debugger
       if (this.order) {
         if (this.order.guest_checkout) {
           return {
@@ -614,8 +626,6 @@ export default {
     },
     //This is a method to generate fake order for invoice generation. No need to have bottom part of it at the POS
     order() {
-      // eslint-disable-next-line no-debugger
-      debugger
       if (this.dataBeingLoaded) {
         return null
       }
