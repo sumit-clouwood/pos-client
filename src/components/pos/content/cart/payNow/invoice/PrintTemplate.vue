@@ -516,6 +516,13 @@ export default {
     },
     created_time() {
       if (this.order_to_print) {
+        if (this.order.future_order_datetime) {
+          return this.convertDatetime(
+            this.order.future_order_datetime,
+            this.timezoneString,
+            'h:mm:ss A'
+          )
+        }
         return this.convertDatetime(
           this.order.real_created_datetime,
           this.timezoneString,
@@ -526,6 +533,13 @@ export default {
     },
     created_date() {
       if (this.order_to_print) {
+        if (this.order.future_order_datetime) {
+          return this.convertDatetime(
+            this.order.future_order_datetime,
+            this.timezoneString,
+            'Do MMMM YYYY'
+          )
+        }
         return this.convertDatetime(
           this.order.real_created_datetime,
           this.timezoneString,
