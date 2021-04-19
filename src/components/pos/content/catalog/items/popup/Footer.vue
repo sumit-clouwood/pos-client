@@ -128,6 +128,7 @@ export default {
     },
   },
   mounted() {
+    this.itemDeliveryTime = 0
     setTimeout(() => {
       this.errorMessage = false
     }, 3000)

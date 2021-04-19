@@ -396,14 +396,13 @@ const actions = {
     //replace item in cart
     commit('NOTE_BEFORE_ITEM', note)
   },
-  /*setItemDeliveryTime({ commit }, time) {
-    commit('setItemDeliveryTime', time)
+  addItemDeliveryTime({ commit }, time) {
     let item = { ...state.item }
     item.item_delivery_time = time
     commit(mutation.REPLACE_ORDER_ITEM, {
       item: item,
     })
-  },*/
+  },
 
   prepareModifiersItemCart({ dispatch, commit, rootGetters, rootState }, item) {
     return new Promise((resolve, reject) => {
@@ -681,6 +680,7 @@ const actions = {
       }
 
       item.quantity = quantity
+      item.item_delivery_time = rootState.orderForm.itemDeliveryTime
 
       //if item.measurement_unit and item.measurement_value
       if (item.item_type === CONST.SCALE_ITEM_TYPE && item.measurement_value) {
