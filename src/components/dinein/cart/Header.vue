@@ -80,6 +80,11 @@
           {{ _t('Split') }} {{ _t('Bill') }}
         </button>
       </div>
+      <div class="driver-container">
+        <button class="btn btn-success" @click="moveCustomer">
+          {{ _t('Move Customer') }}
+        </button>
+      </div>
       <div v-if="isSplit" class="driver-container">
         <button
           class="btn btn-success"
@@ -98,9 +103,9 @@
           <img src="img/dinein/guest-user.svg" /> <b> {{ guests }}</b>
         </span>
       </div>
-      <div class="btn btn-success cartBottomBtn">
+      <!-- <div class="btn btn-success cartBottomBtn">
         <i aria-hidden="true" class="fa fa-chevron-down"></i>
-      </div>
+      </div>-->
     </div>
     <div class="scrolls">
       <div
@@ -117,6 +122,11 @@
       >
         <i aria-hidden="true" class="fa fa-chevron-down"></i>
       </div>
+    </div>
+    <div v-if="moveCustomerMsg">
+      <span class="text-danger font-weight-bold right">{{
+        _t('Select table and items')
+      }}</span>
     </div>
   </div>
 </template>
@@ -142,6 +152,7 @@ export default {
       cartItemHeight: 0,
       cartHeight: 0,
       cartInitHeight: 0,
+      moveCustomerMsg: false,
     }
   },
   mounted() {
@@ -208,6 +219,13 @@ export default {
   methods: {
     scroll(option) {
       bus.$emit('scroll-cart', option)
+    },
+    moveCustomer() {
+      /*select items*/
+      /*select table from popup*/
+      /*make new order by items and tables*/
+      !this.moveCustomerMsg ? true : true
+      alert(this.moveCustomerMsg + 'dd')
     },
     printSplit() {
       this.executePayment({ action: 'dine-in-order-preview' }).then(() => {

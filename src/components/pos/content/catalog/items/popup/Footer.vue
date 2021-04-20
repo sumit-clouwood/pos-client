@@ -3,44 +3,7 @@
     <p class="text-danger" v-if="errorMessage">{{ errorMessage }}</p>
     <div class="btn-announce apply_btn">
       <template>
-        <div class="dropdown show">
-          <a
-            class=""
-            href="#"
-            role="button"
-            id="select-item-time"
-            data-toggle="dropdown"
-            aria-haspopup="true"
-            aria-expanded="false"
-          >
-            {{
-              itemDeliveryTime
-                ? itemDeliveryTime + _t(' Minutes')
-                : _t('Item delivery time')
-            }}
-          </a>
-
-          <div class="dropdown-menu" aria-labelledby="select-item-time">
-            <span class="dropdown-item">
-              <span
-                @click="setItemDeliveryTime(0)"
-                href="javascript:void(0)"
-                class="time-s"
-              >
-                {{ _t('On time') }}
-              </span>
-            </span>
-            <span v-for="i in timer_loop" :key="i" class="dropdown-item">
-              <span
-                @click="setItemDeliveryTime(i)"
-                href="javascript:void(0)"
-                class="time-s"
-              >
-                {{ i }}{{ _t(' Minutes') }}
-              </span>
-            </span>
-          </div>
-        </div>
+        <item-delivery-time></item-delivery-time>
         <button
           type="button"
           data-toggle="modal"
@@ -77,7 +40,7 @@
 <script>
 //this footer ll be always called by the catalog and modifiers items only
 import { mapGetters } from 'vuex'
-
+import itemDeliveryTime from '@/components/pos/content/cart/newOrders/items/popup/footer/buttons/ItemTimeDelivery'
 import AddModifierOrderButton from './footer/AddModifierOrderButton'
 import RemoveFromComboButton from './footer/RemoveFromComboButton'
 export default {
@@ -86,14 +49,12 @@ export default {
   data() {
     return {
       errorMessage: false,
-      timerStart: 10,
-      timerEnd: 100,
-      itemDeliveryTime: 0,
     }
   },
   components: {
     AddModifierOrderButton,
     RemoveFromComboButton,
+    itemDeliveryTime,
   },
   computed: {
     ...mapGetters('location', ['_t']),
@@ -109,57 +70,16 @@ export default {
       }
       return false
     },
-    timer_loop() {
-      let timer_ = []
-      let i = this.timerStart
-      for (i; i <= this.timerEnd; i += 10) {
-        timer_.push(i)
-      }
-      return timer_
-    },
   },
   methods: {
-    setItemDeliveryTime(time) {
-      this.itemDeliveryTime = time
-      this.$store.commit('orderForm/setItemDeliveryTime', time)
-    },
     error(errorMessage) {
       this.errorMessage = errorMessage
     },
   },
   mounted() {
-    this.itemDeliveryTime = 0
     setTimeout(() => {
       this.errorMessage = false
     }, 3000)
   },
 }
 </script>
-<style scoped type="scss">
-.dropdown-item {
-  padding: 0.55rem 1.5rem;
-}
-#select-item-time {
-  background: transparent;
-  border: none;
-  border-bottom: 1px solid #000;
-  color: #000;
-  padding: 15px 16px 13px;
-  line-height: 15px;
-}
-@media only screen and (min-width: 320px) and (max-width: 576px) {
-  #select-item-time {
-    width: 100%;
-    font-size: 20px;
-  }
-  .time-s {
-    font-size: 20px;
-  }
-}
-/*.dropdown-menu {
-  padding: 0.5rem 1.5rem;
-}*/
-.time-s {
-  padding: 0.5rem 1.5rem;
-}
-</style>
