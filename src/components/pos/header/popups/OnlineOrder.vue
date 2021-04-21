@@ -336,6 +336,10 @@ export default {
       this.isAudioPlaying = true
     },
     onlineOrderSetup() {
+      // eslint-disable-next-line no-debugger
+      debugger
+      // eslint-disable-next-line no-console
+      console.log(process.env.VUE_APP_SOCKET_DISABLE)
       if (process.env.VUE_APP_SOCKET_DISABLE) {
         return false
       }
@@ -372,6 +376,8 @@ export default {
       this.isAudioPlaying = false
     },
     getOnlineOrders(payload) {
+      // eslint-disable-next-line no-debugger
+      debugger
       let scope = this
       let storeId = this.store ? this.store._id : this.$route.params.store_id
 
@@ -386,7 +392,7 @@ export default {
               $('#online-order')
                 .dialog()
                 .dialog('open')
-              if (!scope.isAudioPlaying) scope.playSound()
+              scope.playSound()
             }
           }
           // clearTimeout(scope.interval)
