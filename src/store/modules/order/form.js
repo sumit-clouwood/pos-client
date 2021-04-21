@@ -5,7 +5,7 @@ const state = {
   quantity: 0,
   checkboxes: [],
   radios: {},
-  itemDeliveryTime: 0,
+  itemServingTime: 0,
 }
 
 // getters
@@ -82,7 +82,7 @@ const mutations = {
   clearSelection(state) {
     state.checkboxes = []
     state.radios = {}
-    state.itemDeliveryTime = 0
+    state.itemServingTime = 0
     //state.quantity = 1
   },
   updateQuantity(state, quantity) {
@@ -143,7 +143,7 @@ const mutations = {
     state.radios = radios
   },
   setItemDeliveryTime(state, time) {
-    state.itemDeliveryTime = time
+    state.itemServingTime = time
   },
 }
 

@@ -398,7 +398,7 @@ const actions = {
   },
   addItemDeliveryTime({ commit }, time) {
     let item = { ...state.item }
-    item.item_delivery_time = time
+    item.item_serving_time = time
     commit(mutation.REPLACE_ORDER_ITEM, {
       item: item,
     })
@@ -680,7 +680,7 @@ const actions = {
       }
 
       item.quantity = quantity
-      item.item_delivery_time = rootState.orderForm.itemDeliveryTime
+      item.item_serving_time = rootState.orderForm.itemServingTime
 
       //if item.measurement_unit and item.measurement_value
       if (item.item_type === CONST.SCALE_ITEM_TYPE && item.measurement_value) {

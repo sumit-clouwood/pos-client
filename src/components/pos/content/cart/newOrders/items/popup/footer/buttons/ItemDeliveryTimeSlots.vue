@@ -5,7 +5,7 @@
       <div class="modal-content color-dashboard-background">
         <div class="modal-header customer-header color-secondary">
           <h4 class="customer-title color-text-invert">
-            {{ _t('Select item delivery time') }}
+            {{ _t('Select item serving time') }}
           </h4>
         </div>
         <div class="modal-body row dining-options-block select-discount">
@@ -15,7 +15,7 @@
                 v-for="i in timer_loop"
                 :key="i"
                 class="time-slots"
-                :class="itemDeliveryTime === i ? 'active' : ''"
+                :class="itemServingTime === i ? 'active' : ''"
               >
                 <span @click="setItemDeliveryTime(i)">
                   <span class="time-number">
@@ -33,7 +33,7 @@
               class="btn btn-success btn-large color-main color-text-invert"
               type="button"
               id="move-Table-only"
-              @click="closeModal(itemDeliveryTime)"
+              @click="closeModal(itemServingTime)"
             >
               {{ _t('Apply') }}
             </button>
@@ -56,7 +56,7 @@ export default {
     return {
       timerStart: 5,
       timerEnd: 60,
-      itemDeliveryTime: 0,
+      itemServingTime: 0,
     }
   },
   computed: {
@@ -72,7 +72,7 @@ export default {
   },
   methods: {
     setItemDeliveryTime(time) {
-      this.itemDeliveryTime = time
+      this.itemServingTime = time
       this.$store.commit('orderForm/setItemDeliveryTime', time)
       this.$store.dispatch('order/addItemDeliveryTime', time)
     },
@@ -82,7 +82,7 @@ export default {
     },
   },
   mounted() {
-    this.itemDeliveryTime = 0
+    this.itemServingTime = 0
   },
 }
 </script>

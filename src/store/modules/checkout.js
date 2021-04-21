@@ -492,7 +492,7 @@ const actions = {
           status: 'in-progress',
           //itemTax.undiscountedTax is without modifiers
           tax: item.tax,
-          item_delivery_time: item.item_delivery_time,
+          item_serving_time: item.item_serving_time,
           //barcode needs to be printed on invoice
           barcode: item.barcode,
           price: item.netPrice,
