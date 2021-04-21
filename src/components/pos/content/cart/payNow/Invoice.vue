@@ -218,6 +218,9 @@ export default {
               word-break: normal;
               text-align: left;
           }
+          .invoice-body.rtl tr th {
+              text-align: right;
+          }
            .invoice-body tr td {
              }
 
@@ -266,10 +269,7 @@ export default {
 
           }
 
-          .invoice-body tbody td.item-name {
-              /*flex-grow: 1;
-              flex-shrink:100;*/
-          }
+
 
           .invoice-body tbody {
               border-bottom: 1px solid #666;
