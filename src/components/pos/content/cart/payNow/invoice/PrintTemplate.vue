@@ -76,7 +76,7 @@
             </th>
           </tr>
           <tr v-if="customer" class="left-aligned">
-            <th :colspan="colspanFirst">
+            <th :colspan="colspanFull">
               {{ template.customer_label }}
               <span class="float-right">{{ customer.name }}</span>
             </th>
