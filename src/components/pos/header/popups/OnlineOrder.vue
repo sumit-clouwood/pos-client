@@ -237,11 +237,6 @@
         </div>
       </div>
     </div>
-    <audio id="onlineAudioSound">
-      <source src="/sounds/doorbell.ogg" type="audio/ogg" />
-      <source src="/sounds/doorbell.mp3" type="audio/mpeg" />
-      Your browser does not support the audio element.
-    </audio>
   </div>
 </template>
 
@@ -251,27 +246,13 @@ import DateTime from '@/mixins/DateTime'
 import InformationPopup from '@/components/pos/content/InformationPopup'
 import Progress from '@/components/util/Progress'
 
-/*var audio = new Audio('/sounds/doorbell.ogg')
+var audio = new Audio('/sounds/doorbell.ogg')
 audio.load()
 audio.addEventListener(
   'ended',
   function() {
     this.currentTime = 0
     this.play()
-  },
-  false
-)*/
-var audio = new Audio('/sounds/doorbell.ogg')
-var nopromise = {
-  catch: new Function(),
-}
-audio.load()
-audio.addEventListener(
-  'ended',
-  function() {
-    this.currentTime = 0
-    this.load()
-    ;(this.play() || nopromise).catch(function() {})
   },
   false
 )
@@ -334,7 +315,6 @@ export default {
       this.$store.commit('deliveryManager/SET_LOADING', true)
       this.updateOrderAction(data)
         .then(() => {
-          alert(1)
           this.$store.dispatch('deliveryManager/getOnlineOrders')
         })
         .catch(er => {
@@ -351,26 +331,16 @@ export default {
         .dialog('close')
     },
     playSound() {
-      // eslint-disable-next-line no-console
-      console.log(audio, this.isAudioPlaying, 'audio payload data')
+      // eslint-disable-next-line prettier/prettier
       audio.play()
-      var audioSound = document.getElementById('onlineAudioSound')
-      audioSound.play()
       this.isAudioPlaying = true
     },
     onlineOrderSetup() {
-      // eslint-disable-next-line no-debugger
-      debugger
-      // eslint-disable-next-line no-console
-      console.log(process.env.VUE_APP_SOCKET_DISABLE)
-      // if (process.env.VUE_APP_SOCKET_DISABLE) {
-      //   return false
-      // }
+      if (process.env.VUE_APP_SOCKET_DISABLE) {
+        return false
+      }
       // let scope = this
       this.$socket.$subscribe('online-order-channel', payload => {
-        // eslint-disable-next-line no-console
-        console.log(payload, 'payload data')
-
         // eslint-disable-next-line no-console
         // console.log(
         //   'payload',
@@ -398,31 +368,25 @@ export default {
         .dialog('close')
     },
     pause() {
-      var audioSound = document.getElementById('onlineAudioSound')
-      audioSound.pause()
-      // audio.pause()
+      audio.pause()
       this.isAudioPlaying = false
     },
     getOnlineOrders(payload) {
-      // eslint-disable-next-line no-debugger
-      debugger
       let scope = this
       let storeId = this.store ? this.store._id : this.$route.params.store_id
-      // eslint-disable-next-line no-console
-      console.log(payload, storeId, 'payload data')
+
       if (
         payload.data.store_id == storeId &&
         scope.lastOrderId !== payload.data.order_id
       ) {
         scope.lastOrderId = payload.data.order_id
-        alert(2)
         this.$store.dispatch('deliveryManager/getOnlineOrders').then(() => {
           if (scope.onlineOrders.count > 0 && scope.privateContext) {
             if (payload.data.action_id === 'add') {
               $('#online-order')
                 .dialog()
                 .dialog('open')
-              scope.playSound()
+              if (!scope.isAudioPlaying) scope.playSound()
             }
           }
           // clearTimeout(scope.interval)
