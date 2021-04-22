@@ -237,6 +237,11 @@
         </div>
       </div>
     </div>
+    <audio id="onlineAudioSound">
+      <source src="/sounds/doorbell.ogg" type="audio/ogg" />
+      <source src="/sounds/doorbell.mp3" type="audio/mpeg" />
+      Your browser does not support the audio element.
+    </audio>
   </div>
 </template>
 
@@ -348,7 +353,9 @@ export default {
     playSound() {
       // eslint-disable-next-line no-console
       console.log(audio, this.isAudioPlaying, 'audio payload data')
-      audio.play()
+      // audio.play()
+      var audioSound = document.getElementById('onlineAudioSound')
+      audioSound.play()
       this.isAudioPlaying = true
     },
     onlineOrderSetup() {
@@ -391,7 +398,9 @@ export default {
         .dialog('close')
     },
     pause() {
-      audio.pause()
+      var audioSound = document.getElementById('onlineAudioSound')
+      audioSound.pause()
+      // audio.pause()
       this.isAudioPlaying = false
     },
     getOnlineOrders(payload) {
