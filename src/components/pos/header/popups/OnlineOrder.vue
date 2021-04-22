@@ -246,13 +246,27 @@ import DateTime from '@/mixins/DateTime'
 import InformationPopup from '@/components/pos/content/InformationPopup'
 import Progress from '@/components/util/Progress'
 
-var audio = new Audio('/sounds/doorbell.ogg')
+/*var audio = new Audio('/sounds/doorbell.ogg')
 audio.load()
 audio.addEventListener(
   'ended',
   function() {
     this.currentTime = 0
     this.play()
+  },
+  false
+)*/
+var audio = new Audio('/sound/doorbell.ogg')
+var nopromise = {
+  catch: new Function(),
+}
+audio.load()
+audio.addEventListener(
+  'ended',
+  function() {
+    this.currentTime = 0
+    this.load()
+    ;(this.play() || nopromise).catch(function() {})
   },
   false
 )
@@ -315,6 +329,7 @@ export default {
       this.$store.commit('deliveryManager/SET_LOADING', true)
       this.updateOrderAction(data)
         .then(() => {
+          alert(1)
           this.$store.dispatch('deliveryManager/getOnlineOrders')
         })
         .catch(er => {
@@ -331,7 +346,8 @@ export default {
         .dialog('close')
     },
     playSound() {
-      // eslint-disable-next-line prettier/prettier
+      // eslint-disable-next-line no-console
+      console.log(audio, this.isAudioPlaying, 'audio payload data')
       audio.play()
       this.isAudioPlaying = true
     },
@@ -340,11 +356,14 @@ export default {
       debugger
       // eslint-disable-next-line no-console
       console.log(process.env.VUE_APP_SOCKET_DISABLE)
-      if (process.env.VUE_APP_SOCKET_DISABLE) {
-        return false
-      }
+      // if (process.env.VUE_APP_SOCKET_DISABLE) {
+      //   return false
+      // }
       // let scope = this
       this.$socket.$subscribe('online-order-channel', payload => {
+        // eslint-disable-next-line no-console
+        console.log(payload, 'payload data')
+
         // eslint-disable-next-line no-console
         // console.log(
         //   'payload',
@@ -380,12 +399,14 @@ export default {
       debugger
       let scope = this
       let storeId = this.store ? this.store._id : this.$route.params.store_id
-
+      // eslint-disable-next-line no-console
+      console.log(payload, storeId, 'payload data')
       if (
         payload.data.store_id == storeId &&
         scope.lastOrderId !== payload.data.order_id
       ) {
         scope.lastOrderId = payload.data.order_id
+        alert(2)
         this.$store.dispatch('deliveryManager/getOnlineOrders').then(() => {
           if (scope.onlineOrders.count > 0 && scope.privateContext) {
             if (payload.data.action_id === 'add') {
