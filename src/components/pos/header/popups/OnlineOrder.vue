@@ -261,7 +261,7 @@ audio.addEventListener(
   },
   false
 )*/
-var audio = new Audio('/sound/doorbell.ogg')
+var audio = new Audio('/sounds/doorbell.ogg')
 var nopromise = {
   catch: new Function(),
 }
@@ -353,7 +353,7 @@ export default {
     playSound() {
       // eslint-disable-next-line no-console
       console.log(audio, this.isAudioPlaying, 'audio payload data')
-      // audio.play()
+      audio.play()
       var audioSound = document.getElementById('onlineAudioSound')
       audioSound.play()
       this.isAudioPlaying = true
