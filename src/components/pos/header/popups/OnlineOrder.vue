@@ -237,25 +237,22 @@
         </div>
       </div>
     </div>
+    <audio id="orderSound">
+      <source src="/sounds/doorbell.ogg" type="audio/ogg" />
+      <source src="/sounds/doorbell.mp3" type="audio/mpeg" />
+      Your browser does not support the audio element.
+    </audio>
   </div>
 </template>
 
 <script>
+/* eslint-disable no-console */
+
 import { mapState, mapActions, mapGetters } from 'vuex'
 import DateTime from '@/mixins/DateTime'
 import InformationPopup from '@/components/pos/content/InformationPopup'
 import Progress from '@/components/util/Progress'
 
-var audio = new Audio('/sounds/doorbell.ogg')
-audio.load()
-audio.addEventListener(
-  'ended',
-  function() {
-    this.currentTime = 0
-    this.play()
-  },
-  false
-)
 /* global $ */
 export default {
   name: 'OnlineOrder',
@@ -332,8 +329,17 @@ export default {
     },
     playSound() {
       // eslint-disable-next-line prettier/prettier
-      audio.play()
-      this.isAudioPlaying = true
+      console.log('trying to play audio')
+      if (this.audio && !this.isAudioPlaying) {
+        try {
+          this.audio.play()
+          console.log('audio played')
+        } catch (e) {
+          console.log('playback error', e)
+        }
+      } else {
+        console.log('audio can not be played')
+      }
     },
     onlineOrderSetup() {
       if (process.env.VUE_APP_SOCKET_DISABLE) {
@@ -368,8 +374,10 @@ export default {
         .dialog('close')
     },
     pause() {
-      audio.pause()
-      this.isAudioPlaying = false
+      if (this.audio) {
+        this.audio.pause()
+        this.isAudioPlaying = false
+      }
     },
     getOnlineOrders(payload) {
       let scope = this
@@ -379,6 +387,8 @@ export default {
         payload.data.store_id == storeId &&
         scope.lastOrderId !== payload.data.order_id
       ) {
+        if (!scope.isAudioPlaying) scope.playSound()
+
         scope.lastOrderId = payload.data.order_id
         this.$store.dispatch('deliveryManager/getOnlineOrders').then(() => {
           if (scope.onlineOrders.count > 0 && scope.privateContext) {
@@ -398,6 +408,22 @@ export default {
   },
   created() {
     this.onlineOrderSetup()
+  },
+  mounted() {
+    this.audio = document.querySelector('#orderSound')
+    this.audio.addEventListener('canplaythrough', event => {
+      /* the audio is now playable; play it if permissions allow */
+      console.log(event, 'this audio can be played now')
+    })
+    this.audio.addEventListener('playing', event => {
+      /* the audio is now playable; play it if permissions allow */
+      this.isAudioPlaying = true
+      console.log(event, 'playing')
+    })
+    this.audio.addEventListener('ended', event => {
+      this.isAudioPlaying = false
+      console.log(event, 'ended')
+    })
   },
 }
 </script>
