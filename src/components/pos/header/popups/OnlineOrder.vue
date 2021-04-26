@@ -307,7 +307,11 @@ export default {
       return this.$store.state.auth.token
     },
   },
-  updated() {},
+  updated() {
+    if (!this.onlineOrders.count) {
+      this.pauseSound()
+    }
+  },
   methods: {
     ...mapActions('deliveryManager', ['showOrderDetails']),
     updateOrder(data) {
@@ -345,6 +349,7 @@ export default {
       promise.catch(error => {
         console.log(error)
       })
+      this.isAudioPlaying = true
     },
     pauseSound() {
       console.log('pausing sound')
@@ -352,6 +357,7 @@ export default {
       promise.catch(error => {
         console.log(error)
       })
+      this.isAudioPlaying = false
     },
     getOnlineOrders(payload) {
       let storeId = this.store ? this.store._id : this.$route.params.store_id
