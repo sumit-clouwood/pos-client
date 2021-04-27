@@ -76,7 +76,7 @@
             </th>
           </tr>
           <tr v-if="customer" class="left-aligned">
-            <th :colspan="colspanFirst">
+            <th :colspan="colspanFull">
               {{ template.customer_label }}
               <span class="float-right">{{ customer.name }}</span>
             </th>
@@ -102,7 +102,9 @@
         </thead>
         <tbody>
           <tr class="table-title">
-            <th class="serial" v-if="showNumbering" valign="top">#</th>
+            <th class="first-col serial" v-if="showNumbering" valign="top">
+              #
+            </th>
             <th class="first-col qty">{{ template.qty_label }}</th>
             <th class="item-name">{{ template.item_label }}</th>
             <th class="right-aligned">{{ template.amount_label }}</th>
@@ -112,7 +114,7 @@
           </tr>
           <template v-for="(item, key) in order.items">
             <tr v-if="item.type == 'combo_item'" :key="key">
-              <td class="serial" v-if="showNumbering" valign="top">
+              <td class="first-col serial" v-if="showNumbering" valign="top">
                 {{ key + 1 }}
               </td>
               <td class="first-col qty" valign="top">
