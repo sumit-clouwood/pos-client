@@ -18,7 +18,7 @@
                 ></path>
               </svg>
             </span>
-            Move Table
+            {{ _t('Move Table') }}
           </button>
           <button type="" id="dine-split-table" class="popup-btn-save">
             <span
@@ -35,7 +35,7 @@
                 ></path>
               </svg>
             </span>
-            Split Table
+            {{ _t('Split Table') }}
           </button>
           <button type="" id="dine-print-bill" class="popup-btn-save">
             <span
@@ -55,7 +55,7 @@
                 </g>
               </svg>
             </span>
-            Print Bill
+            {{ _t('Print Bill') }}
           </button>
           <button type="" id="dine-pay" class="popup-btn-save">
             <span
@@ -80,7 +80,7 @@
                 </g>
               </svg>
             </span>
-            Pay
+            {{ _t('Pay') }}
           </button>
         </div>
       </div>
@@ -89,11 +89,15 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
   name: 'Footer',
   props: {},
   components: {},
-  computed: {},
+  computed: {
+    ...mapGetters('location', ['_t']),
+  },
   methods: {},
   updated() {},
 }

@@ -393,6 +393,22 @@
               </div>
             </a>
           </div>
+          <div
+            class="profile-menu-item"
+            v-if="allowed(PERMS.UPDATE_POS_WAITING_TIME)"
+          >
+            <div class="profile-menu-item-icon">
+              <img src="/img/waiting_time.png" width="21px" height="21px" />
+            </div>
+            <a
+              data-toggle="modal"
+              data-target="#pos-waiting-time"
+              role="button"
+              class="cursor-pointer business-summary"
+            >
+              <span>{{ _t('POS Waiting Time') }}</span>
+            </a>
+          </div>
         </div>
       </div>
       <div class="profile-sidebar-footer">
@@ -409,7 +425,7 @@
               fill="#CC3232"
             />
           </svg>
-          Logout
+          {{ _t('Logout') }}
         </div>
       </div>
     </div>

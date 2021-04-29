@@ -186,13 +186,12 @@ const actions = {
             dispatch('getDineInArea').then(() => {
               return resolve()
             })
-          } else {
-            dispatch('getTableStatus')
           }
           commit(mutation.BOOKED_TABLES, response.data)
           if (loader) commit(mutation.LOADING, false)
         })
         .catch(er => reject(er))
+      dispatch('getTableStatus')
     })
   },
   seOrderData({ commit }, response) {
@@ -336,14 +335,15 @@ const actions = {
         availableCount: 0,
         unavailableCount: 0,
         availableSoonCount: 0,
+        emptyTableCount: 0,
         table: [],
       }
-      let tables_status_update = []
       let orderOnTable = []
       if (state.tablesOnArea) {
         state.tablesOnArea.forEach(table => {
           let is_unavail = 0
           let is_avail_soon = 0
+          let is_reserved_empty = 0
           let orders = []
           let table_details = {
             id: table._id,
@@ -356,12 +356,13 @@ const actions = {
               order => order.assigned_table_id === table._id
             )
           }
-          // tables_status_update = Object.assign({}, tableStatus)
           let empty_reserved_table = []
           state.allBookedTables.orders.filter(order_table => {
             if (order_table.status === 'reserved') {
-              empty_reserved_table[order_table.assigned_table_id] =
-                order_table.start_time
+              empty_reserved_table[order_table.assigned_table_id] = {
+                time: order_table.start_time,
+                date: order_table.start_date,
+              }
             }
           })
           if (orders.length) {
@@ -370,12 +371,15 @@ const actions = {
               if (tableArray[order.assigned_table_id] == undefined)
                 tableArray[order.assigned_table_id] = []
               tableArray[order.assigned_table_id].push(order.status)
-              if (
-                order.status === CONST.ORDER_STATUS_RESERVED ||
-                order.status === CONST.ORDER_STATUS_IN_PROGRESS
-              ) {
+              if (order.status === CONST.ORDER_STATUS_IN_PROGRESS) {
                 if (order.assigned_table_id == table._id) {
                   is_unavail = 1
+                } else {
+                  is_reserved_empty = 1
+                }
+              } else if (order.status === CONST.ORDER_STATUS_RESERVED) {
+                if (order.assigned_table_id == table._id) {
+                  is_reserved_empty = 1
                 }
               } else if (order.status === CONST.ORDER_STATUS_ON_WAY) {
                 if (order.assigned_table_id == table._id) {
@@ -413,11 +417,17 @@ const actions = {
             ) {
               if (empty_reserved_table && empty_reserved_table[table._id]) {
                 let table_book_date_time = empty_reserved_table[table._id]
-                  ? availability.timeConvert(empty_reserved_table[table._id])
+                  ? availability.timeConvert(
+                      empty_reserved_table[table._id].time
+                    )
                   : 0
                 // let table_book_date_time = availability.timeConvert(
                 //   order.start_time
                 // )
+                const table_book_date_date = moment
+                  .utc(empty_reserved_table[table._id].date)
+                  .format('YYYY-MM-DD')
+                const current_date_active = moment.utc().format('YYYY-MM-DD')
                 let empty_table_time = availability.timeConvert(
                   getters.getTableEmptyTime
                 )
@@ -425,8 +435,8 @@ const actions = {
                   availability.getUTCCurrentTime()
                 )
                 if (
-                  getUTCCurrentTime >
-                  table_book_date_time + empty_table_time
+                  getUTCCurrentTime > table_book_date_time + empty_table_time ||
+                  table_book_date_date < current_date_active
                 ) {
                   if (table_book_date_time) {
                     // let new_table = table
@@ -452,17 +462,17 @@ const actions = {
               table_details.status.text = 'available'
             }
             tableStatus.table.push(table_details)
-            if (is_unavail == 1) {
+            if (is_unavail === 1) {
               tableStatus.unavailableCount += 1
             }
-            if (is_avail_soon == 1) {
+            if (is_reserved_empty === 1) {
+              tableStatus.emptyTableCount += 1
+            }
+            if (is_avail_soon === 1) {
               tableStatus.availableSoonCount += 1
             }
           } else {
             tableStatus.availableCount = parseInt(state.tablesOnArea.length)
-            /*-
-            parseInt(tableStatus.unavailableCount) +
-            parseInt(tableStatus.availableSoonCount)*/
             table_details.status.color = '#62bb31'
             table_details.status.text = 'available'
             tableStatus.table.push(table_details)
@@ -472,8 +482,6 @@ const actions = {
           commit(mutation.ORDER_ON_TABLES, orderOnTable)
         })
       }
-      // eslint-disable-next-line no-console
-      console.log('order no item length', tableStatus, tables_status_update)
       commit(mutation.TABLE_STATUS, tableStatus)
       resolve()
     })
@@ -536,7 +544,32 @@ const actions = {
             .format('YYYY-MM-DD'),
           start_time: moment()
             .utc()
-            .format('hh:mm'),
+            .format('HH:mm'),
+          assigned_table_id: tableId,
+          number_of_guests: state.guests,
+          customers: [],
+        },
+      ]
+      dispatch('newReservation', ...params)
+    }
+  },
+  newReservationForMovingItems(
+    { commit, state, dispatch, rootState },
+    tableId
+  ) {
+    commit(mutation.LOADING, false)
+    // dispatch('order/reset', {}, { root: true })
+    // dispatch('checkout/reset', {}, { root: true })
+    if (rootState.order.selectItemsToMove) {
+      const params = [
+        {
+          //need to set UTC
+          start_date: moment()
+            .utc()
+            .format('YYYY-MM-DD'),
+          start_time: moment()
+            .utc()
+            .format('HH:mm'),
           assigned_table_id: tableId,
           number_of_guests: state.guests,
           customers: [],
@@ -656,10 +689,21 @@ const actions = {
     const reservationsOnTable = getters.getCurrentTableRunningReservations
 
     reservationsOnTable.forEach(reservation => {
-      DineInService.switchWaiter(reservation.reservationId, {
-        switch_from: reservation.assigned_to,
-        switch_to: waiter._id,
-      })
+      let orderIds = reservation.orderIds
+      if (orderIds.length) {
+        orderIds.forEach(order_id => {
+          DineInService.switchWaiter(reservation.reservationId, {
+            switch_from: reservation.assigned_to,
+            switch_to: waiter._id,
+            order_id: order_id,
+          })
+        })
+      } /*else {
+        DineInService.switchWaiter(reservation.reservationId, {
+          switch_from: reservation.assigned_to,
+          switch_to: waiter._id,
+        })
+      }*/
     })
   },
   /*switchWaiter({ state, rootGetters }, waiter) {

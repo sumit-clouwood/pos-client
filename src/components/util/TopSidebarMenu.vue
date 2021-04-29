@@ -22,7 +22,7 @@
         </svg>
       </a>
     </li>
-    <ul v-show="!cashier_walkin" class="setting-dropdown">
+    <li v-show="!cashier_walkin" class="setting-dropdown">
       <div class="profile-sidebar-header">
         <avatar />
         <div class="btn-close" @click="closeConfigLinks">✖</div>
@@ -384,6 +384,18 @@
             <span>{{ _t('Business Summary') }}</span>
           </a>
         </li>
+        <li v-if="allowed(PERMS.UPDATE_POS_WAITING_TIME)">
+          <!--UPDATE_POS_WAITING_TIME-->
+          <a
+            data-toggle="modal"
+            data-target="#pos-waiting-time"
+            role="button"
+            class="cursor-pointer business-summary"
+          >
+            <img src="/img/waiting_time.png" width="21px" height="21px" />
+            <span>{{ _t('POS Waiting Time') }}</span>
+          </a>
+        </li>
         <!--Added a new button for IOS and Android KOT App-->
         <li v-if="!isWaiter() && !isCarhop() && isDimsKotApp()">
           <a
@@ -458,12 +470,13 @@
           >
         </li>
       </ul>
-    </ul>
+    </li>
     <PrinterSettings v-if="isDimsPosApp()" />
 
     <IOSPrintingSetting v-if="isDimsIOSApp()" />
     <BusinessSummary />
     <SupervisorPasswordView />
+    <p-o-s-waiting-time></p-o-s-waiting-time>
   </ul>
 </template>
 <script>
@@ -475,10 +488,12 @@ import avatar from '@/components/mobileComponents/mobileElements/avatar'
 import PrinterSettings from '../pos/footer/popups/PrinterSettings'
 import BusinessSummary from '../pos/footer/popups/BusinessSummary'
 import IOSPrintingSetting from '../pos/footer/popups/IOSPrinterSetting'
+import POSWaitingTime from '@/components/util/POSWaitingTime'
 export default {
   name: 'TopSidebarMenu',
   props: {},
   components: {
+    POSWaitingTime,
     //SwitchStore,
     avatar,
     PrinterSettings,

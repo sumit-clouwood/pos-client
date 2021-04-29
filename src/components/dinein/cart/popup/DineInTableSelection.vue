@@ -95,6 +95,7 @@ export default {
     ...mapGetters('location', ['_t']),
     ...mapState('dinein', ['availableTables', 'selectedTable']),
     ...mapGetters('context', ['store']),
+    ...mapState('order', ['selectItemsToMove']),
   },
   methods: {
     setTable: function(table) {
@@ -110,23 +111,35 @@ export default {
       }
     },
     moveSelectedTable(moveToDineIn) {
+      // eslint-disable-next-line no-debugger
+      debugger
       let table = this.moveTableDetails
       if (table) {
         if (table.table_number) {
           table.number = table.table_number
         }
-        this.$store.commit('dinein/SELECTED_TABLE', table)
-        this.$store.commit('dinein/POS_MOVE_TABLE_SELECTION', table)
-        // let coverId = table.id
-        let tableId = table.table_id
-        let reservationId = localStorage.getItem('reservationId')
-        //Move Table Functionality.
-        let data = {
-          table: tableId,
-          reservationid: reservationId,
-          status: 'move_table',
+        if (this.selectItemsToMove) {
+          this.$store.dispatch(
+            'dinein/newReservationForMovingItems',
+            table.table_id
+          )
+        } else {
+          this.$store.commit('dinein/SELECTED_TABLE', table)
+          this.$store.commit('dinein/POS_MOVE_TABLE_SELECTION', table)
+          // let coverId = table.id
+          /*if (this.selectItemsToMove) {
+            return true
+          }*/
+          let tableId = table.table_id
+          let reservationId = localStorage.getItem('reservationId')
+          //Move Table Functionality.
+          let data = {
+            table: tableId,
+            reservationid: reservationId,
+            status: 'move_table',
+          }
+          this.$store.dispatch('dinein/moveTable', data)
         }
-        this.$store.dispatch('dinein/moveTable', data)
       } else {
         this.selectedTableMove = ''
       }

@@ -2,6 +2,10 @@
   <div class="dinein-table-control">
     <div class="dinein-seat-available">
       <ul class="ullist-dinein-table" v-if="tableStatus">
+        <li id="reserved-seat">
+          <span>{{ tableStatus.emptyTableCount }}</span
+          >{{ _t('Reserved') }}
+        </li>
         <li id="unavailable-seat">
           <span>{{ tableStatus.unavailableCount }}</span
           >{{ _t('Unavailable') }}
@@ -254,7 +258,9 @@ export default {
       if (tableStatus.availableCount > 0) {
         tableCount =
           tableStatus.availableCount -
-          (tableStatus.unavailableCount + tableStatus.availableSoonCount)
+          (tableStatus.unavailableCount +
+            tableStatus.availableSoonCount +
+            tableStatus.emptyTableCount)
       }
       return tableCount
     },

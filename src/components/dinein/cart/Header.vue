@@ -80,9 +80,17 @@
           {{ _t('Split') }} {{ _t('Bill') }}
         </button>
       </div>
-      <div class="driver-container">
-        <button class="btn btn-success" @click="moveCustomer">
-          {{ _t('Move Customer') }}
+      <div
+        class="driver-container"
+        v-if="!showSplitOption && orderId && covers && cartType !== 'hold'"
+      >
+        <button
+          class="btn btn-success"
+          :data-target="moveTableModal"
+          data-toggle="modal"
+          @click="moveItems"
+        >
+          {{ _t('Move Items') }}
         </button>
       </div>
       <div v-if="isSplit" class="driver-container">
@@ -93,15 +101,6 @@
         >
           {{ _t('Print') }}
         </button>
-      </div>
-      <div class="color-main color-text dine-in-table-guest-details-pos">
-        <span class="tables-draw" v-if="selectedTable">
-          <img src="img/dinein/dine-intable.svg" />
-          <b> {{ selectedTable.number }}</b>
-        </span>
-        <span class="tables-draw">
-          <img src="img/dinein/guest-user.svg" /> <b> {{ guests }}</b>
-        </span>
       </div>
       <!-- <div class="btn btn-success cartBottomBtn">
         <i aria-hidden="true" class="fa fa-chevron-down"></i>
@@ -122,8 +121,18 @@
       >
         <i aria-hidden="true" class="fa fa-chevron-down"></i>
       </div>
+      <div class="color-main color-text dine-in-table-guest-details-pos">
+        <span class="tables-draw" v-if="selectedTable">
+          <img src="img/dinein/dine-intable.svg" />
+          <b> {{ selectedTable.number }}</b>
+        </span>
+        <span class="tables-draw">
+          <img src="img/dinein/guest-user.svg" />
+          <b> {{ guests }}</b>
+        </span>
+      </div>
     </div>
-    <div v-if="moveCustomerMsg">
+    <div v-if="moveItemsMsg">
       <span class="text-danger font-weight-bold right">{{
         _t('Select table and items')
       }}</span>
@@ -152,7 +161,8 @@ export default {
       cartItemHeight: 0,
       cartHeight: 0,
       cartInitHeight: 0,
-      moveCustomerMsg: false,
+      moveItemsMsg: this.selectItemsToMove,
+      moveTableModal: '',
     }
   },
   mounted() {
@@ -182,6 +192,7 @@ export default {
       'orderType',
       'orderData',
       'orderSource',
+      'selectItemsToMove',
     ]),
     ...mapState('checkoutForm', ['msg']),
     ...mapState('customer', ['deliveryAreas']),
@@ -202,17 +213,17 @@ export default {
     }),
     ...mapGetters('context', ['store']),
     ...mapGetters('auth', ['waiter']),
-
-    enabledSplitBill() {
-      const newItemsAddedToCart = this.$store.state.order.items.some(
+    showSplitOption() {
+      return this.$store.state.order.items.some(
         item => typeof item.no === 'undefined'
       )
-
+    },
+    enabledSplitBill() {
       return (
         this.brand.split_bill &&
         this.items.length > 1 &&
         !this.waiter &&
-        !newItemsAddedToCart
+        !this.showSplitOption
       )
     },
   },
@@ -220,12 +231,19 @@ export default {
     scroll(option) {
       bus.$emit('scroll-cart', option)
     },
-    moveCustomer() {
+    moveItems() {
       /*select items*/
       /*select table from popup*/
       /*make new order by items and tables*/
-      !this.moveCustomerMsg ? true : true
-      alert(this.moveCustomerMsg + 'dd')
+      this.moveItemsMsg = !this.moveItemsMsg
+      if (this.moveItemsMsg) {
+        this.$store.dispatch('order/setSplitBill')
+        this.moveTableModal = '#dine-in-table-selection'
+        this.$store.commit('order/MOVE_SELECTED_ITEMS', true)
+      } else {
+        this.moveTableModal = ''
+        this.$store.commit('order/RESET_SPLIT_BILL')
+      }
     },
     printSplit() {
       this.executePayment({ action: 'dine-in-order-preview' }).then(() => {
@@ -235,6 +253,7 @@ export default {
       })
     },
     showSplitBill() {
+      this.$store.commit('order/MOVE_SELECTED_ITEMS', false)
       this.$store.dispatch('order/setSplitBill')
     },
     removeSelectedCustomer() {
@@ -316,4 +335,6 @@ export default {
 <style lang="sass" scoped>
 .scrolls
   margin-top: 4px
+  display: grid
+  grid-template-columns: auto auto auto
 </style>

@@ -33,6 +33,7 @@ const getDefaults = () => ({
   brandStores: false,
   jeeblyOrder: [],
   locationData: undefined,
+  update_pos_waiting_time: undefined,
 })
 
 const state = getDefaults()
@@ -558,6 +559,12 @@ const mutations = {
   },
   SET_LOCATION_DATA(state, data) {
     state.locationData = data
+  },
+  SET_POS_WAITING_TIME(state, data) {
+    state.update_pos_waiting_time = data
+  },
+  SET_STORE_POS_WAITING_TIME(state, time) {
+    state.store.waiting_time = time.waiting_time
   },
 }
 

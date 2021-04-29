@@ -464,7 +464,8 @@ const actions = {
       let item = null
       //reset modifiers
       // commit(mutation.ITEM_MODIFIERS_COLLECTION, false)
-      if (rootState.order.splitBill) {
+      debugger
+      if (rootState.order.splitBill || rootState.order.selectItemsToMove) {
         if (action === 'dine-in-place-order') {
           //place order
           if (oitem.paid === false) {
@@ -788,6 +789,7 @@ const actions = {
 
                 order = {
                   cashier_id: rootState.auth.userDetails.item._id,
+                  assigned_to: rootState.auth.userDetails.item._id,
                   customer: !rootState.isBrandHasDeliveryOrder ? rootState.customer.customerId : '',
                   customer_address_id: '',
                   referral: '',
@@ -984,6 +986,7 @@ const actions = {
     if (selOrder) {
       if (selOrder.cashier_id) {
         order.cashier_id = selOrder.cashier_id
+        order.assigned_to = selOrder.cashier_id
       } else if (selOrder.order_history) {
         const history = OrderHelper.lookup(
           selOrder,
@@ -993,6 +996,9 @@ const actions = {
         )
         if (history) {
           order.cashier_id = history.user
+          if (!order.assigned_to) {
+            order.assigned_to = history.user
+          }
         }
       }
     }

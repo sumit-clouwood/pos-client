@@ -1,13 +1,14 @@
 <template>
-  <span
-    v-if="allowed(PERMS.SWITCH_WAITER && PERMS.SWITCH_WAITER_API)"
+  <button
     data-toggle="modal"
     data-target="#switchWaiter"
+    type="button"
+    class="btn bg-success table-popup font-weight-bold"
     data-dismiss="modal"
-    class="table-popup popbtn bg-success font-weight-bold"
   >
+    <!--    v-if="allowed(PERMS.SWITCH_WAITER && PERMS.SWITCH_WAITER_API)"-->
     {{ _t('Switch Waiter') }}
-  </span>
+  </button>
 </template>
 <script>
 import { mapGetters } from 'vuex'

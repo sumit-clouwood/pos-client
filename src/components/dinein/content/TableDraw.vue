@@ -6,7 +6,166 @@
       <div class="sitting-dinein-table ui-droppable" id="sitting-dinein-table">
         <div class="sitting-dine-wrap disable-sorting" v-if="tablesOnArea">
           <AllTables :viewBox="viewBox" />
-          <div id="tooltipdata" class="dropdown-content cursor-pointer">
+          <div
+            class="modal fade"
+            id="tooltipdata"
+            tabindex="-1"
+            role="dialog"
+            aria-labelledby="exampleModalLabel"
+            aria-hidden="true"
+          >
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">
+                    {{ _t('Table information') }}
+                  </h5>
+                  <button
+                    type="button"
+                    class="close"
+                    data-dismiss="modal"
+                    aria-label="Close"
+                  >
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <div
+                    class="m-1 table-order-content"
+                    v-if="orderDetails.length"
+                  >
+                    <div
+                      class="table-order"
+                      v-for="orderData in orderDetails"
+                      :key="orderData.reservationId"
+                    >
+                      <div v-if="orderData.orderIds.length">
+                        <div
+                          class="table-action order-details-with-action"
+                          v-for="orderId in orderData.orderIds"
+                          :key="orderId"
+                        >
+                          <div
+                            class="text-capitalize dt-items"
+                            v-if="allBookedTables.lookup.orders._id"
+                          >
+                            {{ orderData.tableNumber }}
+                            #{{ getOrderNo(orderId) }}
+                          </div>
+                          <div
+                            class="order-details-with-action"
+                            v-if="orderStatus(orderId) !== 'finished'"
+                          >
+                            <button
+                              class="btn bg-success table-popup font-weight-bold"
+                              @click="
+                                updateOrder({
+                                  orderId: orderId,
+                                  orderData: orderData,
+                                })
+                              "
+                            >
+                              {{ _t('Update') }}
+                              <!--Split Bill-->
+                            </button>
+                            <button
+                              class="btn bg-danger table-popup font-weight-bold"
+                              @click="
+                                cancelReservation(orderData.reservationId)
+                              "
+                            >
+                              <span class="dlt-icon">
+                                <img
+                                  src="img/pos/delete-icon-reservation.svg"
+                                />
+                              </span>
+                            </button>
+                          </div>
+                          <div v-else>
+                            <div
+                              class="paid-amount-msg text-center font-weight-bold"
+                            >
+                              <img
+                                src="img/dinein/paid-icon.png"
+                                style="width:33px"
+                              />
+                              {{ _t('Paid') }}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        v-else
+                        class="table-action order-details-with-action"
+                      >
+                        <div class="text-capitalize dt-items">
+                          {{ orderData.tableNumber }} #{{ _t('Reserved') }} |
+                          {{ created_date(orderData.startDate) }},
+                          {{ created_time(orderData.startTime) }}
+                        </div>
+                        <div
+                          class="order-details-with-action table-draw-order-details"
+                        >
+                          <button
+                            class="btn bg-success table-popup font-weight-bold"
+                            @click="newOrder(orderData.reservationId, true)"
+                          >
+                            {{ _t('Add Order') }}
+                          </button>
+                          <button
+                            class="btn bg-danger table-popup font-weight-bold"
+                            @click="cancelReservation(orderData.reservationId)"
+                          >
+                            <span class="dlt-icon">
+                              <img src="img/pos/delete-icon-reservation.svg" />
+                            </span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="m-1 table-order-content" v-else>
+                    <div class="">
+                      {{ _t('Table is not reserved yet') }}
+                    </div>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <div
+                    v-if="brand && brand.number_of_guests"
+                    class="table-order-footer"
+                  >
+                    <button
+                      data-toggle="modal"
+                      data-target="#placeOrder"
+                      type="button"
+                      class="btn bg-success table-popup font-weight-bold"
+                      data-dismiss="modal"
+                      @click="closeMyself"
+                    >
+                      {{ _t(addOrSplit) }}
+                    </button>
+                    <switch-waiter v-if="orderDetails.length"></switch-waiter>
+                  </div>
+                  <div class="table-order-footer" v-else>
+                    <div class="m-1 buttons">
+                      <button
+                        data-toggle="modal"
+                        type="button"
+                        class="btn bg-success table-popup font-weight-bold"
+                        data-dismiss="modal"
+                        @click="newOrder(false, brand.book_table)"
+                      >
+                        {{ _t(addOrSplit) }}
+                      </button>
+                      <switch-waiter v-if="orderDetails.length"></switch-waiter>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!--<div id="tooltipdata1" class="dropdown-content cursor-pointer">
             <div class="tooltip-c-range" id="range" :key="componentKey">
               <div class="display-table-details">
                 <div class="table-header-border-bottom">
@@ -21,122 +180,8 @@
                   X
                 </span>
               </div>
-              <div class="m-1 table-order-content" v-if="orderDetails">
-                <div
-                  class="table-order"
-                  v-for="orderData in orderDetails"
-                  :key="orderData.reservationId"
-                >
-                  <div v-if="orderData.orderIds.length">
-                    <div
-                      class="table-action order-details-with-action"
-                      v-for="orderId in orderData.orderIds"
-                      :key="orderId"
-                    >
-                      <div
-                        class="text-capitalize dt-items"
-                        v-if="allBookedTables.lookup.orders._id"
-                      >
-                        {{ orderData.tableNumber }}
-                        #{{ getOrderNo(orderId) }}
-                      </div>
-                      <div
-                        class="order-details-with-action"
-                        v-if="orderStatus(orderId) !== 'finished'"
-                      >
-                        <div
-                          class="table-popup bg-success font-weight-bold"
-                          @click="
-                            updateOrder({
-                              orderId: orderId,
-                              orderData: orderData,
-                            })
-                          "
-                        >
-                          {{ _t('Update') }}
-                          <!--Split Bill-->
-                        </div>
-                        <div
-                          class="cursor-pointer text-danger reservation-cancel btn btn-danger"
-                          @click="cancelReservation(orderData.reservationId)"
-                        >
-                          <span class="dlt-icon">
-                            <img src="img/pos/delete-icon-reservation.svg" />
-                          </span>
-                        </div>
-                      </div>
-                      <div v-else>
-                        <div
-                          class="paid-amount-msg text-center font-weight-bold"
-                        >
-                          <img
-                            src="img/dinein/paid-icon.png"
-                            style="width:33px"
-                          />
-                          {{ _t('Paid') }}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div v-else class="table-action order-details-with-action">
-                    <div class="text-capitalize dt-items">
-                      {{ orderData.tableNumber }} #R |
-                      {{ created_date(orderData.startDate) }},
-                      {{ created_time(orderData.startTime) }}
-                    </div>
-                    <div
-                      class="order-details-with-action table-draw-order-details"
-                    >
-                      <div
-                        class="table-popup bg-success font-weight-bold"
-                        @click="newOrder(orderData.reservationId, true)"
-                      >
-                        {{ _t('Add Order') }}
-                      </div>
-                      <div
-                        class="cursor-pointer text-danger reservation-cancel  btn btn-danger"
-                        @click="cancelReservation(orderData.reservationId)"
-                      >
-                        <span class="dlt-icon">
-                          <img src="img/pos/delete-icon-reservation.svg" />
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div
-                class="table-order-footer"
-                v-if="brand && brand.number_of_guests"
-              >
-                <div class="m-1 buttons">
-                  <span
-                    data-toggle="modal"
-                    data-target="#placeOrder"
-                    data-dismiss="modal"
-                    class="table-popup popbtn bg-success font-weight-bold"
-                    @click="closeMyself"
-                  >
-                    {{ _t(addOrSplit) }}
-                  </span>
-                  <switch-waiter v-if="orderDetails.length"></switch-waiter>
-                </div>
-              </div>
-              <div class="table-order-footer" v-else>
-                <div class="m-1 buttons">
-                  <span
-                    data-toggle="modal"
-                    data-dismiss="modal"
-                    @click="newOrder(false, brand.book_table)"
-                    class="table-popup popbtn bg-success font-weight-bold"
-                  >
-                    {{ _t(addOrSplit) }}
-                  </span>
-                  <switch-waiter v-if="orderDetails.length"></switch-waiter>
-                </div>
-              </div>
             </div>
-          </div>
+          </div>-->
         </div>
       </div>
     </div>
@@ -253,7 +298,7 @@
   </div>
 </template>
 <script>
-/* global $ */
+/* global $ showModal hideModal */
 /* eslint-disable no-console */
 
 import { mapGetters, mapState, mapActions } from 'vuex'
@@ -358,7 +403,8 @@ export default {
   methods: {
     ...mapActions('dinein', ['reservationUpdateStatus', 'dineInRunningOrders']),
     closeMyself() {
-      $('#tooltipdata').hide()
+      // $('#tooltipdata').hide()
+      hideModal('#tooltipdata')
     },
     /*addZero(x, n) {
       while (x.toString().length < n) {
@@ -491,7 +537,8 @@ export default {
               let URL = this.$route.path + '/' + this.selectedTableId
               this.$router.push({ path: URL })
             }
-            $('#tooltipdata').hide()
+            // $('#tooltipdata').hide()
+            hideModal('#tooltipdata')
           })
       } else {
         if (pos) {
@@ -914,7 +961,8 @@ export default {
             return false
           }
         }
-        $('#tooltipdata').hide()
+        // $('#tooltipdata').hide()
+        hideModal('#tooltipdata')
       })
       this.componentKey += 1
       $('#range')
@@ -939,7 +987,8 @@ export default {
       this.$store
         .dispatch('dinein/getBookedTablesOnClick', false, { root: true })
         .then(() => {
-          $('#tooltipdata').hide()
+          // $('#tooltipdata').hide()
+          hideModal('#tooltipdata')
           this.cssClass = 'restricted'
           this.popupItemLoader = false
           this.selectedTableData = datum
@@ -981,7 +1030,8 @@ export default {
             } else {
               this.popupItemLoader = false
               this.cssClass = 'restricted'
-              $('#tooltipdata').hide()
+              // $('#tooltipdata').hide()
+              hideModal('#tooltipdata')
             }
           } else {
             this.popupItemLoader = true
@@ -990,7 +1040,8 @@ export default {
           // alert(this.popupItemLoader + ' >> ' + this.cssClass)
           if (this.cssClass == 'restricted') return false
           // $('#tooltipdata').hide()
-          $('#tooltipdata').show()
+          // $('#tooltipdata').show()
+          showModal('#tooltipdata')
           // console.log(
           //   'order details for table',
           //   this.orderDetails,
@@ -1454,10 +1505,76 @@ export default {
     }
   }
 }
+#tooltipdata {
+  .modal-dialog {
+    height: 100vh;
+    display: flex;
+  }
+  .modal-content {
+    margin: auto;
+    height: fit-content;
+    .modal-body {
+      padding: $px10;
+    }
+    .modal-footer {
+      padding: $px15;
+      border-top: 1px solid #dbd7d7;
+      background: #e3e2e2;
+    }
+  }
+  .table-popup {
+    color: #fff;
+    margin: 0.1325rem;
+    //&:hover {
+    //  background: rgb(0, 147, 0) !important;
+    //}
+  }
+  .table-order-footer {
+    text-align: right;
+  }
+  .table-order-content {
+    overflow: auto;
+    max-height: $px185;
+    padding: $px5;
+    .table-order {
+      padding: $px5 $px2;
+      //margin-bottom: $px5;
+      //background: #e3e2e2;
+      border-bottom: 1px solid #dbd7d7;
+      //font-size: 12px;
+      //&:last-child {
+      //  border-bottom: unset;
+      //}
+    }
+    .order-details-with-action {
+      display: grid;
+      grid-template-columns: 1fr auto;
 
+      .dt-items {
+        font-weight: 400;
+        color: #212529;
+        display: grid;
+        align-items: center;
+        padding: 0 5px;
+      }
+
+      .paid-amount-msg {
+        color: #7ac241;
+      }
+
+      /*.reservation-cancel {
+        position: static;
+        margin: 1px;
+      }*/
+    }
+  }
+}
 @include responsive(mobile) {
   .modal .modal-dialog .modal-content {
     width: 95% !important;
+    .modal-body {
+      padding: $px5;
+    }
   }
   .modal-dialog {
     margin-top: 2rem !important;

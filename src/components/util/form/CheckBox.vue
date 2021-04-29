@@ -32,7 +32,7 @@ export default {
 <style lang="scss" scoped>
 @import '@/assets/scss/variables.scss';
 .POSItemOptions_choose {
-  margin-top: $px10;
+  margin-top: $px3;
   margin-left: $px10;
   display: grid;
   grid-template-columns: repeat(auto-fill, 60px);
