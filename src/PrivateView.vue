@@ -366,7 +366,10 @@ export default {
             //logout here after 3 sec
             const logoutInterval = setInterval(() => {
               this.secondsToLogout--
-              if (this.secondsToLogout <= 0) {
+              if (
+                this.secondsToLogout <= 0 &&
+                process.env.NODE_ENV === 'production'
+              ) {
                 clearInterval(logoutInterval)
                 this.$store.dispatch('auth/logout')
               }

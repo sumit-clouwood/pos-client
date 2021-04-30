@@ -35,6 +35,7 @@ const state = {
   selectedTable: false,
   reservation: false,
   reservationId: false,
+  moveItemReservationId: false,
   orderType: { OTview: 'Dine In', OTApi: 'dine_in' },
   covers: false,
   selectedCover: '',
@@ -48,6 +49,7 @@ const state = {
   processingSplit: false,
   reservationData: null,
   isModified: false,
+  moveItemTableId: undefined,
   currentTableReservationData: null,
 }
 const getters = {
@@ -554,13 +556,11 @@ const actions = {
     }
   },
   newReservationForMovingItems(
-    { commit, state, dispatch, rootState },
+    { commit, state, rootState, getters, dispatch },
     tableId
   ) {
     commit(mutation.LOADING, false)
-    // dispatch('order/reset', {}, { root: true })
-    // dispatch('checkout/reset', {}, { root: true })
-    if (rootState.order.selectItemsToMove) {
+    if (rootState.order.selectItemsToMove && state.moveItemTableId) {
       const params = [
         {
           //need to set UTC
@@ -573,9 +573,24 @@ const actions = {
           assigned_table_id: tableId,
           number_of_guests: state.guests,
           customers: [],
+          assigned_to: rootState.auth.userDetails.item._id,
+          created_by: rootState.auth.userDetails.item._id,
+          number: getters.getTableNumberById(tableId).number,
         },
       ]
-      dispatch('newReservation', ...params)
+      return new Promise(async (resolve, reject) => {
+        DineInService.reservationOperation(...params, 'add')
+          .then(response => {
+            // commit('RESERVATION_RESPONSE_MOVE_ITEMS', response.data)
+            commit(mutation.RESERVATION_RESPONSE, response.data)
+            commit('order/ORDER_TYPE', state.orderType, { root: true })
+            dispatch('getBookedTablesOnClick', false)
+            commit('MOVE_ITEM_TABLE_ID', undefined)
+            resolve()
+          })
+          .catch(error => reject(error))
+      })
+      /* set table id to state to new state (set handle here)*/
     }
   },
   newReservation({ commit, dispatch, rootState, getters }, params) {
@@ -591,10 +606,6 @@ const actions = {
 
         .then(response => {
           commit(mutation.RESERVATION_RESPONSE, response.data)
-          // dispatch('getCovers').then(() => {
-          //   resolve(response)
-          //   commit(mutation.LOADING, false)
-          // }) //update it for optimization
           commit('order/ORDER_TYPE', state.orderType, { root: true })
           dispatch('getBookedTablesOnClick', false) //update it for optimization
         })
@@ -840,6 +851,14 @@ const mutations = {
     state.statusFlag = Math.random()
     state.reservationId = reservation.id
     localStorage.setItem('reservationId', reservation.id)
+  },
+  /*RESERVATION_RESPONSE_MOVE_ITEMS(state, reservation) {
+    state.statusFlag = Math.random()
+    state.moveItemReservationId = reservation.id
+    localStorage.setItem('moveItemReservationId', reservation.id)
+  },*/
+  MOVE_ITEM_TABLE_ID(state, tableId) {
+    state.moveItemTableId = tableId
   },
   [mutation.CURRENT_TABLE_RESERVATION](state, reservationData) {
     state.currentTableReservationData = reservationData

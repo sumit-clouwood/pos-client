@@ -111,18 +111,13 @@ export default {
       }
     },
     moveSelectedTable(moveToDineIn) {
-      // eslint-disable-next-line no-debugger
-      debugger
       let table = this.moveTableDetails
       if (table) {
         if (table.table_number) {
           table.number = table.table_number
         }
         if (this.selectItemsToMove) {
-          this.$store.dispatch(
-            'dinein/newReservationForMovingItems',
-            table.table_id
-          )
+          this.$store.commit('dinein/MOVE_ITEM_TABLE_ID', table.table_id)
         } else {
           this.$store.commit('dinein/SELECTED_TABLE', table)
           this.$store.commit('dinein/POS_MOVE_TABLE_SELECTION', table)
@@ -148,6 +143,9 @@ export default {
       $('#dine-in-table-selection').modal('toggle')
     },
     removeSelectedTable: function() {
+      if (this.selectItemsToMove) {
+        $('#dine-in-table-selection').modal('hide')
+      }
       if (this.selectedTable) {
         this.selectedTable.number = this.selectedTable.table_number
       }

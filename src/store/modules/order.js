@@ -43,7 +43,7 @@ const state = {
   startTime: null,
   orderToModify: null,
   splitBill: null,
-  selectItemsToMove: null,
+  selectItemsToMove: false,
   splittedItems: {},
   selectedItems: {},
   splitted: false,

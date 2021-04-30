@@ -1500,7 +1500,7 @@ export default {
     span {
       margin-right: 10px !important;
       &:last-child {
-        margin-right: 0px !important;
+        margin-right: 0 !important;
       }
     }
   }
@@ -1534,7 +1534,7 @@ export default {
   }
   .table-order-content {
     overflow: auto;
-    max-height: $px185;
+    max-height: $px190;
     padding: $px5;
     .table-order {
       padding: $px5 $px2;
