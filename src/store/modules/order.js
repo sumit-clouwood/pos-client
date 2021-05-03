@@ -57,6 +57,7 @@ const state = {
   newOrder: null,
   alert: {},
   noteBeforeItem: undefined,
+  orderItemData: undefined,
 }
 
 // getters
@@ -1738,6 +1739,24 @@ const actions = {
         .catch(error => reject(error))
     })
   },
+  fetchOrderDetailsOnly({ commit }, orderId) {
+    return new Promise((resolve, reject) => {
+      const params = ['orders', orderId, '', 0]
+      OrderService.getGlobalDetails(...params)
+        .then(response => {
+          let orderDetails = {}
+          orderDetails.item = response.data.item
+          /*let collectedData = response.data.collected_data
+          if (typeof collectedData.table_number != 'undefined') {
+            orderDetails.table_number = collectedData.table_number
+          }*/
+
+          commit('ORDER_ITEM_DATA', orderDetails)
+          resolve(orderDetails)
+        })
+        .catch(error => reject(error))
+    })
+  },
   removeOrder({ dispatch }, { order, orderType }) {
     let actionTrigger = orderType
     if (actionTrigger) {
@@ -2142,10 +2161,9 @@ const mutations = {
   [mutation.NEED_SUPERVISOR_ACCESS](state, status) {
     state.needSupervisorAccess = status
   },
-  /*
-  setItemDeliveryTime(state, time) {
-    state.itemDeliveryTime = time
-  },*/
+  ORDER_ITEM_DATA(state, order_data) {
+    state.orderItemData = order_data
+  },
 }
 
 export default {

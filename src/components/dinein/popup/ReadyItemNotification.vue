@@ -1,5 +1,10 @@
 <template>
-  <div class="modal fade" id="switchWaiter" role="dialog">
+  <div
+    class="modal fade"
+    id="item-notification"
+    role="dialog"
+    v-show="itemData"
+  >
     <div class="modal-dialog modal-dialog-centered">
       <!-- Modal content-->
       <div class="modal-content color-dashboard-background">
@@ -8,12 +13,20 @@
             {{ _t('Item Ready') }}
           </h4>
         </div>
-        <div class="modal-body row dining-options-block select-discount">
-          <div id="available-tables" class="available-tables cursor-pointer">
-            <div class="table-status-container">
-              item is ready pizza
-              {{ socketData }}
-            </div>
+        <div class="modal-body">
+          <div>
+            <strong v-if="orderData">
+              {{ _t('Order Number: ') }}{{ orderData.order_no }}
+            </strong>
+            <br />
+            <strong v-if="itemData">
+              {{ _t('Table Number:') }} {{ itemData.table.number }}
+            </strong>
+            <hr />
+            <br />
+            <span v-if="itemData"
+              >{{ itemData.name }} {{ _t('is ready') }}</span
+            >
           </div>
         </div>
         <div class="modal-footer">
@@ -25,14 +38,6 @@
               @click="noted"
             >
               {{ _t('ok') }}
-            </button>
-            <button
-              type="button"
-              class="btn btn-danger cancel-announce color-button color-text-invert"
-              data-dismiss="modal"
-              @click="noted"
-            >
-              {{ _t('Cancel') }}
             </button>
           </div>
         </div>
@@ -46,14 +51,15 @@
 </template>
 
 <script>
-// /* global $ */
+/* global showModal hideModal */
 // import InformationPopup from '@/components/pos/content/InformationPopup'
 import { mapGetters, mapState } from 'vuex'
 export default {
   name: 'ReadyItemNotification',
   data() {
     return {
-      socketData: null,
+      orderData: undefined,
+      itemData: undefined,
       msg: '',
     }
   },
@@ -61,6 +67,7 @@ export default {
   computed: {
     ...mapGetters('location', ['_t']),
     ...mapState('location', ['store']),
+    ...mapState('dinein', ['allBookedTables']),
     ...mapState('auth', ['userDetails']),
   },
   created() {
@@ -68,7 +75,9 @@ export default {
   },
   methods: {
     noted: function() {
-      this.selectedWaiter = 'no'
+      this.itemData = undefined
+      this.orderData = undefined
+      hideModal('#item-notification')
     },
     fetchReadyItemsBySocket() {
       if (process.env.VUE_APP_SOCKET_DISABLE) {
@@ -80,6 +89,7 @@ export default {
       debugger
       // var socket = io('https://websocket-stg.dimspos.com')
       let store = this.store._id
+      let scope = this
       let user = this.userDetails ? this.userDetails.item : false
       if (!user) return false
       // eslint-disable-next-line no-console
@@ -89,10 +99,42 @@ export default {
           store +
           user._id,
         function(message) {
+          /*let message = {
+        data: {
+          assigned_to: '5d24920aafbc7d026e717f78',
+          brand_id: '5d904ed3c6aee432ec723c32',
+          item_id: '5d905a07c6aee4334e7e2393',
+          item_no: 1,
+          namespace: '5d90562cc6aee43328376de35d24920aafbc7d026e717f78',
+          order_id: '608fbfe5b9ef912ab75fd263',
+          store_id: '5d90562cc6aee43328376de3',
+        },*/
           // eslint-disable-next-line no-console
           console.log(message)
-          this.socketData = message.data
-          alert('Socket Run for item ready : ' + JSON.stringify(message))
+          let socketData = message.data
+          scope.$store
+            .dispatch(
+              'order/fetchOrderDetailsOnly',
+              socketData.order_id,
+              {},
+              { root: true }
+            )
+            .then(response => {
+              scope.orderData = response.item
+              let item = response.item.items.find(
+                item =>
+                  item.no == socketData.item_no &&
+                  item.entity_id == socketData.item_id
+              )
+              if (item) {
+                item.table = scope.allBookedTables.orders.find(
+                  table => table._id === scope.orderData.table_reservation_id
+                )
+                scope.itemData = item
+                showModal('#item-notification')
+              }
+            })
+          // alert('Socket Run for item ready : ' + JSON.stringify(message))
         }
       )
       /*this.$socket.$subscribe(
