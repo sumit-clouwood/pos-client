@@ -1,12 +1,12 @@
 <template>
   <button
+    v-if="allowed(PERMS.SWITCH_WAITER && PERMS.SWITCH_WAITER_API)"
     data-toggle="modal"
     data-target="#switchWaiter"
     type="button"
     class="btn bg-success table-popup font-weight-bold"
     data-dismiss="modal"
   >
-    <!--    v-if="allowed(PERMS.SWITCH_WAITER && PERMS.SWITCH_WAITER_API)"-->
     {{ _t('Switch Waiter') }}
   </button>
 </template>
