@@ -342,6 +342,11 @@ export default {
       this.$socket.$subscribe('online-order-channel', payload => {
         this.getOnlineOrders(payload)
       })
+      // let scope = this
+      this.$socket.$subscribe('kitchen-item-channel', payload => {
+        alert('aalare')
+        console.log(payload, 'fff')
+      })
     },
     playSound() {
       console.log('play sound')
