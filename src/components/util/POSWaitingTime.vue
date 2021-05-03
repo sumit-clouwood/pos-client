@@ -90,7 +90,7 @@ export default {
     ...mapState('reports', ['passwordVerification', 'loader', 'modalView']),
     pos_waiting_time: {
       get() {
-        return this.store.waiting_time
+        return this.store ? this.store.waiting_time || '00:00' : '00:00'
       },
       set(value) {
         this.$store.commit('location/SET_POS_WAITING_TIME', {

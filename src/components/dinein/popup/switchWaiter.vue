@@ -5,7 +5,7 @@
       <div class="modal-content color-dashboard-background">
         <div class="modal-header customer-header color-secondary">
           <h4 class="customer-title color-text-invert">
-            {{ _t('Select') + ' ' + _t('Waiter') }}
+            {{ _t('Select Waiter') }}
           </h4>
         </div>
         <div class="modal-body row dining-options-block select-discount">
