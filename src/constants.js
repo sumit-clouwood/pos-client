@@ -119,6 +119,9 @@ export const PAGE_ID_DELIVERY_HOME = 'delivery_home'
 export const PAGE_ID_WAITER = 'dine-in'
 export const PAGE_ID_CARHOP = 'carhop'
 
+export const AGGREGATOR_SOURCE_ZOMATO = 'zomato'
+export const AGGREGATOR_SOURCE_TALABAT = 'talabat'
+
 export const POS_START_PATHS = [
   PAGE_ID_DELIVERY_HOME,
   PAGE_ID_WAITER,

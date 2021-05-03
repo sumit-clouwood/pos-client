@@ -241,21 +241,29 @@
 </template>
 
 <script>
+/* eslint-disable no-console */
+
 import { mapState, mapActions, mapGetters } from 'vuex'
 import DateTime from '@/mixins/DateTime'
 import InformationPopup from '@/components/pos/content/InformationPopup'
 import Progress from '@/components/util/Progress'
 
-var audio = new Audio('/sounds/doorbell.ogg')
+var audio = new Audio('/sound/doorbell.ogg')
+var nopromise = {
+  catch: new Function(),
+}
 audio.load()
 audio.addEventListener(
   'ended',
   function() {
     this.currentTime = 0
-    this.play()
+    this.load()
+    let promise = this.play() || nopromise
+    promise.catch(error => console.log(error))
   },
   false
 )
+
 /* global $ */
 export default {
   name: 'OnlineOrder',
@@ -300,14 +308,9 @@ export default {
     },
   },
   updated() {
-    // eslint-disable-next-line no-console
-    //console.log('update', this.onlineOrders.count)
     if (!this.onlineOrders.count) {
       this.pauseSound()
     }
-    /*if (this.onlineOrders.count && !this.isAudioPlaying) {
-      this.playSound()
-    }*/
   },
   methods: {
     ...mapActions('deliveryManager', ['showOrderDetails']),
@@ -330,56 +333,40 @@ export default {
         .dialog()
         .dialog('close')
     },
-    playSound() {
-      // eslint-disable-next-line prettier/prettier
-      audio.play()
-      this.isAudioPlaying = true
-    },
+
     onlineOrderSetup() {
       if (process.env.VUE_APP_SOCKET_DISABLE) {
         return false
       }
       // let scope = this
       this.$socket.$subscribe('online-order-channel', payload => {
-        // eslint-disable-next-line no-console
-        // console.log(
-        //   'payload',
-        //   payload,
-        //   scope.lastOrderId,
-        //   payload.data.order_id
-        // )
-
-        // this.$store.dispatch('deliveryManager/getOnlineOrders').then(() => {
-        //   if (payload.data.action_id === 'add') {
-        //     if (scope.privateContext)
-        //       $('#online-order')
-        //         .dialog()
-        //         .dialog('open')
-        //     if (!scope.isAudioPlaying) scope.playSound()
-        //   }
-        // })
         this.getOnlineOrders(payload)
       })
     },
-    pauseSound() {
-      this.pause()
-      $('#online-order')
-        .dialog()
-        .dialog('close')
+    playSound() {
+      console.log('play sound')
+      let promise = audio.play() || nopromise
+      promise.catch(error => {
+        console.log(error)
+      })
+      // this.isAudioPlaying = true
     },
-    pause() {
-      audio.pause()
-      this.isAudioPlaying = false
+    pauseSound() {
+      console.log('pausing sound')
+      let promise = audio.pause() || nopromise
+      promise.catch(error => {
+        console.log(error)
+      })
+      // this.isAudioPlaying = false
     },
     getOnlineOrders(payload) {
-      let scope = this
       let storeId = this.store ? this.store._id : this.$route.params.store_id
-
+      let scope = this
       if (
         payload.data.store_id == storeId &&
-        scope.lastOrderId !== payload.data.order_id
+        this.lastOrderId !== payload.data.order_id
       ) {
-        scope.lastOrderId = payload.data.order_id
+        this.lastOrderId = payload.data.order_id
         this.$store.dispatch('deliveryManager/getOnlineOrders').then(() => {
           if (scope.onlineOrders.count > 0 && scope.privateContext) {
             if (payload.data.action_id === 'add') {
@@ -399,6 +386,7 @@ export default {
   created() {
     this.onlineOrderSetup()
   },
+  mounted() {},
 }
 </script>
 
