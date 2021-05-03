@@ -250,6 +250,7 @@
         </div>
       </div>
     </div>
+    <ready-item-notification></ready-item-notification>
   </div>
 </template>
 <script>
@@ -269,6 +270,7 @@ import DateTime from '@/mixins/DateTime'
 import * as PERMS from '@/const/permissions'
 import OrderHelper from '@/plugins/helpers/Order'
 import moment from 'moment-timezone'
+import ReadyItemNotification from '@/components/dinein/popup/ReadyItemNotification'
 
 export default {
   name: 'TableDraw',
@@ -295,6 +297,7 @@ export default {
   },
   mixins: [DateTime],
   components: {
+    ReadyItemNotification,
     Header,
     TableStatus,
     AllTables,
