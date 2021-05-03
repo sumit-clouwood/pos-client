@@ -93,8 +93,16 @@
           <check-box
             v-bind:value="item.no"
             v-bind:index="item.no"
+            v-bind:title="'Select'"
+            v-if="selectItemsToMove && item.paid !== true"
+            v-model="splittedItems[item.no]"
+            @change="markSplit"
+          ></check-box>
+          <check-box
+            v-bind:value="item.no"
+            v-bind:index="item.no"
             v-bind:title="'Pay'"
-            v-if="splitBill && item.paid !== true"
+            v-if="!selectItemsToMove && splitBill && item.paid !== true"
             v-model="splittedItems[item.no]"
             @change="markSplit"
           ></check-box>
@@ -226,7 +234,12 @@ export default {
     ...mapState({
       currentItem: state => state.order.item._id,
     }),
-    ...mapState('order', ['orderType', 'selectedOrder', 'splitBill']),
+    ...mapState('order', [
+      'orderType',
+      'selectedOrder',
+      'splitBill',
+      'selectItemsToMove',
+    ]),
     ...mapState('discount', ['itemDiscounts']),
     ...mapGetters('category', ['subcategoryImage']),
     ...mapGetters('modifier', ['hasModifiers']),

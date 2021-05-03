@@ -498,6 +498,7 @@
     />
     <alert-popup></alert-popup>
     <scale-popup></scale-popup>
+    <item-delivery-time-slots></item-delivery-time-slots>
 
   </div>
 </template>
@@ -553,11 +554,13 @@ import * as CONST from '@/constants'
 import { mapState, mapGetters, mapActions } from 'vuex'
 import Referral from '@/components/pos/footer/popups/Referrals'
 import CreateLoyaltyCustomer from '@/components/pos/footer/popups/ManageCustomer/CreateLoyaltyCustomer'
+import ItemDeliveryTimeSlots from '@/components/pos/content/cart/newOrders/items/popup/footer/buttons/ItemDeliveryTimeSlots'
 /* global $ */
 export default {
   name: 'Footer',
   props: {},
   components: {
+    ItemDeliveryTimeSlots,
     CreateLoyaltyCustomer,
     Referral,
     DineIn,

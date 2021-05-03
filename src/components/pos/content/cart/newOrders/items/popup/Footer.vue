@@ -4,6 +4,7 @@
       <ModifyItemModifiersButton
         v-if="show('modifiers') && device === 'mobile'"
       />
+      <item-delivery-time></item-delivery-time>
       <note-button v-if="show('note')"></note-button>
       <DiscountButton v-if="show('discount')" />
       <!-- <RemoveDiscountButton /> -->
@@ -36,11 +37,13 @@ import noteButton from './footer/buttons/note'
 import RemoveTaxButton from './footer/RemoveTaxButton'
 import ModifyItemModifiersButton from './footer/ModifyItemModifiersButton'
 import { mapGetters, mapState } from 'vuex'
+import itemDeliveryTime from './footer/buttons/ItemTimeDelivery'
 
 export default {
   name: 'Footer',
   props: {},
   components: {
+    itemDeliveryTime,
     DiscountButton,
     noteButton,
     //  RemoveDiscountButton,

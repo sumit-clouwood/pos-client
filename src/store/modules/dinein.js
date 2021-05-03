@@ -5,6 +5,7 @@ import moment from 'moment-timezone'
 // import OrderHelper from '@/plugins/helpers/Order'
 import * as PERMS from '@/const/permissions'
 import workflow from '../../plugins/helpers/workflow'
+import availability from '../../plugins/helpers/Availability'
 
 const state = {
   orders: {
@@ -34,6 +35,7 @@ const state = {
   selectedTable: false,
   reservation: false,
   reservationId: false,
+  moveItemReservationId: false,
   orderType: { OTview: 'Dine In', OTApi: 'dine_in' },
   covers: false,
   selectedCover: '',
@@ -47,6 +49,7 @@ const state = {
   processingSplit: false,
   reservationData: null,
   isModified: false,
+  moveItemTableId: undefined,
   currentTableReservationData: null,
 }
 const getters = {
@@ -86,6 +89,9 @@ const getters = {
   },
   getTableNumberById: state => tableId => {
     return state.tablesOnArea.find(table => table._id === tableId)
+  },
+  getTableEmptyTime: (state, getters, rootState) => {
+    return rootState.location.store.table_empty_time
   },
   guestInBillItem: state => (item, guest) => {
     if (
@@ -166,7 +172,30 @@ const actions = {
         .catch(er => reject(er))
     })
   },
-
+  getBookedTablesOnClick({ state, commit, dispatch }, loader = false) {
+    new Promise(async (resolve, reject) => {
+      if (loader) commit(mutation.LOADING, loader)
+      /*localStorage.setItem('reservationId', false)*/
+      await DineInService.getAllBookedTables()
+        .then(response => {
+          //if we have offline bookings data ll be returned always as offline once syced up it ll return original
+          //if we get fresh data we need to save it in cache
+          workflow.storeData({
+            key: 'dinein_reservations',
+            data: response.data,
+          })
+          if (!state.areas) {
+            dispatch('getDineInArea').then(() => {
+              return resolve()
+            })
+          }
+          commit(mutation.BOOKED_TABLES, response.data)
+          if (loader) commit(mutation.LOADING, false)
+        })
+        .catch(er => reject(er))
+      dispatch('getTableStatus')
+    })
+  },
   seOrderData({ commit }, response) {
     let orderDetails = []
     let responseData = response.data.data
@@ -274,6 +303,11 @@ const actions = {
               data: response.data,
             })
           }
+          // eslint-disable-next-line no-console
+          console.log(
+            response.data,
+            'DINE_IN_TABLES, added console log for undefined table number'
+          )
           commit(mutation.DINE_IN_TABLES, response.data)
           commit(mutation.PAGE_LOOKUP, response.data.page_lookups)
           dispatch('getAvailableTables')
@@ -295,13 +329,15 @@ const actions = {
     commit(mutation.COVERS, response.data)
     return Promise.resolve()
   },
-  getTableStatus({ commit, state }) {
+  // eslint-disable-next-line no-unused-vars
+  getTableStatus({ commit, state, getters }) {
     return new Promise(resolve => {
       commit(mutation.TABLE_STATUS, false)
       let tableStatus = {
         availableCount: 0,
         unavailableCount: 0,
         availableSoonCount: 0,
+        emptyTableCount: 0,
         table: [],
       }
       let orderOnTable = []
@@ -309,6 +345,7 @@ const actions = {
         state.tablesOnArea.forEach(table => {
           let is_unavail = 0
           let is_avail_soon = 0
+          let is_reserved_empty = 0
           let orders = []
           let table_details = {
             id: table._id,
@@ -321,19 +358,30 @@ const actions = {
               order => order.assigned_table_id === table._id
             )
           }
-
+          let empty_reserved_table = []
+          state.allBookedTables.orders.filter(order_table => {
+            if (order_table.status === 'reserved') {
+              empty_reserved_table[order_table.assigned_table_id] = {
+                time: order_table.start_time,
+                date: order_table.start_date,
+              }
+            }
+          })
           if (orders.length) {
             let tableArray = []
             orders.forEach(order => {
               if (tableArray[order.assigned_table_id] == undefined)
                 tableArray[order.assigned_table_id] = []
               tableArray[order.assigned_table_id].push(order.status)
-              if (
-                order.status === CONST.ORDER_STATUS_RESERVED ||
-                order.status === CONST.ORDER_STATUS_IN_PROGRESS
-              ) {
+              if (order.status === CONST.ORDER_STATUS_IN_PROGRESS) {
                 if (order.assigned_table_id == table._id) {
                   is_unavail = 1
+                } else {
+                  is_reserved_empty = 1
+                }
+              } else if (order.status === CONST.ORDER_STATUS_RESERVED) {
+                if (order.assigned_table_id == table._id) {
+                  is_reserved_empty = 1
                 }
               } else if (order.status === CONST.ORDER_STATUS_ON_WAY) {
                 if (order.assigned_table_id == table._id) {
@@ -369,8 +417,43 @@ const actions = {
                 CONST.ORDER_STATUS_IN_PROGRESS
               )
             ) {
-              table_details.status.color = '#c84c4c'
-              table_details.status.text = 'unavailable'
+              if (empty_reserved_table && empty_reserved_table[table._id]) {
+                let table_book_date_time = empty_reserved_table[table._id]
+                  ? availability.timeConvert(
+                      empty_reserved_table[table._id].time
+                    )
+                  : 0
+                // let table_book_date_time = availability.timeConvert(
+                //   order.start_time
+                // )
+                const table_book_date_date = moment
+                  .utc(empty_reserved_table[table._id].date)
+                  .format('YYYY-MM-DD')
+                const current_date_active = moment.utc().format('YYYY-MM-DD')
+                let empty_table_time = availability.timeConvert(
+                  getters.getTableEmptyTime
+                )
+                let getUTCCurrentTime = availability.timeConvert(
+                  availability.getUTCCurrentTime()
+                )
+                if (
+                  getUTCCurrentTime > table_book_date_time + empty_table_time ||
+                  table_book_date_date < current_date_active
+                ) {
+                  if (table_book_date_time) {
+                    // let new_table = table
+                    table_details.status.color = '#c1bfbf'
+                    table_details.status.text = 'reserved'
+                    // tableStatus.table.push(new_table)
+                  }
+                } else {
+                  table_details.status.color = '#c84c4c'
+                  table_details.status.text = 'unavailable'
+                }
+              } else {
+                table_details.status.color = '#c84c4c'
+                table_details.status.text = 'unavailable'
+              }
             } else if (
               tableArray[table_details.id].includes(CONST.ORDER_STATUS_ON_WAY)
             ) {
@@ -381,17 +464,17 @@ const actions = {
               table_details.status.text = 'available'
             }
             tableStatus.table.push(table_details)
-            if (is_unavail == 1) {
+            if (is_unavail === 1) {
               tableStatus.unavailableCount += 1
             }
-            if (is_avail_soon == 1) {
+            if (is_reserved_empty === 1) {
+              tableStatus.emptyTableCount += 1
+            }
+            if (is_avail_soon === 1) {
               tableStatus.availableSoonCount += 1
             }
           } else {
             tableStatus.availableCount = parseInt(state.tablesOnArea.length)
-            /*-
-            parseInt(tableStatus.unavailableCount) +
-            parseInt(tableStatus.availableSoonCount)*/
             table_details.status.color = '#62bb31'
             table_details.status.text = 'available'
             tableStatus.table.push(table_details)
@@ -401,8 +484,6 @@ const actions = {
           commit(mutation.ORDER_ON_TABLES, orderOnTable)
         })
       }
-      // eslint-disable-next-line no-console
-      console.log('order no item length', tableStatus)
       commit(mutation.TABLE_STATUS, tableStatus)
       resolve()
     })
@@ -465,13 +546,51 @@ const actions = {
             .format('YYYY-MM-DD'),
           start_time: moment()
             .utc()
-            .format('hh:mm'),
+            .format('HH:mm'),
           assigned_table_id: tableId,
           number_of_guests: state.guests,
           customers: [],
         },
       ]
       dispatch('newReservation', ...params)
+    }
+  },
+  newReservationForMovingItems(
+    { commit, state, rootState, getters, dispatch },
+    tableId
+  ) {
+    commit(mutation.LOADING, false)
+    if (rootState.order.selectItemsToMove && state.moveItemTableId) {
+      const params = [
+        {
+          //need to set UTC
+          start_date: moment()
+            .utc()
+            .format('YYYY-MM-DD'),
+          start_time: moment()
+            .utc()
+            .format('HH:mm'),
+          assigned_table_id: tableId,
+          number_of_guests: state.guests,
+          customers: [],
+          assigned_to: rootState.auth.userDetails.item._id,
+          created_by: rootState.auth.userDetails.item._id,
+          number: getters.getTableNumberById(tableId).number,
+        },
+      ]
+      return new Promise(async (resolve, reject) => {
+        DineInService.reservationOperation(...params, 'add')
+          .then(response => {
+            // commit('RESERVATION_RESPONSE_MOVE_ITEMS', response.data)
+            commit(mutation.RESERVATION_RESPONSE, response.data)
+            commit('order/ORDER_TYPE', state.orderType, { root: true })
+            dispatch('getBookedTablesOnClick', false)
+            commit('MOVE_ITEM_TABLE_ID', undefined)
+            resolve()
+          })
+          .catch(error => reject(error))
+      })
+      /* set table id to state to new state (set handle here)*/
     }
   },
   newReservation({ commit, dispatch, rootState, getters }, params) {
@@ -487,12 +606,8 @@ const actions = {
 
         .then(response => {
           commit(mutation.RESERVATION_RESPONSE, response.data)
-          dispatch('getCovers').then(() => {
-            resolve(response)
-            commit(mutation.LOADING, false)
-          })
           commit('order/ORDER_TYPE', state.orderType, { root: true })
-          dispatch('getBookedTables', false)
+          dispatch('getBookedTablesOnClick', false) //update it for optimization
         })
         .catch(error => reject(error))
     })
@@ -585,10 +700,21 @@ const actions = {
     const reservationsOnTable = getters.getCurrentTableRunningReservations
 
     reservationsOnTable.forEach(reservation => {
-      DineInService.switchWaiter(reservation.reservationId, {
-        switch_from: reservation.assigned_to,
-        switch_to: waiter._id,
-      })
+      let orderIds = reservation.orderIds
+      if (orderIds.length) {
+        orderIds.forEach(order_id => {
+          DineInService.switchWaiter(reservation.reservationId, {
+            switch_from: reservation.assigned_to,
+            switch_to: waiter._id,
+            order_id: order_id,
+          })
+        })
+      } /*else {
+        DineInService.switchWaiter(reservation.reservationId, {
+          switch_from: reservation.assigned_to,
+          switch_to: waiter._id,
+        })
+      }*/
     })
   },
   /*switchWaiter({ state, rootGetters }, waiter) {
@@ -676,6 +802,9 @@ const mutations = {
   [mutation.ORDER_ON_TABLES](state, orderOnTables) {
     state.orderOnTables = orderOnTables
   },
+  UPDATE_TABLE_STATUS(state, orderOnTables) {
+    state.orderOnTables.table = orderOnTables
+  },
   [mutation.TABLE_SCALE](state, scale) {
     state.tableZoomScale = scale
   },
@@ -722,6 +851,14 @@ const mutations = {
     state.statusFlag = Math.random()
     state.reservationId = reservation.id
     localStorage.setItem('reservationId', reservation.id)
+  },
+  /*RESERVATION_RESPONSE_MOVE_ITEMS(state, reservation) {
+    state.statusFlag = Math.random()
+    state.moveItemReservationId = reservation.id
+    localStorage.setItem('moveItemReservationId', reservation.id)
+  },*/
+  MOVE_ITEM_TABLE_ID(state, tableId) {
+    state.moveItemTableId = tableId
   },
   [mutation.CURRENT_TABLE_RESERVATION](state, reservationData) {
     state.currentTableReservationData = reservationData

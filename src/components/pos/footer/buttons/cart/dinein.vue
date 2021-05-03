@@ -1,6 +1,15 @@
 <template>
   <div>
-    <div v-if="orderSource === 'backend' || billSplit">
+    <div v-if="moveItems">
+      <div class="button">
+        <div class="template-btn">
+          <div class="pay-now">
+            <save class="pay-btn-holder" @save="save"></save>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div v-else-if="orderSource === 'backend' || billSplit">
       <div class="button">
         <div class="template-btn">
           <div class="pay-now">
@@ -73,6 +82,12 @@ export default {
         return true
       }
       if (this.$store.state.order.splitBill) {
+        return true
+      }
+      return false
+    },
+    moveItems() {
+      if (this.$store.state.order.selectItemsToMove) {
         return true
       }
       return false

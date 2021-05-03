@@ -95,6 +95,7 @@ export default {
     ...mapGetters('location', ['_t']),
     ...mapState('dinein', ['availableTables', 'selectedTable']),
     ...mapGetters('context', ['store']),
+    ...mapState('order', ['selectItemsToMove']),
   },
   methods: {
     setTable: function(table) {
@@ -115,18 +116,25 @@ export default {
         if (table.table_number) {
           table.number = table.table_number
         }
-        this.$store.commit('dinein/SELECTED_TABLE', table)
-        this.$store.commit('dinein/POS_MOVE_TABLE_SELECTION', table)
-        // let coverId = table.id
-        let tableId = table.table_id
-        let reservationId = localStorage.getItem('reservationId')
-        //Move Table Functionality.
-        let data = {
-          table: tableId,
-          reservationid: reservationId,
-          status: 'move_table',
+        if (this.selectItemsToMove) {
+          this.$store.commit('dinein/MOVE_ITEM_TABLE_ID', table.table_id)
+        } else {
+          this.$store.commit('dinein/SELECTED_TABLE', table)
+          this.$store.commit('dinein/POS_MOVE_TABLE_SELECTION', table)
+          // let coverId = table.id
+          /*if (this.selectItemsToMove) {
+            return true
+          }*/
+          let tableId = table.table_id
+          let reservationId = localStorage.getItem('reservationId')
+          //Move Table Functionality.
+          let data = {
+            table: tableId,
+            reservationid: reservationId,
+            status: 'move_table',
+          }
+          this.$store.dispatch('dinein/moveTable', data)
         }
-        this.$store.dispatch('dinein/moveTable', data)
       } else {
         this.selectedTableMove = ''
       }
@@ -135,6 +143,9 @@ export default {
       $('#dine-in-table-selection').modal('toggle')
     },
     removeSelectedTable: function() {
+      if (this.selectItemsToMove) {
+        $('#dine-in-table-selection').modal('hide')
+      }
       if (this.selectedTable) {
         this.selectedTable.number = this.selectedTable.table_number
       }

@@ -464,10 +464,14 @@ const actions = {
       let item = null
       //reset modifiers
       // commit(mutation.ITEM_MODIFIERS_COLLECTION, false)
-      if (rootState.order.splitBill) {
+      if (rootState.order.splitBill || rootState.order.selectItemsToMove) {
         if (action === 'dine-in-place-order') {
           //place order
-          if (oitem.paid === false) {
+          /* !oitem.split condition added in top because when we move items after placed not selected item, again place selected item its become empty*/
+          if (!oitem.split && oitem.paid === false) {
+            item = oitem
+          }
+          if (oitem.split && oitem.paid === false && !rootState.dinein.moveItemTableId) {
             item = oitem
           }
         } else {
@@ -492,7 +496,8 @@ const actions = {
           status: 'in-progress',
           //itemTax.undiscountedTax is without modifiers
           tax: item.tax,
-          //barcode needs to be printed on invoice 
+          item_serving_time: item.item_serving_time,
+          //barcode needs to be printed on invoice
           barcode: item.barcode,
           price: item.netPrice,
           qty: item.quantity || 1,
@@ -769,6 +774,7 @@ const actions = {
               //send order for payment
               let order = {}
               const orderPlacementTime = rootState.order.startTime
+              let past_order_history = rootState.order.selectedOrder ? rootState.order.selectedOrder.item.order_action_history : []
 
               try {
                 const transitionOrderNo =
@@ -786,6 +792,7 @@ const actions = {
 
                 order = {
                   cashier_id: rootState.auth.userDetails.item._id,
+                  assigned_to: rootState.auth.userDetails.item._id,
                   customer: !rootState.isBrandHasDeliveryOrder ? rootState.customer.customerId : '',
                   customer_address_id: '',
                   referral: '',
@@ -798,6 +805,7 @@ const actions = {
                   order_mode: 'online',
                   //this time can be used to indentify offline order
                   real_created_datetime: orderPlacementTime,
+                  order_action_history: past_order_history,
                   // order_mode: 'online',
                   //remove the modifiers prices from subtotal
                   print_count: 0,
@@ -882,6 +890,10 @@ const actions = {
               //adding tip amount
               order.tip_amount = rootState.checkoutForm.tipAmount
 
+              let action_order = !action ? 'create_order' : action
+              // let order_actions = {action: action_order, date_time: orderPlacementTime, order: JSON.stringify(order)}
+              // order.order_action_history.push(order_actions)
+
               dispatch('addItemsToOrder', {
                 order: order,
                 action: action,
@@ -898,9 +910,9 @@ const actions = {
                         delete item.originalItem
                         return item
                       })
-                      
+                      let order_actions = {action: action_order, date_time: orderPlacementTime, order: JSON.stringify(order)}
+                      order.order_action_history.push(order_actions)
                       commit(mutation.SET_ORDER, order)
-                      
                       dispatch('createOrder', { action: action, data: data })
                         .then(response => {
                           //reset order start time
@@ -978,6 +990,7 @@ const actions = {
     if (selOrder) {
       if (selOrder.cashier_id) {
         order.cashier_id = selOrder.cashier_id
+        order.assigned_to = selOrder.cashier_id
       } else if (selOrder.order_history) {
         const history = OrderHelper.lookup(
           selOrder,
@@ -987,6 +1000,9 @@ const actions = {
         )
         if (history) {
           order.cashier_id = history.user
+          if (!order.assigned_to) {
+            order.assigned_to = history.user
+          }
         }
       }
     }
@@ -1106,9 +1122,15 @@ const actions = {
                 commit('SPLITED_ITEM', false)
               } else {
                 commit('SPLITED_ITEM', true)
-                msg = rootGetters['location/_t'](
-                  'Payment done for selected item(s).'
-                )
+                if (rootState.dinein.moveItemTableId && rootState.order.selectItemsToMove)  {
+                  msgStr = rootGetters['location/_t'](
+                      'Selected item(s) are moved to another table.'
+                  )
+                } else {
+                  msg = rootGetters['location/_t'](
+                      'Payment done for selected item(s).'
+                  )
+                }
               }
               //Invoice APP API Call with Custom Request JSON
               if (!state.dineInSplitedItems) {
@@ -1171,6 +1193,7 @@ const actions = {
           .then(response => {
             if (response.data.status === 'ok') {
               let msgStr = rootGetters['location/_t'](msg)
+              const selectedCovers = rootState.dinein.selectedCover
 
               if (
                 ['dine-in-place-order', 'modify-backend-order'].includes(
@@ -1188,13 +1211,23 @@ const actions = {
                 dispatch('reset', true)
                 commit(mutation.PRINT, false)
                 commit('order/CLEAR_SELECTED_ORDER', null, { root: true })
-                resolve()
+                if (!getters.complete) {
+                  if (rootState.dinein.moveItemTableId && rootState.order.selectItemsToMove) {
+                    dispatch('dinein/newReservationForMovingItems', rootState.dinein.moveItemTableId, {root: true}).then(() => {
+                      dispatch('splitOrder', {
+                        action: action,
+                        data: {selectedCovers: selectedCovers},
+                      }).then(() => resolve())
+                    })
+                  }
+                } else {
+                  resolve()
+                }
               } else {
                 //order paid
                 msgStr = rootGetters['location/_t'](
                   'Dinein order has been Paid.'
                 )
-                const selectedCovers = rootState.dinein.selectedCover
                 commit(
                   'SET_ORDER_NUMBER',
                   rootState.order.selectedOrder.item.order_no
@@ -1240,6 +1273,7 @@ const actions = {
                       }).then(() => resolve())
                     } else {
                       commit('order/CLEAR_SELECTED_ORDER', null, { root: true })
+                      commit(mutation.SET_ROUTE, { name: 'Dinein' })
                     }
                   })
                   //if splitted once
@@ -1665,7 +1699,12 @@ const actions = {
   },
 
   splitOrder({ dispatch, rootState, commit }, { data }) {
-    let unpaidItems = rootState.order.items.filter(item => item.paid === false)
+    let unpaidItems = ''
+    if (rootState.order.selectItemsToMove)  {
+      unpaidItems = rootState.order.items.filter(item => item.split === true)
+    } else {
+      unpaidItems = rootState.order.items.filter(item => item.paid === false)
+    }
 
     unpaidItems = unpaidItems.map((item, key) => {
       item.oldIndex = item.no

@@ -175,6 +175,15 @@ li#circle-table-shape {
     }
   }
 }
+#reserved-seat {
+  > span {
+    background-color: $gray-middle-dark;
+    @include seat_avail;
+    @include responsive(mobile){
+      padding: $px3 0;
+    }
+  }
+}
 
 #available-seat {
   > span {
@@ -1323,7 +1332,7 @@ div {
         .ullist-dinein-table {
           text-align: center;
           display: grid;
-          grid-template-columns: repeat(3, auto);
+          grid-template-columns: repeat(4, auto);
           justify-content: flex-start;
           > li {
             &:first-child {
@@ -1397,6 +1406,17 @@ div {
 .tables-draw {
   border: $px1 dashed;
   margin: $px2;
+  padding: $px5;
+  /*border-right: $px1 solid;
+  border-bottom: $px1 solid;
+  padding-right: $px2;
+  &:last-child {
+    border-right: none;
+    padding-right: unset;
+  }*/
+  img {
+    width: $px25;
+  }
 }
 
 .table-action {
@@ -1442,7 +1462,7 @@ div {
           position: absolute;
           top: -14px;
           font-size: $px64 !important;
-          right: $px35;
+          right: $px8;
           margin: 0 auto;
           text-align: center;
           color: rgba(0, 0, 0, 0.1);

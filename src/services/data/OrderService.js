@@ -128,6 +128,12 @@ export default {
     }
     return DataService.post(`/model/orders/id/${id}/modify_${type}order`, order)
   },
+  SetPOSWaitingTime(waiting_time, store_id) {
+    return DataService.post(
+      `/model/stores/id/${store_id}/store_waiting_time_action_id`,
+      waiting_time
+    )
+  },
 
   getOrderTimeUTC() {
     return { orderTimeUTC: DateTime.getUTCDateTime() }

@@ -23,6 +23,7 @@ import DateTime from '@/mixins/DateTime.js'
 
 // initial state
 const state = {
+  // itemDeliveryTime: 0,
   items: [],
   item: false,
   errors: '',
@@ -42,7 +43,9 @@ const state = {
   startTime: null,
   orderToModify: null,
   splitBill: null,
+  selectItemsToMove: false,
   splittedItems: {},
+  selectedItems: {},
   splitted: false,
   totalItems: 0,
   totalItemsPaid: 0,
@@ -395,6 +398,13 @@ const actions = {
     //replace item in cart
     commit('NOTE_BEFORE_ITEM', note)
   },
+  addItemDeliveryTime({ commit }, time) {
+    let item = { ...state.item }
+    item.item_serving_time = time
+    commit(mutation.REPLACE_ORDER_ITEM, {
+      item: item,
+    })
+  },
 
   prepareModifiersItemCart({ dispatch, commit, rootGetters, rootState }, item) {
     return new Promise((resolve, reject) => {
@@ -672,6 +682,7 @@ const actions = {
       }
 
       item.quantity = quantity
+      item.item_serving_time = rootState.orderForm.itemServingTime
 
       //if item.measurement_unit and item.measurement_value
       if (item.item_type === CONST.SCALE_ITEM_TYPE && item.measurement_value) {
@@ -1266,7 +1277,7 @@ const actions = {
     commit(mutation.SET_ORDER_NOTE, orderNote)
   },
 
-  setOnlineOrders({ commit, rootState }, onlineOrderData) {
+  /*setOnlineOrders({ commit, rootState }, onlineOrderData) {
     // const params = [1, onlineOrderData.location_id]
     let orderDetail = ''
     // OrderService.fetchOnlineOrderDetails(...params).then(response => {
@@ -1277,7 +1288,7 @@ const actions = {
       orderDetails: orderDetail,
     })
     // })
-  },
+  },*/
 
   /*getPastOrderDetails({ commit, rootState }, orderId) {
     const params = [orderId, rootState.location.location]
@@ -1834,34 +1845,43 @@ const actions = {
     commit(mutation.START_ORDER)
     commit('checkout/SET_PROCESSING', false, { root: true })
   },
+  updatePOSWaitingTime({ rootState, commit }) {
+    let waiting_time = rootState.location.update_pos_waiting_time
+    let store_id = rootState.context.storeId
+    OrderService.SetPOSWaitingTime(waiting_time, store_id).then(() => {
+      commit('location/SET_STORE_POS_WAITING_TIME', waiting_time, {
+        root: true,
+      })
+    })
+  },
 }
 
-function playSound(locationId, onlineOrders) {
-  let nopromise = {
-    catch: new Function(),
-  }
-  // onlineOrders.orders.forEach(order => {
-  if (locationId == onlineOrders.location_id) {
-    let onlineNewOrderAudioRing = new Audio(
-      'https://int.erp-pos.com/sound/doorbell.ogg'
-    )
-    onlineNewOrderAudioRing.load()
-    if (onlineOrders.orders && onlineOrders.orders.length) {
-      onlineNewOrderAudioRing.addEventListener(
-        'ended',
-        function() {
-          this.currentTime = 0
-          ;(this.play() || nopromise).catch(function() {})
-        },
-        false
-      )
-      ;(onlineNewOrderAudioRing.play() || nopromise).catch(function() {})
-    } else {
-      onlineNewOrderAudioRing.pause()
-      onlineNewOrderAudioRing.currentTime = 0
-    }
-  }
-}
+// function playSound(locationId, onlineOrders) {
+//   let nopromise = {
+//     catch: new Function(),
+//   }
+//   // onlineOrders.orders.forEach(order => {
+//   if (locationId == onlineOrders.location_id) {
+//     let onlineNewOrderAudioRing = new Audio(
+//       'https://int.erp-pos.com/sound/doorbell.ogg'
+//     )
+//     onlineNewOrderAudioRing.load()
+//     if (onlineOrders.orders && onlineOrders.orders.length) {
+//       onlineNewOrderAudioRing.addEventListener(
+//         'ended',
+//         function() {
+//           this.currentTime = 0
+//           ;(this.play() || nopromise).catch(function() {})
+//         },
+//         false
+//       )
+//       ;(onlineNewOrderAudioRing.play() || nopromise).catch(function() {})
+//     } else {
+//       onlineNewOrderAudioRing.pause()
+//       onlineNewOrderAudioRing.currentTime = 0
+//     }
+//   }
+// }
 
 // mutations
 const mutations = {
@@ -1969,7 +1989,7 @@ const mutations = {
       state.orderStatus = null
       state.orderNote = null
     }
-
+    // state.itemDeliveryTime = 0
     state.splittedItems = {}
     state.item = false
     state.futureOrder = false
@@ -1996,11 +2016,11 @@ const mutations = {
   [mutation.SET_ORDER_DATA](state, data) {
     state.orderData = data
   },
-  [mutation.ONLINE_ORDERS](state, { onlineOrders, locationId, orderDetails }) {
+  /*[mutation.ONLINE_ORDERS](state, { onlineOrders, locationId, orderDetails }) {
     localStorage.setItem('onlineOrders', JSON.stringify(orderDetails))
     state.onlineOrders = orderDetails
-    playSound(locationId, onlineOrders)
-  },
+    // playSound(locationId, onlineOrders)
+  },*/
   [mutation.SET_ORDER_DETAILS](state, selectedOrderDetails) {
     state.selectedOrder = selectedOrderDetails
   },
@@ -2064,6 +2084,10 @@ const mutations = {
   [mutation.RESET_SPLIT_BILL](state) {
     state.splitBill = false
     state.splitted = false
+    state.selectItemsToMove = false
+  },
+  MOVE_SELECTED_ITEMS(state, status) {
+    state.selectItemsToMove = status
   },
   [mutation.MARK_SPLIT_ITEMS_PAID](state) {
     const newitems = state.items.map(item => {
@@ -2118,6 +2142,10 @@ const mutations = {
   [mutation.NEED_SUPERVISOR_ACCESS](state, status) {
     state.needSupervisorAccess = status
   },
+  /*
+  setItemDeliveryTime(state, time) {
+    state.itemDeliveryTime = time
+  },*/
 }
 
 export default {

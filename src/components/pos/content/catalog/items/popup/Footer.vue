@@ -3,6 +3,7 @@
     <p class="text-danger" v-if="errorMessage">{{ errorMessage }}</p>
     <div class="btn-announce apply_btn">
       <template>
+        <item-delivery-time></item-delivery-time>
         <button
           type="button"
           data-toggle="modal"
@@ -39,7 +40,7 @@
 <script>
 //this footer ll be always called by the catalog and modifiers items only
 import { mapGetters } from 'vuex'
-
+import itemDeliveryTime from '@/components/pos/content/cart/newOrders/items/popup/footer/buttons/ItemTimeDelivery'
 import AddModifierOrderButton from './footer/AddModifierOrderButton'
 import RemoveFromComboButton from './footer/RemoveFromComboButton'
 export default {
@@ -53,6 +54,7 @@ export default {
   components: {
     AddModifierOrderButton,
     RemoveFromComboButton,
+    itemDeliveryTime,
   },
   computed: {
     ...mapGetters('location', ['_t']),
