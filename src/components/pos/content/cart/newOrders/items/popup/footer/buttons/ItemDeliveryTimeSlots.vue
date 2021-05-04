@@ -9,6 +9,10 @@
           </h4>
         </div>
         <div class="modal-body row dining-options-block select-discount">
+          <span v-if="itemPreparingTime" class="prepare_time"
+            >{{ _t('Item preparing time is ') }} {{ itemPreparingTime }}
+            {{ _t('minutes') }}.</span
+          >
           <div id="available-tables" class="available-tables cursor-pointer">
             <div class="table-status-container">
               <span
@@ -49,22 +53,36 @@
 
 <script>
 /* global hideModal */
-import { mapGetters } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 export default {
   name: 'ItemDeliveryTimeSlots',
   data() {
     return {
-      timerStart: 5,
-      timerEnd: 60,
+      timerStart: 0,
+      timerEnd: 0,
+      interval: 5,
       itemServingTime: 0,
+      itemPreparingTime: 0,
     }
   },
   computed: {
+    /*need to get selected item*/
+    ...mapState('category', ['itemsPreparingTime']),
     ...mapGetters('location', ['_t']),
+    ...mapGetters('order', ['item']),
+    ...mapState({
+      modifierItem: state => state.modifier.item,
+    }),
+    selectedItem() {
+      let selected_item = this.item
+      if (!selected_item) selected_item = this.modifierItem
+      return selected_item
+    },
+    ...mapGetters('combo', ['current_combo_selected_item']),
     timer_loop() {
       let timer_ = []
-      let i = this.timerStart
-      for (i; i <= this.timerEnd; i += this.timerStart) {
+      let i = this.timerStart + 5
+      for (i; i <= this.timerEnd + 60; i += this.interval) {
         i < 10 ? timer_.push('0' + i) : timer_.push(i)
       }
       return timer_
@@ -76,9 +94,31 @@ export default {
       this.$store.commit('orderForm/setItemDeliveryTime', time)
       this.$store.dispatch('order/addItemDeliveryTime', time)
     },
+    timeConvert(time, separator = ':') {
+      if (time) {
+        let timeSplit = time.split(separator)
+        return parseInt(timeSplit[0]) * 60 + parseInt(timeSplit[1])
+      }
+    },
     closeModal(time) {
       this.setItemDeliveryTime(time)
       hideModal('#item-delivery-time-selection')
+    },
+  },
+  watch: {
+    selectedItem(selected_item) {
+      this.$nextTick(() => {
+        let item_prepating = this.itemsPreparingTime.find(item => {
+          return item.for_items.includes(selected_item._id)
+        })
+        let cooking_time = 0
+        if (item_prepating) {
+          cooking_time = this.timeConvert(item_prepating.cooking_time)
+        }
+        this.itemPreparingTime = cooking_time
+        this.timerStart = cooking_time
+        this.timerEnd = cooking_time
+      })
     },
   },
   mounted() {
@@ -155,5 +195,9 @@ export default {
     overflow-y: auto;
     text-align: center;
   }
+}
+.prepare_time {
+  font-weight: bold;
+  margin-bottom: 10px;
 }
 </style>

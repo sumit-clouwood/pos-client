@@ -1290,6 +1290,7 @@ const actions = {
                   root: true,
                 }
               )
+              dispatch('dinein/getBookedTablesOnClick', true, { root: true })
             } else {
               dispatch('handleSystemErrors', response).then(() =>
                 reject(response)

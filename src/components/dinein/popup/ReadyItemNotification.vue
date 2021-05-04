@@ -83,11 +83,6 @@ export default {
       if (process.env.VUE_APP_SOCKET_DISABLE) {
         return false
       }
-      // var store = '5d90562cc6aee43328376de3';
-      // var user = '5d24920aafbc7d026e717f78';
-      // eslint-disable-next-line no-debugger
-      debugger
-      // var socket = io('https://websocket-stg.dimspos.com')
       let store = this.store._id
       let scope = this
       let user = this.userDetails ? this.userDetails.item : false

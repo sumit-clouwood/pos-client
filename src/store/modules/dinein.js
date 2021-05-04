@@ -648,7 +648,7 @@ const actions = {
       dispatch('dineInCompleteOrders', loader)
     }
   },
-  moveTable({ commit, state }, data) {
+  moveTable({ commit, state, dispatch }, data) {
     if (state.selectedTable) {
       commit(
         mutation.SELECTED_TABLE_RESERVATION,
@@ -664,6 +664,7 @@ const actions = {
       ]
       DineInService.updateReservationTable(...params).then(() => {
         commit(mutation.RESERVATION_ID, data.reservationid)
+        dispatch('getBookedTablesOnClick', false) //update it for optimization
       })
     }
   },

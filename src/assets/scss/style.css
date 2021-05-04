@@ -2521,7 +2521,7 @@ a:hover {
     letter-spacing: 0.43px; }
 
 .manage-customer-table {
-  max-height: 31.25rem;
+  max-height: 20.3125rem;
   overflow-y: auto;
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;

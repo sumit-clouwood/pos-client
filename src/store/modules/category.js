@@ -31,6 +31,7 @@ const getDefaults = () => {
     itemMeasurementUnit: '',
     itemMeasurementValue: '',
     scaleData: '',
+    itemsPreparingTime: undefined,
   }
 }
 
@@ -279,6 +280,16 @@ const actions = {
     commit('setItemMeasurementUnit', unitName)
     commit('setItemMeasurementValue', unitValue)
   },
+  getItemPreparingTime({ commit }) {
+    return new Promise((resolve, reject) => {
+      CategoryService.loadItemsPreparingTime()
+        .then(response => {
+          commit('SET_ITEM_PREPARING_TIME', response.data.data)
+          resolve(response)
+        })
+        .catch(er => reject(er))
+    })
+  },
 }
 // mutations
 //state should be only changed through mutation and these are synchronous
@@ -369,6 +380,9 @@ const mutations = {
   },
   setItemMeasurementValue(state, value) {
     state.itemMeasurementValue = value
+  },
+  SET_ITEM_PREPARING_TIME(state, items_time) {
+    state.itemsPreparingTime = items_time
   },
 }
 

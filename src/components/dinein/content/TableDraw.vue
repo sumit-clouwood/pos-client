@@ -53,7 +53,7 @@
                             #{{ getOrderNo(orderId) }}
                           </div>
                           <div
-                            class="order-details-with-action"
+                            class=""
                             v-if="orderStatus(orderId) !== 'finished'"
                           >
                             <button
@@ -103,9 +103,7 @@
                           {{ created_date(orderData.startDate) }},
                           {{ created_time(orderData.startTime) }}
                         </div>
-                        <div
-                          class="order-details-with-action table-draw-order-details"
-                        >
+                        <div class="table-draw-order-details">
                           <button
                             class="btn bg-success table-popup font-weight-bold"
                             @click="newOrder(orderData.reservationId, true)"
@@ -1540,10 +1538,10 @@ export default {
     max-height: $px190;
     padding: $px5;
     .table-order {
-      padding: $px5 $px2;
+      //padding: $px5 $px2;
+      //border-bottom: 1px solid #dbd7d7;
       //margin-bottom: $px5;
       //background: #e3e2e2;
-      border-bottom: 1px solid #dbd7d7;
       //font-size: 12px;
       //&:last-child {
       //  border-bottom: unset;
@@ -1552,6 +1550,8 @@ export default {
     .order-details-with-action {
       display: grid;
       grid-template-columns: 1fr auto;
+      padding: $px5 $px2;
+      border-bottom: 1px solid #dbd7d7;
 
       .dt-items {
         font-weight: 400;

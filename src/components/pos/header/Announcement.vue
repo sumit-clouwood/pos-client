@@ -26,7 +26,8 @@
       >
         <b v-if="announcements">{{ announcements }} | </b>
         <b v-if="store.waiting_time !== '00:00'"
-          >{{ _t(' Store waiting time is ') }} {{ store.waiting_time }}</b
+          >{{ _t(' Store waiting time is ') }}
+          {{ splitTime(store.waiting_time) }}</b
         >
       </marquee>
     </div>
@@ -49,6 +50,14 @@ export default {
     ...mapState({
       announcements: state => state.announcement.announcements,
     }),
+  },
+  methods: {
+    splitTime(time) {
+      let time_split = time.split(':')
+      let hh = time_split[0] !== '00' ? time_split[0] + ' Hour(s)' : ''
+      let mm = time_split[1] !== '00' ? ' ' + time_split[1] + ' Minutes' : ''
+      return hh + mm
+    },
   },
 }
 </script>
