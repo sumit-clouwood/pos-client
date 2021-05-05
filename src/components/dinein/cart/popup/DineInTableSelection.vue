@@ -1,10 +1,5 @@
 <template>
-  <div
-    class="modal fade"
-    :class="show"
-    id="dine-in-table-selection"
-    role="dialog"
-  >
+  <div class="modal fade" id="dine-in-table-selection" role="dialog">
     <div class="modal-dialog modal-dialog-centered">
       <!-- Modal content-->
       <div class="modal-content color-dashboard-background">
@@ -13,16 +8,16 @@
             {{ _t(tableHeaderName) }}
           </h4>
         </div>
+        <div class="cust-top-arrow food-arrow" @click="btnTop">
+          <i class="fa fa-chevron-up" aria-hidden="true"></i>
+        </div>
+        <div class="cust-bottom-arrow food-arrow" @click="btnBottom">
+          <i class="fa fa-chevron-down" aria-hidden="true"></i>
+        </div>
         <div class="modal-body row dining-options-block select-discount">
-          <!--<div class="cust-top-arrow food-arrow disable" @click="btnTop">
-            <i class="fa fa-chevron-up" aria-hidden="true"></i>
-          </div>
-          <div class="cust-bottom-arrow food-arrow disable" @click="btnBottom">
-            <i class="fa fa-chevron-down" aria-hidden="true"></i>
-          </div>-->
           <span class="error">{{ tableBookedAlert }}</span>
           <div id="available-tables" class="available-tables cursor-pointer">
-            <div class="table-status-container">
+            <div class="table-status-container" id="table-status-container-id">
               <span
                 class="table-status"
                 :class="selectedTableMove == table.table_id ? 'active' : ''"
@@ -83,6 +78,7 @@
 <script>
 /*global $*/
 import { mapGetters, mapState } from 'vuex'
+import { bus } from '@/eventBus'
 // import { bus } from '@/eventBus'
 export default {
   name: 'DineInTableSelection',
@@ -91,10 +87,10 @@ export default {
       selectedTableMove: '',
       moveTableDetails: '',
       tableBookedAlert: '',
-      /*custBlockHeight: 0,
+      custBlockHeight: 0,
       custBlockInitHeight: 0,
-      custBlockItemHeight: 0,*/
-      show: 'show',
+      custBlockItemHeight: 0,
+      scrollPosition: 0,
     }
   },
   props: {
@@ -183,80 +179,61 @@ export default {
       this.$store.dispatch('dinein/moveTable', data)
       $('#dine-in-table-selection').modal('hide')*/
     },
-    /*custAreaCalculation() {
-      // eslint-disable-next-line no-debugger
-      debugger
-      let custBlockHeight = $('.available-tables').innerHeight()
-      this.custBlockHeight = custBlockHeight
-      this.custBlockInitHeight = custBlockHeight
-      this.custBlockItemHeight = $('.available-tables > div').innerHeight()
-      $('.cust-bottom-arrow, .cust-top-arrow').removeClass('disable')
-      if (this.custBlockHeight > this.custBlockItemHeight) {
-        $('.cust-bottom-arrow, .cust-top-arrow').addClass('disable')
+    areaCalculation(operation) {
+      this.custBlockHeight = $('#table-status-container-id').innerHeight()
+      this.custBlockItemHeight = $(
+        '#table-status-container-id > span'
+      ).innerHeight()
+      if (this.custBlockHeight < 255 && operation === 'init') {
+        $('.cust-top-arrow, .cust-bottom-arrow').addClass('disable')
       }
-      if (this.custBlockHeight === this.custBlockInitHeight) {
-        $('.cust-top-arrow').addClass('disable')
+      if (operation === 'top') {
+        this.scrollPosition = this.custBlockItemHeight
+      }
+      if (
+        operation === '-' &&
+        this.scrollPosition >= this.custBlockItemHeight
+      ) {
+        this.scrollPosition += this.custBlockItemHeight - 20
+      }
+      if (
+        operation === '+' &&
+        this.scrollPosition >= this.custBlockItemHeight
+      ) {
+        this.scrollPosition -= this.custBlockItemHeight - 20
       }
     },
     btnTop() {
-      // eslint-disable-next-line no-debugger
-      debugger
-
-      if (this.custBlockHeight <= 0) {
-        this.custBlockHeight = parseInt(this.custBlockInitHeight)
+      if (this.scrollPosition <= this.custBlockItemHeight) {
+        this.areaCalculation('top')
         $('.cust-top-arrow').addClass('disable')
-        return false
-      } else {
         $('.cust-bottom-arrow').removeClass('disable')
-        if (this.custBlockHeight === this.custBlockItemHeight) {
-          this.custBlockHeight -= parseInt(this.custBlockInitHeight + 100)
-        } else {
-          this.custBlockHeight -= parseInt(this.custBlockInitHeight)
-        }
-      }
-      $('.available-tables').animate({ scrollTop: this.custBlockHeight }, 1000)
-
-      if (this.custBlockHeight <= 0) {
-        this.custBlockHeight = parseInt(this.custBlockInitHeight)
-        $('.cust-top-arrow').addClass('disable')
+      } else {
+        this.areaCalculation('+')
+        $('.cust-top-arrow').removeClass('disable')
+        $('.cust-bottom-arrow').removeClass('disable')
+        document.getElementById('table-status-container-id').scrollTop -= 220
       }
     },
     btnBottom() {
-      // eslint-disable-next-line no-debugger
-      debugger
-      if (this.custBlockHeight >= this.custBlockItemHeight) {
+      $('.cust-top-arrow').removeClass('disable')
+      if (this.scrollPosition >= this.custBlockHeight) {
+        $('.cust-top-arrow').removeClass('disable')
         $('.cust-bottom-arrow').addClass('disable')
-        this.custBlockHeight = parseInt(this.custBlockItemHeight)
-        return false
       } else {
         $('.cust-top-arrow').removeClass('disable')
-        if (
-          this.custBlockHeight == this.custBlockInitHeight ||
-          this.custBlockHeight === 0
-        ) {
-          this.custBlockHeight += parseInt(this.custBlockInitHeight - 100)
-        } else {
-          this.custBlockHeight += parseInt(this.custBlockInitHeight)
-        }
+        document.getElementById('table-status-container-id').scrollTop += 220
+        this.areaCalculation('-')
       }
-
-      $('.available-tables').animate({ scrollTop: this.custBlockHeight }, 1000)
-
-      if (this.custBlockHeight >= this.custBlockItemHeight) {
-        $('.cust-bottom-arrow').addClass('disable')
-        this.custBlockHeight = parseInt(this.custBlockItemHeight)
-      }
-    },*/
+    },
+    mounted() {
+      bus.$on('check-move-tables-height', () => {
+        setTimeout(() => {
+          this.areaCalculation('init')
+        }, 300)
+      })
+    },
   },
-  /*mounted() {
-    // bus.$on('check-height', () => {
-    setTimeout(() => {
-      if ($('#dine-in-table-selection').hasClass('show')) {
-        this.custAreaCalculation()
-      }
-    }, 300)
-    // })
-  },*/
 }
 </script>
 <style lang="scss" scoped>
@@ -268,16 +245,24 @@ export default {
   position: relative;
   bottom: 10px;
 }
+.disable {
+  display: none;
+}
 /*padding: 40px 5px 10px 5px*/
-//.food-arrow.disable {
-//  display: none;
-//}
-//.food-arrow.cust-top-arrow {
-//  top: 70px;
-//  right: 30px;
-//}
-//.food-arrow.cust-bottom-arrow {
-//  bottom: 0;
-//  right: 30px;
-//}
+.food-arrow.disable {
+  display: none;
+}
+.food-arrow.cust-top-arrow {
+  top: 60px;
+  right: 30px;
+}
+.food-arrow.cust-bottom-arrow {
+  bottom: 80px;
+  right: 30px;
+}
+#available-tables {
+  .table-status-container {
+    //max-height: unset;
+  }
+}
 </style>

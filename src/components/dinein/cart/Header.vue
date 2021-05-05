@@ -51,6 +51,7 @@
           data-target="#dine-in-table-selection"
           data-toggle="modal"
           id="get-available-tables-list"
+          @click="scrollTable('up')"
         >
           {{ _t('Move Table') }}
         </button>
@@ -230,6 +231,9 @@ export default {
   methods: {
     scroll(option) {
       bus.$emit('scroll-cart', option)
+    },
+    scrollTable(option) {
+      bus.$emit('check-move-tables-height', option)
     },
     moveItems() {
       /*select items*/
