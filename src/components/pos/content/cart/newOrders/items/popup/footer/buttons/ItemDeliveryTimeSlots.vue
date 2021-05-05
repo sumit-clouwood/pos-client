@@ -184,6 +184,10 @@ export default {
   .modal-content {
     .modal-body {
       padding: 0 30px;
+      @media only screen and (min-width: 320px) and (max-width: 576px) {
+        min-height: 330px !important;
+      }
+      min-height: 310px !important;
     }
   }
   .table-status-container {

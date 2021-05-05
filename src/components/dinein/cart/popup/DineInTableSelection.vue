@@ -180,7 +180,7 @@ export default {
       $('#dine-in-table-selection').modal('hide')*/
     },
     areaCalculation(operation) {
-      this.custBlockHeight = $('#table-status-container-id').innerHeight()
+      this.custBlockHeight = $('#table-status-container-id')[0].scrollHeight
       this.custBlockItemHeight = $(
         '#table-status-container-id > span'
       ).innerHeight()
@@ -204,6 +204,8 @@ export default {
       }
     },
     btnTop() {
+      // eslint-disable-next-line no-console
+      console.log(this.scrollPosition, '', this.custBlockItemHeight)
       if (this.scrollPosition <= this.custBlockItemHeight) {
         this.areaCalculation('top')
         $('.cust-top-arrow').addClass('disable')
@@ -217,7 +219,10 @@ export default {
     },
     btnBottom() {
       $('.cust-top-arrow').removeClass('disable')
-      if (this.scrollPosition >= this.custBlockHeight) {
+      if (
+        this.custBlockHeight != 0 &&
+        this.scrollPosition >= this.custBlockHeight
+      ) {
         $('.cust-top-arrow').removeClass('disable')
         $('.cust-bottom-arrow').addClass('disable')
       } else {
