@@ -1398,8 +1398,11 @@ div {
   grid-template-columns: 1fr 1fr;
   align-content: center;
   text-align: center;
+  position: absolute;
+  bottom: -2px;
+  right: 0;
   @include responsive(mobile){
-    grid-column-gap: 10px !important;
+    grid-column-gap: $px10 !important;
   }
 }
 

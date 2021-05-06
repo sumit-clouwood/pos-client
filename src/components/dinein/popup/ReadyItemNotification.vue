@@ -55,7 +55,7 @@
 
 /* global showModal hideModal */
 // import InformationPopup from '@/components/pos/content/InformationPopup'
-var audio = new Audio('/sound/Store_Door_Chime.mp3')
+/*var audio = new Audio('/sound/Store_Door_Chime.mp3')
 var nopromise = {
   catch: new Function(),
 }
@@ -69,7 +69,7 @@ audio.addEventListener(
     promise.catch(error => console.log(error))
   },
   false
-)
+)*/
 import { mapGetters, mapState } from 'vuex'
 export default {
   name: 'ReadyItemNotification',
@@ -96,9 +96,9 @@ export default {
       this.itemData = undefined
       this.orderData = undefined
       hideModal('#item-notification')
-      this.pauseSound()
+      // this.pauseSound()
     },
-    playSound() {
+    /*playSound() {
       console.log('play sound')
       let promise = audio.play() || nopromise
       promise.catch(error => {
@@ -113,7 +113,7 @@ export default {
         console.log(error)
       })
       // this.isAudioPlaying = false
-    },
+    },*/
     fetchReadyItemsBySocket() {
       if (process.env.VUE_APP_SOCKET_DISABLE) {
         return false
@@ -162,7 +162,7 @@ export default {
                 )
                 scope.itemData = item
                 showModal('#item-notification')
-                if (!scope.isAudioPlaying) scope.playSound()
+                // if (!scope.isAudioPlaying) scope.playSound()
               }
             })
           // alert('Socket Run for item ready : ' + JSON.stringify(message))

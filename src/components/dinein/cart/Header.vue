@@ -133,11 +133,11 @@
         </span>
       </div>
     </div>
-    <div v-if="moveItemsMsg">
+    <!--<div v-if="moveItemsMsg">
       <span class="text-danger font-weight-bold right">{{
         _t('Select table and items')
       }}</span>
-    </div>
+    </div>-->
   </div>
 </template>
 
@@ -288,13 +288,16 @@ export default {
   button {
   }
 }
+.main-orders-contacts {
+  position: relative;
+}
 @include responsive(mobile) {
   .main-orders-contacts {
     display: grid;
     grid-template-columns: 1fr;
     grid-template-rows: none;
     grid-row-gap: 20px;
-
+    position: unset;
     .cursor-pointer {
       display: flex;
       align-items: center;

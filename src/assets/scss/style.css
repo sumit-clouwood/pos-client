@@ -6148,10 +6148,13 @@ div#confirmModal .customer-title {
   display: grid;
   grid-template-columns: 1fr 1fr;
   align-content: center;
-  text-align: center; }
+  text-align: center;
+  position: absolute;
+  bottom: -2px;
+  right: 0; }
   @media only screen and (min-width: 320px) and (max-width: 960px) {
     .dine-in-table-guest-details-pos {
-      grid-column-gap: 10px !important; } }
+      grid-column-gap: 0.625rem !important; } }
 
 .tables-draw {
   border: 0.0625rem dashed;
