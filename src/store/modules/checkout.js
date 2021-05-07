@@ -1104,7 +1104,7 @@ const actions = {
     })
   },
 
-  createDineOrder({ dispatch, commit, getters, rootGetters, state }, action) {
+  createDineOrder({ dispatch, commit, getters, rootGetters, state, rootState }, action) {
     return new Promise(resolve => {
       OrderService.saveOrder(state.order)
         .then(response => {
@@ -1122,8 +1122,8 @@ const actions = {
                 commit('SPLITED_ITEM', false)
               } else {
                 commit('SPLITED_ITEM', true)
-                if (rootState.dinein.moveItemTableId && rootState.order.selectItemsToMove)  {
-                  msgStr = rootGetters['location/_t'](
+                if (rootState.order.selectItemsToMove)  {
+                  msg = rootGetters['location/_t'](
                       'Selected item(s) are moved to another table.'
                   )
                 } else {
@@ -1147,6 +1147,7 @@ const actions = {
             } else {
               commit(mutation.PRINT, true)
             }
+            commit(mutation.SET_ROUTE, { name: 'Dinein' })
             dispatch('setMessage', {
               result: 'success',
               msg: msg,
@@ -1282,15 +1283,16 @@ const actions = {
                 commit(mutation.PRINT, true)
                 resolve()
               }
-
-              commit(
-                'checkoutForm/SET_MSG',
-                { result: '', message: msgStr },
-                {
-                  root: true,
-                }
-              )
-              dispatch('dinein/getBookedTablesOnClick', true, { root: true })
+              if (!rootState.order.selectItemsToMove)  {
+                commit(
+                    'checkoutForm/SET_MSG',
+                    { result: '', message: msgStr },
+                    {
+                      root: true,
+                    }
+                )
+                dispatch('dinein/getBookedTablesOnClick', true, { root: true })
+              }
             } else {
               dispatch('handleSystemErrors', response).then(() =>
                 reject(response)
