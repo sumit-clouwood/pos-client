@@ -1736,17 +1736,19 @@ const actions = {
         data: { route: 'splitOrder' },
       })
         .then(newOrder => {
-          dispatch('dinein/getSelectedOrder', newOrder.id, {
-            root: true,
-          })
-            .then(() => {
-              commit(mutation.SPLIT_PAID, true)
-              commit('order/SET_SPLITTED', true, { root: true })
-              resolve()
+          if (newOrder && newOrder.id) {
+            dispatch('dinein/getSelectedOrder', newOrder.id, {
+              root: true,
             })
-            .catch(error => reject(error))
-          //new order has been created with remaining orders,
-          //order items have same old order indexes so we need to update them before next order isplaced
+                .then(() => {
+                  commit(mutation.SPLIT_PAID, true)
+                  commit('order/SET_SPLITTED', true, { root: true })
+                  resolve()
+                })
+                .catch(error => reject(error))
+            //new order has been created with remaining orders,
+            //order items have same old order indexes so we need to update them before next order isplaced
+          }
           commit('order/SET_SPLIT_BILL', false, { root: true })
         })
         .catch(error => reject(error))

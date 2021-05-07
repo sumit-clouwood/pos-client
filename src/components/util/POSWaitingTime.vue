@@ -37,6 +37,7 @@
                     <input
                       autocomplete="off"
                       type="text"
+                      placeholder="00:00"
                       class="form-control"
                       v-model="pos_waiting_time"
                     />

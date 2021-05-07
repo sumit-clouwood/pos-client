@@ -94,15 +94,6 @@
           {{ _t('Move Items') }}
         </button>
       </div>
-      <div v-if="isSplit" class="driver-container">
-        <button
-          class="btn btn-success"
-          @click="printSplit"
-          id="split-bill-print-button"
-        >
-          {{ _t('Print') }}
-        </button>
-      </div>
       <!-- <div class="btn btn-success cartBottomBtn">
         <i aria-hidden="true" class="fa fa-chevron-down"></i>
       </div>-->
@@ -123,6 +114,15 @@
         <i aria-hidden="true" class="fa fa-chevron-down"></i>
       </div>
       <div class="color-main color-text dine-in-table-guest-details-pos">
+        <div v-if="isSplit" class="driver-container">
+          <button
+            class="btn btn-success"
+            @click="printSplit"
+            id="split-bill-print-button"
+          >
+            {{ _t('Print') }}
+          </button>
+        </div>
         <span class="tables-draw" v-if="selectedTable">
           <img src="img/dinein/dine-intable.svg" />
           <b> {{ selectedTable.number }}</b>

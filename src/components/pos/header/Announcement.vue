@@ -25,7 +25,7 @@
         onmouseout="this.start();"
       >
         <b v-if="announcements">{{ announcements }} | </b>
-        <b v-if="store.waiting_time !== '00:00'"
+        <b v-if="splitTime(store.waiting_time)"
           >{{ _t(' Store waiting time is ') }}
           {{ splitTime(store.waiting_time) }}</b
         >
@@ -53,10 +53,18 @@ export default {
   },
   methods: {
     splitTime(time) {
-      let time_split = time.split(':')
-      let hh = time_split[0] !== '00' ? time_split[0] + ' Hour(s)' : ''
-      let mm = time_split[1] !== '00' ? ' ' + time_split[1] + ' Minutes' : ''
-      return hh + mm
+      if (time) {
+        let time_split = time.split(':')
+        let hh =
+          parseInt(time_split[0]) !== 0 && parseInt(time_split[0]) !== undefined
+            ? time_split[0] + ' Hour(s)'
+            : ''
+        let mm =
+          parseInt(time_split[1]) !== 0 && parseInt(time_split[1]) !== undefined
+            ? ' ' + time_split[1] + ' Minutes'
+            : ''
+        return hh + mm
+      } else return false
     },
   },
 }

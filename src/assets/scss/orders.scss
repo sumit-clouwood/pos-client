@@ -73,7 +73,7 @@
 
     .main-oreders-phone {
       color: $blue-dark;
-      padding: 0px 0;
+      padding: 0 0;
       font-weight: 600;
       text-align: right;
       font-size: $px14;
@@ -81,9 +81,9 @@
     }
 
     .main-oreders-buttons {
-      padding: 0px 0;
+      padding: 0 0;
       display: grid;
-      grid-template-columns: 1fr 1fr 1fr auto auto;
+      grid-template-columns: 1fr 1fr 1fr auto;
       grid-gap: $px10;
       grid-column-start: 1;
       grid-column-end: 3;

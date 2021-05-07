@@ -1395,12 +1395,15 @@ div {
 
 .dine-in-table-guest-details-pos {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: auto auto auto;
   align-content: center;
   text-align: center;
   position: absolute;
   bottom: -2px;
   right: 0;
+  .driver-container {
+    margin-right: $px8;
+  }
   @include responsive(mobile){
     grid-column-gap: $px10 !important;
   }
