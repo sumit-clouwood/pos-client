@@ -881,6 +881,10 @@ const mutations = {
     state.dineInTabType = 'all'
     state.activeArea = false
   },
+  RESET_MOVE_ITEMS(state) {
+    state.moveItemReservationId = false
+    state.moveItemTableId = undefined
+  },
   [mutation.PROCESSING_SPLIT](state, status) {
     state.processingSplit = status
   },

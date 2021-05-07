@@ -1147,7 +1147,6 @@ const actions = {
             } else {
               commit(mutation.PRINT, true)
             }
-            commit(mutation.SET_ROUTE, { name: 'Dinein' })
             dispatch('setMessage', {
               result: 'success',
               msg: msg,
@@ -1971,6 +1970,7 @@ const actions = {
       dispatch('combo/reset', true, { root: true })
       dispatch('customer/reset', true, { root: true })
       dispatch('location/reset', {}, { root: true })
+      commit('dinein/RESET_MOVE_ITEMS', {}, { root: true })
     }
   },
 

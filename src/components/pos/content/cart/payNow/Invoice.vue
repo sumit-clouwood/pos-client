@@ -82,6 +82,11 @@ export default {
         this.postRedirect()
         this.$store.commit('checkout/PAYMENT_MSG_STATUS', false)
       } else {
+        if (newVal && this.$store.state.order.orderType.OTApi === 'dine_in') {
+          this.$store.dispatch('order/beforeRedirectResetCartDineIn')
+          this.$router.replace({ name: 'Dinein' })
+          this.$store.commit('order/RESET_SPLIT_BILL')
+        }
         this.postRedirectIncomplete()
       }
     },
