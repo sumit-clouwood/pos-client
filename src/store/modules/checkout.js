@@ -919,14 +919,14 @@ const actions = {
                         // let lastOrderUpdate = order.order_action_history[order.order_action_history.length - 1]
                         let firstTimeOrderPlacement = order.order_action_history[0]
                         let difference_in_order = CompareData.findDiffString(decompressFromBase64(firstTimeOrderPlacement.order), JSON.stringify(empty_old_order_action))
-                        let difference_in_order_remove_item = CompareData.findDiffString(JSON.stringify(empty_old_order_action), decompressFromBase64(firstTimeOrderPlacement.order))
+                        // let difference_in_order_remove_item = CompareData.findDiffString(JSON.stringify(empty_old_order_action), decompressFromBase64(firstTimeOrderPlacement.order))
                         if (difference_in_order.length > 50) {
                           order_actions.order = compressToBase64(JSON.stringify(difference_in_order))
                           order.order_action_history.push(order_actions)
-                        } else if (difference_in_order_remove_item.length > 50) {
+                        } /*else if (difference_in_order_remove_item.length > 50) {
                           order_actions.order = compressToBase64(JSON.stringify(difference_in_order_remove_item))
                           order.order_action_history.push(order_actions)
-                        }
+                        }*/
                       } else {
                         order.order_action_history.push(order_actions)
                       }
