@@ -2,8 +2,10 @@ import OrderService from '@/services/data/OrderService'
 import * as mutation from './checkout/mutation-types'
 import Num from '@/plugins/helpers/Num.js'
 import * as CONSTANTS from '@/constants'
-// import { compressToBase64 } from 'lz-string'
+import { compressToBase64, decompressFromBase64 } from 'lz-string'
 import OrderHelper from '@/plugins/helpers/Order'
+import CompareData from '@/plugins/helpers/CompareData'
+
 // import * as CONST from '@/constants'
 /* eslint-disable */
 // initial state
@@ -910,8 +912,27 @@ const actions = {
                         delete item.originalItem
                         return item
                       })
-                      let order_actions = {action: action_order, date_time: orderPlacementTime, order: JSON.stringify(order)}
-                      order.order_action_history.push(order_actions)
+                      let empty_old_order_action = Object.assign({}, order)
+                      empty_old_order_action.order_action_history = []
+                      let order_actions = {action: action_order, date_time: orderPlacementTime, order: compressToBase64(JSON.stringify(empty_old_order_action))}
+                      if (order.order_action_history.length) {
+                        // let lastOrderUpdate = order.order_action_history[order.order_action_history.length - 1]
+                        let firstTimeOrderPlacement = order.order_action_history[0]
+                        let difference_in_order = CompareData.findDiffString(decompressFromBase64(firstTimeOrderPlacement.order), JSON.stringify(empty_old_order_action))
+                        let difference_in_order_remove_item = CompareData.findDiffString(JSON.stringify(empty_old_order_action), decompressFromBase64(firstTimeOrderPlacement.order))
+                        if (difference_in_order.length > 50) {
+                          order_actions.order = compressToBase64(JSON.stringify(difference_in_order))
+                          order.order_action_history.push(order_actions)
+                        } else if (difference_in_order_remove_item.length > 50) {
+                          order_actions.order = compressToBase64(JSON.stringify(difference_in_order_remove_item))
+                          order.order_action_history.push(order_actions)
+                        }
+                      } else {
+                        order.order_action_history.push(order_actions)
+                      }
+                      /*Need to check difference in two stringingfy before push in history (can generate with superwise password (findDiffString*/
+                      // let decomp = JSON.parse(decompressFromBase64(order_actions.order))
+                      // console.log(decomp, 'decomp')
                       commit(mutation.SET_ORDER, order)
                       dispatch('createOrder', { action: action, data: data })
                         .then(response => {
@@ -1812,7 +1833,7 @@ const actions = {
     })
   },
 
-  handleSystemErrors({ dispatch }, response) {
+  handleSystemErrors({ dispatch, rootState }, response) {
     let error = ''
     if (response.data.status == 'form_errors') {
       for (let i in response.data.form_errors) {
@@ -1822,6 +1843,8 @@ const actions = {
           response.data.form_errors[i].forEach(err => (error += ' ' + err))
         }
       }
+      /*let past_order_history = rootState.order.selectedOrder ? rootState.order.selectedOrder.item.order_action_history : []
+      if(past_order_history.length > 1) past_order_history.pop()*/
     } else {
       error =
         typeof response.data.error !== 'undefined'

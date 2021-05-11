@@ -83,7 +83,13 @@
       </div>
       <div
         class="driver-container"
-        v-if="!showSplitOption && orderId && covers && cartType !== 'hold'"
+        v-if="
+          items.length > 1 &&
+            !showSplitOption &&
+            orderId &&
+            covers &&
+            cartType !== 'hold'
+        "
       >
         <button
           class="btn btn-success"
@@ -240,6 +246,7 @@ export default {
       /*select table from popup*/
       /*make new order by items and tables*/
       this.moveItemsMsg = !this.moveItemsMsg
+      this.$store.commit('dinein/MOVE_ITEM_TABLE_ID', undefined)
       if (this.moveItemsMsg) {
         this.$store.dispatch('order/setSplitBill')
         this.moveTableModal = '#dine-in-table-selection'

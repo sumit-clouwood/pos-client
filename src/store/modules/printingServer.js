@@ -334,6 +334,7 @@ const actions = {
       }
 
       Object.assign(jsonResponse, invoice_header_data)
+      jsonResponse.order_action_history = []
       if (isIOS) {
         Object.assign(jsonResponse, { kitchens: state.kitchens })
         localStorage.setItem('orderInvoiceColData', '')

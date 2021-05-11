@@ -94,7 +94,7 @@
             v-bind:value="item.no"
             v-bind:index="item.no"
             v-bind:title="'Select'"
-            v-if="selectItemsToMove && item.paid !== true"
+            v-if="moveItemTableId && selectItemsToMove && item.paid !== true"
             v-model="splittedItems[item.no]"
             @change="markSplit"
           ></check-box>
@@ -230,7 +230,7 @@ export default {
       },
     },
     ...mapGetters('combo', ['find_combo_items', 'find_combo_item_modifiers']),
-    ...mapState('dinein', ['covers', 'split', 'guests']),
+    ...mapState('dinein', ['covers', 'split', 'guests', 'moveItemTableId']),
     ...mapState({
       currentItem: state => state.order.item._id,
     }),

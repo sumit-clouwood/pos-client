@@ -155,6 +155,7 @@ export default {
       $('#dine-in-table-selection').modal('toggle')
     },
     removeSelectedTable: function() {
+      this.$store.commit('dinein/MOVE_ITEM_TABLE_ID', undefined)
       // eslint-disable-next-line no-debugger
       $('#dine-in-table-selection').modal('hide')
       /*Bellow code is for reset table if not move, its having issue while cancel moving will check later*/
