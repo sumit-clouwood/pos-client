@@ -20,7 +20,7 @@
                 {{ _t('Order Number: ') }}
                 <b>#{{ item_details.order_no }}</b>
               </span>
-              <span>
+              <span v-if="item_details.table">
                 {{ _t('Table Number:') }}
                 <b>{{ item_details.table.number }}</b>
               </span>
