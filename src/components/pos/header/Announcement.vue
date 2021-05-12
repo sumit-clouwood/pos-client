@@ -25,7 +25,7 @@
         onmouseout="this.start();"
       >
         <b v-if="announcements">{{ announcements }} | </b>
-        <b v-if="splitTime(store.waiting_time)"
+        <b v-if="store.waiting_time && splitTime(store.waiting_time)"
           >{{ _t(' Store waiting time is ') }}
           {{ splitTime(store.waiting_time) }}</b
         >

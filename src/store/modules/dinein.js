@@ -369,21 +369,57 @@ const actions = {
           })
           if (orders.length) {
             let tableArray = []
+            let table_book_date_time = empty_reserved_table[table._id]
+              ? availability.timeConvert(empty_reserved_table[table._id].time)
+              : 0
+            const table_book_date_date = empty_reserved_table[table._id]
+              ? moment
+                  .utc(empty_reserved_table[table._id].date)
+                  .format('YYYY-MM-DD')
+              : 0
+            const current_date_active = moment.utc().format('YYYY-MM-DD')
+            let empty_table_time = availability.timeConvert(
+              getters.getTableEmptyTime
+            )
+            let getUTCCurrentTime = availability.timeConvert(
+              availability.getUTCCurrentTime()
+            )
             orders.forEach(order => {
               if (tableArray[order.assigned_table_id] == undefined)
                 tableArray[order.assigned_table_id] = []
               tableArray[order.assigned_table_id].push(order.status)
-              if (order.status === CONST.ORDER_STATUS_IN_PROGRESS) {
-                if (order.assigned_table_id == table._id) {
+              if (
+                order.status === CONST.ORDER_STATUS_IN_PROGRESS ||
+                order.status === CONST.ORDER_STATUS_RESERVED
+              ) {
+                if (
+                  order.assigned_table_id == table._id &&
+                  order.related_orders_ids.length
+                ) {
                   is_unavail = 1
                 } else {
+                  if (
+                    getUTCCurrentTime >
+                      table_book_date_time + empty_table_time ||
+                    table_book_date_date < current_date_active
+                  ) {
+                    if (table_book_date_time) {
+                      is_reserved_empty = 1
+                    }
+                  } else {
+                    is_unavail = 1
+                  }
+                }
+              } /*else if (order.status === CONST.ORDER_STATUS_RESERVED) {
+                if (
+                  order.assigned_table_id == table._id &&
+                  !order.related_orders_ids.length
+                ) {
                   is_reserved_empty = 1
                 }
-              } else if (order.status === CONST.ORDER_STATUS_RESERVED) {
-                if (order.assigned_table_id == table._id) {
-                  is_reserved_empty = 1
-                }
-              } else if (order.status === CONST.ORDER_STATUS_ON_WAY) {
+              }*/ else if (
+                order.status === CONST.ORDER_STATUS_ON_WAY
+              ) {
                 if (order.assigned_table_id == table._id) {
                   is_avail_soon = 1
 
@@ -418,24 +454,6 @@ const actions = {
               )
             ) {
               if (empty_reserved_table && empty_reserved_table[table._id]) {
-                let table_book_date_time = empty_reserved_table[table._id]
-                  ? availability.timeConvert(
-                      empty_reserved_table[table._id].time
-                    )
-                  : 0
-                // let table_book_date_time = availability.timeConvert(
-                //   order.start_time
-                // )
-                const table_book_date_date = moment
-                  .utc(empty_reserved_table[table._id].date)
-                  .format('YYYY-MM-DD')
-                const current_date_active = moment.utc().format('YYYY-MM-DD')
-                let empty_table_time = availability.timeConvert(
-                  getters.getTableEmptyTime
-                )
-                let getUTCCurrentTime = availability.timeConvert(
-                  availability.getUTCCurrentTime()
-                )
                 if (
                   getUTCCurrentTime > table_book_date_time + empty_table_time ||
                   table_book_date_date < current_date_active

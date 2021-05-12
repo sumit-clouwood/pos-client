@@ -3,7 +3,7 @@
     class="modal fade"
     id="item-notification"
     role="dialog"
-    v-show="itemData"
+    v-show="itemData.length"
   >
     <div class="modal-dialog modal-dialog-centered">
       <!-- Modal content-->
@@ -14,19 +14,25 @@
           </h4>
         </div>
         <div class="modal-body">
-          <div>
-            <strong v-if="orderData">
-              {{ _t('Order Number: ') }}{{ orderData.order_no }}
-            </strong>
-            <br />
-            <strong v-if="itemData">
-              {{ _t('Table Number:') }} {{ itemData.table.number }}
-            </strong>
-            <hr />
-            <br />
-            <span v-if="itemData"
-              >{{ itemData.name }} {{ _t('is ready') }}</span
+          <div v-for="(item_details, index) in itemData" :key="index">
+            <div class="order-table-details">
+              <span>
+                {{ _t('Order Number: ') }}
+                <b>#{{ item_details.order_no }}</b>
+              </span>
+              <span>
+                {{ _t('Table Number:') }}
+                <b>{{ item_details.table.number }}</b>
+              </span>
+            </div>
+            <div
+              class="item-ready"
+              v-for="item in item_details.item"
+              :key="item._id"
             >
+              {{ _t('Ready to serve') }} : <b> {{ item.name }} </b>
+            </div>
+            <hr />
           </div>
         </div>
         <div class="modal-footer">
@@ -75,8 +81,8 @@ export default {
   name: 'ReadyItemNotification',
   data() {
     return {
-      orderData: undefined,
-      itemData: undefined,
+      itemData: [],
+      showPopup: false,
       msg: '',
       isAudioPlaying: false,
     }
@@ -93,8 +99,8 @@ export default {
   },
   methods: {
     noted: function() {
-      this.itemData = undefined
-      this.orderData = undefined
+      this.itemData = []
+      this.showPopup = false
       hideModal('#item-notification')
       // this.pauseSound()
     },
@@ -132,13 +138,14 @@ export default {
           /*let message = {
         data: {
           assigned_to: '5d24920aafbc7d026e717f78',
-          brand_id: '5d904ed3c6aee432ec723c32',
-          item_id: '5d905a07c6aee4334e7e2393',
+          brand_id: '5d9f2254d355b82f1543bd82',
+          item_id: '5da2d459b82fe55b01336bab',
           item_no: 1,
           namespace: '5d90562cc6aee43328376de35d24920aafbc7d026e717f78',
-          order_id: '608fbfe5b9ef912ab75fd263',
-          store_id: '5d90562cc6aee43328376de3',
-        },*/
+          order_id: '609bb55fe11e9779600ea572',
+          store_id: '5d9f24ac85f9e71d726b65c2',
+        },
+      }*/
           // eslint-disable-next-line no-console
           console.log(message)
           let socketData = message.data
@@ -150,18 +157,36 @@ export default {
               { root: true }
             )
             .then(response => {
-              scope.orderData = response.item
-              let item = response.item.items.find(
+              // eslint-disable-next-line no-debugger
+              debugger
+              let item = { item: [], table: undefined, order_no: undefined }
+              let item_details = response.item.items.find(
                 item =>
                   item.no == socketData.item_no &&
                   item.entity_id == socketData.item_id
               )
-              if (item) {
+              if (item_details) {
+                item.item.push(item_details)
                 item.table = scope.allBookedTables.orders.find(
-                  table => table._id === scope.orderData.table_reservation_id
+                  table => table._id === response.item.table_reservation_id
                 )
-                scope.itemData = item
-                showModal('#item-notification')
+                item.order_no = response.item.order_no
+                /*if (scope.itemData.length) {
+              /!*let is_same_order = scope.itemData.find(
+                item_data => item_data.order_no === item.order_no
+              )
+              if (is_same_order) {
+
+              } else {*!/
+                scope.itemData[item.order_no] = item
+              // }
+            } else {*/
+                scope.itemData.push(item)
+                // }
+                if (scope.itemData.length && !scope.showPopup) {
+                  showModal('#item-notification')
+                  scope.showPopup = true
+                }
                 // if (!scope.isAudioPlaying) scope.playSound()
               }
             })
@@ -187,30 +212,16 @@ export default {
 @import '@/assets/scss/pixels_rem.scss';
 @import '@/assets/scss/variables.scss';
 @import '@/assets/scss/mixins.scss';
-
-@include responsive(mobile) {
-  #switchWaiter {
-    overflow: hidden !important;
-    .modal-dialog {
-      max-width: 100% !important;
-      margin: 0 !important;
-      margin-top: 2rem !important;
-      .modal-content {
-        width: 95% !important;
-        margin: auto !important;
-        .modal-body {
-          padding-left: 0 !important;
-          padding-right: 0 !important;
-          width: 90%;
-        }
-        #available-tables {
-          width: 100%;
-          .table-status-container {
-            grid-template-columns: 1fr 1fr !important;
-          }
-        }
-      }
+.order-table-details {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  span {
+    &:last-child {
+      text-align: right;
     }
+  }
+  .item-ready {
+    /**/
   }
 }
 </style>
