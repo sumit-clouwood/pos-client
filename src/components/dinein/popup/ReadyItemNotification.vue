@@ -98,8 +98,8 @@ export default {
   },
   methods: {
     showScrollButtons() {
-      let scroll_height = $('#' + this.containerId)[0].scrollHeight
-      let height_ = $('#' + this.containerId).height()
+      let scroll_height = $('#ready-item-container')[0].scrollHeight
+      let height_ = $('#ready-item-container').height()
       if (scroll_height > height_) {
         $('.scroll-top-arrow, .scroll-bottom-arrow').removeClass('disable')
       } else {
