@@ -13,12 +13,7 @@
             {{ _t('Item Ready') }}
           </h4>
         </div>
-        <div class="scroll-top-arrow food-arrow" @click="btnTop">
-          <i class="fa fa-chevron-up" aria-hidden="true"></i>
-        </div>
-        <div class="scroll-bottom-arrow food-arrow" @click="btnBottom">
-          <i class="fa fa-chevron-down" aria-hidden="true"></i>
-        </div>
+        <scroll-buttons containerId="ready-item-container"></scroll-buttons>
         <div class="modal-body">
           <div id="ready-item-container">
             <div v-for="(item_details, index) in itemData" :key="index">
@@ -61,7 +56,7 @@
 </template>
 
 <script>
-/* global showModal hideModal $ */
+/* global showModal hideModal */
 
 /* eslint-disable no-console */
 /*var audio = new Audio('/sound/Store_Door_Chime.mp3')
@@ -80,18 +75,16 @@ audio.addEventListener(
   false
 )*/
 import { mapGetters, mapState } from 'vuex'
+import ScrollButtons from '@/components/util/ScrollButtons'
 export default {
   name: 'ReadyItemNotification',
+  components: { ScrollButtons },
   data() {
     return {
       itemData: [],
       showPopup: false,
       msg: '',
       isAudioPlaying: false,
-      scrollBlockHeight: 0,
-      scrollBlockInitHeight: 0,
-      scrollBlockItemHeight: 0,
-      scrollPosition: 0,
     }
   },
   computed: {
@@ -110,58 +103,6 @@ export default {
       hideModal('#item-notification')
       // this.pauseSound()
     },
-    areaCalculation(operation) {
-      this.scrollBlockHeight = $('#ready-item-container')[0].scrollHeight
-      this.scrollBlockItemHeight = $(
-        '#ready-item-container > div'
-      ).innerHeight()
-      if (this.scrollBlockHeight < 255 && operation === 'init') {
-        $('.scroll-top-arrow, .scroll-bottom-arrow').addClass('disable')
-      }
-      if (operation === 'top') {
-        this.scrollPosition = this.scrollBlockItemHeight
-      }
-      if (
-        operation === '-' &&
-        this.scrollPosition >= this.scrollBlockItemHeight
-      ) {
-        this.scrollPosition += this.scrollBlockItemHeight - 20
-      }
-      if (
-        operation === '+' &&
-        this.scrollPosition >= this.scrollBlockItemHeight
-      ) {
-        this.scrollPosition -= this.scrollBlockItemHeight - 20
-      }
-    },
-    btnTop() {
-      // eslint-disable-next-line no-console
-      console.log(this.scrollPosition, '', this.scrollBlockItemHeight)
-      if (this.scrollPosition <= this.scrollBlockItemHeight) {
-        this.areaCalculation('top')
-        $('.scroll-top-arrow').addClass('disable')
-        $('.scroll-bottom-arrow').removeClass('disable')
-      } else {
-        this.areaCalculation('+')
-        $('.scroll-top-arrow').removeClass('disable')
-        $('.scroll-bottom-arrow').removeClass('disable')
-        document.getElementById('ready-item-container').scrollTop -= 130
-      }
-    },
-    btnBottom() {
-      $('.scroll-top-arrow').removeClass('disable')
-      if (
-        this.scrollBlockHeight != 0 &&
-        this.scrollPosition >= this.scrollBlockHeight
-      ) {
-        $('.scroll-top-arrow').removeClass('disable')
-        $('.scroll-bottom-arrow').addClass('disable')
-      } else {
-        $('.scroll-top-arrow').removeClass('disable')
-        document.getElementById('ready-item-container').scrollTop += 130
-        this.areaCalculation('-')
-      }
-    },
     /*playSound() {
       console.log('play sound')
       let promise = audio.play() || nopromise
@@ -179,21 +120,19 @@ export default {
       // this.isAudioPlaying = false
     },*/
     fetchReadyItemsBySocket() {
-      /*if (process.env.VUE_APP_SOCKET_DISABLE) {
+      if (process.env.VUE_APP_SOCKET_DISABLE) {
         return false
-      }*/
-      // let store = this.store._id
+      }
+      let store = this.store._id
       let scope = this
       let user = this.userDetails ? this.userDetails.item : false
       if (!user) return false
-      // eslint-disable-next-line no-console
-      /*console.log(this.$socket, 'this.$socket')
       this.$socket.client.on(
         'kitchen-item-channel:App\\Events\\KitchenItemReady:' +
           store +
           user._id,
-        function(message) {*/
-      let message = {
+        function(message) {
+          /*let message = {
         data: {
           assigned_to: '5d24920aafbc7d026e717f78',
           brand_id: '5d9f2254d355b82f1543bd82',
@@ -203,31 +142,31 @@ export default {
           order_id: '609be5f016d7da01361ae286',
           store_id: '5d9f24ac85f9e71d726b65c2',
         },
-      }
-      // eslint-disable-next-line no-console
-      console.log(message)
-      let socketData = message.data
-      scope.$store
-        .dispatch(
-          'order/fetchOrderDetailsOnly',
-          socketData.order_id,
-          {},
-          { root: true }
-        )
-        .then(response => {
-          let item = { item: [], table: undefined, order_no: undefined }
-          let item_details = response.item.items.find(
-            item =>
-              item.no == socketData.item_no &&
-              item.entity_id == socketData.item_id
-          )
-          if (item_details) {
-            item.item.push(item_details)
-            item.table = scope.allBookedTables.orders.find(
-              table => table._id === response.item.table_reservation_id
+      }*/
+          // eslint-disable-next-line no-console
+          console.log(message)
+          let socketData = message.data
+          scope.$store
+            .dispatch(
+              'order/fetchOrderDetailsOnly',
+              socketData.order_id,
+              {},
+              { root: true }
             )
-            item.order_no = response.item.order_no
-            /*if (scope.itemData.length) {
+            .then(response => {
+              let item = { item: [], table: undefined, order_no: undefined }
+              let item_details = response.item.items.find(
+                item =>
+                  item.no == socketData.item_no &&
+                  item.entity_id == socketData.item_id
+              )
+              if (item_details) {
+                item.item.push(item_details)
+                item.table = scope.allBookedTables.orders.find(
+                  table => table._id === response.item.table_reservation_id
+                )
+                item.order_no = response.item.order_no
+                /*if (scope.itemData.length) {
               /!*let is_same_order = scope.itemData.find(
                 item_data => item_data.order_no === item.order_no
               )
@@ -237,28 +176,17 @@ export default {
                 scope.itemData[item.order_no] = item
               // }
             } else {*/
-            scope.itemData.push(item)
-            // }
-            if (scope.itemData.length && !scope.showPopup) {
-              showModal('#item-notification')
-              scope.showPopup = true
-            }
-            // if (!scope.isAudioPlaying) scope.playSound()
-          }
-        })
-      // alert('Socket Run for item ready : ' + JSON.stringify(message))
-      /*}
-      )*/
-      /*this.$socket.$subscribe(
-        'kitchen-item-channel:App\\Events\\KitchenItemReady:' +
-          store +
-          user._id,
-        payload => {
-          // eslint-disable-next-line no-console
-          console.log(payload)
-          alert('Socket Run for item ready : ' + JSON.stringify(payload))
+                scope.itemData.push(item)
+                // }
+                if (scope.itemData.length && !scope.showPopup) {
+                  showModal('#item-notification')
+                  scope.showPopup = true
+                }
+                // if (!scope.isAudioPlaying) scope.playSound()
+              }
+            })
         }
-      )*/
+      )
     },
   },
 }
@@ -286,17 +214,5 @@ export default {
 #ready-item-container {
   max-height: $px335;
   overflow: hidden;
-}
-/*padding: 40px 5px 10px 5px*/
-.food-arrow.disable {
-  display: none;
-}
-.food-arrow.scroll-top-arrow {
-  top: 60px;
-  right: 30px;
-}
-.food-arrow.scroll-bottom-arrow {
-  bottom: 80px;
-  right: 30px;
 }
 </style>

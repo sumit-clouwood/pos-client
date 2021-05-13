@@ -206,7 +206,7 @@ export default {
     },
     btnTop() {
       // eslint-disable-next-line no-console
-      console.log(this.scrollPosition, '', this.scrollBlockItemHeight)
+      // console.log(this.scrollPosition, '', this.scrollBlockItemHeight)
       if (this.scrollPosition <= this.scrollBlockItemHeight) {
         this.areaCalculation('top')
         $('.scroll-top-arrow').addClass('disable')
