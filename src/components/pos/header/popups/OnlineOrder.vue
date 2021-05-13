@@ -326,8 +326,6 @@ export default {
         })
     },
     hideOnlineModal() {
-      // eslint-disable-next-line no-console
-      console.log('hide', $('#online-order'), 'ff')
       $('.online-order-modal').hide()
       $('#online-order')
         .dialog()
@@ -341,11 +339,6 @@ export default {
       // let scope = this
       this.$socket.$subscribe('online-order-channel', payload => {
         this.getOnlineOrders(payload)
-      })
-      // let scope = this
-      this.$socket.$subscribe('kitchen-item-channel', payload => {
-        alert('aalare')
-        console.log(payload, 'fff')
       })
     },
     playSound() {

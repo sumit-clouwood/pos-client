@@ -21,7 +21,7 @@ export default {
       scrollPosition: 0,
     }
   },
-  updated() {
+  /*updated() {
     let scroll_height = $('#' + this.containerId)[0].scrollHeight
     let height_ = $('#' + this.containerId).height()
     if (scroll_height > height_) {
@@ -29,7 +29,7 @@ export default {
     } else {
       $('.scroll-top-arrow, .scroll-bottom-arrow').addClass('disable')
     }
-  },
+  },*/
   methods: {
     areaCalculation(operation) {
       this.scrollBlockHeight = $('#' + this.containerId)[0].scrollHeight

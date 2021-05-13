@@ -96,16 +96,16 @@ export default {
   created() {
     this.fetchReadyItemsBySocket()
   },
-  updated() {
-    let scroll_height = $('#' + this.containerId)[0].scrollHeight
-    let height_ = $('#' + this.containerId).height()
-    if (scroll_height > height_) {
-      $('.scroll-top-arrow, .scroll-bottom-arrow').removeClass('disable')
-    } else {
-      $('.scroll-top-arrow, .scroll-bottom-arrow').addClass('disable')
-    }
-  },
   methods: {
+    showScrollButtons() {
+      let scroll_height = $('#' + this.containerId)[0].scrollHeight
+      let height_ = $('#' + this.containerId).height()
+      if (scroll_height > height_) {
+        $('.scroll-top-arrow, .scroll-bottom-arrow').removeClass('disable')
+      } else {
+        $('.scroll-top-arrow, .scroll-bottom-arrow').addClass('disable')
+      }
+    },
     noted: function() {
       this.itemData = []
       this.showPopup = false
@@ -186,6 +186,8 @@ export default {
               // }
             } else {*/
                 scope.itemData.push(item)
+                scope.showScrollButtons
+
                 // }
                 if (scope.itemData.length && !scope.showPopup) {
                   showModal('#item-notification')

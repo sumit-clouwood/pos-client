@@ -290,6 +290,11 @@ const actions = {
     commit('modifier/RESET', true, { root: true })
     commit('surcharge/RESET', true, { root: true })
     commit('payment/RESET', true, { root: true })
+    commit(
+      'deliveryManager/SET_ONLINE_ORDERS',
+      { count: 0, orders: false },
+      { root: true }
+    )
   },
   logout({ commit, dispatch, rootGetters }, data = {}) {
     return new Promise(resolve => {
