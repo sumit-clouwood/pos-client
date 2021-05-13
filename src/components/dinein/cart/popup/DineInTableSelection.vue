@@ -3,15 +3,15 @@
     <div class="modal-dialog modal-dialog-centered">
       <!-- Modal content-->
       <div class="modal-content color-dashboard-background">
-        <div class="modal-header customer-header color-secondary">
-          <h4 class="customer-title color-text-invert">
+        <div class="modal-header scrollomer-header color-secondary">
+          <h4 class="scrollomer-title color-text-invert">
             {{ _t(tableHeaderName) }}
           </h4>
         </div>
-        <div class="cust-top-arrow food-arrow" @click="btnTop">
+        <div class="scroll-top-arrow food-arrow" @click="btnTop">
           <i class="fa fa-chevron-up" aria-hidden="true"></i>
         </div>
-        <div class="cust-bottom-arrow food-arrow" @click="btnBottom">
+        <div class="scroll-bottom-arrow food-arrow" @click="btnBottom">
           <i class="fa fa-chevron-down" aria-hidden="true"></i>
         </div>
         <div class="modal-body row dining-options-block select-discount">
@@ -87,9 +87,9 @@ export default {
       selectedTableMove: '',
       moveTableDetails: '',
       tableBookedAlert: '',
-      custBlockHeight: 0,
-      custBlockInitHeight: 0,
-      custBlockItemHeight: 0,
+      scrollBlockHeight: 0,
+      scrollBlockInitHeight: 0,
+      scrollBlockItemHeight: 0,
       scrollPosition: 0,
     }
   },
@@ -181,53 +181,53 @@ export default {
       $('#dine-in-table-selection').modal('hide')*/
     },
     areaCalculation(operation) {
-      this.custBlockHeight = $('#table-status-container-id')[0].scrollHeight
-      this.custBlockItemHeight = $(
+      this.scrollBlockHeight = $('#table-status-container-id')[0].scrollHeight
+      this.scrollBlockItemHeight = $(
         '#table-status-container-id > span'
       ).innerHeight()
-      if (this.custBlockHeight < 255 && operation === 'init') {
-        $('.cust-top-arrow, .cust-bottom-arrow').addClass('disable')
+      if (this.scrollBlockHeight < 255 && operation === 'init') {
+        $('.scroll-top-arrow, .scroll-bottom-arrow').addClass('disable')
       }
       if (operation === 'top') {
-        this.scrollPosition = this.custBlockItemHeight
+        this.scrollPosition = this.scrollBlockItemHeight
       }
       if (
         operation === '-' &&
-        this.scrollPosition >= this.custBlockItemHeight
+        this.scrollPosition >= this.scrollBlockItemHeight
       ) {
-        this.scrollPosition += this.custBlockItemHeight - 20
+        this.scrollPosition += this.scrollBlockItemHeight - 20
       }
       if (
         operation === '+' &&
-        this.scrollPosition >= this.custBlockItemHeight
+        this.scrollPosition >= this.scrollBlockItemHeight
       ) {
-        this.scrollPosition -= this.custBlockItemHeight - 20
+        this.scrollPosition -= this.scrollBlockItemHeight - 20
       }
     },
     btnTop() {
       // eslint-disable-next-line no-console
-      console.log(this.scrollPosition, '', this.custBlockItemHeight)
-      if (this.scrollPosition <= this.custBlockItemHeight) {
+      console.log(this.scrollPosition, '', this.scrollBlockItemHeight)
+      if (this.scrollPosition <= this.scrollBlockItemHeight) {
         this.areaCalculation('top')
-        $('.cust-top-arrow').addClass('disable')
-        $('.cust-bottom-arrow').removeClass('disable')
+        $('.scroll-top-arrow').addClass('disable')
+        $('.scroll-bottom-arrow').removeClass('disable')
       } else {
         this.areaCalculation('+')
-        $('.cust-top-arrow').removeClass('disable')
-        $('.cust-bottom-arrow').removeClass('disable')
+        $('.scroll-top-arrow').removeClass('disable')
+        $('.scroll-bottom-arrow').removeClass('disable')
         document.getElementById('table-status-container-id').scrollTop -= 220
       }
     },
     btnBottom() {
-      $('.cust-top-arrow').removeClass('disable')
+      $('.scroll-top-arrow').removeClass('disable')
       if (
-        this.custBlockHeight != 0 &&
-        this.scrollPosition >= this.custBlockHeight
+        this.scrollBlockHeight != 0 &&
+        this.scrollPosition >= this.scrollBlockHeight
       ) {
-        $('.cust-top-arrow').removeClass('disable')
-        $('.cust-bottom-arrow').addClass('disable')
+        $('.scroll-top-arrow').removeClass('disable')
+        $('.scroll-bottom-arrow').addClass('disable')
       } else {
-        $('.cust-top-arrow').removeClass('disable')
+        $('.scroll-top-arrow').removeClass('disable')
         document.getElementById('table-status-container-id').scrollTop += 220
         this.areaCalculation('-')
       }
@@ -258,11 +258,11 @@ export default {
 .food-arrow.disable {
   display: none;
 }
-.food-arrow.cust-top-arrow {
+.food-arrow.scroll-top-arrow {
   top: 60px;
   right: 30px;
 }
-.food-arrow.cust-bottom-arrow {
+.food-arrow.scroll-bottom-arrow {
   bottom: 80px;
   right: 30px;
 }
