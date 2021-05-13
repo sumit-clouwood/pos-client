@@ -56,7 +56,7 @@
 </template>
 
 <script>
-/* global showModal hideModal */
+/* global showModal hideModal $ */
 
 /* eslint-disable no-console */
 /*var audio = new Audio('/sound/Store_Door_Chime.mp3')
@@ -95,6 +95,15 @@ export default {
   },
   created() {
     this.fetchReadyItemsBySocket()
+  },
+  updated() {
+    let scroll_height = $('#' + this.containerId)[0].scrollHeight
+    let height_ = $('#' + this.containerId).height()
+    if (scroll_height > height_) {
+      $('.scroll-top-arrow, .scroll-bottom-arrow').removeClass('disable')
+    } else {
+      $('.scroll-top-arrow, .scroll-bottom-arrow').addClass('disable')
+    }
   },
   methods: {
     noted: function() {
@@ -207,9 +216,6 @@ export default {
   .item-ready {
     /**/
   }
-}
-.disable {
-  display: none;
 }
 #ready-item-container {
   max-height: $px335;
