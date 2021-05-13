@@ -12,7 +12,7 @@
 /* global $ */
 export default {
   name: 'ScrollButtons',
-  props: { containerId: String, scrollTo: Number },
+  props: { containerId: String, scrollTo: String },
   data() {
     return {
       scrollBlockHeight: 0,
@@ -66,7 +66,9 @@ export default {
         this.areaCalculation('+')
         $('.scroll-top-arrow').removeClass('disable')
         $('.scroll-bottom-arrow').removeClass('disable')
-        document.getElementById(this.containerId).scrollTop -= this.scrollTo
+        document.getElementById(this.containerId).scrollTop -= parseInt(
+          this.scrollTo
+        )
       }
     },
     btnBottom() {
@@ -79,7 +81,9 @@ export default {
         $('.scroll-bottom-arrow').addClass('disable')
       } else {
         $('.scroll-top-arrow').removeClass('disable')
-        document.getElementById(this.containerId).scrollTop += this.scrollTo
+        document.getElementById(this.containerId).scrollTop += parseInt(
+          this.scrollTo
+        )
         this.areaCalculation('-')
       }
     },

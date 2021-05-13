@@ -13,7 +13,10 @@
             {{ _t('Item Ready') }}
           </h4>
         </div>
-        <scroll-buttons containerId="ready-item-container"></scroll-buttons>
+        <scroll-buttons
+          containerId="ready-item-container"
+          scrollTo="130"
+        ></scroll-buttons>
         <div class="modal-body">
           <div id="ready-item-container">
             <div v-for="(item_details, index) in itemData" :key="index">
@@ -186,13 +189,15 @@ export default {
               // }
             } else {*/
                 scope.itemData.push(item)
-                scope.showScrollButtons
 
                 // }
                 if (scope.itemData.length && !scope.showPopup) {
                   showModal('#item-notification')
                   scope.showPopup = true
                 }
+                setTimeout(() => {
+                  scope.showScrollButtons()
+                }, 300)
                 // if (!scope.isAudioPlaying) scope.playSound()
               }
             })
