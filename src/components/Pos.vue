@@ -42,6 +42,9 @@ export default {
     ...mapState('auth', ['role']),
     ...mapGetters('context', ['store']),
     ...mapGetters('auth', ['carhop', 'waiter']),
+    ...mapState({
+      currentStoreId: state => state.context.storeId,
+    }),
   },
   components: {
     Menu,
@@ -49,6 +52,34 @@ export default {
     Content,
     Footer,
     mobileIndex,
+  },
+  created() {
+    this.fetchWaitingTime()
+  },
+  methods: {
+    fetchWaitingTime() {
+      if (process.env.VUE_APP_SOCKET_DISABLE) {
+        return false
+      }
+      let store = this.currentStoreId
+      // let scope = this
+      // var socket = io('https://websocket-stg.dimspos.com');
+      this.$socket.client.on(
+        'store-field-update-channel:App\\Events\\StoreFieldUpdated:' + store,
+        function(data) {
+          console.log(data)
+          if (data.field === 'waiting_time') {
+            this.$store.commit(
+              'location/SET_STORE_POS_WAITING_TIME',
+              data.new_value,
+              {
+                root: true,
+              }
+            )
+          }
+        }
+      )
+    },
   },
   //store private data in component using data
 
