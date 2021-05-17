@@ -71,10 +71,7 @@ export default {
           if (data.field === 'waiting_time') {
             this.$store.commit(
               'location/SET_STORE_POS_WAITING_TIME',
-              data.new_value,
-              {
-                root: true,
-              }
+              data.new_value
             )
           }
         }
