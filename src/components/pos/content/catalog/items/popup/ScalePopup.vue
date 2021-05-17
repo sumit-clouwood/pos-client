@@ -1,5 +1,11 @@
 <template>
-  <div class="modal fade" id="scale-popup" role="dialog">
+  <div
+    class="modal fade"
+    id="scale-popup"
+    role="dialog"
+    data-backdrop="static"
+    data-keyboard="false"
+  >
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content color-dashboard-background">
         <div class="modal-header customer-header color-secondary">
