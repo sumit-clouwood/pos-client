@@ -1865,10 +1865,10 @@ const actions = {
     commit('checkout/SET_PROCESSING', false, { root: true })
   },
   updatePOSWaitingTime({ rootState, commit }) {
-    let waiting_time = rootState.location.update_pos_waiting_time
+    let time = rootState.location.update_pos_waiting_time
     let store_id = rootState.context.storeId
-    OrderService.SetPOSWaitingTime(waiting_time, store_id).then(() => {
-      commit('location/SET_STORE_POS_WAITING_TIME', waiting_time, {
+    OrderService.SetPOSWaitingTime(time, store_id).then(() => {
+      commit('location/SET_STORE_POS_WAITING_TIME', time.waiting_time, {
         root: true,
       })
     })

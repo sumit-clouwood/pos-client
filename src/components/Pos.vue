@@ -77,9 +77,9 @@ export default {
         function(data) {
           console.log(data)
           if (data.field === 'waiting_time') {
-            scope.$store.commit('location/SET_STORE_POS_WAITING_TIME', {
-              waiting_time: data.new_value,
-            })
+            //{ waiting_time: data.new_value }
+            let time = data.new_value
+            scope.$store.commit('location/SET_STORE_POS_WAITING_TIME', time)
           }
         }
       )

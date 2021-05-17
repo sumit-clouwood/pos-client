@@ -563,8 +563,8 @@ const mutations = {
   SET_POS_WAITING_TIME(state, data) {
     state.update_pos_waiting_time = data
   },
-  SET_STORE_POS_WAITING_TIME(state, time) {
-    state.store.waiting_time = time.waiting_time
+  SET_STORE_POS_WAITING_TIME(state, waiting_time) {
+    state.store.waiting_time = waiting_time
   },
 }
 
