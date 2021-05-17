@@ -234,6 +234,6 @@ export default {
 }
 #ready-item-container {
   max-height: $px335;
-  overflow: hidden;
+  overflow-x: hidden;
 }
 </style>
