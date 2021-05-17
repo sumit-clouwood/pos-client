@@ -62,7 +62,7 @@ export default {
         return false
       }
       let store = this.currentStoreId
-      // let scope = this
+      let scope = this
       // var socket = io('https://websocket-stg.dimspos.com');
       /*let data = {
         brand_id: '5d9f2254d355b82f1543bd82',
@@ -70,14 +70,14 @@ export default {
         namespace: '5d9f24ac85f9e71d726b65c2',
         new_value: '01:16',
         old_value: '01:15',
-        store_id: '5d9f24ac85f9e71d726b65c2',
+        store_id: store,
       }*/
       this.$socket.client.on(
         'store-field-update-channel:App\\Events\\StoreFieldUpdated:' + store,
         function(data) {
           console.log(data)
           if (data.field === 'waiting_time') {
-            this.$store.commit('location/SET_STORE_POS_WAITING_TIME', {
+            scope.$store.commit('location/SET_STORE_POS_WAITING_TIME', {
               waiting_time: data.new_value,
             })
           }
