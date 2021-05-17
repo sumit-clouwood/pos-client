@@ -1,5 +1,11 @@
 <template>
-  <div class="modal fade" id="dine-in-table-selection" role="dialog">
+  <div
+    class="modal fade"
+    data-backdrop="static"
+    data-keyboard="false"
+    id="dine-in-table-selection"
+    role="dialog"
+  >
     <div class="modal-dialog modal-dialog-centered">
       <!-- Modal content-->
       <div class="modal-content color-dashboard-background">
@@ -148,6 +154,8 @@ export default {
           this.$store.dispatch('dinein/moveTable', data)
         }
       } else {
+        this.$store.commit('dinein/MOVE_ITEM_TABLE_ID', undefined)
+        this.$store.commit('order/RESET_SPLIT_BILL')
         this.selectedTableMove = ''
       }
       if (moveToDineIn && typeof this.moveTableDetails == 'object')
@@ -156,6 +164,8 @@ export default {
     },
     removeSelectedTable: function() {
       this.$store.commit('dinein/MOVE_ITEM_TABLE_ID', undefined)
+      this.$store.commit('order/RESET_SPLIT_BILL')
+
       // eslint-disable-next-line no-debugger
       $('#dine-in-table-selection').modal('hide')
       /*Bellow code is for reset table if not move, its having issue while cancel moving will check later*/

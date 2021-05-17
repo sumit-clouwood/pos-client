@@ -152,7 +152,7 @@ export default {
           item_no: 12,
           namespace: '5d90562cc6aee43328376de35d24920aafbc7d026e717f78',
           order_id: '609be5f016d7da01361ae286',
-          store_id: '5d9f24ac85f9e71d726b65c2',
+          store_id: store,
         },
       }*/
           // eslint-disable-next-line no-console
@@ -174,9 +174,12 @@ export default {
               )
               if (item_details) {
                 item.item.push(item_details)
-                item.table = scope.allBookedTables.orders.find(
+                let table = scope.allBookedTables.orders.find(
                   table => table._id === response.item.table_reservation_id
                 )
+                if (table) {
+                  item.table = table
+                }
                 item.order_no = response.item.order_no
                 /*if (scope.itemData.length) {
               /!*let is_same_order = scope.itemData.find(
@@ -222,6 +225,11 @@ export default {
   }
   .item-ready {
     /**/
+  }
+}
+#item-notification {
+  .modal-body {
+    padding: 45px 20px;
   }
 }
 #ready-item-container {

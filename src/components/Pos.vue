@@ -74,11 +74,11 @@ export default {
       }*/
       this.$socket.client.on(
         'store-field-update-channel:App\\Events\\StoreFieldUpdated:' + store,
-        function(data) {
-          console.log(data)
-          if (data.field === 'waiting_time') {
+        function(response) {
+          console.log(response.data)
+          if (response.data.field === 'waiting_time') {
             //{ waiting_time: data.new_value }
-            let time = data.new_value
+            let time = response.data.new_value
             scope.$store.commit('location/SET_STORE_POS_WAITING_TIME', time)
           }
         }

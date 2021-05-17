@@ -247,7 +247,7 @@ export default {
       /*make new order by items and tables*/
       this.moveItemsMsg = !this.moveItemsMsg
       this.$store.commit('dinein/MOVE_ITEM_TABLE_ID', undefined)
-      if (this.moveItemsMsg) {
+      if (this.moveItemsMsg || !this.selectItemsToMove) {
         this.$store.dispatch('order/setSplitBill')
         this.moveTableModal = '#dine-in-table-selection'
         this.$store.commit('order/MOVE_SELECTED_ITEMS', true)
