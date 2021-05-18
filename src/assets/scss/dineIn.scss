@@ -1349,9 +1349,15 @@ div {
 
 .dine-in-table-guest-details-pos {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: auto auto auto;
   align-content: center;
   text-align: center;
+  position: absolute;
+  bottom: -2px;
+  right: 0;
+  .driver-container {
+    margin-right: $px8;
+  }
   @include responsive(mobile){
     grid-column-gap: 10px !important;
   }
@@ -1360,6 +1366,17 @@ div {
 .tables-draw {
   border: $px1 dashed;
   margin: $px2;
+  padding: $px5;
+  /*border-right: $px1 solid;
+  border-bottom: $px1 solid;
+  padding-right: $px2;
+  &:last-child {
+    border-right: none;
+    padding-right: unset;
+  }*/
+  img {
+    width: $px25;
+  }
 }
 
 .table-action {
