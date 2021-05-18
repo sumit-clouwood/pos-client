@@ -29,7 +29,7 @@ const state = {
   errors: '',
   orderType: { OTview: 'Walk In', OTApi: 'walk_in' },
   orderNote: '',
-  cancellationReason: {},
+  cancellationReason: undefined,
   onlineOrders: false,
   futureOrder: false,
   referral: false,
@@ -1708,7 +1708,7 @@ const actions = {
         .catch(error => reject(error))
     })
   },
-  selectedOrderDetails({ commit }, orderId) {
+  selectedOrderDetails({ commit, state }, orderId) {
     commit('category/IS_UP_SELLING_MODIFY', true, { root: true })
     return new Promise((resolve, reject) => {
       const params = ['orders', orderId, '']
@@ -1727,12 +1727,13 @@ const actions = {
           }
 
           commit(mutation.SET_ORDER_DETAILS, orderDetails)
-
-          OrderService.getModalDetails('brand_cancellation_reasons')
-            .then(responseData => {
-              commit(mutation.SET_CANCELLATION_REASON, responseData.data.data)
-            })
-            .catch(error => reject(error))
+          if (typeof state.cancellationReason == 'undefined') {
+            OrderService.getModalDetails('brand_cancellation_reasons')
+              .then(responseData => {
+                commit(mutation.SET_CANCELLATION_REASON, responseData.data.data)
+              })
+              .catch(error => reject(error))
+          }
 
           resolve(orderDetails)
         })
