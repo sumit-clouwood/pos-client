@@ -141,6 +141,7 @@ export default {
               !['dine-in-order-preview'].includes(this.paymentAction) ||
               this.$store.state.auth.deviceType.osType
             ) {
+              orderData.isReprint = 1
               this.$store.dispatch(
                 'printingServer/printingServerInvoiceRaw',
                 orderData
