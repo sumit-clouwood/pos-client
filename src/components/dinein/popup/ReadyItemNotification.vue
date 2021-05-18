@@ -194,10 +194,10 @@ export default {
                 scope.itemData.push(item)
 
                 // }
-                if (scope.itemData.length && !scope.showPopup) {
-                  showModal('#item-notification')
-                  scope.showPopup = true
-                }
+                // if (scope.itemData.length && !scope.showPopup) {
+                showModal('#item-notification')
+                // scope.showPopup = true
+                // }
                 setTimeout(() => {
                   scope.showScrollButtons()
                 }, 300)
