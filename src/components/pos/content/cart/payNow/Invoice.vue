@@ -139,7 +139,8 @@ export default {
             // }
             if (
               !['dine-in-order-preview'].includes(this.paymentAction) ||
-              this.$store.state.auth.deviceType.osType
+              this.$store.state.auth.deviceType.osType ||
+              window.PrintHandle != null
             ) {
               orderData.isReprint = 1
               this.$store.dispatch(
