@@ -62,12 +62,12 @@
 /* global showModal hideModal $ */
 
 /* eslint-disable no-console */
-/*var audio = new Audio('/sound/Store_Door_Chime.mp3')
+var audio_ready_item = new Audio('/sound/Store_Door_Chime.mp3')
 var nopromise = {
   catch: new Function(),
 }
-audio.load()
-audio.addEventListener(
+audio_ready_item.load()
+audio_ready_item.addEventListener(
   'ended',
   function() {
     this.currentTime = 0
@@ -76,7 +76,7 @@ audio.addEventListener(
     promise.catch(error => console.log(error))
   },
   false
-)*/
+)
 import { mapGetters, mapState } from 'vuex'
 import ScrollButtons from '@/components/util/ScrollButtons'
 export default {
@@ -85,7 +85,7 @@ export default {
   data() {
     return {
       itemData: [],
-      showPopup: false,
+      // showPopup: false,
       msg: '',
       isAudioPlaying: false,
     }
@@ -111,26 +111,26 @@ export default {
     },
     noted: function() {
       this.itemData = []
-      this.showPopup = false
+      // this.showPopup = false
       hideModal('#item-notification')
-      // this.pauseSound()
+      this.pauseSound()
     },
-    /*playSound() {
+    playSound() {
       console.log('play sound')
-      let promise = audio.play() || nopromise
+      let promise = audio_ready_item.play() || nopromise
       promise.catch(error => {
         console.log(error)
       })
-      // this.isAudioPlaying = true
+      this.isAudioPlaying = true
     },
     pauseSound() {
       console.log('pausing sound')
-      let promise = audio.pause() || nopromise
+      let promise = audio_ready_item.pause() || nopromise
       promise.catch(error => {
         console.log(error)
       })
-      // this.isAudioPlaying = false
-    },*/
+      this.isAudioPlaying = false
+    },
     fetchReadyItemsBySocket() {
       if (process.env.VUE_APP_SOCKET_DISABLE) {
         return false
@@ -146,12 +146,12 @@ export default {
         function(message) {
           /*let message = {
         data: {
-          assigned_to: '5d24920aafbc7d026e717f78',
+          assigned_to: '5e6f43c53b74fe088c58c642',
           brand_id: '5d9f2254d355b82f1543bd82',
-          item_id: '5edfbd5d4c99ac6973411515',
-          item_no: 12,
+          item_id: '5da2d626256e0107c8294868',
+          item_no: 0,
           namespace: '5d90562cc6aee43328376de35d24920aafbc7d026e717f78',
-          order_id: '609be5f016d7da01361ae286',
+          order_id: '60a3bdca8971261fe92ded74',
           store_id: store,
         },
       }*/
@@ -166,6 +166,8 @@ export default {
               { root: true }
             )
             .then(response => {
+              // eslint-disable-next-line no-debugger
+              debugger
               let item = { item: [], table: undefined, order_no: undefined }
               let item_details = response.item.items.find(
                 item =>
@@ -181,27 +183,14 @@ export default {
                   item.table = table
                 }
                 item.order_no = response.item.order_no
-                /*if (scope.itemData.length) {
-              /!*let is_same_order = scope.itemData.find(
-                item_data => item_data.order_no === item.order_no
-              )
-              if (is_same_order) {
-
-              } else {*!/
-                scope.itemData[item.order_no] = item
-              // }
-            } else {*/
                 scope.itemData.push(item)
-
-                // }
-                // if (scope.itemData.length && !scope.showPopup) {
-                showModal('#item-notification')
-                // scope.showPopup = true
-                // }
                 setTimeout(() => {
+                  if (!scope.isAudioPlaying && scope.itemData.length) {
+                    showModal('#item-notification')
+                    scope.playSound()
+                  }
                   scope.showScrollButtons()
                 }, 300)
-                // if (!scope.isAudioPlaying) scope.playSound()
               }
             })
         }
