@@ -61,6 +61,8 @@
 </template>
 
 <script>
+/* eslint-disable no-console */
+
 /* global showModal hideModal $ */
 
 /* eslint-disable no-console */
