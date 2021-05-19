@@ -216,6 +216,12 @@ export default {
       }
     },
   },
+  activated() {
+    console.log('component activated')
+  },
+  deactivated() {
+    console.log('component de-activated')
+  },
 }
 </script>
 <!-- eslint-disable max-len -->
