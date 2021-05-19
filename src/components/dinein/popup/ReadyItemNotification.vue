@@ -61,8 +61,7 @@
 <script>
 /* global showModal hideModal $ */
 
-/* eslint-disable no-console */
-var audio_ready_item = new Audio('/sound/storedoorchime.ogg')
+var audio_ready_item = new Audio('/sound/doorbell.ogg')
 var nopromise = {
   catch: new Function(),
 }
