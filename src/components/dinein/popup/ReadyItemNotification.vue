@@ -59,6 +59,8 @@
 </template>
 
 <script>
+/* eslint-disable no-console */
+
 /* global showModal hideModal $ */
 
 var audio_ready_item = new Audio('/sound/doorbell.ogg')

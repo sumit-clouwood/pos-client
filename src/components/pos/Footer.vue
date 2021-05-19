@@ -497,11 +497,7 @@
       v-if="brand && brand.move_table && availableTables && cartType !== 'hold'"
     />
     <alert-popup></alert-popup>
-    
-    <keep-alive>
-      <scale-popup></scale-popup>
-    </keep-alive>
-
+    <scale-popup></scale-popup>
     <item-delivery-time-slots></item-delivery-time-slots>
 
   </div>
