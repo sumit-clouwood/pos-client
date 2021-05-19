@@ -703,8 +703,8 @@ h6 {
     margin: 0 auto;
     line-height: 1;
     min-height: calc(100% - (0.5rem * 2));
-    max-width: 600px;
-    width: 600px; }
+    max-width: 42.5rem;
+    width: 42.5rem; }
     .POSItemOptions .modal-dialog .modal-content .modal-header {
       padding-left: 0;
       border: 0 none;

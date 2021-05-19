@@ -128,10 +128,12 @@ export default {
             if (window.PrintHandle == null) {
               //this.$refs.iframe.contentWindow.print()
               console.log('scope.$refs.iframe', this.$refs)
-              let w = this.$refs.iframe.contentWindow
-              w.focus()
-              w.print()
-              this.iframe_body = ''
+              if (this.$refs.iframe) {
+                let w = this.$refs.iframe.contentWindow
+                w.focus()
+                w.print()
+                this.iframe_body = ''
+              }
             }
             // Code Pane reflects in DIMS WEB APP window.PrintHandle.GetAgent() !== 'Dimspos.App'
             // if (!this.$store.getters['checkout/complete']) {

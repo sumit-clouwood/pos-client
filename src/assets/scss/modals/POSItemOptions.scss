@@ -15,8 +15,8 @@
     margin: 0 auto;
     line-height: 1;
     min-height: calc(100% - (0.5rem * 2));
-    max-width: 600px;
-    width: 600px;
+    max-width: $px680;
+    width: $px680;
 
     .modal-content {
       .modal-header {
