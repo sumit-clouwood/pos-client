@@ -62,7 +62,7 @@
 /* global showModal hideModal $ */
 
 /* eslint-disable no-console */
-var audio_ready_item = new Audio('/sound/Store_Door_Chime.mp3')
+var audio_ready_item = new Audio('/sound/doorbell.ogg')
 var nopromise = {
   catch: new Function(),
 }
@@ -118,18 +118,18 @@ export default {
     playSound() {
       console.log('play sound')
       let promise = audio_ready_item.play() || nopromise
+      this.isAudioPlaying = true
       promise.catch(error => {
         console.log(error)
       })
-      this.isAudioPlaying = true
     },
     pauseSound() {
       console.log('pausing sound')
       let promise = audio_ready_item.pause() || nopromise
+      this.isAudioPlaying = false
       promise.catch(error => {
         console.log(error)
       })
-      this.isAudioPlaying = false
     },
     fetchReadyItemsBySocket() {
       if (process.env.VUE_APP_SOCKET_DISABLE) {
@@ -156,7 +156,7 @@ export default {
         },
       }*/
           // eslint-disable-next-line no-console
-          console.log(message)
+          console.log(message, 'ready item')
           let socketData = message.data
           scope.$store
             .dispatch(
@@ -184,8 +184,14 @@ export default {
                 }
                 item.order_no = response.item.order_no
                 scope.itemData.push(item)
+                console.log(
+                  scope.isAudioPlaying,
+                  scope.itemData.length,
+                  'ready item check'
+                )
                 setTimeout(() => {
                   if (!scope.isAudioPlaying && scope.itemData.length) {
+                    console.log('inside log ready item check')
                     showModal('#item-notification')
                     scope.playSound()
                   }
