@@ -2,6 +2,8 @@
   <div
     class="modal fade"
     id="item-notification"
+    data-backdrop="static"
+    data-keyboard="false"
     role="dialog"
     v-show="itemData.length"
   >
@@ -61,6 +63,7 @@
 <script>
 /* global showModal hideModal $ */
 
+/* eslint-disable no-console */
 var audio_ready_item = new Audio('/sound/doorbell.ogg')
 var nopromise = {
   catch: new Function(),
