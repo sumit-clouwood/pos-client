@@ -62,7 +62,7 @@
 /* global showModal hideModal $ */
 
 /* eslint-disable no-console */
-var audio_ready_item = new Audio('/sound/Store_Door_Chime.ogg')
+var audio_ready_item = new Audio('/sound/storedoorchime.ogg')
 var nopromise = {
   catch: new Function(),
 }
