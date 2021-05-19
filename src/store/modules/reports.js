@@ -4,8 +4,8 @@ import DateTime from '@/mixins/DateTime'
 
 const state = {
   BSData: false,
-  date_from: '2020-02-19',
-  date_to: '2020-02-19',
+  date_from: undefined,
+  date_to: undefined,
   hour_from: 24,
   hour_to: 24,
   time_mode: false, //true means taking store time, false means taking UTC time

@@ -31,8 +31,54 @@
             </label>
             <label> Store</label>
           </div>-->
+          <div class="bs-datetime-selector">
+            <form>
+              <datetime
+                type="date"
+                title="Date from"
+                v-model="getSetDateFrom"
+                placeholder="Date from"
+                :zone="timezoneString"
+                input-class="btn schedule-input btn-large datepicker-here color-dashboard-background"
+                :format="{
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+                }"
+                auto="true"
+              ></datetime>
+              <datetime
+                type="date"
+                v-model="getSetDateTo"
+                title="Date to"
+                placeholder="Date to"
+                :zone="timezoneString"
+                input-class="btn schedule-input btn-large datepicker-here color-dashboard-background"
+                :format="{
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+                }"
+                :week-start="7"
+                auto="true"
+                :phrases="{ ok: 'oK', cancel: 'Exit' }"
+              ></datetime>
+              <button
+                class="btn btn-success btn-large color-main"
+                type="button"
+                v-on:click="getReport"
+              >
+                <i class="fa fa-refresh fa"></i>
+                <!--{{ _t('Get Report') }}-->
+              </button>
+            </form>
+          </div>
+        </div>
+        <div class="modal-body row business-summary" v-if="loader">
+          <Preloader />
         </div>
         <div
+          v-else
           class="modal-body row business-summary"
           id="print_bs"
           style="font-family: sans-serif; font-weight: bold"
@@ -43,11 +89,17 @@
             >
               {{ store.name }}
             </h4>
-            <small class="date">{{ todayDate }}</small
-            ><br />
-            <small class="date" style="text-transform: uppercase">
-              {{ todayTime }} </small
-            ><br />
+            <small class="date">
+              {{ _t('Current datetime') }} {{ todayDate }}
+              <span style="text-transform: uppercase">
+                {{ todayTime }}
+              </span></small
+            >
+            <br />
+            <small class="date"> {{ _t('Report from') }} {{ date_from }}</small>
+            -
+            <small class="date"> {{ _t('To') }} {{ date_to }} </small>
+            <br />
             <small>{{ _t('Printed by') }}: {{ user.name }}</small>
           </div>
           <div class="business-summary-wrapper" style="text-align: center">
@@ -534,6 +586,7 @@
               {{ _t('Ok') }}
             </button>
             <button
+              v-if="!loader"
               class="btn btn-success btn-large color-main color-text-invert"
               type="button"
               @click="printBS"
@@ -549,6 +602,8 @@
 <script>
 import { mapGetters, mapState } from 'vuex'
 import moment from 'moment-timezone'
+import { Datetime } from 'vue-datetime'
+import Preloader from '@/components/util/Preloader'
 
 export default {
   name: 'BusinessSummary',
@@ -559,16 +614,48 @@ export default {
       todayTime: moment().format('h:mm:ss a'),
     }
   },
+  components: {
+    Preloader,
+    Datetime,
+  },
   computed: {
     ...mapGetters('location', ['_t', 'formatPrice']),
-    ...mapState('reports', ['BSData', 'totalPayments', 'time_mode']),
-    ...mapState('location', ['store']),
+    ...mapState('reports', [
+      'BSData',
+      'totalPayments',
+      'time_mode',
+      'date_from',
+      'date_to',
+      'loader',
+    ]),
+    ...mapState('location', ['store', 'timezoneString']),
     ...mapState({ user: state => state.auth.userDetails.item }),
+    getSetDateFrom: {
+      /*get() {
+        // return this.date_from
+      },*/
+      set(dateFrom) {
+        let _from = moment(dateFrom).format('YYYY-MM-DD')
+        this.$store.commit('reports/DATE_FROM', _from)
+      },
+    },
+    getSetDateTo: {
+      /*get() {
+        // return this.date_to
+      },*/
+      set(dateTo) {
+        let _to = moment(dateTo).format('YYYY-MM-DD')
+        this.$store.commit('reports/DATE_TO', _to)
+      },
+    },
   },
   methods: {
     getBSStoreTime() {
       this.timeMode = !this.timeMode
       this.$store.commit('reports/TIME_MODE', this.timeMode)
+      this.getReport()
+    },
+    getReport() {
       this.$store.dispatch('reports/businessSummary', {}, { root: true })
     },
     printBS() {
@@ -704,5 +791,28 @@ export default {
   -webkit-transform: rotate(45deg);
   -ms-transform: rotate(45deg);
   transform: rotate(45deg);
+}
+.bs-datetime-selector {
+  display: grid;
+  left: 3px;
+  grid-template-columns: auto auto auto;
+  grid-column-gap: 5px;
+  position: absolute;
+  align-items: baseline;
+  top: 80px;
+  z-index: 9;
+}
+.bs-datetime-selector .vdatetime {
+  margin-left: 5px;
+}
+.bs-datetime-selector button {
+  margin-left: 5px;
+  height: 42px;
+  width: 41px;
+}
+@media only screen and (max-width: 599px) {
+  .business-summary {
+    top: 60px;
+  }
 }
 </style>
