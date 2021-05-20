@@ -188,6 +188,15 @@ export default {
                 }
                 item.order_no = response.item.order_no
                 scope.itemData.push(item)
+                let notifications =
+                  localStorage.getItem('ready_item_notification') || []
+                if (notifications.length)
+                  notifications = JSON.parse(notifications)
+                notifications.push(item)
+                localStorage.setItem(
+                  'ready_item_notification',
+                  JSON.stringify(notifications)
+                )
                 console.log(
                   scope.isAudioPlaying,
                   scope.itemData.length,

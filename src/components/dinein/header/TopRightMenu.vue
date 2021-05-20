@@ -80,6 +80,7 @@
     <div class="hide-below-sm">
       <LanguageMenu />
     </div>
+    <notification></notification>
     <SwitchStore />
     <TopSidebarMenu />
     <div class="curent-sale hideBigScreen">
@@ -203,10 +204,12 @@ import bootstrap from '@/bootstrap'
 import SwitchStore from '@/components/commonButtons/SwitchStore'
 import TopSidebarMenu from '@/components/util/TopSidebarMenu'
 import LanguageMenu from '@/components/util/LanguageMenu'
+import Notification from '@/components/util/Notification'
 export default {
   name: 'TopNavRight',
   props: {},
   components: {
+    Notification,
     SwitchStore,
     TopSidebarMenu,
     LanguageMenu,
@@ -343,6 +346,9 @@ export default {
 </script>
 <style lang="scss" scoped>
 #dropdownLanguage {
+  margin-right: 0.39rem;
+}
+#dropdownNotifications {
   margin-right: 0.39rem;
 }
 </style>

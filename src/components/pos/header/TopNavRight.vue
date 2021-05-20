@@ -180,6 +180,9 @@ export default {
     #dropdownLanguage {
       display: none !important;
     }
+    #dropdownNotifications {
+      display: none !important;
+    }
   }
 }
 </style>
