@@ -135,7 +135,7 @@ export default {
               this.$store.state.auth.deviceType.osType ||
               window.PrintHandle != null
             ) {
-              orderData.isReprint = 1
+              // orderData.isReprint = 1
               this.$store.dispatch(
                 'printingServer/printingServerInvoiceRaw',
                 orderData
