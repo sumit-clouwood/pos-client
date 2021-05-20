@@ -124,6 +124,8 @@ export default {
         this.$store.commit('checkout/PRINT', false)
         this.isPrint = true
         try {
+          // eslint-disable-next-line no-debugger
+          debugger
           setTimeout(() => {
             if (window.PrintHandle == null) {
               //this.$refs.iframe.contentWindow.print()
@@ -144,7 +146,13 @@ export default {
               this.$store.state.auth.deviceType.osType ||
               window.PrintHandle != null
             ) {
-              orderData.isReprint = 1
+              let is_order_splited = this.$store.getters['order/splitItems']
+              if (
+                is_order_splited.length &&
+                orderData.order_type == 'dine_in'
+              ) {
+                orderData.isReprint = 1
+              }
               this.$store.dispatch(
                 'printingServer/printingServerInvoiceRaw',
                 orderData
