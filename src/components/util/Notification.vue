@@ -40,14 +40,14 @@
             <div
               class="item-served"
               v-for="item in item_details.item"
-              :key="item._id"
+              :key="item.entity_id"
             >
               <i class="item-name-normal">{{ item.name }}</i>
               <span>
                 <button
                   type="button"
                   class="btn btn-primary"
-                  @click="updateItemNotification(item_details)"
+                  @click="updateItemNotification(item_details, item.entity_id)"
                 >
                   {{ _t('Serve') }}
                 </button>
@@ -110,16 +110,19 @@ export default {
       this.$store.commit('dinein/READY_ITEM_NOTIFICATION', notifications)
       // return notifications
     },
-    updateItemNotification(removeItem) {
+    updateItemNotification(removeItem, item_id) {
       let notification = this.readyItemNotification
       let new_items_list = []
       if (!notification.length) return false
-      notification.forEach(item => {
-        if (
-          item.order_no != removeItem.order_no &&
-          item.table != removeItem.table
-        ) {
-          new_items_list.push(item)
+      notification.forEach(data => {
+        if (data.order_no === removeItem.order_no) {
+          data.item.forEach(_item => {
+            if (_item.entity_id !== item_id) {
+              new_items_list.push(data)
+            }
+          })
+        } else {
+          new_items_list.push(data)
         }
       })
       this.readyItemNotification = new_items_list

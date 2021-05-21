@@ -190,16 +190,32 @@ export default {
                 scope.itemData.push(item)
                 let notifications =
                   localStorage.getItem('ready_item_notification') || []
-                if (notifications.length)
+                let new_notification_list = notifications
+                if (notifications.length) {
                   notifications = JSON.parse(notifications)
-                notifications.push(item)
+                  new_notification_list = JSON.parse(new_notification_list)
+                  notifications.push(item)
+                  notifications.forEach(data => {
+                    if (data.order_no === item.order_no) {
+                      data.item.forEach(_item => {
+                        if (_item.entity_id != item_details.entity_id) {
+                          new_notification_list.push(data)
+                        }
+                      })
+                    } else {
+                      new_notification_list.push(data)
+                    }
+                  })
+                } else {
+                  new_notification_list.push(item)
+                }
                 scope.$store.commit(
                   'dinein/READY_ITEM_NOTIFICATION',
-                  notifications
+                  new_notification_list
                 )
                 localStorage.setItem(
                   'ready_item_notification',
-                  JSON.stringify(notifications)
+                  JSON.stringify(new_notification_list)
                 )
                 console.log(
                   scope.isAudioPlaying,
@@ -212,12 +228,12 @@ export default {
                     if (scope.$store.state.order.orderType.OTApi == 'dine_in') {
                       showModal('#item-notification')
                       scope.playSound()
+                      scope.showScrollButtons()
                     } else {
                       hideModal('#item-notification')
                       scope.pauseSound()
                     }
                   }
-                  scope.showScrollButtons()
                 }, 300)
               }
             })
