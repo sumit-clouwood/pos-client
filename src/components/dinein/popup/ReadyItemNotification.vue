@@ -190,7 +190,18 @@ export default {
                 scope.itemData.push(item)
                 let notifications =
                   localStorage.getItem('ready_item_notification') || []
-                let new_notification_list = notifications
+                if (notifications.length)
+                  notifications = JSON.parse(notifications)
+                notifications.push(item)
+                scope.$store.commit(
+                  'dinein/READY_ITEM_NOTIFICATION',
+                  notifications
+                )
+                localStorage.setItem(
+                  'ready_item_notification',
+                  JSON.stringify(notifications)
+                )
+                /*let new_notification_list = notifications
                 if (notifications.length) {
                   notifications = JSON.parse(notifications)
                   new_notification_list = JSON.parse(new_notification_list)
@@ -210,18 +221,13 @@ export default {
                   new_notification_list.push(item)
                 }
                 scope.$store.commit(
-                  'dinein/READY_ITEM_NOTIFICATION',
-                  new_notification_list
+                    'dinein/READY_ITEM_NOTIFICATION',
+                    new_notification_list
                 )
                 localStorage.setItem(
-                  'ready_item_notification',
-                  JSON.stringify(new_notification_list)
-                )
-                console.log(
-                  scope.isAudioPlaying,
-                  scope.itemData.length,
-                  'ready item check'
-                )
+                    'ready_item_notification',
+                    JSON.stringify(new_notification_list)
+                )*/
                 setTimeout(() => {
                   if (!scope.isAudioPlaying && scope.itemData.length) {
                     console.log('inside log ready item check')
