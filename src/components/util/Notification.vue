@@ -42,7 +42,7 @@
               v-for="item in item_details.item"
               :key="item._id"
             >
-              <span class="item-name-normal">{{ item.name }}</span>
+              <i class="item-name-normal">{{ item.name }}</i>
               <span>
                 <button
                   type="button"
@@ -195,7 +195,7 @@ export default {
 .notification-header {
   left: 0;
   h4 {
-    padding: 18px;
+    padding: 10px;
   }
   background: #eceaea;
   display: flex;

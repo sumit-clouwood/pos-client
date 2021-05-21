@@ -193,7 +193,7 @@ export default {
                 if (notifications.length)
                   notifications = JSON.parse(notifications)
                 notifications.push(item)
-                this.$store.commit(
+                scope.$store.commit(
                   'dinein/READY_ITEM_NOTIFICATION',
                   notifications
                 )
