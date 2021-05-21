@@ -143,24 +143,26 @@ export default {
       let scope = this
       let user = this.userDetails ? this.userDetails.item : false
       if (!user) return false
+      /*let message = {
+        data: {
+          assigned_to: '5e6f43c53b74fe088c58c642',
+          brand_id: '5d9f2254d355b82f1543bd82',
+          item_id: '5da2d459b82fe55b01336b99',
+          item_no: 1,
+          namespace: '5d90562cc6adee43328376de35d24920aafbc7d026e717f78',
+          order_id: '60a4e2bf57181b676b748092',
+          store_id: store,
+        },
+      }*/
       this.$socket.client.on(
         'kitchen-item-channel:App\\Events\\KitchenItemReady:' +
           store +
           user._id,
         function(message) {
-          /*let message = {
-        data: {
-          assigned_to: '5e6f43c53b74fe088c58c642',
-          brand_id: '5d9f2254d355b82f1543bd82',
-          item_id: '5da2d626256e0107c8294868',
-          item_no: 0,
-          namespace: '5d90562cc6aee43328376de35d24920aafbc7d026e717f78',
-          order_id: '60a3bdca8971261fe92ded74',
-          store_id: store,
-        },
-      }*/
           // eslint-disable-next-line no-console
           console.log(message, 'ready item')
+          // eslint-disable-next-line no-debugger
+          debugger
           let socketData = message.data
           scope.$store
             .dispatch(
@@ -170,8 +172,6 @@ export default {
               { root: true }
             )
             .then(response => {
-              // eslint-disable-next-line no-debugger
-              debugger
               let item = { item: [], table: undefined, order_no: undefined }
               let item_details = response.item.items.find(
                 item =>
@@ -193,6 +193,10 @@ export default {
                 if (notifications.length)
                   notifications = JSON.parse(notifications)
                 notifications.push(item)
+                this.$store.commit(
+                  'dinein/READY_ITEM_NOTIFICATION',
+                  notifications
+                )
                 localStorage.setItem(
                   'ready_item_notification',
                   JSON.stringify(notifications)
@@ -205,8 +209,13 @@ export default {
                 setTimeout(() => {
                   if (!scope.isAudioPlaying && scope.itemData.length) {
                     console.log('inside log ready item check')
-                    showModal('#item-notification')
-                    scope.playSound()
+                    if (scope.$store.state.order.orderType.OTApi == 'dine_in') {
+                      showModal('#item-notification')
+                      scope.playSound()
+                    } else {
+                      hideModal('#item-notification')
+                      scope.pauseSound()
+                    }
                   }
                   scope.showScrollButtons()
                 }, 300)

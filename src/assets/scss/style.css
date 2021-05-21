@@ -458,9 +458,9 @@ h6 {
       align-items: center;
       justify-content: flex-end;
       position: relative; }
-      .header .header-main .header-main-right .menu-language {
+      .header .header-main .header-main-right .menu-language, .header .header-main .header-main-right .menu-notifications {
         margin-right: 0.625rem; }
-        .header .header-main .header-main-right .menu-language img {
+        .header .header-main .header-main-right .menu-language img, .header .header-main .header-main-right .menu-notifications img {
           width: 24px; }
       .header .header-main .header-main-right .switch-store {
         padding-right: 0.625rem; }

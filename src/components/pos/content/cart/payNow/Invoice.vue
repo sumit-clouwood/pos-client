@@ -124,8 +124,6 @@ export default {
         this.$store.commit('checkout/PRINT', false)
         this.isPrint = true
         try {
-          // eslint-disable-next-line no-debugger
-          debugger
           setTimeout(() => {
             if (window.PrintHandle == null) {
               //this.$refs.iframe.contentWindow.print()

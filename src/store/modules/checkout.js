@@ -776,8 +776,10 @@ const actions = {
               //send order for payment
               let order = {}
               const orderPlacementTime = rootState.order.startTime
-              let past_order_history = rootState.order.selectedOrder ? rootState.order.selectedOrder.item.order_action_history : []
-
+              let past_order_history =  []
+              if (rootState.order.orderType.OTApi == CONSTANTS.ORDER_TYPE_DINE_IN) {
+                past_order_history = rootState.order.selectedOrder ? rootState.order.selectedOrder.item.order_action_history : []
+              }
               try {
                 const transitionOrderNo =
                   rootState.location.store.branch_n +
@@ -914,21 +916,23 @@ const actions = {
                       })
                       let empty_old_order_action = Object.assign({}, order)
                       empty_old_order_action.order_action_history = []
-                      let order_actions = {action: action_order, date_time: orderPlacementTime, order: compressToBase64(JSON.stringify(empty_old_order_action))}
-                      if (order.order_action_history.length) {
-                        // let lastOrderUpdate = order.order_action_history[order.order_action_history.length - 1]
-                        let firstTimeOrderPlacement = order.order_action_history[0]
-                        let difference_in_order = CompareData.findDiffString(decompressFromBase64(firstTimeOrderPlacement.order), JSON.stringify(empty_old_order_action))
-                        // let difference_in_order_remove_item = CompareData.findDiffString(JSON.stringify(empty_old_order_action), decompressFromBase64(firstTimeOrderPlacement.order))
-                        if (difference_in_order.length > 50) {
-                          order_actions.order = compressToBase64(JSON.stringify(difference_in_order))
-                          order.order_action_history.push(order_actions)
-                        } /*else if (difference_in_order_remove_item.length > 50) {
+                      if (rootState.order.orderType.OTApi == CONSTANTS.ORDER_TYPE_DINE_IN) {
+                        let order_actions = {action: action_order, date_time: orderPlacementTime, order: compressToBase64(JSON.stringify(empty_old_order_action))}
+                        if (order.order_action_history.length) {
+                          // let lastOrderUpdate = order.order_action_history[order.order_action_history.length - 1]
+                          let firstTimeOrderPlacement = order.order_action_history[0]
+                          let difference_in_order = CompareData.findDiffString(decompressFromBase64(firstTimeOrderPlacement.order), JSON.stringify(empty_old_order_action))
+                          // let difference_in_order_remove_item = CompareData.findDiffString(JSON.stringify(empty_old_order_action), decompressFromBase64(firstTimeOrderPlacement.order))
+                          if (difference_in_order.length > 50) {
+                            order_actions.order = compressToBase64(JSON.stringify(difference_in_order))
+                            order.order_action_history.push(order_actions)
+                          } /*else if (difference_in_order_remove_item.length > 50) {
                           order_actions.order = compressToBase64(JSON.stringify(difference_in_order_remove_item))
                           order.order_action_history.push(order_actions)
                         }*/
-                      } else {
-                        order.order_action_history.push(order_actions)
+                        } else {
+                          order.order_action_history.push(order_actions)
+                        }
                       }
                       /*Need to check difference in two stringingfy before push in history (can generate with superwise password (findDiffString*/
                       // let decomp = JSON.parse(decompressFromBase64(order_actions.order))

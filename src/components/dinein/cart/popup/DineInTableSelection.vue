@@ -166,7 +166,6 @@ export default {
       this.$store.commit('dinein/MOVE_ITEM_TABLE_ID', undefined)
       this.$store.commit('order/RESET_SPLIT_BILL')
 
-      // eslint-disable-next-line no-debugger
       $('#dine-in-table-selection').modal('hide')
       /*Bellow code is for reset table if not move, its having issue while cancel moving will check later*/
       /*if (this.selectItemsToMove) {

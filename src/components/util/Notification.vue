@@ -1,23 +1,26 @@
 <template>
-  <div class="menu-language">
+  <div class="menu-notifications">
     <div class="dropdown">
       <button
-        class="btn btn-primary dropdown-toggle"
+        class="btn btn-primary"
         type="button"
         id="dropdownNotifications"
-        data-toggle="dropdown"
+        @click="openNotifications"
       >
         <img src="img/notification.svg" alt="notifications" />
-        <i v-if="readyItemNotification.length">
-          <span class="notification-count">{{
-            readyItemNotification.length
-          }}</span>
-        </i>
+        <span class="notification-count" v-if="readyItemNotification.length">{{
+          readyItemNotification.length
+        }}</span>
       </button>
       <ul
         class="dropdown-menu dropdown-menu-right cursor-pointer"
+        x-placement="bottom-end"
         v-if="readyItemNotification.length"
       >
+        <li class="notification-header">
+          <h4>{{ _t('Notifications') }}</h4>
+          <h4 @click="openNotifications">X</h4>
+        </li>
         <li
           class="dropdown-item"
           v-for="(item_details, key) in readyItemNotification"
@@ -39,24 +42,25 @@
               v-for="item in item_details.item"
               :key="item._id"
             >
-              <span>
-                <b> {{ item.name }} </b>
-              </span>
+              <span class="item-name-normal">{{ item.name }}</span>
               <span>
                 <button
                   type="button"
                   class="btn btn-primary"
                   @click="updateItemNotification(item_details)"
                 >
-                  {{ _t('Served') }}
+                  {{ _t('Serve') }}
                 </button>
               </span>
             </div>
           </div>
         </li>
-        <li class="divider"></li>
       </ul>
       <ul class="dropdown-menu dropdown-menu-right  ff cursor-pointer" v-else>
+        <li class="notification-header">
+          <h4>{{ _t('Notifications') }}</h4>
+          <h4 @click="openNotifications">X</h4>
+        </li>
         <li class="dropdown-item">{{ _t('No more ready item') }}</li>
       </ul>
     </div>
@@ -64,26 +68,47 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-
+import { mapGetters, mapState } from 'vuex'
+/* global $ */
 export default {
   name: 'Notification',
-  data() {
+  /*data() {
     return {
       readyItemNotification: this.ready_items(),
     }
-  },
+  },*/
   computed: {
     ...mapGetters('location', ['_t']),
+    ...mapState('dinein', ['readyItemNotification']),
   },
   /*updated() {
     this.readyItemNotification = this.ready_items()
   },*/
+  mounted() {
+    this.ready_items()
+  },
   methods: {
+    openNotifications() {
+      /*$('li.dropdown.mega-dropdown a').on('click', function (event) {
+        $(this).parent().toggleClass('open');
+      });
+      // Close notification whe click outside
+      $('body').on('click', function (e) {
+          if (!$('li.dropdown.mega-dropdown').is(e.target)
+              && $('li.dropdown.mega-dropdown').has(e.target).length === 0
+              && $('.open').has(e.target).length === 0
+          ) {
+              $('li.dropdown.mega-dropdown').removeClass('open');
+          }
+      });
+      */
+      $('.dropdown-menu-right').toggleClass('show')
+    },
     ready_items() {
       let notifications = localStorage.getItem('ready_item_notification') || []
       if (notifications.length) notifications = JSON.parse(notifications)
-      return notifications
+      this.$store.commit('dinein/READY_ITEM_NOTIFICATION', notifications)
+      // return notifications
     },
     updateItemNotification(removeItem) {
       let notification = this.readyItemNotification
@@ -98,6 +123,7 @@ export default {
         }
       })
       this.readyItemNotification = new_items_list
+      this.$store.commit('dinein/READY_ITEM_NOTIFICATION', new_items_list)
       localStorage.setItem(
         'ready_item_notification',
         JSON.stringify(new_items_list)
@@ -125,7 +151,7 @@ export default {
   //}
 }
 .notification-count {
-  padding-top: 4px;
+  /*padding-top: 4px;
   background: #f31410;
   border-radius: 50%;
   text-align: center;
@@ -137,7 +163,18 @@ export default {
   height: 30px;
   width: 30px;
   font-size: 16px;
-  padding-right: 4px;
+  padding-right: 4px;*/
+  background: #f31410;
+  border-radius: 35%;
+  text-align: center;
+  font-weight: bold;
+  color: #fff;
+  top: -10px;
+  position: absolute;
+  right: -5px;
+  height: 22px;
+  width: 35px;
+  font-size: 16px;
 }
 .order-table-details,
 .item-served {
@@ -145,11 +182,40 @@ export default {
   align-items: baseline;
   grid-template-columns: 1fr 1fr;
   grid-column-gap: 20px;
+  .item-name-normal {
+    white-space: normal;
+  }
   span {
     &:last-child {
       text-align: right;
       justify-content: end;
     }
+  }
+}
+.notification-header {
+  left: 0;
+  h4 {
+    padding: 18px;
+  }
+  background: #eceaea;
+  display: flex;
+  justify-content: space-between;
+  &:hover {
+    background: #eceaea;
+  }
+}
+ul.dropdown-menu.show {
+  background: #fff;
+  max-height: 500px;
+  width: 400px;
+  overflow-x: scroll;
+  position: absolute;
+  transform: translate3d(-353px, 46px, 0px);
+  top: 0;
+  left: 0;
+  will-change: transform;
+  .dropdown-item {
+    padding: 0.6rem 1.5rem 0.6rem 1.5rem;
   }
 }
 </style>

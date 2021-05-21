@@ -51,6 +51,7 @@ const state = {
   isModified: false,
   moveItemTableId: undefined,
   currentTableReservationData: null,
+  readyItemNotification: [],
 }
 const getters = {
   getCurrentTableRunningReservations: state => {
@@ -908,6 +909,9 @@ const mutations = {
   },
   [mutation.KITCHEN_PRINT](state, status) {
     state.kitchenPrint = status
+  },
+  READY_ITEM_NOTIFICATION(state, data) {
+    state.readyItemNotification = data
   },
   [mutation.SELECTED_TABLE_RESERVATION](state, reservationData) {
     state.selectedTableRservationData = reservationData

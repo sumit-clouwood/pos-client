@@ -512,8 +512,6 @@ export default {
     },
     ...mapActions('location', ['getUIMenu']),
     newOrder(reservationId, pos) {
-      // eslint-disable-next-line no-debugger
-      // debugger
       this.$store.commit(
         'dinein/SELECTED_TABLE_RESERVATION',
         this.selectedTableData.number
@@ -983,8 +981,6 @@ export default {
         .getBoundingClientRect()
     },
     showOptions(datum, index, all) {
-      // eslint-disable-next-line no-debugger
-      // debugger
       this.$store
         .dispatch('dinein/getBookedTablesOnClick', false, { root: true })
         .then(() => {

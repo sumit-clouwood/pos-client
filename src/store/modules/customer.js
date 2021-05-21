@@ -770,8 +770,6 @@ const mutations = {
     console.log(state.loyalty, 'state.loyalty', state.customerLoyalty)
   },
   /*[mutation.LOYALTY_FILTER](state, orderType) {
-    // eslint-disable-next-line no-debugger
-    debugger
     let order_type_spend = orderType + '_spend_points'
     if (state.loyalty.details[order_type_spend] !== true) {
       state.loyalty.card = false
