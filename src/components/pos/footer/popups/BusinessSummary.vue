@@ -38,21 +38,23 @@
                 title="Date from"
                 v-model="getSetDateFrom"
                 placeholder="Date from"
-                :zone="timezoneString"
+                value-zone="local"
+                zone="local"
                 input-class="btn schedule-input btn-large datepicker-here color-dashboard-background"
                 :format="{
                   year: 'numeric',
                   month: 'long',
                   day: 'numeric',
                 }"
-                auto="true"
+                auto
               ></datetime>
               <datetime
                 type="date"
                 v-model="getSetDateTo"
                 title="Date to"
                 placeholder="Date to"
-                :zone="timezoneString"
+                value-zone="local"
+                zone="local"
                 input-class="btn schedule-input btn-large datepicker-here color-dashboard-background"
                 :format="{
                   year: 'numeric',
@@ -60,7 +62,7 @@
                   day: 'numeric',
                 }"
                 :week-start="7"
-                auto="true"
+                auto
                 :phrases="{ ok: 'oK', cancel: 'Exit' }"
               ></datetime>
               <button
@@ -83,7 +85,9 @@
           id="print_bs"
           style="font-family: sans-serif; font-weight: bold"
         >
-          <div style="width: 100%; text-align: center; margin-bottom: 15px;">
+          <div
+            style="width: 100%; text-align: center; margin-bottom: 15px; margin-top: 7px;"
+          >
             <h4
               style="text-align: center; padding-bottom:5px; margin-bottom: 0"
             >
@@ -96,9 +100,13 @@
               </span></small
             >
             <br />
-            <small class="date"> {{ _t('Report from') }} {{ date_from }}</small>
+            <small class="date" v-if="date_from !== 'Invalid date'">
+              {{ _t('Report from') }} {{ date_from }}</small
+            >
             -
-            <small class="date"> {{ _t('To') }} {{ date_to }} </small>
+            <small class="date" v-if="date_to !== 'Invalid date'">
+              {{ _t('To') }} {{ date_to }}
+            </small>
             <br />
             <small>{{ _t('Printed by') }}: {{ user.name }}</small>
           </div>
@@ -574,6 +582,146 @@
                 </tbody>
               </table>
             </div>
+            <div class="table-responsive">
+              <table
+                style="margin-bottom: 20px;
+                width: 98%; font-family: sans-serif;;
+                border-bottom: 1px dashed #000; font-size: 12px"
+              >
+                <thead>
+                  <tr>
+                    <th
+                      style="border: 1px dashed #000; margin-top: 15px;
+                      text-align: left;padding: 0.3rem;"
+                    >
+                      {{ _t('Name') }}
+                      <span><i class="fa fa-sort" aria-hidden="true"></i></span>
+                    </th>
+                    <th
+                      style="border: 1px dashed #000; margin-top: 15px;
+                      text-align: left;padding: 0.3rem; border-left: 0;"
+                    >
+                      {{ _t('Qty') }}
+                      <span><i class="fa fa-sort" aria-hidden="true"></i></span>
+                    </th>
+                    <th
+                      style="border: 1px dashed #000; margin-top: 15px;
+                      text-align: left;padding: 0.3rem; border-left: 0;"
+                    >
+                      {{ _t('Qty %') }}
+                      <span><i class="fa fa-sort" aria-hidden="true"></i></span>
+                    </th>
+                    <th
+                      style="border: 1px dashed #000; margin-top: 15px;
+                      text-align: left;padding: 0.3rem; border-left: 0;"
+                    >
+                      {{ _t('Value') }}
+                      <span><i class="fa fa-sort" aria-hidden="true"></i></span>
+                    </th>
+                    <th
+                      style="border: 1px dashed #000; margin-top: 15px;
+                      text-align: left;padding: 0.3rem; border-left: 0;"
+                    >
+                      {{ _t('Value %') }}
+                      <span><i class="fa fa-sort" aria-hidden="true"></i></span>
+                    </th>
+                    <th
+                      style="border: 1px dashed #000; margin-top: 15px;
+                      text-align: left;padding: 0.3rem; border-left: 0;"
+                    >
+                      {{ _t('Weight') }}
+                      <span><i class="fa fa-sort" aria-hidden="true"></i></span>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                    style="border: 1px dashed #000; margin-top: 10px"
+                    v-for="(item, index) in BSData.REPORT_ITEM"
+                    :key="index"
+                  >
+                    <td
+                      style="border-right: 1px dashed #000;
+                      border-left: 1px dashed #000;
+                      text-align: left;padding: 0.3rem;"
+                    >
+                      {{ _t(item['REPORT-ITEM-NAME']) }}
+                    </td>
+                    <td
+                      style="padding-left: 10px;
+                      border-right: 1px dashed #000"
+                    >
+                      {{ item['REPORT-ITEM-QUANTITY'] }}
+                    </td>
+                    <td
+                      style="padding-left: 10px;
+                      border-right: 1px dashed #000"
+                    >
+                      {{
+                        getPercentage(
+                          getItemTotalQty,
+                          item['REPORT-ITEM-QUANTITY']
+                        )
+                      }}
+                    </td>
+                    <td
+                      style="padding-left: 10px;
+                     border-right: 1px dashed #000"
+                    >
+                      {{ formatPrice(item['REPORT-ITEM-VALUE']) }}
+                    </td>
+                    <td
+                      style="padding-left: 10px;
+                     border-right: 1px dashed #000"
+                    >
+                      {{
+                        getPercentage(getItemTotal, item['REPORT-ITEM-VALUE'])
+                      }}
+                    </td>
+                    <td
+                      style="padding-left: 10px;
+                     border-right: 1px dashed #000"
+                    >
+                      {{ item['REPORT-ITEM-QUANTITY-MEASUREMENT'] }}
+                      <!--{{ setTotalValue(payment['REPORT-PAYMENT-TYPE']) }}-->
+                    </td>
+                  </tr>
+                  <tr class="font-weight-bold">
+                    <td
+                      style="border-right: 1px dashed #000;
+                      border-left: 1px dashed #000;
+                      text-align: left;padding: 0.3rem;"
+                    >
+                      {{ _t('Total') }}
+                    </td>
+                    <td
+                      style="padding-left: 10px;
+                      border-right: 1px dashed #000"
+                    >
+                      {{ getItemTotalQty }}
+                    </td>
+                    <td
+                      style="padding-left: 10px;
+                      border-right: 1px dashed #000"
+                    ></td>
+                    <td
+                      style="padding-left: 10px;
+                      border-right: 1px dashed #000"
+                    >
+                      {{ formatPrice(getItemTotal) }}
+                    </td>
+                    <td
+                      style="padding-left: 10px;
+                      border-right: 1px dashed #000"
+                    ></td>
+                    <td
+                      style="padding-left: 10px;
+                      border-right: 1px dashed #000"
+                    ></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
         <div class="modal-footer">
@@ -631,18 +779,38 @@ export default {
     ...mapState('location', ['store', 'timezoneString']),
     ...mapState({ user: state => state.auth.userDetails.item }),
     getSetDateFrom: {
-      /*get() {
-        // return this.date_from
-      },*/
+      get() {
+        return this.date_from
+      },
       set(dateFrom) {
         let _from = moment(dateFrom).format('YYYY-MM-DD')
         this.$store.commit('reports/DATE_FROM', _from)
       },
     },
+    getItemTotal() {
+      let total = 0
+      if (this.BSData && this.BSData.REPORT_ITEM) {
+        let reportItem = this.BSData.REPORT_ITEM
+        for (const item in reportItem) {
+          total += parseFloat(reportItem[item]['REPORT-ITEM-VALUE'])
+        }
+      }
+      return total
+    },
+    getItemTotalQty() {
+      let total = 0
+      if (this.BSData && this.BSData.REPORT_ITEM) {
+        let reportItem = this.BSData.REPORT_ITEM
+        for (const item in reportItem) {
+          total += parseFloat(reportItem[item]['REPORT-ITEM-QUANTITY'])
+        }
+      }
+      return total
+    },
     getSetDateTo: {
-      /*get() {
-        // return this.date_to
-      },*/
+      get() {
+        return this.date_to
+      },
       set(dateTo) {
         let _to = moment(dateTo).format('YYYY-MM-DD')
         this.$store.commit('reports/DATE_TO', _to)
@@ -650,6 +818,9 @@ export default {
     },
   },
   methods: {
+    getPercentage(total, value) {
+      return this.formatPrice((value / total) * 100)
+    },
     getBSStoreTime() {
       this.timeMode = !this.timeMode
       this.$store.commit('reports/TIME_MODE', this.timeMode)

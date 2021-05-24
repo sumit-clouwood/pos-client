@@ -1,5 +1,5 @@
 <template>
-  <div class="modal-footer">
+  <div class="modal-footer set-buttons-alignments">
     <div class="btn-announce">
       <ModifyItemModifiersButton
         v-if="show('modifiers') && device === 'mobile'"
@@ -104,3 +104,8 @@ export default {
   },
 }
 </script>
+<style lang="scss" scoped>
+.modal-footer.set-buttons-alignments {
+  padding: 0 1.875rem 1.875rem 0.875rem !important;
+}
+</style>

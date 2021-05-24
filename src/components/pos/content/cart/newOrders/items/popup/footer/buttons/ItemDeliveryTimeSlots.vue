@@ -74,8 +74,8 @@ export default {
       modifierItem: state => state.modifier.item,
     }),
     selectedItem() {
-      let selected_item = this.item
-      if (!selected_item) selected_item = this.modifierItem
+      let selected_item = this.modifierItem
+      if (!selected_item) selected_item = this.item
       return selected_item
     },
     ...mapGetters('combo', ['current_combo_selected_item']),
@@ -91,8 +91,6 @@ export default {
   methods: {
     setItemDeliveryTime(time) {
       this.itemServingTime = time
-      this.$store.commit('orderForm/setItemDeliveryTime', time)
-      this.$store.dispatch('order/addItemDeliveryTime', time)
     },
     timeConvert(time, separator = ':') {
       if (time) {
@@ -101,7 +99,11 @@ export default {
       }
     },
     closeModal(time) {
-      this.setItemDeliveryTime(time)
+      // eslint-disable-next-line no-console
+      console.log(this.item, 'order item', this.modifierItem)
+      if (!this.modifierItem)
+        this.$store.dispatch('order/addItemDeliveryTime', time)
+      this.$store.commit('orderForm/setItemDeliveryTime', time)
       hideModal('#item-delivery-time-selection')
     },
   },
