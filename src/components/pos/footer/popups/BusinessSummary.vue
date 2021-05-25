@@ -991,6 +991,13 @@ export default {
   height: 42px;
   width: 41px;
 }
+/*.vdatetime-popup {
+  top: 12% !important;
+}*/
+.business-summary {
+  max-height: 480px;
+  overflow-x: scroll;
+}
 @media only screen and (max-width: 599px) {
   .business-summary {
     top: 60px;
