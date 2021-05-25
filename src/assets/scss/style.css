@@ -1911,6 +1911,12 @@ button.btn.referal-btn {
   margin-left: 0.625rem;
   text-align: left; }
 
+.main-oreders-buttons .vdatetime > input {
+  height: 2.625rem;
+  margin-top: -0.125rem;
+  border: 1px solid #9095af;
+  cursor: pointer; }
+
 .customer-group .vdatetime > input.vdatetime-input {
   width: 19.6875rem;
   margin-left: 0; }
