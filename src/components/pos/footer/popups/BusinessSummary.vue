@@ -86,8 +86,10 @@
           style="font-family: sans-serif; font-weight: bold"
         >
           <div
-            style="width: 100%; 
-            text-align: center; margin-bottom: 15px; margin-top: 7px;"
+            style="width: 100%;
+            text-align: center;
+            margin-bottom: 15px;
+            margin-top: 7px;"
           >
             <h4
               style="text-align: center; padding-bottom:5px; margin-bottom: 0"
@@ -664,6 +666,7 @@
                           item['REPORT-ITEM-QUANTITY']
                         )
                       }}
+                      %
                     </td>
                     <td
                       style="padding-left: 10px;
@@ -678,6 +681,7 @@
                       {{
                         getPercentage(getItemTotal, item['REPORT-ITEM-VALUE'])
                       }}
+                      {{ _t('% of') }} {{ currency }}
                     </td>
                     <td
                       style="padding-left: 10px;
@@ -753,6 +757,7 @@ import { mapGetters, mapState } from 'vuex'
 import moment from 'moment-timezone'
 import { Datetime } from 'vue-datetime'
 import Preloader from '@/components/util/Preloader'
+import Num from '@/plugins/helpers/Num'
 
 export default {
   name: 'BusinessSummary',
@@ -777,7 +782,7 @@ export default {
       'date_to',
       'loader',
     ]),
-    ...mapState('location', ['store', 'timezoneString']),
+    ...mapState('location', ['store', 'timezoneString', 'currency']),
     ...mapState({ user: state => state.auth.userDetails.item }),
     getSetDateFrom: {
       get() {
@@ -820,7 +825,8 @@ export default {
   },
   methods: {
     getPercentage(total, value) {
-      return this.formatPrice((value / total) * 100)
+      let amount = (value / total) * 100
+      return Num.round(amount, 2).toFixed(2)
     },
     getBSStoreTime() {
       this.timeMode = !this.timeMode
@@ -915,6 +921,9 @@ export default {
   -ms-flex-pack: justify;
   justify-content: space-between;
 }*/
+.preloader {
+  width: 100%;
+}
 /* Hide the browser's default checkbox */
 .container-checkbox input {
   position: absolute;
@@ -981,6 +990,13 @@ export default {
   margin-left: 5px;
   height: 42px;
   width: 41px;
+}
+/*.vdatetime-popup {
+  top: 12% !important;
+}*/
+.business-summary {
+  max-height: 480px;
+  overflow-x: scroll;
 }
 @media only screen and (max-width: 599px) {
   .business-summary {

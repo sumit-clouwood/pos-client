@@ -107,6 +107,8 @@ const mutations = {
         state.totalPayments.value += parseFloat(payment['REPORT-PAYMENT-TYPE'])
       })
       state.totalPayments
+    } else {
+      state.totalPayments = { value: 0, count: 0 }
     }
   },
   [mutation.DATE_FROM](state, date_from) {
