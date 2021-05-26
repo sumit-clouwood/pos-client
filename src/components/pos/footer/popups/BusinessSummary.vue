@@ -86,7 +86,8 @@
           style="font-family: sans-serif; font-weight: bold"
         >
           <div
-            style="width: 100%; text-align: center; margin-bottom: 15px; margin-top: 7px;"
+            style="width: 100%; 
+            text-align: center; margin-bottom: 15px; margin-top: 7px;"
           >
             <h4
               style="text-align: center; padding-bottom:5px; margin-bottom: 0"

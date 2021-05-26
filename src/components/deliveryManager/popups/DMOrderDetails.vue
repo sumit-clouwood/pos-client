@@ -320,10 +320,8 @@
               <span>✕</span> Close
             </button>
           </div>
-          <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
         </div>
       </div>
-      <!-- <InvoiceReprint v-if="selectedOrder" :order="selectedOrder" /> -->
     </div>
   </div>
 </template>

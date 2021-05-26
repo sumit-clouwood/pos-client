@@ -2,6 +2,7 @@
   <div class="transaction-orders">
     <Header />
     <Content />
+    <Invoice />
   </div>
 </template>
 
@@ -21,11 +22,13 @@
 <script>
 import Header from './transactions/Header.vue'
 import Content from './transactions/Content.vue'
+import Invoice from '@/components/pos/content/cart/payNow/Invoice'
 export default {
   name: 'Pos',
   components: {
     Header,
     Content,
+    Invoice,
   },
   //store private data in component using data
 
