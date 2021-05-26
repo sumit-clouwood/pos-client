@@ -166,7 +166,10 @@ export default {
         let resetFull = false
         if (this.$store.getters['checkout/complete']) {
           resetFull = true
-          this.$store.commit('order/CLEAR_SELECTED_ORDER')
+          //check if order is coming through transaction screen then don't clear it
+          if (!['Transactions'].includes(this.$route.name)) {
+            this.$store.commit('order/CLEAR_SELECTED_ORDER')
+          }
         }
 
         this.$store.dispatch('checkout/reset', resetFull)

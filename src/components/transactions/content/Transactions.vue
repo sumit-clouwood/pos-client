@@ -200,9 +200,14 @@ export default {
       return statusArr
     },
     getSelectedOrder(order) {
+      //show loader here
+      this.$store.dispatch('sync/setLoader', true)
       this.$store
         .dispatch('order/selectedOrderDetails', order._id)
-        .then(() => {})
+        .then(() => {
+          //stop loader here
+          this.$store.dispatch('sync/setLoader', false)
+        })
         .catch()
       this.$store.dispatch('transactionDetail')
     },
