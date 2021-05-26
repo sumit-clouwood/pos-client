@@ -179,6 +179,7 @@ export default {
                   item.entity_id == socketData.item_id
               )
               if (item_details) {
+                /* Worked according to response.item.order_type -- dine_in / or carhop*/
                 item.item.push(item_details)
                 let table = scope.allBookedTables.orders.find(
                   table => table._id === response.item.table_reservation_id

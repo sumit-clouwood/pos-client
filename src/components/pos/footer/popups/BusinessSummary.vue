@@ -8,7 +8,7 @@
           <h4 class="customer-title color-text-invert">
             {{ _t('Business Summary Details') }}
           </h4>
-          <div>
+          <!--          <div>
             <label class="container-checkbox"
               >{{ _t('Store Time') }}
               <input
@@ -18,7 +18,7 @@
               />
               <span class="checkmark"></span>
             </label>
-          </div>
+          </div>-->
           <!--<div class="printConfg">
             <label>
               <input
@@ -597,7 +597,7 @@
                       style="border: 1px dashed #000; margin-top: 15px;
                       text-align: left;padding: 0.3rem;"
                     >
-                      {{ _t('Name') }}
+                      {{ _t('Item Names') }}
                       <span><i class="fa fa-sort" aria-hidden="true"></i></span>
                     </th>
                     <th
@@ -763,7 +763,7 @@ export default {
   name: 'BusinessSummary',
   data() {
     return {
-      timeMode: this.time_mode,
+      // timeMode: this.time_mode,
       todayDate: moment().format('Do MMMM YYYY'),
       todayTime: moment().format('h:mm:ss a'),
     }
@@ -777,7 +777,6 @@ export default {
     ...mapState('reports', [
       'BSData',
       'totalPayments',
-      'time_mode',
       'date_from',
       'date_to',
       'loader',
@@ -828,11 +827,11 @@ export default {
       let amount = (value / total) * 100
       return Num.round(amount, 2).toFixed(2)
     },
-    getBSStoreTime() {
+    /*getBSStoreTime() {
       this.timeMode = !this.timeMode
       this.$store.commit('reports/TIME_MODE', this.timeMode)
       this.getReport()
-    },
+    },*/
     getReport() {
       this.$store.dispatch('reports/businessSummary', {}, { root: true })
     },

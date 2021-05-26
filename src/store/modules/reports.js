@@ -8,7 +8,7 @@ const state = {
   date_to: undefined,
   hour_from: 24,
   hour_to: 24,
-  time_mode: false, //true means taking store time, false means taking UTC time
+  time_mode: true, //true means taking store time, false means taking UTC time
   supervisor_password: '',
   passwordVerification: '',
   modalView: '#supervisor-password',

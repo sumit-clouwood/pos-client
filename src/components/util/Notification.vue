@@ -102,7 +102,7 @@ export default {
           }
       });
       */
-      $('.dropdown-menu-right').toggleClass('show')
+      $('.menu-notifications .dropdown-menu-right').toggleClass('show')
     },
     ready_items() {
       let notifications = localStorage.getItem('ready_item_notification') || []
@@ -214,11 +214,21 @@ ul.dropdown-menu.show {
   overflow-x: scroll;
   position: absolute;
   transform: translate3d(-353px, 46px, 0px);
+  @media only screen and (max-width: 599px) {
+    transform: translate3d(-247px, 46px, 0px);
+  }
   top: 0;
   left: 0;
   will-change: transform;
   .dropdown-item {
     padding: 0.6rem 1.5rem 0.6rem 1.5rem;
+  }
+}
+.carhop-wrapper {
+  ul.dropdown-menu.show {
+    @media only screen and (max-width: 599px) {
+      transform: translate3d(-300px, 46px, 0px);
+    }
   }
 }
 </style>
