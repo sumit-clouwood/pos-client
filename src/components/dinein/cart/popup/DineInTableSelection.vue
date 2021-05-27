@@ -116,6 +116,15 @@ export default {
     ...mapState('order', ['selectItemsToMove']),
   },
   methods: {
+    showScrollButtons() {
+      let scroll_height = $('#table-status-container-id')[0].scrollHeight
+      let height_ = $('#table-status-container-id').height()
+      if (scroll_height > height_) {
+        $('.scroll-top-arrow, .scroll-bottom-arrow').removeClass('disable')
+      } else {
+        $('.scroll-top-arrow, .scroll-bottom-arrow').addClass('disable')
+      }
+    },
     setTable: function(table) {
       this.moveTableDetails = table
       this.selectedTableMove = table.table_id
@@ -194,8 +203,8 @@ export default {
       this.scrollBlockItemHeight = $(
         '#table-status-container-id > span'
       ).innerHeight()
-      if (this.scrollBlockHeight < 255 && operation === 'init') {
-        $('.scroll-top-arrow, .scroll-bottom-arrow').addClass('disable')
+      if (operation === 'init') {
+        this.showScrollButtons()
       }
       if (operation === 'top') {
         this.scrollPosition = this.scrollBlockItemHeight
