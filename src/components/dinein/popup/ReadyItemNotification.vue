@@ -177,6 +177,7 @@ export default {
                   item.no == socketData.item_no &&
                   item.entity_id == socketData.item_id
               )
+              console.log(item_details, 'item_details')
               if (item_details) {
                 /* Worked according to response.item.order_type -- dine_in / or carhop*/
                 item.item.push(item_details)
@@ -203,6 +204,12 @@ export default {
                     })
                   }
                 })
+                console.log(
+                  is_item_duplicate,
+                  item,
+                  notifications,
+                  'is_item_duplicate'
+                )
                 if (!is_item_duplicate) {
                   scope.itemData.push(item)
                   notifications.push(item)
@@ -214,23 +221,21 @@ export default {
                     'ready_item_notification',
                     JSON.stringify(notifications)
                   )
-                  setTimeout(() => {
-                    console.log(scope.itemData, scope.isAudioPlaying, 'ID')
-                    if (!scope.isAudioPlaying && scope.itemData.length) {
-                      console.log('inside log ready item check')
-                      if (
-                        scope.$store.state.order.orderType.OTApi == 'dine_in'
-                      ) {
-                        showModal('#item-notification')
-                        scope.playSound()
-                        scope.showScrollButtons()
-                      } else {
-                        hideModal('#item-notification')
-                        scope.pauseSound()
-                      }
-                    }
-                  }, 300)
                 }
+                setTimeout(() => {
+                  console.log(scope.itemData, scope.isAudioPlaying, 'ID')
+                  if (!scope.isAudioPlaying && scope.itemData.length) {
+                    console.log('inside log ready item check')
+                    if (scope.$store.state.order.orderType.OTApi == 'dine_in') {
+                      showModal('#item-notification')
+                      scope.playSound()
+                      scope.showScrollButtons()
+                    } else {
+                      hideModal('#item-notification')
+                      scope.pauseSound()
+                    }
+                  }
+                }, 300)
               }
             })
         }
