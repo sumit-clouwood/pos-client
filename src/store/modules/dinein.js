@@ -197,7 +197,7 @@ const actions = {
       dispatch('getTableStatus')
     })
   },
-  seOrderData({ commit }, response) {
+  seOrderData({ commit, state }, response) {
     let orderDetails = []
     let responseData = response.data.data
     //state.areas = this.getDineInArea
@@ -205,14 +205,17 @@ const actions = {
       let order = []
       let balanceDue = 0
       let currency = ''
-
-      let areaName = state.areas.find(element => {
-        return element._id ==
-          response.data.page_lookups.dine_in_tables._id[table.assigned_table_id]
-            .area_id
-          ? element.name
-          : ''
-      })
+      let areaName = undefined
+      if (state.areas) {
+        areaName = state.areas.find(element => {
+          return element._id ==
+            response.data.page_lookups.dine_in_tables._id[
+              table.assigned_table_id
+            ].area_id
+            ? element.name
+            : ''
+        })
+      }
       table.related_orders_ids.forEach(order_Id => {
         let od = response.data.page_lookups.orders._id[order_Id]
         order.push(od)
@@ -232,7 +235,7 @@ const actions = {
           table: table,
           orders: order,
           amount: balanceDue + ' ' + currency,
-          areaName: areaName.name.toUpperCase(),
+          areaName: areaName ? areaName.name.toUpperCase() : '',
         })
       }
     })

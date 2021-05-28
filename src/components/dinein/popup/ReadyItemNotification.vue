@@ -223,24 +223,26 @@ export default {
                     'ready_item_notification',
                     JSON.stringify(notifications)
                   )
-                }
-                setTimeout(() => {
-                  console.log(scope.itemData, scope.isAudioPlaying, 'ID')
-                  if (!scope.isAudioPlaying && scope.itemData.length) {
-                    console.log('inside log ready item check')
-                    if (scope.$store.state.order.orderType.OTApi == 'dine_in') {
-                      showModal('#item-notification')
-                      scope.playSound()
-                      scope.showScrollButtons()
-                    } else {
-                      hideModal('#item-notification')
-                      scope.pauseSound()
-                    }
-                  } /*else {
+                  setTimeout(() => {
+                    console.log(scope.itemData, scope.isAudioPlaying, 'ID')
+                    if (!scope.isAudioPlaying && scope.itemData.length) {
+                      console.log('inside log ready item check')
+                      if (
+                        scope.$store.state.order.orderType.OTApi == 'dine_in'
+                      ) {
+                        showModal('#item-notification')
+                        scope.playSound()
+                        scope.showScrollButtons()
+                      } else {
+                        hideModal('#item-notification')
+                        scope.pauseSound()
+                      }
+                    } /*else {
                     hideModal('#item-notification')
                     scope.pauseSound()
                   }*/
-                }, 100)
+                  }, 100)
+                }
               }
             })
         }
