@@ -131,6 +131,7 @@ export default {
       console.log('pausing sound')
       let promise = audio_ready_item.pause() || nopromise
       this.isAudioPlaying = false
+      this.itemData = []
       promise.catch(error => {
         console.log(error)
       })
@@ -190,20 +191,21 @@ export default {
                 item.order_no = response.item.order_no
                 let notifications =
                   localStorage.getItem('ready_item_notification') || []
-                if (notifications.length)
+                if (notifications.length) {
                   notifications = JSON.parse(notifications)
-                notifications.forEach(data => {
-                  if (data.item.length) {
-                    data.item.forEach(stored_item => {
-                      if (
-                        stored_item.entity_id === item_details.entity_id &&
-                        data.order_no === item.order_no
-                      ) {
-                        is_item_duplicate = true
-                      }
-                    })
-                  }
-                })
+                  notifications.forEach(data => {
+                    if (data.item.length) {
+                      data.item.forEach(stored_item => {
+                        if (
+                          stored_item.entity_id === item_details.entity_id &&
+                          data.order_no === item.order_no
+                        ) {
+                          is_item_duplicate = true
+                        }
+                      })
+                    }
+                  })
+                }
                 console.log(
                   is_item_duplicate,
                   item,
@@ -234,6 +236,9 @@ export default {
                       hideModal('#item-notification')
                       scope.pauseSound()
                     }
+                  } else {
+                    hideModal('#item-notification')
+                    scope.pauseSound()
                   }
                 }, 300)
               }
