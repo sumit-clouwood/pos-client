@@ -213,6 +213,7 @@ ul.dropdown-menu.show {
   width: 400px;
   overflow-x: scroll;
   position: absolute;
+  z-index: 9;
   transform: translate3d(-353px, 46px, 0px);
   @media only screen and (max-width: 599px) {
     transform: translate3d(-247px, 46px, 0px);

@@ -236,11 +236,11 @@ export default {
                       hideModal('#item-notification')
                       scope.pauseSound()
                     }
-                  } else {
+                  } /*else {
                     hideModal('#item-notification')
                     scope.pauseSound()
-                  }
-                }, 300)
+                  }*/
+                }, 100)
               }
             })
         }
