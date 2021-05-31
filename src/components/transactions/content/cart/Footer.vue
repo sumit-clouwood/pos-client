@@ -49,6 +49,39 @@
       </div>
     </div>
     <div class="btn-transaction text-right">
+      <div class="v-menu v-menu--inline">
+        <div class="v-menu__activator">
+          <div class="dropdown">
+            <button
+              v-if="allowed(PERMS.REPRINT_ORDER)"
+              class="btn btn-large btn-success popup-btn-save color-text-invert color-main pos-button-design ml-2 btn-tans-mbl dropdown-toggle"
+              type="button"
+              id="dropdownMenuButton"
+              data-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false"
+            >
+              {{ _t('Reprint') }}
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              <a
+                class="dropdown-item"
+                role="button"
+                v-for="(template, index) in selectedOrder.invoice"
+                :key="index"
+                @click="
+                  printInvoiceDisableKitchenPrint({
+                    templateId: template._id,
+                    order: selectedOrder,
+                  })
+                "
+                >{{ template.name }}</a
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+
       <span
         v-if="
           order.order_type === 'dine_in' &&
@@ -98,19 +131,23 @@
         {{ _t('Add More Items') }}
       </button>-->
     </div>
+    <Invoice />
     <CancelOrderPopup :order="order" />
   </div>
 </template>
 
 <script>
 import CancelOrderPopup from '@/components/transactions/content/orderDetails/CancelOrderPopup'
-import { mapGetters, mapState } from 'vuex'
+import { mapActions, mapGetters, mapState } from 'vuex'
+import Invoice from '@/components/pos/content/cart/payNow/Invoice'
+
 export default {
   name: 'CartFooter',
   props: {
     order: Object,
   },
   components: {
+    Invoice,
     CancelOrderPopup,
   },
   computed: {
@@ -120,14 +157,37 @@ export default {
       'totalTax',
       'orderGrandTotal',
     ]),
+    ...mapState('order', ['selectedOrder']),
     ...mapGetters('surcharge', ['surcharge']),
     ...mapGetters('location', ['formatPrice', '_t']),
     ...mapGetters('discount', ['orderDiscountWithoutTax']),
     ...mapState('discount', ['appliedOrderDiscount']),
     ...mapGetters(['totalWrapperHendler']),
-    ...mapGetters('auth', ['multistore']),
+    ...mapGetters('auth', ['multistore', 'allowed']),
   },
   methods: {
+    ...mapActions('deliveryManager', ['printInvoice']),
+    printInvoiceDisableKitchenPrint(details) {
+      if (details.order.item && details.order.customer) {
+        let customer = {
+          customerData: details.order.customer,
+          pastOrders: '',
+          deliveryAreas: details.order.item.order_delivery_area,
+        }
+        this.$store.commit('customer/SELECTED_CUSTOMER', customer)
+      }
+      // this.$store.commit('checkout/PRINT', true)
+
+      if (window.PrintHandle == null) {
+        this.printInvoice(details)
+      } else {
+        this.$store.dispatch(
+          'printingServer/printingServerInvoiceRaw',
+          details.order.item
+        )
+      }
+      this.$store.commit('dinein/KITCHEN_PRINT', false)
+    },
     getOrderDiscount(discounts) {
       let value = ''
       let name = ''

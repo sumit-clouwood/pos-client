@@ -214,6 +214,14 @@ button.btn.referal-btn {
   margin-left: $px10;
   text-align: left;
 }
+.main-oreders-buttons {
+  .vdatetime > input {
+    height: $px42;
+    margin-top: -$px2;
+    border: 1px solid #9095af;
+    cursor: pointer;
+  }
+}
 .customer-group .vdatetime > input.vdatetime-input {
   width: $px315;
   margin-left: 0;

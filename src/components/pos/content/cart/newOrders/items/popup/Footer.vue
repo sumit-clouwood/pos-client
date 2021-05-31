@@ -1,9 +1,10 @@
 <template>
-  <div class="modal-footer">
+  <div class="modal-footer set-buttons-alignments">
     <div class="btn-announce">
       <ModifyItemModifiersButton
         v-if="show('modifiers') && device === 'mobile'"
       />
+      <item-delivery-time></item-delivery-time>
       <note-button v-if="show('note')"></note-button>
       <DiscountButton v-if="show('discount')" />
       <!-- <RemoveDiscountButton /> -->
@@ -36,11 +37,13 @@ import noteButton from './footer/buttons/note'
 import RemoveTaxButton from './footer/RemoveTaxButton'
 import ModifyItemModifiersButton from './footer/ModifyItemModifiersButton'
 import { mapGetters, mapState } from 'vuex'
+import itemDeliveryTime from './footer/buttons/ItemTimeDelivery'
 
 export default {
   name: 'Footer',
   props: {},
   components: {
+    itemDeliveryTime,
     DiscountButton,
     noteButton,
     //  RemoveDiscountButton,
@@ -101,3 +104,8 @@ export default {
   },
 }
 </script>
+<style lang="scss" scoped>
+.modal-footer.set-buttons-alignments {
+  padding: 0 1.875rem 1.875rem 0.875rem !important;
+}
+</style>

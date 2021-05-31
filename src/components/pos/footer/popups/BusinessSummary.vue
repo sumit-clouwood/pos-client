@@ -8,7 +8,7 @@
           <h4 class="customer-title color-text-invert">
             {{ _t('Business Summary Details') }}
           </h4>
-          <div>
+          <!--          <div>
             <label class="container-checkbox"
               >{{ _t('Store Time') }}
               <input
@@ -18,7 +18,7 @@
               />
               <span class="checkmark"></span>
             </label>
-          </div>
+          </div>-->
           <!--<div class="printConfg">
             <label>
               <input
@@ -31,23 +31,86 @@
             </label>
             <label> Store</label>
           </div>-->
+          <div class="bs-datetime-selector">
+            <form>
+              <datetime
+                type="date"
+                title="Date from"
+                v-model="getSetDateFrom"
+                placeholder="Date from"
+                value-zone="local"
+                zone="local"
+                input-class="btn schedule-input btn-large datepicker-here color-dashboard-background"
+                :format="{
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+                }"
+                auto
+              ></datetime>
+              <datetime
+                type="date"
+                v-model="getSetDateTo"
+                title="Date to"
+                placeholder="Date to"
+                value-zone="local"
+                zone="local"
+                input-class="btn schedule-input btn-large datepicker-here color-dashboard-background"
+                :format="{
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+                }"
+                :week-start="7"
+                auto
+                :phrases="{ ok: 'oK', cancel: 'Exit' }"
+              ></datetime>
+              <button
+                class="btn btn-success btn-large color-main"
+                type="button"
+                v-on:click="getReport"
+              >
+                <i class="fa fa-refresh fa"></i>
+                <!--{{ _t('Get Report') }}-->
+              </button>
+            </form>
+          </div>
+        </div>
+        <div class="modal-body row business-summary" v-if="loader">
+          <Preloader />
         </div>
         <div
+          v-else
           class="modal-body row business-summary"
           id="print_bs"
           style="font-family: sans-serif; font-weight: bold"
         >
-          <div style="width: 100%; text-align: center; margin-bottom: 15px;">
+          <div
+            style="width: 100%;
+            text-align: center;
+            margin-bottom: 15px;
+            margin-top: 7px;"
+          >
             <h4
               style="text-align: center; padding-bottom:5px; margin-bottom: 0"
             >
               {{ store.name }}
             </h4>
-            <small class="date">{{ todayDate }}</small
-            ><br />
-            <small class="date" style="text-transform: uppercase">
-              {{ todayTime }} </small
-            ><br />
+            <small class="date">
+              {{ _t('Current datetime') }} {{ todayDate }}
+              <span style="text-transform: uppercase">
+                {{ todayTime }}
+              </span></small
+            >
+            <br />
+            <small class="date" v-if="date_from !== 'Invalid date'">
+              {{ _t('Report from') }} {{ date_from }}</small
+            >
+            -
+            <small class="date" v-if="date_to !== 'Invalid date'">
+              {{ _t('To') }} {{ date_to }}
+            </small>
+            <br />
             <small>{{ _t('Printed by') }}: {{ user.name }}</small>
           </div>
           <div class="business-summary-wrapper" style="text-align: center">
@@ -522,6 +585,148 @@
                 </tbody>
               </table>
             </div>
+            <div class="table-responsive">
+              <table
+                style="margin-bottom: 20px;
+                width: 98%; font-family: sans-serif;;
+                border-bottom: 1px dashed #000; font-size: 12px"
+              >
+                <thead>
+                  <tr>
+                    <th
+                      style="border: 1px dashed #000; margin-top: 15px;
+                      text-align: left;padding: 0.3rem;"
+                    >
+                      {{ _t('Item Names') }}
+                      <span><i class="fa fa-sort" aria-hidden="true"></i></span>
+                    </th>
+                    <th
+                      style="border: 1px dashed #000; margin-top: 15px;
+                      text-align: left;padding: 0.3rem; border-left: 0;"
+                    >
+                      {{ _t('Qty') }}
+                      <span><i class="fa fa-sort" aria-hidden="true"></i></span>
+                    </th>
+                    <th
+                      style="border: 1px dashed #000; margin-top: 15px;
+                      text-align: left;padding: 0.3rem; border-left: 0;"
+                    >
+                      {{ _t('Qty %') }}
+                      <span><i class="fa fa-sort" aria-hidden="true"></i></span>
+                    </th>
+                    <th
+                      style="border: 1px dashed #000; margin-top: 15px;
+                      text-align: left;padding: 0.3rem; border-left: 0;"
+                    >
+                      {{ _t('Value') }}
+                      <span><i class="fa fa-sort" aria-hidden="true"></i></span>
+                    </th>
+                    <th
+                      style="border: 1px dashed #000; margin-top: 15px;
+                      text-align: left;padding: 0.3rem; border-left: 0;"
+                    >
+                      {{ _t('Value %') }}
+                      <span><i class="fa fa-sort" aria-hidden="true"></i></span>
+                    </th>
+                    <th
+                      style="border: 1px dashed #000; margin-top: 15px;
+                      text-align: left;padding: 0.3rem; border-left: 0;"
+                    >
+                      {{ _t('Weight') }}
+                      <span><i class="fa fa-sort" aria-hidden="true"></i></span>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                    style="border: 1px dashed #000; margin-top: 10px"
+                    v-for="(item, index) in BSData.REPORT_ITEM"
+                    :key="index"
+                  >
+                    <td
+                      style="border-right: 1px dashed #000;
+                      border-left: 1px dashed #000;
+                      text-align: left;padding: 0.3rem;"
+                    >
+                      {{ _t(item['REPORT-ITEM-NAME']) }}
+                    </td>
+                    <td
+                      style="padding-left: 10px;
+                      border-right: 1px dashed #000"
+                    >
+                      {{ item['REPORT-ITEM-QUANTITY'] }}
+                    </td>
+                    <td
+                      style="padding-left: 10px;
+                      border-right: 1px dashed #000"
+                    >
+                      {{
+                        getPercentage(
+                          getItemTotalQty,
+                          item['REPORT-ITEM-QUANTITY']
+                        )
+                      }}
+                      %
+                    </td>
+                    <td
+                      style="padding-left: 10px;
+                     border-right: 1px dashed #000"
+                    >
+                      {{ formatPrice(item['REPORT-ITEM-VALUE']) }}
+                    </td>
+                    <td
+                      style="padding-left: 10px;
+                     border-right: 1px dashed #000"
+                    >
+                      {{
+                        getPercentage(getItemTotal, item['REPORT-ITEM-VALUE'])
+                      }}
+                      {{ _t('% of') }} {{ currency }}
+                    </td>
+                    <td
+                      style="padding-left: 10px;
+                     border-right: 1px dashed #000"
+                    >
+                      {{ item['REPORT-ITEM-QUANTITY-MEASUREMENT'] }}
+                      <!--{{ setTotalValue(payment['REPORT-PAYMENT-TYPE']) }}-->
+                    </td>
+                  </tr>
+                  <tr class="font-weight-bold">
+                    <td
+                      style="border-right: 1px dashed #000;
+                      border-left: 1px dashed #000;
+                      text-align: left;padding: 0.3rem;"
+                    >
+                      {{ _t('Total') }}
+                    </td>
+                    <td
+                      style="padding-left: 10px;
+                      border-right: 1px dashed #000"
+                    >
+                      {{ getItemTotalQty }}
+                    </td>
+                    <td
+                      style="padding-left: 10px;
+                      border-right: 1px dashed #000"
+                    ></td>
+                    <td
+                      style="padding-left: 10px;
+                      border-right: 1px dashed #000"
+                    >
+                      {{ formatPrice(getItemTotal) }}
+                    </td>
+                    <td
+                      style="padding-left: 10px;
+                      border-right: 1px dashed #000"
+                    ></td>
+                    <td
+                      style="padding-left: 10px;
+                      border-right: 1px dashed #000"
+                    ></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
         <div class="modal-footer">
@@ -534,6 +739,7 @@
               {{ _t('Ok') }}
             </button>
             <button
+              v-if="!loader"
               class="btn btn-success btn-large color-main color-text-invert"
               type="button"
               @click="printBS"
@@ -549,26 +755,84 @@
 <script>
 import { mapGetters, mapState } from 'vuex'
 import moment from 'moment-timezone'
+import { Datetime } from 'vue-datetime'
+import Preloader from '@/components/util/Preloader'
+import Num from '@/plugins/helpers/Num'
 
 export default {
   name: 'BusinessSummary',
   data() {
     return {
-      timeMode: this.time_mode,
+      // timeMode: this.time_mode,
       todayDate: moment().format('Do MMMM YYYY'),
       todayTime: moment().format('h:mm:ss a'),
     }
   },
+  components: {
+    Preloader,
+    Datetime,
+  },
   computed: {
     ...mapGetters('location', ['_t', 'formatPrice']),
-    ...mapState('reports', ['BSData', 'totalPayments', 'time_mode']),
-    ...mapState('location', ['store']),
+    ...mapState('reports', [
+      'BSData',
+      'totalPayments',
+      'date_from',
+      'date_to',
+      'loader',
+    ]),
+    ...mapState('location', ['store', 'timezoneString', 'currency']),
     ...mapState({ user: state => state.auth.userDetails.item }),
+    getSetDateFrom: {
+      get() {
+        return this.date_from
+      },
+      set(dateFrom) {
+        let _from = moment(dateFrom).format('YYYY-MM-DD')
+        this.$store.commit('reports/DATE_FROM', _from)
+      },
+    },
+    getItemTotal() {
+      let total = 0
+      if (this.BSData && this.BSData.REPORT_ITEM) {
+        let reportItem = this.BSData.REPORT_ITEM
+        for (const item in reportItem) {
+          total += parseFloat(reportItem[item]['REPORT-ITEM-VALUE'])
+        }
+      }
+      return total
+    },
+    getItemTotalQty() {
+      let total = 0
+      if (this.BSData && this.BSData.REPORT_ITEM) {
+        let reportItem = this.BSData.REPORT_ITEM
+        for (const item in reportItem) {
+          total += parseFloat(reportItem[item]['REPORT-ITEM-QUANTITY'])
+        }
+      }
+      return total
+    },
+    getSetDateTo: {
+      get() {
+        return this.date_to
+      },
+      set(dateTo) {
+        let _to = moment(dateTo).format('YYYY-MM-DD')
+        this.$store.commit('reports/DATE_TO', _to)
+      },
+    },
   },
   methods: {
-    getBSStoreTime() {
+    getPercentage(total, value) {
+      let amount = (value / total) * 100
+      return Num.round(amount, 2).toFixed(2)
+    },
+    /*getBSStoreTime() {
       this.timeMode = !this.timeMode
       this.$store.commit('reports/TIME_MODE', this.timeMode)
+      this.getReport()
+    },*/
+    getReport() {
       this.$store.dispatch('reports/businessSummary', {}, { root: true })
     },
     printBS() {
@@ -656,6 +920,9 @@ export default {
   -ms-flex-pack: justify;
   justify-content: space-between;
 }*/
+.preloader {
+  width: 100%;
+}
 /* Hide the browser's default checkbox */
 .container-checkbox input {
   position: absolute;
@@ -704,5 +971,35 @@ export default {
   -webkit-transform: rotate(45deg);
   -ms-transform: rotate(45deg);
   transform: rotate(45deg);
+}
+.bs-datetime-selector {
+  display: grid;
+  left: 3px;
+  grid-template-columns: auto auto auto;
+  grid-column-gap: 5px;
+  position: absolute;
+  align-items: baseline;
+  top: 80px;
+  z-index: 9;
+}
+.bs-datetime-selector .vdatetime {
+  margin-left: 5px;
+}
+.bs-datetime-selector button {
+  margin-left: 5px;
+  height: 42px;
+  width: 41px;
+}
+/*.vdatetime-popup {
+  top: 12% !important;
+}*/
+.business-summary {
+  max-height: 480px;
+  overflow-x: scroll;
+}
+@media only screen and (max-width: 599px) {
+  .business-summary {
+    top: 60px;
+  }
 }
 </style>

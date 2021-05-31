@@ -25,6 +25,7 @@
       </li>
     </ul>
     <LanguageMenu />
+    <!--    <notification v-show="orderType.OTApi === 'carhop'"></notification>-->
     <SwitchStore />
     <OnlineOrder />
     <div class="curent-sale hideBigScreen">
@@ -50,10 +51,12 @@ import LanguageMenu from '@/components/util/LanguageMenu'
 
 import bootstrap from '@/bootstrap'
 import OnlineOrder from './popups/OnlineOrder'
+// import Notification from '@/components/util/Notification'
 export default {
   name: 'TopNavRight',
   props: {},
   components: {
+    // Notification,
     OnlineOrder,
     SwitchStore,
     TopSidebarMenu,
@@ -178,6 +181,9 @@ export default {
     .menu-language,
     .switch-store,
     #dropdownLanguage {
+      display: none !important;
+    }
+    #dropdownNotifications {
       display: none !important;
     }
   }

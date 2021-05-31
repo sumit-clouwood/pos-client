@@ -13,11 +13,13 @@
       </div>
     </div>
     <div class="modal-backdrop fade show" id="transparent-screen"></div>
+    <ready-item-notification></ready-item-notification>
   </div>
 </template>
 
 <script>
 /* global $ */
+import ReadyItemNotification from '@/components/dinein/popup/ReadyItemNotification'
 import SystemNavigation from '@/components/SystemNavigation'
 import Header from '@/components/dinein/Header.vue'
 import Content from '@/components/dinein/Content'
@@ -29,6 +31,7 @@ import Preloader from '@/components/util/progressbar'
 export default {
   name: 'Dinein',
   components: {
+    ReadyItemNotification,
     Header,
     SystemNavigation,
     Content,

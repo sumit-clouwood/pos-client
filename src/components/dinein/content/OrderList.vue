@@ -396,7 +396,7 @@ export default {
       }
       this.fetchMoreReservations(pageInformation)
     },
-    ...mapActions('order', ['selectedOrderDetails']),
+    ...mapActions('order', ['selectedOrderDetails', 'fetchOrderDetailsOnly']),
     ...mapActions('deliveryManager', ['printInvoice']),
     ...mapActions('dinein', [
       'reservationUpdateStatus',

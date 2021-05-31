@@ -81,7 +81,7 @@
           {{ _t('Split') }} {{ _t('Bill') }}
         </button>
       </div>
-      <!--<div
+      <div
         class="driver-container"
         v-if="
           items.length > 1 &&
@@ -99,7 +99,7 @@
         >
           {{ _t('Move Items') }}
         </button>
-      </div>-->
+      </div>
       <!-- <div class="btn btn-success cartBottomBtn">
         <i aria-hidden="true" class="fa fa-chevron-down"></i>
       </div>-->

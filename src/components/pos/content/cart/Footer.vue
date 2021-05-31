@@ -1,6 +1,18 @@
 <template>
   <div class="main-orders-total color-text-invert">
-    <div :class="['total-wrapper', { active: totalWrapperHendler }]">
+    <button
+      type="button"
+      @click="collapsibleFooter"
+      class="btn btn-success cartBottomBtn visible btn-footer-"
+    >
+      <!--{{ _t('Show amount details') }}-->
+      <i aria-hidden="true" :class="buttonArrow"></i>
+    </button>
+    <div
+      :class="['total-wrapper', { active: totalWrapperHendler }]"
+      id="content-wrapper-footer"
+      style="display: none"
+    >
       <div class="item sub-total">
         <div class="sub-total-text">{{ _t('Sub Total') }}</div>
         <div class="sub-total-num">{{ formatPrice(subTotal || 0) }}</div>
@@ -50,6 +62,11 @@ import { mapGetters, mapState } from 'vuex'
 export default {
   name: 'CartFooter',
   props: {},
+  data() {
+    return {
+      buttonArrow: 'fa fa-chevron-down',
+    }
+  },
   computed: {
     ...mapGetters('order', [
       'orderTotal',
@@ -67,14 +84,31 @@ export default {
     totalWrapperHendlerChange() {
       this.$store.dispatch('totalWrapperHendlerChange')
     },
+    collapsibleFooter() {
+      // let coll = document.getElementsByClassName('collapsible_footer')
+      // let i
+      // eslint-disable-next-line no-debugger
+      // for (i = 0; i < coll.length; i++) {
+      // coll[i].addEventListener('click', function() {
+      // this.classList.toggle('active')
+      let content = document.getElementById('content-wrapper-footer')
+      if (content.style.display === 'block') {
+        content.style.display = 'none'
+        this.buttonArrow = 'fa fa-chevron-down'
+      } else {
+        this.buttonArrow = 'fa fa-chevron-up'
+        content.style.display = 'block'
+      }
+      // })
+      // }
+    },
   },
 }
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
 @import '@/assets/scss/pixels_rem.scss';
 @import '@/assets/scss/variables.scss';
 @import '@/assets/scss/mixins.scss';
-
 @include responsive(mobile) {
   .main-orders-total {
     .total {
@@ -88,5 +122,13 @@ export default {
   .remove-surcharge {
     cursor: pointer;
   }
+}
+.main-orders-total {
+  position: relative;
+}
+.btn-footer- {
+  position: absolute;
+  bottom: 5px;
+  right: 45%;
 }
 </style>

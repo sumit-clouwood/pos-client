@@ -72,7 +72,7 @@
   </div>
 </template>
 <script>
-/* global  hideModal  */
+/* global  $  */
 /* eslint-disable no-console */
 import { mapGetters } from 'vuex'
 import Cart from '@/mixins/Cart'
@@ -134,14 +134,14 @@ export default {
       )
       console.log('base units', base_units)
 
-      let associative_units = {}
-      base_units.forEach(baseunit => {
-        associative_units = this.recurrsiveUnits(
-          baseunit,
-          measurementUnits.data
-        )
-      })
-      console.log(associative_units)
+      // let associative_units = {}
+      // base_units.forEach(baseunit => {
+      //   associative_units = this.recurrsiveUnits(
+      //     baseunit,
+      //     measurementUnits.data
+      //   )
+      // })
+      // console.log(associative_units)
       //now search in associative units
     },
     recurrsiveUnits(baseUnit, units, output = {}) {
@@ -159,6 +159,7 @@ export default {
       return output
     },
     addToCart() {
+      console.log('adding to cart')
       this.error = ''
       if (!this.measurementValue) {
         this.error = 'Please enter measurement value'
@@ -194,10 +195,15 @@ export default {
       }
 
       item.measurement_value = currentMeasurementValue
-
-      hideModal('#scale-popup')
+      console.log('hiding modal')
+      $('#scale-popup').modal('toggle')
+      console.log('modal hidden')
       this.measurementValue = ''
-      return this.itemsAddToCart(item)
+      setTimeout(() => {
+        this.itemsAddToCart(item)
+      }, 0)
+
+      console.log('items added to cart')
     },
   },
   mixins: [Cart],
@@ -215,6 +221,12 @@ export default {
         }
       }
     },
+  },
+  activated() {
+    console.log('component activated')
+  },
+  deactivated() {
+    console.log('component de-activated')
   },
 }
 </script>

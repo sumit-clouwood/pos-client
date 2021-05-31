@@ -82,6 +82,11 @@ export default {
         this.postRedirect()
         this.$store.commit('checkout/PAYMENT_MSG_STATUS', false)
       } else {
+        if (newVal && this.$store.state.order.orderType.OTApi === 'dine_in') {
+          this.$store.dispatch('order/beforeRedirectResetCartDineIn')
+          this.$router.replace({ name: 'Dinein' })
+          this.$store.commit('order/RESET_SPLIT_BILL')
+        }
         this.postRedirectIncomplete()
       }
     },
@@ -121,10 +126,13 @@ export default {
           setTimeout(() => {
             if (window.PrintHandle == null) {
               //this.$refs.iframe.contentWindow.print()
-              let w = this.$refs.iframe.contentWindow
-              w.focus()
-              w.print()
-              this.iframe_body = ''
+              console.log('scope.$refs.iframe', this.$refs)
+              if (this.$refs.iframe) {
+                let w = this.$refs.iframe.contentWindow
+                w.focus()
+                w.print()
+                this.iframe_body = ''
+              }
             }
             // Code Pane reflects in DIMS WEB APP window.PrintHandle.GetAgent() !== 'Dimspos.App'
             // if (!this.$store.getters['checkout/complete']) {
@@ -135,7 +143,13 @@ export default {
               this.$store.state.auth.deviceType.osType ||
               window.PrintHandle != null
             ) {
-              // orderData.isReprint = 1
+              let is_order_splited = this.$store.getters['order/splitItems']
+              if (
+                is_order_splited.length &&
+                orderData.order_type == 'dine_in'
+              ) {
+                orderData.isReprint = 1
+              }
               this.$store.dispatch(
                 'printingServer/printingServerInvoiceRaw',
                 orderData
@@ -151,7 +165,10 @@ export default {
         let resetFull = false
         if (this.$store.getters['checkout/complete']) {
           resetFull = true
-          this.$store.commit('order/CLEAR_SELECTED_ORDER')
+          //check if order is coming through transaction screen then don't clear it
+          if (!['Transactions'].includes(this.$route.name)) {
+            this.$store.commit('order/CLEAR_SELECTED_ORDER')
+          }
         }
 
         this.$store.dispatch('checkout/reset', resetFull)

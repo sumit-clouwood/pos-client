@@ -36,6 +36,7 @@
           >{{ _t('Order Date/Times') }}:</span
         >
         <p class="color-text">
+          <!--<b>{{ _t('Order Date:') }}</b>-->
           {{
             convertDatetime(
               orderDetails.item.real_created_datetime,

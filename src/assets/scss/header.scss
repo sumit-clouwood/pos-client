@@ -67,7 +67,7 @@
       justify-content: flex-end;
       position: relative;
 
-      .menu-language {
+      .menu-language, .menu-notifications {
         margin-right: $px10;
 
         img {
@@ -400,7 +400,7 @@
     }
     .business-summary-wrapper {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(2, 1fr);
       grid-gap: $px20;
       width: 100%;
 

@@ -399,6 +399,9 @@ export default {
 
                     $store.commit('sync/loaded', true)
                     $store.dispatch('payment/setTranslations').then(() => {})
+                    $store
+                      .dispatch('category/getItemPreparingTime')
+                      .then(() => {})
                     resolve()
                   })
                 })

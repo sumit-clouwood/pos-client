@@ -326,8 +326,6 @@ export default {
         })
     },
     hideOnlineModal() {
-      // eslint-disable-next-line no-console
-      console.log('hide', $('#online-order'), 'ff')
       $('.online-order-modal').hide()
       $('#online-order')
         .dialog()

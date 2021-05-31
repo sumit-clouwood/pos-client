@@ -77,7 +77,17 @@ export default {
 </script>
 <style lang="scss" scoped>
 @import '@/assets/scss/mixins.scss';
-
+/*#POSOrderItemOptions {
+  .modal {
+    .modal-dialog {
+      .modal-content {
+        .modal-footer {
+          padding: 0 1.875rem 1.875rem 0.875rem;
+        }
+      }
+    }
+  }
+}*/
 .POSItemOptions {
   .modal-body {
     height: auto !important;
