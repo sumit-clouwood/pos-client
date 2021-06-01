@@ -80,7 +80,7 @@
     <div class="hide-below-sm">
       <LanguageMenu />
     </div>
-    <notification></notification>
+    <dine-in-notification></dine-in-notification>
     <SwitchStore />
     <TopSidebarMenu />
     <div class="curent-sale hideBigScreen">
@@ -204,12 +204,12 @@ import bootstrap from '@/bootstrap'
 import SwitchStore from '@/components/commonButtons/SwitchStore'
 import TopSidebarMenu from '@/components/util/TopSidebarMenu'
 import LanguageMenu from '@/components/util/LanguageMenu'
-import Notification from '@/components/util/Notification'
+import DineInNotification from '@/components/util/notification/DineInNotification'
 export default {
   name: 'TopNavRight',
   props: {},
   components: {
-    Notification,
+    DineInNotification,
     SwitchStore,
     TopSidebarMenu,
     LanguageMenu,

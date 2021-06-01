@@ -11,11 +11,13 @@
       </div>
     </div>
     <div class="modal-backdrop fade show" id="transparent-screen"></div>
+    <ready-item-notification></ready-item-notification>
   </div>
 </template>
 
 <script>
 /* global $ */
+import ReadyItemNotification from '@/components/dinein/popup/ReadyItemNotification'
 import SystemNavigationCarhop from '@/components/SystemNavigationCarhop'
 import Header from '@/components/carhop/Header.vue'
 import Content from '@/components/carhop/Content'
@@ -26,6 +28,7 @@ export default {
   name: 'Dinein',
   components: {
     Header,
+    ReadyItemNotification,
     SystemNavigationCarhop,
     Content,
     Footer,

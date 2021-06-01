@@ -6,6 +6,7 @@ import * as PERMS from '@/const/permissions'
 const state = {
   orderStatus: 'in-progress',
   loading: false,
+  readyOrderNotification: [],
   loadingSilent: false,
   limit: 10,
   orders: {
@@ -127,6 +128,9 @@ const mutations = {
   },
   [mutation.SET_LOADING_SILENT](state, status) {
     state.loadingSilent = status
+  },
+  READY_ORDER_NOTIFICATION(state, data) {
+    state.readyOrderNotification = data
   },
 }
 
