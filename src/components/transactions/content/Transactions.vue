@@ -139,6 +139,7 @@ export default {
       if (orderType === CONST.ORDER_TYPE_DINE_IN) return 'Dine in'
       if (orderType === CONST.ORDER_TYPE_CARHOP) return 'Carhop'
       if (orderType === CONST.ORDER_TYPE_TAKEAWAY) return 'Takeaway'
+      if (orderType === CONST.ORDER_TYPE_ONLINE) return 'Online'
 
       return 'Walk in'
     },
