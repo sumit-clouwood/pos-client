@@ -94,11 +94,11 @@ export default {
       `/model/orders?page_id=${pageId}&query=${query}&limit=${limit}&ascending=1&page=${page}&byColumn=1&orderBy=${orderBy}&order_system_status=${orderSystemStatus}&order_type=${orderType}&store_id=${storeId}${customer}`
     )
   },
-  getGlobalDetails(modal, id, action, lookups_needed = 1) {
+  getGlobalDetails(modal, id, action, collected_needed = 1) {
     let validAction = action !== '' ? '/' + action : ''
-    if (!lookups_needed) {
+    if (!collected_needed) {
       return DataService.get(
-        `/model/${modal}/id/${id}${validAction}?lookups_needed=0`,
+        `/model/${modal}/id/${id}${validAction}?collected_needed=0`,
         'brand'
       )
     }
