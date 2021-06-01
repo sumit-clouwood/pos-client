@@ -337,7 +337,7 @@ export default {
         return false
       }
       // let scope = this
-      this.$socket.$subscribe('online-order-channel', payload => {
+      this.$socket.client.on('online-order-channel', function(payload) {
         this.getOnlineOrders(payload)
       })
     },
