@@ -869,6 +869,10 @@ const actions = {
                 // order.future_order = 1
                 order.future_order_datetime = rootState.order.futureOrder
               }
+              //carhop_ready_0: order not ready yet 1 means order ready show notification with bell
+              if (rootGetters['order/orderType'] === CONSTANTS.ORDER_TYPE_CARHOP) {
+                order.carhop_ready = 0
+              }
 
               order.order_discounts = []
 

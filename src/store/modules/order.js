@@ -1740,6 +1740,16 @@ const actions = {
         .catch(error => reject(error))
     })
   },
+  // eslint-disable-next-line no-empty-pattern
+  makeOrderReady({}, order_id) {
+    return new Promise((resolve, reject) => {
+      OrderService.makeCarhopOrderReady(order_id)
+        .then(response => {
+          resolve(response)
+        })
+        .catch(er => reject(er))
+    })
+  },
   fetchOrderDetailsOnly({ commit }, orderId) {
     return new Promise((resolve, reject) => {
       const params = ['orders', orderId, '', 0]

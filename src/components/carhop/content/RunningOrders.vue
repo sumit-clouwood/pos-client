@@ -5,12 +5,18 @@
         <table class="responsive-table">
           <thead>
             <tr>
-              <th class="table_header" style="width: 150px">Order No</th>
-              <th class="table_header" width="400px">Items</th>
-              <th class="table_header" style="width: 150px">Amount</th>
-              <th class="table_header" style="width: 100px">Status</th>
+              <th class="table_header" style="width: 150px">
+                {{ _t('Order No') }}
+              </th>
+              <th class="table_header" width="400px">{{ _t('Items') }}</th>
+              <th class="table_header" style="width: 150px">
+                {{ _t('Amount') }}
+              </th>
+              <th class="table_header" style="width: 100px">
+                {{ _t('Status') }}
+              </th>
               <th class="table_header text-center" style="width: 215px">
-                Action
+                {{ _t('Action') }}
               </th>
             </tr>
           </thead>
@@ -23,7 +29,7 @@
                   data-dismiss="modal"
                   data-target=".bd-example-modal-lg"
                   data-toggle="modal"
-                  >Order # {{ order.order_no }}</span
+                  >{{ _t('Order') }} # {{ order.order_no }}</span
                 >
               </td>
               <td class="mobile-items">
@@ -39,10 +45,18 @@
                 {{ order.currency }} {{ order.balance_due }}
               </td>
               <td>
-                <span class="in-progress">Running</span>
+                <span class="in-progress">{{ _t('Running') }}</span>
               </td>
               <td>
                 <div class="button-wrapper btn-align-row">
+                  <button
+                    class="button btn btn-success color-main color-text-invert"
+                    type="button"
+                    @click="makeOrderReady(order._id)"
+                  >
+                    {{ order._id }}
+                    <span>{{ _t('Ready') }}</span>
+                  </button>
                   <div class="dropdown">
                     <button
                       class="button btn btn-success color-main color-text-invert dropdown-toggle"
@@ -175,7 +189,7 @@
       </div>
     </div>
     <div v-else>
-      <span class="not-found">No running order found.</span>
+      <span class="not-found">{{ _t('No running order found') }}.</span>
     </div>
   </div>
 </template>
@@ -222,7 +236,7 @@ export default {
 
   methods: {
     ...mapActions('carhop', ['fetchOrders']),
-    ...mapActions('order', ['selectedOrderDetails']),
+    ...mapActions('order', ['selectedOrderDetails', 'makeOrderReady']),
     ...mapActions('deliveryManager', ['printInvoice']),
     fetchMore(page) {
       this.fetchOrders({ orderStatus: 'in-progress', page: page })
@@ -251,8 +265,9 @@ export default {
 
 .btn-align-row {
   display: grid;
-  grid-template-columns: max-content 1fr !important;
+  grid-template-columns: auto auto auto;
   width: max-content;
+  grid-column-gap: $px5;
   .pay-now-carhop {
     width: max-content;
     @include responsive(mobile) {

@@ -116,6 +116,9 @@ export default {
   getModifyReasons() {
     return DataService.get(`/model/brand_modify_reasons?no_limit=true`, 'brand')
   },
+  makeCarhopOrderReady(order_id) {
+    return DataService.post(`model/orders/id/${order_id}/carhop_ready`)
+  },
 
   updateOrderAction(id, action, params) {
     let setBrand = ['delivery_ready'].includes(action) ? 'brand' : ''
