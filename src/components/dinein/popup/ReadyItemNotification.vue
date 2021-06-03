@@ -97,7 +97,7 @@ export default {
   computed: {
     ...mapGetters('location', ['_t']),
     ...mapState('location', ['store']),
-    ...mapState('dinein', ['allBookedTables']),
+    ...mapState('dinein', ['tables']),
     ...mapState('auth', ['userDetails']),
   },
   created() {
@@ -184,7 +184,7 @@ export default {
                 if (item_details) {
                   /* Worked according to response.item.order_type -- dine_in / or carhop*/
                   item.item.push(item_details)
-                  let table = scope.allBookedTables.orders.find(
+                  let table = scope.tables.orders.find(
                     table => table._id === response.item.table_reservation_id
                   )
                   if (table) {
