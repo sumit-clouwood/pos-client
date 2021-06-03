@@ -148,12 +148,12 @@ export default {
         data: {
           assigned_to: '5e6f43c53b74fe088c58c642',
           brand_id: '5d9f2254d355b82f1543bd82',
-          item_id: '5da2d458b82fe55b01336b97',
+          item_id: '5f9a70e9f240a92ad75e7027',
           item_no: 0,
-          namespace: '5d90562cc6adee43328376de35d24920aafbc7d026e717f78',
-          order_id: '60793cfb3b2f4763966ab273',
-          store_id: store,
-          notification: 'carhop_ready',
+          namespace: '5d9f24ac85f9e71d726b65c25e6f43c53b74fe088c58c642',
+          notification: 'kitchen_item_ready',
+          order_id: '60b89bf0f86eb74143660f72',
+          store_id: '5d9f24ac85f9e71d726b65c2',
         },
       }*/
       this.$socket.client.on(
@@ -172,7 +172,7 @@ export default {
               { root: true }
             )
             .then(response => {
-              if (message.notification === 'kitchen_item_ready') {
+              if (socketData.notification === 'kitchen_item_ready') {
                 let is_item_duplicate = false
                 let item = { item: [], table: undefined, order_no: undefined }
                 let item_details = response.item.items.find(
@@ -247,7 +247,7 @@ export default {
                   }, 300)
                 }
               }
-              if (message.notification === 'carhop_ready') {
+              if (socketData.notification === 'carhop_ready') {
                 // eslint-disable-next-line no-debugger
                 debugger
                 let is_order_duplicate = false
