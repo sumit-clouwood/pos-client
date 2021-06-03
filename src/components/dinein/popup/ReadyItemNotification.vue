@@ -180,11 +180,11 @@ export default {
                     item.no == socketData.item_no &&
                     item.entity_id == socketData.item_id
                 )
-                console.log(item_details, 'item_details')
+                console.log(item_details, 'item_details', scope.tables)
                 if (item_details) {
                   /* Worked according to response.item.order_type -- dine_in / or carhop*/
                   item.item.push(item_details)
-                  let table = scope.tables.orders.find(
+                  let table = scope.tables.find(
                     table => table._id === response.item.table_reservation_id
                   )
                   if (table) {
@@ -268,6 +268,7 @@ export default {
                 }
                 console.log(
                   is_order_duplicate,
+                  order_details,
                   notifications,
                   'duplicate_carhop'
                 )
@@ -286,9 +287,12 @@ export default {
                   setTimeout(() => {
                     console.log(scope.itemData, scope.isAudioPlaying, 'ID')
                     if (!scope.isAudioPlaying) {
-                      console.log('inside log ready item check')
+                      console.log(
+                        'inside log ready item check',
+                        scope.$store.state.order.orderType.OTApi
+                      )
                       if (
-                        scope.$store.state.order.orderType.OTApi == 'dine_in'
+                        scope.$store.state.order.orderType.OTApi == 'carhop'
                       ) {
                         scope.playSound()
                       } else {
