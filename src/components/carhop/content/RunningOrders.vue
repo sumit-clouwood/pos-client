@@ -54,7 +54,6 @@
                     type="button"
                     @click="makeOrderReady(order._id)"
                   >
-                    {{ order._id }}
                     <span>{{ _t('Ready') }}</span>
                   </button>
                   <div class="dropdown">

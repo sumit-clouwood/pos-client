@@ -15,19 +15,19 @@
           >
           <div id="available-tables" class="available-tables cursor-pointer">
             <div class="table-status-container">
-              <span
+              <div
                 v-for="i in timer_loop"
                 :key="i"
                 class="time-slots"
                 :class="itemServingTime === i ? 'active' : ''"
               >
-                <span @click="setItemDeliveryTime(i)">
+                <div @click="setItemDeliveryTime(i)">
                   <span class="time-number">
                     {{ i }}
                   </span>
                   <span class="font-weight-bold">{{ _t(' Minutes') }}</span>
-                </span>
-              </span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -99,11 +99,15 @@ export default {
       }
     },
     closeModal(time) {
+      if (!this.modifierItem) {
+        this.$store.dispatch('order/addItemDeliveryTime', time)
+      } /*else {
+        this.$store.commit('modifier/UPDATE_ITEM', time)
+      }*/
+      this.$store.commit('orderForm/setItemDeliveryTime', time)
+
       // eslint-disable-next-line no-console
       console.log(this.item, 'order item', this.modifierItem)
-      if (!this.modifierItem)
-        this.$store.dispatch('order/addItemDeliveryTime', time)
-      this.$store.commit('orderForm/setItemDeliveryTime', time)
       hideModal('#item-delivery-time-selection')
     },
   },
@@ -154,8 +158,9 @@ export default {
   color: rgba(11, 11, 11, 0.6);
 }
 .time-slots {
+  height: 75px;
   border: 2px solid #e0e3e6 !important;
-  padding: 0.75rem 0.3125rem;
+  padding: 1px 0.3125rem;
   position: relative;
   border-radius: 4px;
   //min-height: 55px;
@@ -204,6 +209,5 @@ export default {
 }
 .prepare_time {
   font-weight: bold;
-  margin-bottom: 10px;
 }
 </style>

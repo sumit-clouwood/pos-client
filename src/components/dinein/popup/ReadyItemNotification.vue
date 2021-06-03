@@ -137,14 +137,14 @@ export default {
       })
     },
     fetchReadyItemsBySocket() {
-      /*if (process.env.VUE_APP_SOCKET_DISABLE) {
+      if (process.env.VUE_APP_SOCKET_DISABLE) {
         return false
-      }*/
+      }
       let store = this.store._id
       let scope = this
       let user = this.userDetails ? this.userDetails.item : false
       if (!user) return false
-      let message = {
+      /*let message = {
         data: {
           assigned_to: '5e6f43c53b74fe088c58c642',
           brand_id: '5d9f2254d355b82f1543bd82',
@@ -155,145 +155,153 @@ export default {
           store_id: store,
           notification: 'carhop_ready',
         },
-      }
-      /*this.$socket.client.on(
+      }*/
+      this.$socket.client.on(
         'kitchen-item-channel:App\\Events\\KitchenItemReady:' +
           store +
           user._id,
-        function(message) {*/
-      // eslint-disable-next-line no-console
-      console.log(message, 'ready item')
-      let socketData = message.data
-      scope.$store
-        .dispatch(
-          'order/fetchOrderDetailsOnly',
-          socketData.order_id,
-          {},
-          { root: true }
-        )
-        .then(response => {
-          if (message.notification === 'kitchen_item_ready') {
-            let is_item_duplicate = false
-            let item = { item: [], table: undefined, order_no: undefined }
-            let item_details = response.item.items.find(
-              item =>
-                item.no == socketData.item_no &&
-                item.entity_id == socketData.item_id
+        function(message) {
+          // eslint-disable-next-line no-console
+          console.log(message, 'ready item')
+          let socketData = message.data
+          scope.$store
+            .dispatch(
+              'order/fetchOrderDetailsOnly',
+              socketData.order_id,
+              {},
+              { root: true }
             )
-            console.log(item_details, 'item_details')
-            if (item_details) {
-              /* Worked according to response.item.order_type -- dine_in / or carhop*/
-              item.item.push(item_details)
-              let table = scope.allBookedTables.orders.find(
-                table => table._id === response.item.table_reservation_id
-              )
-              if (table) {
-                item.table = table
-              }
-              item.order_no = response.item.order_no
-              let notifications =
-                localStorage.getItem('ready_item_notification') || []
-              if (notifications.length) {
-                notifications = JSON.parse(notifications)
-                notifications.forEach(data => {
-                  if (data.item.length) {
-                    data.item.forEach(stored_item => {
-                      if (
-                        stored_item.entity_id === item_details.entity_id &&
-                        data.order_no === item.order_no
-                      ) {
-                        is_item_duplicate = true
+            .then(response => {
+              if (message.notification === 'kitchen_item_ready') {
+                let is_item_duplicate = false
+                let item = { item: [], table: undefined, order_no: undefined }
+                let item_details = response.item.items.find(
+                  item =>
+                    item.no == socketData.item_no &&
+                    item.entity_id == socketData.item_id
+                )
+                console.log(item_details, 'item_details')
+                if (item_details) {
+                  /* Worked according to response.item.order_type -- dine_in / or carhop*/
+                  item.item.push(item_details)
+                  let table = scope.allBookedTables.orders.find(
+                    table => table._id === response.item.table_reservation_id
+                  )
+                  if (table) {
+                    item.table = table
+                  }
+                  item.order_no = response.item.order_no
+                  let notifications =
+                    localStorage.getItem('ready_item_notification') || []
+                  if (notifications.length) {
+                    notifications = JSON.parse(notifications)
+                    notifications.forEach(data => {
+                      if (data.item.length) {
+                        data.item.forEach(stored_item => {
+                          if (
+                            stored_item.entity_id === item_details.entity_id &&
+                            data.order_no === item.order_no
+                          ) {
+                            is_item_duplicate = true
+                          }
+                        })
                       }
                     })
                   }
-                })
-              }
-              console.log(
-                is_item_duplicate,
-                item,
-                notifications,
-                'is_item_duplicate_dine_in'
-              )
-              scope.itemData.push(item)
-              if (!is_item_duplicate) {
-                notifications.push(item)
-                scope.$store.commit(
-                  'dinein/READY_ITEM_NOTIFICATION',
-                  notifications
-                )
-                localStorage.setItem(
-                  'ready_item_notification',
-                  JSON.stringify(notifications)
-                )
-              }
-              setTimeout(() => {
-                console.log(scope.itemData, scope.isAudioPlaying, 'ID')
-                if (!scope.isAudioPlaying && scope.itemData.length) {
-                  console.log('inside log ready item check')
-                  if (scope.$store.state.order.orderType.OTApi == 'dine_in') {
-                    showModal('#item-notification')
-                    scope.playSound()
-                    scope.showScrollButtons()
-                  } else {
-                    hideModal('#item-notification')
-                    scope.pauseSound()
+                  console.log(
+                    is_item_duplicate,
+                    item,
+                    notifications,
+                    'is_item_duplicate_dine_in'
+                  )
+                  scope.itemData.push(item)
+                  if (!is_item_duplicate) {
+                    notifications.push(item)
+                    scope.$store.commit(
+                      'dinein/READY_ITEM_NOTIFICATION',
+                      notifications
+                    )
+                    localStorage.setItem(
+                      'ready_item_notification',
+                      JSON.stringify(notifications)
+                    )
                   }
-                } /*else {
+                  setTimeout(() => {
+                    console.log(scope.itemData, scope.isAudioPlaying, 'ID')
+                    if (!scope.isAudioPlaying && scope.itemData.length) {
+                      console.log('inside log ready item check')
+                      if (
+                        scope.$store.state.order.orderType.OTApi == 'dine_in'
+                      ) {
+                        showModal('#item-notification')
+                        scope.playSound()
+                        scope.showScrollButtons()
+                      } else {
+                        hideModal('#item-notification')
+                        scope.pauseSound()
+                      }
+                    } /*else {
                     hideModal('#item-notification')
                     scope.pauseSound()
                   }*/
-              }, 300)
-            }
-          }
-          if (message.notification === 'carhop_ready') {
-            // eslint-disable-next-line no-debugger
-            debugger
-            let is_order_duplicate = false
-            let order_details = response.item
-            let notifications =
-              localStorage.getItem('carhop_order_notification') || []
-            if (notifications.length) {
-              notifications = JSON.parse(notifications)
-              notifications.forEach(data => {
-                if (data.length) {
-                  data.order.forEach(order => {
-                    if (order._id === order_details._id) {
-                      is_order_duplicate = true
+                  }, 300)
+                }
+              }
+              if (message.notification === 'carhop_ready') {
+                // eslint-disable-next-line no-debugger
+                debugger
+                let is_order_duplicate = false
+                let order_details = response.item
+                let notifications =
+                  localStorage.getItem('carhop_order_notification') || []
+                if (notifications.length) {
+                  notifications = JSON.parse(notifications)
+                  notifications.forEach(data => {
+                    if (data.length) {
+                      data.order.forEach(order => {
+                        if (order._id === order_details._id) {
+                          is_order_duplicate = true
+                        }
+                      })
                     }
                   })
                 }
-              })
-            }
-            console.log(is_order_duplicate, notifications, 'duplicate_carhop')
-            if (!is_order_duplicate) {
-              notifications.push(order_details)
-              scope.$store.commit(
-                'carhop/READY_ORDER_NOTIFICATION',
-                notifications
-              )
-              localStorage.setItem(
-                'carhop_order_notification',
-                JSON.stringify(notifications)
-              )
-            }
-            if (order_details) {
-              setTimeout(() => {
-                console.log(scope.itemData, scope.isAudioPlaying, 'ID')
-                if (!scope.isAudioPlaying) {
-                  console.log('inside log ready item check')
-                  if (scope.$store.state.order.orderType.OTApi == 'dine_in') {
-                    scope.playSound()
-                  } else {
-                    scope.pauseSound()
-                  }
+                console.log(
+                  is_order_duplicate,
+                  notifications,
+                  'duplicate_carhop'
+                )
+                if (!is_order_duplicate) {
+                  notifications.push(order_details)
+                  scope.$store.commit(
+                    'carhop/READY_ORDER_NOTIFICATION',
+                    notifications
+                  )
+                  localStorage.setItem(
+                    'carhop_order_notification',
+                    JSON.stringify(notifications)
+                  )
                 }
-              }, 100)
-            }
-            /**/
-          }
-        })
-      /*}
-      )*/
+                if (order_details) {
+                  setTimeout(() => {
+                    console.log(scope.itemData, scope.isAudioPlaying, 'ID')
+                    if (!scope.isAudioPlaying) {
+                      console.log('inside log ready item check')
+                      if (
+                        scope.$store.state.order.orderType.OTApi == 'dine_in'
+                      ) {
+                        scope.playSound()
+                      } else {
+                        scope.pauseSound()
+                      }
+                    }
+                  }, 100)
+                }
+                /**/
+              }
+            })
+        }
+      )
     },
   },
 }

@@ -400,6 +400,11 @@ const mutations = {
   [mutation.SET_ITEM](state, item) {
     state.item = item
   },
+  /*UPDATE_ITEM(state, time) {
+    let item = { ...state.item }
+    item.item_serving_time = time
+    state.item = item
+  },*/
   [mutation.RESET](state) {
     state.groups = []
     state.subgroups = []

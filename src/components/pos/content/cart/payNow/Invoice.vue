@@ -119,7 +119,6 @@ export default {
     },
     doPrint() {
       let orderData = this.order
-      console.log(this.print, this.iframe_body, 'dsdsd')
       if (this.print && this.iframe_body) {
         this.$store.commit('checkout/PRINT', false)
         this.isPrint = true
@@ -127,7 +126,6 @@ export default {
           setTimeout(() => {
             if (window.PrintHandle == null) {
               //this.$refs.iframe.contentWindow.print()
-              console.log('scope.$refs.iframe', this.$refs)
               if (this.$refs.iframe) {
                 let w = this.$refs.iframe.contentWindow
                 w.focus()
