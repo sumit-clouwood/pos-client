@@ -99,11 +99,14 @@ export default {
       }
     },
     closeModal(time) {
-      if (!this.modifierItem) {
+      /*if (!this.modifierItem) {
         this.$store.dispatch('order/addItemDeliveryTime', time)
-      } /*else {
+      }*/ /*else {
         this.$store.commit('modifier/UPDATE_ITEM', time)
       }*/
+      let item = !this.modifierItem ? this.item : this.modifierItem
+      let data = { item: item, time: parseInt(time) }
+      this.$store.dispatch('order/addItemDeliveryTime', data)
       this.$store.commit('orderForm/setItemDeliveryTime', time)
 
       // eslint-disable-next-line no-console

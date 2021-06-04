@@ -63,10 +63,9 @@
 
 <script>
 /* eslint-disable no-console */
-
 /* global showModal hideModal $ */
+import { bus } from '@/eventBus'
 
-/* eslint-disable no-console */
 var audio_ready_item = new Audio('/sound/doorbell.ogg')
 var nopromise = {
   catch: new Function(),
@@ -102,9 +101,17 @@ export default {
     ...mapState('auth', ['userDetails']),
   },
   created() {
+    bus.$on('stopCarhopNotificationSound', option => {
+      if (!option && this.$store.state.order.orderType.OTApi === 'carhop') {
+        this.pauseSound()
+      }
+    })
     this.fetchReadyItemsBySocket()
   },
   methods: {
+    /*stopCarhopNotificationSound() {
+      alert('hega')
+    },*/
     showScrollButtons() {
       let scroll_height = $('#ready-item-container')[0].scrollHeight
       let height_ = $('#ready-item-container').height()

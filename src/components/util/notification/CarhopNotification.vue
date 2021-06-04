@@ -71,6 +71,7 @@
 </template>
 
 <script>
+import { bus } from '@/eventBus'
 import { mapGetters, mapState } from 'vuex'
 /* global $ */
 export default {
@@ -86,6 +87,7 @@ export default {
   },
   methods: {
     openNotifications() {
+      bus.$emit('stopCarhopNotificationSound', false)
       $('.menu-notifications .dropdown-menu-right').toggleClass('show')
     },
     updateOrderNotification(removeOrder) {

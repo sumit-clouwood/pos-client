@@ -399,9 +399,9 @@ const actions = {
     //replace item in cart
     commit('NOTE_BEFORE_ITEM', note)
   },
-  addItemDeliveryTime({ commit }, time) {
-    let item = { ...state.item }
-    item.item_serving_time = time
+  addItemDeliveryTime({ commit }, data) {
+    let item = { ...data.item }
+    item.item_serving_time = data.time
     commit(mutation.REPLACE_ORDER_ITEM, {
       item: item,
     })
