@@ -49,13 +49,7 @@
               </td>
               <td>
                 <div class="button-wrapper btn-align-row">
-                  <button
-                    class="button btn btn-success color-main color-text-invert"
-                    type="button"
-                    @click="makeOrderReady(order._id)"
-                  >
-                    <span>{{ _t('Ready') }}</span>
-                  </button>
+                  <ready-action :order="order"></ready-action>
                   <div class="dropdown">
                     <button
                       class="button btn btn-success color-main color-text-invert dropdown-toggle"
@@ -196,6 +190,7 @@
 <script>
 import { mapActions, mapState, mapGetters } from 'vuex'
 import paginate from 'vuejs-paginate'
+import ReadyAction from './ReadyAction'
 
 export default {
   name: 'CompletedOrders',
@@ -203,6 +198,7 @@ export default {
     orders: Object,
   },
   components: {
+    ReadyAction,
     paginate,
   },
   data() {
@@ -235,7 +231,7 @@ export default {
 
   methods: {
     ...mapActions('carhop', ['fetchOrders']),
-    ...mapActions('order', ['selectedOrderDetails', 'makeOrderReady']),
+    ...mapActions('order', ['selectedOrderDetails']),
     ...mapActions('deliveryManager', ['printInvoice']),
     fetchMore(page) {
       this.fetchOrders({ orderStatus: 'in-progress', page: page })
@@ -264,14 +260,26 @@ export default {
 
 .btn-align-row {
   display: grid;
-  grid-template-columns: auto auto auto;
   width: max-content;
-  grid-column-gap: $px5;
   .pay-now-carhop {
     width: max-content;
-    @include responsive(mobile) {
-      margin-left: 1rem;
-    }
+  }
+  @include responsive(mobile) {
+    display: flex;
+    flex-flow: column;
+    row-gap: 10px;
+  }
+}
+.carhop-running-orders {
+  .btn-align-row {
+    grid-template-columns: 1fr 1fr auto;
+    padding-right: 15px;
+  }
+}
+.carhop-completed-orders {
+  .btn-align-row {
+    grid-template-columns: auto auto auto;
+    grid-column-gap: $px5;
   }
 }
 #dropdownMenuButton {
@@ -333,7 +341,7 @@ export default {
   }
   .button-wrapper {
     width: max-content;
-    margin-left: 0px !important;
+    margin-left: 0 !important;
   }
   .button-wrapper > a span.dinefor-paynow {
     margin-left: 0;

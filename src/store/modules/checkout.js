@@ -871,7 +871,7 @@ const actions = {
               }
               //carhop_ready_0: order not ready yet 1 means order ready show notification with bell
               if (rootGetters['order/orderType'] === CONSTANTS.ORDER_TYPE_CARHOP) {
-                order.carhop_ready = 0
+                order.carhop_ready = false
               }
 
               order.order_discounts = []

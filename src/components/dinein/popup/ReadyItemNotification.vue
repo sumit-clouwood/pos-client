@@ -31,6 +31,7 @@
                   {{ _t('Table Number:') }}
                   <b>{{ item_details.table.number }}</b>
                 </span>
+                <span v-else> NA </span>
               </div>
               <div
                 class="item-ready"
@@ -97,7 +98,7 @@ export default {
   computed: {
     ...mapGetters('location', ['_t']),
     ...mapState('location', ['store']),
-    ...mapState('dinein', ['tables']),
+    ...mapState('dinein', ['allBookedTables']),
     ...mapState('auth', ['userDetails']),
   },
   created() {
@@ -148,12 +149,12 @@ export default {
         data: {
           assigned_to: '5e6f43c53b74fe088c58c642',
           brand_id: '5d9f2254d355b82f1543bd82',
-          item_id: '5f9a70e9f240a92ad75e7027',
-          item_no: 0,
+          item_id: '5da3100b3dba6d5b8b1f4602',
+          item_no: 1,
           namespace: '5d9f24ac85f9e71d726b65c25e6f43c53b74fe088c58c642',
-          notification: 'kitchen_item_ready',
-          order_id: '60b89bf0f86eb74143660f72',
-          store_id: '5d9f24ac85f9e71d726b65c2',
+          notification: 'carhop_ready',
+          order_id: '60b9b6c3d6b40a063173f274',
+          store_id: store,
         },
       }*/
       this.$socket.client.on(
@@ -180,11 +181,11 @@ export default {
                     item.no == socketData.item_no &&
                     item.entity_id == socketData.item_id
                 )
-                console.log(item_details, 'item_details', scope.tables)
+                console.log(item_details, 'item_details')
                 if (item_details) {
                   /* Worked according to response.item.order_type -- dine_in / or carhop*/
                   item.item.push(item_details)
-                  let table = scope.tables.find(
+                  let table = scope.allBookedTables.orders.find(
                     table => table._id === response.item.table_reservation_id
                   )
                   if (table) {
@@ -256,13 +257,9 @@ export default {
                   localStorage.getItem('carhop_order_notification') || []
                 if (notifications.length) {
                   notifications = JSON.parse(notifications)
-                  notifications.forEach(data => {
-                    if (data.length) {
-                      data.order.forEach(order => {
-                        if (order._id === order_details._id) {
-                          is_order_duplicate = true
-                        }
-                      })
+                  notifications.forEach(order => {
+                    if (order._id === order_details._id) {
+                      is_order_duplicate = true
                     }
                   })
                 }

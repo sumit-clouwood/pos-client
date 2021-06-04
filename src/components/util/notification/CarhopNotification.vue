@@ -28,10 +28,24 @@
         >
           <div href="javascript:void(0)" class="item_id">
             <div class="order-table-details">
-              <span>
-                {{ _t('Order Number: ') }}
-                <b>#{{ order_details.order_no }}</b>
-              </span>
+              <div class="order-amount">
+                <span>
+                  {{ _t('Order Number: ') }}
+                  <b>#{{ order_details.order_no }}</b>
+                </span>
+                <span>
+                  {{ _t('Amount: ') }}
+                  <b> {{ formatPrice(order_details.balance_due) }} </b>
+                  <i
+                    v-if="parseFloat(order_details.total_paid) < 0.01"
+                    class="text-danger"
+                  >
+                    - {{ _t('Unpaid') }}</i
+                  >
+                  <i v-else class="text-success"> - {{ _t('Paid') }}</i>
+                  <!-- <b>, #{{ order_details.total_paid }}</b>-->
+                </span>
+              </div>
               <span>
                 <button
                   type="button"
@@ -62,7 +76,7 @@ import { mapGetters, mapState } from 'vuex'
 export default {
   name: 'CarhopNotification',
   computed: {
-    ...mapGetters('location', ['_t']),
+    ...mapGetters('location', ['_t', 'formatPrice']),
     ...mapState('carhop', ['readyOrderNotification']),
   },
   mounted() {
@@ -121,6 +135,10 @@ export default {
   grid-column-gap: 20px;
   .item-name-normal {
     white-space: normal;
+  }
+  .order-amount {
+    display: flex;
+    flex-flow: wrap;
   }
   span {
     &:last-child {

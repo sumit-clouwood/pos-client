@@ -37,6 +37,7 @@
               </td>
               <td>
                 <div class="button-wrapper btn-align-row">
+                  <ready-action :order="order"></ready-action>
                   <div class="dropdown text-right">
                     <button
                       class="button btn btn-success color-main color-text-invert dropdown-toggle"
@@ -119,6 +120,7 @@
 <script>
 import { mapActions, mapState, mapGetters } from 'vuex'
 import paginate from 'vuejs-paginate'
+import ReadyAction from './ReadyAction'
 
 export default {
   name: 'CompletedOrders',
@@ -126,6 +128,7 @@ export default {
     orders: Object,
   },
   components: {
+    ReadyAction,
     paginate,
   },
   data() {
@@ -173,6 +176,7 @@ export default {
 
   .button-wrapper
     grid-gap: 15px
+    float: right
 
   .paid-amount-msg
     color: #7ac241
@@ -200,8 +204,7 @@ export default {
 }
 .btn-align-row {
   display: grid;
-  grid-template-columns: max-content 1fr !important;
-  width: max-content;
+  grid-template-columns: auto auto auto !important;
 }
 @include responsive(mobile) {
   .carhop-completed-orders-wrapper {
