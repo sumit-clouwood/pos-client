@@ -140,8 +140,7 @@ export default {
             // }
             if (
               !['dine-in-order-preview'].includes(this.paymentAction) ||
-              (this.$store.state.auth.deviceType.osType &&
-                this.paymentAction !== 'carhop-place-order') ||
+              this.$store.state.auth.deviceType.osType ||
               window.PrintHandle != null
             ) {
               let is_order_splited = this.$store.getters['order/splitItems']

@@ -1796,9 +1796,10 @@ const actions = {
             dispatch('setToken', response.data.token_number)
             let msg = rootGetters['location/_t']('Carhop Order has been placed')
             //Invoice APP API Call with Custom Request JSON
-            dispatch('printingServer/printingServerInvoiceRaw', state.order, {
+            /*Commented because twice invoice call*/
+            /*dispatch('printingServer/printingServerInvoiceRaw', state.order, {
               root: true,
-            })
+            })*/
             commit(
                 'checkout/SET_PAYMENT_ACTION',
                 'carhop-place-order',
