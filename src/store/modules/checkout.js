@@ -1261,9 +1261,10 @@ const actions = {
                   'SET_ORDER_NUMBER',
                   rootState.order.selectedOrder.item.order_no
                 )
-                dispatch('printingServer/printingServerInvoiceRaw', state.order, {
+                /* Commented because twice in IOS*/
+                /*dispatch('printingServer/printingServerInvoiceRaw', state.order, {
                   root: true,
-                })
+                })*/
                 commit(
                     'checkout/SET_PAYMENT_ACTION',
                     'modify-dine-in-order',
@@ -1799,11 +1800,6 @@ const actions = {
             //we are not printing so reset manually here
             dispatch('setToken', response.data.token_number)
             let msg = rootGetters['location/_t']('Carhop Order has been placed')
-            //Invoice APP API Call with Custom Request JSON
-            /*Commented because twice invoice call*/
-            /*dispatch('printingServer/printingServerInvoiceRaw', state.order, {
-              root: true,
-            })*/
             commit(
                 'checkout/SET_PAYMENT_ACTION',
                 'carhop-place-order',
@@ -1815,6 +1811,10 @@ const actions = {
               msg = rootGetters['location/_t']('Carhop Order has been Paid')
               commit(mutation.PRINT, true)
             } else {
+              //Invoice APP API Call with Custom Request JSON
+              dispatch('printingServer/printingServerInvoiceRaw', state.order, {
+                root: true,
+              })
               dispatch('reset')
             }
             commit(mutation.SET_ROUTE, { name: 'CarhopOrders' })
