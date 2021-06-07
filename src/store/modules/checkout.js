@@ -1292,10 +1292,12 @@ const actions = {
                         root: true,
                       })
                     })*/
-
-                    /*dispatch('printingServer/printingServerInvoiceRaw', order, {
+                    // if (!rootState.order.selectItemsToMove) {
+                    console.log(state.order, order, 'ooooorrrrr')
+                    dispatch('printingServer/printingServerInvoiceRaw', order, {
                       root: true,
-                    })*/
+                    })
+                    // }
                     if (!getters.complete) {
                       dispatch('splitOrder', {
                         action: action,
@@ -1307,9 +1309,9 @@ const actions = {
                     }
                   })
                   //if splitted once
+                } else {
+                  commit(mutation.PRINT, true)
                 }
-
-                commit(mutation.PRINT, true)
                 resolve()
               }
               if (!rootState.order.selectItemsToMove)  {
