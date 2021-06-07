@@ -139,7 +139,9 @@ export default {
             //   this.$store.dispatch('checkout/splitOrder').then(() => {})
             // }
             if (
-              !['dine-in-order-preview'].includes(this.paymentAction) ||
+              !['dine-in-order-preview', 'carhop-place-order'].includes(
+                this.paymentAction
+              ) ||
               this.$store.state.auth.deviceType.osType ||
               window.PrintHandle != null
             ) {
