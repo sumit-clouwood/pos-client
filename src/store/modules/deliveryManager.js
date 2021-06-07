@@ -384,6 +384,7 @@ const actions = {
     let dt = rootState.auth.deviceType
     let isIOS = dt.osType
     commit('invoice/SET_TEMPLATE_ID', templateId, { root: true })
+    if (isIOS) order.item.isReprint = 1
     commit('checkout/SET_ORDER', order.item, { root: true })
     if (order.table_number) {
       //set table no to show on invoice, only dinein order ll have it
@@ -391,9 +392,8 @@ const actions = {
         root: true,
       })
     }
-    if (isIOS) order.item.isReprint = 1
     commit('order/SET_ORDER_ID', order.item._id, { root: true })
-    if (!isIOS) commit('checkout/PRINT', true, { root: true })
+    commit('checkout/PRINT', true, { root: true })
     commit('checkout/SET_PAYMENT_ACTION', 'dine-in-running-order', {
       root: true,
     })
