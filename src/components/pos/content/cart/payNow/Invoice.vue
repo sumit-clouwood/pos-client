@@ -138,10 +138,9 @@ export default {
             //   this.$store.dispatch('checkout/splitOrder').then(() => {})
             // }
             if (
-              !['dine-in-order-preview', 'carhop-place-order'].includes(
-                this.paymentAction
-              ) ||
-              this.$store.state.auth.deviceType.osType ||
+              !['dine-in-order-preview'].includes(this.paymentAction) ||
+              (this.$store.state.auth.deviceType.osType &&
+                this.paymentAction !== 'carhop-place-order') ||
               window.PrintHandle != null
             ) {
               let is_order_splited = this.$store.getters['order/splitItems']
