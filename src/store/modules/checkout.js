@@ -1293,10 +1293,6 @@ const actions = {
                       })
                     })*/
                     // if (!rootState.order.selectItemsToMove) {
-                    console.log(state.order, order, 'ooooorrrrr')
-                    dispatch('printingServer/printingServerInvoiceRaw', order, {
-                      root: true,
-                    })
                     // }
                     if (!getters.complete) {
                       dispatch('splitOrder', {
@@ -1309,6 +1305,14 @@ const actions = {
                     }
                   })
                   //if splitted once
+                }
+                // console.log(state.order, order, 'both are same')
+                let dt = rootState.auth.deviceType
+                let isIOS = dt.osType
+                if (isIOS || window.PrintHandle != null) {
+                  dispatch('printingServer/printingServerInvoiceRaw', order, {
+                    root: true,
+                  })
                 } else {
                   commit(mutation.PRINT, true)
                 }
