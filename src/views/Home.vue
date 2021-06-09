@@ -72,10 +72,18 @@ export default {
         OTApi: CONST.ORDER_TYPE_CARHOP,
       })
     }
+    if (this.$route.name.match('Takeaway')) {
+      this.$store.commit('order/ORDER_TYPE', {
+        OTview: 'Take Away',
+        OTApi: 'takeaway',
+      })
+    }
     if (this.$route.params.order_id) {
       this.orderId = this.$route.params.order_id
     }
-
+    if (this.orderId && this.$route.name === 'TakeawayOrderPay') {
+      this.$store.dispatch('order/loadCarhopOrder', this.orderId)
+    }
     if (this.orderId && this.$route.name === 'CarhopOrderPay') {
       this.$store.dispatch('order/loadCarhopOrder', this.orderId)
     }

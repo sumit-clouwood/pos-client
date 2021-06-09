@@ -386,14 +386,6 @@ export default {
         // newValue.assigned_table_id != oldvalue.assigned_table_id
         this.updateDetails()
         this.errors = false
-        // eslint-disable-next-line no-console
-        console.log(
-          this.reservationInformation,
-          'data',
-          this.selectedTable,
-          oldvalue,
-          newValue
-        )
       } else {
         this.getInterval()
       }
@@ -456,8 +448,6 @@ export default {
         // startTime += openAt
         closedTime = calcTime * 60 + parseInt(timeSplit[1])
       }
-      // eslint-disable-next-line no-console
-      console.log(startTime, closedTime, 'closedTime')
       let time_slots = []
       let occupied = null
       let hh = 0,
@@ -481,8 +471,6 @@ export default {
         time_slots.push({ time: timeSlot, occupied: occupied }) // pushing data in array in [00:00 - 12:00 AM/PM format]
         startTime = startTime + interval
       }
-      // eslint-disable-next-line no-console
-      console.log(time_slots, 'time_slots', this.tableBookedStatus)
       this.time_slots = time_slots
     },
     timeConvert(time, timeKnown, separator = ':') {

@@ -1588,6 +1588,12 @@ const actions = {
         OTApi: CONST.ORDER_TYPE_CARHOP,
       })
     }
+    if (state.orderType.OTApi == 'takeaway') {
+      commit(mutation.ORDER_TYPE, {
+        OTview: 'Takeaway',
+        OTApi: CONST.ORDER_TYPE_TAKEAWAY,
+      })
+    }
     commit(mutation.SET_ORDER_ID, orderId)
 
     dispatch('startOrder')

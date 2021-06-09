@@ -424,12 +424,7 @@ export default {
         this.timezoneString,
         'YYYY-MM-DD HH:mm'
       )
-      // return orderDateTime + 'yyyu'
     },
-    /*payNow(orderId) {
-      // eslint-disable-next-line no-console
-      // console.log(orderId, this.$store)
-    },*/
     setRouter(data) {
       let tableData = this.tables.find(
         table => table._id === data.orderData.assigned_table_id

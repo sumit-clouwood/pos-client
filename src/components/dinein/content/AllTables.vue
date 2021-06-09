@@ -20,9 +20,5 @@ export default {
   props: {
     viewBox: Object,
   },
-  updated() {
-    // eslint-disable-next-line no-console
-    console.log('v')
-  },
 }
 </script>

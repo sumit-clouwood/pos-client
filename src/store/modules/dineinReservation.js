@@ -138,8 +138,6 @@ const mutations = {
         )
       }
     }
-    // eslint-disable-next-line no-console
-    console.log(state.userHistory, 'history')
     state.userHistory = history
   },
   [mutation.SELECTED_RESERVATION](state, selectedReservation) {
