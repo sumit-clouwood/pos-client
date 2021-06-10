@@ -1603,7 +1603,7 @@ const actions = {
       let orderDetails = {}
 
       orderDetails.item = response.data.item
-      orderDetails.customer = response.data.collected_data.customer
+      orderDetails.customer = response.data.collected_data.customer || {}
       orderDetails.lookups = response.data.collected_data.page_lookups
       orderDetails.store_name = response.data.collected_data.store_name
       orderDetails.invoice =

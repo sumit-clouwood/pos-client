@@ -5,6 +5,7 @@ import * as CONSTANTS from '@/constants'
 import { compressToBase64, decompressFromBase64 } from 'lz-string'
 import OrderHelper from '@/plugins/helpers/Order'
 import CompareData from '@/plugins/helpers/CompareData'
+import router from '../../router'
 
 // import * as CONST from '@/constants'
 /* eslint-disable */
@@ -277,10 +278,24 @@ const actions = {
     }
     return Promise.resolve(order)
   },
+  injectTakeawayData({ rootState, rootGetters }, order) {
+    // eslint-disable-next-line no-console
+    console.log(state.order)
+    if (typeof order.items !== 'undefined') {
+      order.items = order.items.map(oitem => {
+        oitem.kitchen_invoice = 1
+        return oitem
+      })
+    }
+    return Promise.resolve(order)
+  },
 
   preOrderHook({ rootState, dispatch }, { order, action }) {
     if (rootState.order.orderType.OTApi == CONSTANTS.ORDER_TYPE_CALL_CENTER) {
       return dispatch('injectCrmData', order)
+    }
+    if (rootState.order.orderType.OTApi == CONSTANTS.ORDER_TYPE_TAKEAWAY) {
+      return dispatch('injectTakeawayData', order)
     }
 
     if (rootState.order.orderType.OTApi === CONSTANTS.ORDER_TYPE_DINE_IN) {
@@ -1422,6 +1437,38 @@ const actions = {
     }
   },
 
+  createModifyOrderItemListTakeaway({ rootState, state, dispatch }) {
+    let newItems = []
+    rootState.order.items.forEach(item => {
+      if (typeof item.no === 'undefined') {
+        newItems.push({
+          name: item.name,
+          entity_id: item._id,
+          no: item.orderIndex,
+          status: 'in-progress',
+          //itemTax.undiscountedTax is without modifiers
+          tax: item.tax,
+          price: item.netPrice,
+          qty: item.quantity,
+          originalItem: item,
+        })
+      }
+    })
+    if (newItems.length) {
+      let order = state.order
+      order.items = newItems
+      dispatch('injectTakeawayData', order).then(order => {
+        order.items = order.items.map(item => {
+          delete item.originalItem
+          return item
+        })
+        dispatch('printingServer/printingServerInvoiceRaw', order, {
+          root: true,
+        })
+      })
+    }
+  },
+
   modifyCarhopOrder(
     { dispatch, rootState, rootGetters, commit },
     { action = false, data = false }
@@ -1510,7 +1557,6 @@ const actions = {
                 )
               }
               commit('order/CLEAR_SELECTED_ORDER', null, { root: true })
-              resolve()
               commit(
                 'checkoutForm/SET_MSG',
                 { result: '', message: msgStr },
@@ -1518,12 +1564,8 @@ const actions = {
                   root: true,
                 }
               )
-
-              commit(mutation.SET_ROUTE, { name: 'CarhopOrders' })
-
               commit('order/CLEAR_SELECTED_ORDER', null, { root: true })
-              // dispatch('reset', true)
-
+              commit(mutation.SET_ROUTE, { name: 'CarhopOrders' })
               resolve()
             } else {
               dispatch('handleSystemErrors', response).then(() => resolve())
@@ -1563,15 +1605,16 @@ const actions = {
                 let msgStr = rootGetters['location/_t'](
                     'Takeaway order has been Updated'
                 )
-
-                /*commit(
-                    'SET_ORDER_NUMBER',
-                    rootState.order.selectedOrder.item.order_no
-                )
-                dispatch(
-                    'setToken',
-                    rootState.order.selectedOrder.item.token_number
-                ) //order paid*/
+                if (rootState.order.selectedOrder) {
+                  commit(
+                      'SET_ORDER_NUMBER',
+                      rootState.order.selectedOrder.item.order_no
+                  )
+                  dispatch(
+                      'setToken',
+                      rootState.order.selectedOrder.item.token_number
+                  ) //order paid
+                }
                 if (
                     rootState.checkoutForm.action === 'pay' &&
                     (action === 'modify-backend-order' || !action)
@@ -1586,7 +1629,7 @@ const actions = {
                 let isIOS = dt.osType
                 if (isIOS) {
                   if (rootState.checkoutForm.action === 'add') {
-                    dispatch('createModifyOrderItemListCarHop')
+                    dispatch('createModifyOrderItemListTakeaway')
                   }
                 } else {
                   let newItems = []
@@ -1605,7 +1648,7 @@ const actions = {
                       })
                     }
                   })
-                  if (newItems.length) {
+                  if (newItems.length && rootState.order.selectedOrder) {
                     rootState.order.selectedOrder.item.items = newItems.map(
                         item => {
                           delete item.originalItem
@@ -1633,20 +1676,24 @@ const actions = {
                   )
                 }
                 commit('order/CLEAR_SELECTED_ORDER', null, { root: true })
-                resolve()
                 commit(
                     'checkoutForm/SET_MSG',
                     { result: '', message: msgStr },
-                    {
-                      root: true,
-                    }
+                    {root: true,}
                 )
-
-                commit(mutation.SET_ROUTE, { name: 'TakeawayOrders' })
-
-                commit('order/CLEAR_SELECTED_ORDER', null, { root: true })
-                // dispatch('reset', true)
-
+                /*commit(mutation.SET_ROUTE, { name: 'TakeawayOrders' })*/
+                router.replace({ name: 'TakeawayOrders' })
+                let orderStatus = {
+                  collected: 'no',
+                  dataRelated: 'new-Collections',
+                  orderStatus: 'in-progress',
+                  pageId: 'takeaway_new',
+                  section: 'takeaway',
+                  title: 'NEW TAKEAWAY ORDERS',
+                }
+                commit('deliveryManager/LIST_TYPE', orderStatus.title)
+                commit('deliveryManager/SECTION', orderStatus.section)
+                dispatch('deliveryManager/updateDMOrderStatus', orderStatus)
                 resolve()
               } else {
                 dispatch('handleSystemErrors', response).then(() => resolve())
