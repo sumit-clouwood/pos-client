@@ -496,13 +496,15 @@ export default {
           }
         })
         .catch(({ idb, event }) => {
-          console.log('ooops', event)
+          console.log('ooops', event, idb)
           if (event == 'blocked') {
             console.log(
               'db was already opened may be by sw or app itself, closing and retrying'
             )
             idb.close()
-            this.setupDB(resolve)
+            this.setupDB(resolve).then(rs => {
+              console.log(rs, 'catch lof')
+            })
           }
         })
     })
