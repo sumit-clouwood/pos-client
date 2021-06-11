@@ -2,7 +2,14 @@
   <div class="preloader">
     <link rel="prefetch" href="/pos/img/icons/apple-touch-icon.png" />
     <div>
-      <img src="img/pos/DimsLogo.gif" id="slidecaption" />
+      <!--      <img src="img/pos/DimsLogo.gif" id="slidecaption" />-->
+      <img
+        src="https://fflurous.sirv.com/dims-stg/DimsLogo.gif"
+        width="600"
+        height="338"
+        alt=""
+        id="slidecaption"
+      />
     </div>
     <div v-if="msg">{{ msg }}</div>
   </div>
