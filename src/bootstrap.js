@@ -502,9 +502,7 @@ export default {
               'db was already opened may be by sw or app itself, closing and retrying'
             )
             idb.close()
-            this.setupDB(resolve).then(rs => {
-              console.log(rs, 'catch lof')
-            })
+            this.setupDB(resolve)
           }
         })
     })
@@ -550,7 +548,6 @@ export default {
     })
 
     console.log('log bucket created')
-
     this.store.commit('sync/setIdbVersion', 4)
   },
   orderWorkflowBucket() {
@@ -585,7 +582,6 @@ export default {
     })
 
     console.log('order workflow bucket created')
-
     this.store.commit('sync/setIdbVersion', 5)
   },
   dataStore() {
@@ -638,15 +634,27 @@ export default {
         //   'seconds passed last sync',
         //   (nowTime - this.lastSynced) / 1000
         // )
-
-        if (nowTime - this.lastSynced > this.syncInterval * 1000) {
+        console.log(nowTime, this.lastSynced, this.syncInterval, 'nowTime')
+        if (
+          this.lastSynced &&
+          nowTime - this.lastSynced > this.syncInterval * 1000
+        ) {
           this.lastSynced = nowTime
-
-          setTimeout(function() {
-            navigator.serviceWorker.controller.postMessage({
-              sync: 1,
-            })
-          }, 1000 * 10)
+          let userAgent = window.navigator.userAgent.toLowerCase(),
+            ios = /dims_kot_app/.test(userAgent)
+          console.log(
+            userAgent,
+            window.navigator,
+            navigator,
+            'userAgent - userAgent'
+          )
+          if (!ios) {
+            setTimeout(function() {
+              navigator.serviceWorker.controller.postMessage({
+                sync: 1,
+              })
+            }, 1000 * 10)
+          }
         } else {
           //console.log(this.syncInterval, ' not passed yet')
         }
