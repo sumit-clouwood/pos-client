@@ -1,4 +1,5 @@
-// /* global showModal */
+/*
+// /!* global showModal *!/
 const state = {
   audio: false,
   lastOrderId: '',
@@ -68,3 +69,4 @@ export default {
   actions,
   mutations,
 }
+*/
