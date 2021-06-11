@@ -176,19 +176,21 @@ export default {
             })
         }, 3000)
       }
-      setTimeout(() => {
-        navigator.serviceWorker.addEventListener('message', event => {
-          console.log('*** event received from service worker', event)
-          if (event.data.msg == 'token') {
-            console.log('event received from sw', event)
-          }
-          if (event.data.msg === 'sync') {
-            if (event.data.data.status === 'done') {
-              this.$store.dispatch('sync/offlineSync', event.data.data.status)
+      if ('serviceWorker' in navigator) {
+        setTimeout(() => {
+          navigator.serviceWorker.addEventListener('message', event => {
+            console.log('*** event received from service worker', event)
+            if (event.data.msg == 'token') {
+              console.log('event received from sw', event)
             }
-          }
-        })
-      }, 3000)
+            if (event.data.msg === 'sync') {
+              if (event.data.data.status === 'done') {
+                this.$store.dispatch('sync/offlineSync', event.data.data.status)
+              }
+            }
+          })
+        }, 3000)
+      }
     },
     setup() {
       this.multistoreSelector = false
