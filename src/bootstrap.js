@@ -635,20 +635,12 @@ export default {
         //   (nowTime - this.lastSynced) / 1000
         // )
         console.log(nowTime, this.lastSynced, this.syncInterval, 'nowTime')
-        if (
-          this.lastSynced &&
-          nowTime - this.lastSynced > this.syncInterval * 1000
-        ) {
+        if (nowTime - this.lastSynced > this.syncInterval * 1000) {
           this.lastSynced = nowTime
-          let userAgent = window.navigator.userAgent.toLowerCase(),
-            ios = /dims_kot_app/.test(userAgent)
-          console.log(
-            userAgent,
-            window.navigator,
-            navigator,
-            'userAgent - userAgent'
-          )
-          if (!ios) {
+          /*let userAgent = window.navigator.userAgent.toLowerCase(),
+            ios = /dims_kot_app/.test(userAgent)*/
+          // console.log(window.navigator, navigator, 'userAgent - userAgent')
+          if ('serviceWorker' in navigator) {
             setTimeout(function() {
               navigator.serviceWorker.controller.postMessage({
                 sync: 1,

@@ -66,7 +66,9 @@
 /* global showModal hideModal $ */
 
 /* eslint-disable no-console */
-var audio_ready_item = new Audio('/sound/doorbell.ogg')
+var audio_ready_item = new Audio(
+  'https://fflurous.sirv.com/dims-stg/doorbell.mp3'
+)
 var nopromise = {
   catch: new Function(),
 }
