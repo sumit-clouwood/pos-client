@@ -415,7 +415,9 @@ const actions = {
       'carhop-update-order',
       'carhop-place-order',
       'dine-in-place-order',
+      'takeaway-place-order',
       'carhop-modify-order',
+      'takeaway-modify-order',
       'modify-dine-in-order',
     ]
     if (

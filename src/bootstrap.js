@@ -502,7 +502,7 @@ export default {
               'db was already opened may be by sw or app itself, closing and retrying'
             )
             idb.close()
-            this.setupDB(resolve)
+            this.setupDB(resolve).then()
           }
         })
     })

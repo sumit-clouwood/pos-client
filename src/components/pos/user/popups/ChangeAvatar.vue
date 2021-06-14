@@ -56,7 +56,6 @@ export default {
       }
       let res = reader.readAsDataURL(this.$refs.fileUpload.files[0])
       /* eslint-disable */
-      console.log(res, this.$refs.fileUpload.files[0])
       return res
     },
     changeImage() {

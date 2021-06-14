@@ -68,6 +68,21 @@ const router = new Router({
       component: UserProfile,
     },
     {
+      path: '/takeaway/:brand_id/:store_id',
+      name: 'Takeaway',
+      component: Home,
+    },
+    {
+      path: '/takeaway-orders/:brand_id/:store_id',
+      name: 'TakeawayOrders',
+      component: DeliveryManagerInit,
+    },
+    {
+      path: '/takeaway/:brand_id/:store_id/:order_id',
+      name: 'TakeawayOrderPay',
+      component: Home,
+    },
+    {
       path: '/carhop/:brand_id/:store_id',
       name: 'Carhop',
       component: Home,

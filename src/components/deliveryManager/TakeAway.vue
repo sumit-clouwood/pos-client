@@ -62,14 +62,14 @@ export default {
     return {
       actionDetailsNew: {
         moreDetails: true,
-        action: 'takeaway_ready',
-        actionLabel: 'Ready',
+        action: ['takeaway_ready', 'pay'],
+        actionLabel: ['Ready', 'Pay'],
         nextOrderStatus: 'paid',
       },
       actionDetailsWaiting: {
         moreDetails: true,
-        action: 'takeaway_picked',
-        actionLabel: 'Collected',
+        action: ['takeaway_picked', 'pay'],
+        actionLabel: ['Collected', 'Pay'],
         nextOrderStatus: 'finished',
       },
       actionDetailsCollected: {

@@ -141,7 +141,6 @@
                         </button>
                       </span>
                     </div>
-
                     <div
                       v-else-if="typeof actionDetails.actionLabel == 'object'"
                     >
@@ -150,7 +149,33 @@
                         style="margin: 0.2rem"
                         v-for="(label, LabelIndex) in actionDetails.actionLabel"
                       >
+                        <router-link
+                          :to="
+                            '/takeaway/' +
+                              store.brand_id +
+                              '/' +
+                              order.store_id +
+                              '/' +
+                              order._id
+                          "
+                          v-if="
+                            actionDetails.action[LabelIndex] === 'pay' &&
+                              !order.order_payments.length
+                          "
+                          class="button text-button btn btn-success"
+                          type="button"
+                        >
+                          <div class="button-content-container">
+                            <div class="button-icon-container">
+                              <!---->
+                            </div>
+                            <div class="button-caption" :style="{ opacity: 1 }">
+                              {{ actionDetails.actionLabel[LabelIndex] }}
+                            </div>
+                          </div>
+                        </router-link>
                         <button
+                          v-if="actionDetails.action[LabelIndex] !== 'pay'"
                           @click.stop="
                             updateOrder({
                               order: order,

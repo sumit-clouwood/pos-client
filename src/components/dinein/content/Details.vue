@@ -120,9 +120,7 @@ export default {
         .toggleClass('active')
     },
     getOrderDetails(orderId) {
-      // eslint-disable-next-line no-console
       this.pickOrderDetails = this.orders[this.lookup].orders._id[orderId]
-      // console.log(collection)
       this.isOrderCancelledClass =
         this.pickOrderDetails.order_system_status !== 'cancelled'
           ? 'table-order-view'
