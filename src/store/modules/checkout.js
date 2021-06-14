@@ -5,7 +5,6 @@ import * as CONSTANTS from '@/constants'
 import { compressToBase64, decompressFromBase64 } from 'lz-string'
 import OrderHelper from '@/plugins/helpers/Order'
 import CompareData from '@/plugins/helpers/CompareData'
-import router from '../../router'
 
 // import * as CONST from '@/constants'
 /* eslint-disable */
@@ -1681,8 +1680,8 @@ const actions = {
                     { result: '', message: msgStr },
                     {root: true,}
                 )
-                /*commit(mutation.SET_ROUTE, { name: 'TakeawayOrders' })*/
-                router.replace({ name: 'TakeawayOrders' })
+                commit(mutation.SET_ROUTE, { name: 'TakeawayOrders' })
+                // router.replace({ name: 'TakeawayOrders' })
                 let orderStatus = {
                   collected: 'no',
                   dataRelated: 'new-Collections',

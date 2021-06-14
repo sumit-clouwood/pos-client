@@ -707,6 +707,7 @@ export default {
     },
     add_customer_address() {
       this.calculateHeights()
+      this.setOrderType({ OTview: 'Delivery', OTApi: 'call_center' })
       if (this.$store.state.customer.address === false) {
         $('#manage-customer').modal()
       } else {

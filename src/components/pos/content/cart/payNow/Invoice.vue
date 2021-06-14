@@ -115,6 +115,11 @@ export default {
       if (this.$store.state.order.orderType.OTApi === CONST.ORDER_TYPE_CARHOP) {
         this.$router.replace({ name: 'CarhopOrders' })
       }
+      if (
+        this.$store.state.order.orderType.OTApi === CONST.ORDER_TYPE_TAKEAWAY
+      ) {
+        this.$router.replace({ name: 'TakeawayOrders' })
+      }
       this.$store.commit('order/RESET_SPLIT_BILL')
     },
     doPrint() {
