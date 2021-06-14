@@ -7,8 +7,8 @@
 
 @font-face {
   font-family: 'ProximaNova-Regular';
-  src: url('/fonts/ProximaNova-Regular.woff') format('woff');
-  src: url('/fonts/ProximaNova-Regular.woff2') format('woff');
+  /*src: url('/fonts/ProximaNova-Regular.woff') format('woff');*/
+  src: url("https://cdn.jsdelivr.net/npm/font-proxima-nova@1.0.1/fonts/ProximaNova-Regular.woff") format("woff");
   font-style: normal;
   font-weight: normal;
 }

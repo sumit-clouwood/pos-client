@@ -248,7 +248,7 @@ import DateTime from '@/mixins/DateTime'
 import InformationPopup from '@/components/pos/content/InformationPopup'
 import Progress from '@/components/util/Progress'
 
-var audio = new Audio('/sound/doorbell.ogg')
+var audio = new Audio('https://fflurous.sirv.com/dims-stg/doorbell.mp3')
 var nopromise = {
   catch: new Function(),
 }

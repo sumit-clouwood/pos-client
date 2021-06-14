@@ -66,7 +66,10 @@
 /* global showModal hideModal $ */
 import { bus } from '@/eventBus'
 
-var audio_ready_item = new Audio('/sound/doorbell.ogg')
+/* eslint-disable no-console */
+var audio_ready_item = new Audio(
+  'https://fflurous.sirv.com/dims-stg/doorbell.mp3'
+)
 var nopromise = {
   catch: new Function(),
 }
@@ -109,9 +112,6 @@ export default {
     this.fetchReadyItemsBySocket()
   },
   methods: {
-    /*stopCarhopNotificationSound() {
-      alert('hega')
-    },*/
     showScrollButtons() {
       let scroll_height = $('#ready-item-container')[0].scrollHeight
       let height_ = $('#ready-item-container').height()
