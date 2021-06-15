@@ -269,6 +269,7 @@ export default {
       this.$store.dispatch('footerMenuHendlerChange')
     },
     add_customer_address() {
+      this.setOrderType({ OTview: 'Delivery', OTApi: 'call_center' })
       if (this.$store.state.customer.address === false) {
         $('#manage-customer').modal()
       } else {
