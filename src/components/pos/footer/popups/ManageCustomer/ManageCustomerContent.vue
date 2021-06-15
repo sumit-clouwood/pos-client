@@ -139,8 +139,6 @@ export default {
     ...mapGetters('modules', ['enabled']),
     ...mapGetters('location', ['_t']),
     addressPopup() {
-      // eslint-disable-next-line no-debugger
-      debugger
       let addToOrderPopup =
         this.isBrandHasDeliveryOrder &&
         this.enabled(CONST.MODULE_CRM) &&

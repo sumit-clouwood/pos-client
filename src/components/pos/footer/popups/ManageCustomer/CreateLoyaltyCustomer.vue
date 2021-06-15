@@ -66,6 +66,7 @@ export default {
   computed: {
     ...mapGetters('location', ['_t']),
     ...mapState('loyalty', ['customer_status', 'loader']),
+    ...mapState('order', ['orderType']),
   },
   methods: {
     ...mapActions('loyalty', ['createCustomer']),
@@ -103,7 +104,10 @@ export default {
       const errors = this.$refs.form.validate()
       if (errors.count === 0) {
         // $('#create-loyalty-customer').attr('disabled', true) //Disable Save button if pressed
-        const customerData = this.$refs.form.getData()
+        let customerData = this.$refs.form.getData()
+        if (this.orderType.OTApi !== 'carhop') {
+          delete customerData.car_number
+        }
         this.createCustomer(customerData).then(() => {
           let errorData = this.customer_status
           this.displayValidationErrors(errorData)
