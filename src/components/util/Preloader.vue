@@ -5,8 +5,6 @@
       <!--      <img src="img/pos/DimsLogo.gif" id="slidecaption" />-->
       <img
         src="https://fflurous.sirv.com/dims-stg/DimsLogo.gif"
-        width="600"
-        height="338"
         alt=""
         id="slidecaption"
       />

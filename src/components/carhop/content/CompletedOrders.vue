@@ -1,6 +1,6 @@
 <template>
   <div class="carhop-completed-orders-wrapper">
-    <div v-if="orders.data.length">
+    <div v-if="orders.data && orders.data.length">
       <div class="carhop-completed-orders">
         <table class="responsive-table">
           <thead>
