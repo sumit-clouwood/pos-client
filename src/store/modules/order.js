@@ -58,6 +58,7 @@ const state = {
   alert: {},
   noteBeforeItem: undefined,
   orderItemData: undefined,
+  creditOrderPayment: { order: undefined, order_payments: undefined },
 }
 
 // getters
@@ -2026,6 +2027,7 @@ const mutations = {
       state.orderNote = null
     }
     // state.itemDeliveryTime = 0
+    state.creditOrderPayment = { order: undefined, order_payments: undefined }
     state.splittedItems = {}
     state.item = false
     state.futureOrder = false
@@ -2124,6 +2126,14 @@ const mutations = {
   },
   MOVE_SELECTED_ITEMS(state, status) {
     state.selectItemsToMove = status
+  },
+  CREDIT_ORDER_PAYMENT(state, order) {
+    if (order.order) {
+      state.creditOrderPayment.order = order.order
+    }
+    if (order.payment_type) {
+      state.creditOrderPayment.order_payments = order.payment_type
+    }
   },
   [mutation.MARK_SPLIT_ITEMS_PAID](state) {
     const newitems = state.items.map(item => {

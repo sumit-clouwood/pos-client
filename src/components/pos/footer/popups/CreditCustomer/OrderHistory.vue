@@ -1,0 +1,89 @@
+<template>
+  <div class="order-history-data" :id="order._id">
+    <div class="invoice-date">
+      <span
+        data-toggle="modal"
+        data-target=".bd-example-modal-lg"
+        data-dismiss="modal"
+        @click="selectedOrderDetails(order._id)"
+        class="cursor-pointer text-capitalize"
+      >
+        <b>#{{ order.order_no }}</b>
+        {{ LookupData.replaceUnderscoreHyphon(order.order_type) }}
+      </span>
+      <span>
+        {{ _t('Date') }}:<b> {{ order.created_at }}</b>
+      </span>
+    </div>
+    <div>
+      <b> {{ formatPrice(order.balance_due) }}</b>
+    </div>
+    <div
+      v-if="orderType === 'remaining'"
+      class="button text-button btn btn-success"
+      type="button"
+      @click="payCreditOrder(order)"
+    >
+      {{ _t('Pay') }}
+    </div>
+    <div v-else class="paid-amount-msg text-left font-weight-bold">
+      <img src="img/dinein/paid-icon.png" style="width:33px" />
+      {{ _t('Paid') }}
+    </div>
+  </div>
+</template>
+<script>
+import { mapActions, mapGetters } from 'vuex'
+/* global $ */
+export default {
+  name: 'OrderHistory',
+  data() {
+    return {
+      /*active_id: '',*/
+    }
+  },
+  props: {
+    order: Object,
+    orderType: String,
+  },
+  computed: {
+    ...mapGetters('location', ['formatPrice', '_t']),
+  },
+  methods: {
+    ...mapActions('order', ['selectedOrderDetails']),
+    // eslint-disable-next-line no-unused-vars
+    payCreditOrder(order) {
+      this.$store.commit('order/CREDIT_ORDER_PAYMENT', {
+        order: order,
+        payment_type: false,
+      })
+      $('.order-history-data.active').removeClass('active')
+      $('#' + order._id).addClass('active')
+      $('#credit-payment-methods').attr('style', 'display:block')
+    },
+  },
+}
+</script>
+<style scoped lang="scss">
+.order-history-data {
+  display: grid;
+  grid-template-columns: 3fr 1fr 1fr;
+  grid-gap: 10px;
+  background: #f9f9f9;
+  border: 1px dashed gray;
+  align-items: baseline;
+  margin-bottom: 5px;
+  padding: 5px 15px;
+  .invoice-date {
+    display: grid;
+    grid-column-gap: 10px;
+    grid-template-columns: 43% 1fr;
+  }
+}
+#remaining_orders_history {
+  .active {
+    background: #676767;
+    color: #fff;
+  }
+}
+</style>
