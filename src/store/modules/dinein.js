@@ -219,7 +219,9 @@ const actions = {
       table.related_orders_ids.forEach(order_Id => {
         let od = response.data.page_lookups.orders._id[order_Id]
         order.push(od)
-        balanceDue += parseFloat(od.balance_due)
+        if (od.order_system_status !== 'modified') {
+          balanceDue += parseFloat(od.balance_due)
+        }
         currency = od.currency
       })
 
