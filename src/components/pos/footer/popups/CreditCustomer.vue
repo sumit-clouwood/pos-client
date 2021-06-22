@@ -86,6 +86,7 @@
               <button
                 type="button"
                 class="btn btn-success color-text-invert color-button"
+                @click="printBS"
               >
                 {{ _t('Print') }}
               </button>
@@ -184,7 +185,57 @@ export default {
         this.searchCustomerErr = 'Please Select Customer'
       }
     },
+    printBS() {
+      let dt = this.$store.state.auth.deviceType
+      let isIOS = dt.osType
+      if (!isIOS) {
+        this.bsPrint('remaining_order_list')
+      } else {
+        const urlParams = new URLSearchParams(window.location.search)
+        urlParams.set('iosprint_bs', '1')
+        window.location.search = urlParams
+      }
+      // Pass the element id here
+    },
+    bsPrint(el) {
+      const url = ''
+      let name = '_blank'
+      let specs = ['fullscreen=yes', 'titlebar=yes', 'scrollbars=yes']
+      let replace = true
+      // let styles = []
+      const win = window.open(url, name, specs, replace)
+      specs = specs.length ? specs.join(',') : ''
 
+      const element = document.getElementById(el)
+
+      if (!element) {
+        alert(`Element to print #${el} not found!`)
+        return
+      }
+      win.document.write(`
+        <html>
+          <head>
+            <title>${this._t('Yuvraj credit amount list')}</title>
+          </head>
+          <body>
+            ${element.innerHTML}
+          </body>
+        </html>
+      `)
+      // addStyles(win, styles)
+
+      setTimeout(() => {
+        win.document.close()
+        win.focus()
+        win.print()
+        // win.close()
+        // cb()
+      }, 1000)
+      setTimeout(() => {
+        win.close()
+      }, 3000)
+      return true
+    },
     selectCustomer(customer) {
       this.customer_loading = true
       this.customer_details = false

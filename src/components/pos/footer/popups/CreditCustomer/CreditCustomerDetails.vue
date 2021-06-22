@@ -27,7 +27,7 @@
     </ul>
 
     <div class="tab-content">
-      <div id="details" class="tab-pane fade">
+      <div id="details" class="tab-pane fade active show">
         <p class="profile-customer-title color-text-invert">
           {{ _t('Customer Name') }}:
           <b class="text-capitalize">{{ customerProfile.name }}</b>
@@ -39,13 +39,20 @@
           {{ _t('Phone Number') }}: <b>{{ customerProfile.phone_number }}</b>
         </p>
       </div>
-      <div id="remaining_orders_history" class="tab-pane fade in active">
-        <OrderHistory
-          v-for="order in pastOrders"
-          :key="order._id"
-          :order="order"
-          orderType="remaining"
-        ></OrderHistory>
+      <div id="remaining_orders_history" class="tab-pane fade">
+        <div v-if="remainingAmount > 0">
+          <OrderHistory
+            id="remaining_order_list"
+            v-for="order in pastOrders"
+            :key="order._id"
+            :order="order"
+            orderType="remaining"
+            :payment_status="is_order_paid(order)"
+          ></OrderHistory>
+        </div>
+        <div v-else>
+          {{ _t('No order found') }}
+        </div>
         <div id="credit-payment-methods">
           <PaymentMethods />
           <div class="actions">
@@ -68,19 +75,26 @@
 
         <div class="order-history-footer">
           <span>{{ _t('Remaining Balance') }}</span>
-          <span> {{ remainingAmount }}</span>
+          <span> {{ formatPrice(remainingAmount || 0) }}</span>
         </div>
       </div>
       <div id="paid_order_history" class="tab-pane fade">
-        <OrderHistory
-          v-for="order in pastOrders"
-          :key="order._id"
-          :order="order"
-          orderType="paid"
-        ></OrderHistory>
+        <div v-if="paidAmount > 0">
+          <OrderHistory
+            id="paid_order_list"
+            v-for="order in pastOrders"
+            :key="order._id"
+            :order="order"
+            orderType="paid"
+            :payment_status="is_order_paid(order)"
+          ></OrderHistory>
+        </div>
+        <div v-else>
+          {{ _t('No order found') }}
+        </div>
         <div class="order-history-footer">
           <span>{{ _t('Paid Amount') }}</span>
-          <span> {{ remainingAmount }}</span>
+          <span> {{ formatPrice(paidAmount || 0) }}</span>
         </div>
       </div>
     </div>
@@ -89,6 +103,7 @@
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex'
 import OrderHistory from './OrderHistory'
+import * as CONST from '@/constants'
 import PaymentMethods from '../../../content/cart/payNow/PaymentMethods'
 // import progressbar from '@/components/util/progressbar'
 /* global $ */
@@ -102,6 +117,7 @@ export default {
   data() {
     return {
       activeTab: 'details',
+      payment_status: undefined,
     }
   },
   computed: {
@@ -115,27 +131,46 @@ export default {
     remainingAmount() {
       let amount = 0
       this.pastOrders.forEach(order => {
-        amount += parseFloat(order.balance_due)
+        if (
+          order.credit &&
+          order.order_payments.length === 1 &&
+          order.order_payments[0].name === CONST.CUSTOMER_CREDIT
+        ) {
+          amount += parseFloat(order.balance_due)
+        }
       })
-      return this.formatPrice(amount)
+      return amount
+    },
+    paidAmount() {
+      let amount = 0
+      this.pastOrders.forEach(order => {
+        if (order.credit && order.order_payments.length > 1) {
+          amount += parseFloat(order.balance_due)
+        }
+      })
+      return amount
     },
   },
   methods: {
-    ...mapActions('order', ['selectedOrderDetails']),
+    ...mapActions('order', ['selectedOrderDetails', 'creditOrderPay']),
     hidePayments() {
       $('#credit-payment-methods').attr('style', 'display:none')
+    },
+    is_order_paid(order) {
+      if (
+        order.credit &&
+        order.order_payments.length === 1 &&
+        order.order_payments[0].name === CONST.CUSTOMER_CREDIT
+      ) {
+        return false
+      } else return true
     },
     processPayments() {
       this.$store.commit('order/CREDIT_ORDER_PAYMENT', {
         order: false,
         payment_type: this.method,
       })
-      /*[{collected: "111.51"
-        entity_id: "5d9f2254d355b82f1543bd8a"
-        name: "Cash"
-        param1: null
-        param2: 111.51
-        param3: null}]*/
+      this.creditOrderPay()
       $('#credit-payment-methods').attr('style', 'display:none')
     },
     setActive(tab) {
@@ -183,6 +218,7 @@ export default {
 #paid_order_history {
   max-height: 270px;
   overflow-x: scroll;
+  min-height: 240px;
   @include responsive(mobile) {
     width: 330px;
   }

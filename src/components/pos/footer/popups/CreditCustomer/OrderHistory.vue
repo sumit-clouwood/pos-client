@@ -1,34 +1,63 @@
 <template>
-  <div class="order-history-data" :id="order._id">
-    <div class="invoice-date">
-      <span
-        data-toggle="modal"
-        data-target=".bd-example-modal-lg"
-        data-dismiss="modal"
-        @click="selectedOrderDetails(order._id)"
-        class="cursor-pointer text-capitalize"
+  <div>
+    <div
+      v-if="order.credit && !payment_status && orderType === 'remaining'"
+      class="order-history-data"
+      :id="order._id"
+    >
+      <div class="invoice-date">
+        <span
+          data-toggle="modal"
+          data-target=".bd-example-modal-lg"
+          data-dismiss="modal"
+          @click="selectedOrderDetails(order._id)"
+          class="cursor-pointer text-capitalize"
+        >
+          <b>#{{ order.order_no }}</b>
+          {{ LookupData.replaceUnderscoreHyphon(order.order_type) }}
+        </span>
+        <span>
+          {{ _t('Date') }}:<b> {{ order.created_at }}</b>
+        </span>
+      </div>
+      <div>
+        <b> {{ formatPrice(order.balance_due) }}</b>
+      </div>
+      <div
+        class="button text-button btn btn-success"
+        type="button"
+        @click="payCreditOrder(order)"
       >
-        <b>#{{ order.order_no }}</b>
-        {{ LookupData.replaceUnderscoreHyphon(order.order_type) }}
-      </span>
-      <span>
-        {{ _t('Date') }}:<b> {{ order.created_at }}</b>
-      </span>
-    </div>
-    <div>
-      <b> {{ formatPrice(order.balance_due) }}</b>
+        {{ _t('Pay') }}
+      </div>
     </div>
     <div
-      v-if="orderType === 'remaining'"
-      class="button text-button btn btn-success"
-      type="button"
-      @click="payCreditOrder(order)"
+      v-if="order.credit && payment_status && orderType === 'paid'"
+      class="order-history-data"
+      :id="order._id"
     >
-      {{ _t('Pay') }}
-    </div>
-    <div v-else class="paid-amount-msg text-left font-weight-bold">
-      <img src="img/dinein/paid-icon.png" style="width:33px" />
-      {{ _t('Paid') }}
+      <div class="invoice-date">
+        <span
+          data-toggle="modal"
+          data-target=".bd-example-modal-lg"
+          data-dismiss="modal"
+          @click="selectedOrderDetails(order._id)"
+          class="cursor-pointer text-capitalize"
+        >
+          <b>#{{ order.order_no }}</b>
+          {{ LookupData.replaceUnderscoreHyphon(order.order_type) }}
+        </span>
+        <span>
+          {{ _t('Date') }}:<b> {{ order.created_at }}</b>
+        </span>
+      </div>
+      <div>
+        <b> {{ formatPrice(order.balance_due) }}</b>
+      </div>
+      <div class="paid-amount-msg text-left font-weight-bold">
+        <img src="img/dinein/paid-icon.png" style="width:33px" />
+        {{ _t('Paid') }}
+      </div>
     </div>
   </div>
 </template>
@@ -45,6 +74,7 @@ export default {
   props: {
     order: Object,
     orderType: String,
+    payment_status: Boolean,
   },
   computed: {
     ...mapGetters('location', ['formatPrice', '_t']),
