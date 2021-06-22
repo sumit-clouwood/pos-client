@@ -159,8 +159,11 @@
                               order._id
                           "
                           v-if="
-                            actionDetails.action[LabelIndex] === 'pay' &&
-                              !order.order_payments.length
+                            (actionDetails.action[LabelIndex] === 'pay' &&
+                              !order.order_payments.length) ||
+                              (actionDetails.action[LabelIndex] ===
+                                'takeaway_picked' &&
+                                !order.order_payments.length)
                           "
                           class="button text-button btn btn-success"
                           type="button"
@@ -175,7 +178,7 @@
                           </div>
                         </router-link>
                         <button
-                          v-if="actionDetails.action[LabelIndex] !== 'pay'"
+                          v-else-if="actionDetails.action[LabelIndex] !== 'pay'"
                           @click.stop="
                             updateOrder({
                               order: order,
