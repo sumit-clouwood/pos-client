@@ -4,7 +4,7 @@
     <div>
       <!--      <img src="img/pos/DimsLogo.gif" id="slidecaption" />-->
       <img
-        src="https://fflurous.sirv.com/dims-stg/DimsLogo.gif"
+        src="https://d3jjfdwi6rnqlf.cloudfront.net/DimsLogo.gif"
         alt=""
         id="slidecaption"
       />
