@@ -28,6 +28,17 @@
 
     <div class="tab-content">
       <div id="details" class="tab-pane fade active show">
+        <img
+          v-if="customerProfile.image"
+          v-bind:src="customerProfile.image_path + customerProfile.image"
+          alt="order-profile"
+          class="credit-customer-picture"
+        />
+        <img
+          v-else
+          class="credit-customer-picture"
+          src="img/other/placeholder-img.png"
+        />
         <p class="profile-customer-title color-text-invert">
           {{ _t('Customer Name') }}:
           <b class="text-capitalize">{{ customerProfile.name }}</b>
@@ -38,11 +49,14 @@
         <p class="profile-customer-title color-text-invert">
           {{ _t('Phone Number') }}: <b>{{ customerProfile.phone_number }}</b>
         </p>
+        <p class="profile-customer-title color-text-invert">
+          {{ _t('Pending credit orders') }}:
+          <b>{{ remainingAmount.total_pending_credit_orders }}</b>
+        </p>
       </div>
       <div id="remaining_orders_history" class="tab-pane fade">
-        <div v-if="remainingAmount > 0">
+        <div v-if="remainingAmount.amount > 0">
           <OrderHistory
-            id="remaining_order_list"
             v-for="order in pastOrders"
             :key="order._id"
             :order="order"
@@ -75,13 +89,12 @@
 
         <div class="order-history-footer">
           <span>{{ _t('Remaining Balance') }}</span>
-          <span> {{ formatPrice(remainingAmount || 0) }}</span>
+          <span> {{ formatPrice(remainingAmount.amount || 0) }}</span>
         </div>
       </div>
       <div id="paid_order_history" class="tab-pane fade">
         <div v-if="paidAmount > 0">
           <OrderHistory
-            id="paid_order_list"
             v-for="order in pastOrders"
             :key="order._id"
             :order="order"
@@ -126,10 +139,11 @@ export default {
       customerProfile: state =>
         state.customer.customer ? state.customer.customer : false,
       pastOrders: state => state.customer.pastOrders,
-      ...mapState('checkoutForm', ['method']),
     }),
+    ...mapState('checkoutForm', ['method']),
     remainingAmount() {
       let amount = 0
+      let total_pending_credit_orders = 0
       this.pastOrders.forEach(order => {
         if (
           order.credit &&
@@ -137,9 +151,13 @@ export default {
           order.order_payments[0].name === CONST.CUSTOMER_CREDIT
         ) {
           amount += parseFloat(order.balance_due)
+          total_pending_credit_orders += 1
         }
       })
-      return amount
+      return {
+        amount: amount,
+        total_pending_credit_orders: total_pending_credit_orders,
+      }
     },
     paidAmount() {
       let amount = 0
@@ -184,6 +202,17 @@ export default {
 .nav-tabs {
   border-bottom: 1px solid #ddd;
 }
+.credit-customer-picture {
+  width: 15%;
+  border-radius: 50%;
+}
+#details {
+  text-align: center;
+  .profile-customer-title {
+    padding-top: 3px;
+  }
+}
+
 #credit-payment-methods {
   display: none;
   position: absolute;

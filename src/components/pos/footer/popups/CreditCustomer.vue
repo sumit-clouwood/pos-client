@@ -40,8 +40,8 @@
                   <span
                     class="clear-search cursor-pointer"
                     @click="clearSearch()"
-                    >x</span
-                  >
+                    >x
+                  </span>
                 </div>
                 <span
                   class="loyalty-error text-danger loyalty-customer-error color-warning"
@@ -88,7 +88,7 @@
                 class="btn btn-success color-text-invert color-button"
                 @click="printBS"
               >
-                {{ _t('Print') }}
+                {{ _t('Print Remaining Orders') }}
               </button>
               <button
                 data-toggle="modal"
@@ -122,6 +122,7 @@
 import { mapState, mapActions, mapGetters } from 'vuex'
 import progressbar from '@/components/util/progressbar'
 import CreditCustomerDetails from './CreditCustomer/CreditCustomerDetails'
+import * as CONST from '@/constants'
 
 export default {
   name: 'credit-customer',
@@ -144,13 +145,18 @@ export default {
   computed: {
     ...mapState({
       customers: state => state.customer.customer_list,
+      customerProfile: state =>
+        state.customer.customer ? state.customer.customer : false,
+      pastOrders: state => state.customer.pastOrders,
     }),
     ...mapState('loyalty', ['loyalty']),
-    ...mapGetters('location', ['_t']),
+    ...mapGetters('location', ['_t', 'formatPrice']),
+    ...mapState('location', ['store']),
   },
   methods: {
     clearSearch() {
       this.searchTerm = ''
+      this.$store.dispatch('customer/resetCustomer')
     },
     /*loyaltyHendlerChange() {
       this.searchTerm = ''
@@ -189,7 +195,8 @@ export default {
       let dt = this.$store.state.auth.deviceType
       let isIOS = dt.osType
       if (!isIOS) {
-        this.bsPrint('remaining_order_list')
+        /*paid_order_history*/
+        this.bsPrint('remaining_orders_history')
       } else {
         const urlParams = new URLSearchParams(window.location.search)
         urlParams.set('iosprint_bs', '1')
@@ -206,7 +213,77 @@ export default {
       const win = window.open(url, name, specs, replace)
       specs = specs.length ? specs.join(',') : ''
 
-      const element = document.getElementById(el)
+      let element = ''
+      let print_header = `<div style="text-align: center;"><p>
+              ${this._t('Store')}: <b>${this.store.name}</b>
+               </p><p>${this._t('Name')}:
+               <b style="text-transform: capitalize;">${
+                 this.customerProfile.name
+               }</b></p>`
+      print_header += `<p>${this._t('Mobile no.')}: <b>${
+        this.customerProfile.phone_number
+      }</b></p></div>`
+      let print_body = ''
+      let print_footer = ''
+      if (el === 'remaining_orders_history') {
+        let amount = 0
+        let total_pending_credit_orders = 0
+        print_body = `<div style="display: grid;
+                                grid-column-gap: 10px;
+                                grid-template-columns: 1fr 1fr 1fr 1fr;
+                                text-transform: capitalize;
+                                grid-gap: 10px;
+                                background: #f9f9f9;
+                                border: 1px dashed gray;
+                                align-items: baseline;
+                                margin-bottom: 5px;
+                                padding: 5px 15px;">
+
+                        <b>${this._t('Order no')}</b>
+                        <b>${this._t('Amount')}</b>
+                        <b>${this._t('Order Type')}</b>
+                        <b>${this._t('Date')}</b>
+                        </div>`
+        this.pastOrders.forEach(order => {
+          if (
+            order.credit &&
+            order.order_payments.length === 1 &&
+            order.order_payments[0].name === CONST.CUSTOMER_CREDIT
+          ) {
+            amount += parseFloat(order.balance_due)
+            total_pending_credit_orders += 1
+            print_body += `<div style="display: grid;
+                            grid-gap: 10px;
+                            border: 1px dashed gray;
+                            align-items: baseline;
+                            margin-bottom: 5px;
+                            padding: 5px 15px;">
+                            <div style="display: grid;
+                                grid-column-gap: 10px;
+                                grid-template-columns: 1fr 1fr 1fr 1fr;">
+                                  <span>
+                                    #${order.order_no}
+                                  </span>
+                                  <span>
+                                     ${this.formatPrice(order.balance_due)}
+                                  </span>
+                                  <span style="text-transform: capitalize;">
+                                     ${order.order_type.replace(/[_-]/g, ' ')}
+                                  </span>
+                                  <span>
+                                     ${order.created_at}
+                                  </span>
+                            </div>
+                        </div>`
+          }
+        })
+        print_footer = `<div style="text-align: center; margin-top: 10px;"><b>${this._t(
+          'Your remaining balance is'
+        )} ${this.formatPrice(amount)}, ${this._t(
+          'from'
+        )} ${total_pending_credit_orders} ${this._t('orders')}.</b></div>`
+      }
+      element = print_header + print_body + print_footer
 
       if (!element) {
         alert(`Element to print #${el} not found!`)
@@ -215,10 +292,12 @@ export default {
       win.document.write(`
         <html>
           <head>
-            <title>${this._t('Yuvraj credit amount list')}</title>
+            <title><b style="text-transform: capitalize;">${
+              this.customerProfile.name
+            }</b>${this._t(' credit orders list')}</title>
           </head>
           <body>
-            ${element.innerHTML}
+            ${element}
           </body>
         </html>
       `)

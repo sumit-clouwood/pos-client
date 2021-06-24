@@ -30,6 +30,7 @@
         type="button"
         class="btn btn-danger cancel-announce color-button color-text-invert"
         data-dismiss="modal"
+        @click="closeManageCustomer()"
       >
         {{ _t('Cancel') }}
       </button>
@@ -39,7 +40,7 @@
 </template>
 
 <script>
-/*global $*/
+/*global $ hideModal */
 import { mapState, mapActions, mapGetters } from 'vuex'
 import paginate from 'vuejs-paginate'
 export default {
@@ -61,6 +62,10 @@ export default {
   methods: {
     moreCustomer: function(pageNumber) {
       this.setPageNumber(pageNumber)
+    },
+    closeManageCustomer() {
+      hideModal('#manage-customer')
+      $('#manage-customer').modal('hide')
     },
     addCustomerForm: function() {
       if (
