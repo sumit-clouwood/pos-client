@@ -67,7 +67,7 @@
 
 /* eslint-disable no-console */
 var audio_ready_item = new Audio(
-  'https://fflurous.sirv.com/dims-stg/doorbell.mp3'
+  'https://d3jjfdwi6rnqlf.cloudfront.net/doorbell.mp3'
 )
 var nopromise = {
   catch: new Function(),

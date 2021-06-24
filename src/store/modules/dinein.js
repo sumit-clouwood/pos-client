@@ -89,7 +89,11 @@ const getters = {
     return tableNumber
   },
   getTableNumberById: state => tableId => {
-    return state.tablesOnArea.find(table => table._id === tableId)
+    let table = state.tablesOnArea.find(table => table._id === tableId)
+    if (!table) {
+      table = state.tables.find(table => table._id === tableId)
+    }
+    return table
   },
   getTableEmptyTime: (state, getters, rootState) => {
     return rootState.location.store.table_empty_time
