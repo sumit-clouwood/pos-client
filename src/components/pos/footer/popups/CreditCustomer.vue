@@ -84,6 +84,7 @@
           <div class="btn-announce">
             <div class="btn-loyalty">
               <button
+                v-if="customer_details"
                 type="button"
                 class="btn btn-success color-text-invert color-button"
                 @click="printBS"
@@ -520,6 +521,11 @@ export default {
           .btn-announce {
             width: 90% !important;
             margin: auto;
+            button {
+              padding-left: 5px;
+              margin-left: unset;
+              padding-right: 5px;
+            }
           }
         }
       }
@@ -534,6 +540,7 @@ export default {
     display: grid;
     grid-template-columns: repeat(2, 1fr) !important;
     column-gap: 0.5rem;
+    grid-row-gap: 5px;
   }
 }
 .ullist-profile {

@@ -1866,10 +1866,8 @@ const actions = {
         })
     })
   },
-  creditOrderPay({ state }) {
+  creditOrderPay({ state, dispatch, rootState }) {
     return new Promise((resolve, reject) => {
-      // eslint-disable-next-line no-debugger
-      debugger
       let order_id = state.creditOrderPayment.order._id
       let order_payment = { order_payments: [] }
       if (state.creditOrderPayment.order.order_payments.length) {
@@ -1889,10 +1887,14 @@ const actions = {
       order_payment.order_payments.push(prepare_payment)
       OrderService.creditOrderPayment(order_id, order_payment)
         .then(response => {
+          let customer = rootState.customer.customer
+          dispatch('customer/fetchSelectedCustomer', customer._id, {
+            root: true,
+          })
           resolve(response)
         })
-        .cache(er => {
-          reject(er)
+        .catch(err => {
+          reject(err)
         })
     })
   },

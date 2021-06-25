@@ -5,7 +5,7 @@
         ref="paymentmethods"
         :slides="methods"
         :perPage="4"
-        :width="456"
+        :width="400"
         @click="selectMethod"
       ></carousel>
     </div>

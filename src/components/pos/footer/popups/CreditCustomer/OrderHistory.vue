@@ -3,7 +3,7 @@
     <div
       v-if="order.credit && !payment_status && orderType === 'remaining'"
       class="order-history-data"
-      :id="order._id"
+      :id="'credit_customer' + order._id"
     >
       <div class="invoice-date">
         <span
@@ -83,12 +83,13 @@ export default {
     ...mapActions('order', ['selectedOrderDetails']),
     // eslint-disable-next-line no-unused-vars
     payCreditOrder(order) {
+      // this.$store.commit('payment/PAYMENT_SLIDES_PER_PAGE', 3)
       this.$store.commit('order/CREDIT_ORDER_PAYMENT', {
         order: order,
         payment_type: false,
       })
       $('.order-history-data.active').removeClass('active')
-      $('#' + order._id).addClass('active')
+      $('#credit_customer' + order._id).addClass('active')
       $('#credit-payment-methods').attr('style', 'display:block')
     },
   },

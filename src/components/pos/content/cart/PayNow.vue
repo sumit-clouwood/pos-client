@@ -80,7 +80,7 @@
             </div>
           </div>
           <div class="pay-now-btn-next" @click="payNowCalcHendlerChange">
-            Next
+            {{ _t('Next') }}
           </div>
         </div>
       </div>

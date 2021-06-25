@@ -141,7 +141,7 @@
     ref="paymentmethods"
     :slides="aggregatorValues"
     :perPage="4"
-    :width="456"
+    :width="400"
     @click="selectSlide"
   ></carousel>
   <child-slider
@@ -149,7 +149,7 @@
     ref="paymentmethods"
     :slides="selectedValue"
     :perPage="4"
-    :width="456"
+    :width="400"
     :currentKey="currentKey"
     @selected-slide="selectSlide"
     @back="show = !show"

@@ -392,10 +392,10 @@ const actions = {
   resetAmount({ commit }) {
     commit('setAmount', 0)
   },
-  setMethod({ commit, getters, rootGetters }, method) {
+  setMethod({ commit, rootState, getters, rootGetters }, method) {
     //check if payable is greater than 0 else set cash as method
     commit('setMethod', method)
-    if (getters['payable'] <= 0) {
+    if (getters['payable'] <= 0 && !rootState.order.creditOrderPayment.order) {
       commit('setMethod', rootGetters['payment/cash'])
       commit('forceCash', true)
     }
@@ -433,8 +433,6 @@ const actions = {
     let total_of_one_point_redeem = 0
     let total_redeem_amount_for_items = 0
     let loyalty_details_ids = []
-    // eslint-disable-next-line no-debugger
-    // debugger
     items.forEach(item => {
       if (loyalty && item) {
         let loyalty_action = loyalty.find(loyalty => {

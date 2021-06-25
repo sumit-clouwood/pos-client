@@ -144,6 +144,12 @@ export default {
     remainingAmount() {
       let amount = 0
       let total_pending_credit_orders = 0
+      if (!this.pastOrders.length) {
+        return {
+          amount: amount,
+          total_pending_credit_orders: total_pending_credit_orders,
+        }
+      }
       this.pastOrders.forEach(order => {
         if (
           order.credit &&
@@ -160,6 +166,9 @@ export default {
       }
     },
     paidAmount() {
+      if (!this.pastOrders.length) {
+        return 0
+      }
       let amount = 0
       this.pastOrders.forEach(order => {
         if (order.credit && order.order_payments.length > 1) {
@@ -189,6 +198,8 @@ export default {
         payment_type: this.method,
       })
       this.creditOrderPay()
+      //   let order_id = this.$store.state.order.creditOrderPayment.order._id
+      // $('#credit_customer' + order_id).attr('style', 'display:none')
       $('#credit-payment-methods').attr('style', 'display:none')
     },
     setActive(tab) {
@@ -222,7 +233,7 @@ export default {
   padding-left: 20px;
   padding-right: 10px;
   padding-bottom: 20px;
-  left: 100px;
+  // left: 100px;
   .actions {
     position: absolute;
     bottom: 0;
@@ -249,7 +260,9 @@ export default {
   overflow-x: scroll;
   min-height: 240px;
   @include responsive(mobile) {
-    width: 330px;
+    width: 100%;
+    max-height: 170px;
+    min-height: 170px;
   }
 }
 .order-history-footer {
