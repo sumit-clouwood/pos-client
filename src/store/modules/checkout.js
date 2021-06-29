@@ -2161,7 +2161,7 @@ const actions = {
     } else if (
         rootState.order.orderType.OTApi === CONSTANTS.ORDER_TYPE_TAKEAWAY
     ) {
-      if (action === 'takeaway-place-order' && !rootState.order.orderId) {
+      if (!rootState.order.orderId) {
         return dispatch('createWalkinOrder', action)
       } else {
         return dispatch('modifyTakeawayOrder', { action: action, data: false })
