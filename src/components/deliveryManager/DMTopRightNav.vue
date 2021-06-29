@@ -108,7 +108,7 @@
                         orderStatus: 'in-progress',
                         collected: 'no',
                         pageId: 'takeaway_new',
-                        title: _t('NEW TAKEAWAY ORDERS'),
+                        title: _t('WAITING FOR COLLECTION'),
                         dataRelated: 'new-Collections',
                         section: 'takeaway',
                       })

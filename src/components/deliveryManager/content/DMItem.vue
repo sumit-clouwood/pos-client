@@ -162,7 +162,7 @@
                             (actionDetails.action[LabelIndex] === 'pay' &&
                               !order.order_payments.length) ||
                               (actionDetails.action[LabelIndex] ===
-                                'takeaway_picked' &&
+                                'takeaway_ready' &&
                                 !order.order_payments.length)
                           "
                           class="button text-button btn btn-success"

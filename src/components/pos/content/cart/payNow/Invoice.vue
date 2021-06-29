@@ -124,7 +124,7 @@ export default {
           orderStatus: 'in-progress',
           pageId: 'takeaway_new',
           section: 'takeaway',
-          title: 'NEW TAKEAWAY ORDERS',
+          title: 'WAITING FOR COLLECTION',
         }
         this.$router.replace({ name: 'TakeawayOrders' })
         this.$store.commit('deliveryManager/LIST_TYPE', orderStatus.title)

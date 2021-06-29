@@ -1688,7 +1688,7 @@ const actions = {
                   orderStatus: 'in-progress',
                   pageId: 'takeaway_new',
                   section: 'takeaway',
-                  title: 'NEW TAKEAWAY ORDERS',
+                  title: 'WAITING FOR COLLECTION',
                 }
                 commit('deliveryManager/LIST_TYPE', orderStatus.title)
                 commit('deliveryManager/SECTION', orderStatus.section)
