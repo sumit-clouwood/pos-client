@@ -91,6 +91,14 @@
             margin-bottom: 15px;
             margin-top: 7px;"
           >
+            <img
+              style="width: 155px;
+        min-width: 155px;
+        display: inline-block;
+        margin: 0 auto 1.2em;"
+              :src="company_logo"
+              alt="Logo"
+            />
             <h4
               style="text-align: center; padding-bottom:5px; margin-bottom: 0"
             >
@@ -772,6 +780,15 @@ export default {
     Preloader,
     Datetime,
   },
+  mounted() {
+    this.toDataURL(
+      this.company_logo,
+      base64 => {
+        this.company_logo = base64
+      },
+      'image/png'
+    )
+  },
   computed: {
     ...mapGetters('location', ['_t', 'formatPrice']),
     ...mapState('reports', [
@@ -821,6 +838,12 @@ export default {
         this.$store.commit('reports/DATE_TO', _to)
       },
     },
+    company_logo() {
+      return this.$store.state.location.brand &&
+        this.$store.state.location.brand.company_logo
+        ? this.$store.state.location.brand.company_logo
+        : ''
+    },
   },
   methods: {
     getPercentage(total, value) {
@@ -834,6 +857,28 @@ export default {
     },*/
     getReport() {
       this.$store.dispatch('reports/businessSummary', {}, { root: true })
+    },
+    toDataURL(src, callback, outputFormat) {
+      var img = new Image()
+      img.crossOrigin = 'Anonymous'
+
+      img.src = src
+      if (img.complete || img.complete === undefined) {
+        img.src =
+          'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw=='
+        img.src = src
+      }
+
+      img.onload = function() {
+        var canvas = document.createElement('CANVAS')
+        var ctx = canvas.getContext('2d')
+        var dataURL
+        canvas.height = this.naturalHeight
+        canvas.width = this.naturalWidth
+        ctx.drawImage(this, 0, 0)
+        dataURL = canvas.toDataURL(outputFormat)
+        callback(dataURL)
+      }
     },
     printBS() {
       let dt = this.$store.state.auth.deviceType
