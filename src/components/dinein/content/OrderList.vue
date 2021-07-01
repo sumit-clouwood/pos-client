@@ -8,7 +8,7 @@
             <th width="200px">{{ _t('TABLE NUMBER') }}</th>
             <!--<th width="100px">{{ _t('STATUS') }}</th>-->
             <th width="450px">{{ _t('ORDERS') }}</th>
-            <th width="200px">{{ _t('AMOUNT') }}</th>
+            <!-- <th width="200px">{{ _t('AMOUNT') }}</th> -->
             <th width="250px">{{ _t('ACTION STATUS') }}</th>
           </tr>
         </thead>
@@ -237,9 +237,9 @@
                   </div>
                 </div>
               </td>
-              <td class="dine-order-amt font-weight-bold">
+              <!-- <td class="dine-order-amt font-weight-bold">
                 {{ formatPrice(orderTable.amount) }}
-              </td>
+              </td> -->
               <td class="order-time-det">
                 <div class="action-status">
                   <div>
@@ -499,9 +499,10 @@ button#dropdownMenuButton svg {
   }
   .action-status {
     button {
-      width: 100%;
+      width: 90%;
       margin: auto;
       font-size: 1.1rem;
+      margin: 5%;
     }
   }
   .dine-order-amt,
