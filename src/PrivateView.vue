@@ -54,7 +54,17 @@ other components are nested within.
           <li class="p-3">
             <span class="margin220">
               <Preloader />
-              <h2 class="text-center blue-middle">Loading Data...</h2>
+              <h2 class="text-center blue-middle">
+                Loading Data... &nbsp;
+                <button
+                  type="button"
+                  class="btn btn-success"
+                  @click="reloadPage"
+                >
+                  {{ _t('Reload') }}
+                </button>
+              </h2>
+
               <ul class="loading-modules">
                 <li v-for="(val, key) in modules" :key="key">
                   Loading {{ key }}
@@ -137,6 +147,9 @@ export default {
       setTimeout(() => {
         require('@/../public/js/pos_script.js')
       }, 2000)
+    },
+    reloadPage() {
+      window.location.reload()
     },
     setupRoutes() {
       if (this.orderId && this.$route.name === 'UpdateDeliveryOrder') {
