@@ -54,7 +54,17 @@ other components are nested within.
           <li class="p-3">
             <span class="margin220">
               <Preloader />
-              <h2 class="text-center blue-middle">Loading Data...</h2>
+              <h2 class="text-center blue-middle">
+                Loading Data... &nbsp;
+                <button
+                  v-if="reloadButton"
+                  type="button"
+                  class="btn btn-success"
+                  @click="reloadPage"
+                >
+                  {{ _t('Reload') }}
+                </button>
+              </h2>
               <ul class="loading-modules">
                 <li v-for="(val, key) in modules" :key="key">
                   Loading {{ key }}
@@ -110,6 +120,7 @@ export default {
   data: function() {
     return {
       loading: true,
+      reloadButton: false,
       systemError: false,
       userError: false,
       progressIncrement: 0,
@@ -387,7 +398,12 @@ export default {
         })
     },
   },
-  created() {},
+  created() {
+    let scope = this
+    setTimeout(() => {
+      scope.reloadButton = true
+    }, 10000)
+  },
   watch: {
     storeId(storeId) {
       if (storeId) {
