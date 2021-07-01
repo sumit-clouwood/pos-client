@@ -57,6 +57,7 @@ other components are nested within.
               <h2 class="text-center blue-middle">
                 Loading Data... &nbsp;
                 <button
+                  v-if="reloadButton"
                   type="button"
                   class="btn btn-success"
                   @click="reloadPage"
@@ -119,6 +120,7 @@ export default {
   mixins: [Cookie, ResizeMixin],
   data: function() {
     return {
+      reloadButton: false,
       loading: true,
       systemError: false,
       userError: false,
@@ -506,7 +508,10 @@ export default {
   //life cycle hooks
   mounted() {
     console.log('In private view mounted')
-
+    setTimeout(() => {
+      //wait for modifiers to load
+      this.reloadButton = true
+    }, 10000)
     if (this.$route.params.order_id) {
       this.orderId = this.$route.params.order_id
       this.$store.commit('order/RESET_SPLIT_BILL')
