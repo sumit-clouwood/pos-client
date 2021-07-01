@@ -120,7 +120,7 @@ export default {
   mixins: [Cookie, ResizeMixin],
   data: function() {
     return {
-      reloadButton: false,
+      reloadButton: true,
       loading: true,
       systemError: false,
       userError: false,
