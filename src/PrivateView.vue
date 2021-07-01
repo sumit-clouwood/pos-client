@@ -149,6 +149,9 @@ export default {
         require('@/../public/js/pos_script.js')
       }, 2000)
     },
+    reloadPage() {
+      window.location.reload()
+    },
     setupRoutes() {
       if (this.orderId && this.$route.name === 'UpdateDeliveryOrder') {
         this.$store.commit('order/ORDER_SOURCE', 'deliveryManager')
@@ -188,6 +191,7 @@ export default {
         }, 3000)
       }
       if ('serviceWorker' in navigator) {
+        let scope = this
         setTimeout(() => {
           navigator.serviceWorker.addEventListener('message', event => {
             console.log('*** event received from service worker', event)
@@ -196,7 +200,10 @@ export default {
             }
             if (event.data.msg === 'sync') {
               if (event.data.data.status === 'done') {
-                this.$store.dispatch('sync/offlineSync', event.data.data.status)
+                scope.$store.dispatch(
+                  'sync/offlineSync',
+                  event.data.data.status
+                )
               }
             }
           })
