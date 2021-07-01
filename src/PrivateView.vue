@@ -120,7 +120,7 @@ export default {
   mixins: [Cookie, ResizeMixin],
   data: function() {
     return {
-      reloadButton: true,
+      reloadButton: false,
       loading: true,
       systemError: false,
       userError: false,
@@ -192,6 +192,7 @@ export default {
         }, 3000)
       }
       if ('serviceWorker' in navigator) {
+        let scope = this
         setTimeout(() => {
           navigator.serviceWorker.addEventListener('message', event => {
             console.log('*** event received from service worker', event)
@@ -200,7 +201,10 @@ export default {
             }
             if (event.data.msg === 'sync') {
               if (event.data.data.status === 'done') {
-                this.$store.dispatch('sync/offlineSync', event.data.data.status)
+                scope.$store.dispatch(
+                  'sync/offlineSync',
+                  event.data.data.status
+                )
               }
             }
           })
@@ -402,7 +406,12 @@ export default {
         })
     },
   },
-  created() {},
+  created() {
+    let scope = this
+    setTimeout(() => {
+      scope.reloadButton = true
+    }, 10000)
+  },
   watch: {
     storeId(storeId) {
       if (storeId) {
