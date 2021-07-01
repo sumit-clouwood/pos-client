@@ -248,10 +248,7 @@ export default {
                         hideModal('#item-notification')
                         scope.pauseSound()
                       }
-                    } /*else {
-                    hideModal('#item-notification')
-                    scope.pauseSound()
-                  }*/
+                    }
                   }, 300)
                 }
               }
