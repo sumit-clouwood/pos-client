@@ -54,7 +54,18 @@ other components are nested within.
           <li class="p-3">
             <span class="margin220">
               <Preloader />
-              <h2 class="text-center blue-middle">Loading Data...</h2>
+              <h2 class="text-center blue-middle">
+                Loading Data... &nbsp;
+                <button
+                  v-if="reloadButton"
+                  type="button"
+                  class="btn btn-success"
+                  @click="reloadPage"
+                >
+                  {{ _t('Reload') }}
+                </button>
+              </h2>
+
               <ul class="loading-modules">
                 <li v-for="(val, key) in modules" :key="key">
                   Loading {{ key }}
@@ -109,6 +120,7 @@ export default {
   mixins: [Cookie, ResizeMixin],
   data: function() {
     return {
+      reloadButton: false,
       loading: true,
       systemError: false,
       userError: false,
@@ -137,6 +149,9 @@ export default {
       setTimeout(() => {
         require('@/../public/js/pos_script.js')
       }, 2000)
+    },
+    reloadPage() {
+      window.location.reload()
     },
     setupRoutes() {
       if (this.orderId && this.$route.name === 'UpdateDeliveryOrder') {
@@ -177,6 +192,7 @@ export default {
         }, 3000)
       }
       if ('serviceWorker' in navigator) {
+        let scope = this
         setTimeout(() => {
           navigator.serviceWorker.addEventListener('message', event => {
             console.log('*** event received from service worker', event)
@@ -185,7 +201,10 @@ export default {
             }
             if (event.data.msg === 'sync') {
               if (event.data.data.status === 'done') {
-                this.$store.dispatch('sync/offlineSync', event.data.data.status)
+                scope.$store.dispatch(
+                  'sync/offlineSync',
+                  event.data.data.status
+                )
               }
             }
           })
@@ -387,7 +406,12 @@ export default {
         })
     },
   },
-  created() {},
+  created() {
+    let scope = this
+    setTimeout(() => {
+      scope.reloadButton = true
+    }, 10000)
+  },
   watch: {
     storeId(storeId) {
       if (storeId) {
@@ -492,8 +516,6 @@ export default {
   },
   //life cycle hooks
   mounted() {
-    console.log('In private view mounted')
-
     if (this.$route.params.order_id) {
       this.orderId = this.$route.params.order_id
       this.$store.commit('order/RESET_SPLIT_BILL')

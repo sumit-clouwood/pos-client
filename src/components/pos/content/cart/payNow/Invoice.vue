@@ -22,7 +22,7 @@
 </template>
 
 <script>
-/* global $ hidePayNow */
+/* global $ hidePayNow deliveryTabs*/
 /* eslint-disable no-console */
 import { mapState, mapGetters } from 'vuex'
 import PrintTemplate from './invoice/PrintTemplate'
@@ -118,7 +118,19 @@ export default {
       if (
         this.$store.state.order.orderType.OTApi === CONST.ORDER_TYPE_TAKEAWAY
       ) {
+        let orderStatus = {
+          collected: 'no',
+          dataRelated: 'new-Collections',
+          orderStatus: 'in-progress',
+          pageId: 'takeaway_new',
+          section: 'takeaway',
+          title: 'WAITING FOR COLLECTION',
+        }
         this.$router.replace({ name: 'TakeawayOrders' })
+        this.$store.commit('deliveryManager/LIST_TYPE', orderStatus.title)
+        this.$store.commit('deliveryManager/SECTION', orderStatus.section)
+        this.$store.dispatch('deliveryManager/updateDMOrderStatus', orderStatus)
+        deliveryTabs(orderStatus.dataRelated)
       }
       this.$store.commit('order/RESET_SPLIT_BILL')
     },
