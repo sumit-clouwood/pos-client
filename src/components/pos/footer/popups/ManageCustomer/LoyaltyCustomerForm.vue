@@ -61,7 +61,7 @@
         <div class="left-form" v-if="orderType.OTApi === 'carhop'">
           <div class="email-from">
             <label class="color-text-invert">
-              {{ _t('Car Number') }} <span>*</span>
+              {{ _t('Car Number') }}
             </label>
             <input
               type="text"
@@ -142,16 +142,16 @@ export default {
           this.errors.count = 1
         }
       }
-      if (this.orderType.OTApi === 'carhop') {
-        if (
-          !this.newCustomerDetails.car_number ||
-          !getWithoutSpaceLength(this.newCustomerDetails.car_number)
-        ) {
-          this.errors.car_number =
-            this._t('Car number') + ' ' + this._t('is required')
-          this.errors.count = 1
-        }
-      }
+      // if (this.orderType.OTApi === 'carhop') {
+      //   if (
+      //     !this.newCustomerDetails.car_number ||
+      //     !getWithoutSpaceLength(this.newCustomerDetails.car_number)
+      //   ) {
+      //     this.errors.car_number =
+      //       this._t('Car number') + ' ' + this._t('is required')
+      //     this.errors.count = 1
+      //   }
+      // }
 
       if (
         !this.newCustomerDetails.phone_number ||
