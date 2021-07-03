@@ -146,7 +146,8 @@
                             v-if="
                               !waiter &&
                                 tabName !== 'completed' &&
-                                order.order_status !== 'finished'
+                                order.order_status !== 'finished' &&
+                                !order.order_payments.length
                               /*&& order.order_status !== 'cancelled'*/
                             "
                           >

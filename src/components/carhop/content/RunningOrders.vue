@@ -97,7 +97,7 @@
                     </div>
                   </div>
                   <router-link
-                    v-if="canPay"
+                    v-if="canPay && !order.order_payments.length"
                     :to="'/carhop' + store + '/' + order._id"
                     class="pay-now-carhop"
                   >
@@ -127,7 +127,7 @@
                       </span>
                     </span>
                   </router-link>
-                  <router-link
+                  <!-- <router-link
                     v-else
                     :to="'/carhop' + store + '/' + order._id"
                     class="pay-now-carhop"
@@ -157,7 +157,7 @@
                         {{ _t('Update Order') }}
                       </span>
                     </span>
-                  </router-link>
+                  </router-link> -->
                 </div>
               </td>
             </tr>
