@@ -54,7 +54,10 @@
                     class="carhop-ready-"
                   ></ready-action>
                   <button
-                    v-if="order.dispatch_history.new.length"
+                    v-if="
+                      order.dispatch_history &&
+                        order.dispatch_history.new.length
+                    "
                     class="button btn btn-success carhop-completed"
                     @click="orderCollection(order._id)"
                   >
