@@ -112,7 +112,12 @@ export default {
         : '?no_limit=true'
     return DataService.get(`/model/${model}${query}`, 'brand')
   },
-
+  creditOrderPayment(orderId, payments) {
+    return DataService.post(
+      `/model/orders/id/${orderId}/credit_payment`,
+      payments
+    )
+  },
   getModifyReasons() {
     return DataService.get(`/model/brand_modify_reasons?no_limit=true`, 'brand')
   },

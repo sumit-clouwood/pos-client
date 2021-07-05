@@ -23,12 +23,12 @@
         <th style="width: 140px" class="color-text-invert color-secondary">
           {{ _t('Driver') }}
         </th>
-        <th style="width: 205px" class="color-text-invert color-secondary">
+        <!--        <th style="width: 205px" class="color-text-invert color-secondary">
           {{ _t('Agent') }}
         </th>
         <th style="width: 290px" class="color-text-invert color-secondary">
           {{ _t('Order Source') }}
-        </th>
+        </th>-->
       </tr>
       <tbody class="color-tables-background">
         <tr
@@ -36,8 +36,16 @@
           v-for="order in pastOrders"
           :key="order._id"
         >
-          <td class="color-tables-background color-text">
-            #{{ order.order_no }}
+          <td class="show-details-his color-tables-background color-text">
+            <span
+              class="color-icon-table-neutral-button color-text-invert"
+              data-toggle="modal"
+              data-target=".bd-example-modal-lg"
+              data-dismiss="modal"
+              @click="selectedOrderDetails(order._id)"
+            >
+              #{{ order.order_no }}
+            </span>
           </td>
           <td class="color-tables-background color-text">
             {{ order.created_at }}
@@ -63,10 +71,10 @@
               })
             }}
           </td>
-          <td class="color-tables-background color-text">
+          <!--          <td class="color-tables-background color-text">
             {{ order.created_by }}
           </td>
-          <!--<td>Tecom</td>-->
+          &lt;!&ndash;<td>Tecom</td>&ndash;&gt;
           <td class="show-details-his color-tables-background color-text">
             <span
               class="color-icon-table-neutral-button color-text-invert"
@@ -93,7 +101,7 @@
               </svg>
               {{ _t('Show Details') }}
             </span>
-          </td>
+          </td>-->
         </tr>
       </tbody>
     </table>

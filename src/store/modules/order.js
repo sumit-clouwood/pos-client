@@ -58,6 +58,7 @@ const state = {
   alert: {},
   noteBeforeItem: undefined,
   orderItemData: undefined,
+  creditOrderPayment: { order: undefined, order_payments: undefined },
 }
 
 // getters
@@ -1865,6 +1866,38 @@ const actions = {
         })
     })
   },
+  creditOrderPay({ state, dispatch, rootState }) {
+    return new Promise((resolve, reject) => {
+      let order_id = state.creditOrderPayment.order._id
+      let order_payment = { order_payments: [] }
+      if (state.creditOrderPayment.order.order_payments.length) {
+        order_payment.order_payments.push(
+          state.creditOrderPayment.order.order_payments[0]
+        )
+      }
+      let selected_paymwnt_method = state.creditOrderPayment.order_payments
+      let prepare_payment = {
+        collected: state.creditOrderPayment.order.balance_due,
+        entity_id: selected_paymwnt_method._id,
+        name: selected_paymwnt_method.name,
+        param1: null,
+        param2: parseFloat(state.creditOrderPayment.order.balance_due),
+        param3: null,
+      }
+      order_payment.order_payments.push(prepare_payment)
+      OrderService.creditOrderPayment(order_id, order_payment)
+        .then(response => {
+          let customer = rootState.customer.customer
+          dispatch('customer/fetchSelectedCustomer', customer._id, {
+            root: true,
+          })
+          resolve(response)
+        })
+        .catch(err => {
+          reject(err)
+        })
+    })
+  },
   beforeRedirectResetCartDineIn({ dispatch, rootState }) {
     let dineInAreas = rootState.order.areas
     if (typeof dineInAreas != 'undefined') {
@@ -2026,6 +2059,7 @@ const mutations = {
       state.orderNote = null
     }
     // state.itemDeliveryTime = 0
+    state.creditOrderPayment = { order: undefined, order_payments: undefined }
     state.splittedItems = {}
     state.item = false
     state.futureOrder = false
@@ -2124,6 +2158,14 @@ const mutations = {
   },
   MOVE_SELECTED_ITEMS(state, status) {
     state.selectItemsToMove = status
+  },
+  CREDIT_ORDER_PAYMENT(state, order) {
+    if (order.order) {
+      state.creditOrderPayment.order = order.order
+    }
+    if (order.payment_type) {
+      state.creditOrderPayment.order_payments = order.payment_type
+    }
   },
   [mutation.MARK_SPLIT_ITEMS_PAID](state) {
     const newitems = state.items.map(item => {

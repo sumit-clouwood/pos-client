@@ -8,6 +8,7 @@ const state = {
   methods: {},
   appInvoiceData: {},
   aggregatorGroups: [],
+  paymentSlidePerPage: 4,
 }
 
 // getters
@@ -222,6 +223,9 @@ const mutations = {
   },
   [mutation.SET_AGGREGATE_GROUPS](state, aggregatorGroups) {
     state.aggregatorGroups = aggregatorGroups
+  },
+  PAYMENT_SLIDES_PER_PAGE(state, items = 4) {
+    state.paymentSlidePerPage = items
   },
 }
 
