@@ -293,9 +293,7 @@ export default {
       win.document.write(`
         <html>
           <head>
-            <title><b style="text-transform: capitalize;">${
-              this.customerProfile.name
-            }</b>${this._t(' credit orders list')}</title>
+            <title>${this._t(' Credit orders list ')}</title>
           </head>
           <body>
             ${element}
