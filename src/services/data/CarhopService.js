@@ -16,4 +16,10 @@ export default {
     }
     return DataService.get(URl)
   },
+  collecteOrder(orderId) {
+    return DataService.post(
+      `/model/orders/id/${orderId}/dispatch_collected`,
+      'brand'
+    )
+  },
 }

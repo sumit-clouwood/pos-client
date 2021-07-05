@@ -49,7 +49,17 @@
               </td>
               <td>
                 <div class="button-wrapper btn-align-row">
-                  <ready-action :order="order"></ready-action>
+                  <ready-action
+                    :order="order"
+                    class="carhop-ready-"
+                  ></ready-action>
+                  <button
+                    v-if="order.dispatch_history.new.length"
+                    class="button btn btn-success carhop-completed"
+                    @click="orderCollection(order._id)"
+                  >
+                    {{ _t('Collected') }}
+                  </button>
                   <div class="dropdown">
                     <button
                       class="button btn btn-success color-main color-text-invert dropdown-toggle"
@@ -230,9 +240,14 @@ export default {
   },
 
   methods: {
-    ...mapActions('carhop', ['fetchOrders']),
+    ...mapActions('carhop', ['fetchOrders', 'orderCollected']),
     ...mapActions('order', ['selectedOrderDetails']),
     ...mapActions('deliveryManager', ['printInvoice']),
+    orderCollection(orderId) {
+      this.orderCollected(orderId).then(() => {
+        this.fetchMore(this.page)
+      })
+    },
     fetchMore(page) {
       this.fetchOrders({ orderStatus: 'in-progress', page: page })
     },
@@ -272,13 +287,22 @@ export default {
 }
 .carhop-running-orders {
   .btn-align-row {
-    grid-template-columns: 1fr 1fr auto;
-    padding-right: 15px;
+    grid-template-columns: 1fr 1fr 1fr auto;
+    margin-left: 5px;
+    .carhop-completed {
+      margin-right: 40px;
+    }
+    .carhop-ready- {
+      padding-left: 20px;
+      @include responsive(mobile) {
+        padding-left: unset;
+      }
+    }
   }
 }
 .carhop-completed-orders {
   .btn-align-row {
-    grid-template-columns: auto auto auto;
+    grid-template-columns: auto auto auto auto;
     grid-column-gap: $px5;
   }
 }

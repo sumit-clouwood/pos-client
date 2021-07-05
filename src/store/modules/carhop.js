@@ -111,6 +111,13 @@ const actions = {
       commit(mutation.SET_LOADING_SILENT, false)
     })
   },
+  orderCollected({}, orderId) {
+      return new Promise((resolve, reject) => {
+        CarhopService.collecteOrder(orderId).then(response => {
+          resolve(response)
+        }).catch(err => {reject(err)})
+      })
+  },
 }
 const mutations = {
   [mutation.SET_ORDER_STATUS](state, status) {
