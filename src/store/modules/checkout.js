@@ -115,6 +115,7 @@ const actions = {
         'carhop-update-order',
         'dine-in-order-preview',
         'modify-backend-order',
+        'takeaway-place-order',
         CONSTANTS.ORDER_STATUS_ON_HOLD,
       ].includes(action)
     ) {
@@ -276,10 +277,24 @@ const actions = {
     }
     return Promise.resolve(order)
   },
+  injectTakeawayData({ rootState, rootGetters }, order) {
+    // eslint-disable-next-line no-console
+    console.log(state.order)
+    if (typeof order.items !== 'undefined') {
+      order.items = order.items.map(oitem => {
+        oitem.kitchen_invoice = 1
+        return oitem
+      })
+    }
+    return Promise.resolve(order)
+  },
 
   preOrderHook({ rootState, dispatch }, { order, action }) {
     if (rootState.order.orderType.OTApi == CONSTANTS.ORDER_TYPE_CALL_CENTER) {
       return dispatch('injectCrmData', order)
+    }
+    if (rootState.order.orderType.OTApi == CONSTANTS.ORDER_TYPE_TAKEAWAY) {
+      return dispatch('injectTakeawayData', order)
     }
 
     if (rootState.order.orderType.OTApi === CONSTANTS.ORDER_TYPE_DINE_IN) {
@@ -350,6 +365,7 @@ const actions = {
 
       const actions = [
         'dine-in-place-order',
+        'takeaway-place-order',
         'carhop-place-order',
         'carhop-update-order',
         'dine-in-order-preview',
@@ -869,6 +885,10 @@ const actions = {
                 // order.future_order = 1
                 order.future_order_datetime = rootState.order.futureOrder
               }
+              //carhop_ready_0: order not ready yet 1 means order ready show notification with bell
+              if (rootGetters['order/orderType'] === CONSTANTS.ORDER_TYPE_CARHOP) {
+                order.carhop_ready = false
+              }
 
               order.order_discounts = []
 
@@ -1288,10 +1308,8 @@ const actions = {
                         root: true,
                       })
                     })*/
-
-                    /*dispatch('printingServer/printingServerInvoiceRaw', order, {
-                      root: true,
-                    })*/
+                    // if (!rootState.order.selectItemsToMove) {
+                    // }
                     if (!getters.complete) {
                       dispatch('splitOrder', {
                         action: action,
@@ -1304,8 +1322,16 @@ const actions = {
                   })
                   //if splitted once
                 }
-
-                commit(mutation.PRINT, true)
+                // console.log(state.order, order, 'both are same')
+                let dt = rootState.auth.deviceType
+                let isIOS = dt.osType
+                if (isIOS || window.PrintHandle != null) {
+                  dispatch('printingServer/printingServerInvoiceRaw', order, {
+                    root: true,
+                  })
+                } else {
+                  commit(mutation.PRINT, true)
+                }
                 resolve()
               }
               if (!rootState.order.selectItemsToMove)  {
@@ -1410,6 +1436,38 @@ const actions = {
     }
   },
 
+  createModifyOrderItemListTakeaway({ rootState, state, dispatch }) {
+    let newItems = []
+    rootState.order.items.forEach(item => {
+      if (typeof item.no === 'undefined') {
+        newItems.push({
+          name: item.name,
+          entity_id: item._id,
+          no: item.orderIndex,
+          status: 'in-progress',
+          //itemTax.undiscountedTax is without modifiers
+          tax: item.tax,
+          price: item.netPrice,
+          qty: item.quantity,
+          originalItem: item,
+        })
+      }
+    })
+    if (newItems.length) {
+      let order = state.order
+      order.items = newItems
+      dispatch('injectTakeawayData', order).then(order => {
+        order.items = order.items.map(item => {
+          delete item.originalItem
+          return item
+        })
+        dispatch('printingServer/printingServerInvoiceRaw', order, {
+          root: true,
+        })
+      })
+    }
+  },
+
   modifyCarhopOrder(
     { dispatch, rootState, rootGetters, commit },
     { action = false, data = false }
@@ -1498,7 +1556,6 @@ const actions = {
                 )
               }
               commit('order/CLEAR_SELECTED_ORDER', null, { root: true })
-              resolve()
               commit(
                 'checkoutForm/SET_MSG',
                 { result: '', message: msgStr },
@@ -1506,12 +1563,8 @@ const actions = {
                   root: true,
                 }
               )
-
-              commit(mutation.SET_ROUTE, { name: 'CarhopOrders' })
-
               commit('order/CLEAR_SELECTED_ORDER', null, { root: true })
-              // dispatch('reset', true)
-
+              commit(mutation.SET_ROUTE, { name: 'CarhopOrders' })
               resolve()
             } else {
               dispatch('handleSystemErrors', response).then(() => resolve())
@@ -1533,6 +1586,134 @@ const actions = {
     })
   },
 
+  modifyTakeawayOrder(
+      { dispatch, rootState, rootGetters, commit },
+      { action = false, data = false }
+  ) {
+    return new Promise(resolve => {
+      dispatch('getModifyOrder').then(order => {
+        //delete order.order_system_status
+        //delete order.real_created_datetime
+        delete order.new_real_transition_order_no
+        if (action && data) {
+          order = { ...order, ...data }
+        }
+        OrderService.updateOrderItems(order, rootState.order.orderId)
+            .then(response => {
+              if (response.data.status === 'ok') {
+                let msgStr = rootGetters['location/_t'](
+                    'Takeaway order has been Updated'
+                )
+                if (rootState.order.selectedOrder) {
+                  commit(
+                      'SET_ORDER_NUMBER',
+                      rootState.order.selectedOrder.item.order_no
+                  )
+                  dispatch(
+                      'setToken',
+                      rootState.order.selectedOrder.item.token_number
+                  ) //order paid
+                }
+                if (
+                    rootState.checkoutForm.action === 'pay' &&
+                    (action === 'modify-backend-order' || !action)
+                ) {
+                  msgStr = rootGetters['location/_t'](
+                      'Takeaway order has been Paid'
+                  )
+                  commit(mutation.PRINT, true)
+                }
+
+                let dt = rootState.auth.deviceType
+                let isIOS = dt.osType
+                if (isIOS) {
+                  if (rootState.checkoutForm.action === 'add') {
+                    dispatch('createModifyOrderItemListTakeaway')
+                  }
+                } else {
+                  let newItems = []
+                  rootState.order.items.forEach(item => {
+                    /*if (typeof item.no === 'undefined')*/ {
+                      newItems.push({
+                        name: item.name,
+                        entity_id: item._id,
+                        no: item.orderIndex,
+                        status: 'in-progress',
+                        //itemTax.undiscountedTax is without modifiers
+                        tax: item.tax,
+                        price: item.netPrice,
+                        qty: item.quantity,
+                        originalItem: item,
+                      })
+                    }
+                  })
+                  if (newItems.length && rootState.order.selectedOrder) {
+                    rootState.order.selectedOrder.item.items = newItems.map(
+                        item => {
+                          delete item.originalItem
+                          return item
+                        }
+                    )
+                  }
+                  //Invoice APP API Call with Custom Request JSON
+                  let checkout_order = rootState.checkout.order
+                  let selected_order = rootState.order.selectedOrder.item
+                  let updated_order = Object.assign(selected_order, checkout_order)
+                  dispatch(
+                      'printingServer/printingServerInvoiceRaw',
+                      updated_order,
+                      {
+                        root: true,
+                      }
+                  )
+                  commit(
+                      'checkout/SET_PAYMENT_ACTION',
+                      'takeaway-modify-order',
+                      {
+                        root: true,
+                      }
+                  )
+                }
+                commit('order/CLEAR_SELECTED_ORDER', null, { root: true })
+                commit(
+                    'checkoutForm/SET_MSG',
+                    { result: '', message: msgStr },
+                    {root: true,}
+                )
+                commit(mutation.SET_ROUTE, { name: 'TakeawayOrders' })
+                // router.replace({ name: 'TakeawayOrders' })
+                let orderStatus = {
+                  collected: 'no',
+                  dataRelated: 'new-Collections',
+                  orderStatus: 'in-progress',
+                  pageId: 'takeaway_new',
+                  section: 'takeaway',
+                  title: 'WAITING FOR COLLECTION',
+                }
+                commit('deliveryManager/LIST_TYPE', orderStatus.title)
+                commit('deliveryManager/SECTION', orderStatus.section)
+                dispatch('deliveryManager/updateDMOrderStatus', orderStatus)
+                resolve()
+              } else {
+                dispatch('handleSystemErrors', response).then(() => resolve())
+              }
+            })
+            .catch(error => {
+              dispatch('handleRejectedResponse', {
+                response: error,
+                offline: false,
+              })
+                  .then(() => {
+                    resolve()
+                  })
+                  .catch(() => {
+                    resolve()
+                  })
+            })
+      })
+    })
+  },
+
   modifyBackendOrder(
     { dispatch, rootState, rootGetters, commit },
     { action, data }
@@ -1549,6 +1730,12 @@ const actions = {
     if (rootState.order.orderSource !== 'backend') {
       if (rootGetters['order/orderType'] === CONSTANTS.ORDER_TYPE_CARHOP) {
         return dispatch('modifyCarhopOrder', {
+          action: action,
+          data: data,
+        })
+      }
+      if (rootGetters['order/orderType'] === CONSTANTS.ORDER_TYPE_TAKEAWAY) {
+        return dispatch('modifyTakeawayOrder', {
           action: action,
           data: data,
         })
@@ -1619,6 +1806,9 @@ const actions = {
               result: 'success',
               msg: msg,
             }).then(() => {
+              if (rootGetters['order/orderType'] === CONSTANTS.ORDER_TYPE_TAKEAWAY) {
+                commit(mutation.SET_ROUTE, { name: 'TakeawayOrders' })
+              }
               resolve(response.data)
               commit(mutation.PRINT, true)
               // dispatch('iosWebviewPrintAction', { orderData: state.order })
@@ -1936,7 +2126,6 @@ const actions = {
     // we send user directly to delivery manager after printing invoice so we auto print inoivce
     // without waiting for a button to be clicked
 
-    //order.order is a hold order, state.order contains current order
     if (rootState.order.orderStatus === CONSTANTS.ORDER_STATUS_ON_HOLD) {
       return dispatch('modifyHoldOrder', action)
     } else if (
@@ -1968,6 +2157,14 @@ const actions = {
         return dispatch('createCarhopOrder', action)
       } else {
         return dispatch('modifyCarhopOrder', { action: action, data: false })
+      }
+    } else if (
+        rootState.order.orderType.OTApi === CONSTANTS.ORDER_TYPE_TAKEAWAY
+    ) {
+      if (!rootState.order.orderId) {
+        return dispatch('createWalkinOrder', action)
+      } else {
+        return dispatch('modifyTakeawayOrder', { action: action, data: false })
       }
     } else {
       return dispatch('createWalkinOrder')

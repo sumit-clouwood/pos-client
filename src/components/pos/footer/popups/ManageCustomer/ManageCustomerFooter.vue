@@ -22,7 +22,7 @@
         id="cust-new"
         @click="addCustomerForm"
         data-toggle="modal"
-        data-target="#customer"
+        :data-target="customer_target"
       >
         {{ _t('Create New Customer') }}
       </button>
@@ -51,6 +51,7 @@ export default {
   data() {
     return {
       page: 1,
+      customer_target: '#customer',
     }
   },
   computed: {
@@ -62,12 +63,24 @@ export default {
       this.setPageNumber(pageNumber)
     },
     addCustomerForm: function() {
-      this.addCustomer()
-      $('#post_announcement').attr('disabled', false) //Disable Save button if pressed
-      $('#customer input, #customer select').val('')
-      $('.nogeneral').show()
-      $('#manage-customer').modal('hide')
-      $('.customerAddressWrapper').show()
+      if (
+        ['carhop', 'dine_in', 'walk_in', 'takeaway'].includes(
+          this.$store.state.order.orderType.OTApi
+        )
+      ) {
+        this.customer_target = '#customer-loyalty'
+        $('#customer-loyalty input').val('')
+        $('#manage-customer').modal('hide')
+        // $('#customer-loyalty').show()
+      } else {
+        this.customer_target = '#customer'
+        this.addCustomer()
+        $('#post_announcement').attr('disabled', false) //Disable Save button if pressed
+        $('#customer input, #customer select').val('')
+        $('.nogeneral').show()
+        $('#manage-customer').modal('hide')
+        $('.customerAddressWrapper').show()
+      }
     },
     ...mapActions('customer', ['setPageNumber', 'addCustomer']),
   },

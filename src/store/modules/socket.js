@@ -38,12 +38,7 @@ const actions = {
       commit('LAST_ORDER_ID', payload.data.order_id)
       dispatch('deliveryManager/getOnlineOrders', {}, { root: true }).then(
         () => {
-          // eslint-disable-next-line no-console
-          console.log(payload, 'ffpayload')
           if (onlineOrders.count && payload.data.action_id === 'add') {
-            // eslint-disable-next-line no-console
-            console.log('onlineOrders', onlineOrders.count, storeId)
-            //showModal('#online-order')
             dispatch('playSound')
           }
         }

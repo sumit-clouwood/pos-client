@@ -58,6 +58,23 @@
             }}</span>
           </div>
         </div>
+        <div class="left-form" v-if="orderType.OTApi === 'carhop'">
+          <div class="email-from">
+            <label class="color-text-invert">
+              {{ _t('Car Number') }}
+            </label>
+            <input
+              type="text"
+              autocomplete="off"
+              name="car_number"
+              class="text-width"
+              v-model="newCustomerDetails.car_number"
+            />
+            <span class="validation-error" v-if="errors.car_number">{{
+              errors.car_number
+            }}</span>
+          </div>
+        </div>
       </div>
     </div>
   </form>
@@ -81,7 +98,12 @@ export default {
   data() {
     return {
       errors: {},
-      newCustomerDetails: { name: '', email: '', phone_number: '' },
+      newCustomerDetails: {
+        name: '',
+        email: '',
+        phone_number: '',
+        car_number: '',
+      },
     }
   },
   computed: {
@@ -91,6 +113,7 @@ export default {
       customerCreateStatus: state => state.customer.responseInformation,
       customerId: state => state.customer.customer._id,
     }),
+    ...mapState('order', ['orderType']),
   },
   methods: {
     getData() {
@@ -119,6 +142,17 @@ export default {
           this.errors.count = 1
         }
       }
+      // if (this.orderType.OTApi === 'carhop') {
+      //   if (
+      //     !this.newCustomerDetails.car_number ||
+      //     !getWithoutSpaceLength(this.newCustomerDetails.car_number)
+      //   ) {
+      //     this.errors.car_number =
+      //       this._t('Car number') + ' ' + this._t('is required')
+      //     this.errors.count = 1
+      //   }
+      // }
+
       if (
         !this.newCustomerDetails.phone_number ||
         !getWithoutSpaceLength(this.newCustomerDetails.phone_number)
@@ -141,6 +175,7 @@ export default {
       this.newCustomerDetails.name = null
       this.newCustomerDetails.phone_number = null
       this.newCustomerDetails.email = null
+      this.newCustomerDetails.car_number = null
     },
   },
 }

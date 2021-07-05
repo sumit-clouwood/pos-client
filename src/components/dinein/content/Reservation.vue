@@ -249,8 +249,6 @@ export default {
           getReservation
         )
         $('#NewReservation').modal('show')
-        // eslint-disable-next-line no-console
-        console.log(getReservation)
       } else {
         let data = {
           assigned_table_id: id,

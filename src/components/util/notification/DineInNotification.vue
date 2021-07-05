@@ -56,7 +56,7 @@
           </div>
         </li>
       </ul>
-      <ul class="dropdown-menu dropdown-menu-right  ff cursor-pointer" v-else>
+      <ul class="dropdown-menu dropdown-menu-right cursor-pointer" v-else>
         <li class="notification-header">
           <h4>{{ _t('Notifications') }}</h4>
           <h4 @click="openNotifications">X</h4>
@@ -71,7 +71,7 @@
 import { mapGetters, mapState } from 'vuex'
 /* global $ */
 export default {
-  name: 'Notification',
+  name: 'DineInNotification',
   /*data() {
     return {
       readyItemNotification: this.ready_items(),
@@ -225,11 +225,11 @@ ul.dropdown-menu.show {
     padding: 0.6rem 1.5rem 0.6rem 1.5rem;
   }
 }
-.carhop-wrapper {
+/*.carhop-wrapper {
   ul.dropdown-menu.show {
     @media only screen and (max-width: 599px) {
       transform: translate3d(-300px, 46px, 0px);
     }
   }
-}
+}*/
 </style>

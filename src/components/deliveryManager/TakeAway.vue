@@ -19,9 +19,9 @@
     <div class="dm-ready-order-wrapper" id="Waiting-for-Collections">
       <Preloader :msg="_t('Loading new orders') + '...'" v-if="loading" />
       <!--suppress XmlDuplicatedId -->
-      <div id="dm-new-order" v-else>
+      <!-- <div id="dm-new-order" v-else>
         <DMItem :actionDetails="actionDetailsWaiting" />
-      </div>
+      </div> -->
     </div>
     <div class="dm-ready-order-wrapper" id="collected">
       <Preloader :msg="_t('Loading new orders') + '...'" v-if="loading" />
@@ -62,16 +62,16 @@ export default {
     return {
       actionDetailsNew: {
         moreDetails: true,
-        action: 'takeaway_ready',
-        actionLabel: 'Ready',
+        action: ['takeaway_ready', 'pay'],
+        actionLabel: ['Collected', 'Pay'],
         nextOrderStatus: 'paid',
       },
-      actionDetailsWaiting: {
-        moreDetails: true,
-        action: 'takeaway_picked',
-        actionLabel: 'Collected',
-        nextOrderStatus: 'finished',
-      },
+      // actionDetailsNew: {
+      //   moreDetails: true,
+      //   action: ['takeaway_picked', 'pay'],
+      //   actionLabel: ['Collected', 'Pay'],
+      //   nextOrderStatus: 'finished',
+      // },
       actionDetailsCollected: {
         moreDetails: false,
         action: '',

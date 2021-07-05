@@ -3,23 +3,25 @@
     <div class="dm-delivery-details-btn">
       <ul class="dm-ullist">
         <li
-          :class="{ active: listType == _t('NEW TAKEAWAY ORDERS') }"
+          :class="{ active: listType == _t('WAITING FOR COLLECTION') }"
           data-related="new-Collections"
           @click="
             updateOrderStatus({
               orderStatus: 'in-progress',
               collected: 'no',
               pageId: 'takeaway_new',
-              title: _t('NEW TAKEAWAY ORDERS'),
+              title: _t('WAITING FOR COLLECTION'),
               dataRelated: 'new-Collections',
               section: 'takeaway',
             })
           "
         >
-          <a role="button">{{ _t('New Order') }}</a
-          ><span v-if="orderCount">{{ orderCount.take_away.new_order }}</span>
+          <a role="button">{{ _t('Waiting for Collections') }}</a
+          ><span v-if="orderCount">{{
+            orderCount.take_away.Waiting_for_collection
+          }}</span>
         </li>
-        <li
+        <!-- <li
           class="pick"
           data-related="Waiting-for-Collections"
           :class="{ active: listType == _t('WAITING FOR COLLECTION') }"
@@ -38,7 +40,7 @@
           ><span v-if="orderCount">{{
             orderCount.take_away.Waiting_for_collection
           }}</span>
-        </li>
+        </li> -->
         <li
           class="pick"
           data-related="collected"

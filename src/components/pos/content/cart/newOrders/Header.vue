@@ -1,7 +1,13 @@
 <template>
   <div class="main-orders-contacts color-text">
     <div class="main-oreders-title">
-      {{ cartType == 'hold' ? _t('Hold Orders') : _t('New Orders') }}
+      {{
+        cartType == 'hold'
+          ? _t('Hold Orders')
+          : orderData
+          ? orderType.OTview + ' #' + orderData.order_no
+          : _t('New Order')
+      }}
       <DateTimeVue />
     </div>
     <div class="main-oreders-email" v-if="selectedCustomer && online">
@@ -132,7 +138,13 @@ export default {
   },
   computed: {
     ...mapGetters('location', ['_t']),
-    ...mapState('order', ['items', 'cartType', 'orderType', 'futureOrder']),
+    ...mapState('order', [
+      'items',
+      'cartType',
+      'orderType',
+      'futureOrder',
+      'orderData',
+    ]),
     ...mapState('checkoutForm', ['msg']),
     ...mapState('location', ['timezoneString']),
     ...mapState({ selectedCustomer: state => state.customer.customer }),

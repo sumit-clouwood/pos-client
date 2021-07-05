@@ -5,12 +5,18 @@
         <table class="responsive-table">
           <thead>
             <tr>
-              <th class="table_header" style="width: 150px">Order No</th>
-              <th class="table_header" width="400px">Items</th>
-              <th class="table_header" style="width: 150px">Amount</th>
-              <th class="table_header" style="width: 100px">Status</th>
+              <th class="table_header" style="width: 150px">
+                {{ _t('Order No') }}
+              </th>
+              <th class="table_header" width="400px">{{ _t('Items') }}</th>
+              <th class="table_header" style="width: 150px">
+                {{ _t('Amount') }}
+              </th>
+              <th class="table_header" style="width: 100px">
+                {{ _t('Status') }}
+              </th>
               <th class="table_header text-center" style="width: 215px">
-                Action
+                {{ _t('Action') }}
               </th>
             </tr>
           </thead>
@@ -23,7 +29,7 @@
                   data-dismiss="modal"
                   data-target=".bd-example-modal-lg"
                   data-toggle="modal"
-                  >Order # {{ order.order_no }}</span
+                  >{{ _t('Order') }} # {{ order.order_no }}</span
                 >
               </td>
               <td class="mobile-items">
@@ -39,10 +45,11 @@
                 {{ order.currency }} {{ order.balance_due }}
               </td>
               <td>
-                <span class="in-progress">Running</span>
+                <span class="in-progress">{{ _t('Running') }}</span>
               </td>
               <td>
                 <div class="button-wrapper btn-align-row">
+                  <ready-action :order="order"></ready-action>
                   <div class="dropdown">
                     <button
                       class="button btn btn-success color-main color-text-invert dropdown-toggle"
@@ -90,7 +97,7 @@
                     </div>
                   </div>
                   <router-link
-                    v-if="canPay"
+                    v-if="canPay && !order.order_payments.length"
                     :to="'/carhop' + store + '/' + order._id"
                     class="pay-now-carhop"
                   >
@@ -120,7 +127,7 @@
                       </span>
                     </span>
                   </router-link>
-                  <router-link
+                  <!-- <router-link
                     v-else
                     :to="'/carhop' + store + '/' + order._id"
                     class="pay-now-carhop"
@@ -150,7 +157,7 @@
                         {{ _t('Update Order') }}
                       </span>
                     </span>
-                  </router-link>
+                  </router-link> -->
                 </div>
               </td>
             </tr>
@@ -175,7 +182,7 @@
       </div>
     </div>
     <div v-else>
-      <span class="not-found">No running order found.</span>
+      <span class="not-found">{{ _t('No running order found') }}.</span>
     </div>
   </div>
 </template>
@@ -183,6 +190,7 @@
 <script>
 import { mapActions, mapState, mapGetters } from 'vuex'
 import paginate from 'vuejs-paginate'
+import ReadyAction from './ReadyAction'
 
 export default {
   name: 'CompletedOrders',
@@ -190,6 +198,7 @@ export default {
     orders: Object,
   },
   components: {
+    ReadyAction,
     paginate,
   },
   data() {
@@ -251,13 +260,26 @@ export default {
 
 .btn-align-row {
   display: grid;
-  grid-template-columns: max-content 1fr !important;
   width: max-content;
   .pay-now-carhop {
     width: max-content;
-    @include responsive(mobile) {
-      margin-left: 1rem;
-    }
+  }
+  @include responsive(mobile) {
+    display: flex;
+    flex-flow: column;
+    row-gap: 10px;
+  }
+}
+.carhop-running-orders {
+  .btn-align-row {
+    grid-template-columns: 1fr 1fr auto;
+    padding-right: 15px;
+  }
+}
+.carhop-completed-orders {
+  .btn-align-row {
+    grid-template-columns: auto auto auto;
+    grid-column-gap: $px5;
   }
 }
 #dropdownMenuButton {
@@ -319,7 +341,7 @@ export default {
   }
   .button-wrapper {
     width: max-content;
-    margin-left: 0px !important;
+    margin-left: 0 !important;
   }
   .button-wrapper > a span.dinefor-paynow {
     margin-left: 0;

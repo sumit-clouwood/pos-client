@@ -97,13 +97,17 @@ const actions = {
     // orderData.order_no = orderData.orderNumber || orderData.order_no //Custom Order No to give appropriate field for Habib
     let orderNo = orderData.orderNumber || orderData.order_no //Custom Order No to give appropriate field for Habib
     let dateTime = orderData.real_created_datetime
-      .toString()
-      .replace(/[\s-:]/g, '')
+      ? orderData.real_created_datetime.toString().replace(/[\s-:]/g, '')
+      : ''
     if (orderNo) {
       orderData.order_no = orderNo
-    } else {
+    } else if (dateTime) {
       orderData.order_no = dateTime
       orderData.orderNumber = dateTime
+    } else {
+      let ord_no = rootState.order.selectedOrder.item.order_no
+      orderData.order_no = ord_no
+      orderData.orderNumber = ord_no
     }
     let dt = rootState.auth.deviceType
     let isIOS = dt.osType
@@ -411,7 +415,9 @@ const actions = {
       'carhop-update-order',
       'carhop-place-order',
       'dine-in-place-order',
+      'takeaway-place-order',
       'carhop-modify-order',
+      'takeaway-modify-order',
       'modify-dine-in-order',
     ]
     if (

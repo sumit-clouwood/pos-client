@@ -399,9 +399,9 @@ const actions = {
     //replace item in cart
     commit('NOTE_BEFORE_ITEM', note)
   },
-  addItemDeliveryTime({ commit }, time) {
-    let item = { ...state.item }
-    item.item_serving_time = time
+  addItemDeliveryTime({ commit }, data) {
+    let item = { ...data.item }
+    item.item_serving_time = data.time
     commit(mutation.REPLACE_ORDER_ITEM, {
       item: item,
     })
@@ -1588,6 +1588,12 @@ const actions = {
         OTApi: CONST.ORDER_TYPE_CARHOP,
       })
     }
+    if (state.orderType.OTApi == 'takeaway') {
+      commit(mutation.ORDER_TYPE, {
+        OTview: 'Takeaway',
+        OTApi: CONST.ORDER_TYPE_TAKEAWAY,
+      })
+    }
     commit(mutation.SET_ORDER_ID, orderId)
 
     dispatch('startOrder')
@@ -1597,7 +1603,7 @@ const actions = {
       let orderDetails = {}
 
       orderDetails.item = response.data.item
-      orderDetails.customer = response.data.collected_data.customer
+      orderDetails.customer = response.data.collected_data.customer || {}
       orderDetails.lookups = response.data.collected_data.page_lookups
       orderDetails.store_name = response.data.collected_data.store_name
       orderDetails.invoice =
@@ -1738,6 +1744,16 @@ const actions = {
           resolve(orderDetails)
         })
         .catch(error => reject(error))
+    })
+  },
+  // eslint-disable-next-line no-empty-pattern
+  makeOrderReady({}, order_id) {
+    return new Promise((resolve, reject) => {
+      OrderService.makeCarhopOrderReady(order_id)
+        .then(response => {
+          resolve(response)
+        })
+        .catch(er => reject(er))
     })
   },
   fetchOrderDetailsOnly({ commit }, orderId) {

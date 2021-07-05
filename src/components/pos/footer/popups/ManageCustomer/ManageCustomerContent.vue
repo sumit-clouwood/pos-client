@@ -139,9 +139,13 @@ export default {
     ...mapGetters('modules', ['enabled']),
     ...mapGetters('location', ['_t']),
     addressPopup() {
-      return !this.isBrandHasDeliveryOrder && !this.enabled(CONST.MODULE_CRM)
-        ? ''
-        : '#add-to-order'
+      let addToOrderPopup =
+        this.isBrandHasDeliveryOrder &&
+        this.enabled(CONST.MODULE_CRM) &&
+        this.orderType.OTApi === 'call_center'
+          ? '#add-to-order'
+          : ''
+      return addToOrderPopup
     },
   },
   data: function() {

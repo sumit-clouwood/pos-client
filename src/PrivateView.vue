@@ -119,8 +119,8 @@ export default {
   mixins: [Cookie, ResizeMixin],
   data: function() {
     return {
-      loading: true,
       reloadButton: false,
+      loading: true,
       systemError: false,
       userError: false,
       progressIncrement: 0,
@@ -445,7 +445,6 @@ export default {
       this.$store.commit('order/RESET_SPLIT_BILL')
       if (to.name !== 'setOrderType') {
         //set order type is already set in dinin.vue, don't override here
-
         let orderType = {
           OTview: 'Walk In',
           OTApi: 'walk_in',
@@ -456,6 +455,12 @@ export default {
             orderType = {
               OTview: 'Dine In',
               OTApi: 'dine_in',
+            }
+            break
+          case 'Takeaway':
+            orderType = {
+              OTview: 'Take Away',
+              OTApi: 'takeaway',
             }
             break
           case 'Carhop':
@@ -510,8 +515,6 @@ export default {
   },
   //life cycle hooks
   mounted() {
-    console.log('In private view mounted')
-
     if (this.$route.params.order_id) {
       this.orderId = this.$route.params.order_id
       this.$store.commit('order/RESET_SPLIT_BILL')
