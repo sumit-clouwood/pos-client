@@ -43,7 +43,10 @@
           {{ _t('Customer Name') }}:
           <b class="text-capitalize">{{ customerProfile.name }}</b>
         </p>
-        <p class="profile-customer-title color-text">
+        <p
+          class="profile-customer-title color-text"
+          v-if="customerProfile.email"
+        >
           {{ _t('Email') }}: <b>{{ customerProfile.email }}</b>
         </p>
         <p class="profile-customer-title color-text-invert">
@@ -154,6 +157,7 @@ export default {
         if (
           order.credit &&
           order.order_payments.length === 1 &&
+          order.order_system_status === 'normal' &&
           order.order_payments[0].name === CONST.CUSTOMER_CREDIT
         ) {
           amount += parseFloat(order.balance_due)
@@ -171,7 +175,11 @@ export default {
       }
       let amount = 0
       this.pastOrders.forEach(order => {
-        if (order.credit && order.order_payments.length > 1) {
+        if (
+          order.credit &&
+          order.order_system_status === 'normal' &&
+          order.order_payments.length > 1
+        ) {
           amount += parseFloat(order.balance_due)
         }
       })
