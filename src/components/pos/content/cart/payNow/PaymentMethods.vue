@@ -62,6 +62,7 @@ export default {
     },
   },
   computed: {
+    ...mapState({ selectedCustomer: state => state.customer.customer }),
     ...mapState({
       activeMethod: state => state.checkoutForm.method.name,
       payments: state => state.checkoutForm.payments,
@@ -70,6 +71,7 @@ export default {
       loyaltyCard: state => state.customer.customerLoyalty.card,
     }),
     ...mapGetters('location', ['_t']),
+    ...mapGetters('payment', ['cash']),
     ...mapState('sync', ['online']),
     ...mapGetters(['payNowCalcHendler']),
     ...mapGetters({
@@ -107,6 +109,8 @@ export default {
           this.$refs.paymentmethods.setActive(CONST.AGGREGATOR)
         }
       } else {
+        // eslint-disable-next-line no-debugger
+        debugger
         let index = this.payments.findIndex(
           payment => payment.method.type === CONST.AGGREGATOR
         )
@@ -122,6 +126,17 @@ export default {
       this.methodCardHendlerChange(slide.priority)
 
       if (this.$store.getters['checkoutForm/payable'] > 0) {
+        if (slide.type == CONST.CUSTOMER_CREDIT_TYPE) {
+          if (!this.selectedCustomer) {
+            this.setErrorMessage(
+              'Credit customer payment',
+              'Please select customer for credit payment.'
+            )
+            this.$store.commit('checkoutForm/setMethod', this.cash, {
+              root: true,
+            })
+          }
+        }
         if (slide.type == CONST.LOYALTY) {
           if (this.online) {
             if (this.selectedModal == '#manage-customer') {

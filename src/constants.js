@@ -36,6 +36,7 @@ export const CARD = 'card'
 export const AGGREGATOR = 'aggregator'
 export const CASH = 'cash'
 export const ONLINE = 'online'
+export const CUSTOMER_CREDIT_TYPE = 'customer_credit'
 export const CUSTOMER_CREDIT = 'Customer Credit'
 export const GO_ORDER_LOYALTY = 'go_order_loyalty'
 
