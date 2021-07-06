@@ -56,6 +56,7 @@ const state = {
   needSupervisorAccess: false,
   newOrder: null,
   alert: {},
+  creditCustomerPaymentLoader: false,
   noteBeforeItem: undefined,
   orderItemData: undefined,
   creditOrderPayment: { order: undefined, order_payments: undefined },
@@ -1866,7 +1867,7 @@ const actions = {
         })
     })
   },
-  creditOrderPay({ state, dispatch, rootState }) {
+  creditOrderPay({ state, dispatch, rootState, commit }) {
     return new Promise((resolve, reject) => {
       let order_id = state.creditOrderPayment.order._id
       let order_payment = { order_payments: [] }
@@ -1884,16 +1885,20 @@ const actions = {
         param2: parseFloat(state.creditOrderPayment.order.balance_due),
         param3: null,
       }
+      commit('creditCustomerPaymentLoader', true)
       order_payment.order_payments.push(prepare_payment)
       OrderService.creditOrderPayment(order_id, order_payment)
         .then(response => {
           let customer = rootState.customer.customer
           dispatch('customer/fetchSelectedCustomer', customer._id, {
             root: true,
+          }).then(() => {
+            commit('creditCustomerPaymentLoader', false)
           })
           resolve(response)
         })
         .catch(err => {
+          commit('creditCustomerPaymentLoader', false)
           reject(err)
         })
     })
@@ -2017,6 +2022,10 @@ const mutations = {
 
   [mutation.ADD_MODIFIERS_DATA_TO_ITEM](state, modifiers) {
     state.item.modifiersData = modifiers
+  },
+
+  creditCustomerPaymentLoader(state, status) {
+    state.creditCustomerPaymentLoader = status
   },
 
   [mutation.SET_ITEM_TAX](state, tax) {

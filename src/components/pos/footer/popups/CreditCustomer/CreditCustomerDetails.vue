@@ -1,6 +1,13 @@
 <template>
   <div class="container credit-customer-details">
     <hr />
+    <progressbar
+      v-if="creditCustomerPaymentLoader"
+      :init="10"
+      :step="10"
+      :interval="1"
+      :range="100"
+    />
     <ul class="nav nav-tabs">
       <li
         :class="{ active: activeTab === 'details' }"
@@ -121,15 +128,12 @@ import { mapActions, mapGetters, mapState } from 'vuex'
 import OrderHistory from './OrderHistory'
 import * as CONST from '@/constants'
 import PaymentMethods from '../../../content/cart/payNow/PaymentMethods'
-// import progressbar from '@/components/util/progressbar'
+import progressbar from '@/components/util/progressbar'
 /* global $ */
 export default {
   name: 'CreditCustomerDetails',
-  components: { PaymentMethods, OrderHistory },
+  components: { PaymentMethods, OrderHistory, progressbar },
   props: {},
-  /*components: {
-    progressbar,
-  },*/
   data() {
     return {
       activeTab: 'details',
@@ -142,6 +146,8 @@ export default {
       customerProfile: state =>
         state.customer.customer ? state.customer.customer : false,
       pastOrders: state => state.customer.pastOrders,
+      creditCustomerPaymentLoader: state =>
+        state.order.creditCustomerPaymentLoader,
     }),
     ...mapState('checkoutForm', ['method']),
     remainingAmount() {
