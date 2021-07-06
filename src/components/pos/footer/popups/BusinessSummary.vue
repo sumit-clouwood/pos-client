@@ -498,7 +498,7 @@
                     class="font-weight-bold"
                     v-if="
                       BSData.REPORT_DINEIN_PANDDING_ORDER_COUNT &&
-                        parse.float(BSData.REPORT_DINEIN_PANDDING_ORDER) > 0.01
+                        parseFloat(BSData.REPORT_DINEIN_PANDDING_ORDER) > 0.01
                     "
                   >
                     <td
@@ -591,6 +591,30 @@
                       border-right: 1px dashed #000"
                     >
                       {{ formatPrice(BSData.REPORT_CAPHOP_UNPAID_ORDER) }}
+                    </td>
+                  </tr>
+                  <tr
+                    class="font-weight-bold"
+                    v-if="BSData.REPORT_TAKEAWAY_PANDDING_ORDER_COUNT"
+                  >
+                    <td
+                      style="border-right: 1px dashed #000;
+                      border-left: 1px dashed #000;
+                      text-align: left;padding: 0.3rem;"
+                    >
+                      {{ _t('Uncollected Takeaway Orders') }}
+                    </td>
+                    <td
+                      style="padding-left: 10px;
+                      border-right: 1px dashed #000"
+                    >
+                      {{ BSData.REPORT_TAKEAWAY_PANDDING_ORDER_COUNT }}
+                    </td>
+                    <td
+                      style="padding-left: 10px;
+                      border-right: 1px dashed #000"
+                    >
+                      {{ formatPrice(BSData.REPORT_TAKEAWAY_PANDDING_ORDER) }}
                     </td>
                   </tr>
                   <tr
