@@ -53,18 +53,39 @@
                     :order="order"
                     class="carhop-ready-"
                   ></ready-action>
-                  <button
+                  <div
+                    class="carhop-completed"
                     v-if="
                       (order.dispatch_history &&
                         order.dispatch_history.new &&
                         order.dispatch_history.new.length) ||
                         typeof order.dispatch_history === undefined
                     "
-                    class="button btn btn-success carhop-completed"
-                    @click="orderCollection(order._id)"
                   >
-                    {{ _t('Collected') }}
-                  </button>
+                    <button
+                      v-if="processedOrder.includes(order._id)"
+                      class="button text-button btn btn-success"
+                      type="button"
+                    >
+                      <div class="button-content-container">
+                        <div class="button-icon-container">
+                          <!---->
+                        </div>
+                        <div class="button-caption" :style="{ opacity: 1 }">
+                          <i class="fa fa-circle-o-notch fa-spin"></i>
+                          {{ _t('wait') }}
+                        </div>
+                      </div>
+                    </button>
+                    <button
+                      v-else
+                      class="button btn btn-success"
+                      @click="orderCollection(order._id)"
+                    >
+                      {{ _t('Collected') }}
+                    </button>
+                  </div>
+
                   <div class="dropdown">
                     <button
                       class="button btn btn-success color-main color-text-invert dropdown-toggle"
@@ -217,7 +238,9 @@ export default {
     paginate,
   },
   data() {
-    return {}
+    return {
+      processedOrder: [],
+    }
   },
   computed: {
     ...mapState('order', ['selectedOrder']),
@@ -249,6 +272,7 @@ export default {
     ...mapActions('order', ['selectedOrderDetails']),
     ...mapActions('deliveryManager', ['printInvoice']),
     orderCollection(orderId) {
+      this.processedOrder.push(orderId)
       this.orderCollected(orderId).then(() => {
         this.fetchMore(this.page)
       })
