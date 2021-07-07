@@ -56,6 +56,7 @@
                   <button
                     v-if="
                       (order.dispatch_history &&
+                        order.dispatch_history.new &&
                         order.dispatch_history.new.length) ||
                         typeof order.dispatch_history === undefined
                     "
