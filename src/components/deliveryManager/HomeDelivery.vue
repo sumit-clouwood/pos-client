@@ -298,7 +298,7 @@ export default {
     this.interval = setInterval(() => {
       let dmautoloader = this.listType == 'Waiting for Pick' ? false : true
       this.$store.dispatch('deliveryManager/fetchDMOrderDetail', dmautoloader)
-    }, 1000 * 60)
+    }, 1500 * 60)
   },
   destroyed() {
     clearInterval(this.interval)
