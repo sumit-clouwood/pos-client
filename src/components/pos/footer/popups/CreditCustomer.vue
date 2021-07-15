@@ -1,6 +1,12 @@
 <template>
   <!-- Add Note -->
-  <div class="modal fade" id="credit-customer" role="dialog">
+  <div
+    class="modal fade"
+    id="credit-customer"
+    role="dialog"
+    data-keyboard="false"
+    data-backdrop="static"
+  >
     <div class="modal-dialog modal-dialog-centered">
       <!-- Modal content-->
       <div class="modal-content color-dashboard-background">
@@ -103,8 +109,9 @@
                 type="button"
                 class="btn btn-danger cancel-announce color-text-invert color-button"
                 data-dismiss="modal"
+                @click="clearSearch()"
               >
-                {{ _t('Cancel') }}
+                {{ _t('Close') }}
               </button>
             </div>
           </div>
@@ -158,6 +165,7 @@ export default {
     clearSearch() {
       this.searchTerm = ''
       this.$store.dispatch('customer/resetCustomer')
+      this.customer_details = false
     },
     /*loyaltyHendlerChange() {
       this.searchTerm = ''

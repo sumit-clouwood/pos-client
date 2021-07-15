@@ -174,7 +174,7 @@
                       style="padding-left: 10px;
                       border-right: 1px dashed #000; width: 40%"
                     >
-                      {{ formatPrice(BSData.REPORT_ITEM_DISCOUNT_VALUE) }}
+                      {{ formatPrice(BSData.REPORT_SUM_OF_DISCOUNT) }}
                     </td>
                   </tr>
                   <tr class="font-weight-bold">
