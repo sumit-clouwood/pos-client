@@ -120,6 +120,8 @@ const getters = {
 const actions = {
   auth({ commit }, deviceId) {
     return new Promise((resolve, reject) => {
+      //authservice ll look into localstorage for token, if token found return token
+      //otherwise return reject
       AuthService.getAccess(process.env, deviceId)
         .then(response => {
           if (!response.data.token) {

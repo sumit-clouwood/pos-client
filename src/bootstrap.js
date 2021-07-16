@@ -32,13 +32,21 @@ export default {
   loadStore() {
     return this.fetchData()
   },
+  getApiVersions() {
+    return LocationService.getApiVersions()
+  },
   setup(store) {
+    //user already logged in, setup is not called without login
     this.store = store
     return new Promise((resolve, reject) => {
+      //setup idb
       this.setupDB()
-        .then(idb => {
+        .then(async idb => {
           console.log('dbsetup, now feth data')
           this.store.commit('sync/setIdb', idb)
+          //fetch current logged in user details, because login api doesn't send us user details infull
+          await this.getApiVersions()
+          //control ll not moved to below until getapiversions is fullfilled
           this.fetchLoggedInUser()
             .then(() => {
               resolve()
@@ -57,12 +65,15 @@ export default {
       this.setNetwork()
     })
   },
+  //call user details and then call menu api
   async fetchLoggedInUser() {
     DataService.setLang($store.state.location.locale)
     return new Promise((resolve, reject) => {
       const currentStoreId =
         $store.getters['context/store_id'] || localStorage.getItem('store_id')
       this.detectBrowser().then(deviceId => {
+        //there is possibility that user was logged in and page refreshed
+        //auth/auth ll check only token, if token present then go fwd otherwise bk
         this.store.dispatch('auth/auth', deviceId).then(() => {
           $store
             .dispatch('auth/getUserDetails')
