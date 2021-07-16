@@ -15,6 +15,7 @@ const state = {
   lastFetch: 0,
   offlineSync: false,
   isLoading: false,
+  apiVersions: undefined,
 
   modules: {
     store: CONST.LOADING_STATUS_LOADING,
@@ -59,6 +60,10 @@ const actions = {
   },
   setLoader({ commit }, payload) {
     commit('SET_IS_LOADING', payload)
+  },
+  setApiVersions({ commit }, payload) {
+    commit('SET_API_VERSIONS', payload)
+    //ADD VERSIONS TO IDB AS WELL
   },
 }
 
@@ -108,6 +113,9 @@ const mutations = {
   },
   SET_IS_LOADING(state, payload) {
     state.isLoading = payload
+  },
+  SET_API_VERSIONS(state, payload) {
+    state.apiVersions = payload
   },
 }
 

@@ -1,6 +1,12 @@
 import DataService from '@/services/DataService'
 
 export default {
+  getApiVersions() {
+    return DataService.get(
+      '/model/core_versions?no_limit=true&lookups_needed=0&min_max_needed=0',
+      false
+    )
+  },
   //Get country,city,location and drivers data by location id . ?lang=ru-RU
   getLocationData() {
     //const language = typeof lang != 'undefined' ? '&lang=' + lang : ''
