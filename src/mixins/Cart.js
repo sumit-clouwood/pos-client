@@ -106,8 +106,16 @@ export default {
           'checkoutForm/setMethod',
           this.$store.getters['payment/cash']
         )
-        this.$store.commit('sync/reload', true)
-        bootstrap.loadUI('orderStart').then(() => {})
+
+        //check if last reload was before 6 hours
+        const time = +new Date()
+        let lastUpdatedTime = localStorage.getItem('catalog_updated_on') || 0
+        lastUpdatedTime = parseInt(lastUpdatedTime) + 1000 * 60 * 60 * 6
+        if (lastUpdatedTime <= time) {
+          localStorage.setItem('catalog_updated_on', time)
+          this.$store.commit('sync/reload', true)
+          bootstrap.loadUI('orderStart').then(() => {})
+        }
       }
 
       this.$store.commit('order/SET_CART_TYPE', 'new')
