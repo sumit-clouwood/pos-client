@@ -12,6 +12,10 @@ var LOG_DOCUMENT = 'log'
 var client = null
 var enabledConsole = false
 
+//const VERSION = '<VERSION>';
+const VERSION = '1'
+const RUNTIME = 'runtime' + VERSION
+
 var notificationOptions = {
   body: '',
   icon: './img/icons/apple-icon.png',
@@ -266,15 +270,11 @@ var EventListener = {
 
       var handler = Factory.offlineHandler(clonedRequest)
 
-      if (handler) {
+      if (handler && handler.intercept) {
         // attempt to send request normally
         event.respondWith(
           fetch(clonedRequest)
             .then(data => {
-              if (!handler.intercept) {
-                return Promise.resolve(data)
-              }
-
               return new Promise(resolve => {
                 data.json().then(serverResponse => {
                   DB.open(() => {
@@ -330,6 +330,35 @@ var EventListener = {
               })
             })
         )
+      } else {
+        //if no handler was defined
+        //put api response in cache and possibily serve from cache
+        if (event.request.method == 'GET') {
+          event.respondWith(
+            caches
+              .match(event.request, { ignoreVary: true })
+              .then(cachedResponse => {
+                if (cachedResponse) {
+                  return cachedResponse
+                }
+
+                return caches.open(RUNTIME).then(cache => {
+                  return fetch(event.request).then(response => {
+                    if (response.ok) {
+                      var clonnedResponse = response.clone()
+                      // Put a copy of the response in the runtime cache.
+                      return cache
+                        .put(event.request, clonnedResponse)
+                        .then(() => {
+                          return response
+                        })
+                    }
+                    return response
+                  })
+                })
+              })
+          )
+        }
       }
     })
   },

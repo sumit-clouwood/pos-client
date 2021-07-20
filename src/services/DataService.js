@@ -2,8 +2,8 @@
 import axios from 'axios'
 import createAuthRefreshInterceptor from 'axios-auth-refresh'
 import db from '@/services/network/DB'
-import DateTime from '@/plugins/helpers/DateTime.js'
-
+import $store from '@/store'
+import { rules } from 'eslint-config-prettier'
 const apiURL = process.env.VUE_APP_API_ENDPOINT
 
 axios.defaults.headers.post['Content-Type'] = 'application/json'
@@ -99,118 +99,52 @@ export default {
     return validResponse
   },
 
-  fetchFromServer(url, resolve, reject) {
-    if (!localStorage.getItem('token')) {
-      this.store.dispatch('auth/logout', { preserve: ['brand_id', 'store_id'] })
-      return Promise.reject('token expired or not found, logout')
-    }
-
-    //const newDate = new DateTime()
-    //this.syncDate = newDate.getDate()
-    const absUrl = this.getAbsUrl(url)
-    axios
-      .get(apiURL + url)
-      .then(response => {
-        if (this.isValidResponse(response)) {
-          this.saveEventOffline({
-            request: absUrl,
-            response: response.data,
-          })
-            .then(() => {
-              this.setLastUpdate(absUrl, new Date())
-            })
-            .catch(error => {
-              console.log('offline save event fails', error)
-            })
-
-          resolve(response)
-        } else {
-          reject(response)
-        }
-      })
-      .catch(() => {
-        this.getOfflineEventData(absUrl).then(response => {
-          if (response) {
-            resolve(response)
-          } else {
-            //reject(`No data found in both live and local for url ${absUrl}`)
-            resolve({ data: {} })
-          }
-        })
-      })
-  },
-
   get(url, level) {
+    if (!url.includes('core_versions')) {
+      let uriparts = url
+        .substring(1)
+        .replace('model/', '')
+        .split('/')
+
+      let model = uriparts[0].split('?')[0]
+
+      let apiVersion = $store.getters['sync/getVersion'](model) || 0
+
+      let glue = '?'
+
+      if (url.includes('?')) {
+        glue = '&'
+      }
+
+      url += glue + 'fetch_version=' + apiVersion
+    }
     url = this.getContextUrl(url, level)
     return new Promise((resolve, reject) => {
-      // axios
-      //   .get(apiURL + url)
-      //   .then(response => {
-      //     if (this.isValidResponse(response)) {
-      //       resolve(response)
-      //     } else {
-      //       reject(response)
-      //     }
-      //   })
-      //   .catch(error => reject(error))
-      if (process.env.VUE_APP_CACHE_FIRST) {
-        this.getCacheable(url)
-          .then(response => resolve(response))
-          .catch(error => reject(error))
-      } else {
-        return this.fetchFromServer(url, resolve, reject)
+      if (!localStorage.getItem('token')) {
+        this.store.dispatch('auth/logout', {
+          preserve: ['brand_id', 'store_id'],
+        })
+        return Promise.reject('token expired or not found, logout')
       }
+
+      axios
+        .get(apiURL + url)
+        .then(response => {
+          if (this.isValidResponse(response)) {
+            resolve(response)
+          } else {
+            reject(response)
+          }
+        })
+        .catch(err => {
+          reject(err)
+        })
     })
   },
-  /*if (this.lang && this.lang !== 'en-US') {
-      url += '&translations_needed=1&lang=' + this.lang
-    } else {
-      url += '&lang=' + this.lang
-  }*/
 
-  getLive(url, level) {
-    url = this.getContextUrl(url, level)
-    if (!localStorage.getItem('token')) {
-      this.store.dispatch('auth/logout')
-      return Promise.reject('token expired or not found, logout')
-    }
-
-    return axios.get(apiURL + url)
-  },
   getT(url, level) {
     url += '&translations_needed=1&lang=' + this.lang || 'en-US'
     return this.get(url, level)
-  },
-
-  getCacheable(url) {
-    const absUrl = this.getAbsUrl(url)
-    return new Promise((resolve, reject) => {
-      this.getOfflineEventData(absUrl)
-        .then(response => {
-          if (!response.lastUpdated) {
-            //no response found in local db, get it from live
-            this.fetchFromServer(url, resolve, reject)
-          } else {
-            const lastUpdatedTime = response.lastUpdated.getTime()
-            const nowTime = new Date().getTime()
-            const days = (nowTime - lastUpdatedTime) / (1000 * 3600 * 24)
-
-            const newDate = new DateTime(response.lastUpdated)
-
-            if (days > 1) {
-              //resync time greater than 1 day, get live, we ll change this later
-              this.fetchFromServer(absUrl, resolve, reject)
-            } else {
-              this.syncDate = newDate.getDate()
-              resolve(response)
-            }
-          }
-        })
-        .catch(() => {
-          //no data found in the localdb
-          this.fetchFromServer(url, resolve, reject)
-        })
-    })
   },
 
   post(url, data, level) {
@@ -253,48 +187,5 @@ export default {
 
   factory() {
     return axios
-  },
-
-  saveEventOffline({ request, response }) {
-    return new Promise((resolve, reject) => {
-      db.getBucket('events')
-        .then(bucket => {
-          db.put(bucket, { url: request, data: response })
-            .then(response => {
-              resolve(response)
-            })
-            .catch(error => {
-              reject(error)
-            })
-        })
-        .catch(error =>
-          console.log(
-            'error opening db bucket events',
-            error,
-            request,
-            response
-          )
-        )
-    })
-  },
-  setLastUpdate(request, time) {
-    db.getBucket('events').then(bucket =>
-      db.find(bucket, request).then(data => {
-        data.lastUpdated = time
-        db.put(bucket, data)
-      })
-    )
-  },
-  getOfflineEventData(request) {
-    return new Promise((resolve, reject) => {
-      db.getBucket('events').then(bucket =>
-        db
-          .find(bucket, request)
-          .then(data => {
-            resolve(data)
-          })
-          .catch(error => reject(error))
-      )
-    })
   },
 }
