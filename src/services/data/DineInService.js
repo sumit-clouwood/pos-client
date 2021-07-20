@@ -77,7 +77,7 @@ export default {
   },
 
   getAllBookedTables() {
-    return DataService.getLive(
+    return DataService.get(
       '/model/reservations?page_id=tables_reserved&page=1&limit=999999'
     )
   },

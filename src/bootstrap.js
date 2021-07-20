@@ -32,9 +32,7 @@ export default {
   loadStore() {
     return this.fetchData()
   },
-  getApiVersions() {
-    return LocationService.getApiVersions()
-  },
+
   setup(store) {
     //user already logged in, setup is not called without login
     this.store = store
@@ -45,7 +43,7 @@ export default {
           console.log('dbsetup, now feth data')
           this.store.commit('sync/setIdb', idb)
           //fetch current logged in user details, because login api doesn't send us user details infull
-          await this.getApiVersions()
+          await this.store.dispatch('sync/getApiVersions')
           //control ll not moved to below until getapiversions is fullfilled
           this.fetchLoggedInUser()
             .then(() => {

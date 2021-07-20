@@ -1,6 +1,7 @@
 // initial state
 import * as CONST from '@/constants'
-
+import LocationService from '@/services/data/LocationService'
+import workflow from '../../plugins/helpers/workflow'
 const state = {
   //date: '2019-02-06',
   compress: false,
@@ -31,6 +32,21 @@ const state = {
 
 // getters
 const getters = {
+  all_core_versions: state => state.apiVersions || [],
+  getVersion: (state, getters) => model => {
+    var collection_remaps = {
+      root_stores: 'stores',
+      new_style_root_delivery_areas: 'new_style_store_delivery_areas',
+      root_order_discounts: 'brand_order_discounts',
+    }
+    var collection_id = collection_remaps[model] || model
+
+    var ver = getters.all_core_versions
+    if (ver.length > 0 && ver[0].versions[collection_id] !== undefined) {
+      return ver[0].versions[collection_id]
+    }
+    return undefined
+  },
   lastFetch: state => fmt => {
     const seconds = (new Date().getTime() - state.lastFetch) / 1000
     switch (fmt) {
@@ -61,9 +77,16 @@ const actions = {
   setLoader({ commit }, payload) {
     commit('SET_IS_LOADING', payload)
   },
-  setApiVersions({ commit }, payload) {
-    commit('SET_API_VERSIONS', payload)
+  async getApiVersions({ commit }) {
+    const payload = await LocationService.getApiVersions()
+
+    commit('SET_API_VERSIONS', payload.data.data)
     //ADD VERSIONS TO IDB AS WELL
+    workflow.storeData({
+      key: 'api_versions',
+      data: payload.data.data,
+    })
+    return Promise.resolve()
   },
 }
 
