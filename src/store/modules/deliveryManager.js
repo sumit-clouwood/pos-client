@@ -227,7 +227,7 @@ const actions = {
       commit(mutation.SERVICE_DRIVERS, response.data.data)
     })
   },
-  getOnlineOrders({ rootGetters, commit, state }) {
+  getOnlineOrders({ rootGetters, commit, state, dispatch }) {
     const params = [
       '',
       50,
@@ -250,6 +250,13 @@ const actions = {
               let onlineOrders = {
                 count: response.data.count,
                 orders: response.data.data,
+              }
+              if (onlineOrders.orders.length) {
+                onlineOrders.orders.forEach(order => {
+                  if (order.order_type === 'dine_in') {
+                    dispatch('dinein/dineInRunningOrders', {}, { root: true })
+                  }
+                })
               }
               resolve()
               commit(mutation.SET_ONLINE_ORDERS, onlineOrders)

@@ -169,9 +169,11 @@ const actions = {
           })
 
           commit(mutation.BOOKED_TABLES, response.data)
-          dispatch('getDineInArea').then(() => {
-            return resolve()
-          })
+          if (!state.areas) {
+            dispatch('getDineInArea').then(() => {
+              return resolve()
+            })
+          }
           if (loader) commit(mutation.LOADING, false)
         })
         .catch(er => reject(er))

@@ -1813,6 +1813,9 @@ const actions = {
                 case 'hold':
                   dispatch('holdOrders/remove', order, { root: true })
                   break
+                case 'dine_in':
+                  dispatch('dinein/dineInRunningOrders', {}, { root: true })
+                  break
                 case 'call_center':
                 case 'takeaway':
                   dispatch(

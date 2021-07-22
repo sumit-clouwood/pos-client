@@ -93,7 +93,12 @@
                             #{{ order.order_no }} | {{ _t('Cancelled') }}
                           </button>
                         </div>
-                        <div class="running-actions">
+                        <div
+                          class="running-actions"
+                          v-if="
+                            order.order_system_status !== 'requires_acceptance'
+                          "
+                        >
                           <div class="dropdown">
                             <button
                               class="button btn btn-success color-main color-text-invert dropdown-toggle"
@@ -198,6 +203,68 @@
                               }}</span></a
                             >
                           </button>
+                        </div>
+
+                        <div
+                          v-if="
+                            order.order_system_status === 'requires_acceptance'
+                          "
+                          class="button-block running-actions"
+                          style="visibility: visible;"
+                        >
+                          <div
+                            class="button-block"
+                            v-if="
+                              processedOrder.includes(order._id) &&
+                                loading_awating_order_response
+                            "
+                          >
+                            <button
+                              class="button text-button btn btn-success"
+                              type="button"
+                            >
+                              <div class="button-content-container">
+                                <div class="button-icon-container">
+                                  <!---->
+                                </div>
+                                <div
+                                  class="button-caption"
+                                  :style="{ opacity: 1 }"
+                                >
+                                  <i class="fa fa-circle-o-notch fa-spin"></i>
+                                  {{ _t('wait') }}
+                                </div>
+                              </div>
+                            </button>
+                          </div>
+                          <div v-else>
+                            <span
+                              :key="LabelIndex"
+                              style="margin: 0.2rem"
+                              v-for="(label,
+                              LabelIndex) in actionDetails.actionLabel"
+                            >
+                              <button
+                                @click.stop="
+                                  updateOrder({
+                                    order: order,
+                                    orderType: order.order_type,
+                                    actionTrigger:
+                                      actionDetails.action[LabelIndex],
+                                  })
+                                "
+                                class="button text-button btn btn-success"
+                                type="button"
+                              >
+                                <div class="button-content-container">
+                                  <div class="button-icon-container"></div>
+                                  <div class="button-caption">
+                                    {{ actionDetails.actionLabel[LabelIndex] }}
+                                  </div>
+                                </div>
+                              </button>
+                            </span>
+                          </div>
                         </div>
                       </div>
                       <div class="modifiers-content">
@@ -325,6 +392,13 @@ export default {
   },
   data() {
     return {
+      actionDetails: {
+        moreDetails: false,
+        actionLabel: ['Accept', 'Reject'],
+        action: ['delivery_accept', 'delivery_reject'],
+        nextOrderStatus: 'in-progress',
+      },
+      processedOrder: [],
       timerTime: false,
       isOrderCancelledClass: 'table-order-view',
       page: 1,
@@ -350,6 +424,9 @@ export default {
   },
   mixins: [DateTime],
   computed: {
+    ...mapState({
+      loading_awating_order_response: state => state.deliveryManager.loading,
+    }),
     ...mapState('location', ['timezoneString']),
     ...mapGetters('location', ['_t', 'formatPrice']),
     ...mapState('order', ['selectedOrder']),
@@ -363,6 +440,19 @@ export default {
     ...mapGetters('auth', ['waiter']),
   },
   methods: {
+    updateOrder(data) {
+      this.processedOrder.push(data.order._id)
+      this.$store.commit('deliveryManager/SET_LOADING', true)
+      this.updateOrderAction(data)
+        .then(() => {
+          // this.$store.dispatch('dinein/dineInRunningOrders')
+          this.$store.dispatch('deliveryManager/getOnlineOrders')
+        })
+        .catch(er => {
+          this.err = er.data ? er.data.error : er.message
+          if (this.err) $('.information-popup').modal('show')
+        })
+    },
     hasOrders(orderDetails) {
       return orderDetails.orders.length
     },
@@ -397,7 +487,11 @@ export default {
       }
       this.fetchMoreReservations(pageInformation)
     },
-    ...mapActions('order', ['selectedOrderDetails', 'fetchOrderDetailsOnly']),
+    ...mapActions('order', [
+      'selectedOrderDetails',
+      'fetchOrderDetailsOnly',
+      'updateOrderAction',
+    ]),
     ...mapActions('deliveryManager', ['printInvoice']),
     ...mapActions('dinein', [
       'reservationUpdateStatus',

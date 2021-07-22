@@ -52,7 +52,15 @@
                                 data-target=".bd-example-modal-lg"
                                 data-toggle="modal"
                               >
-                                #{{ order.order_no }}
+                                #{{ order.order_no }} (
+                                {{
+                                  order.order_type
+                                    .replace(/[_-]/g, ' ')
+                                    .replace(/^./, function(t) {
+                                      return t.toUpperCase()
+                                    })
+                                }}
+                                )
                                 <span
                                   class="btn-future"
                                   v-if="order.future_order_datetime !== ''"
@@ -310,6 +318,7 @@ export default {
   updated() {
     if (!this.onlineOrders.count) {
       this.pauseSound()
+      this.hideOnlineModal()
     }
   },
   methods: {
