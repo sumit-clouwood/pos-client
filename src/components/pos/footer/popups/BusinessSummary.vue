@@ -174,7 +174,7 @@
                       style="padding-left: 10px;
                       border-right: 1px dashed #000; width: 40%"
                     >
-                      {{ formatPrice(BSData.REPORT_ITEM_DISCOUNT_VALUE) }}
+                      {{ formatPrice(BSData.REPORT_SUM_OF_DISCOUNT) }}
                     </td>
                   </tr>
                   <tr class="font-weight-bold">
@@ -425,32 +425,34 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr
-                    style="border: 1px dashed #000; margin-top: 10px"
-                    v-for="(payment, index) in BSData.PAYMENT_TYPES"
-                    :key="index"
-                  >
-                    <td
-                      style="border-right: 1px dashed #000;
+                  <template v-for="(payment, index) in BSData.PAYMENT_TYPES">
+                    <tr
+                      style="border: 1px dashed #000; margin-top: 10px"
+                      v-if="parseFloat(payment['REPORT-PAYMENT-TYPE']) > 0.01"
+                      :key="index"
+                    >
+                      <td
+                        style="border-right: 1px dashed #000;
                       border-left: 1px dashed #000;
                       text-align: left;padding: 0.3rem;"
-                    >
-                      {{ _t(payment['REPORT-PAYMENT-TYPE-NAME']) }}
-                    </td>
-                    <td
-                      style="padding-left: 10px;
+                      >
+                        {{ _t(payment['REPORT-PAYMENT-TYPE-NAME']) }}
+                      </td>
+                      <td
+                        style="padding-left: 10px;
                       border-right: 1px dashed #000"
-                    >
-                      {{ payment['REPORT-PAYMENT-TYPE-QUANTITY'] }}
-                    </td>
-                    <td
-                      style="padding-left: 10px;
+                      >
+                        {{ payment['REPORT-PAYMENT-TYPE-QUANTITY'] }}
+                      </td>
+                      <td
+                        style="padding-left: 10px;
                      border-right: 1px dashed #000"
-                    >
-                      {{ formatPrice(payment['REPORT-PAYMENT-TYPE']) }}
-                      <!--{{ setTotalValue(payment['REPORT-PAYMENT-TYPE']) }}-->
-                    </td>
-                  </tr>
+                      >
+                        {{ formatPrice(payment['REPORT-PAYMENT-TYPE']) }}
+                        <!--{{ setTotalValue(payment['REPORT-PAYMENT-TYPE']) }}-->
+                      </td>
+                    </tr>
+                  </template>
                   <tr class="font-weight-bold">
                     <td
                       style="border-right: 1px dashed #000;
@@ -523,7 +525,10 @@
                   </tr>
                   <tr
                     class="font-weight-bold"
-                    v-if="BSData.REPORT_CRM_PANDDING_ORDER_COUNT"
+                    v-if="
+                      BSData.REPORT_CRM_PANDDING_ORDER_COUNT &&
+                        parseFloat(BSData.REPORT_CRM_PANDDING_ORDER) > 0.01
+                    "
                   >
                     <td
                       style="border-right: 1px dashed #000;
@@ -547,7 +552,10 @@
                   </tr>
                   <tr
                     class="font-weight-bold"
-                    v-if="BSData.REPORT_CAPHOP_PANDDING_ORDER_COUNT"
+                    v-if="
+                      BSData.REPORT_CAPHOP_PANDDING_ORDER_COUNT &&
+                        parseFloat(BSData.REPORT_CAPHOP_PANDDING_ORDER) > 0.01
+                    "
                   >
                     <td
                       style="border-right: 1px dashed #000;
@@ -571,7 +579,10 @@
                   </tr>
                   <tr
                     class="font-weight-bold"
-                    v-if="BSData.REPORT_TAKEAWAY_PANDDING_ORDER_COUNT"
+                    v-if="
+                      BSData.REPORT_TAKEAWAY_PANDDING_ORDER_COUNT &&
+                        parseFloat(BSData.REPORT_TAKEAWAY_PANDDING_ORDER) > 0.01
+                    "
                   >
                     <td
                       style="border-right: 1px dashed #000;
@@ -595,7 +606,10 @@
                   </tr>
                   <tr
                     class="font-weight-bold"
-                    v-if="BSData.REPORT_CAPHOP_UNPAID_ORDER_COUNT"
+                    v-if="
+                      BSData.REPORT_CAPHOP_UNPAID_ORDER_COUNT &&
+                        parseFloat(BSData.REPORT_CAPHOP_UNPAID_ORDER) > 0.01
+                    "
                   >
                     <td
                       style="border-right: 1px dashed #000;
@@ -619,7 +633,10 @@
                   </tr>
                   <tr
                     class="font-weight-bold"
-                    v-if="BSData.REPORT_TAKEAWAY_UNPAID_ORDER_COUNT"
+                    v-if="
+                      BSData.REPORT_TAKEAWAY_UNPAID_ORDER_COUNT &&
+                        parseFloat(BSData.REPORT_TAKEAWAY_UNPAID_ORDER) > 0.01
+                    "
                   >
                     <td
                       style="border-right: 1px dashed #000;
@@ -643,7 +660,10 @@
                   </tr>
                   <tr
                     class="font-weight-bold"
-                    v-if="BSData.REPORT_DINEIN_UNPAID_ORDER_COUNT"
+                    v-if="
+                      BSData.REPORT_DINEIN_UNPAID_ORDER_COUNT &&
+                        parseFloat(BSData.REPORT_DINEIN_UNPAID_ORDER) > 0.01
+                    "
                   >
                     <td
                       style="border-right: 1px dashed #000;
@@ -667,7 +687,10 @@
                   </tr>
                   <tr
                     class="font-weight-bold"
-                    v-if="BSData.REPORT_ITEM_REFERRAL_QUANTITY"
+                    v-if="
+                      BSData.REPORT_ITEM_REFERRAL_QUANTITY &&
+                        parseFloat(BSData.REPORT_ITEM_REFERRAL_VALUE) > 0.01
+                    "
                   >
                     <td
                       style="border-right: 1px dashed #000;

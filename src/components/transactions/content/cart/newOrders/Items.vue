@@ -25,11 +25,16 @@
                 {{ item.name }}
               </p>
               <p class="price-qty">
-                @ {{ formatPrice(item.price) }} x {{ item.qty }} &nbsp; - &nbsp;
+                @
+                {{
+                  formatPrice(
+                    parseFloat(item.price) + parseFloat(item.tax || 0)
+                  )
+                }}
+                x {{ item.qty }} &nbsp; - &nbsp;
                 {{ getItemDiscountValue(order.item_discounts, item).name }}
               </p>
-              <a
-                href="javascript:void(0)"
+              <span
                 v-for="(modifier, indexNo) in order.item_modifiers"
                 :key="indexNo"
                 class="trans-item-btn"
@@ -37,7 +42,18 @@
                 <span v-if="modifier.for_item == index">{{
                   modifier.name
                 }}</span>
-              </a>
+                <span v-if="modifier.price !== 0">
+                  &nbsp; ({{
+                    format_number(
+                      parseFloat(modifier.price) + parseFloat(modifier.tax)
+                    )
+                  }}
+                  x {{ modifier.qty }})&#x200E;</span
+                >
+                <span v-else-if="modifier.qty > 1"
+                  >(x {{ modifier.qty }})&#x200E;</span
+                >
+              </span>
               <div v-if="item.note">
                 <span class="item-note">{{ _t('Note') }}: </span>
                 <i> {{ item.note }}</i>
@@ -47,12 +63,15 @@
         </div>
         <div class="trans-menu-replace">
           <div class="aed-amt">
-            <span>{{
-              formatPrice(
-                item.price * item.qty -
-                  getItemDiscountValue(order.item_discounts, item).value || 0
-              )
-            }}</span>
+            <span>
+              <!-- {{
+                formatPrice(
+                  item.price * item.qty -
+                    getItemDiscountValue(order.item_discounts, item).value || 0
+                )
+              }} -->
+              {{ formatPrice(item_total(item.no)) }}
+            </span>
           </div>
           <!--<div class="replace-btn">
             <a href="javascript:void(0)" @click="modifyThisOrder">{{
@@ -82,6 +101,31 @@ export default {
     ...mapGetters('location', ['formatPrice', '_t']),
   },
   methods: {
+    item_total(item_no) {
+      var total = 0
+      for (var item of this.order.items) {
+        if (item.no == item_no) {
+          total += (parseFloat(item.price) + parseFloat(item.tax)) * item.qty
+        }
+      }
+      for (var modifier of this.order.item_modifiers) {
+        if (modifier.for_item == item_no) {
+          total +=
+            (parseFloat(modifier.price) + parseFloat(modifier.tax)) *
+            modifier.qty
+        }
+      }
+      for (var item_discount of this.order.item_discounts) {
+        if (item_discount.for_item == item_no) {
+          total -= parseFloat(item_discount.price)
+          total -= parseFloat(item_discount.tax)
+        }
+      }
+      return total < 0 ? '0.00' : total
+    },
+    format_number(number) {
+      return parseFloat(number).toFixed(2)
+    },
     getItemImage(itemName, column) {
       let itemData = this.catItems.find(
         data => data.name.toLowerCase() === itemName.toLowerCase()

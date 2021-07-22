@@ -1008,9 +1008,9 @@ const actions = {
     if (['dine-in-order-preview'].includes(action)) {
       return
     }
-    dispatch('transactionOrders/getTransactionOrders', null, {
-      root: true,
-    })
+    // dispatch('transactionOrders/getTransactionOrders', null, {
+    //   root: true,
+    // })
   },
 
   getModifyOrder({ state, rootState }) {

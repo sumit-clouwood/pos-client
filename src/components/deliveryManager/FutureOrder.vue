@@ -36,7 +36,7 @@ export default {
   mounted() {
     this.interval = setInterval(() => {
       this.$store.dispatch('deliveryManager/fetchDMOrderDetail')
-    }, 1000 * 61)
+    }, 1500 * 61)
   },
   destroyed() {
     clearInterval(this.interval)
