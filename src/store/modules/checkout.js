@@ -27,7 +27,7 @@ const state = {
   orderCreationSource: '',
   orderItemsPayload: {},
   dineInSplitedItems: false,
-  loaylty_earn_points: []
+  loaylty_earn_points: [],
 }
 
 // getters
@@ -142,7 +142,6 @@ const actions = {
   },
 
   validateEvent({ commit, rootState, dispatch }, { action, data }) {
-
     if (state.processing === true) {
       // eslint-disable-next-line
       console.log('Dual event detected')
@@ -227,7 +226,8 @@ const actions = {
 
     if (
       rootState.order.selectedOrder &&
-      rootState.order.selectedOrder.customer && Array.isArray(rootState.customer.address)
+      rootState.order.selectedOrder.customer &&
+      Array.isArray(rootState.customer.address)
     ) {
       order.customer_address_id = rootState.customer.address[0]._id
       deliveryAreaId = rootState.customer.address[0].delivery_area_id
@@ -242,7 +242,8 @@ const actions = {
       deliveryAreaId
     )
     console.log(deliveryArea, 'delivery area, dd')
-    let isDeliverySurchargeRemoved = rootState.surcharge.isDeliverySurchargeRemoved
+    let isDeliverySurchargeRemoved =
+      rootState.surcharge.isDeliverySurchargeRemoved
     if (deliveryArea) {
       if (deliveryArea.special_order_surcharge && !isDeliverySurchargeRemoved) {
         order.delivery_surcharge = deliveryArea.special_order_surcharge
@@ -489,7 +490,11 @@ const actions = {
           if (!oitem.split && oitem.paid === false) {
             item = oitem
           }
-          if (oitem.split && oitem.paid === false && !rootState.dinein.moveItemTableId) {
+          if (
+            oitem.split &&
+            oitem.paid === false &&
+            !rootState.dinein.moveItemTableId
+          ) {
             item = oitem
           }
         } else {
@@ -533,7 +538,7 @@ const actions = {
         if (item.measurement_unit) {
           orderItem.measurement_unit = item.measurement_unit
         }
-        
+
         if (item.measurement_weight) {
           orderItem.qty = 1
           orderItem.measurement_weight = item.measurement_weight
@@ -637,12 +642,14 @@ const actions = {
   injectDineInItemsData({ rootState }, order) {
     let orderCovers = []
     order.items = order.items.map(oitem => {
-      let itemCover = oitem.originalItem && oitem.originalItem.coverNo
-        ? oitem.originalItem.coverNo
-        : rootState.dinein.selectedCover._id
-      let itemCoverName = oitem.originalItem && oitem.originalItem.cover_name
-        ? oitem.originalItem.cover_name
-        : rootState.dinein.selectedCover.name
+      let itemCover =
+        oitem.originalItem && oitem.originalItem.coverNo
+          ? oitem.originalItem.coverNo
+          : rootState.dinein.selectedCover._id
+      let itemCoverName =
+        oitem.originalItem && oitem.originalItem.cover_name
+          ? oitem.originalItem.cover_name
+          : rootState.dinein.selectedCover.name
 
       if (!orderCovers.some(item => item.entity_id == itemCover)) {
         if (itemCover) {
@@ -792,9 +799,13 @@ const actions = {
               //send order for payment
               let order = {}
               const orderPlacementTime = rootState.order.startTime
-              let past_order_history =  []
-              if (rootState.order.orderType.OTApi == CONSTANTS.ORDER_TYPE_DINE_IN) {
-                past_order_history = rootState.order.selectedOrder ? rootState.order.selectedOrder.item.order_action_history : []
+              let past_order_history = []
+              if (
+                rootState.order.orderType.OTApi == CONSTANTS.ORDER_TYPE_DINE_IN
+              ) {
+                past_order_history = rootState.order.selectedOrder
+                  ? rootState.order.selectedOrder.item.order_action_history
+                  : []
               }
               try {
                 const transitionOrderNo =
@@ -813,7 +824,9 @@ const actions = {
                 order = {
                   cashier_id: rootState.auth.userDetails.item._id,
                   assigned_to: rootState.auth.userDetails.item._id,
-                  customer: !rootState.isBrandHasDeliveryOrder ? rootState.customer.customerId : '',
+                  customer: !rootState.isBrandHasDeliveryOrder
+                    ? rootState.customer.customerId
+                    : '',
                   customer_address_id: '',
                   referral: '',
                   transition_order_no: transitionOrderNo,
@@ -886,7 +899,9 @@ const actions = {
                 order.future_order_datetime = rootState.order.futureOrder
               }
               //carhop_ready_0: order not ready yet 1 means order ready show notification with bell
-              if (rootGetters['order/orderType'] === CONSTANTS.ORDER_TYPE_CARHOP) {
+              if (
+                rootGetters['order/orderType'] === CONSTANTS.ORDER_TYPE_CARHOP
+              ) {
                 order.carhop_ready = false
               }
 
@@ -936,15 +951,30 @@ const actions = {
                       })
                       let empty_old_order_action = Object.assign({}, order)
                       empty_old_order_action.order_action_history = []
-                      if (rootState.order.orderType.OTApi == CONSTANTS.ORDER_TYPE_DINE_IN) {
-                        let order_actions = {action: action_order, date_time: orderPlacementTime, order: compressToBase64(JSON.stringify(empty_old_order_action))}
+                      if (
+                        rootState.order.orderType.OTApi ==
+                        CONSTANTS.ORDER_TYPE_DINE_IN
+                      ) {
+                        let order_actions = {
+                          action: action_order,
+                          date_time: orderPlacementTime,
+                          order: compressToBase64(
+                            JSON.stringify(empty_old_order_action)
+                          ),
+                        }
                         if (order.order_action_history.length) {
                           // let lastOrderUpdate = order.order_action_history[order.order_action_history.length - 1]
-                          let firstTimeOrderPlacement = order.order_action_history[0]
-                          let difference_in_order = CompareData.findDiffString(decompressFromBase64(firstTimeOrderPlacement.order), JSON.stringify(empty_old_order_action))
+                          let firstTimeOrderPlacement =
+                            order.order_action_history[0]
+                          let difference_in_order = CompareData.findDiffString(
+                            decompressFromBase64(firstTimeOrderPlacement.order),
+                            JSON.stringify(empty_old_order_action)
+                          )
                           // let difference_in_order_remove_item = CompareData.findDiffString(JSON.stringify(empty_old_order_action), decompressFromBase64(firstTimeOrderPlacement.order))
                           if (difference_in_order.length > 50) {
-                            order_actions.order = compressToBase64(JSON.stringify(difference_in_order))
+                            order_actions.order = compressToBase64(
+                              JSON.stringify(difference_in_order)
+                            )
                             order.order_action_history.push(order_actions)
                           } /*else if (difference_in_order_remove_item.length > 50) {
                           order_actions.order = compressToBase64(JSON.stringify(difference_in_order_remove_item))
@@ -1008,9 +1038,9 @@ const actions = {
     if (['dine-in-order-preview'].includes(action)) {
       return
     }
-    dispatch('transactionOrders/getTransactionOrders', null, {
-      root: true,
-    })
+    // dispatch('transactionOrders/getTransactionOrders', null, {
+    //   root: true,
+    // })
   },
 
   getModifyOrder({ state, rootState }) {
@@ -1149,14 +1179,20 @@ const actions = {
     })
   },
 
-  createDineOrder({ dispatch, commit, getters, rootGetters, state, rootState }, action) {
+  createDineOrder(
+    { dispatch, commit, getters, rootGetters, state, rootState },
+    action
+  ) {
     return new Promise(resolve => {
       OrderService.saveOrder(state.order)
         .then(response => {
           if (response.data.status === 'ok') {
             commit('order/SET_ORDER_ID', response.data.id, { root: true })
             commit('SET_ORDER_NUMBER', response.data.order_no)
-            commit('LOAYLTY_EARN_POINTS', response.data.loyalty_cards_with_points)
+            commit(
+              'LOAYLTY_EARN_POINTS',
+              response.data.loyalty_cards_with_points
+            )
             //we are not printing so reset manually here
             let msg = rootGetters['location/_t']('Dinein Order has been paid')
             if (action === 'dine-in-place-order') {
@@ -1167,21 +1203,25 @@ const actions = {
                 commit('SPLITED_ITEM', false)
               } else {
                 commit('SPLITED_ITEM', true)
-                if (rootState.order.selectItemsToMove)  {
+                if (rootState.order.selectItemsToMove) {
                   msg = rootGetters['location/_t'](
-                      'Selected item(s) are moved to another table.'
+                    'Selected item(s) are moved to another table.'
                   )
                 } else {
                   msg = rootGetters['location/_t'](
-                      'Payment done for selected item(s).'
+                    'Payment done for selected item(s).'
                   )
                 }
               }
               //Invoice APP API Call with Custom Request JSON
               if (!state.dineInSplitedItems) {
-                dispatch('printingServer/printingServerInvoiceRaw', state.order, {
-                  root: true,
-                })
+                dispatch(
+                  'printingServer/printingServerInvoiceRaw',
+                  state.order,
+                  {
+                    root: true,
+                  }
+                )
               }
 
               let resetFull = false
@@ -1257,11 +1297,18 @@ const actions = {
                 commit(mutation.PRINT, false)
                 commit('order/CLEAR_SELECTED_ORDER', null, { root: true })
                 if (!getters.complete) {
-                  if (rootState.dinein.moveItemTableId && rootState.order.selectItemsToMove) {
-                    dispatch('dinein/newReservationForMovingItems', rootState.dinein.moveItemTableId, {root: true}).then(() => {
+                  if (
+                    rootState.dinein.moveItemTableId &&
+                    rootState.order.selectItemsToMove
+                  ) {
+                    dispatch(
+                      'dinein/newReservationForMovingItems',
+                      rootState.dinein.moveItemTableId,
+                      { root: true }
+                    ).then(() => {
                       dispatch('splitOrder', {
                         action: action,
-                        data: {selectedCovers: selectedCovers},
+                        data: { selectedCovers: selectedCovers },
                       }).then(() => resolve())
                     })
                   }
@@ -1281,13 +1328,9 @@ const actions = {
                 /*dispatch('printingServer/printingServerInvoiceRaw', state.order, {
                   root: true,
                 })*/
-                commit(
-                    'checkout/SET_PAYMENT_ACTION',
-                    'modify-dine-in-order',
-                    {
-                      root: true,
-                    }
-                )
+                commit('checkout/SET_PAYMENT_ACTION', 'modify-dine-in-order', {
+                  root: true,
+                })
                 if (rootState.order.splitted || rootState.order.splitBill) {
                   commit('order/SET_SPLITTED', true, { root: true })
                   //mark items as paid in current execution
@@ -1334,13 +1377,13 @@ const actions = {
                 }
                 resolve()
               }
-              if (!rootState.order.selectItemsToMove)  {
+              if (!rootState.order.selectItemsToMove) {
                 commit(
-                    'checkoutForm/SET_MSG',
-                    { result: '', message: msgStr },
-                    {
-                      root: true,
-                    }
+                  'checkoutForm/SET_MSG',
+                  { result: '', message: msgStr },
+                  {
+                    root: true,
+                  }
                 )
                 dispatch('dinein/getBookedTablesOnClick', true, { root: true })
               }
@@ -1539,7 +1582,10 @@ const actions = {
                 //Invoice APP API Call with Custom Request JSON
                 let checkout_order = rootState.checkout.order
                 let selected_order = rootState.order.selectedOrder.item
-                let updated_order = Object.assign(selected_order, checkout_order)  
+                let updated_order = Object.assign(
+                  selected_order,
+                  checkout_order
+                )
                 dispatch(
                   'printingServer/printingServerInvoiceRaw',
                   updated_order,
@@ -1547,13 +1593,9 @@ const actions = {
                     root: true,
                   }
                 )
-                commit(
-                    'checkout/SET_PAYMENT_ACTION',
-                    'carhop-modify-order',
-                    {
-                      root: true,
-                    }
-                )
+                commit('checkout/SET_PAYMENT_ACTION', 'carhop-modify-order', {
+                  root: true,
+                })
               }
               commit('order/CLEAR_SELECTED_ORDER', null, { root: true })
               commit(
@@ -1587,8 +1629,8 @@ const actions = {
   },
 
   modifyTakeawayOrder(
-      { dispatch, rootState, rootGetters, commit },
-      { action = false, data = false }
+    { dispatch, rootState, rootGetters, commit },
+    { action = false, data = false }
   ) {
     return new Promise(resolve => {
       dispatch('getModifyOrder').then(order => {
@@ -1599,117 +1641,116 @@ const actions = {
           order = { ...order, ...data }
         }
         OrderService.updateOrderItems(order, rootState.order.orderId)
-            .then(response => {
-              if (response.data.status === 'ok') {
-                let msgStr = rootGetters['location/_t'](
-                    'Takeaway order has been Updated'
-                )
-                if (rootState.order.selectedOrder) {
-                  commit(
-                      'SET_ORDER_NUMBER',
-                      rootState.order.selectedOrder.item.order_no
-                  )
-                  dispatch(
-                      'setToken',
-                      rootState.order.selectedOrder.item.token_number
-                  ) //order paid
-                }
-                if (
-                    rootState.checkoutForm.action === 'pay' &&
-                    (action === 'modify-backend-order' || !action)
-                ) {
-                  msgStr = rootGetters['location/_t'](
-                      'Takeaway order has been Paid'
-                  )
-                  commit(mutation.PRINT, true)
-                }
-
-                let dt = rootState.auth.deviceType
-                let isIOS = dt.osType
-                if (isIOS) {
-                  if (rootState.checkoutForm.action === 'add') {
-                    dispatch('createModifyOrderItemListTakeaway')
-                  }
-                } else {
-                  let newItems = []
-                  rootState.order.items.forEach(item => {
-                    /*if (typeof item.no === 'undefined')*/ {
-                      newItems.push({
-                        name: item.name,
-                        entity_id: item._id,
-                        no: item.orderIndex,
-                        status: 'in-progress',
-                        //itemTax.undiscountedTax is without modifiers
-                        tax: item.tax,
-                        price: item.netPrice,
-                        qty: item.quantity,
-                        originalItem: item,
-                      })
-                    }
-                  })
-                  if (newItems.length && rootState.order.selectedOrder) {
-                    rootState.order.selectedOrder.item.items = newItems.map(
-                        item => {
-                          delete item.originalItem
-                          return item
-                        }
-                    )
-                  }
-                  //Invoice APP API Call with Custom Request JSON
-                  let checkout_order = rootState.checkout.order
-                  let selected_order = rootState.order.selectedOrder.item
-                  let updated_order = Object.assign(selected_order, checkout_order)
-                  dispatch(
-                      'printingServer/printingServerInvoiceRaw',
-                      updated_order,
-                      {
-                        root: true,
-                      }
-                  )
-                  commit(
-                      'checkout/SET_PAYMENT_ACTION',
-                      'takeaway-modify-order',
-                      {
-                        root: true,
-                      }
-                  )
-                }
-                commit('order/CLEAR_SELECTED_ORDER', null, { root: true })
+          .then(response => {
+            if (response.data.status === 'ok') {
+              let msgStr = rootGetters['location/_t'](
+                'Takeaway order has been Updated'
+              )
+              if (rootState.order.selectedOrder) {
                 commit(
-                    'checkoutForm/SET_MSG',
-                    { result: '', message: msgStr },
-                    {root: true,}
+                  'SET_ORDER_NUMBER',
+                  rootState.order.selectedOrder.item.order_no
                 )
-                commit(mutation.SET_ROUTE, { name: 'TakeawayOrders' })
-                // router.replace({ name: 'TakeawayOrders' })
-                let orderStatus = {
-                  collected: 'no',
-                  dataRelated: 'new-Collections',
-                  orderStatus: 'in-progress',
-                  pageId: 'takeaway_new',
-                  section: 'takeaway',
-                  title: 'WAITING FOR COLLECTION',
-                }
-                commit('deliveryManager/LIST_TYPE', orderStatus.title)
-                commit('deliveryManager/SECTION', orderStatus.section)
-                dispatch('deliveryManager/updateDMOrderStatus', orderStatus)
-                resolve()
-              } else {
-                dispatch('handleSystemErrors', response).then(() => resolve())
+                dispatch(
+                  'setToken',
+                  rootState.order.selectedOrder.item.token_number
+                ) //order paid
               }
+              if (
+                rootState.checkoutForm.action === 'pay' &&
+                (action === 'modify-backend-order' || !action)
+              ) {
+                msgStr = rootGetters['location/_t'](
+                  'Takeaway order has been Paid'
+                )
+                commit(mutation.PRINT, true)
+              }
+
+              let dt = rootState.auth.deviceType
+              let isIOS = dt.osType
+              if (isIOS) {
+                if (rootState.checkoutForm.action === 'add') {
+                  dispatch('createModifyOrderItemListTakeaway')
+                }
+              } else {
+                let newItems = []
+                rootState.order.items.forEach(item => {
+                  /*if (typeof item.no === 'undefined')*/ {
+                    newItems.push({
+                      name: item.name,
+                      entity_id: item._id,
+                      no: item.orderIndex,
+                      status: 'in-progress',
+                      //itemTax.undiscountedTax is without modifiers
+                      tax: item.tax,
+                      price: item.netPrice,
+                      qty: item.quantity,
+                      originalItem: item,
+                    })
+                  }
+                })
+                if (newItems.length && rootState.order.selectedOrder) {
+                  rootState.order.selectedOrder.item.items = newItems.map(
+                    item => {
+                      delete item.originalItem
+                      return item
+                    }
+                  )
+                }
+                //Invoice APP API Call with Custom Request JSON
+                let checkout_order = rootState.checkout.order
+                let selected_order = rootState.order.selectedOrder.item
+                let updated_order = Object.assign(
+                  selected_order,
+                  checkout_order
+                )
+                dispatch(
+                  'printingServer/printingServerInvoiceRaw',
+                  updated_order,
+                  {
+                    root: true,
+                  }
+                )
+                commit('checkout/SET_PAYMENT_ACTION', 'takeaway-modify-order', {
+                  root: true,
+                })
+              }
+              commit('order/CLEAR_SELECTED_ORDER', null, { root: true })
+              commit(
+                'checkoutForm/SET_MSG',
+                { result: '', message: msgStr },
+                { root: true }
+              )
+              commit(mutation.SET_ROUTE, { name: 'TakeawayOrders' })
+              // router.replace({ name: 'TakeawayOrders' })
+              let orderStatus = {
+                collected: 'no',
+                dataRelated: 'new-Collections',
+                orderStatus: 'in-progress',
+                pageId: 'takeaway_new',
+                section: 'takeaway',
+                title: 'WAITING FOR COLLECTION',
+              }
+              commit('deliveryManager/LIST_TYPE', orderStatus.title)
+              commit('deliveryManager/SECTION', orderStatus.section)
+              dispatch('deliveryManager/updateDMOrderStatus', orderStatus)
+              resolve()
+            } else {
+              dispatch('handleSystemErrors', response).then(() => resolve())
+            }
+          })
+          .catch(error => {
+            dispatch('handleRejectedResponse', {
+              response: error,
+              offline: false,
             })
-            .catch(error => {
-              dispatch('handleRejectedResponse', {
-                response: error,
-                offline: false,
+              .then(() => {
+                resolve()
               })
-                  .then(() => {
-                    resolve()
-                  })
-                  .catch(() => {
-                    resolve()
-                  })
-            })
+              .catch(() => {
+                resolve()
+              })
+          })
       })
     })
   },
@@ -1799,14 +1840,19 @@ const actions = {
           if (response.data.status === 'ok') {
             commit('order/SET_ORDER_ID', response.data.id, { root: true })
             commit('SET_ORDER_NUMBER', response.data.order_no)
-            commit('LOAYLTY_EARN_POINTS', response.data.loyalty_cards_with_points)
+            commit(
+              'LOAYLTY_EARN_POINTS',
+              response.data.loyalty_cards_with_points
+            )
             dispatch('setToken', response.data.token_number)
             const msg = rootGetters['location/_t']('Order placed Successfully')
             dispatch('setMessage', {
               result: 'success',
               msg: msg,
             }).then(() => {
-              if (rootGetters['order/orderType'] === CONSTANTS.ORDER_TYPE_TAKEAWAY) {
+              if (
+                rootGetters['order/orderType'] === CONSTANTS.ORDER_TYPE_TAKEAWAY
+              ) {
                 commit(mutation.SET_ROUTE, { name: 'TakeawayOrders' })
               }
               resolve(response.data)
@@ -1847,8 +1893,12 @@ const actions = {
             commit('order/SET_ORDER_ID', response.data.id, { root: true })
             commit('SET_ORDER_NUMBER', response.data.order_no)
             commit('deliveryManager/LIST_TYPE', 'New Orders', { root: true })
-            commit('deliveryManager/SET_DM_ORDER_STATUS', 'in-progress', { root:  true })
-            commit('deliveryManager/SET_DM_PAGE_ID', 'home_delivery_new', { root:  true })
+            commit('deliveryManager/SET_DM_ORDER_STATUS', 'in-progress', {
+              root: true,
+            })
+            commit('deliveryManager/SET_DM_PAGE_ID', 'home_delivery_new', {
+              root: true,
+            })
             const msg = rootGetters['location/_t']('Order placed Successfully')
             dispatch('setMessage', {
               result: 'success',
@@ -1885,7 +1935,10 @@ const actions = {
           if (response.data.status === 'ok') {
             commit('order/SET_ORDER_ID', response.data.id, { root: true })
             commit('SET_ORDER_NUMBER', response.data.order_no)
-            commit('LOAYLTY_EARN_POINTS', response.data.loyalty_cards_with_points)
+            commit(
+              'LOAYLTY_EARN_POINTS',
+              response.data.loyalty_cards_with_points
+            )
             //we are not printing so reset manually here
             dispatch('reset')
 
@@ -1918,7 +1971,7 @@ const actions = {
 
   splitOrder({ dispatch, rootState, commit }, { data }) {
     let unpaidItems = ''
-    if (rootState.order.selectItemsToMove)  {
+    if (rootState.order.selectItemsToMove) {
       unpaidItems = rootState.order.items.filter(item => item.split === true)
     } else {
       unpaidItems = rootState.order.items.filter(item => item.paid === false)
@@ -1957,12 +2010,12 @@ const actions = {
             dispatch('dinein/getSelectedOrder', newOrder.id, {
               root: true,
             })
-                .then(() => {
-                  commit(mutation.SPLIT_PAID, true)
-                  commit('order/SET_SPLITTED', true, { root: true })
-                  resolve()
-                })
-                .catch(error => reject(error))
+              .then(() => {
+                commit(mutation.SPLIT_PAID, true)
+                commit('order/SET_SPLITTED', true, { root: true })
+                resolve()
+              })
+              .catch(error => reject(error))
             //new order has been created with remaining orders,
             //order items have same old order indexes so we need to update them before next order isplaced
           }
@@ -1982,17 +2035,16 @@ const actions = {
           if (response.data.status === 'ok') {
             commit('order/SET_ORDER_ID', response.data.id, { root: true })
             commit('SET_ORDER_NUMBER', response.data.order_no)
-            commit('LOAYLTY_EARN_POINTS', response.data.loyalty_cards_with_points)
+            commit(
+              'LOAYLTY_EARN_POINTS',
+              response.data.loyalty_cards_with_points
+            )
             //we are not printing so reset manually here
             dispatch('setToken', response.data.token_number)
             let msg = rootGetters['location/_t']('Carhop Order has been placed')
-            commit(
-                'checkout/SET_PAYMENT_ACTION',
-                'carhop-place-order',
-                {
-                  root: true,
-                }
-            )
+            commit('checkout/SET_PAYMENT_ACTION', 'carhop-place-order', {
+              root: true,
+            })
             if (rootState.checkoutForm.action === 'pay') {
               msg = rootGetters['location/_t']('Carhop Order has been Paid')
               commit(mutation.PRINT, true)
@@ -2076,17 +2128,29 @@ const actions = {
     if (response.data && response.data.error) {
       err_msg = response.data.error
     }
+    if (err_msg) {
+      dispatch('setMessage', {
+        result: 'error',
+        msg: err_msg,
+      })
+    } else {
+      return dispatch('handleNetworkError', response)
+    }
 
-    dispatch('setMessage', {
-      result: 'error',
-      msg: err_msg,
-    })
     return Promise.reject(err_msg)
   },
-  handleNetworkError({ rootGetters, commit }) {
-    let errorMsg = rootGetters['location/_t'](
-      'System went offline. Order is queued for sending later'
-    )
+  handleNetworkError({ rootState, rootGetters, commit }) {
+    let msg = 'System is offline. '
+    if (
+      [CONSTANTS.ORDER_TYPE_WALKIN, CONSTANTS.ORDER_TYPE_CALL_CENTER].includes(
+        rootState.order.orderType.OTApi
+      )
+    ) {
+      msg += 'Order is queued for sending later'
+    } else {
+      msg += 'Order can not be placed.'
+    }
+    let errorMsg = rootGetters['location/_t'](msg)
     commit(
       'checkoutForm/SET_MSG',
       { result: '', message: errorMsg },
@@ -2159,7 +2223,7 @@ const actions = {
         return dispatch('modifyCarhopOrder', { action: action, data: false })
       }
     } else if (
-        rootState.order.orderType.OTApi === CONSTANTS.ORDER_TYPE_TAKEAWAY
+      rootState.order.orderType.OTApi === CONSTANTS.ORDER_TYPE_TAKEAWAY
     ) {
       if (!rootState.order.orderId) {
         return dispatch('createWalkinOrder', action)
