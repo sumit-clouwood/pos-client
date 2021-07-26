@@ -55,7 +55,7 @@ export default {
       ) {
         this.$store.commit('checkoutForm/SET_MSG', {
           message:
-            "Sorry! you can't split and extra payment for credit customers",
+            "Sorry! you can't split payment and can't add extra or less payment for credit customers",
           result: 'error',
         })
         $('#payment-msg').modal('show')

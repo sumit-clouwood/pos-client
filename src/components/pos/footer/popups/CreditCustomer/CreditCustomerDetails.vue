@@ -220,7 +220,7 @@ export default {
         let scope = this
         setTimeout(function() {
           scope.msg = undefined
-        }, 2000)
+        }, 3000)
       })
       //   let order_id = this.$store.state.order.creditOrderPayment.order._id
       // $('#credit_customer' + order_id).attr('style', 'display:none')
