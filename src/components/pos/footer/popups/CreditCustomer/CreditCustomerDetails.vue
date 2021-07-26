@@ -65,6 +65,9 @@
         </p>
       </div>
       <div id="remaining_orders_history" class="tab-pane fade">
+        <span v-if="msg" class="text-success text-capitalize">
+          {{ _t(msg) }}
+        </span>
         <div v-if="remainingAmount.amount > 0">
           <OrderHistory
             v-for="order in pastOrders"
@@ -137,6 +140,7 @@ export default {
   data() {
     return {
       activeTab: 'details',
+      msg: undefined,
       payment_status: undefined,
     }
   },
@@ -211,7 +215,13 @@ export default {
         order: false,
         payment_type: this.method,
       })
-      this.creditOrderPay()
+      this.creditOrderPay().then(() => {
+        this.msg = 'Order has been paid successfully.'
+        let scope = this
+        setTimeout(function() {
+          scope.msg = undefined
+        }, 2000)
+      })
       //   let order_id = this.$store.state.order.creditOrderPayment.order._id
       // $('#credit_customer' + order_id).attr('style', 'display:none')
       $('#credit-payment-methods').attr('style', 'display:none')

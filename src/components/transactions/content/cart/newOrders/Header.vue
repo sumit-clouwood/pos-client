@@ -2,7 +2,7 @@
   <div class="transaction-cart" v-if="order">
     <div class="transaction-payment">
       <div class="trans-cash-payment">
-        <p>{{ moment(order.created_at.date) }}</p>
+        <p>{{ created_date_time(order) }}</p>
       </div>
       <div class="trans-cash-price">
         <p>
@@ -42,23 +42,40 @@
 </template>
 
 <script>
-import moment from 'moment-timezone'
+// import moment from 'moment-timezone'
 import { mapState, mapGetters } from 'vuex'
+import DateTime from '@/mixins/DateTime'
+
 export default {
   name: 'Header',
   props: {
     order: Object,
   },
+  mixins: [DateTime],
   computed: {
-    ...mapGetters('location', ['formatPrice', '_t']),
+    ...mapGetters('location', ['formatPrice', '_t', 'timezoneString']),
     ...mapState('order', ['items', 'cartType']),
     ...mapState('checkoutForm', ['msg']),
     ...mapState({ selectedCustomer: state => state.customer.customer }),
   },
   methods: {
-    moment: function(date) {
-      moment.tz.setDefault(this.$store.state.location.setTimeZone)
-      return moment(date).format('dddd, LL h:mm a')
+    // moment: function(date) {
+    //   moment.tz.setDefault(this.$store.state.location.setTimeZone)
+    //   return moment(date).format('dddd, LL h:mm a')
+    // },
+    created_date_time(order) {
+      if (order.future_order_datetime) {
+        return this.convertDatetime(
+          order.future_order_datetime,
+          this.timezoneString,
+          'dddd, LL h:mm a'
+        )
+      }
+      return this.convertDatetime(
+        order.real_created_datetime,
+        this.timezoneString,
+        'dddd, LL h:mm a'
+      )
     },
     removeSelectedCustomer() {
       this.$store.commit('location/SET_MODAL', '#manage-customer')

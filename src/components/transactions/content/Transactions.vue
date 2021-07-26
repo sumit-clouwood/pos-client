@@ -157,7 +157,6 @@ export default {
     clearInterval(this.interval)
   },
   computed: {
-    ...mapState('location', ['timezoneString']),
     ...mapState('transactionOrders', ['displayTransactionOrders']),
     ...mapState('order', ['selectedOrder']),
     ...mapGetters('location', ['_t', 'timezoneString']),

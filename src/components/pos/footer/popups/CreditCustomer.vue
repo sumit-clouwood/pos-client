@@ -98,6 +98,15 @@
                 {{ _t('Print Remaining Orders') }}
               </button>
               <button
+                type="button"
+                v-if="customer_details"
+                class="btn btn-success cancel-announce color-text-invert color-button"
+                data-dismiss="modal"
+                @click="clearPaymentMethods"
+              >
+                {{ _t('Place Order') }}
+              </button>
+              <button
                 data-toggle="modal"
                 data-dismiss="modal"
                 class="btn btn-success btn-large color-text-invert color-main"
@@ -162,7 +171,14 @@ export default {
     ...mapState('location', ['store']),
   },
   methods: {
+    clearPaymentMethods() {
+      this.$store.commit('order/CREDIT_ORDER_PAYMENT', {
+        order: '',
+        payment_type: '',
+      })
+    },
     clearSearch() {
+      this.clearPaymentMethods()
       this.searchTerm = ''
       this.$store.dispatch('customer/resetCustomer')
       this.customer_details = false
@@ -172,6 +188,7 @@ export default {
       this.$store.dispatch('loyaltyHendlerChange')
     },*/
     loyaltyAddCustomer: function(target) {
+      this.clearPaymentMethods()
       // eslint-disable-next-line no-debugger
       this.$store.commit('loyalty/LOYALTY', true)
       // $('#create-loyalty-customer').attr('disabled', false) //Disable Save button if pressed
@@ -425,6 +442,7 @@ export default {
   max-height: 140px;
 }
 #credit-customer {
+  z-index: 999;
   .modal-dialog {
     max-width: 60%;
   }

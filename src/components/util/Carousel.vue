@@ -60,9 +60,14 @@
                   </label>
                 </div>
               </li>
-
               <li
-                v-else-if="value.length === 1"
+                v-else-if="
+                  (value.length === 1 &&
+                    creditOrderPayment.order &&
+                    creditOrderPayment.order.order_payments[0].name !=
+                      dt(value[0])) ||
+                    (value.length === 1 && !creditOrderPayment.order)
+                "
                 :key="currentKey"
                 :class="{
                   active:
@@ -160,6 +165,7 @@ import ChildSlider from './carousel/ChildSlider'
 import PaymentMethodsMixin from '@/mixins/PaymentMethods'
 import * as CONST from '@/constants'
 import { bus } from '@/eventBus'
+import { mapState } from 'vuex'
 export default {
   name: 'Carousel',
   mixins: [PaymentMethodsMixin],
@@ -187,6 +193,7 @@ export default {
     }
   },
   computed: {
+    ...mapState('order', ['creditOrderPayment']),
     totalPages() {
       let length = 0
 

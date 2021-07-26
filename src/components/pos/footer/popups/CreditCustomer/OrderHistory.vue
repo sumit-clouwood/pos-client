@@ -17,7 +17,7 @@
           {{ LookupData.replaceUnderscoreHyphon(order.order_type) }}
         </span>
         <span>
-          {{ _t('Date') }}:<b> {{ order.created_at }}</b>
+          {{ _t('Date') }}:<b> {{ created_date_time(order) }}</b>
         </span>
       </div>
       <div>
@@ -48,7 +48,7 @@
           {{ LookupData.replaceUnderscoreHyphon(order.order_type) }}
         </span>
         <span>
-          {{ _t('Date') }}:<b> {{ order.created_at }}</b>
+          {{ _t('Date') }}:<b> {{ created_date_time(order) }}</b>
         </span>
       </div>
       <div>
@@ -62,10 +62,14 @@
   </div>
 </template>
 <script>
-import { mapActions, mapGetters } from 'vuex'
+import { mapActions, mapGetters, mapState } from 'vuex'
+import DateTime from '@/mixins/DateTime'
+
 /* global $ */
 export default {
   name: 'OrderHistory',
+  mixins: [DateTime],
+
   data() {
     return {
       /*active_id: '',*/
@@ -77,9 +81,24 @@ export default {
     payment_status: Boolean,
   },
   computed: {
+    ...mapState('location', ['timezoneString']),
     ...mapGetters('location', ['formatPrice', '_t']),
   },
   methods: {
+    created_date_time(order) {
+      if (order.future_order_datetime) {
+        return this.convertDatetime(
+          order.future_order_datetime,
+          this.timezoneString,
+          'Do MMMM YYYY h:mm:ss A'
+        )
+      }
+      return this.convertDatetime(
+        order.real_created_datetime,
+        this.timezoneString,
+        'Do MMMM YYYY h:mm:ss A'
+      )
+    },
     ...mapActions('order', ['selectedOrderDetails']),
     // eslint-disable-next-line no-unused-vars
     payCreditOrder(order) {

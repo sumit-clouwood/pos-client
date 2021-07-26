@@ -2178,6 +2178,10 @@ const mutations = {
     if (order.payment_type) {
       state.creditOrderPayment.order_payments = order.payment_type
     }
+    if (order.payment_type === '' && order.order === '') {
+      state.creditOrderPayment.order_payments = undefined
+      state.creditOrderPayment.order = undefined
+    }
   },
   [mutation.MARK_SPLIT_ITEMS_PAID](state) {
     const newitems = state.items.map(item => {
