@@ -342,7 +342,7 @@
                       style="padding-left: 10px;
                       border-right: 1px dashed #000"
                     >
-                      {{ BSData.REPORT_ORDER_CANCEL_REASON_QUANTITY }}
+                      {{ BSData.REPORT_SUM_OF_CANCELLATION_REASONS }}
                     </td>
                   </tr>
                   <tr>
@@ -357,7 +357,7 @@
                       style="padding-left: 10px;
                       border-right: 1px dashed #000"
                     >
-                      {{ BSData.REPORT_MODIFY_REASON_QUANTITY }}
+                      {{ BSData.REPORT_SUM_OF_MODIFICATION_REASON }}
                     </td>
                   </tr>
                   <tr>
@@ -372,7 +372,7 @@
                       style="padding-left: 10px;
                       border-right: 1px dashed #000"
                     >
-                      {{ BSData.REPORT_ORDER_REFUND_REASON_QUANTITY }}
+                      {{ BSData.REPORT_SUM_OF_REFUNDED_REASONS }}
                     </td>
                   </tr>
                   <tr>
