@@ -19,7 +19,7 @@ const state = {
 const getters = {}
 
 const actions = {
-  businessSummary({ commit, state }) {
+  businessSummary({ commit, state, rootState }) {
     commit('LOADER', true)
     let data = {
       date_from: state.date_from,
@@ -40,10 +40,20 @@ const actions = {
             return false
           } else {
             commit(mutation.BUSINESS_SUMMERY, response.data)
-            localStorage.setItem(
-              'business_summery',
-              JSON.stringify(response.data)
-            )
+            let data = response.data
+            let company_logo = rootState.location.brand.company_logo || ''
+            let store_name = rootState.location.store.name || ''
+            let date_from = state.date_from
+            let date_to = state.date_to
+            let user = rootState.auth.userDetails.item.name || ''
+            data.header = {
+              company_logo: company_logo,
+              store_name: store_name,
+              date_from: date_from,
+              date_to: date_to,
+              user: user,
+            }
+            localStorage.setItem('business_summery', JSON.stringify(data))
             commit(mutation.MODAL_VIEW, '#business-summary')
             resolve(response.data)
           }
@@ -139,8 +149,6 @@ const mutations = {
     state.loader = status
   },
   [mutation.PASSWORD_VERIFICATION](state, passwordVerification) {
-    // eslint-disable-next-line no-console
-    console.log(passwordVerification)
     state.passwordVerification = passwordVerification
   },
 }
