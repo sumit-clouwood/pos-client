@@ -95,6 +95,13 @@ export default {
   },
   methods: {
     setPassword() {
+      if (this.supervisorPassword.length < 1) {
+        this.$store.commit(
+          'reports/PASSWORD_VERIFICATION',
+          'Please enter password'
+        )
+        return false
+      }
       this.$store.dispatch(
         'reports/setSupervisorPassword',
         this.supervisorPassword,
