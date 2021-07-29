@@ -56,9 +56,16 @@ export default {
     ...mapState('order', ['needSupervisorAccess']),
     ...mapGetters('order', ['orderType']),
     ...mapState('location', ['brand']),
-    ...mapState('checkoutForm', ['msg', 'error', 'method', 'processing']),
+    ...mapState('checkoutForm', [
+      'msg',
+      'error',
+      'method',
+      'processing',
+      'amount',
+    ]),
     ...mapGetters('checkoutForm', ['validate']),
     ...mapGetters('location', ['_t']),
+    ...mapGetters('order', ['orderTotal']),
   },
   data() {
     return {}
@@ -86,6 +93,18 @@ export default {
       })
     },
     pay() {
+      if (
+        this.method.type === 'customer_credit' &&
+        parseFloat(this.amount) != parseFloat(this.orderTotal)
+      ) {
+        this.$store.commit('checkoutForm/SET_MSG', {
+          message:
+            "Sorry! you can't split payment and can't add extra or less payment for credit customers",
+          result: 'error',
+        })
+        $('#payment-msg').modal('show')
+        return false
+      }
       this.$store.commit('checkoutForm/paymentButton', 'done')
       this.$store.commit('checkoutForm/setAction', 'pay')
       this.addAmount()
