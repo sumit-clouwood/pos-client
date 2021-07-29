@@ -3,7 +3,6 @@ import axios from 'axios'
 import createAuthRefreshInterceptor from 'axios-auth-refresh'
 import db from '@/services/network/DB'
 import $store from '@/store'
-import { rules } from 'eslint-config-prettier'
 const apiURL = process.env.VUE_APP_API_ENDPOINT
 
 axios.defaults.headers.post['Content-Type'] = 'application/json'
