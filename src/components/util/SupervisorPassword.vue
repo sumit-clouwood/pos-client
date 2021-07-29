@@ -95,7 +95,7 @@ export default {
   },
   methods: {
     setPassword() {
-      if (this.supervisorPassword.length < 1) {
+      if (this.supervisorPassword.trim().length < 1) {
         this.$store.commit(
           'reports/PASSWORD_VERIFICATION',
           'Please enter password'
