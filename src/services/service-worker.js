@@ -333,7 +333,10 @@ var EventListener = {
       } else {
         //if no handler was defined
         //put api response in cache and possibily serve from cache
-        if (event.request.method == 'GET') {
+        if (
+          event.request.method == 'GET' &&
+          event.request.url.includes('fetch_version=')
+        ) {
           event.respondWith(
             caches
               .match(event.request, { ignoreVary: true })

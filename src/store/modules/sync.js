@@ -81,11 +81,12 @@ const actions = {
     const payload = await LocationService.getApiVersions()
 
     commit('SET_API_VERSIONS', payload.data.data)
-    //ADD VERSIONS TO IDB AS WELL
-    workflow.storeData({
-      key: 'api_versions',
-      data: payload.data.data,
-    })
+    //Do not add versions to idb, as we need to reload core_version on every
+    //- system load request
+    // workflow.storeData({
+    //   key: 'api_versions',
+    //   data: payload.data.data,
+    // })
     return Promise.resolve()
   },
 }
