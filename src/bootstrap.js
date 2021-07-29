@@ -43,8 +43,8 @@ export default {
           console.log('dbsetup, now feth data')
           this.store.commit('sync/setIdb', idb)
           //fetch current logged in user details, because login api doesn't send us user details infull
-          await this.store.dispatch('sync/getApiVersions')
-          //control ll not moved to below until getapiversions is fullfilled
+          await this.store.dispatch('sync/getApiCoreVersions')
+          //control ll not moved to below until getApiCoreVersions is fullfilled
           this.fetchLoggedInUser()
             .then(() => {
               resolve()
@@ -335,6 +335,7 @@ export default {
     DataService.setLang($store.state.location.locale)
     const self = this
     return new Promise((resolve, reject) => {
+      //call ui_menu
       $store
         .dispatch('location/fetch')
         .then(locationDetails => {

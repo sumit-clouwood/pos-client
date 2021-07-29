@@ -99,7 +99,7 @@ export default {
   },
 
   get(url, level) {
-    if (!url.includes('core_versions')) {
+    if (!url.includes('core_versions') && !url.includes('ui_menu')) {
       let uriparts = url
         .substring(1)
         .replace('model/', '')

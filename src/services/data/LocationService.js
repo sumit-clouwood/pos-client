@@ -1,7 +1,7 @@
 import DataService from '@/services/DataService'
 
 export default {
-  getApiVersions() {
+  getApiCoreVersions() {
     return DataService.get(
       '/model/core_versions?no_limit=true&lookups_needed=0&min_max_needed=0',
       false
