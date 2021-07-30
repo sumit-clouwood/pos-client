@@ -244,7 +244,37 @@
                               v-for="(label,
                               LabelIndex) in actionDetails.actionLabel"
                             >
+                              <a
+                                v-if="label == 'Update'"
+                                @click="
+                                  setRouter({
+                                    url:
+                                      $route.path +
+                                      '/' +
+                                      orderTable.table.assigned_table_id +
+                                      '/' +
+                                      order._id,
+                                    orderId: order._id,
+                                    orderData: orderTable.table,
+                                  })
+                                "
+                              >
+                                <div
+                                  class="button text-button btn btn-success"
+                                  type="button"
+                                >
+                                  <div class="button-content-container">
+                                    <div class="button-icon-container"></div>
+                                    <div class="button-caption">
+                                      {{
+                                        actionDetails.actionLabel[LabelIndex]
+                                      }}
+                                    </div>
+                                  </div>
+                                </div>
+                              </a>
                               <button
+                                v-else
                                 @click.stop="
                                   updateOrder({
                                     order: order,
@@ -394,8 +424,8 @@ export default {
     return {
       actionDetails: {
         moreDetails: false,
-        actionLabel: ['Accept', 'Reject'],
-        action: ['delivery_accept', 'delivery_reject'],
+        actionLabel: ['Accept', 'Reject', 'Update'],
+        action: ['delivery_accept', 'delivery_reject', 'update'],
         nextOrderStatus: 'in-progress',
       },
       processedOrder: [],
