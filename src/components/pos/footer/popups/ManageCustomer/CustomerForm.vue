@@ -42,9 +42,6 @@
                 class="text-width"
                 autocomplete="off"
                 v-model="newCustomerDetails[field.name_key]"
-                v-on:keyup="
-                  search(field.name_key, newCustomerDetails[field.name_key])
-                "
                 :name="field.name"
               />
               <textarea
@@ -68,7 +65,7 @@
                 @keypress="Num.toNumberOnly($event)"
                 :name="field.name"
               />
-              <div
+              <!-- <div
                 class="dropdown"
                 v-if="filterBuildingArea && field.name_key === 'building'"
               >
@@ -82,7 +79,7 @@
                     {{ area }}
                   </span>
                 </div>
-              </div>
+              </div> -->
               <select
                 class="selectpicker"
                 v-if="field.name_key === 'gender'"

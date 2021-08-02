@@ -266,28 +266,33 @@ const actions = {
   fetchAll({ commit, dispatch }) {
     commit(mutation.SET_LOADING, true)
     return new Promise((resolve, reject) => {
-      dispatch('fetchCustomers').then(() => {
-        dispatch('fetchCRMCustomerFields')
-        // get Customer Group
-        CustomerService.customerGroupList().then(response => {
-          commit(mutation.SET_CUSTOMER_GROUP, response.data.data)
-        })
-        CustomerService.customerBuildings()
-          .then(buildingAreas => {
-            if (buildingAreas.data.data) {
-              let obj = Object.values(buildingAreas.data.data)
-              commit(mutation.BUILDING_AREA, obj)
-            }
+      dispatch('fetchCustomers')
+        .then(() => {
+          dispatch('fetchCRMCustomerFields')
+          // get Customer Group
+          CustomerService.customerGroupList().then(response => {
+            commit(mutation.SET_CUSTOMER_GROUP, response.data.data)
           })
-          .catch(error => {
-            commit(mutation.SET_LOADING, false)
-            reject(error)
-          })
+          // CustomerService.customerBuildings()
+          //   .then(buildingAreas => {
+          //     if (buildingAreas.data.data) {
+          //       let obj = Object.values(buildingAreas.data.data)
+          //       commit(mutation.BUILDING_AREA, obj)
+          //     }
+          //   })
+          //   .catch(error => {
+          //     commit(mutation.SET_LOADING, false)
+          //     reject(error)
+          //   })
 
-        dispatch('fetchDeliveryArea', '').then(() => {
-          resolve()
+          dispatch('fetchDeliveryArea', '').then(() => {
+            resolve()
+          })
         })
-      })
+        .catch(error => {
+          commit(mutation.SET_LOADING, false)
+          reject(error)
+        })
       //fetch customer deliver areas
       // resolve()
     })
