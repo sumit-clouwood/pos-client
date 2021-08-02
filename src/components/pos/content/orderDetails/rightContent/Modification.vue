@@ -28,10 +28,14 @@
           <div v-if="rec.order_updated">
             <span class="caption-mr">{{ rec.order_prefix }}</span
             >&nbsp;<span class="value-mr">{{ rec.items_removed }}</span>
-            <div v-if="rec.items_added">
+            <div>
               <span class="caption-mr">{{ rec.order_prefix_add }}</span
               >&nbsp;<span class="value-mr">{{ rec.items_added }}</span>
             </div>
+          </div>
+          <div v-if="rec.order_created">
+            <span class="caption-mr">{{ rec.order_prefix }}</span
+            >&nbsp;<span class="value-mr">{{ rec.items_added }}</span>
           </div>
 
           <div v-if="rec.order">
@@ -82,6 +86,7 @@ export default {
       if (!this.order) return false
 
       let modification_records = []
+      var addedInitialItemsHistory = false
       let from_modified = {}
       let modify_hr = {}
 
@@ -108,6 +113,18 @@ export default {
         }
 
         if (hr.name == CONST.ORDER_HISTORY_TYPE_RECORD_UPDATED) {
+          if (addedInitialItemsHistory == false) {
+            addedInitialItemsHistory = true
+            modification_records.push({
+              prefix: this._t('Order has been created'),
+              by: this.collected_data.lookups['users']['_id'][hr.user]['name'],
+              at: this.convertDatetime(hr.created_at, this.timezoneString),
+              order_prefix: this._t('Item(s) added:'),
+              order_updated: false,
+              order_created: true,
+              items_added: hr.param2.map(item => this._t(item.name)).join(', '),
+            })
+          }
           let removed_items = this.removedItems(hr.param2, hr.param3)
           let added_items = this.addedItems(hr.param2, hr.param3)
           from_modified = {
@@ -172,7 +189,13 @@ export default {
   methods: {
     ...mapActions('order', ['selectedOrderDetails']),
 
-    removedItems(oldItems, newItems) {
+    removedItems(oldItemsArray, newItemsArray) {
+      let oldItems = oldItemsArray.map(item => {
+        return { name: item.name, entity_id: item.entity_id, no: item.no }
+      })
+      let newItems = newItemsArray.map(item => {
+        return { name: item.name, entity_id: item.entity_id, no: item.no }
+      })
       let removedItemsArray = oldItems.filter(
         oldItem =>
           !newItems.some(
@@ -181,9 +204,15 @@ export default {
       )
       if (removedItemsArray.length)
         return removedItemsArray.map(item => this._t(item.name)).join(', ')
-      else return this._t('Nothing was updated')
+      else return this._t('Nothing was removed')
     },
-    addedItems(oldItems, newItems) {
+    addedItems(oldItemsArray, newItemsArray) {
+      let oldItems = oldItemsArray.map(item => {
+        return { name: item.name, entity_id: item.entity_id, no: item.no }
+      })
+      let newItems = newItemsArray.map(item => {
+        return { name: item.name, entity_id: item.entity_id, no: item.no }
+      })
       let addedItemsArray = newItems.filter(
         newItem =>
           !oldItems.some(
@@ -192,13 +221,17 @@ export default {
       )
       if (addedItemsArray.length)
         return addedItemsArray.map(item => this._t(item.name)).join(', ')
-      else return null
+      else return this._t('Nothing was added')
     },
   },
 }
 </script>
 
 <style lang="scss" scoped>
+#nav-contact {
+  max-height: 500px;
+  overflow: scroll;
+}
 .order-modif-history {
   .value-mr,
   .prefix-mr {
@@ -207,11 +240,12 @@ export default {
   }
 
   .prefix-mr {
+    text-transform: uppercase;
     width: 100%;
     text-align: center;
     display: inline-block;
     padding-top: 10px;
-
+    margin-top: 1.5rem;
     &.first {
       padding-top: 0;
     }

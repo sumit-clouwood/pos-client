@@ -78,6 +78,9 @@ export default {
 </script>
 
 <style lang="sass">
+#nav-profile
+  max-height: 500px;
+  overflow: scroll;
 .created_at
   span
     display: block
