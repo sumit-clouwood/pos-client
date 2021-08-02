@@ -40,6 +40,7 @@
                 placeholder="Date from"
                 value-zone="local"
                 zone="local"
+                :week-start="1"
                 input-class="btn schedule-input btn-large datepicker-here color-dashboard-background"
                 :format="{
                   year: 'numeric',
@@ -61,7 +62,7 @@
                   month: 'long',
                   day: 'numeric',
                 }"
-                :week-start="7"
+                :week-start="1"
                 auto
                 :phrases="{ ok: 'oK', cancel: 'Exit' }"
               ></datetime>
@@ -386,8 +387,16 @@
                     <td
                       style="padding-left: 10px;
                       border-right: 1px dashed #000"
+                      v-if="parseInt(BSData.REPORT_IN_PROGRESS_QUANTITY) > 0"
                     >
                       {{ BSData.REPORT_IN_PROGRESS_QUANTITY }}
+                    </td>
+                    <td
+                      style="padding-left: 10px;
+                      border-right: 1px dashed #000"
+                      v-else
+                    >
+                      0
                     </td>
                   </tr>
                 </tbody>

@@ -227,7 +227,7 @@ const actions = {
       commit(mutation.SERVICE_DRIVERS, response.data.data)
     })
   },
-  getOnlineOrders({ rootGetters, commit, state, dispatch }) {
+  getOnlineOrders({ rootGetters, commit, state }) {
     const params = [
       '',
       50,
@@ -251,13 +251,14 @@ const actions = {
                 count: response.data.count,
                 orders: response.data.data,
               }
-              if (onlineOrders.orders.length) {
-                onlineOrders.orders.forEach(order => {
-                  if (order.order_type === 'dine_in') {
-                    dispatch('dinein/dineInRunningOrders', {}, { root: true })
-                  }
-                })
-              }
+              // if (onlineOrders.orders.length) {
+              //   onlineOrders.orders.forEach(order => {
+              //     if (order.order_type === 'dine_in') {
+              // check with a flag true false
+              //       dispatch('dinein/dineInRunningOrders', {}, { root: true })
+              //     }
+              //   })
+              // }
               resolve()
               commit(mutation.SET_ONLINE_ORDERS, onlineOrders)
               commit(mutation.SET_LOADING, false)

@@ -204,10 +204,11 @@
                             >
                           </button>
                         </div>
-
                         <div
                           v-if="
-                            order.order_system_status === 'requires_acceptance'
+                            order.order_system_status ===
+                              'requires_acceptance' &&
+                              order.order_type === 'dine_in'
                           "
                           class="button-block running-actions"
                           style="visibility: visible;"
@@ -424,8 +425,8 @@ export default {
     return {
       actionDetails: {
         moreDetails: false,
-        actionLabel: ['Accept', 'Reject', 'Update'],
-        action: ['delivery_accept', 'delivery_reject', 'update'],
+        actionLabel: ['Accept', 'Reject'],
+        action: ['delivery_accept', 'delivery_reject'],
         nextOrderStatus: 'in-progress',
       },
       processedOrder: [],
