@@ -5,7 +5,7 @@ import Store from '@/store'
 export default {
   fetchOrders(orderStatus, page = 1, limit = 10, userId = '', orderBy = '') {
     const currentDate = DateTime.getPreviousDayUTCDate()
-    let datequery = '&start_date=' + currentDate + '~gte'
+    let datequery = '&store_date=' + currentDate + '~gte'
     if (orderStatus === 'running') {
       datequery = ''
     }

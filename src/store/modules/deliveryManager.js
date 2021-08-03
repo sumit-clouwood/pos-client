@@ -200,10 +200,10 @@ const actions = {
               commit(mutation.SET_DM_PAGE, 1)
               dispatch('fetchDMOrderDetail')
             }
-            /*if (section === 'delivery_home') {*/
-            dispatch('getDrivers')
-            dispatch('getDeliveryServiceDriver')
-            // }
+            if (state.deliveryServiceDriver.length < 1) {
+              dispatch('getDrivers')
+              dispatch('getDeliveryServiceDriver')
+            }
           }
         })
         .catch(() => {

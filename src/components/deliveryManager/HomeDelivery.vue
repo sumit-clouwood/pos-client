@@ -352,7 +352,7 @@ export default {
 <style scoped lang="scss">
 #my-dropdown {
   width: 100% !important;
-  max-height: 7rem;
+  max-height: 15rem;
 }
 .driver-footer {
   padding: 1.125rem;
