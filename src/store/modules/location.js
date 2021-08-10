@@ -249,11 +249,11 @@ const actions = {
           if (storedata.data.brand) {
             commit(mutation.SET_BRAND, storedata.data.brand)
             //set brand api versions
-            commit(
-              'sync/SET_API_BRAND_VERSIONS',
-              storedata.data.brand.versions,
-              { root: true }
-            )
+            // commit(
+            //   'sync/SET_API_BRAND_VERSIONS',
+            //   storedata.data.brand.versions,
+            //   { root: true }
+            // )
           }
 
           let currentStore = storedata.data.store
@@ -278,11 +278,11 @@ const actions = {
           if (storedata.data.store) {
             commit(mutation.SET_STORE, storedata.data.store)
             //set store api versions
-            commit(
-              'sync/SET_API_STORE_VERSIONS',
-              storedata.data.store.versions,
-              { root: true }
-            )
+            // commit(
+            //   'sync/SET_API_STORE_VERSIONS',
+            //   storedata.data.store.versions,
+            //   { root: true }
+            // )
           } else if (storedata.data.available_stores) {
             commit(mutation.SET_STORE, storedata.data.available_stores[0])
           } else {

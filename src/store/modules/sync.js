@@ -1,7 +1,7 @@
 // initial state
 import * as CONST from '@/constants'
 import LocationService from '@/services/data/LocationService'
-import workflow from '../../plugins/helpers/workflow'
+//import workflow from '../../plugins/helpers/workflow'
 const state = {
   //date: '2019-02-06',
   compress: false,

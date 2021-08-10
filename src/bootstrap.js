@@ -42,9 +42,10 @@ export default {
         .then(async idb => {
           console.log('dbsetup, now feth data')
           this.store.commit('sync/setIdb', idb)
-          //fetch current logged in user details, because login api doesn't send us user details infull
-          await this.store.dispatch('sync/getApiCoreVersions')
+          //no need to call getApiCoreVersions as new pos_menu api in repalcement of ui_menu includes all versions
+          //await this.store.dispatch('sync/getApiCoreVersions')
           //control ll not moved to below until getApiCoreVersions is fullfilled
+          //fetch current logged in user details, because login api doesn't send us user details infull
           this.fetchLoggedInUser()
             .then(() => {
               resolve()
