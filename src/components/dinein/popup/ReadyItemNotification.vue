@@ -157,6 +157,9 @@ export default {
           console.log(socket_notification.data)
           let notifications =
             localStorage.getItem('qr_table_notification') || []
+          if (notifications.length) {
+            notifications = JSON.parse(notifications)
+          }
           notifications.push(socket_notification.data)
           scope.$store.commit('dinein/QR_TABLE_NOTIFICATION', notifications)
           localStorage.setItem(
