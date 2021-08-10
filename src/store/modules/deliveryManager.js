@@ -227,7 +227,7 @@ const actions = {
       commit(mutation.SERVICE_DRIVERS, response.data.data)
     })
   },
-  getOnlineOrders({ rootGetters, commit, state }) {
+  getOnlineOrders({ rootGetters, commit, state, dispatch }) {
     const params = [
       '',
       50,
@@ -248,17 +248,23 @@ const actions = {
             if (response.data) {
               // commit(mutation.SET_DM_ORDERS, response.data)
               let onlineOrders = {
-                count: response.data.count,
-                orders: response.data.data,
+                count: 0,
+                orders: [],
               }
-              // if (onlineOrders.orders.length) {
-              //   onlineOrders.orders.forEach(order => {
-              //     if (order.order_type === 'dine_in') {
-              // check with a flag true false
-              //       dispatch('dinein/dineInRunningOrders', {}, { root: true })
-              //     }
-              //   })
-              // }
+              let get_dine_in_data = false
+              if (response.data.data.length) {
+                response.data.data.forEach(order => {
+                  if (order.order_type === 'online') {
+                    onlineOrders.count += 1
+                    onlineOrders.orders.push(order)
+                  }
+                  if (order.order_type === 'dine_in' && !get_dine_in_data) {
+                    //if we have 4 dine in order it should not run 4 times so added flag
+                    get_dine_in_data = true
+                    dispatch('dinein/dineInRunningOrders', {}, { root: true })
+                  }
+                })
+              }
               resolve()
               commit(mutation.SET_ONLINE_ORDERS, onlineOrders)
               commit(mutation.SET_LOADING, false)

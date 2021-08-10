@@ -151,6 +151,20 @@ export default {
       let store = this.store._id
       let scope = this
       let user = this.userDetails ? this.userDetails.item : false
+      this.$socket.client.on(
+        'store-notification-channel:App\\Events\\StoreNotification:' + store,
+        function(socket_notification) {
+          console.log(socket_notification.data)
+          let notifications =
+            localStorage.getItem('qr_table_notification') || []
+          notifications.push(socket_notification.data)
+          scope.$store.commit('dinein/QR_TABLE_NOTIFICATION', notifications)
+          localStorage.setItem(
+            'qr_table_notification',
+            JSON.stringify(notifications)
+          )
+        }
+      )
       if (!user) return false
       /*let message = {
         data: {
@@ -216,12 +230,6 @@ export default {
                       }
                     })
                   }
-                  console.log(
-                    is_item_duplicate,
-                    item,
-                    notifications,
-                    'is_item_duplicate_dine_in'
-                  )
                   scope.itemData.push(item)
                   if (!is_item_duplicate) {
                     notifications.push(item)
@@ -253,8 +261,6 @@ export default {
                 }
               }
               if (socketData.notification === 'carhop_ready') {
-                // eslint-disable-next-line no-debugger
-                debugger
                 let is_order_duplicate = false
                 let order_details = response.item
                 let notifications =

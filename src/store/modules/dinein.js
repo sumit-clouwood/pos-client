@@ -52,6 +52,7 @@ const state = {
   moveItemTableId: undefined,
   currentTableReservationData: null,
   readyItemNotification: [],
+  qrTableNotification: [],
 }
 const getters = {
   getCurrentTableRunningReservations: state => {
@@ -923,6 +924,9 @@ const mutations = {
   },
   READY_ITEM_NOTIFICATION(state, data) {
     state.readyItemNotification = data
+  },
+  QR_TABLE_NOTIFICATION(state, data) {
+    state.qrTableNotification = data
   },
   [mutation.SELECTED_TABLE_RESERVATION](state, reservationData) {
     state.selectedTableRservationData = reservationData

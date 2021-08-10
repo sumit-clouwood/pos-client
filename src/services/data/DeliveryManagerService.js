@@ -4,8 +4,12 @@ import DateTime from '@/mixins/DateTime'
 export default {
   getDMOrderDetails(...[query, limit, orderBy, page, pageId, storeId]) {
     let currentDate = DateTime.getPreviousDayUTCDate()
+    let set_order_type = ''
+    if (pageId === 'home_delivery_acceptance') {
+      set_order_type = '&order_type=online'
+    }
     return DataService.get(
-      `/model/orders?page_id=${pageId}&query=${query}&limit=${limit}&ascending=1&page=${page}&byColumn=0&orderBy=${orderBy}&store_id=${storeId}&store_date=${currentDate}~gte`
+      `/model/orders?page_id=${pageId}&query=${query}&limit=${limit}&ascending=1&page=${page}&byColumn=0&orderBy=${orderBy}&store_id=${storeId}&store_date=${currentDate}~gte${set_order_type}`
     )
   },
 

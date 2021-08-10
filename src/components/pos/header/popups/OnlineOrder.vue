@@ -11,9 +11,10 @@
           >
             {{
               _t(
-                'Additional order are almost ready. Would you like to take them with you ?'
+                'Additional order are almost ready. Would you like to take them with you '
               )
             }}
+            ?
           </h4>
           <h4 class="customer-title color-text-invert" v-else>
             {{ _t('No more orders') }}

@@ -8,55 +8,112 @@
         @click="openNotifications"
       >
         <img src="img/notification.svg" alt="notifications" />
-        <span class="notification-count" v-if="readyItemNotification.length">{{
-          readyItemNotification.length
-        }}</span>
+        <span
+          class="notification-count"
+          v-if="readyItemNotification.length || qrTableNotification.length"
+          >{{
+            parseInt(readyItemNotification.length) +
+              parseInt(qrTableNotification.length)
+          }}</span
+        >
       </button>
       <ul
         class="dropdown-menu dropdown-menu-right cursor-pointer"
         x-placement="bottom-end"
-        v-if="readyItemNotification.length"
+        v-if="readyItemNotification.length || qrTableNotification.length"
       >
         <li class="notification-header">
           <h4>{{ _t('Notifications') }}</h4>
           <h4 @click="openNotifications">X</h4>
         </li>
-        <li
-          class="dropdown-item"
-          v-for="(item_details, key) in readyItemNotification"
-          :key="key"
-        >
-          <div href="javascript:void(0)" class="item_id">
-            <div class="order-table-details">
-              <span>
-                {{ _t('Order Number: ') }}
-                <b>#{{ item_details.order_no }}</b>
-              </span>
-              <span v-if="item_details.table">
-                {{ _t('Table Number:') }}
-                <b>{{ item_details.table.number }}</b>
-              </span>
-            </div>
-            <div
-              class="item-served"
-              v-for="item in item_details.item"
-              :key="item.entity_id"
+        <li v-if="qrTableNotification.length">
+          <ul>
+            <li
+              class="dropdown-item qr-notification"
+              v-for="(notificationDetails, key) in qrTableNotification"
+              :key="key"
             >
-              <i class="item-name-normal">{{ item.name }}</i>
-              <span>
-                <button
-                  type="button"
-                  class="btn btn-primary"
-                  @click="updateItemNotification(item_details, item.entity_id)"
+              <div href="javascript:void(0)" class="item_id">
+                <div class="order-table-details">
+                  <span>
+                    {{ _t('Order Type') }}:
+                    <b class="text-capitalize">{{
+                      LookupData.replaceUnderscoreHyphon(
+                        notificationDetails.order_type
+                      )
+                    }}</b>
+                  </span>
+                  <span>
+                    {{ _t('Area') }}:
+                    <b class="text-capitalize">{{
+                      notificationDetails.area
+                    }}</b>
+                  </span>
+                </div>
+                <div class="item-served">
+                  <i class="item-name-normal"
+                    >{{ _t('Table no') }} {{ notificationDetails.table_no }}
+                    {{ _t('customer') }} {{ notificationDetails.message }}</i
+                  >
+                  <span>
+                    <button
+                      type="button"
+                      class="btn btn-danger shadow-btn"
+                      @click="notedMsg(notificationDetails)"
+                    >
+                      {{ _t('Noted') }}
+                    </button>
+                  </span>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </li>
+        <li v-if="readyItemNotification.length">
+          <ul>
+            <li
+              class="dropdown-item"
+              v-for="(item_details, key) in readyItemNotification"
+              :key="key"
+            >
+              <div href="javascript:void(0)" class="item_id">
+                <div class="order-table-details">
+                  <span>
+                    {{ _t('Order Number: ') }}
+                    <b>#{{ item_details.order_no }}</b>
+                  </span>
+                  <span v-if="item_details.table">
+                    {{ _t('Table Number:') }}
+                    <b>{{ item_details.table.number }}</b>
+                  </span>
+                </div>
+                <div
+                  class="item-served"
+                  v-for="item in item_details.item"
+                  :key="item.entity_id"
                 >
-                  {{ _t('Serve') }}
-                </button>
-              </span>
-            </div>
-          </div>
+                  <i class="item-name-normal">{{ item.name }}</i>
+                  <span>
+                    <button
+                      type="button"
+                      class="btn btn-primary"
+                      @click="
+                        updateItemNotification(item_details, item.entity_id)
+                      "
+                    >
+                      {{ _t('Serve') }}
+                    </button>
+                  </span>
+                </div>
+              </div>
+            </li>
+          </ul>
         </li>
       </ul>
-      <ul class="dropdown-menu dropdown-menu-right cursor-pointer" v-else>
+      <ul
+        class="dropdown-menu dropdown-menu-right cursor-pointer"
+        v-if="!qrTableNotification.length && !readyItemNotification.length"
+      >
         <li class="notification-header">
           <h4>{{ _t('Notifications') }}</h4>
           <h4 @click="openNotifications">X</h4>
@@ -72,43 +129,45 @@ import { mapGetters, mapState } from 'vuex'
 /* global $ */
 export default {
   name: 'DineInNotification',
-  /*data() {
-    return {
-      readyItemNotification: this.ready_items(),
-    }
-  },*/
   computed: {
     ...mapGetters('location', ['_t']),
-    ...mapState('dinein', ['readyItemNotification']),
+    ...mapState('dinein', ['readyItemNotification', 'qrTableNotification']),
   },
-  /*updated() {
-    this.readyItemNotification = this.ready_items()
-  },*/
   mounted() {
-    this.ready_items()
+    this.readyItems()
   },
   methods: {
     openNotifications() {
-      /*$('li.dropdown.mega-dropdown a').on('click', function (event) {
-        $(this).parent().toggleClass('open');
-      });
-      // Close notification whe click outside
-      $('body').on('click', function (e) {
-          if (!$('li.dropdown.mega-dropdown').is(e.target)
-              && $('li.dropdown.mega-dropdown').has(e.target).length === 0
-              && $('.open').has(e.target).length === 0
-          ) {
-              $('li.dropdown.mega-dropdown').removeClass('open');
-          }
-      });
-      */
       $('.menu-notifications .dropdown-menu-right').toggleClass('show')
     },
-    ready_items() {
+    readyItems() {
       let notifications = localStorage.getItem('ready_item_notification') || []
       if (notifications.length) notifications = JSON.parse(notifications)
       this.$store.commit('dinein/READY_ITEM_NOTIFICATION', notifications)
+      this.qrTableNotifications()
       // return notifications
+    },
+    qrTableNotifications() {
+      let notifications = localStorage.getItem('qr_table_notification') || []
+      if (notifications.length) notifications = JSON.parse(notifications)
+      this.$store.commit('dinein/QR_TABLE_NOTIFICATION', notifications)
+      // return notifications
+    },
+    notedMsg(notifications) {
+      let notification = this.qrTableNotification
+      let new_items_list = []
+      if (!notification.length) return false
+      notification.forEach(data => {
+        if (data.order_no !== notifications.order_no) {
+          new_items_list.push(data)
+        }
+      })
+      this.qrTableNotification = new_items_list
+      this.$store.commit('dinein/QR_TABLE_NOTIFICATION', new_items_list)
+      localStorage.setItem(
+        'qr_table_notification',
+        JSON.stringify(new_items_list)
+      )
     },
     updateItemNotification(removeItem, item_id) {
       let notification = this.readyItemNotification
@@ -193,6 +252,16 @@ export default {
       text-align: right;
       justify-content: end;
     }
+  }
+}
+.qr-notification {
+  background-color: #cc3232;
+  color: #fff;
+  &:hover {
+    color: #000;
+  }
+  .shadow-btn {
+    box-shadow: 0px 0px 3px #0000004a;
   }
 }
 .notification-header {
