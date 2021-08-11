@@ -21,7 +21,11 @@ function getAccessToken() {
 
 function setMiddleware() {
   axios.interceptors.request.use(request => {
-    request.headers['Authorization'] = getAccessToken()
+    if (request.method == 'get' && request.url.includes('/cached/api')) {
+      request.headers['Authorization'] = 'as_guest'
+    } else {
+      request.headers['Authorization'] = getAccessToken()
+    }
     return request
   })
 }
@@ -117,7 +121,9 @@ export default {
 
       url += glue + 'fetch_version=' + apiVersion
     }
+
     url = this.getContextUrl(url, level)
+
     return new Promise((resolve, reject) => {
       if (!localStorage.getItem('token')) {
         this.store.dispatch('auth/logout', {
@@ -126,8 +132,14 @@ export default {
         return Promise.reject('token expired or not found, logout')
       }
 
+      let endpoint = apiURL
+
+      if (!url.includes('pos_menu')) {
+        endpoint = apiURL.replace(new RegExp('/api$'), '/cached/api')
+      }
+
       axios
-        .get(apiURL + url)
+        .get(endpoint + url)
         .then(response => {
           if (this.isValidResponse(response)) {
             resolve(response)
