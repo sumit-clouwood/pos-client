@@ -15,6 +15,7 @@ var enabledConsole = false
 //const VERSION = '<VERSION>';
 const VERSION = '1'
 const RUNTIME = 'runtime' + VERSION
+const expectedCaches = ['runtime1', 'workbox-precache', 'images']
 
 var notificationOptions = {
   body: '',
@@ -138,26 +139,24 @@ self.addEventListener('activate', function(event) {
   // eslint-disable-next-line no-undef
   clients.claim()
   enabledConsole && console.log(1, 'sw:', 'in activation')
+  // delete any caches that aren't in expectedCaches
+  // which will get rid of static-v1
   event.waitUntil(
-    caches.keys().then(function(cacheNames) {
-      enabledConsole && console.log('cachenames', cacheNames)
-      enabledConsole && console.log('update cachenames', cacheNames)
-      return Promise.all(
-        cacheNames
-          // eslint-disable-next-line no-unused-vars
-          .filter(function(cacheName) {
-            enabledConsole && console.log('clear this one? ', cacheName)
-            return true
-            // Return true if you want to remove this cache,
-            // but remember that caches are shared across
-            // the whole origin
+    caches
+      .keys()
+      .then(keys =>
+        Promise.all(
+          keys.map(key => {
+            if (!expectedCaches.includes(key)) {
+              console.log('deleting cache', key)
+              return caches.delete(key)
+            }
           })
-          .map(function(cacheName) {
-            enabledConsole && console.log('clearing ', cacheName)
-            return caches.delete(cacheName)
-          })
+        )
       )
-    })
+      .then(() => {
+        console.log('new version of sw ready to handle fetches!')
+      })
   )
 })
 
