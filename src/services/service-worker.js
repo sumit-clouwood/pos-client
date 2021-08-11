@@ -122,48 +122,51 @@ function setupEventListners() {
   EventListener.setup()
 }
 
+self.addEventListener('install', function(event) {
+  console.log('installing sw')
+  //don't wait
+  self.skipWaiting()
+  console.log('skip waiting')
+  event.waitUntil(
+    caches.open('runtime1').then(() => {
+      console.log('runtime1 cache opened')
+    })
+  ) // Activate worker immediately
+})
+
+self.addEventListener('activate', function(event) {
+  // eslint-disable-next-line no-undef
+  clients.claim()
+  enabledConsole && console.log(1, 'sw:', 'in activation')
+  event.waitUntil(
+    caches.keys().then(function(cacheNames) {
+      enabledConsole && console.log('cachenames', cacheNames)
+      enabledConsole && console.log('update cachenames', cacheNames)
+      return Promise.all(
+        cacheNames
+          // eslint-disable-next-line no-unused-vars
+          .filter(function(cacheName) {
+            enabledConsole && console.log('clear this one? ', cacheName)
+            return true
+            // Return true if you want to remove this cache,
+            // but remember that caches are shared across
+            // the whole origin
+          })
+          .map(function(cacheName) {
+            enabledConsole && console.log('clearing ', cacheName)
+            return caches.delete(cacheName)
+          })
+      )
+    })
+  )
+})
+
 var EventListener = {
   setup: function() {
-    this._install()
-    this._activate()
     this._sync()
     this._message()
     this._push()
     this._fetch()
-  },
-
-  _install() {
-    self.addEventListener('install', function(event) {
-      event.waitUntil(self.skipWaiting()) // Activate worker immediately
-    })
-  },
-
-  _activate() {
-    self.addEventListener('activate', function(event) {
-      enabledConsole && console.log(1, 'sw:', 'in activation')
-      event.waitUntil(
-        caches.keys().then(function(cacheNames) {
-          enabledConsole && console.log('cachenames', cacheNames)
-          self.clients.claim()
-          enabledConsole && console.log('update cachenames', cacheNames)
-          return Promise.all(
-            cacheNames
-              // eslint-disable-next-line no-unused-vars
-              .filter(function(cacheName) {
-                enabledConsole && console.log('clear this one? ', cacheName)
-                return true
-                // Return true if you want to remove this cache,
-                // but remember that caches are shared across
-                // the whole origin
-              })
-              .map(function(cacheName) {
-                enabledConsole && console.log('clearing ', cacheName)
-                return caches.delete(cacheName)
-              })
-          )
-        })
-      )
-    })
   },
 
   _push() {
