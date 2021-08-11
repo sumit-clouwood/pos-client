@@ -191,16 +191,26 @@ const actions = {
         .catch(er => reject(er))
     })
   },
-  async getLocationData({ commit, rootGetters }) {
+  async getLocationData({ commit, rootGetters }, option) {
     if (
       state.locationData &&
       state.locationData.data.store &&
       rootGetters['context/store_id'] === state.locationData.data.store._id
     ) {
+      //api versions already set for this store so need to set again
       return Promise.resolve(state.locationData)
     }
-    const locationData = await LocationService.getLocationData()
+    const locationData = await LocationService.getLocationData(option)
+    //set api versions here
     commit('SET_LOCATION_DATA', locationData)
+    const globalVersions = locationData.data.global_versions.versions
+    const brandVersions = locationData.data.brand.versions
+    const storeVersions = locationData.data.store.versions
+    commit(
+      'sync/SET_API_VERSIONS',
+      Object.assign({}, globalVersions, brandVersions, storeVersions),
+      { root: true }
+    )
     return locationData
   },
   //got through brand/store
@@ -208,6 +218,7 @@ const actions = {
     dispatch('formatDate')
     dispatch('auth/checkDevice', '', { root: true })
     return new Promise((resolve, reject) => {
+      //call ui_menu
       dispatch('getLocationData')
         .then(storedata => {
           if (typeof storedata.data.available_stores !== 'undefined') {
@@ -247,6 +258,12 @@ const actions = {
           })
           if (storedata.data.brand) {
             commit(mutation.SET_BRAND, storedata.data.brand)
+            //set brand api versions
+            // commit(
+            //   'sync/SET_API_BRAND_VERSIONS',
+            //   storedata.data.brand.versions,
+            //   { root: true }
+            // )
           }
 
           let currentStore = storedata.data.store
@@ -270,6 +287,12 @@ const actions = {
 
           if (storedata.data.store) {
             commit(mutation.SET_STORE, storedata.data.store)
+            //set store api versions
+            // commit(
+            //   'sync/SET_API_STORE_VERSIONS',
+            //   storedata.data.store.versions,
+            //   { root: true }
+            // )
           } else if (storedata.data.available_stores) {
             commit(mutation.SET_STORE, storedata.data.available_stores[0])
           } else {

@@ -32,13 +32,17 @@ export default {
   loadStore() {
     return this.fetchData()
   },
+
   setup(store) {
+    //user already logged in, setup is not called without login
     this.store = store
     return new Promise((resolve, reject) => {
+      //setup idb
       this.setupDB()
-        .then(idb => {
+        .then(async idb => {
           console.log('dbsetup, now feth data')
           this.store.commit('sync/setIdb', idb)
+          //fetch current logged in user details, because login api doesn't send us user details infull
           this.fetchLoggedInUser()
             .then(() => {
               resolve()
@@ -57,12 +61,15 @@ export default {
       this.setNetwork()
     })
   },
+  //call user details and then call menu api
   async fetchLoggedInUser() {
     DataService.setLang($store.state.location.locale)
     return new Promise((resolve, reject) => {
       const currentStoreId =
         $store.getters['context/store_id'] || localStorage.getItem('store_id')
       this.detectBrowser().then(deviceId => {
+        //there is possibility that user was logged in and page refreshed
+        //auth/auth ll check only token, if token present then go fwd otherwise bk
         this.store.dispatch('auth/auth', deviceId).then(() => {
           $store
             .dispatch('auth/getUserDetails')
@@ -96,8 +103,9 @@ export default {
                       user.item.brand_id
                     )
 
-                    DataService.getT('/ui_menu?&menu_needed=false', false).then(
-                      response => {
+                    $store
+                      .dispatch('location/getLocationData', false)
+                      .then(response => {
                         $store.commit('location/SET_LOCATION_DATA', response)
                         $store.commit(
                           'context/SET_STORES_LENGTH',
@@ -140,8 +148,7 @@ export default {
                         }
 
                         resolve()
-                      }
-                    )
+                      })
                   }
                 } else {
                   $store.commit('context/RESET')
@@ -198,62 +205,63 @@ export default {
 
                 //get user info from store
                 // check if we have store id otherwise we ll call ui menu
-                let $caller = undefined
-                if ($store.getters['context/store_id']) {
-                  $caller = DataService.getT('/ui_menu?&menu_needed=false')
-                } else {
-                  $caller = DataService.getT(
-                    '/ui_menu?&menu_needed=false',
-                    false
-                  )
+                let callerOption = undefined
+                if (!$store.getters['context/store_id']) {
+                  callerOption = false
                 }
-                $caller.then(response => {
-                  $store.commit('location/SET_LOCATION_DATA', response)
-                  $store.dispatch(
-                    'context/setBrandContext',
-                    response.data.brand._id
-                  )
-                  let selectedStore = null
-                  if (currentStoreId) {
-                    selectedStore = response.data.available_stores.find(
-                      _store => _store._id === currentStoreId
+                $store
+                  .dispatch('location/getLocationData', callerOption)
+                  .then(response => {
+                    //set versions here
+                    $store.commit('location/SET_LOCATION_DATA', response)
+                    $store.dispatch(
+                      'context/setBrandContext',
+                      response.data.brand._id
                     )
-                  }
-
-                  if (response.data.available_stores.length > 1) {
-                    $store.commit(
-                      'context/SET_STORES_LENGTH',
-                      response.data.available_stores.length
-                    )
-                    $store.commit(
-                      'context/SET_MULTI_STORES',
-                      response.data.available_stores
-                    )
-
-                    if (selectedStore) {
-                      $store.commit('context/SET_CURRENT_STORE', selectedStore)
-                      //if storeid is same, getter ll not act, in that case load store from context
-                      $store.commit('context/LOAD_STORE_FROM_CONTEXT', true)
-                      $store.dispatch(
-                        'context/setStoreContext',
-                        selectedStore._id
+                    let selectedStore = null
+                    if (currentStoreId) {
+                      selectedStore = response.data.available_stores.find(
+                        _store => _store._id === currentStoreId
                       )
                     }
-                  } else {
-                    $store.dispatch(
-                      'context/setStoreContext',
-                      response.data.available_stores[0]._id
-                    )
-                    $store.commit(
-                      'context/SET_CURRENT_STORE',
-                      response.data.available_stores[0]
-                    )
-                    //if storeid is same, getter ll not act, in that case load store from context
-                    $store.commit('context/LOAD_STORE_FROM_CONTEXT', true)
-                  }
 
-                  resolve()
-                })
+                    if (response.data.available_stores.length > 1) {
+                      $store.commit(
+                        'context/SET_STORES_LENGTH',
+                        response.data.available_stores.length
+                      )
+                      $store.commit(
+                        'context/SET_MULTI_STORES',
+                        response.data.available_stores
+                      )
+
+                      if (selectedStore) {
+                        $store.commit(
+                          'context/SET_CURRENT_STORE',
+                          selectedStore
+                        )
+                        //if storeid is same, getter ll not act, in that case load store from context
+                        $store.commit('context/LOAD_STORE_FROM_CONTEXT', true)
+                        $store.dispatch(
+                          'context/setStoreContext',
+                          selectedStore._id
+                        )
+                      }
+                    } else {
+                      $store.dispatch(
+                        'context/setStoreContext',
+                        response.data.available_stores[0]._id
+                      )
+                      $store.commit(
+                        'context/SET_CURRENT_STORE',
+                        response.data.available_stores[0]
+                      )
+                      //if storeid is same, getter ll not act, in that case load store from context
+                      $store.commit('context/LOAD_STORE_FROM_CONTEXT', true)
+                    }
+
+                    resolve()
+                  })
               }
             })
             .catch(error => {
@@ -326,6 +334,7 @@ export default {
     DataService.setLang($store.state.location.locale)
     const self = this
     return new Promise((resolve, reject) => {
+      //call ui_menu
       $store
         .dispatch('location/fetch')
         .then(locationDetails => {
