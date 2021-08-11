@@ -111,7 +111,7 @@ export default {
 
       let model = uriparts[0].split('?')[0]
 
-      let apiVersion = $store.getters['sync/getVersion'](model) || 0
+      let apiVersion = $store.getters['sync/getVersion'](model)
 
       let glue = '?'
 
@@ -119,7 +119,9 @@ export default {
         glue = '&'
       }
 
-      url += glue + 'fetch_version=' + apiVersion
+      if (apiVersion) {
+        url += glue + 'fetch_version=' + apiVersion
+      }
     }
 
     url = this.getContextUrl(url, level)
