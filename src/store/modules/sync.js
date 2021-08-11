@@ -1,6 +1,5 @@
 // initial state
 import * as CONST from '@/constants'
-import LocationService from '@/services/data/LocationService'
 //import workflow from '../../plugins/helpers/workflow'
 const state = {
   //date: '2019-02-06',
@@ -16,9 +15,7 @@ const state = {
   lastFetch: 0,
   offlineSync: false,
   isLoading: false,
-  apiCoreVersions: undefined,
-  apiBrandVersions: undefined,
-  apiStoreVersions: undefined,
+  apiVersions: undefined,
 
   modules: {
     store: CONST.LOADING_STATUS_LOADING,
@@ -34,12 +31,7 @@ const state = {
 
 // getters
 const getters = {
-  all_core_versions: state => {
-    let coreVersions = state.apiCoreVersions || {}
-    let brandVersions = state.apiBrandVersions || {}
-    let storeVersions = state.apiStoreVersions || {}
-    return Object.assign({}, coreVersions, brandVersions, storeVersions)
-  },
+  all_core_versions: state => state.apiVersions,
   getVersion: (state, getters) => model => {
     var collection_remaps = {
       root_stores: 'stores',
@@ -49,7 +41,7 @@ const getters = {
     var collection_id = collection_remaps[model] || model
 
     var ver = getters.all_core_versions
-    if (ver[collection_id] !== undefined) {
+    if (ver && ver[collection_id] !== undefined) {
       return ver[collection_id]
     }
     return undefined
@@ -83,18 +75,6 @@ const actions = {
   },
   setLoader({ commit }, payload) {
     commit('SET_IS_LOADING', payload)
-  },
-  async getApiCoreVersions({ commit }) {
-    const payload = await LocationService.getApiCoreVersions()
-
-    commit('SET_API_CORE_VERSIONS', payload.data.data[0].versions)
-    //Do not add versions to idb, as we need to reload core_version on every
-    //- system load request
-    // workflow.storeData({
-    //   key: 'api_versions',
-    //   data: payload.data.data,
-    // })
-    return Promise.resolve()
   },
 }
 
@@ -145,14 +125,8 @@ const mutations = {
   SET_IS_LOADING(state, payload) {
     state.isLoading = payload
   },
-  SET_API_CORE_VERSIONS(state, payload) {
-    state.apiCoreVersions = payload
-  },
-  SET_API_BRAND_VERSIONS(state, payload) {
-    state.apiBrandVersions = payload
-  },
-  SET_API_STORE_VERSIONS(state, payload) {
-    state.apiStoreVersions = payload
+  SET_API_VERSIONS(state, payload) {
+    state.apiVersions = payload
   },
 }
 

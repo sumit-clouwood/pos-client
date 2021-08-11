@@ -1,28 +1,9 @@
 import DataService from '@/services/DataService'
 
 export default {
-  //no need to get core versions now as new pos_menu api does that all
-  getApiCoreVersions() {
-    return DataService.get(
-      '/model/core_versions?no_limit=true&lookups_needed=0&min_max_needed=0',
-      false
-    )
-  },
   //Get country,city,location and drivers data by location id . ?lang=ru-RU
-  getLocationData() {
-    //const language = typeof lang != 'undefined' ? '&lang=' + lang : ''
-    return DataService.getT('/pos_menu?&menu_needed=false')
-    // return new Promise((resolve, reject) => {
-    //   DataService.getT('/ui_menu?&menu_needed=false')
-    //     .then(response => resolve(response))
-    //     .catch(error => {
-    //       return DataService.getT('/ui_menu?&menu_needed=false', false)
-    //         .then(response => resolve(response))
-    //         .catch(errorWithoutContext =>
-    //           reject(error + ', Error without context: ' + errorWithoutContext)
-    //         )
-    //     })
-    // })
+  getLocationData(option) {
+    return DataService.getT('/pos_menu?&menu_needed=false', option)
   },
   getReferrals() {
     return DataService.get(
