@@ -55,11 +55,16 @@
                   </span>
                 </div>
                 <div class="item-served">
-                  <i class="item-name-normal"
+                  <i class="item-name-normal text-capitalize"
                     >{{ _t('At table') }} {{ notificationDetails.table_no }}
                     {{ _t('customer') }} {{ notificationDetails.message }}</i
                   >
-                  <span>
+                  <span v-if="notificationDetails.namespace === 'new_order'">
+                    <order-accept-reject
+                      :order="notificationDetails.order"
+                    ></order-accept-reject>
+                  </span>
+                  <span v-else>
                     <button
                       type="button"
                       class="btn btn-danger shadow-btn"
@@ -130,12 +135,17 @@
 
 <script>
 import { mapGetters, mapState } from 'vuex'
+import OrderAcceptReject from '@/components/dinein/content/buttons/OrderAcceptReject'
+
 /* global $ */
 export default {
   name: 'DineInNotification',
   computed: {
     ...mapGetters('location', ['_t']),
     ...mapState('dinein', ['readyItemNotification', 'qrTableNotification']),
+  },
+  components: {
+    OrderAcceptReject,
   },
   mounted() {
     this.readyItems()
@@ -166,7 +176,7 @@ export default {
           new_items_list.push(data)
         }
       })
-      this.qrTableNotification = new_items_list
+      // this.qrTableNotification = new_items_list
       this.$store.commit('dinein/QR_TABLE_NOTIFICATION', new_items_list)
       localStorage.setItem(
         'qr_table_notification',
@@ -188,7 +198,7 @@ export default {
           new_items_list.push(data)
         }
       })
-      this.readyItemNotification = new_items_list
+      // this.readyItemNotification = new_items_list
       this.$store.commit('dinein/READY_ITEM_NOTIFICATION', new_items_list)
       localStorage.setItem(
         'ready_item_notification',

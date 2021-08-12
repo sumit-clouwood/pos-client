@@ -154,7 +154,6 @@ export default {
       this.$socket.client.on(
         'store-notification-channel:App\\Events\\StoreNotification:' + store,
         function(socket_notification) {
-          console.log(socket_notification.data)
           let notifications =
             localStorage.getItem('qr_table_notification') || []
           if (notifications.length) {

@@ -271,6 +271,56 @@ const actions = {
 
     DineInService.dineInRunningOrders(...params).then(response => {
       dispatch('seOrderData', response)
+      if (state.orderDetails.length) {
+        let notifications = localStorage.getItem('qr_table_notification') || []
+        if (notifications.length) {
+          notifications = JSON.parse(notifications)
+        }
+        let new_order_notificaiton = undefined
+        state.orderDetails.forEach(orderData => {
+          if (orderData.orders.length) {
+            orderData.orders.forEach(order => {
+              if (order.order_system_status === 'requires_acceptance') {
+                if (notifications.length) {
+                  let notification_order_numbers = []
+                  notifications.forEach(old_notification => {
+                    notification_order_numbers.push(old_notification.order_no)
+                  })
+                  if (!notification_order_numbers.includes(order.order_no)) {
+                    new_order_notificaiton = {
+                      message: 'Placed new order',
+                      table_no: orderData.table.number,
+                      area: orderData.areaName,
+                      order_type: 'dine_in',
+                      order_no: order.order_no,
+                      namespace: 'new_order',
+                      order: order,
+                    }
+                    notifications.push(new_order_notificaiton)
+                  }
+                } else {
+                  new_order_notificaiton = {
+                    message: 'Placed new order',
+                    table_no: orderData.table.number,
+                    area: orderData.areaName,
+                    order_type: 'dine_in',
+                    order_no: order.order_no,
+                    namespace: 'new_order',
+                    order: order,
+                  }
+                  notifications.push(new_order_notificaiton)
+                }
+              }
+            })
+          }
+        })
+
+        commit('QR_TABLE_NOTIFICATION', notifications)
+        localStorage.setItem(
+          'qr_table_notification',
+          JSON.stringify(notifications)
+        )
+      }
       commit(mutation.TOTAL_RESERVATION, response.data)
       if (loader) commit(mutation.LOADING, false)
     })

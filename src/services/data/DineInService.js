@@ -3,8 +3,9 @@ import DateTime from '@/mixins/DateTime'
 
 export default {
   dineInRunningOrders(page, limit, userId) {
+    let currentDate = DateTime.getPreviousDayUTCDate()
     return DataService.get(
-      `/model/reservations?page_id=running_orders&query=&limit=${limit}&ascending=1&page=${page}&byColumn=1&assigned_to=${userId}&orderBy=priority`
+      `/model/reservations?page_id=running_orders&query=&limit=${limit}&ascending=1&page=${page}&byColumn=1&assigned_to=${userId}&orderBy=priority&start_date=${currentDate}~gte`
     )
   },
   dineInCompleteOrders(page, limit, userId) {
