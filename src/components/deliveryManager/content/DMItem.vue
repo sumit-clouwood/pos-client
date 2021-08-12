@@ -21,9 +21,13 @@
           :class="'class' + order._id"
         >
           <td
-            v-if="order.order_status == orderStatus"
+            v-if="
+              order.order_status == orderStatus &&
+                order.order_type !== CONST.ORDER_TYPE_DINE_IN
+            "
             :class="{ active: activeIndex.includes(order._id) }"
           >
+            {{ order.order_type }}
             <div
               class="order-item"
               :class="[

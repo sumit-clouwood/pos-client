@@ -36,12 +36,16 @@
               <div href="javascript:void(0)" class="item_id">
                 <div class="order-table-details">
                   <span>
-                    {{ _t('Order Type') }}:
-                    <b class="text-capitalize">{{
-                      LookupData.replaceUnderscoreHyphon(
-                        notificationDetails.order_type
+                    {{ _t('Order') }}:
+                    <b class="text-capitalize">
+                      #{{ notificationDetails.order_no }} (
+                      {{
+                        LookupData.replaceUnderscoreHyphon(
+                          notificationDetails.order_type
+                        )
+                      }}
                       )
-                    }}</b>
+                    </b>
                   </span>
                   <span>
                     {{ _t('Area') }}:
@@ -52,7 +56,7 @@
                 </div>
                 <div class="item-served">
                   <i class="item-name-normal"
-                    >{{ _t('Table no') }} {{ notificationDetails.table_no }}
+                    >{{ _t('At table') }} {{ notificationDetails.table_no }}
                     {{ _t('customer') }} {{ notificationDetails.message }}</i
                   >
                   <span>
@@ -72,7 +76,7 @@
         <li v-if="readyItemNotification.length">
           <ul>
             <li
-              class="dropdown-item"
+              class="dropdown-item qr-notification"
               v-for="(item_details, key) in readyItemNotification"
               :key="key"
             >
@@ -242,7 +246,7 @@ export default {
 .item-served {
   display: grid;
   align-items: baseline;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: auto 1fr;
   grid-column-gap: 20px;
   .item-name-normal {
     white-space: normal;
@@ -255,11 +259,12 @@ export default {
   }
 }
 .qr-notification {
-  background-color: #cc3232;
-  color: #fff;
-  &:hover {
-    color: #000;
-  }
+  background-color: #ffffff;
+  border-bottom: 1px solid #e1e3e6;
+  //color: #fff;
+  // &:hover {
+  //   color: #e3e7f2;
+  // }
   .shadow-btn {
     box-shadow: 0px 0px 3px #0000004a;
   }
@@ -284,11 +289,14 @@ ul.dropdown-menu.show {
   position: absolute;
   z-index: 9;
   transform: translate3d(-353px, 46px, 0px);
+  left: 0;
   @media only screen and (max-width: 599px) {
     transform: translate3d(-247px, 46px, 0px);
+    width: 350px;
+    left: 51px;
+    border: 1px solid #5a5c5f;
   }
   top: 0;
-  left: 0;
   will-change: transform;
   .dropdown-item {
     padding: 0.6rem 1.5rem 0.6rem 1.5rem;
