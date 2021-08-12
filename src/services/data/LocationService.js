@@ -11,7 +11,11 @@ export default {
     )
   },
   validateStoreSubscription() {
-    return DataService.get('/model/subscriptions/get_subscription_status')
+    return DataService.get(
+      '/model/subscriptions/get_subscription_status',
+      null,
+      false
+    )
   },
   getMeasurementUnits() {
     return DataService.get(

@@ -8,7 +8,9 @@ export default {
   },
   fetchOpenItemTaxes() {
     return DataService.get(
-      `/model/brand_tax_rates/get_open_items_tax?ascending=1&byColumn=0`
+      `/model/brand_tax_rates/get_open_items_tax?ascending=1&byColumn=0`,
+      null,
+      false
     )
   },
 }
