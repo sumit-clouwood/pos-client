@@ -19,7 +19,11 @@ export default {
     )
   },
   getDeliveryServices(brand_id) {
-    return DataService.get(`/model/orders/get_drivers?brand_id=${brand_id}`)
+    return DataService.get(
+      `/model/orders/get_drivers?brand_id=${brand_id}`,
+      null,
+      false
+    )
   },
   getGlobalDetails(model) {
     return DataService.get(`/model/${model}?no_limit=true`, 'brand')

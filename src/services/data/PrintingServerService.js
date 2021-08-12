@@ -3,7 +3,9 @@ import DataService from '@/services/DataService'
 export default {
   allKitchenSectionsItems() {
     return DataService.getT(
-      '/model/kitchens/get_kitchen_menu_items?item_status=true'
+      '/model/kitchens/get_kitchen_menu_items?item_status=true',
+      null,
+      false
     )
   },
   allKitchenServers() {

@@ -4,7 +4,7 @@ import createAuthRefreshInterceptor from 'axios-auth-refresh'
 import db from '@/services/network/DB'
 import $store from '@/store'
 const apiURL = process.env.VUE_APP_API_ENDPOINT
-const CDN_ENABLED = false
+const CDN_ENABLED = true
 
 axios.defaults.headers.post['Content-Type'] = 'application/json'
 axios.defaults.headers.post['Accept'] = 'application/json'
@@ -27,7 +27,7 @@ function setMiddleware() {
       request.method == 'get' &&
       request.url.includes('/cached/api')
     ) {
-      request.headers['Authorization'] = 'as_guest'
+      request.headers['Authorization'] = 'guest'
     } else {
       request.headers['Authorization'] = getAccessToken()
     }
@@ -107,7 +107,7 @@ export default {
     return validResponse
   },
 
-  get(url, level) {
+  get(url, level, cdn = true) {
     if (!url.includes('pos_menu')) {
       let uriparts = url
         .substring(1)
@@ -141,7 +141,7 @@ export default {
 
       let endpoint = apiURL
 
-      if (CDN_ENABLED && !url.includes('pos_menu')) {
+      if (CDN_ENABLED && cdn && !url.match(new RegExp('/pos_menu|/id/'))) {
         endpoint = apiURL.replace(new RegExp('/api$'), '/cached/api')
       }
 
