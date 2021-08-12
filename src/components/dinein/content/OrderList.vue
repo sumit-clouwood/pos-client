@@ -213,89 +213,9 @@
                           class="button-block running-actions"
                           style="visibility: visible;"
                         >
-                          <div
-                            class="button-block"
-                            v-if="
-                              processedOrder.includes(order._id) &&
-                                loading_awating_order_response
-                            "
-                          >
-                            <button
-                              class="button text-button btn btn-success"
-                              type="button"
-                            >
-                              <div class="button-content-container">
-                                <div class="button-icon-container">
-                                  <!---->
-                                </div>
-                                <div
-                                  class="button-caption"
-                                  :style="{ opacity: 1 }"
-                                >
-                                  <i class="fa fa-circle-o-notch fa-spin"></i>
-                                  {{ _t('wait') }}
-                                </div>
-                              </div>
-                            </button>
-                          </div>
-                          <div v-else>
-                            <span
-                              :key="LabelIndex"
-                              style="margin: 0.2rem"
-                              v-for="(label,
-                              LabelIndex) in actionDetails.actionLabel"
-                            >
-                              <a
-                                v-if="label == 'Update'"
-                                @click="
-                                  setRouter({
-                                    url:
-                                      $route.path +
-                                      '/' +
-                                      orderTable.table.assigned_table_id +
-                                      '/' +
-                                      order._id,
-                                    orderId: order._id,
-                                    orderData: orderTable.table,
-                                  })
-                                "
-                              >
-                                <div
-                                  class="button text-button btn btn-success"
-                                  type="button"
-                                >
-                                  <div class="button-content-container">
-                                    <div class="button-icon-container"></div>
-                                    <div class="button-caption">
-                                      {{
-                                        actionDetails.actionLabel[LabelIndex]
-                                      }}
-                                    </div>
-                                  </div>
-                                </div>
-                              </a>
-                              <button
-                                v-else
-                                @click.stop="
-                                  updateOrder({
-                                    order: order,
-                                    orderType: order.order_type,
-                                    actionTrigger:
-                                      actionDetails.action[LabelIndex],
-                                  })
-                                "
-                                class="button text-button btn btn-success"
-                                type="button"
-                              >
-                                <div class="button-content-container">
-                                  <div class="button-icon-container"></div>
-                                  <div class="button-caption">
-                                    {{ actionDetails.actionLabel[LabelIndex] }}
-                                  </div>
-                                </div>
-                              </button>
-                            </span>
-                          </div>
+                          <order-accept-reject
+                            :order="order"
+                          ></order-accept-reject>
                         </div>
                       </div>
                       <div class="modifiers-content">
@@ -409,6 +329,7 @@ import DateTime from '@/mixins/DateTime'
 import Preloader from '@/components/util/Preloader'
 import paginate from 'vuejs-paginate'
 import InformationPopup from '@/components/pos/content/InformationPopup'
+import OrderAcceptReject from './buttons/OrderAcceptReject'
 
 export default {
   name: 'OrderList',
@@ -420,15 +341,16 @@ export default {
     Preloader,
     paginate,
     InformationPopup,
+    OrderAcceptReject,
   },
   data() {
     return {
-      actionDetails: {
-        moreDetails: false,
-        actionLabel: ['Accept', 'Reject'],
-        action: ['delivery_accept', 'delivery_reject'],
-        nextOrderStatus: 'in-progress',
-      },
+      // actionDetails: {
+      //   moreDetails: false,
+      //   actionLabel: ['Accept', 'Reject'],
+      //   action: ['delivery_accept', 'delivery_reject'],
+      //   nextOrderStatus: 'in-progress',
+      // },
       processedOrder: [],
       timerTime: false,
       isOrderCancelledClass: 'table-order-view',
@@ -471,19 +393,19 @@ export default {
     ...mapGetters('auth', ['waiter']),
   },
   methods: {
-    updateOrder(data) {
-      this.processedOrder.push(data.order._id)
-      this.$store.commit('deliveryManager/SET_LOADING', true)
-      this.updateOrderAction(data)
-        .then(() => {
-          // this.$store.dispatch('dinein/dineInRunningOrders')
-          this.$store.dispatch('deliveryManager/getOnlineOrders')
-        })
-        .catch(er => {
-          this.err = er.data ? er.data.error : er.message
-          if (this.err) $('.information-popup').modal('show')
-        })
-    },
+    // updateOrder(data) {
+    //   this.processedOrder.push(data.order._id)
+    //   this.$store.commit('deliveryManager/SET_LOADING', true)
+    //   this.updateOrderAction(data)
+    //     .then(() => {
+    //       // this.$store.dispatch('dinein/dineInRunningOrders')
+    //       this.$store.dispatch('deliveryManager/getOnlineOrders')
+    //     })
+    //     .catch(er => {
+    //       this.err = er.data ? er.data.error : er.message
+    //       if (this.err) $('.information-popup').modal('show')
+    //     })
+    // },
     hasOrders(orderDetails) {
       return orderDetails.orders.length
     },
