@@ -160,9 +160,9 @@ export default {
     })
   },
 
-  getT(url, level) {
+  getT(url, level, cdn = true) {
     url += '&translations_needed=1&lang=' + this.lang || 'en-US'
-    return this.get(url, level)
+    return this.get(url, level, cdn)
   },
 
   post(url, data, level) {
