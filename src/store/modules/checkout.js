@@ -820,7 +820,7 @@ const actions = {
                 if (action === CONSTANTS.ORDER_STATUS_ON_HOLD) {
                   orderStatus = CONSTANTS.ORDER_STATUS_ON_HOLD
                 }
-
+                let order_source = rootState.order.selectedOrder && rootState.order.selectedOrder.item.order_source || CONSTANTS.ORDER_SOURCE_POS  
                 order = {
                   cashier_id: rootState.auth.userDetails.item._id,
                   assigned_to: rootState.auth.userDetails.item._id,
@@ -833,7 +833,7 @@ const actions = {
                   currency: rootState.location.currency,
                   order_status: orderStatus,
 
-                  order_source: CONSTANTS.ORDER_SOURCE_POS,
+                  order_source: order_source,
                   order_type: rootState.order.orderType.OTApi,
                   order_mode: 'online',
                   //this time can be used to indentify offline order
