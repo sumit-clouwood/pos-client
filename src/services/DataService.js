@@ -4,7 +4,7 @@ import createAuthRefreshInterceptor from 'axios-auth-refresh'
 import db from '@/services/network/DB'
 import $store from '@/store'
 const apiURL = process.env.VUE_APP_API_ENDPOINT
-const CDN_ENABLED = true
+const CDN_ENABLED = false
 
 axios.defaults.headers.post['Content-Type'] = 'application/json'
 axios.defaults.headers.post['Accept'] = 'application/json'
@@ -107,6 +107,12 @@ export default {
     return validResponse
   },
 
+  // level:
+  //  null (brand_id/store_id)
+  //  brand (brand_id)
+  //  false (no brand, no store) eg: gettimezone api
+  // CDN:
+  //  true: cashed, fasle: remote serve,
   get(url, level, cdn = true) {
     if (!url.includes('pos_menu')) {
       let uriparts = url

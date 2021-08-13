@@ -5,13 +5,17 @@ export default {
   dineInRunningOrders(page, limit, userId) {
     let currentDate = DateTime.getPreviousDayUTCDate()
     return DataService.get(
-      `/model/reservations?page_id=running_orders&query=&limit=${limit}&ascending=1&page=${page}&byColumn=1&assigned_to=${userId}&orderBy=priority&start_date=${currentDate}~gte`
+      `/model/reservations?page_id=running_orders&query=&limit=${limit}&ascending=1&page=${page}&byColumn=1&assigned_to=${userId}&orderBy=priority&start_date=${currentDate}~gte`,
+      null,
+      false
     )
   },
   dineInCompleteOrders(page, limit, userId) {
     let currentDate = DateTime.getPreviousDayUTCDate()
     return DataService.get(
-      `/model/reservations?page_id=reservations_main_tbl&query=&limit=${limit}&ascending=1&page=${page}&byColumn=1&assigned_to=${userId}&status=completed&byColumn=1&orderBy=priority&start_date=${currentDate}~gte`
+      `/model/reservations?page_id=reservations_main_tbl&query=&limit=${limit}&ascending=1&page=${page}&byColumn=1&assigned_to=${userId}&status=completed&byColumn=1&orderBy=priority&start_date=${currentDate}~gte`,
+      null,
+      false
     )
   },
 
