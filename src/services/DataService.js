@@ -4,7 +4,7 @@ import createAuthRefreshInterceptor from 'axios-auth-refresh'
 import db from '@/services/network/DB'
 import $store from '@/store'
 const apiURL = process.env.VUE_APP_API_ENDPOINT
-const CDN_ENABLED = false
+const CDN_ENABLED = true
 
 axios.defaults.headers.post['Content-Type'] = 'application/json'
 axios.defaults.headers.post['Accept'] = 'application/json'
