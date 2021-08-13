@@ -25,7 +25,7 @@
         v-for="(label, LabelIndex) in actionDetails.actionLabel"
       >
         <a
-          v-if="label == 'Update'"
+          v-if="typeof orderTable !== 'string' && label == 'Update'"
           @click="
             setRouter({
               url:
@@ -49,7 +49,7 @@
           </div>
         </a>
         <button
-          v-else
+          v-else-if="label !== 'Update'"
           @click.stop="
             updateOrder({
               order: order,
@@ -80,15 +80,20 @@ export default {
       loading_awating_order_response: state => state.deliveryManager.loading,
     }),
     ...mapGetters('location', ['_t']),
-    ...mapState('dinein', ['qrTableNotification']),
+    ...mapState('dinein', ['qrTableNotification', 'tables', 'orderDetails']),
+    // orderTable() {
+    //   return this.orderDetails.forEach(orderTable => {
+    //     orderTable.table.assigned_table_id === this.order.assigned_table_id
+    //   })
+    // },
   },
   name: 'OrderAcceptReject',
   data() {
     return {
       actionDetails: {
         moreDetails: false,
-        actionLabel: ['Accept', 'Reject'],
-        action: ['delivery_accept', 'delivery_reject'],
+        actionLabel: ['Accept', 'Reject', 'Update'],
+        action: ['delivery_accept', 'delivery_reject', 'update'],
         nextOrderStatus: 'in-progress',
       },
       processedOrder: [],
@@ -96,6 +101,7 @@ export default {
   },
   props: {
     order: Object,
+    orderTable: [String, Object],
   },
   methods: {
     ...mapActions('order', ['updateOrderAction']),
@@ -111,6 +117,22 @@ export default {
       //   this.err = er.data ? er.data.error : er.message
       //   if (this.err) $('.information-popup').modal('show')
       // })
+    },
+    setRouter(data) {
+      let tableData = this.tables.find(
+        table => table._id === data.orderData.assigned_table_id
+      )
+      this.$store.commit('dinein/SELECTED_TABLE', tableData)
+      this.$store.commit('dinein/RESERVATION_ID', data.orderData._id)
+      this.$store.commit('dinein/ORDER_RESERVATION_DATA', data.orderData)
+      this.$store.dispatch('dinein/getSelectedOrder', data.orderId, {
+        root: true,
+      })
+      this.$store.dispatch('order/updateOrderType', {
+        OTview: 'Dine In',
+        OTApi: 'dine_in',
+      })
+      this.$router.push({ path: data.url })
     },
     updateQRNotificaitons(order) {
       let notification = this.qrTableNotification

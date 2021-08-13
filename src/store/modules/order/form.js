@@ -21,8 +21,6 @@ const getters = {
     ) {
       return true
     }
-    // eslint-disable-next-line no-console
-    console.log('radio selection ', groupId, itemId, modifierId, 'false')
     return false
   },
   quantity: state => {

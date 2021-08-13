@@ -215,6 +215,7 @@
                         >
                           <order-accept-reject
                             :order="order"
+                            :orderTable="orderTable"
                           ></order-accept-reject>
                         </div>
                       </div>

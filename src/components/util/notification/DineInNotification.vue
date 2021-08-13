@@ -62,6 +62,7 @@
                   <span v-if="notificationDetails.namespace === 'new_order'">
                     <order-accept-reject
                       :order="notificationDetails.order"
+                      orderTable="no"
                     ></order-accept-reject>
                   </span>
                   <span v-else>
