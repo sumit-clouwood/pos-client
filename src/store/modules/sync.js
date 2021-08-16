@@ -37,6 +37,7 @@ const getters = {
       root_stores: 'stores',
       new_style_root_delivery_areas: 'new_style_store_delivery_areas',
       root_order_discounts: 'brand_order_discounts',
+      brand_item_discounts: 'brand_item_discount',
     }
     var collection_id = collection_remaps[model] || model
 
