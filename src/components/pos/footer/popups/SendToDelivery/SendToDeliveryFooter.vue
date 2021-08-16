@@ -174,6 +174,7 @@ export default {
       loyaltyCard: state => state.customer.customerLoyalty.card,
       changedReferral: state => state.order.referral,
       loyaltyAmount: state => state.checkoutForm.loyaltyAmount,
+      errMsg: state => state.checkoutForm.msg,
       selectedCustomer: state => state.customer.customer.name,
     }),
     ...mapState('order', ['needSupervisorAccess']),
@@ -249,8 +250,12 @@ export default {
                 : null,
           })
             .then(response => {
-              if (response.message != 'Network Error') {
+              if (response && response.message != 'Network Error') {
                 this.msg = ''
+              }
+              if (this.errMsg && this.errMsg.result === 'error') {
+                this.errors = this.errMsg.message
+                $('#payment-msg').modal('show')
               }
               // $('#order-confirmation').modal('hide')
               $('#order-confirmation').modal('hide')
