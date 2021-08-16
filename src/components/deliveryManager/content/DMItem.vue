@@ -27,7 +27,6 @@
             "
             :class="{ active: activeIndex.includes(order._id) }"
           >
-            {{ order.order_type }}
             <div
               class="order-item"
               :class="[
