@@ -58,7 +58,11 @@ export default {
   },
 
   fetchOnlineOrderDetails(...[orderid, locationId]) {
-    return DataService.get(`/auth/online-order-list/${locationId}/${orderid}`)
+    return DataService.get(
+      `/auth/online-order-list/${locationId}/${orderid}`,
+      null,
+      false
+    )
   },
   getOrders(
     query,
