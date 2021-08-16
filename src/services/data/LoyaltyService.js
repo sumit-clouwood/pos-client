@@ -18,6 +18,10 @@ export default {
     )
   },
   searchCustomer(searchTerm) {
-    return DataService.get(`/auth/search-customers?search_query=${searchTerm}`)
+    return DataService.get(
+      `/auth/search-customers?search_query=${searchTerm}`,
+      null,
+      false
+    )
   },
 }

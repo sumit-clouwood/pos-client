@@ -141,7 +141,13 @@ export default {
 
       let endpoint = apiURL
 
-      if (CDN_ENABLED && cdn && !url.match(new RegExp('/pos_menu|/id/'))) {
+      if (
+        CDN_ENABLED &&
+        cdn &&
+        !url.match(
+          new RegExp('/pos_menu|/id/|/orders|/reservations|/waiting_lists')
+        )
+      ) {
         endpoint = apiURL.replace(new RegExp('/api$'), '/cached/api')
       }
 
