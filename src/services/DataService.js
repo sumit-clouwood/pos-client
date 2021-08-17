@@ -114,6 +114,8 @@ export default {
   // CDN:
   //  true: cashed, fasle: remote serve,
   get(url, level, cdn = true) {
+    let apiVersion = false
+
     if (!url.includes('pos_menu')) {
       let uriparts = url
         .substring(1)
@@ -122,7 +124,7 @@ export default {
 
       let model = uriparts[0].split('?')[0]
 
-      let apiVersion = $store.getters['sync/getVersion'](model)
+      apiVersion = $store.getters['sync/getVersion'](model)
 
       let glue = '?'
 
@@ -148,11 +150,10 @@ export default {
       let endpoint = apiURL
 
       if (
+        apiVersion &&
         CDN_ENABLED &&
         cdn &&
-        !url.match(
-          new RegExp('/pos_menu|/id/|/orders|/reservations|/waiting_lists')
-        )
+        !url.match(new RegExp('/pos_menu|/id/|/orders|/reservations'))
       ) {
         endpoint = apiURL.replace(new RegExp('/api$'), '/cached/api')
       }
