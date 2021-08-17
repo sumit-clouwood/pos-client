@@ -105,22 +105,22 @@
             >
               {{ store.name }}
             </h4>
-            <small class="date">
+            <h5 class="date">
               {{ _t('Current datetime') }} {{ todayDate }}
               <span style="text-transform: uppercase">
                 {{ todayTime }}
-              </span></small
-            >
-            <br />
-            <small class="date" v-if="date_from !== 'Invalid date'">
-              {{ _t('Report from') }} {{ date_from }}</small
-            >
-            -
-            <small class="date" v-if="date_to !== 'Invalid date'">
-              {{ _t('To') }} {{ date_to }}
-            </small>
-            <br />
-            <small>{{ _t('Printed by') }}: {{ user.name }}</small>
+              </span>
+            </h5>
+            <h5 class="date">
+              <span v-if="date_from !== 'Invalid date'"
+                >{{ _t('Report from') }} {{ date_from }}</span
+              >
+              -
+              <span v-if="date_to !== 'Invalid date'">
+                {{ _t('To') }} {{ date_to }}</span
+              >
+            </h5>
+            <h5>{{ _t('Printed by') }}: {{ user.name }}</h5>
           </div>
           <div class="business-summary-wrapper" style="text-align: center">
             <div class="table-responsive">
@@ -133,6 +133,7 @@
                   <tr style="border: 1px dashed #000">
                     <th
                       style="border: 1px dashed #000;
+                      font-size: 16px;
                       text-align: left;padding: 0.3rem; width: 60%"
                     >
                       {{ _t('Sales') }}
@@ -140,6 +141,7 @@
                     </th>
                     <th
                       style="border: 1px dashed #000; border-left: 0;
+                      font-size: 16px;
                       text-align: left;padding: 0.3rem; width: 40%"
                     >
                       {{ _t('Value') }}
@@ -150,7 +152,7 @@
                 <tbody>
                   <tr>
                     <td
-                      style="border-right: 1px dashed #000;
+                      style="border-right: 1px dashed #000; font-size: 14px;
                       border-left: 1px dashed #000;
                       text-align: left;padding: 0.3rem; width: 60%"
                     >
@@ -158,51 +160,54 @@
                     </td>
                     <td
                       style="padding-left: 10px;
-                      border-right: 1px dashed #000; width: 40%"
+                      border-right: 1px dashed #000; 
+                      font-size: 14px; width: 40%"
                     >
                       {{ formatPrice(BSData.REPORT_CALCULATED_GROSS_SALES) }}
                     </td>
                   </tr>
                   <tr>
                     <td
-                      style="border-right: 1px dashed #000;
+                      style="border-right: 1px dashed #000; font-size: 14px;
                       border-left: 1px dashed #000;
                       text-align: left;padding: 0.3rem; width: 60% "
                     >
                       {{ _t('Item Discounts') }}
                     </td>
                     <td
-                      style="padding-left: 10px;
-                      border-right: 1px dashed #000; width: 40%"
+                      style="padding-left: 10px; font-size: 14px;
+                      border-right: 1px dashed #000; 
+                      font-size: 14px; width: 40%"
                     >
                       {{ formatPrice(BSData.REPORT_SUM_OF_DISCOUNT) }}
                     </td>
                   </tr>
                   <tr class="font-weight-bold">
                     <td
-                      style="border-right: 1px dashed #000;
+                      style="border-right: 1px dashed #000; font-size: 14px;
                       border-left: 1px dashed #000;
                       text-align: left;padding: 0.3rem; width: 60%"
                     >
                       {{ _t('Order Discounts') }}
                     </td>
                     <td
-                      style="padding-left: 10px;
-                      border-right: 1px dashed #000; width: 40%"
+                      style="padding-left: 10px; font-size: 14px;
+                      border-right: 1px dashed #000; 
+                      font-size: 14px; width: 40%"
                     >
                       {{ formatPrice(BSData.REPORT_ORDER_DISCOUNT) }}
                     </td>
                   </tr>
                   <tr>
                     <td
-                      style="border-right: 1px dashed #000;
+                      style="border-right: 1px dashed #000; font-size: 14px;
                       border-left: 1px dashed #000;
                       text-align: left;padding: 0.3rem;"
                     >
                       {{ _t('Net Sales Before Surcharge') }}
                     </td>
                     <td
-                      style="padding-left: 10px;
+                      style="padding-left: 10px; font-size: 14px;
                       border-right: 1px dashed #000"
                     >
                       {{
@@ -214,7 +219,7 @@
                   </tr>
                   <tr class="font-weight-bold">
                     <td
-                      style="border-right: 1px dashed #000;
+                      style="border-right: 1px dashed #000; font-size: 14px;
                       border-left: 1px dashed #000;
                       text-align: left;padding: 0.3rem; width: 60%"
                     >
@@ -222,14 +227,15 @@
                     </td>
                     <td
                       style="padding-left: 10px;
-                      border-right: 1px dashed #000; width: 40%"
+                      border-right: 1px dashed #000; 
+                      font-size: 14px; width: 40%"
                     >
                       {{ formatPrice(BSData.REPORT_ORDER_SURCHARGE) }}
                     </td>
                   </tr>
                   <tr class="font-weight-bold">
                     <td
-                      style="border-right: 1px dashed #000;
+                      style="border-right: 1px dashed #000; font-size: 14px;
                       border-left: 1px dashed #000;
                       text-align: left;padding: 0.3rem; width: 60%"
                     >
@@ -237,14 +243,15 @@
                     </td>
                     <td
                       style="padding-left: 10px;
-                      border-right: 1px dashed #000; width: 40%"
+                      border-right: 1px dashed #000; 
+                      font-size: 14px; width: 40%"
                     >
                       {{ formatPrice(BSData.REPORT_DELIVERY_SURCHARGE_VALUE) }}
                     </td>
                   </tr>
                   <tr>
                     <td
-                      style="border-right: 1px dashed #000;
+                      style="border-right: 1px dashed #000; font-size: 14px;
                       border-left: 1px dashed #000;
                       text-align: left;padding: 0.3rem; width: 60%"
                     >
@@ -252,14 +259,15 @@
                     </td>
                     <td
                       style="padding-left: 10px;
-                      border-right: 1px dashed #000; width: 40%"
+                      border-right: 1px dashed #000;
+                      font-size: 14px; width: 40%"
                     >
                       {{ formatPrice(BSData.REPORT_ORDER_SALES) }}
                     </td>
                   </tr>
                   <tr>
                     <td
-                      style="border-right: 1px dashed #000;
+                      style="border-right: 1px dashed #000; font-size: 14px;
                       border-left: 1px dashed #000;
                       text-align: left;padding: 0.3rem; width: 60%"
                     >
@@ -267,7 +275,8 @@
                     </td>
                     <td
                       style="padding-left: 10px;
-                      border-right: 1px dashed #000;width: 40% "
+                      border-right: 1px dashed #000;
+                      font-size: 14px;width: 40% "
                     >
                       {{ formatPrice(BSData.REPORT_ORDER_TAX) }}
                     </td>
@@ -275,6 +284,7 @@
                   <tr>
                     <td
                       style="border-right: 1px dashed #000;
+                      font-size: 14px;
                       border-left: 1px dashed #000;
                       text-align: left;padding: 0.3rem; width: 60% "
                     >
@@ -282,7 +292,8 @@
                     </td>
                     <td
                       style="padding-left: 10px;
-                      border-right: 1px dashed #000;  width: 40%"
+                      border-right: 1px dashed #000;
+                      font-size: 14px;  width: 40%"
                     >
                       {{ formatPrice(BSData.REPORT_CALCULATED_TOTAL_SALES) }}
                     </td>
@@ -300,6 +311,7 @@
                   <tr>
                     <th
                       style="border: 1px dashed #000; margin-top: 15px;
+                      font-size: 16px;
                       text-align: left;padding: 0.3rem; width: 60%"
                     >
                       {{ _t('Orders') }}
@@ -307,6 +319,7 @@
                     </th>
                     <th
                       style="border: 1px dashed #000; margin-top: 15px;
+                      font-size: 16px;
                       text-align: left;padding: 0.3rem;
                       width: 40%; border-left: 0;"
                     >
@@ -318,14 +331,14 @@
                 <tbody>
                   <tr>
                     <td
-                      style="border-right: 1px dashed #000;
+                      style="border-right: 1px dashed #000; font-size: 14px;
                       border-left: 1px dashed #000; width: 60%;
                       text-align: left;padding: 0.3rem;"
                     >
                       {{ _t('Total Orders') }}
                     </td>
                     <td
-                      style="padding-left: 10px; width: 40%;
+                      style="padding-left: 10px; width: 40%; font-size: 14px;
                       border-right: 1px dashed #000"
                     >
                       {{ BSData.REPORT_ORDER_COUNT }}
@@ -333,14 +346,14 @@
                   </tr>
                   <tr>
                     <td
-                      style="border-right: 1px dashed #000;
+                      style="border-right: 1px dashed #000; font-size: 14px;
                       border-left: 1px dashed #000;
                       text-align: left;padding: 0.3rem;"
                     >
                       {{ _t('Cancelled Orders') }}
                     </td>
                     <td
-                      style="padding-left: 10px;
+                      style="padding-left: 10px; font-size: 14px;
                       border-right: 1px dashed #000"
                     >
                       {{ BSData.REPORT_SUM_OF_CANCELLATION_REASONS }}
@@ -348,14 +361,14 @@
                   </tr>
                   <tr>
                     <td
-                      style="border-right: 1px dashed #000;
+                      style="border-right: 1px dashed #000; font-size: 14px;
                       border-left: 1px dashed #000;
                       text-align: left;padding: 0.3rem;"
                     >
                       {{ _t('Modified Orders') }}
                     </td>
                     <td
-                      style="padding-left: 10px;
+                      style="padding-left: 10px; font-size: 14px;
                       border-right: 1px dashed #000"
                     >
                       {{ BSData.REPORT_SUM_OF_MODIFICATION_REASON }}
@@ -363,14 +376,14 @@
                   </tr>
                   <tr>
                     <td
-                      style="border-right: 1px dashed #000;
+                      style="border-right: 1px dashed #000; font-size: 14px;
                       border-left: 1px dashed #000;
                       text-align: left;padding: 0.3rem;"
                     >
                       {{ _t('Refunded Orders') }}
                     </td>
                     <td
-                      style="padding-left: 10px;
+                      style="padding-left: 10px; font-size: 14px;
                       border-right: 1px dashed #000"
                     >
                       {{ BSData.REPORT_SUM_OF_REFUNDED_REASONS }}
@@ -378,21 +391,21 @@
                   </tr>
                   <tr>
                     <td
-                      style="border-right: 1px dashed #000;
+                      style="border-right: 1px dashed #000; font-size: 14px;
                       border-left: 1px dashed #000;
                       text-align: left;padding: 0.3rem;"
                     >
                       {{ _t('Not Finished Orders') }}
                     </td>
                     <td
-                      style="padding-left: 10px;
+                      style="padding-left: 10px; font-size: 14px;
                       border-right: 1px dashed #000"
                       v-if="parseInt(BSData.REPORT_IN_PROGRESS_QUANTITY) > 0"
                     >
                       {{ BSData.REPORT_IN_PROGRESS_QUANTITY }}
                     </td>
                     <td
-                      style="padding-left: 10px;
+                      style="padding-left: 10px; font-size: 14px;
                       border-right: 1px dashed #000"
                       v-else
                     >
@@ -412,6 +425,7 @@
                   <tr>
                     <th
                       style="border: 1px dashed #000; margin-top: 15px;
+                      font-size: 16px;
                       text-align: left;padding: 0.3rem;"
                     >
                       {{ _t('Payment Types') }}
@@ -419,6 +433,7 @@
                     </th>
                     <th
                       style="border: 1px dashed #000; margin-top: 15px;
+                      font-size: 16px;
                       text-align: left;padding: 0.3rem; border-left: 0;"
                     >
                       {{ _t('Qty') }}
@@ -426,6 +441,7 @@
                     </th>
                     <th
                       style="border: 1px dashed #000; margin-top: 15px;
+                      font-size: 16px;
                       text-align: left;padding: 0.3rem; border-left: 0;"
                     >
                       {{ _t('Value') }}
@@ -441,20 +457,20 @@
                       :key="index"
                     >
                       <td
-                        style="border-right: 1px dashed #000;
+                        style="border-right: 1px dashed #000; font-size: 14px;
                       border-left: 1px dashed #000;
                       text-align: left;padding: 0.3rem;"
                       >
                         {{ _t(payment['REPORT-PAYMENT-TYPE-NAME']) }}
                       </td>
                       <td
-                        style="padding-left: 10px;
+                        style="padding-left: 10px; font-size: 14px;
                       border-right: 1px dashed #000"
                       >
                         {{ payment['REPORT-PAYMENT-TYPE-QUANTITY'] }}
                       </td>
                       <td
-                        style="padding-left: 10px;
+                        style="padding-left: 10px; font-size: 14px;
                      border-right: 1px dashed #000"
                       >
                         {{ formatPrice(payment['REPORT-PAYMENT-TYPE']) }}
@@ -464,20 +480,20 @@
                   </template>
                   <tr class="font-weight-bold">
                     <td
-                      style="border-right: 1px dashed #000;
+                      style="border-right: 1px dashed #000; font-size: 14px;
                       border-left: 1px dashed #000;
                       text-align: left;padding: 0.3rem;"
                     >
                       {{ _t('Total') }}
                     </td>
                     <td
-                      style="padding-left: 10px;
+                      style="padding-left: 10px; font-size: 14px;
                       border-right: 1px dashed #000"
                     >
                       {{ totalPayments.count }}
                     </td>
                     <td
-                      style="padding-left: 10px;
+                      style="padding-left: 10px; font-size: 14px;
                       border-right: 1px dashed #000"
                     >
                       {{ formatPrice(totalPayments.value) }}
@@ -488,18 +504,18 @@
                     v-if="BSData.REPORT_TIPS_VALUE > 0"
                   >
                     <td
-                      style="border-right: 1px dashed #000;
+                      style="border-right: 1px dashed #000; font-size: 14px;
                       border-left: 1px dashed #000;
                       text-align: left;padding: 0.3rem;"
                     >
                       {{ _t('Tips') }}
                     </td>
                     <td
-                      style="padding-left: 10px;
+                      style="padding-left: 10px; font-size: 14px;
                       border-right: 1px dashed #000"
                     ></td>
                     <td
-                      style="padding-left: 10px;
+                      style="padding-left: 10px; font-size: 14px;
                       border-right: 1px dashed #000"
                     >
                       {{ formatPrice(BSData.REPORT_TIPS_VALUE) }}
@@ -513,20 +529,20 @@
                     "
                   >
                     <td
-                      style="border-right: 1px dashed #000;
+                      style="border-right: 1px dashed #000; font-size: 14px;
                       border-left: 1px dashed #000;
                       text-align: left;padding: 0.3rem;"
                     >
                       {{ _t('Uncollected Dine-In Orders') }}
                     </td>
                     <td
-                      style="padding-left: 10px;
+                      style="padding-left: 10px; font-size: 14px;
                       border-right: 1px dashed #000"
                     >
                       {{ BSData.REPORT_DINEIN_PANDDING_ORDER_COUNT }}
                     </td>
                     <td
-                      style="padding-left: 10px;
+                      style="padding-left: 10px; font-size: 14px;
                       border-right: 1px dashed #000"
                     >
                       {{ formatPrice(BSData.REPORT_DINEIN_PANDDING_ORDER) }}
@@ -540,7 +556,7 @@
                     "
                   >
                     <td
-                      style="border-right: 1px dashed #000;
+                      style="border-right: 1px dashed #000; font-size: 14px;
                       border-left: 1px dashed #000;
                       text-align: left;padding: 0.3rem;"
                     >
@@ -567,7 +583,7 @@
                     "
                   >
                     <td
-                      style="border-right: 1px dashed #000;
+                      style="border-right: 1px dashed #000; font-size: 14px;
                       border-left: 1px dashed #000;
                       text-align: left;padding: 0.3rem;"
                     >
@@ -594,20 +610,20 @@
                     "
                   >
                     <td
-                      style="border-right: 1px dashed #000;
+                      style="border-right: 1px dashed #000; font-size: 14px;
                       border-left: 1px dashed #000;
                       text-align: left;padding: 0.3rem;"
                     >
                       {{ _t('Uncollected Takeaway Orders') }}
                     </td>
                     <td
-                      style="padding-left: 10px;
+                      style="padding-left: 10px; font-size: 14px;
                       border-right: 1px dashed #000"
                     >
                       {{ BSData.REPORT_TAKEAWAY_PANDDING_ORDER_COUNT }}
                     </td>
                     <td
-                      style="padding-left: 10px;
+                      style="padding-left: 10px; font-size: 14px;
                       border-right: 1px dashed #000"
                     >
                       {{ formatPrice(BSData.REPORT_TAKEAWAY_PANDDING_ORDER) }}
@@ -621,20 +637,20 @@
                     "
                   >
                     <td
-                      style="border-right: 1px dashed #000;
+                      style="border-right: 1px dashed #000; font-size: 14px;
                       border-left: 1px dashed #000;
                       text-align: left;padding: 0.3rem;"
                     >
                       {{ _t('Unpaid Carhop Orders') }}
                     </td>
                     <td
-                      style="padding-left: 10px;
+                      style="padding-left: 10px; font-size: 14px;
                       border-right: 1px dashed #000"
                     >
                       {{ BSData.REPORT_CAPHOP_UNPAID_ORDER_COUNT }}
                     </td>
                     <td
-                      style="padding-left: 10px;
+                      style="padding-left: 10px; font-size: 14px;
                       border-right: 1px dashed #000"
                     >
                       {{ formatPrice(BSData.REPORT_CAPHOP_UNPAID_ORDER) }}
@@ -648,20 +664,20 @@
                     "
                   >
                     <td
-                      style="border-right: 1px dashed #000;
+                      style="border-right: 1px dashed #000; font-size: 14px;
                       border-left: 1px dashed #000;
                       text-align: left;padding: 0.3rem;"
                     >
                       {{ _t('Unpaid Takeaway Orders') }}
                     </td>
                     <td
-                      style="padding-left: 10px;
+                      style="padding-left: 10px; font-size: 14px;
                       border-right: 1px dashed #000"
                     >
                       {{ BSData.REPORT_TAKEAWAY_UNPAID_ORDER_COUNT }}
                     </td>
                     <td
-                      style="padding-left: 10px;
+                      style="padding-left: 10px; font-size: 14px;
                       border-right: 1px dashed #000"
                     >
                       {{ formatPrice(BSData.REPORT_TAKEAWAY_UNPAID_ORDER) }}
@@ -675,20 +691,20 @@
                     "
                   >
                     <td
-                      style="border-right: 1px dashed #000;
+                      style="border-right: 1px dashed #000; font-size: 14px;
                       border-left: 1px dashed #000;
                       text-align: left;padding: 0.3rem;"
                     >
                       {{ _t('Unpaid Dine-In Orders') }}
                     </td>
                     <td
-                      style="padding-left: 10px;
+                      style="padding-left: 10px; font-size: 14px;
                       border-right: 1px dashed #000"
                     >
                       {{ BSData.REPORT_DINEIN_UNPAID_ORDER_COUNT }}
                     </td>
                     <td
-                      style="padding-left: 10px;
+                      style="padding-left: 10px; font-size: 14px;
                       border-right: 1px dashed #000"
                     >
                       {{ formatPrice(BSData.REPORT_DINEIN_UNPAID_ORDER) }}
@@ -702,20 +718,20 @@
                     "
                   >
                     <td
-                      style="border-right: 1px dashed #000;
+                      style="border-right: 1px dashed #000; font-size: 14px;
                       border-left: 1px dashed #000;
                       text-align: left;padding: 0.3rem;"
                     >
                       {{ _t('Credit Referrals') }}
                     </td>
                     <td
-                      style="padding-left: 10px;
+                      style="padding-left: 10px; font-size: 14px;
                       border-right: 1px dashed #000"
                     >
                       {{ BSData.REPORT_ITEM_REFERRAL_QUANTITY }}
                     </td>
                     <td
-                      style="padding-left: 10px;
+                      style="padding-left: 10px; font-size: 14px;
                       border-right: 1px dashed #000"
                     >
                       {{ formatPrice(BSData.REPORT_ITEM_REFERRAL_VALUE) }}
@@ -734,13 +750,15 @@
                   <tr>
                     <th
                       style="border: 1px dashed #000; margin-top: 15px;
+                      font-size: 16px;
                       text-align: left;padding: 0.3rem;"
                     >
-                      {{ _t('Item Names') }}
+                      {{ _t('Items') }}
                       <span><i class="fa fa-sort" aria-hidden="true"></i></span>
                     </th>
                     <th
                       style="border: 1px dashed #000; margin-top: 15px;
+                      font-size: 16px;
                       text-align: left;padding: 0.3rem; border-left: 0;"
                     >
                       {{ _t('Qty') }}
@@ -748,6 +766,7 @@
                     </th>
                     <th
                       style="border: 1px dashed #000; margin-top: 15px;
+                      font-size: 16px;
                       text-align: left;padding: 0.3rem; border-left: 0;"
                     >
                       {{ _t('Qty %') }}
@@ -755,23 +774,26 @@
                     </th>
                     <th
                       style="border: 1px dashed #000; margin-top: 15px;
+                      font-size: 16px;
                       text-align: left;padding: 0.3rem; border-left: 0;"
                     >
-                      {{ _t('Value') }}
+                      {{ _t('Val') }}
                       <span><i class="fa fa-sort" aria-hidden="true"></i></span>
                     </th>
                     <th
                       style="border: 1px dashed #000; margin-top: 15px;
+                      font-size: 16px;
                       text-align: left;padding: 0.3rem; border-left: 0;"
                     >
-                      {{ _t('Value %') }}
+                      {{ _t('Val %') }}
                       <span><i class="fa fa-sort" aria-hidden="true"></i></span>
                     </th>
                     <th
                       style="border: 1px dashed #000; margin-top: 15px;
+                      font-size: 16px;
                       text-align: left;padding: 0.3rem; border-left: 0;"
                     >
-                      {{ _t('Weight') }}
+                      {{ _t('Wt') }}
                       <span><i class="fa fa-sort" aria-hidden="true"></i></span>
                     </th>
                   </tr>
@@ -783,20 +805,20 @@
                     :key="index"
                   >
                     <td
-                      style="border-right: 1px dashed #000;
+                      style="border-right: 1px dashed #000; font-size: 14px;
                       border-left: 1px dashed #000;
                       text-align: left;padding: 0.3rem;"
                     >
                       {{ _t(item['REPORT-ITEM-NAME']) }}
                     </td>
                     <td
-                      style="padding-left: 10px;
+                      style="padding-left: 10px; font-size: 14px;
                       border-right: 1px dashed #000"
                     >
                       {{ item['REPORT-ITEM-QUANTITY'] }}
                     </td>
                     <td
-                      style="padding-left: 10px;
+                      style="padding-left: 10px; font-size: 14px;
                       border-right: 1px dashed #000"
                     >
                       {{
@@ -808,22 +830,22 @@
                       %
                     </td>
                     <td
-                      style="padding-left: 10px;
+                      style="padding-left: 10px; font-size: 14px;
                      border-right: 1px dashed #000"
                     >
                       {{ formatPrice(item['REPORT-ITEM-VALUE']) }}
                     </td>
                     <td
-                      style="padding-left: 10px;
+                      style="padding-left: 10px; font-size: 14px;
                      border-right: 1px dashed #000"
                     >
                       {{
                         getPercentage(getItemTotal, item['REPORT-ITEM-VALUE'])
                       }}
-                      {{ _t('% of') }} {{ currency }}
+                      {{ _t('%') }}
                     </td>
                     <td
-                      style="padding-left: 10px;
+                      style="padding-left: 10px; font-size: 14px;
                      border-right: 1px dashed #000"
                     >
                       {{ item['REPORT-ITEM-QUANTITY-MEASUREMENT'] }}
@@ -832,34 +854,34 @@
                   </tr>
                   <tr class="font-weight-bold">
                     <td
-                      style="border-right: 1px dashed #000;
+                      style="border-right: 1px dashed #000; font-size: 14px;
                       border-left: 1px dashed #000;
                       text-align: left;padding: 0.3rem;"
                     >
                       {{ _t('Total') }}
                     </td>
                     <td
-                      style="padding-left: 10px;
+                      style="padding-left: 10px; font-size: 14px;
                       border-right: 1px dashed #000"
                     >
                       {{ getItemTotalQty }}
                     </td>
                     <td
-                      style="padding-left: 10px;
+                      style="padding-left: 10px; font-size: 14px;
                       border-right: 1px dashed #000"
                     ></td>
                     <td
-                      style="padding-left: 10px;
+                      style="padding-left: 10px; font-size: 14px;
                       border-right: 1px dashed #000"
                     >
                       {{ formatPrice(getItemTotal) }}
                     </td>
                     <td
-                      style="padding-left: 10px;
+                      style="padding-left: 10px; font-size: 14px;
                       border-right: 1px dashed #000"
                     ></td>
                     <td
-                      style="padding-left: 10px;
+                      style="padding-left: 10px; font-size: 14px;
                       border-right: 1px dashed #000"
                     ></td>
                   </tr>
@@ -885,6 +907,14 @@
             >
               {{ _t('Print') }}
             </button>
+            <a
+              :href="dashboard"
+              target="_self"
+              v-if="!loader"
+              class="a-btn btn btn-success btn-large color-main color-text-invert"
+            >
+              {{ _t('See Full Report') }}
+            </a>
           </div>
         </div>
       </div>
@@ -905,6 +935,7 @@ export default {
       // timeMode: this.time_mode,
       todayDate: moment().format('Do MMMM YYYY'),
       todayTime: moment().format('h:mm:ss a'),
+      dashboard: this.redirectToBS('dashboard'),
     }
   },
   components: {
@@ -977,6 +1008,13 @@ export default {
     },
   },
   methods: {
+    redirectToBS(link) {
+      return (
+        window.location.href.replace(new RegExp('(/pos)?' + '.*'), '/' + link) +
+        this.$store.getters['context/brand'] +
+        '/dashboard_business_summary'
+      )
+    },
     getPercentage(total, value) {
       let amount = (value / total) * 100
       return Num.round(amount, 2).toFixed(2)
@@ -1071,9 +1109,29 @@ export default {
 </script>
 <style>
 @media print {
+  * {
+    margin: 0;
+  }
+  table {
+    width: 100% !important;
+  }
+  h5 {
+    line-height: 25px;
+  }
   @page {
     size: landscape;
   }
+}
+h5 {
+  line-height: 25px;
+}
+.a-btn {
+  height: 3.125rem;
+  font-weight: 600;
+  padding-left: 1.5625rem;
+  padding-right: 1.5625rem;
+  margin-left: 0.625rem;
+  padding-top: 11px;
 }
 /* The container */
 .container-checkbox {
