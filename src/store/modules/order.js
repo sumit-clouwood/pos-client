@@ -1500,7 +1500,10 @@ const actions = {
   },
 
   //from hold order, there would be a single order with multiple items so need to clear what we have already in cart
-  async addOrderToCart({ state, rootGetters, commit, dispatch }, order) {
+  async addOrderToCart(
+    { state, rootGetters, commit, dispatch, rootState },
+    order
+  ) {
     //create cart items indexes so we can sort them when needed
     let needSupervisorpassword = false
     if (state.orderSource === 'backend') {
@@ -1516,7 +1519,7 @@ const actions = {
       commit(mutation.SET_TOTAL_ITEMS, order.items.length)
       commit(mutation.SET_TOTAL_ITEMS_PAID, 0)
 
-      let orderAddress = []
+      let orderAddress = undefined
 
       if (order.customer) {
         //as per discussed we ll send customer address info with only crm order
@@ -1524,8 +1527,22 @@ const actions = {
           const deliveryArea = rootGetters['customer/findDeliveryArea'](
             order.order_delivery_area
           )
-
-          orderAddress.push({
+          if (order.referral) {
+            const referral = rootState.location.referrals.find(
+              ref => ref._id === order.referral
+            )
+            commit(
+              'order/SET_REFERRAL',
+              {
+                referralName: referral.name,
+                referralId: referral._id,
+              },
+              {
+                root: true,
+              }
+            )
+          }
+          orderAddress = {
             building: order.order_building,
             city: order.order_city,
             country: order.order_country,
@@ -1537,20 +1554,29 @@ const actions = {
             store_id: order.store_id,
             street: order.order_street,
             _id: order._id,
-          })
-          if (orderAddress.length) {
-            dispatch('customer/selectedAddress', orderAddress, {
+            min_order_value: deliveryArea.min_order_value,
+            special_order_surcharge: deliveryArea.special_order_surcharge,
+            location_coordinates: { lat: 0, lng: 0 },
+          }
+          let customer = rootState.customer.customer
+          if (!customer || customer._id !== order.customer) {
+            dispatch('customer/fetchSelectedCustomer', order.customer, {
               root: true,
-            })
-            commit('location/SET_MODAL', '#order-confirmation', {
-              root: true,
+            }).then(() => {
+              if (orderAddress) {
+                dispatch('customer/selectedAddress', orderAddress, {
+                  root: true,
+                })
+                commit('location/SET_MODAL', '#order-confirmation', {
+                  root: true,
+                })
+              }
             })
           }
         }
-        dispatch('customer/fetchSelectedCustomer', order.customer, {
-          root: true,
-        })
         // commit('location/SET_MODAL', '#order-confirmation')
+      } else {
+        orderAddress = []
       }
       let orderData = {
         _id: order._id,
