@@ -15,7 +15,7 @@ const state = {
   itemModifiers: [],
   multistoreItemModifiers: {},
 
-  foodIcons: [],
+  // foodIcons: [],
   item: false,
 }
 
@@ -272,18 +272,18 @@ const getters = {
 const actions = {
   fetchAll({ commit, rootState, rootGetters }, storeId = null) {
     return new Promise(async resolve => {
-      const [groups, subgroups, modifiers, foodIcons] = await Promise.all([
+      const [groups, subgroups, modifiers] = await Promise.all([
         ModifierService.groups(storeId),
         ModifierService.subgroups(storeId),
         ModifierService.modifiers(storeId),
-        ModifierService.foodIcons(),
+        // ModifierService.foodIcons(),
       ])
 
       commit(mutation.SET_MODIFIERS, {
         groups: groups.data.data,
         subgroups: subgroups.data.data,
         modifiers: modifiers.data.data,
-        foodIcons: foodIcons.data.data,
+        // foodIcons: foodIcons.data.data,
         multistore: storeId
           ? storeId
           : rootGetters['auth/multistore']
@@ -374,7 +374,7 @@ const actions = {
 const mutations = {
   [mutation.SET_MODIFIERS](
     state,
-    { groups, subgroups, modifiers, foodIcons, multistore }
+    { groups, subgroups, modifiers, multistore }
   ) {
     if (multistore) {
       state.multistoreGroups = {
@@ -394,7 +394,7 @@ const mutations = {
       state.subgroups = subgroups
       state.modifiers = modifiers
     }
-    state.foodIcons = foodIcons
+    // state.foodIcons = foodIcons
   },
 
   [mutation.SET_ITEM](state, item) {
@@ -411,7 +411,7 @@ const mutations = {
     state.modifiers = []
     state.item = false
     state.itemModifiers = []
-    state.foodIcons = []
+    // state.foodIcons = []
 
     state.multistoreGroups = {}
     state.multistoreSubgroups = {}

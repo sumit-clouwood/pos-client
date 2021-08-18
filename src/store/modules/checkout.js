@@ -232,7 +232,7 @@ const actions = {
       order.customer_address_id = rootState.customer.address[0]._id
       deliveryAreaId = rootState.customer.address[0].delivery_area_id
     } else if (rootState.customer.address) {
-      order.customer_address_id = rootState.customer.address._id.$oid
+      order.customer_address_id = rootState.customer.address._id.$oid || rootState.customer.address._id
       deliveryAreaId = rootState.customer.address.delivery_area_id
     } else {
       deliveryAreaId = order.order_delivery_area

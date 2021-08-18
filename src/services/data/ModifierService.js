@@ -22,7 +22,7 @@ export default {
     }
     return DataService.get(apiUrl)
   },
-  foodIcons() {
-    return DataService.get(`/model/brand_food_icons?no_limit=true`, 'brand')
-  },
+  // foodIcons() {
+  //   return DataService.get(`/model/brand_food_icons?no_limit=true`, 'brand')
+  // },
 }
