@@ -1522,6 +1522,9 @@ const actions = {
       let orderAddress = undefined
 
       if (order.customer) {
+        commit('customer/SET_CUSTOMER_ID', order.customer, {
+          root: true,
+        })
         //as per discussed we ll send customer address info with only crm order
         if (order.order_type === CONST.ORDER_TYPE_CALL_CENTER) {
           const deliveryArea = rootGetters['customer/findDeliveryArea'](
