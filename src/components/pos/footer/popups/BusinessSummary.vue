@@ -106,21 +106,20 @@
               {{ store.name }}
             </h4>
             <h5 class="date">
-              {{ _t('Current datetime') }} {{ todayDate }}
+              {{ _t('Current Date') }}: {{ todayDate }}
               <span style="text-transform: uppercase">
                 {{ todayTime }}
               </span>
             </h5>
             <h5 class="date">
               <span v-if="date_from !== 'Invalid date'"
-                >{{ _t('Report from') }} {{ date_from }}</span
+                >{{ _t('Report From') }}: {{ date_from }}</span
               >
-              -
               <span v-if="date_to !== 'Invalid date'">
                 {{ _t('To') }} {{ date_to }}</span
               >
             </h5>
-            <h5>{{ _t('Printed by') }}: {{ user.name }}</h5>
+            <h5>{{ _t('Printed By') }}: {{ user.name }}</h5>
           </div>
           <div class="business-summary-wrapper" style="text-align: center">
             <div class="table-responsive">
@@ -910,7 +909,7 @@
             <a
               :href="dashboard"
               target="_self"
-              v-if="!loader"
+              v-if="!loader && permitted('dashboard', 'root')"
               class="a-btn btn btn-success btn-large color-main color-text-invert"
             >
               {{ _t('See Full Report') }}
@@ -952,7 +951,7 @@ export default {
     )
   },
   computed: {
-    ...mapGetters('location', ['_t', 'formatPrice']),
+    ...mapGetters('location', ['_t', 'formatPrice', 'permitted']),
     ...mapState('reports', [
       'BSData',
       'totalPayments',
