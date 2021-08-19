@@ -97,7 +97,9 @@ const getters = {
     return table
   },
   getTableEmptyTime: (state, getters, rootState) => {
-    return rootState.location.store.table_empty_time
+    return rootState.location && rootState.location.store
+      ? rootState.location.store.table_empty_time
+      : 0
   },
   guestInBillItem: state => (item, guest) => {
     if (
