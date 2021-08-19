@@ -9,7 +9,9 @@
       <img
         class="avatar-link-img"
         :src="
-          user && user.avatar ? user.avatar : 'img/profile/default_avatar.jpg'
+          user && user.avatar
+            ? user.avatar
+            : 'https://d3jjfdwi6rnqlf.cloudfront.net/img/profile/default_avatar.jpg'
         "
         alt="profile"
       />

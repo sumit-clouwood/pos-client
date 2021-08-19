@@ -59,7 +59,7 @@
           :src="
             userDetails.item.avatar
               ? userDetails.item.avatar
-              : 'img/profile/default_avatar.jpg'
+              : 'https://d3jjfdwi6rnqlf.cloudfront.net/img/profile/default_avatar.jpg'
           "
           alt="profile"
         />

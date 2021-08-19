@@ -2,7 +2,10 @@
   <div class="user">
     <img
       class="image"
-      :src="param.avatar || 'img/profile/default_avatar.jpg'"
+      :src="
+        param.avatar ||
+          'https://d3jjfdwi6rnqlf.cloudfront.net/img/profile/default_avatar.jpg'
+      "
     />
     <div class="name">{{ param.name }}</div>
   </div>

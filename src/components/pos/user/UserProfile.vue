@@ -3,7 +3,11 @@
     <div class="profile-container">
       <div class="profile-picture-container">
         <img
-          :src="user.avatar ? user.avatar : 'img/profile/default_avatar.jpg'"
+          :src="
+            user.avatar
+              ? user.avatar
+              : 'https://d3jjfdwi6rnqlf.cloudfront.net/img/profile/default_avatar.jpg'
+          "
           class="profile-picture"
         />
       </div>

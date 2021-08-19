@@ -31,7 +31,10 @@
           :class="{ 'position-set': cashier.email === cashierEmail }"
         >
           <img
-            :src="cashier.avatar || 'img/profile/broccoli-profile.jpg'"
+            :src="
+              cashier.avatar ||
+                'https://d3jjfdwi6rnqlf.cloudfront.net/img/profile/default_avatar.jpg'
+            "
             @click.prevent="setCashier(cashier.email)"
             @touchend.prevent="setCashier(cashier.email)"
             class="transform-img"
