@@ -311,7 +311,7 @@ export default {
               if (caller != 'orderStart') {
                 this.store.dispatch('payment/fetchAll')
                 this.store.dispatch('customer/fetchAll')
-                this.store.dispatch('dinein/fetchAll')
+                // this.store.dispatch('dinein/fetchAll')
                 this.store.dispatch('carhop/initFetch')
                 this.store.dispatch('invoice/printRules').then(() => {
                   this.store.dispatch('invoice/fetchTemplates')
