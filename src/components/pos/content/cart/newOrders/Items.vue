@@ -32,7 +32,9 @@
             "
           >
             <span class="dlt-icon">
-              <img src="img/pos/delete-icon.svg" />
+              <img
+                src="https://d3jjfdwi6rnqlf.cloudfront.net/img/pos/delete-icon.svg"
+              />
             </span>
           </div>
         </div>
@@ -108,7 +110,7 @@
               </svg>
             </div>
             <!--<img-->
-            <!--src="img/pos/plus-icon.png"-->
+            <!--src="https://d3jjfdwi6rnqlf.cloudfront.net/img/pos/plus-icon.png"-->
             <!--alt="plus"-->
             <!--@click="setActiveItem({ orderItem: item, index: index })"-->
             <!--/>-->
@@ -134,7 +136,7 @@
               </svg>
             </div>
             <!--<img-->
-            <!--src="img/pos/plus-icon.png"-->
+            <!--src="https://d3jjfdwi6rnqlf.cloudfront.net/img/pos/plus-icon.png"-->
             <!--alt="plus"-->
             <!--@click="setActiveItem({ orderItem: item, index: index })"-->
             <!--/>-->

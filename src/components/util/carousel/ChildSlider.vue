@@ -22,7 +22,9 @@
                 width: slideWidth - 10 + 'px',
               }"
             >
-              <img src="img/icons/backarrow.svg" />
+              <img
+                src="https://d3jjfdwi6rnqlf.cloudfront.net/img/icons/backarrow.svg"
+              />
               <label class="shorten-sentence" title="Back">
                 Back
               </label>

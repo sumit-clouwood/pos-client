@@ -28,16 +28,24 @@
       </div>
       <div class="round-dinein-circle">
         <span id="dine-top" @click="moveUp()">
-          <img src="img/dinein/chairs/dine-top.svg" />
+          <img
+            src="https://d3jjfdwi6rnqlf.cloudfront.net/img/dinein/chairs/dine-top.svg"
+          />
         </span>
         <span id="dine-left" @click="moveLeft()">
-          <img src="img/dinein/chairs/dine-left.svg" />
+          <img
+            src="https://d3jjfdwi6rnqlf.cloudfront.net/img/dinein/chairs/dine-left.svg"
+          />
         </span>
         <span id="dine-right" @click="moveRight()">
-          <img src="img/dinein/chairs/dine-right.svg" />
+          <img
+            src="https://d3jjfdwi6rnqlf.cloudfront.net/img/dinein/chairs/dine-right.svg"
+          />
         </span>
         <span id="dine-bottom" @click="moveDown()">
-          <img src="img/dinein/chairs/dine-bottom.svg" />
+          <img
+            src="https://d3jjfdwi6rnqlf.cloudfront.net/img/dinein/chairs/dine-bottom.svg"
+          />
         </span>
         <div class="inner-round">
           <div class="sub-inner-round"></div>

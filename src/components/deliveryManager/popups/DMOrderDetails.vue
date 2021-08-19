@@ -288,7 +288,7 @@
                 type="button"
                 id="dm-modify-btn"
               >
-                <span><img src="img/other/edit-icon.png" alt="schedule"/></span
+                <span><img src="https://d3jjfdwi6rnqlf.cloudfront.net/img/other/edit-icon.png" alt="schedule"/></span
                 >Modify
               </button>
             </div>-->
@@ -300,7 +300,10 @@
               id="status-history"
               @click="toggleHistory()"
             >
-              <span><img src="img/other/status.png" alt="status"/></span
+              <span
+                ><img
+                  src="https://d3jjfdwi6rnqlf.cloudfront.net/img/other/status.png"
+                  alt="status"/></span
               >{{ _t('Status History') }}
             </button>
             <button
@@ -309,8 +312,11 @@
               id="recipt-history"
               @click="toggleHistory()"
             >
-              <span><img src="img/other/reciept.png" alt="status"/></span>Show
-              Receipt
+              <span
+                ><img
+                  src="https://d3jjfdwi6rnqlf.cloudfront.net/img/other/reciept.png"
+                  alt="status"/></span
+              >Show Receipt
             </button>
             <button
               type="button"

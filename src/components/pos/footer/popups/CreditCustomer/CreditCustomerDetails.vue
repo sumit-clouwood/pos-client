@@ -44,7 +44,7 @@
         <img
           v-else
           class="credit-customer-picture"
-          src="img/other/placeholder-img.png"
+          src="https://d3jjfdwi6rnqlf.cloudfront.net/img/other/placeholder-img.png"
         />
         <p class="profile-customer-title color-text-invert">
           {{ _t('Customer Name') }}:

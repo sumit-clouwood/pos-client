@@ -2,7 +2,10 @@
   <div class="navigation toggle-navigation navigatorHeight">
     <div class="logo" @click="collapseExpend">
       <a class="logo-link" role="button">
-        <img src="img/other/icon.png" alt="icon" />
+        <img
+          src="https://d3jjfdwi6rnqlf.cloudfront.net/img/other/icon.png"
+          alt="icon"
+        />
       </a>
     </div>
     <div class="navigation-list-wrapper">

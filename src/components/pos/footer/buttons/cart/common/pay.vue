@@ -2,7 +2,10 @@
   <div @click="$emit('pay')" class="btn-charge">
     <div class="pay-button">
       <a role="button">
-        <img src="img/pos/payment.svg" :alt="_t('Pay Now')" />
+        <img
+          src="https://d3jjfdwi6rnqlf.cloudfront.net/img/pos/payment.svg"
+          :alt="_t('Pay Now')"
+        />
         <span class="pay-btn color-text-invert">{{ _t('Pay Now') }}</span>
       </a>
     </div>

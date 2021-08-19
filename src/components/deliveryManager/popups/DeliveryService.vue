@@ -74,25 +74,29 @@ export default {
           name: 'Jeebly',
           id: 'jeebly',
           discription: '',
-          img: 'img/delivery-services/jeebly.png',
+          img:
+            'https://d3jjfdwi6rnqlf.cloudfront.net/img/delivery-services/jeebly.png',
         },
         {
           name: 'Tawseel',
           id: 'tawseel',
           discription: '',
-          img: 'img/delivery-services/tawseel.png',
+          img:
+            'https://d3jjfdwi6rnqlf.cloudfront.net/img/delivery-services/tawseel.png',
         },
         {
           name: 'One Click',
           id: 'one_click',
           discription: '',
-          img: 'img/delivery-services/oneClick.png',
+          img:
+            'https://d3jjfdwi6rnqlf.cloudfront.net/img/delivery-services/oneClick.png',
         },
         {
           name: 'Careem Now',
           id: 'careem',
           discription: '',
-          img: 'img/delivery-services/careemNow.png',
+          img:
+            'https://d3jjfdwi6rnqlf.cloudfront.net/img/delivery-services/careemNow.png',
         },
       ],
     }
@@ -186,7 +190,7 @@ export default {
   margin-left: 21px;
   background: #cc3232;
   color: white;
-  width: 10%;
+  // width: 10%;
   @include responsive(mobile) {
     width: 30%;
   }

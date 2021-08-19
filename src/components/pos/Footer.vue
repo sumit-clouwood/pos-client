@@ -186,7 +186,7 @@
                   </g>
                 </svg>
                 <!--<img
-                  src="img/pos/loyalty.svg"
+                  src="https://d3jjfdwi6rnqlf.cloudfront.net/img/pos/loyalty.svg"
                   :alt="_t('Loyalty')"
                   v-if="!loyaltyCard"
                 />-->
@@ -783,8 +783,10 @@ export default {
         accessibility: false,
         dots: false,
         arrows: true,
-        nextArrow: '<img class="next-btn" src="img/pos/next-arrow.png"/>',
-        prevArrow: '<img class="back-btn" src="img/pos/back-arrow.png"/>',
+        nextArrow:
+          '<img class="next-btn" src="https://d3jjfdwi6rnqlf.cloudfront.net/img/pos/next-arrow.png"/>',
+        prevArrow:
+          '<img class="back-btn" src="https://d3jjfdwi6rnqlf.cloudfront.net/img/pos/back-arrow.png"/>',
       })
 
       $('.next-btn').click()

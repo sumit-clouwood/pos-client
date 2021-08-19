@@ -4,7 +4,10 @@
     class="buttoned colorwhite donebutton color-main"
     @click="addModifierOrder"
   >
-    <img src="img/pos/done.png" alt="done" />
+    <img
+      src="https://d3jjfdwi6rnqlf.cloudfront.net/img/pos/done.png"
+      alt="done"
+    />
     <span class="color-text-invert">{{ _t('Apply') }}</span>
   </button>
 </template>

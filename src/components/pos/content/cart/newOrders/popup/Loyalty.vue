@@ -11,7 +11,9 @@
         </div>-->
         <div class="modal-body add-email-wrap">
           <div class="loyalty_star">
-            <img src="img/loyalty_card.svg" />
+            <img
+              src="https://d3jjfdwi6rnqlf.cloudfront.net/img/loyalty_card.svg"
+            />
           </div>
           <div class="add-note-area color-text-invert">
             <span v-if="loyaltyBalance > 0">

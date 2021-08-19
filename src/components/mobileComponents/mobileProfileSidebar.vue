@@ -398,7 +398,11 @@
             v-if="allowed(PERMS.UPDATE_POS_WAITING_TIME)"
           >
             <div class="profile-menu-item-icon">
-              <img src="img/waiting_time.svg" width="21px" height="21px" />
+              <img
+                src="https://d3jjfdwi6rnqlf.cloudfront.net/img/waiting_time.svg"
+                width="21px"
+                height="21px"
+              />
             </div>
             <a
               data-toggle="modal"

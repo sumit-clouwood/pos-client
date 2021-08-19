@@ -441,7 +441,11 @@
             role="button"
             class="cursor-pointer business-summary"
           >
-            <img src="img/waiting_time.svg" width="21px" height="21px" />
+            <img
+              src="https://d3jjfdwi6rnqlf.cloudfront.net/img/waiting_time.svg"
+              width="21px"
+              height="21px"
+            />
             <span>{{ _t('POS Waiting Time') }}</span>
           </a>
         </li>

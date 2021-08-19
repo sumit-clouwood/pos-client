@@ -1,6 +1,10 @@
 <template>
   <div class="commingsoon">
-    <img width="100%" height="98%" src="img/coming-soon.png" />
+    <img
+      width="100%"
+      height="98%"
+      src="https://d3jjfdwi6rnqlf.cloudfront.net/img/coming-soon.png"
+    />
   </div>
 </template>
 

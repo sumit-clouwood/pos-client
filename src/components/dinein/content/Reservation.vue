@@ -84,7 +84,9 @@
                     @click="cancelReservation(reservation._id)"
                   >
                     <span class="dlt-icon">
-                      <img src="img/pos/delete-icon-reservation.svg" />
+                      <img
+                        src="https://d3jjfdwi6rnqlf.cloudfront.net/img/pos/delete-icon-reservation.svg"
+                      />
                     </span>
                   </button>
                 </td>

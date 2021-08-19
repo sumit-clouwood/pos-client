@@ -76,7 +76,7 @@
                             >
                               <span class="dlt-icon">
                                 <img
-                                  src="img/pos/delete-icon-reservation.svg"
+                                  src="https://d3jjfdwi6rnqlf.cloudfront.net/img/pos/delete-icon-reservation.svg"
                                 />
                               </span>
                             </button>
@@ -86,7 +86,7 @@
                               class="paid-amount-msg text-center font-weight-bold"
                             >
                               <img
-                                src="img/dinein/paid-icon.png"
+                                src="https://d3jjfdwi6rnqlf.cloudfront.net/img/dinein/paid-icon.png"
                                 style="width:33px"
                               />
                               {{ _t('Paid') }}
@@ -115,7 +115,9 @@
                             @click="cancelReservation(orderData.reservationId)"
                           >
                             <span class="dlt-icon">
-                              <img src="img/pos/delete-icon-reservation.svg" />
+                              <img
+                                src="https://d3jjfdwi6rnqlf.cloudfront.net/img/pos/delete-icon-reservation.svg"
+                              />
                             </span>
                           </button>
                         </div>
@@ -1127,7 +1129,7 @@ export default {
             .append('image')
             .attr('preserveAspectRatio', 'none')
             .attr('xlink:href', function(d) {
-              return `img/dinein/area-view/${d.name}_view_h.jpg`
+              return `https://d3jjfdwi6rnqlf.cloudfront.net/img/dinein/area-view/${d.name}_view_h.jpg`
               // return `img/dinein/area-view/city_view_h.jpg`
             })
             .attr('x', function(d) {
@@ -1199,7 +1201,7 @@ export default {
             .append('image')
             .attr('preserveAspectRatio', 'none')
             .attr('xlink:href', function(d) {
-              return `img/dinein/area-view/${d.name}_view_v.jpg`
+              return `https://d3jjfdwi6rnqlf.cloudfront.net/img/dinein/area-view/${d.name}_view_v.jpg`
             })
             .attr('x', function(d) {
               // d.x = that.viewsCoordinates.right_view.x
@@ -1269,7 +1271,7 @@ export default {
             .append('image')
             .attr('preserveAspectRatio', 'none')
             .attr('xlink:href', function(d) {
-              return `img/dinein/area-view/${d.name}_view_h.jpg`
+              return `https://d3jjfdwi6rnqlf.cloudfront.net/img/dinein/area-view/${d.name}_view_h.jpg`
             })
             .attr('x', function(d) {
               // d.x = that.viewsCoordinates.bottom_view.x
@@ -1312,7 +1314,7 @@ export default {
             .append('image')
             .attr('preserveAspectRatio', 'none')
             .attr('xlink:href', function(d) {
-              return `img/dinein/area-view/${d.name}_view_v.jpg`
+              return `https://d3jjfdwi6rnqlf.cloudfront.net/img/dinein/area-view/${d.name}_view_v.jpg`
             })
             .attr('x', function(d) {
               // d.x = that.viewsCoordinates.left_view.x

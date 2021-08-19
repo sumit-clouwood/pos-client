@@ -2,7 +2,10 @@
   <div @click="$emit('save')" class="btn-charge">
     <div class="pay-button">
       <a role="button">
-        <img src="img/pos/place_order.svg" :alt="_t('Place Order')" />
+        <img
+          src="https://d3jjfdwi6rnqlf.cloudfront.net/img/pos/place_order.svg"
+          :alt="_t('Place Order')"
+        />
         <span class="pay-btn color-text-invert">
           {{ _t('Place Order') }}
         </span>

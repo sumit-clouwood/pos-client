@@ -6,7 +6,10 @@
     <div class="logo" title="logo" @click="openMultiStore">
       <a class="logo-link" role="button">
         <!--<router-link :to="'/delivery-manager' + store">-->
-        <img src="img/icons/icon.png" alt="icon" />
+        <img
+          src="https://d3jjfdwi6rnqlf.cloudfront.net/img/icons/icon.png"
+          alt="icon"
+        />
         <!--</router-link>-->
       </a>
     </div>

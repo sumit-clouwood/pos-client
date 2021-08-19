@@ -7,7 +7,7 @@
         <li class="order-pagination">3</li>
         <li class="order-pagination">4</li>
         <li class="next-page" id="next-page">
-          <img src="img/pos/next-arrow.png" alt="next-btn" />
+          <img src="https://d3jjfdwi6rnqlf.cloudfront.net/img/pos/next-arrow.png" alt="next-btn" />
         </li>
         <li>Last</li>
       </ul>

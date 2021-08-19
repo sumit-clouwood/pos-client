@@ -7,7 +7,10 @@
       item.modifiable ? 'catalog-with-modifier' : 'catalog-without-modifiers'
     "
   >
-    <img src="img/pos/done.png" alt="done" />
+    <img
+      src="https://d3jjfdwi6rnqlf.cloudfront.net/img/pos/done.png"
+      alt="done"
+    />
     <span>{{ _t('Apply') }}</span>
   </button>
 </template>

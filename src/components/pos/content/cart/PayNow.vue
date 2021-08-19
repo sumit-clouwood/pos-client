@@ -49,7 +49,7 @@
                   :placeholder="formatPrice(0.0)"
                 />
                 <img
-                  src="img/pos/payment-input-icon.png"
+                  src="https://d3jjfdwi6rnqlf.cloudfront.net/img/pos/payment-input-icon.png"
                   class="input-image"
                   @click="showPayBreakdown"
                 />

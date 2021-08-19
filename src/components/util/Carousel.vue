@@ -28,7 +28,9 @@
                   width: slideWidth - 10 + 'px',
                 }"
               >
-                <img src="img/icons/backarrow.svg" />
+                <img
+                  src="https://d3jjfdwi6rnqlf.cloudfront.net/img/icons/backarrow.svg"
+                />
                 <label class="shorten-sentence" title="Back">
                   Back
                 </label>
@@ -86,7 +88,11 @@
                     width: slideWidth - 10 + 'px',
                   }"
                 >
-                  <img :src="value[0].icon" />
+                  <img
+                    :src="
+                      'https://d3jjfdwi6rnqlf.cloudfront.net' + value[0].icon
+                    "
+                  />
                   <label class="shorten-sentence" :title="dt(value[0])">
                     {{ dt(value[0]) }}
                   </label>
@@ -213,7 +219,9 @@ export default {
   },
   methods: {
     imagePath(key) {
-      return 'img/icons/svgs/' + key + '.svg'
+      return (
+        'https://d3jjfdwi6rnqlf.cloudfront.net/img/icons/svgs/' + key + '.svg'
+      )
     },
     showChildSlides(payLoad) {
       this.show = !payLoad.show

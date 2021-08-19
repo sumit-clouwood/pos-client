@@ -2,7 +2,7 @@
   <div class="preloader">
     <link rel="prefetch" href="/pos/img/icons/apple-touch-icon.png" />
     <div>
-      <!--      <img src="img/pos/DimsLogo.gif" id="slidecaption" />-->
+      <!--      <img src="https://d3jjfdwi6rnqlf.cloudfront.net/img/pos/DimsLogo.gif" id="slidecaption" />-->
       <img
         src="https://d3jjfdwi6rnqlf.cloudfront.net/DimsLogo.gif"
         alt=""

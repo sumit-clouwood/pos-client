@@ -7,7 +7,10 @@
         id="dropdownNotifications"
         @click="openNotifications"
       >
-        <img src="img/notification.svg" alt="notifications" />
+        <img
+          src="https://d3jjfdwi6rnqlf.cloudfront.net/img/notification.svg"
+          alt="notifications"
+        />
         <span class="notification-count" v-if="readyOrderNotification.length">{{
           readyOrderNotification.length
         }}</span>

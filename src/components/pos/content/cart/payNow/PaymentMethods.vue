@@ -17,8 +17,14 @@
         :key="key + index"
       />
     </template>
-    <link rel="prefetch" href="img/icons/backarrow.svg" />
-    <link rel="prefetch" href="img/icons/svgs/aggregator.svg" />
+    <link
+      rel="prefetch"
+      href="https://d3jjfdwi6rnqlf.cloudfront.net/img/icons/backarrow.svg"
+    />
+    <link
+      rel="prefetch"
+      href="https://d3jjfdwi6rnqlf.cloudfront.net/img/icons/svgs/aggregator.svg"
+    />
   </div>
 </template>
 

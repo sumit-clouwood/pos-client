@@ -38,7 +38,11 @@
           v-show="!current_combo"
         >
           <button @click="updateItemQty()" class="color-main color-text-invert">
-            <img src="img/pos/right.png" alt="check" /> {{ _t('Set Quantity') }}
+            <img
+              src="https://d3jjfdwi6rnqlf.cloudfront.net/img/pos/right.png"
+              alt="check"
+            />
+            {{ _t('Set Quantity') }}
           </button>
         </div>
       </template>

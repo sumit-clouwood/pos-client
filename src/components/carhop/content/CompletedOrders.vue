@@ -43,7 +43,10 @@
                     <print-action :orderId="order._id"></print-action>
                   </template>
                   <div class="paid-amount-msg text-left font-weight-bold">
-                    <img src="img/dinein/paid-icon.png" style="width:33px" />
+                    <img
+                      src="https://d3jjfdwi6rnqlf.cloudfront.net/img/dinein/paid-icon.png"
+                      style="width:33px"
+                    />
                     {{ _t('Paid') }}
                   </div>
                 </div>

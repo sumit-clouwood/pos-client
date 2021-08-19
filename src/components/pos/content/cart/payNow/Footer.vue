@@ -7,34 +7,37 @@
       data-toggle="modal"
       data-target="#tip-amount"
     >
-      <img src="img/pos/tip.png" alt="payment-method" /><span
-        class="color-text-invert"
-      >
+      <img
+        src="https://d3jjfdwi6rnqlf.cloudfront.net/img/pos/tip.png"
+        alt="payment-method"
+      /><span class="color-text-invert">
         {{ _t('Tip Amount') }}
       </span>
     </div>
     <div class="footer-wrap color-secondary">
-      <img src="img/pos/gift-receipt.png" alt="payment-method" /><span
-        class="color-text-invert"
-        >{{ _t('Gift Receipt') }}</span
-      >
+      <img
+        src="https://d3jjfdwi6rnqlf.cloudfront.net/img/pos/gift-receipt.png"
+        alt="payment-method"
+      /><span class="color-text-invert">{{ _t('Gift Receipt') }}</span>
     </div>
     <div
       class="footer-wrap color-secondary"
       data-toggle="modal"
       data-target="#add-email"
     >
-      <img src="img/pos/email.png" alt="payment-method" /><span
-        class="color-text-invert"
-      >
+      <img
+        src="https://d3jjfdwi6rnqlf.cloudfront.net/img/pos/email.png"
+        alt="payment-method"
+      /><span class="color-text-invert">
         {{ _t('Email') }}
       </span>
     </div>
 
     <div class="footer-wrap color-secondary" @click="pay" id="submitOrder">
-      <img src="img/pos/done.png" alt="payment-method" /><span
-        class="color-text-invert"
-      >
+      <img
+        src="https://d3jjfdwi6rnqlf.cloudfront.net/img/pos/done.png"
+        alt="payment-method"
+      /><span class="color-text-invert">
         {{ _t('Done') }}
       </span>
     </div>

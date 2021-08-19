@@ -40,7 +40,10 @@
           class="item-details-icon"
           @click.stop="showDetails(item)"
         >
-          <img style="padding: 3px;" src="img/maximize.svg" />
+          <img
+            style="padding: 3px;"
+            src="https://d3jjfdwi6rnqlf.cloudfront.net/img/maximize.svg"
+          />
         </div>
         <img
           v-if="item.image != ''"

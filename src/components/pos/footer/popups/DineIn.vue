@@ -21,7 +21,9 @@
               :class="{ active: selectedOrderType.OTApi === 'dine_in' }"
               @click="setOrderType({ OTview: 'Dine In', OTApi: 'dine_in' })"
             >
-              <img src="img/pos/dine-in.svg" />
+              <img
+                src="https://d3jjfdwi6rnqlf.cloudfront.net/img/pos/dine-in.svg"
+              />
               <span class="color-text-invert">{{ _t('Dine In') }}</span>
             </div>
             <div
@@ -35,7 +37,9 @@
                 })
               "
             >
-              <img src="img/pos/take-away.svg" />
+              <img
+                src="https://d3jjfdwi6rnqlf.cloudfront.net/img/pos/take-away.svg"
+              />
               <span class="color-text-invert">{{ _t('Take Away') }}</span>
             </div>
             <div
@@ -46,7 +50,9 @@
                 setOrderType({ OTview: 'Delivery', OTApi: 'call_center' })
               "
             >
-              <img src="img/pos/delivery-icon.svg" />
+              <img
+                src="https://d3jjfdwi6rnqlf.cloudfront.net/img/pos/delivery-icon.svg"
+              />
               <span class="color-text-invert">{{ _t('Delivery') }}</span>
             </div>
             <!-- <div
@@ -55,7 +61,7 @@
               :class="{ active: selectedOrderType.OTApi === 'event' }"
               @click="showReservationSection()"
             >
-              <img src="img/pos/reservation.svg" />
+              <img src="https://d3jjfdwi6rnqlf.cloudfront.net/img/pos/reservation.svg" />
               <span class="color-text-invert">
                 {{ _t('Reservation') }}
               </span>
@@ -65,7 +71,10 @@
               :class="{ active: selectedOrderType.OTApi === 'walk_in' }"
               @click="setOrderType({ OTview: 'Walk In', OTApi: 'walk_in' })"
             >
-              <img src="img/pos/walkin.svg" width="35" />
+              <img
+                src="https://d3jjfdwi6rnqlf.cloudfront.net/img/pos/walkin.svg"
+                width="35"
+              />
               <span class="color-text-invert">{{ _t('Walk In') }}</span>
             </div>
           </div>
@@ -88,7 +97,10 @@
                 })
               "
             >
-              <img src="img/pos/carhop.svg" width="35" />
+              <img
+                src="https://d3jjfdwi6rnqlf.cloudfront.net/img/pos/carhop.svg"
+                width="35"
+              />
               <span class="color-text-invert">{{ _t('Carhop') }}</span>
             </div>
           </div>

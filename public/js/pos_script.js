@@ -383,8 +383,10 @@ $(document).ready(function() {
       slidesToShow: 1,
       slidesToScroll: 1,
       dots: true,
-      nextArrow: '<img class="next-btn" src="img/pos/next-arrow.png"/>',
-      prevArrow: '<img class="back-btn" src="img/pos/back-arrow.png"/>',
+      nextArrow:
+        '<img class="next-btn" src="https://d3jjfdwi6rnqlf.cloudfront.net/img/pos/next-arrow.png"/>',
+      prevArrow:
+        '<img class="back-btn" src="https://d3jjfdwi6rnqlf.cloudfront.net/img/pos/back-arrow.png"/>',
     })
 
   $('.br-table-btn').click(function() {

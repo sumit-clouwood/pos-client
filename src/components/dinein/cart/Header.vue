@@ -130,11 +130,15 @@
           </button>
         </div>
         <span class="tables-draw" v-if="selectedTable">
-          <img src="img/dinein/dine-intable.svg" />
+          <img
+            src="https://d3jjfdwi6rnqlf.cloudfront.net/img/dinein/dine-intable.svg"
+          />
           <b> {{ selectedTable.number }}</b>
         </span>
         <span class="tables-draw">
-          <img src="img/dinein/guest-user.svg" />
+          <img
+            src="https://d3jjfdwi6rnqlf.cloudfront.net/img/dinein/guest-user.svg"
+          />
           <b> {{ guests }}</b>
         </span>
       </div>

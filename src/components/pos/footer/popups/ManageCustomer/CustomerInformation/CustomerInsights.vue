@@ -23,7 +23,7 @@
           {{ convertDatetime(insight.last_order_datetime, timezoneString) }}
         </p>
         <ul class="fav-item-slider" v-if="items">
-          <!--<li><img src="img/pos/dine-right.png" alt="fav-item" /></li>-->
+          <!--<li><img src="https://d3jjfdwi6rnqlf.cloudfront.net/img/pos/dine-right.png" alt="fav-item" /></li>-->
           <li class="color-text" v-for="(item, index) in items" :key="index">
             {{ item.name }}
           </li>
@@ -161,8 +161,8 @@ export default {
         slidesToShow: 1,
         slidesToScroll: 1,
         dots: true,
-        nextArrow: '<img class="next-btn" src="img/pos/next-arrow.png"/>',
-        prevArrow: '<img class="back-btn" src="img/pos/back-arrow.png"/>',
+        nextArrow: '<img class="next-btn" src="https://d3jjfdwi6rnqlf.cloudfront.net/img/pos/next-arrow.png"/>',
+        prevArrow: '<img class="back-btn" src="https://d3jjfdwi6rnqlf.cloudfront.net/img/pos/back-arrow.png"/>',
       })
       $('.last-order-wrap')[0].slick.refresh()
     } catch (e) {}

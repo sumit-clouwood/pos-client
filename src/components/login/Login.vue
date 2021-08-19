@@ -2,7 +2,7 @@
   <div class="login-background-wrapper login-page">
     <div class="before-login-wrapper">
       <div class="dimension-logo">
-        <img src="img/pos/logo.png" />
+        <img src="https://d3jjfdwi6rnqlf.cloudfront.net/img/pos/logo.png" />
       </div>
       <div
         :class="[
