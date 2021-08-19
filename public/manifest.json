@@ -3,7 +3,7 @@
   "short_name": "DimsPos",
   "icons": [
     {
-      "src": "./img/icons/apple-icon.png",
+      "src": "https://d3jjfdwi6rnqlf.cloudfront.net/img/icons/apple-icon.png",
       "sizes": "192x192",
       "type": "image/png"
     }

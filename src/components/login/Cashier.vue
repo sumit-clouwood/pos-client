@@ -58,7 +58,7 @@ export default {
       logo: state =>
         state.location.brand && state.location.brand.company_logo
           ? state.location.brand.company_logo
-          : 'img/icons/apple-touch-icon-120x120.png',
+          : 'https://d3jjfdwi6rnqlf.cloudfront.net/img/icons/apple-touch-icon-120x120.png',
       store: state => (state.location.store ? state.location.store.name : null),
       address: state =>
         state.location.store

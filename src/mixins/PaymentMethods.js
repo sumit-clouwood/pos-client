@@ -30,7 +30,9 @@ export default {
   },
   methods: {
     imagePath(key) {
-      return 'img/icons/svgs/' + key + '.svg'
+      return (
+        'https://d3jjfdwi6rnqlf.cloudfront.net/img/icons/svgs/' + key + '.svg'
+      )
     },
     setActive(index) {
       this.currentSlide = index

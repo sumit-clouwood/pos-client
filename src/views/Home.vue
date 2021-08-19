@@ -43,7 +43,9 @@ export default {
     ...mapState('location', ['brand']),
     ...mapGetters('auth', ['cashiers']),
     getImages() {
-      let bgImage = this.$store.getters['location/bgImage'] || 'img/bg.jpg'
+      let bgImage =
+        this.$store.getters['location/bgImage'] ||
+        'https://d3jjfdwi6rnqlf.cloudfront.net/img/bg.jpg'
       let images = [bgImage]
 
       this.cashiers.forEach(cashier => images.push[cashier.avatar])

@@ -89,7 +89,9 @@ export default {
 
   methods: {
     imagePath(key) {
-      return 'img/icons/svgs/' + key + '.svg'
+      return (
+        'https://d3jjfdwi6rnqlf.cloudfront.net/img/icons/svgs/' + key + '.svg'
+      )
     },
     // eslint-disable-next-line no-unused-vars
     selectMethod({ index, slide }) {

@@ -19,7 +19,7 @@ const expectedCaches = ['runtime1', 'workbox-precache', 'images']
 
 var notificationOptions = {
   body: '',
-  icon: './img/icons/apple-icon.png',
+  icon: 'https://d3jjfdwi6rnqlf.cloudfront.net/img/icons/apple-icon.png',
   image: '',
   vibrate: [
     500,
