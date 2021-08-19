@@ -148,7 +148,10 @@ export default {
       if (process.env.VUE_APP_SOCKET_DISABLE) {
         return false
       }
-      let store = this.store._id
+      let store = this.store ? this.store._id : undefined
+      if (!store) {
+        return false
+      }
       let scope = this
       let user = this.userDetails ? this.userDetails.item : false
       this.$socket.client.on(
