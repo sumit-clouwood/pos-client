@@ -5,11 +5,7 @@ export default {
     const img = new Image()
     //heartbeat
     setInterval(() => {
-      img.src =
-        process.env.BASE_URL +
-        'https://d3jjfdwi6rnqlf.cloudfront.net/img/icons/favicon.png' +
-        '?' +
-        Math.random()
+      img.src = process.env.BASE_URL + 'img/network.png' + '?' + Math.random()
       img.onload = event => {
         //console.log('onload hearbeat status', this.netstatus, true)
         //if (!this.netstatus)

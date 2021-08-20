@@ -310,7 +310,7 @@ export default {
               resolve()
               if (caller != 'orderStart') {
                 this.store.dispatch('payment/fetchAll')
-                this.store.dispatch('customer/fetchAll')
+                // this.store.dispatch('customer/fetchAll')
                 // this.store.dispatch('dinein/fetchAll')
                 this.store.dispatch('carhop/initFetch')
                 this.store.dispatch('invoice/printRules').then(() => {
@@ -436,11 +436,11 @@ export default {
       this.initLoadUI()
         .then(() => {
           //lets resolve the promise so pos can be loaded, other things ll be loaded later
-          this.loadApiData('customer').then(() => {
-            //delivery areas are must have for modifying crm order so need to laod customers delivery areas
-            resolve()
-          })
-
+          // this.loadApiData('customer').then(() => {
+          //   //delivery areas are must have for modifying crm order so need to laod customers delivery areas
+          //   resolve()
+          // })
+          resolve()
           $store.dispatch('printingServer/getKitchens').then(() => {})
           $store.dispatch(
             'announcement/fetchAll',
