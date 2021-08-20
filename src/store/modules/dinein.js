@@ -127,8 +127,9 @@ const actions = {
     }
     await Promise.all([
       dispatch('getDineInTables'),
-      dispatch('getCovers'),
-      dispatch('getBookedTables', false),
+      // getCovers and getBookedTables commented because we will not get these on load, need to check with cover once
+      // dispatch('getCovers'),
+      // dispatch('getBookedTables', false),
       // dispatch('getDineInArea'),
     ])
     if (!data || !data.silent) {
