@@ -41,7 +41,7 @@ export default {
       this.setupDB()
         .then(async idb => {
           console.log('dbsetup, now feth data')
-          this.store.commit('sync/setIdb', idb)
+          $store.commit('sync/setIdb', idb)
           //fetch current logged in user details, because login api doesn't send us user details infull
           this.fetchLoggedInUser()
             .then(() => {
@@ -70,7 +70,7 @@ export default {
       this.detectBrowser().then(deviceId => {
         //there is possibility that user was logged in and page refreshed
         //auth/auth ll check only token, if token present then go fwd otherwise bk
-        this.store.dispatch('auth/auth', deviceId).then(() => {
+        $store.dispatch('auth/auth', deviceId).then(() => {
           $store
             .dispatch('auth/getUserDetails')
             .then(user => {
@@ -272,7 +272,7 @@ export default {
     })
   },
   updateLoading(key) {
-    this.store.commit('sync/updateLoading', {
+    $store.commit('sync/updateLoading', {
       key: key,
       status: CONST.LOADING_STATUS_DONE,
     })
@@ -282,45 +282,31 @@ export default {
   reloadSystem(caller) {
     if (caller === 'sw') {
       //reload ui menu as token updated
-      return this.store.dispatch('location/fetch')
+      return $store.dispatch('location/fetch')
     }
     return Promise.resolve()
   },
   loadUI(caller) {
-    DataService.setLang(this.store.state.location.locale)
+    DataService.setLang($store.state.location.locale)
     return new Promise((resolve, reject) => {
       this.reloadSystem(caller)
         .then(() => {
-          if (caller != 'orderStart') {
-            this.store.dispatch('auth/fetchRoles').then(() => {
-              this.store.dispatch('auth/setCurrentRole')
-              this.store.dispatch('auth/fetchAllStoreUsers')
-            })
-          }
           this.store
             .dispatch('category/fetchAll')
             .then(async () => {
               await Promise.all([
-                this.store.dispatch('modifier/fetchAll'),
-                this.store.dispatch('tax/fetchAll'),
-                this.store.dispatch('surcharge/fetchAll'),
-                this.store.dispatch('discount/fetchAll'),
+                $store.dispatch('modifier/fetchAll'),
+                $store.dispatch('tax/fetchAll'),
+                $store.dispatch('surcharge/fetchAll'),
+                $store.dispatch('discount/fetchAll'),
               ])
-              this.store.commit('sync/loaded', true)
+              $store.commit('sync/loaded', true)
               resolve()
               if (caller != 'orderStart') {
-                this.store.dispatch('payment/fetchAll')
-                // this.store.dispatch('customer/fetchAll')
-                // this.store.dispatch('dinein/fetchAll')
-                this.store.dispatch('carhop/initFetch')
-                this.store.dispatch('invoice/printRules').then(() => {
-                  this.store.dispatch('invoice/fetchTemplates')
+                $store.dispatch('payment/fetchAll')
+                $store.dispatch('invoice/printRules').then(() => {
+                  $store.dispatch('invoice/fetchTemplates')
                 })
-
-                this.store.dispatch(
-                  'announcement/fetchAll',
-                  this.store.state.auth.userDetails
-                )
               }
             })
             .catch(error => reject(error))
@@ -332,100 +318,140 @@ export default {
   //this function is loaded when pos is loaded, called from App
   initLoadUI() {
     DataService.setLang($store.state.location.locale)
-    const self = this
     return new Promise((resolve, reject) => {
+      $store.commit('location/SET_STORE_PREREQUISITE', false)
       //call ui_menu
       $store
         .dispatch('location/fetch')
         .then(locationDetails => {
-          self
-            .validateSubscription(self.store)
+          this.updateLoading('store')
+          $store.dispatch('payment/fetchAll').then(() => {})
+          $store.dispatch('surcharge/fetchAll').then(() => {})
+          $store.dispatch('discount/fetchAll').then(() => {})
+
+          $store
+            .dispatch('category/fetchAll')
             .then(() => {
-              $store.dispatch('auth/fetchRoles').then(() => {
-                $store.dispatch('auth/setCurrentRole')
-                $store.dispatch('auth/fetchAllStoreUsers')
-              })
-
-              this.updateLoading('store')
-              $store.dispatch('payment/fetchAll').then(() => {})
-              $store.dispatch('tax/openItemTaxes')
-              $store.dispatch('surcharge/fetchAll').then(() => {})
-              $store.dispatch('discount/fetchAll').then(() => {})
-              $store.dispatch('dinein/fetchAll')
-
-              $store
-                .dispatch('category/fetchAll')
-                .then(() => {
-                  let storeIds = []
-                  //this check is for superadmin but I believe we should only check store_group accesstype to
-                  //load multiple stores at once, but problem is super admin don't have this, so we need to check
-                  //if not all, store or countries then load, I ll revise it with Yuvraj and Sohin and ll check only 'store_group' access type
-                  if (
-                    !['all', 'store', 'country'].includes(
-                      locationDetails.userDetails.brand_access_type
-                    )
-                  ) {
-                    if (
-                      locationDetails.availableStoreGroups &&
-                      locationDetails.availableStoreGroups.length &&
-                      locationDetails.userDetails.brand_access_type !==
-                        'store_group'
-                    ) {
-                      storeIds = locationDetails.availableStoreGroups.forEach(
-                        group => {
-                          storeIds = [...storeIds, group.group_stores]
-                        }
-                      )
-                    } else if (
-                      locationDetails.userDetails.brand_access_type ===
-                      'store_group'
-                    ) {
-                      storeIds = locationDetails.stores
+              this.updateLoading('catalog')
+              let storeIds = []
+              //this check is for superadmin but I believe we should only check store_group accesstype to
+              //load multiple stores at once, but problem is super admin don't have this, so we need to check
+              //if not all, store or countries then load, I ll revise it with Yuvraj and Sohin and ll check only 'store_group' access type
+              if (
+                !['all', 'store', 'country'].includes(
+                  locationDetails.userDetails.brand_access_type
+                )
+              ) {
+                if (
+                  locationDetails.availableStoreGroups &&
+                  locationDetails.availableStoreGroups.length &&
+                  locationDetails.userDetails.brand_access_type !==
+                    'store_group'
+                ) {
+                  storeIds = locationDetails.availableStoreGroups.forEach(
+                    group => {
+                      storeIds = [...storeIds, group.group_stores]
                     }
-                  }
+                  )
+                } else if (
+                  locationDetails.userDetails.brand_access_type ===
+                  'store_group'
+                ) {
+                  storeIds = locationDetails.stores
+                }
+              }
 
-                  if (storeIds && storeIds.length) {
-                    $store.dispatch(
-                      'discount/fetchMultistore',
-                      locationDetails.stores
-                    )
-                    $store.dispatch(
-                      'customer/fetchMultiStore',
-                      locationDetails.stores
-                    )
-                    $store.dispatch(
-                      'category/fetchMultistore',
-                      locationDetails.stores
-                    )
-                    $store.dispatch(
-                      'modifier/fetchMultistore',
-                      locationDetails.stores
-                    )
-                  }
-                  this.updateLoading('catalog')
-                  $store.dispatch('modifier/fetchAll').then(() => {
-                    this.updateLoading('modifiers')
+              if (storeIds && storeIds.length) {
+                $store.dispatch(
+                  'discount/fetchMultistore',
+                  locationDetails.stores
+                )
+                $store.dispatch(
+                  'customer/fetchMultiStore',
+                  locationDetails.stores
+                )
+                $store.dispatch(
+                  'category/fetchMultistore',
+                  locationDetails.stores
+                )
+                $store.dispatch(
+                  'modifier/fetchMultistore',
+                  locationDetails.stores
+                )
+              }
 
-                    $store.commit('sync/loaded', true)
-                    $store.dispatch('payment/setTranslations').then(() => {})
-                    $store
-                      .dispatch('category/getItemPreparingTime')
-                      .then(() => {})
-                    resolve()
-                  })
-                })
-                .catch(error => reject(error))
+              $store.dispatch('modifier/fetchAll').then(() => {
+                this.updateLoading('modifiers')
+
+                $store.commit('sync/loaded', true)
+                resolve()
+              })
             })
-            .catch(() => {
-              reject('subscription')
-            })
+            .catch(error => reject(error))
         })
         .catch(error => {
           reject(error)
         })
     })
   },
+  abortPos(error) {
+    console.log(error)
+    //reset collections for orders
+    $store.commit('location/SET_STORE_PREREQUISITE', error)
+  },
+  checkStorePrerequisite() {
+    //register device
+    $store
+      .dispatch('location/registerTerminal')
+      .then()
+      .catch(() =>
+        this.abortPos({
+          title: 'Device registration not allowed.',
+          description: 'Please contact your store owner for access',
+        })
+      )
+    //check subscription
+    this.validateSubscription()
+      .then()
+      .catch(error =>
+        this.abortPos({
+          title: 'Store subscription has been expired.',
+          description: error,
+        })
+      )
+  },
+  defferedLoadApis() {
+    this.checkStorePrerequisite()
 
+    $store.dispatch('location/timezone')
+    $store.dispatch('auth/fetchRoles').then(() => {
+      $store.dispatch('auth/setCurrentRole')
+      $store.dispatch('auth/fetchAllStoreUsers')
+    })
+    //load delivery areas only from below customer
+    $store.dispatch('customer/fetchDeliveryArea')
+    $store.dispatch('customer/customerGroupList')
+    $store.dispatch('customer/fetchCRMCustomerFields')
+
+    $store.dispatch('category/fetchMeasurementUnits')
+    $store.dispatch('location/referrals')
+
+    $store.dispatch('invoice/printRules').then(() => {
+      $store.dispatch('invoice/fetchTemplates')
+    })
+
+    $store.dispatch('payment/setTranslations')
+    $store.dispatch('category/getItemPreparingTime')
+
+    $store.dispatch('printingServer/getKitchens')
+    $store.dispatch('announcement/fetchAll', $store.state.auth.userDetails)
+
+    $store.dispatch('printingServer/fetchAllKitchens')
+    $store.dispatch('tax/openItemTaxes')
+    $store.dispatch('dinein/fetchAll')
+
+    //delayed loading data
+  },
   fetchData() {
     return new Promise((resolve, reject) => {
       DataService.setContext({
@@ -436,48 +462,14 @@ export default {
       this.initLoadUI()
         .then(() => {
           //lets resolve the promise so pos can be loaded, other things ll be loaded later
-          // this.loadApiData('customer').then(() => {
-          //   //delivery areas are must have for modifying crm order so need to laod customers delivery areas
-          //   resolve()
-          // })
+          //delivery areas are must have for modifying crm order so need to laod customers delivery areas
           resolve()
-          $store.dispatch('printingServer/getKitchens').then(() => {})
-          $store.dispatch(
-            'announcement/fetchAll',
-            $store.state.auth.userDetails
-          )
-
-          $store.dispatch('printingServer/fetchAllKitchens')
-          this.loadApiData('catalog')
-
-          //delayed loading data
-          this.loadApiData('order')
+          this.defferedLoadApis()
         })
         .catch(error => {
           console.log('UI Failed', error)
           reject(error)
         })
-    })
-  },
-
-  loadApiData(api) {
-    return new Promise(resolve => {
-      switch (api) {
-        case 'catalog':
-          resolve()
-          break
-        case 'customer':
-          this.store.dispatch('customer/fetchAll').then(() => {
-            resolve()
-          })
-          break
-        case 'order':
-          this.store.dispatch('invoice/printRules').then(() => {
-            this.store.dispatch('invoice/fetchTemplates')
-          })
-          resolve()
-          break
-      }
     })
   },
 
@@ -519,7 +511,7 @@ export default {
 
   authBucket() {
     db.createBucket('auth')
-    this.store.commit('sync/setIdbVersion', 1)
+    $store.commit('sync/setIdbVersion', 1)
     console.log('auth bucket created')
   },
   orderPostRequestBucket() {
@@ -529,13 +521,13 @@ export default {
     bucket.createIndex('order_time', 'order_time', { unique: true })
 
     console.log('order post requests bucket created')
-    this.store.commit('sync/setIdbVersion', 2)
+    $store.commit('sync/setIdbVersion', 2)
   },
   eventsBucket() {
     const bucket = db.createBucket('events', { keyPath: 'url' })
     bucket.createIndex('url', 'url', { unique: true })
     console.log('events bucket created')
-    this.store.commit('sync/setIdbVersion', 3)
+    $store.commit('sync/setIdbVersion', 3)
   },
   logBucket() {
     const bucket = db.createBucket('log', {
@@ -557,7 +549,7 @@ export default {
     })
 
     console.log('log bucket created')
-    this.store.commit('sync/setIdbVersion', 4)
+    $store.commit('sync/setIdbVersion', 4)
   },
   orderWorkflowBucket() {
     const bucket = db.createBucket('workflow_order', {
@@ -591,13 +583,13 @@ export default {
     })
 
     console.log('order workflow bucket created')
-    this.store.commit('sync/setIdbVersion', 5)
+    $store.commit('sync/setIdbVersion', 5)
   },
   dataStore() {
     const bucket = db.createBucket('store', { keyPath: 'key' })
     bucket.createIndex('key', 'key', { unique: true })
     console.log('datastore bucket created')
-    this.store.commit('sync/setIdbVersion', 5)
+    $store.commit('sync/setIdbVersion', 5)
   },
 
   createBuckets(event, version) {
@@ -630,7 +622,7 @@ export default {
         return
       }
 
-      this.store.commit('sync/status', status)
+      $store.commit('sync/status', status)
       if (process.env.NODE_ENV === 'production' && msg === 'on') {
         const nowTime = new Date().getTime() //miliseconds
 
@@ -661,7 +653,7 @@ export default {
         }
       } else {
         //system gone offline
-        this.store.dispatch('sync/offlineSync', false)
+        $store.dispatch('sync/offlineSync', false)
       }
     })
   },

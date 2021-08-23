@@ -233,14 +233,14 @@ const actions = {
           })
         })
         .catch(error => reject(error))
-
-      //load measurement units in parallel
-      CategoryService.loadMeasurementUnits(storeId).then(response => {
-        commit('SET_MEASUREMENT_UNITS', response.data)
-      })
     })
   },
-
+  fetchMeasurementUnits({ commit }, storeId = null) {
+    //load measurement units in parallel
+    CategoryService.loadMeasurementUnits(storeId).then(response => {
+      commit('SET_MEASUREMENT_UNITS', response.data)
+    })
+  },
   fetchMultistore({ rootState, dispatch }, stores) {
     //don't repeat in case storeId is provided otherwise it ll just loop in
     //load discounts for all stores both item and order

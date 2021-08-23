@@ -28,7 +28,7 @@ export default {
   },
   getStoreUsers(pageId, level, roleId) {
     return DataService.get(
-      `/model/brand_users?page_id=${pageId}&query=&no_limit=true&byColumn=0&brand_role=${roleId}&undefined=`,
+      `/model/brand_users?page_id=${pageId}&query=&no_limit=true&byColumn=0&brand_role=${roleId}`,
       level
     )
   },

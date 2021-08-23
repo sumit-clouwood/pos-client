@@ -262,17 +262,17 @@ const actions = {
     ]
     dispatch('setDefaultSettingsGlobalAddUpdate', ...params)
   },
-
+  customerGroupList({ commit }) {
+    CustomerService.customerGroupList().then(response => {
+      commit(mutation.SET_CUSTOMER_GROUP, response.data.data)
+    })
+  },
   fetchAll({ commit, dispatch }) {
     commit(mutation.SET_LOADING, true)
     return new Promise((resolve, reject) => {
       dispatch('fetchCustomers')
         .then(() => {
-          dispatch('fetchCRMCustomerFields')
           // get Customer Group
-          CustomerService.customerGroupList().then(response => {
-            commit(mutation.SET_CUSTOMER_GROUP, response.data.data)
-          })
           // CustomerService.customerBuildings()
           //   .then(buildingAreas => {
           //     if (buildingAreas.data.data) {
@@ -284,10 +284,6 @@ const actions = {
           //     commit(mutation.SET_LOADING, false)
           //     reject(error)
           //   })
-
-          dispatch('fetchDeliveryArea', '').then(() => {
-            resolve()
-          })
         })
         .catch(error => {
           commit(mutation.SET_LOADING, false)
