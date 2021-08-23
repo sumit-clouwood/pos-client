@@ -429,7 +429,7 @@ export default {
       $store.dispatch('auth/fetchAllStoreUsers')
     })
     //load delivery areas only from below customer
-    $store.dispatch('customer/fetchDeliveryArea')
+    $store.dispatch('customer/fetchDeliveryArea', '')
     $store.dispatch('customer/customerGroupList')
     $store.dispatch('customer/fetchCRMCustomerFields')
 

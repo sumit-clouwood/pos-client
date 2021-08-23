@@ -209,7 +209,7 @@ const actions = {
     const storeVersions = locationData.data.store.versions
     commit(
       'sync/SET_API_VERSIONS',
-      Object.assign({}, globalVersions, brandVersions, storeVersions),
+      Object.assign({}, storeVersions, brandVersions, globalVersions),
       { root: true }
     )
     return locationData
