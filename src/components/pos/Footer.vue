@@ -66,7 +66,7 @@
               <span>{{ _t('Customer') }}</span>
             </a>
           </li>
-          <li
+          <!-- <li
             v-if="cartType === 'new' && orderType.OTApi !== 'dine_in'"
             @click="viewHoldOrders"
             class="footer-slider-list-item footer-slider-list-item-open-orders color-secondary"
@@ -77,8 +77,7 @@
               class="footer-slider-list-item-link color-text-invert"
               role="button"
             >
-              <!--<img class="hold-ordes" src="images/hold-order.png" alt="customer">-->
-              <svg
+               <svg
                 fill="#fff"
                 viewBox="-45 0 327 327"
                 xmlns="http://www.w3.org/2000/svg"
@@ -108,8 +107,7 @@
               class="footer-slider-list-item-link color-text-invert"
               role="button"
             >
-              <!--<img class="hold-ordes" src="images/hold-order.png" alt="customer">-->
-              <svg
+               <svg
                 aria-hidden="true"
                 focusable="false"
                 data-prefix="fas"
@@ -127,7 +125,7 @@
               </svg>
               <span>{{ _t('New Orders') }}</span>
             </a>
-          </li>
+          </li> -->
           <template v-if="enabled(CONST.MODULE_LOYALTY)">
             <li
               data-toggle="modal"

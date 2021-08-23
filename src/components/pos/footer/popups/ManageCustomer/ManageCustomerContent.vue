@@ -2,13 +2,16 @@
   <div class="manage-customer-table">
     <Preloader v-if="loading" />
     <div v-else>
-      <div v-if="!customerDetails.length">
-        {{ _t('No matching customer found') }}
+      <div v-if="!customerDetails.length" class="center-align-test">
+        {{ _t(noCustomerMsg) }}
       </div>
       <div v-if="error">
         {{ _t(error) }}
       </div>
-      <table class="table table-responsive color-tables-background" v-else>
+      <table
+        class="table table-responsive color-tables-background"
+        v-if="customerDetails.length && !error"
+      >
         <thead>
           <tr>
             <th style="width: 190px" class="color-text-invert">
@@ -150,6 +153,7 @@ export default {
   },
   data: function() {
     return {
+      noCustomerMsg: 'No matching customer found',
       activeIndex: '',
       error: false,
       custBlockHeight: 0,
@@ -220,6 +224,9 @@ export default {
 }
 </script>
 <style lang="scss">
+.center-align-test {
+  text-align: center;
+}
 .more-button {
   background-color: #4b4e53;
   grid-column-start: 2 !important;

@@ -39,7 +39,7 @@
           <span>{{ _t('Customer') }}</span>
         </a>
       </div>
-      <div
+      <!-- <div
         v-if="!carhop && !waiter"
         class="footer-slider-list-item footer-slider-list-item-open-orders"
         id="hold-order-box"
@@ -66,7 +66,7 @@
         <a class="footer-slider-list-item-link">
           <span>{{ _t('Hold Orders') }}</span>
         </a>
-      </div>
+      </div> -->
       <div
         v-show="
           !carhop && !waiter && !cashier_walkin && enabled(CONST.MODULE_CRM)

@@ -379,13 +379,10 @@ export default {
     }
   },
   updated() {
-    if (this.selectedArea != this.activeArea._id) {
-      this.clearTableArea()
-      this.updateTableOnArea()
-      this.selectedArea = this.activeArea._id
-    }
+    this.mountAction()
   },
   mounted() {
+    this.mountAction()
     this.tableTextTransform = window.PrintHandle ? false : true
     let scope = this
     setInterval(() => {
@@ -402,6 +399,13 @@ export default {
     },
   },
   methods: {
+    mountAction() {
+      if (this.selectedArea != this.activeArea._id) {
+        this.clearTableArea()
+        this.updateTableOnArea()
+        this.selectedArea = this.activeArea._id
+      }
+    },
     ...mapActions('dinein', ['reservationUpdateStatus', 'dineInRunningOrders']),
     closeMyself() {
       // $('#tooltipdata').hide()
