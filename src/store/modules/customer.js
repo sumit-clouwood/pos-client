@@ -294,12 +294,12 @@ const actions = {
     })
   },
 
-  setPageNumber: function({ commit, dispatch }, pageNumber) {
+  setPageNumber: function({ commit }, pageNumber) {
     // commit(mutation.SET_LOADING, true)
     commit(mutation.SET_CURRENT_PAGE_NO, pageNumber)
-    dispatch('fetchAll').then(() => {
-      commit(mutation.SET_LOADING, false)
-    })
+    // dispatch('fetchAll').then(() => {
+    //   commit(mutation.SET_LOADING, false)
+    // })
   },
 
   setPastOrderPageNumber: function({ commit, dispatch }, pageNumber) {
@@ -324,18 +324,16 @@ const actions = {
     })
   },
 
-  searchCustomer: function({ commit, dispatch }, searchTerms) {
-    return new Promise((resolve, reject) => {
-      commit(mutation.CUSTOMER_LIST, [])
-      // commit(mutation.SET_LOADING, true)
-      commit(mutation.SET_SEARCH_TERMS, searchTerms)
-      dispatch('fetchAll')
-        .then(response => {
-          resolve(response)
-        })
-        .catch(error => reject(error, commit(mutation.SET_LOADING, false)))
-        .finally(() => commit(mutation.SET_LOADING, false))
-    })
+  searchCustomer: function({ commit }, searchTerms) {
+    commit(mutation.CUSTOMER_LIST, [])
+    // commit(mutation.SET_LOADING, true)
+    commit(mutation.SET_SEARCH_TERMS, searchTerms)
+    // dispatch('fetchAll')
+    //   .then(response => {
+    //     resolve(response)
+    //   })
+    //   .catch(error => reject(error, commit(mutation.SET_LOADING, false)))
+    //   .finally(() => commit(mutation.SET_LOADING, false))
   },
 
   addNote({ commit }, note) {
@@ -479,7 +477,7 @@ const actions = {
           if (actionDetails.customer) {
             dispatch('fetchSelectedCustomer', actionDetails.customer)
           } else {
-            dispatch('fetchAll')
+            //dispatch('fetchAll')
           }
           if (
             typeof response.data.id != 'undefined' &&
@@ -532,7 +530,7 @@ const actions = {
     CustomerService.globalUpdate(...params).then(response => {
       commit(mutation.SET_RESPONSE_MESSAGES, response.data)
       dispatch('fetchSelectedCustomer', customer_id)
-      dispatch('fetchAll')
+      //dispatch('fetchAll')
     })
   },
 
