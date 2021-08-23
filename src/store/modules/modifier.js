@@ -270,20 +270,24 @@ const getters = {
 
 // actions, often async
 const actions = {
+  fetchFoodIcons({ commit }) {
+    ModifierService.foodIcons().then(response => {
+      commit('SET_FOOD_ICONS', response.data.data)
+    })
+  },
   fetchAll({ commit, rootState, rootGetters }, storeId = null) {
     return new Promise(async resolve => {
-      const [groups, subgroups, modifiers, foodIcons] = await Promise.all([
+      const [groups, subgroups, modifiers] = await Promise.all([
         ModifierService.groups(storeId),
         ModifierService.subgroups(storeId),
         ModifierService.modifiers(storeId),
-        ModifierService.foodIcons(),
       ])
 
       commit(mutation.SET_MODIFIERS, {
         groups: groups.data.data,
         subgroups: subgroups.data.data,
         modifiers: modifiers.data.data,
-        foodIcons: foodIcons.data.data,
+
         multistore: storeId
           ? storeId
           : rootGetters['auth/multistore']
@@ -399,6 +403,9 @@ const mutations = {
 
   [mutation.SET_ITEM](state, item) {
     state.item = item
+  },
+  ['SET_FOOD_ICONS'](state, item) {
+    state.foodIcons = item
   },
   /*UPDATE_ITEM(state, time) {
     let item = { ...state.item }

@@ -412,6 +412,12 @@ export default {
     }, 10000)
   },
   watch: {
+    storePrerequisite(error) {
+      if (error) {
+        this.userError = this._t(error.title)
+        this.userErrorInstructions = this._t(error.description)
+      }
+    },
     storeId(storeId) {
       if (storeId) {
         this.loadStore()
@@ -503,7 +509,11 @@ export default {
     ...mapGetters('location', ['isTokenManager', '_t']),
     ...mapState('order', ['orderType']),
     ...mapState('sync', ['online']),
-    ...mapState('location', ['timezoneString', 'openHours']),
+    ...mapState('location', [
+      'timezoneString',
+      'openHours',
+      'storePrerequisite',
+    ]),
     ...mapGetters('context', ['isStoreSelected', 'haveMultipleStores']),
 
     apisLoaded() {
