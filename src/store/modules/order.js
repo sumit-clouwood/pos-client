@@ -1561,21 +1561,21 @@ const actions = {
             special_order_surcharge: deliveryArea.special_order_surcharge,
             location_coordinates: { lat: 0, lng: 0 },
           }
-          let customer = rootState.customer.customer
-          if (!customer || customer._id !== order.customer) {
-            dispatch('customer/fetchSelectedCustomer', order.customer, {
-              root: true,
-            }).then(() => {
-              if (orderAddress) {
-                dispatch('customer/selectedAddress', orderAddress, {
-                  root: true,
-                })
-                commit('location/SET_MODAL', '#order-confirmation', {
-                  root: true,
-                })
-              }
-            })
-          }
+        }
+        let customer = rootState.customer.customer
+        if (!customer || customer._id !== order.customer) {
+          dispatch('customer/fetchSelectedCustomer', order.customer, {
+            root: true,
+          }).then(() => {
+            if (orderAddress) {
+              dispatch('customer/selectedAddress', orderAddress, {
+                root: true,
+              })
+              commit('location/SET_MODAL', '#order-confirmation', {
+                root: true,
+              })
+            }
+          })
         }
         // commit('location/SET_MODAL', '#order-confirmation')
       } else {
