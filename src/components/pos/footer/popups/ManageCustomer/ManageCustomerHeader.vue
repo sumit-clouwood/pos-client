@@ -8,9 +8,7 @@
         type="text"
         class="search-field-input"
         :placeholder="_t('Search') + ' ' + _t('customer')"
-        v-model="searchTerms"
-        @keyup="searchCustomer()"
-        @keypress="$event.keyCode == 13 ? $event.preventDefault() : true"
+        @keyup="searchCustomer"
       />
     </form>
   </div>
@@ -18,6 +16,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import { debounce } from '@/util.js'
 export default {
   name: 'ManageCustomerHeader',
   data: function() {
@@ -26,21 +25,19 @@ export default {
       searchTerms: '',
     }
   },
-  methods: {
-    searchCustomer() {
-      clearTimeout(this.inputTimer)
-      // if (this.searchTerms.length > 0) {
-      this.inputTimer = setTimeout(() => {
-        this.loading = true
-        this.$store
-          .dispatch('customer/searchCustomer', this.searchTerms)
-          .then(() => {})
-      }, 500) //waith half second until user finishes the typing
-      // }
-    },
-  },
+  methods: {},
   computed: {
     ...mapGetters('location', ['_t']),
+  },
+  created() {
+    this.searchCustomer = debounce(
+      function(event) {
+        this.$store
+          .dispatch('customer/searchCustomer', event.target.value)
+          .then(() => {})
+      }.bind(this),
+      500
+    )
   },
 }
 </script>

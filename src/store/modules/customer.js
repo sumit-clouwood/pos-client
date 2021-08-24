@@ -262,17 +262,17 @@ const actions = {
     ]
     dispatch('setDefaultSettingsGlobalAddUpdate', ...params)
   },
-
+  customerGroupList({ commit }) {
+    CustomerService.customerGroupList().then(response => {
+      commit(mutation.SET_CUSTOMER_GROUP, response.data.data)
+    })
+  },
   fetchAll({ commit, dispatch }) {
     commit(mutation.SET_LOADING, true)
     return new Promise((resolve, reject) => {
       dispatch('fetchCustomers')
         .then(() => {
-          dispatch('fetchCRMCustomerFields')
           // get Customer Group
-          CustomerService.customerGroupList().then(response => {
-            commit(mutation.SET_CUSTOMER_GROUP, response.data.data)
-          })
           // CustomerService.customerBuildings()
           //   .then(buildingAreas => {
           //     if (buildingAreas.data.data) {
@@ -284,10 +284,6 @@ const actions = {
           //     commit(mutation.SET_LOADING, false)
           //     reject(error)
           //   })
-
-          dispatch('fetchDeliveryArea', '').then(() => {
-            resolve()
-          })
         })
         .catch(error => {
           commit(mutation.SET_LOADING, false)
@@ -298,12 +294,12 @@ const actions = {
     })
   },
 
-  setPageNumber: function({ commit, dispatch }, pageNumber) {
+  setPageNumber: function({ commit }, pageNumber) {
     // commit(mutation.SET_LOADING, true)
     commit(mutation.SET_CURRENT_PAGE_NO, pageNumber)
-    dispatch('fetchAll').then(() => {
-      commit(mutation.SET_LOADING, false)
-    })
+    // dispatch('fetchAll').then(() => {
+    //   commit(mutation.SET_LOADING, false)
+    // })
   },
 
   setPastOrderPageNumber: function({ commit, dispatch }, pageNumber) {
@@ -330,14 +326,13 @@ const actions = {
 
   searchCustomer: function({ commit, dispatch }, searchTerms) {
     return new Promise((resolve, reject) => {
+      commit(mutation.SET_LOADING, true)
       commit(mutation.CUSTOMER_LIST, [])
-      // commit(mutation.SET_LOADING, true)
       commit(mutation.SET_SEARCH_TERMS, searchTerms)
-      dispatch('fetchAll')
-        .then(response => {
-          resolve(response)
-        })
-        .catch(error => reject(error, commit(mutation.SET_LOADING, false)))
+
+      dispatch('fetchCustomers')
+        .then(response => resolve(response))
+        .catch(error => reject(error))
         .finally(() => commit(mutation.SET_LOADING, false))
     })
   },
@@ -483,7 +478,7 @@ const actions = {
           if (actionDetails.customer) {
             dispatch('fetchSelectedCustomer', actionDetails.customer)
           } else {
-            dispatch('fetchAll')
+            //dispatch('fetchAll')
           }
           if (
             typeof response.data.id != 'undefined' &&
@@ -536,7 +531,7 @@ const actions = {
     CustomerService.globalUpdate(...params).then(response => {
       commit(mutation.SET_RESPONSE_MESSAGES, response.data)
       dispatch('fetchSelectedCustomer', customer_id)
-      dispatch('fetchAll')
+      //dispatch('fetchAll')
     })
   },
 
