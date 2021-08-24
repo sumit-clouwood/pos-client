@@ -73,6 +73,9 @@ export default {
 
   userDetails(userId) {
     // return DataService.get(`/model/brand_users/id/${userId}`, 'brand')
-    return DataService.get(`/model/users/id/${userId}`, false)
+    return DataService.get(
+      `/model/users/id/${userId}?collected_needed=0`,
+      false
+    )
   },
 }
