@@ -324,16 +324,17 @@ const actions = {
     })
   },
 
-  searchCustomer: function({ commit }, searchTerms) {
-    commit(mutation.CUSTOMER_LIST, [])
-    // commit(mutation.SET_LOADING, true)
-    commit(mutation.SET_SEARCH_TERMS, searchTerms)
-    // dispatch('fetchAll')
-    //   .then(response => {
-    //     resolve(response)
-    //   })
-    //   .catch(error => reject(error, commit(mutation.SET_LOADING, false)))
-    //   .finally(() => commit(mutation.SET_LOADING, false))
+  searchCustomer: function({ commit, dispatch }, searchTerms) {
+    return new Promise((resolve, reject) => {
+      commit(mutation.SET_LOADING, true)
+      commit(mutation.CUSTOMER_LIST, [])
+      commit(mutation.SET_SEARCH_TERMS, searchTerms)
+
+      dispatch('fetchCustomers')
+        .then(response => resolve(response))
+        .catch(error => reject(error))
+        .finally(() => commit(mutation.SET_LOADING, false))
+    })
   },
 
   addNote({ commit }, note) {
