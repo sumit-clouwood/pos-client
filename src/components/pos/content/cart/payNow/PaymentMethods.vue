@@ -9,14 +9,6 @@
         @click="selectMethod"
       ></carousel>
     </div>
-    <template v-for="(method, index) in methods">
-      <link
-        v-for="(entry, key) in method"
-        rel="prefetch"
-        :href="entry.icon"
-        :key="key + index"
-      />
-    </template>
     <link
       rel="prefetch"
       href="https://d3jjfdwi6rnqlf.cloudfront.net/img/icons/backarrow.svg"
