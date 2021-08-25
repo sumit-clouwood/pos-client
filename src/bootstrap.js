@@ -424,9 +424,11 @@ export default {
     this.checkStorePrerequisite()
 
     $store.dispatch('location/timezone')
-    $store.dispatch('auth/fetchRoles').then(() => {
-      $store.dispatch('auth/setCurrentRole')
-      $store.dispatch('auth/fetchAllStoreUsers')
+    Promise.all([
+      $store.dispatch('auth/fetchAllStoreUsers'),
+      $store.dispatch('auth/fetchRoles'),
+    ]).then(() => {
+      $store.dispatch('auth/setRolesAndUsers')
     })
     //load delivery areas only from below customer
     $store.dispatch('customer/fetchDeliveryArea', '')

@@ -216,9 +216,12 @@ const actions = {
   getDrivers({ commit, rootGetters }) {
     let role = rootGetters['auth/getRole']('Driver')
     if (role) {
-      DMService.getUsers(role._id).then(response => {
-        commit(mutation.DRIVERS, response.data.data)
-      })
+      const drivers = rootGetters['auth/all_users'].filter(
+        user => user.brand_role == role._id
+      )
+      if (drivers.length) {
+        commit(mutation.DRIVERS, drivers)
+      }
     }
   },
   getDeliveryServiceDriver({ commit, rootGetters }) {

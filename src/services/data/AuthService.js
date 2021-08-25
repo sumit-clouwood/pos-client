@@ -26,6 +26,11 @@ export default {
       `/model/users?no_limit=true&byColumn=0&brand_role=${roleId}`
     )
   },
+  getAllUsers() {
+    return DataService.get(
+      `/model/brand_users?page_id=brand_users_main_tbl&no_limit=true`
+    )
+  },
   getStoreUsers(pageId, level, roleId) {
     return DataService.get(
       `/model/brand_users?page_id=${pageId}&query=&no_limit=true&byColumn=0&brand_role=${roleId}`,
