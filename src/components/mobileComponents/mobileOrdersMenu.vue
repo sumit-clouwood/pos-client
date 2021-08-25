@@ -9,6 +9,7 @@
         data-toggle="modal"
         data-target="#manage-customer"
         v-show="!carhop && !waiter && !cashier_walkin"
+        @click="fetchCustomer"
       >
         <!--@click="openManageCustomer"-->
         <svg
@@ -244,6 +245,9 @@ export default {
     ...mapState('order', ['orderType', 'cartType']),
   },
   methods: {
+    fetchCustomer() {
+      this.$store.dispatch('customer/fetchCustomers')
+    },
     footerMenuHendlerChange() {
       this.$store.dispatch('footerMenuHendlerChange')
     },

@@ -727,6 +727,7 @@ export default {
   },
   methods: {
     calculateHeights() {
+      this.$store.dispatch('customer/fetchCustomers')
       bus.$emit('check-height')
     },
     discountHeights() {
