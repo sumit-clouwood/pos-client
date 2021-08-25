@@ -26,6 +26,7 @@ const getDefaults = () => {
     offlinePinCode: null,
     deviceType: false,
     currentLoggedInUserId: undefined,
+    allusers: undefined,
   }
 }
 const state = getDefaults()
@@ -33,6 +34,7 @@ const state = getDefaults()
 
 const getters = {
   current_user: state => state.userDetails.item,
+  all_users: state => state.storeUsers,
   allowed: state => resource => {
     if (!state.role) {
       //super admin
@@ -340,39 +342,58 @@ const actions = {
       }
     })
   },
-  fetchRoles({ commit, getters }) {
+  fetchRoles({ commit }) {
     return new Promise(resolve => {
       AuthService.getRoles().then(rolesPermissions => {
         resolve(rolesPermissions.data.data)
         commit(mutation.SET_ROLE_DETAILS, rolesPermissions.data.data)
-        let cashier = rolesPermissions.data.data.find(
-          value => value.name === 'Cashier'
-        )
-        commit('SET_CASHIER_ROLE_ID', cashier._id)
-        const roles = getters.getRoleByPermission(PERMS.WAITER)
-        roles.forEach(role => {
-          AuthService.getUsers(role._id).then(users => {
-            commit(mutation.ADD_WAITERS, users.data.data)
-          })
-        })
       })
     })
   },
-  fetchAllStoreUsers({ state, commit }) {
+  fetchAllStoreUsers({ commit }) {
     return new Promise(resolve => {
-      AuthService.getStoreUsers(
-        'brand_users_main_tbl',
-        true,
-        state.cashierRoleId
-      ).then(response => {
-        resolve(response)
+      AuthService.getAllUsers().then(response => {
         commit('SET_STORE_USERS', response.data.data)
         commit('location/SET_BRAND_STORES', response.data.page_lookups.stores, {
           root: true,
         })
+        resolve(response)
       })
     })
   },
+  setRolesAndUsers({ getters, commit, dispatch }) {
+    dispatch('auth/setCurrentRole')
+
+    let cashier = state.rolePermissions.find(role => role.name === 'Cashier')
+    commit('SET_CASHIER_ROLE_ID', cashier._id)
+
+    const roles = getters.getRoleByPermission(PERMS.WAITER)
+    //these are the roles which have waiter permissions, any role which have waiter permission can be treated as waiter
+    roles.forEach(role => {
+      const waiters = state.storeUsers.filter(
+        user => user.brand_role == role._id
+      )
+      if (waiters.length) {
+        commit(mutation.ADD_WAITERS, waiters)
+      }
+    })
+  },
+  // fetchAllStoreUsers({ state, commit }) {
+  //   return new Promise(resolve => {
+  //     AuthService.getStoreUsers(
+  //       'brand_users_main_tbl',
+  //       true,
+  //       state.cashierRoleId
+  //     ).then(response => {
+  //       resolve(response)
+  //       commit('SET_STORE_USERS', response.data.data)
+  //       commit('location/SET_BRAND_STORES', response.data.page_lookups.stores, {
+  //         root: true,
+  //       })
+  //     })
+  //   })
+  // },
+
   // eslint-disable-next-line no-unused-vars
   filterUserInOffline({ state, commit, dispatch, rootGetters }, encryptedPin) {
     return new Promise((resolve, reject) => {
@@ -485,6 +506,9 @@ const mutations = {
   },
   SET_CURRENT_LOGGED_IN_USER_ID(state, id) {
     state.currentLoggedInUserId = id
+  },
+  SET_ALL_USERS(state, users) {
+    state.allusers = users
   },
 }
 
