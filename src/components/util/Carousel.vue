@@ -88,11 +88,7 @@
                     width: slideWidth - 10 + 'px',
                   }"
                 >
-                  <img
-                    :src="
-                      'https://d3jjfdwi6rnqlf.cloudfront.net' + value[0].icon
-                    "
-                  />
+                  <img :src="iconPath(value)" />
                   <label class="shorten-sentence" :title="dt(value[0])">
                     {{ dt(value[0]) }}
                   </label>
@@ -218,6 +214,12 @@ export default {
     },
   },
   methods: {
+    iconPath(value) {
+      let path = value.length > 0 ? value[0].icon : ''
+      if (!path.includes('https://')) {
+        return 'https://d3jjfdwi6rnqlf.cloudfront.net' + value[0].icon
+      } else return path
+    },
     imagePath(key) {
       return (
         'https://d3jjfdwi6rnqlf.cloudfront.net/img/icons/svgs/' + key + '.svg'
