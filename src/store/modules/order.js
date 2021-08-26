@@ -1960,6 +1960,10 @@ const actions = {
       })
     })
   },
+  // eslint-disable-next-line no-empty-pattern
+  lockUnlockOrder({}, { orderId, status }) {
+    OrderService.orderLock(orderId, status).then(() => {})
+  },
 }
 
 // function playSound(locationId, onlineOrders) {

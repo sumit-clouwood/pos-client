@@ -295,7 +295,39 @@
         </div>
       </div>
     </div>
-    <!--    <ready-item-notification></ready-item-notification>-->
+    <div class="modal" id="orderLock" style="display: none; z-index: 1050;">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header customer-header">
+            <h5 class="customer-title">
+              {{ _t('Order already open') }}
+            </h5>
+          </div>
+          <div class="modal-body font-weight-bold text-center">
+            <span>
+              {{
+                _t(
+                  'Order is already open by someone, you can not open it until you unlock or closed by other user.'
+                )
+              }}
+            </span>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-success"
+              data-dismiss="modal"
+              @click="unlockOrder"
+            >
+              {{ _t('Unlock') }}
+            </button>
+            <button type="button" class="btn btn-danger" data-dismiss="modal">
+              {{ _t('Close') }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 <script>
@@ -376,6 +408,7 @@ export default {
       validationErrors: false,
       selectedArea: false,
       bookedEmptyTables: [],
+      selectedOrderId: undefined,
     }
   },
   updated() {
@@ -452,52 +485,12 @@ export default {
     },
     created_time(time) {
       return this.convertDatetime(time, this.timezoneString, 'h:mm:ss')
-      // return this.current_time.format('h:mm A')
     },
     created_date(date) {
-      // return this.convertDatetime(date, this.timezoneString, 'Do MMMM YYYY')
-      // return this.current_time.format('Do MMMM YYYY')
       return moment(date).format('Do MMMM, YYYY')
     },
-    // getBookedEmptyTables() {
-    //   let table = []
-    //   this.allBookedTables.orders.forEach(order_table => {
-    //     if (order_table.status === 'reserved') {
-    //       table[order_table.assigned_table_id] = order_table.start_time
-    //     }
-    //   })
-    //   if (table) {
-    //     // bookedEmptyTables.filter(table => {
-    //     // alert(table.number + ' BUSY')
-    //     // eslint-disable-next-line no-unused-vars
-    //     let tables_status_update = []
-    //     this.tableStatus.table.forEach(ts => {
-    //       let table_book_date_time = table[ts.id]
-    //         ? this.timeConvert(table[ts.id])
-    //         : 0
-    //       let empty_table_time = this.timeConvert(this.getTableEmptyTime)
-    //       let getUTCCurrentTime = this.timeConvert(this.getUTCCurrentTime())
-    //       if (getUTCCurrentTime > table_book_date_time + empty_table_time) {
-    //         if (table_book_date_time) {
-    //           let new_table = ts
-    //           new_table.status.color = '#c1bfbf'
-    //           new_table.status.text = 'booked_without_order'
-    //           tables_status_update.push(new_table)
-    //         } else {
-    //           tables_status_update.push(ts)
-    //         }
-    //       }
-    //     })
-    //
-    //     this.$store.commit('dinein/UPDATE_TABLE_STATUS', tables_status_update)
-    //     this.setTableProperties()
-    //   }
-    //   // })
-    // },
     getOrderNo(orderId) {
-      // this.getBookedEmptyTables()
       let order = this.allBookedTables.lookup.orders._id[orderId]
-      // let customerName = order && order.customer != null ? order.customer : ''
       return order
         ? order.order_no +
             ' | ' +
@@ -552,7 +545,37 @@ export default {
         this.$store.commit('dinein/NUMBER_GUESTS', false)
       }
     },
+    unlockOrder() {
+      this.$store.dispatch(
+        'order/lockUnlockOrder',
+        {
+          orderId: this.selectedOrderId,
+          status: { order_lock: false },
+        },
+        {
+          root: true,
+        }
+      )
+    },
     updateOrder(data) {
+      let is_order_lock = false
+      if (this.allBookedTables.lookup.orders._id) {
+        is_order_lock = this.allBookedTables.lookup.orders._id[data.orderId]
+          .order_lock
+      }
+      if (is_order_lock) {
+        this.selectedOrderId = data.orderId
+        showModal('#orderLock')
+        return true
+      } else {
+        this.$store.dispatch(
+          'order/lockUnlockOrder',
+          { orderId: data.orderId, status: { order_lock: true } },
+          {
+            root: true,
+          }
+        )
+      }
       this.$store.commit('dinein/SELECTED_TABLE', this.selectedTableData)
       this.$store.commit(
         'dinein/SELECTED_TABLE_RESERVATION',

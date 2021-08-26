@@ -855,6 +855,7 @@ const actions = {
                   order_surcharges: [],
                   order_discounts: [],
                   order_payments: [],
+                  order_lock: false,
                 }
               } catch (e) {
                 // eslint-disable-next-line no-console

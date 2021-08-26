@@ -180,4 +180,7 @@ export default {
   invoiceAPI(order, apiurl) {
     return DataService.invoiceapp(apiurl + `/printorder`, order)
   },
+  orderLock(id, data) {
+    return DataService.post(`/model/orders/id/${id}/order_lock`, data)
+  },
 }
