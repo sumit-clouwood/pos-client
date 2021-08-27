@@ -64,6 +64,15 @@ export default {
         })
     })
   },
+  async logincust(data) {
+    return new Promise(async resolve => {
+      const response = await fetch(authUrl, {
+        method: 'POST',
+        body: data,
+      })
+      resolve(response)
+    })
+  },
   logout(msg) {
     return new Promise((resolve, reject) => {
       DataService.factory()

@@ -12,9 +12,19 @@ const notifyUserAboutUpdate = worker => {
   // store.commit('sync/setAppUpdateNotification', true)
   // localStorage.setItem('update_available', true)
   let lastUpdatedTime = localStorage.getItem('pos_version_updated_on') || 0
-  lastUpdatedTime = parseInt(lastUpdatedTime) + 1000 * 60 * 5
-  console.log(lastUpdatedTime, time)
+  lastUpdatedTime = parseInt(lastUpdatedTime) + 1000 * 60 * 60 * 6
+
+  console.log(
+    1,
+    'service worker last updated',
+    lastUpdatedTime,
+    time,
+    lastUpdatedTime <= time
+  )
+
   if (lastUpdatedTime <= time) {
+    console.log('now time is greater ', time, lastUpdatedTime)
+
     localStorage.setItem('pos_version_updated_on', time)
     store.commit('sync/setAppUpdateNotification', true)
     localStorage.setItem('update_available', true)
