@@ -149,6 +149,9 @@ export default {
 
                         resolve()
                       })
+                      .catch(() =>
+                        reject('Store info not found. Please login again.')
+                      )
                   }
                 } else {
                   $store.commit('context/RESET')
@@ -262,6 +265,9 @@ export default {
 
                     resolve()
                   })
+                  .catch(() =>
+                    reject('Store info not found. Please login again.')
+                  )
               }
             })
             .catch(error => {
