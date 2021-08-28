@@ -3,7 +3,7 @@ import DataService from '@/services/DataService'
 export default {
   //Get country,city,location and drivers data by location id . ?lang=ru-RU
   getLocationData(option) {
-    return DataService.getT('/pos_menu?&menu_needed=false', option)
+    return DataService.getT('/pos_menu?menu_needed=false', option)
   },
   getReferrals() {
     return DataService.get(

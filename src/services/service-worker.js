@@ -272,11 +272,17 @@ var EventListener = {
 
       var handler = Factory.offlineHandler(clonedRequest)
 
-      if (handler && handler.intercept) {
+      if (handler) {
         // attempt to send request normally
         event.respondWith(
           fetch(clonedRequest)
             .then(data => {
+              //since fetch request was successful either get or post we can intercept it
+              //if interceptor available, otherwise send response back as it is
+              if (!handler.intercept) {
+                return Promise.resolve(data)
+              }
+
               return new Promise(resolve => {
                 data.json().then(serverResponse => {
                   DB.open(() => {
