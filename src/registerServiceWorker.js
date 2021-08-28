@@ -12,7 +12,9 @@ const notifyUserAboutUpdate = worker => {
   // store.commit('sync/setAppUpdateNotification', true)
   // localStorage.setItem('update_available', true)
   let lastUpdatedTime = localStorage.getItem('pos_version_updated_on') || 0
-  lastUpdatedTime = parseInt(lastUpdatedTime) + 1000 * 60 * 60 * 6
+  lastUpdatedTime =
+    parseInt(lastUpdatedTime) +
+    1000 * 60 * process.env.VUE_APP_SYSTEM_UPDATE_TIMEOUT
 
   console.log(
     1,
