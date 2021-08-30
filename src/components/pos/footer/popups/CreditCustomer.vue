@@ -82,6 +82,7 @@
               </form>
               <credit-customer-details
                 v-if="customer_details"
+                :customerId="customerId"
               ></credit-customer-details>
             </div>
           </div>
@@ -202,7 +203,7 @@ export default {
         this.searchCustomerErr = ''
         $('.text-danger').hide()
         // this.loyaltyHendlerChange()
-        this.fetchSelectedCustomer(this.customerId)
+        this.creditCustomerList(this.customerId)
           .then(() => {
             // this.searchTerm = ''
             this.$store.dispatch('checkoutForm/calculateLoyaltyAmountForItem')
@@ -347,6 +348,7 @@ export default {
       }
       this.searchTerm = customer.name
       this.customerId = customer._id
+      this.$store.commit('customer/SET_CUSTOMER_ID', customer._id)
       $('#customersList').toggle()
       this.fetchCustomer()
     },
@@ -400,7 +402,7 @@ export default {
     showCustomers() {
       $('#customersList').show()
     },
-    ...mapActions('customer', ['fetchSelectedCustomer', 'addCustomer']),
+    ...mapActions('customer', ['creditCustomerList', 'addCustomer']),
   },
 }
 </script>
