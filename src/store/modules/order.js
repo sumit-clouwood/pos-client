@@ -1921,8 +1921,8 @@ const actions = {
       order_payment.order_payments.push(prepare_payment)
       OrderService.creditOrderPayment(order_id, order_payment)
         .then(response => {
-          let customer = rootState.customer.customer
-          dispatch('customer/fetchSelectedCustomer', customer._id, {
+          let customer = rootState.customer.customerId
+          dispatch('customer/creditCustomerList', customer, {
             root: true,
           }).then(() => {
             commit('creditCustomerPaymentLoader', false)

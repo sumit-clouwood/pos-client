@@ -45,6 +45,8 @@ const getDefaults = () => {
     modalStatus: 'Add',
     lookups: false,
     buildingAreas: false,
+    creditCustomer: false,
+    creditCustomerDetails: false,
   }
 }
 const state = getDefaults()
@@ -217,7 +219,24 @@ const actions = {
     }
     commit('CRM_ADDRESS_FIELD', crm_fields)
   },
-
+  creditCustomerList({ commit }, customerId) {
+    return new Promise((resolve, reject) => {
+      CustomerService.creditCustomer(customerId)
+        .then(response => {
+          commit(mutation.SET_LOADING, false)
+          commit('CREDIT_CUSTOMERS', response.data.data)
+          commit(
+            'CREDIT_CUSTOMER_DETAILS',
+            response.data.page_lookups.brand_customers
+          )
+          resolve(response)
+        })
+        .catch(error => {
+          commit(mutation.SET_LOADING, false)
+          reject(error)
+        })
+    })
+  },
   fetchCustomers({ commit, rootState }) {
     return new Promise((resolve, reject) => {
       const params = [
@@ -758,6 +777,12 @@ const mutations = {
   },
   IS_REFUND_ALLOW: (state, status) => {
     state.isRefundAllow = status
+  },
+  CREDIT_CUSTOMERS: (state, data) => {
+    state.creditCustomer = data
+  },
+  CREDIT_CUSTOMER_DETAILS: (state, customer) => {
+    state.creditCustomerDetails = customer
   },
   SET_CUSTOMER_MANDATORY_FIELDS: (state, mandate_fields) =>
     (state.mandatory_fields = mandate_fields),
