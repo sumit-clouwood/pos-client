@@ -7,6 +7,7 @@ jobs:
         - staging
         - integration
         - fix-cache-issue
+        - fix/stg-build
 
     docker:
        - image: circleci/node:12.18.0
@@ -25,7 +26,7 @@ jobs:
               echo "export SITE=dm-prod-pos" >> $BASH_ENV
               echo "export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID_PROD" >> $BASH_ENV
               echo "export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY_PROD" >> $BASH_ENV
-            elif [ "${CIRCLE_BRANCH}" == "staging" ]; then
+            elif [ "${CIRCLE_BRANCH}" == "staging" ] || [ "${CIRCLE_BRANCH}" == "fix/stg-build" ]; then
               echo "export ENVIRONMENT=staging" >> $BASH_ENV
               echo "export EBENVIRONMENT=stg" >> $BASH_ENV
               echo "export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID_PROD" >> $BASH_ENV
@@ -71,7 +72,7 @@ jobs:
 
             # TEMPORARY DEBIAN REPO FIX
             sudo rm /etc/apt/sources.list
-            echo 'deb http://deb.debian.org/debian testing main' | sudo tee -a /etc/apt/sources.list
+            echo 'deb http://deb.debian.org/debian bullseye main' | sudo tee -a /etc/apt/sources.list
             echo "deb http://archive.debian.org/debian/ jessie-backports main" | sudo tee -a /etc/apt/sources.list
             echo "deb-src http://archive.debian.org/debian/ jessie-backports main" | sudo tee -a /etc/apt/sources.list
             echo "Acquire::Check-Valid-Until false;" | sudo tee -a /etc/apt/apt.conf.d/10-nocheckvalid
