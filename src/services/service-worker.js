@@ -341,34 +341,58 @@ var EventListener = {
       } else {
         //if no handler was defined
         //put api response in cache and possibily serve from cache
-        if (
-          event.request.method == 'GET' &&
-          event.request.url.includes('fetch_version=')
-        ) {
-          event.respondWith(
-            caches
-              .match(event.request, { ignoreVary: true })
-              .then(cachedResponse => {
-                if (cachedResponse) {
-                  return cachedResponse
-                }
+        if (event.request.method == 'GET') {
+          if (event.request.url.includes('fetch_version=')) {
+            event.respondWith(
+              caches
+                .match(event.request, { ignoreVary: true })
+                .then(cachedResponse => {
+                  if (cachedResponse) {
+                    return cachedResponse
+                  }
 
-                return caches.open(RUNTIME).then(cache => {
-                  return fetch(event.request).then(response => {
-                    if (response.ok) {
-                      var clonnedResponse = response.clone()
-                      // Put a copy of the response in the runtime cache.
-                      return cache
-                        .put(event.request, clonnedResponse)
-                        .then(() => {
-                          return response
-                        })
-                    }
-                    return response
+                  return caches.open(RUNTIME).then(cache => {
+                    return fetch(event.request).then(response => {
+                      if (response.ok) {
+                        var clonnedResponse = response.clone()
+                        // Put a copy of the response in the runtime cache.
+                        return cache
+                          .put(event.request, clonnedResponse)
+                          .then(() => {
+                            return response
+                          })
+                      }
+                      return response
+                    })
                   })
                 })
+            )
+          } else if (event.request.url.includes('pos_menu')) {
+            //if pos_menu then try network first, if not found then try the cache
+            const fetchLive = event =>
+              new Promise(async (resolve, reject) => {
+                const response = await fetch(event.request)
+                if (response && ['loaded', 'ok'].includes(response.status)) {
+                  resolve(response)
+
+                  caches.open(RUNTIME).then(cache => {
+                    var clonnedResponse = response.clone()
+                    cache.put(event.request, clonnedResponse)
+                  })
+                } else {
+                  caches
+                    .match(event.request, { ignoreVary: true })
+                    .then(cachedResponse => {
+                      if (cachedResponse) {
+                        resolve(cachedResponse)
+                      }
+                    })
+                    .reject(error => reject(error))
+                }
               })
-          )
+
+            event.respondWith(fetchLive(event))
+          }
         }
       }
     })
