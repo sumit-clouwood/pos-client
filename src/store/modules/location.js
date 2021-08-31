@@ -410,7 +410,6 @@ const actions = {
               }
             }
           }
-          // commit(mutation.SET_CURRENCY, response.data.data.currency_symbol)
         })
         .catch(error => {
           //if refresh token faild log out user here

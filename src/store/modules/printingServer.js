@@ -350,6 +350,9 @@ const actions = {
       //Temp- later remove once IOS KOT App delivers.
       localStorage.setItem('orderInvoiceColData', JSON.stringify(jsonResponse))
 
+      // eslint-disable-next-line no-console
+      console.log('order data in localstorage', jsonResponse)
+
       //check if sunmi app android available
       if (typeof AndroidPOS != 'undefined') {
         AndroidPOS.callFunction(
