@@ -121,7 +121,7 @@ const actions = {
       dispatch(orderStatus.pageId, loader)
     }
   },
-  async fetchAll({ dispatch, commit }, data) {
+  async fetchAll({ dispatch, commit, rootState }, data) {
     if (!data || !data.silent) {
       commit(mutation.LOADING, true)
     }
@@ -132,6 +132,9 @@ const actions = {
       // dispatch('getBookedTables', false),
       // dispatch('getDineInArea'),
     ])
+    if (rootState.location.brand && rootState.location.brand.number_of_covers) {
+      dispatch('getCovers')
+    }
     if (!data || !data.silent) {
       commit(mutation.LOADING, false)
     }

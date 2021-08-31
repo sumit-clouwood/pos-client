@@ -70,7 +70,7 @@
         </button>
       </div>
       <div
-        v-if="enabledSplitBill && orderId && covers && cartType !== 'hold'"
+        v-if="enabledSplitBill && orderId && cartType !== 'hold'"
         class="driver-container"
       >
         <button
@@ -84,11 +84,7 @@
       <div
         class="driver-container"
         v-if="
-          items.length > 1 &&
-            !showSplitOption &&
-            orderId &&
-            covers &&
-            cartType !== 'hold'
+          items.length > 1 && !showSplitOption && orderId && cartType !== 'hold'
         "
       >
         <button

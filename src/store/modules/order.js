@@ -1961,8 +1961,16 @@ const actions = {
     })
   },
   // eslint-disable-next-line no-empty-pattern
-  lockUnlockOrder({}, { orderId, status }) {
-    OrderService.orderLock(orderId, status).then(() => {})
+  lockUnlockOrder({ dispatch }, { orderId, status }) {
+    return new Promise(resolve => {
+      OrderService.orderLock(orderId, status).then(() => {
+        dispatch('dinein/getBookedTablesOnClick', false, { root: true }).then(
+          () => {
+            resolve()
+          }
+        )
+      })
+    })
   },
 }
 

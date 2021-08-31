@@ -313,13 +313,8 @@
             </span>
           </div>
           <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-success"
-              data-dismiss="modal"
-              @click="unlockOrder"
-            >
-              {{ _t('Unlock') }}
+            <button type="button" class="btn btn-success" @click="unlockOrder">
+              {{ _t(unlock) }}
             </button>
             <button type="button" class="btn btn-danger" data-dismiss="modal">
               {{ _t('Close') }}
@@ -409,6 +404,7 @@ export default {
       selectedArea: false,
       bookedEmptyTables: [],
       selectedOrderId: undefined,
+      unlock: 'Unlock',
     }
   },
   updated() {
@@ -546,16 +542,22 @@ export default {
       }
     },
     unlockOrder() {
-      this.$store.dispatch(
-        'order/lockUnlockOrder',
-        {
-          orderId: this.selectedOrderId,
-          status: { order_lock: false },
-        },
-        {
-          root: true,
-        }
-      )
+      this.unlock = 'Wait'
+      this.$store
+        .dispatch(
+          'order/lockUnlockOrder',
+          {
+            orderId: this.selectedOrderId,
+            status: { order_lock: false },
+          },
+          {
+            root: true,
+          }
+        )
+        .then(() => {
+          hideModal('#orderLock')
+          this.unlock = 'Unlock'
+        })
     },
     updateOrder(data) {
       let is_order_lock = false
