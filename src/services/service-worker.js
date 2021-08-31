@@ -367,12 +367,15 @@ var EventListener = {
                   })
                 })
             )
-          } else if (event.request.url.includes('pos_menu')) {
+          } else if (
+            event.request.url.includes('pos_menu') ||
+            event.request.url == '/'
+          ) {
             //if pos_menu then try network first, if not found then try the cache
             const fetchLive = event =>
               new Promise(async (resolve, reject) => {
                 const response = await fetch(event.request)
-                if (response && ['loaded', 'ok'].includes(response.status)) {
+                if (response && response.ok) {
                   resolve(response)
 
                   caches.open(RUNTIME).then(cache => {
