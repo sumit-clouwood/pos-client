@@ -63,4 +63,9 @@ export default {
       'brand'
     )
   },
+  creditCustomer(customerId) {
+    return DataService.get(
+      `/model/orders?query=&limit=100&ascending=0&page=1&byColumn=1&orderBy=real_created_datetime&page_id=store_orders&credit=true&customer=${customerId}`
+    )
+  },
 }

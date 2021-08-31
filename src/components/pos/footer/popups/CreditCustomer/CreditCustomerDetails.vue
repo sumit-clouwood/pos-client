@@ -136,7 +136,6 @@ import progressbar from '@/components/util/progressbar'
 export default {
   name: 'CreditCustomerDetails',
   components: { PaymentMethods, OrderHistory, progressbar },
-  props: {},
   data() {
     return {
       activeTab: 'details',
@@ -144,15 +143,25 @@ export default {
       payment_status: undefined,
     }
   },
+  props: {
+    customerId: String,
+  },
   computed: {
     ...mapGetters('location', ['formatPrice', '_t']),
     ...mapState({
-      customerProfile: state =>
-        state.customer.customer ? state.customer.customer : false,
-      pastOrders: state => state.customer.pastOrders,
+      customerDetails: state =>
+        state.customer.creditCustomerDetails
+          ? state.customer.creditCustomerDetails
+          : false,
+      pastOrders: state => state.customer.creditCustomer,
       creditCustomerPaymentLoader: state =>
         state.order.creditCustomerPaymentLoader,
     }),
+    customerProfile() {
+      if (this.customerId && this.customerDetails)
+        return this.customerDetails._id[this.customerId]
+      else return this.customerDetails._id.first()
+    },
     ...mapState('checkoutForm', ['method']),
     remainingAmount() {
       let amount = 0
