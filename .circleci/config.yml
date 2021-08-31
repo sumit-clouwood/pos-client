@@ -71,14 +71,14 @@ jobs:
 
             # TEMPORARY DEBIAN REPO FIX
             sudo rm /etc/apt/sources.list
-            echo 'deb http://deb.debian.org/debian testing main' | sudo tee -a /etc/apt/sources.list
+            echo "deb http://deb.debian.org/debian bullseye main" | sudo tee -a /etc/apt/sources.list
             echo "deb http://archive.debian.org/debian/ jessie-backports main" | sudo tee -a /etc/apt/sources.list
             echo "deb-src http://archive.debian.org/debian/ jessie-backports main" | sudo tee -a /etc/apt/sources.list
             echo "Acquire::Check-Valid-Until false;" | sudo tee -a /etc/apt/apt.conf.d/10-nocheckvalid
             echo 'Package: *\nPin: origin "archive.debian.org"\nPin-Priority: 500' | sudo tee -a /etc/apt/preferences.d/10-archive-pin
             sudo apt-get update
-            sudo apt-get install libcrypt1 -o APT::Immediate-Configure=0
-            sudo apt-get install -y python3.9 python3-pip python3-dev build-essential
+            sudo apt-get install libcrypt1 -o APT::Immediate-Configure=0 --allow-unauthenticated
+            sudo apt-get install -y python3.9 python3-pip python3-dev build-essential git libcurl3 --allow-unauthenticated
 
             sudo pip3 install --upgrade pip
             sudo pip3 install --upgrade virtualenv
