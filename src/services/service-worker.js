@@ -762,10 +762,14 @@ var Sync = {
                   })
                   reject(error)
                 })
+            } else {
+              //if 422 or any other error
+              reject(response)
             }
           })
           .catch(error => {
             enabledConsole && console.log(1, 'sw:', 'Fetch error', error)
+            reject('error')
           })
       })
     })
@@ -995,17 +999,16 @@ var Order = {
             }
           }
 
-          try {
-            await Promise.all(syncedObjects)
-            notificationOptions.body = 'Offline orders synced successfully.'
-            self.registration.showNotification(
-              'POS synced',
-              notificationOptions
-            )
-            resolve()
-          } catch (error) {
-            reject(error)
-          }
+          Promise.all(syncedObjects)
+            .then(() => {
+              notificationOptions.body = 'Offline orders synced successfully.'
+              self.registration.showNotification(
+                'POS synced',
+                notificationOptions
+              )
+              resolve()
+            })
+            .catch(error => reject(error))
         }
       }
     })
