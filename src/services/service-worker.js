@@ -15,7 +15,7 @@ var enabledConsole = false
 //const VERSION = '<VERSION>';
 const VERSION = '1'
 const RUNTIME = 'runtime' + VERSION
-const expectedCaches = ['workbox-precache', 'images']
+const expectedCaches = ['runtime1', 'workbox-precache', 'images']
 
 var notificationOptions = {
   body: '',
