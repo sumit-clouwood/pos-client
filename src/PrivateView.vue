@@ -267,7 +267,11 @@ export default {
             //logout here after 3 sec
             const logoutInterval = setInterval(() => {
               this.secondsToLogout--
-              if (this.secondsToLogout <= 0) {
+              if (
+                this.secondsToLogout <= 0 &&
+                process.env.NODE_ENV === 'production' &&
+                !process.VUE_APP_PERSISTENT_ERRORS
+              ) {
                 clearInterval(logoutInterval)
                 this.$store.dispatch('auth/logout')
               }
@@ -388,7 +392,8 @@ export default {
               this.secondsToLogout--
               if (
                 this.secondsToLogout <= 0 &&
-                process.env.NODE_ENV === 'production'
+                process.env.NODE_ENV === 'production' &&
+                !process.VUE_APP_PERSISTENT_ERRORS
               ) {
                 clearInterval(logoutInterval)
                 this.$store.dispatch('auth/logout')

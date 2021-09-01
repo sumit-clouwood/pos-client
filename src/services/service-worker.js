@@ -339,62 +339,83 @@ var EventListener = {
             })
         )
       } else {
-        //if no handler was defined
-        //put api response in cache and possibily serve from cache
-        if (event.request.method == 'GET') {
-          if (event.request.url.includes('fetch_version=')) {
-            event.respondWith(
-              caches
-                .match(event.request, { ignoreVary: true })
-                .then(cachedResponse => {
-                  if (cachedResponse) {
-                    return cachedResponse
+        if (
+          event.request.url.indexOf('http') === 0 &&
+          (event.request.url.includes('dimspos.com/api') ||
+            event.request.url.includes('dimspos.com/cached'))
+        ) {
+          //if no handler was defined
+          //put api response in cache and possibily serve from cache
+          if (event.request.method == 'GET') {
+            if (
+              event.request.url.includes('fetch_version=') &&
+              !event.request.url.includes('/id/')
+            ) {
+              event.respondWith(
+                caches
+                  .match(event.request, { ignoreVary: true })
+                  .then(cachedResponse => {
+                    if (cachedResponse) {
+                      return cachedResponse
+                    }
+
+                    return caches.open(RUNTIME).then(cache => {
+                      return fetch(event.request).then(response => {
+                        if (response.ok) {
+                          var clonnedResponse = response.clone()
+                          // Put a copy of the response in the runtime cache.
+                          return cache
+                            .put(clonedRequest, clonnedResponse)
+                            .then(() => {
+                              return response
+                            })
+                        }
+                        return response
+                      })
+                    })
+                  })
+              )
+            }
+            //cache these below urls but always look for network first // if (
+            //   [
+            //     '/pos_menu',
+            //     '/users/id/',
+            //     '/subscriptions/get_subscription_status',
+            //   ].some(key => event.request.url.includes(key))
+            // )
+            else if (
+              !['/orders', '/reservations'].some(key =>
+                event.request.url.includes(key)
+              )
+            ) {
+              event.respondWith(
+                caches.open(RUNTIME).then(async cache => {
+                  let response = {}
+                  try {
+                    response = await fetch(event.request)
+                  } catch (e) {
+                    response.ok = false
                   }
-
-                  return caches.open(RUNTIME).then(cache => {
-                    return fetch(event.request).then(response => {
-                      if (response.ok) {
-                        var clonnedResponse = response.clone()
-                        // Put a copy of the response in the runtime cache.
-                        return cache
-                          .put(event.request, clonnedResponse)
-                          .then(() => {
-                            return response
-                          })
-                      }
-                      return response
-                    })
-                  })
-                })
-            )
-          } else if (
-            event.request.url.includes('pos_menu') ||
-            event.request.url == '/'
-          ) {
-            //if pos_menu then try network first, if not found then try the cache
-            const fetchLive = event =>
-              new Promise(async (resolve, reject) => {
-                const response = await fetch(event.request)
-                if (response && response.ok) {
-                  resolve(response)
-
-                  caches.open(RUNTIME).then(cache => {
+                  if (response.ok) {
                     var clonnedResponse = response.clone()
-                    cache.put(event.request, clonnedResponse)
-                  })
-                } else {
-                  caches
-                    .match(event.request, { ignoreVary: true })
-                    .then(cachedResponse => {
-                      if (cachedResponse) {
-                        resolve(cachedResponse)
-                      }
+                    //Put a copy of the response in the runtime cache.
+                    return cache.put(clonedRequest, response).then(() => {
+                      return clonnedResponse
                     })
-                    .reject(error => reject(error))
-                }
-              })
-
-            event.respondWith(fetchLive(event))
+                  } else {
+                    return new Promise(resolve =>
+                      caches
+                        .match(event.request, { ignoreVary: true })
+                        .then(cachedResponse => {
+                          if (cachedResponse) {
+                            resolve(cachedResponse)
+                          }
+                        })
+                    )
+                  }
+                })
+              )
+            }
           }
         }
       }
