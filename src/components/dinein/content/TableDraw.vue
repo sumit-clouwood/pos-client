@@ -1067,7 +1067,10 @@ export default {
           if (this.cssClass == 'restricted') return false
           // $('#tooltipdata').hide()
           // $('#tooltipdata').show()
-          showModal('#tooltipdata')
+          // console.log('orderDetails', this.orderDetails)
+          if (!this.brand.number_of_guests || this.orderDetails.length > 0) {
+            showModal('#tooltipdata')
+          }
           // console.log(
           //   'order details for table',
           //   this.orderDetails,
