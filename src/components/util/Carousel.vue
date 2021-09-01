@@ -229,9 +229,12 @@ export default {
       }
     },
     fetchImage(method) {
-      return this.$store.getters['payment/findAggregateGroup'](
-        method.payment_type_group
-      )['icon']
+      if (method.payment_type_group) {
+        return this.$store.getters['payment/findAggregateGroup'](
+          method.payment_type_group
+        )['icon']
+      }
+      return ''
     },
     movePage(page) {
       if (this.totalPages === 1) return
