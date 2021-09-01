@@ -213,6 +213,7 @@ var EventListener = {
         if (Sync.inprocess) {
           enabledConsole && console.log(1, 'sw:', 'A sync already in progress')
         } else {
+          console.log('sync is in process')
           Sync.inprocess = true
 
           var nowTime = new Date().getTime()
@@ -575,34 +576,27 @@ var Sync = {
       Factory.syncHandlers().forEach(obj => {
         syncedObjects.push(obj.sync())
       })
-      try {
-        await Promise.all(syncedObjects)
-        Sync.inprocess = false
-        enabledConsole &&
-          console.log(
-            1,
-            1,
-            'sw:',
-            'All synced',
-            'sync inprocess',
-            Sync.inprocess
-          )
-        client.postMessage({
-          msg: 'sync',
-          data: { status: 'done' },
+
+      Promise.all(syncedObjects)
+        .then(() => {
+          enabledConsole &&
+            console.log(
+              1,
+              1,
+              'sw:',
+              'All synced',
+              'sync inprocess',
+              Sync.inprocess
+            )
+          client.postMessage({
+            msg: 'sync',
+            data: { status: 'done' },
+          })
+          resolve()
         })
-        resolve()
-      } catch (error) {
-        Sync.inprocess = false
-        enabledConsole &&
-          console.log(
-            1,
-            'sw:',
-            'Sync error, complete cycle',
-            'sync inprocess',
-            Sync.inprocess
-          )
-      }
+        .finally(() => {
+          Sync.inprocess = false
+        })
     })
   },
   auth() {
