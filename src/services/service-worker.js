@@ -339,6 +339,86 @@ var EventListener = {
               })
             })
         )
+      } else {
+        if (
+          event.request.url.indexOf('http') === 0 &&
+          (event.request.url.includes('dimspos.com/api') ||
+            event.request.url.includes('dimspos.com/cached'))
+        ) {
+          //if no handler was defined
+          //put api response in cache and possibily serve from cache
+          if (event.request.method == 'GET') {
+            if (
+              event.request.url.includes('fetch_version=') &&
+              !event.request.url.includes('/id/')
+            ) {
+              event.respondWith(
+                caches
+                  .match(event.request, { ignoreVary: true })
+                  .then(cachedResponse => {
+                    if (cachedResponse) {
+                      return cachedResponse
+                    }
+
+                    return caches.open(RUNTIME).then(cache => {
+                      return fetch(event.request).then(response => {
+                        if (response.ok) {
+                          var clonnedResponse = response.clone()
+                          // Put a copy of the response in the runtime cache.
+                          return cache
+                            .put(clonedRequest, clonnedResponse)
+                            .then(() => {
+                              return response
+                            })
+                        }
+                        return response
+                      })
+                    })
+                  })
+              )
+            }
+            //cache these below urls but always look for network first // if (
+            //   [
+            //     '/pos_menu',
+            //     '/users/id/',
+            //     '/subscriptions/get_subscription_status',
+            //   ].some(key => event.request.url.includes(key))
+            // )
+            else if (
+              !['/orders', '/reservations'].some(key =>
+                event.request.url.includes(key)
+              )
+            ) {
+              event.respondWith(
+                caches.open(RUNTIME).then(async cache => {
+                  let response = {}
+                  try {
+                    response = await fetch(event.request)
+                  } catch (e) {
+                    response.ok = false
+                  }
+                  if (response.ok) {
+                    var clonnedResponse = response.clone()
+                    //Put a copy of the response in the runtime cache.
+                    return cache.put(clonedRequest, response).then(() => {
+                      return clonnedResponse
+                    })
+                  } else {
+                    return new Promise(resolve =>
+                      caches
+                        .match(event.request, { ignoreVary: true })
+                        .then(cachedResponse => {
+                          if (cachedResponse) {
+                            resolve(cachedResponse)
+                          }
+                        })
+                    )
+                  }
+                })
+              )
+            }
+          }
+        }
       }
     })
   },
