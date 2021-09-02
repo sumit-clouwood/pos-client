@@ -10,7 +10,7 @@ var clientUrl = ''
 var ORDER_DOCUMENT = 'order_post_requests'
 var LOG_DOCUMENT = 'log'
 var client = null
-var enabledConsole = false
+var enabledConsole = true
 
 //const VERSION = '<VERSION>';
 const VERSION = '1'
