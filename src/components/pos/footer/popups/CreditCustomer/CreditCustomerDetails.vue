@@ -33,7 +33,7 @@
       </li>
     </ul>
 
-    <div class="tab-content">
+    <div class="tab-content" v-if="customerProfile">
       <div id="details" class="tab-pane fade active show">
         <img
           v-if="customerProfile.image"
@@ -122,6 +122,11 @@
           <span>{{ _t('Paid Amount') }}</span>
           <span> {{ formatPrice(paidAmount || 0) }}</span>
         </div>
+      </div>
+    </div>
+    <div class="tab-content" v-else>
+      <div id="details" class="tab-pane fade active show">
+        {{ _t('No credit order yet') }}
       </div>
     </div>
   </div>

@@ -103,7 +103,7 @@
                 v-if="customer_details"
                 class="btn btn-success cancel-announce color-text-invert color-button"
                 data-dismiss="modal"
-                @click="clearPaymentMethods"
+                @click="setCustomerPlaceOrder(customerId)"
               >
                 {{ _t('Place Order') }}
               </button>
@@ -172,6 +172,10 @@ export default {
     ...mapState('location', ['store']),
   },
   methods: {
+    setCustomerPlaceOrder(id) {
+      this.$store.dispatch('customer/fetchSelectedCustomer', id)
+      this.clearPaymentMethods()
+    },
     clearPaymentMethods() {
       this.$store.commit('order/CREDIT_ORDER_PAYMENT', {
         order: '',
