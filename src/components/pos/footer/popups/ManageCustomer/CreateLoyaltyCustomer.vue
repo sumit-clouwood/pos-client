@@ -74,12 +74,18 @@ export default {
       let error = ''
       let validationError = {}
       // eslint-disable-next-line no-debugger
-      if (errorData && errorData['status'] == 'form_errors') {
-        $.each(errorData['message'], function(key, val) {
-          $.each(val, function(index, data) {
-            error += data
+      if (errorData) {
+        if (errorData['status'] == 'form_errors') {
+          $.each(errorData['message'], function(key, val) {
+            $.each(val, function(index, data) {
+              error += data
+            })
           })
-        })
+        }
+
+        if (errorData['status'] == 'fail') {
+          error += errorData.error.flash_message
+        }
         validationError = {
           status: 'flash_message',
           flash_message: error,
