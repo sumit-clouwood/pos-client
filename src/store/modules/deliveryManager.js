@@ -172,7 +172,7 @@ const actions = {
       // state.deliveryOrderStatus,
       state.params.page,
       state.params.pageId,
-      state.selectedStores,
+      rootGetters['context/store_id'],
     ]
     let section = 'delivery_home'
     if (state.section === 'takeaway') {
@@ -230,14 +230,14 @@ const actions = {
       commit(mutation.SERVICE_DRIVERS, response.data.data)
     })
   },
-  getOnlineOrders({ rootGetters, commit, state, dispatch }) {
+  getOnlineOrders({ rootGetters, commit, dispatch }) {
     const params = [
       '',
       50,
       'orderBy',
       'real_created_datetime',
       'home_delivery_acceptance',
-      state.selectedStores,
+      rootGetters['context/store_id'],
     ]
     let checkAPIPermission = rootGetters['location/permitted'](
       'home_delivery_acceptance',
