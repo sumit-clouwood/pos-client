@@ -10,16 +10,16 @@ var clientUrl = ''
 var ORDER_DOCUMENT = 'order_post_requests'
 var LOG_DOCUMENT = 'log'
 var client = null
-var enabledConsole = false
+var enabledConsole = true
 
 //const VERSION = '<VERSION>';
 const VERSION = '1'
 const RUNTIME = 'runtime' + VERSION
-const expectedCaches = ['workbox-precache', 'images']
+const expectedCaches = ['runtime1', 'workbox-precache', 'images']
 
 var notificationOptions = {
   body: '',
-  icon: 'https://d3jjfdwi6rnqlf.cloudfront.net/img/icons/apple-icon.png',
+  icon: './img/icons/apple-icon.png',
   image: '',
   vibrate: [
     500,
@@ -213,6 +213,7 @@ var EventListener = {
         if (Sync.inprocess) {
           enabledConsole && console.log(1, 'sw:', 'A sync already in progress')
         } else {
+          console.log('sync is in process')
           Sync.inprocess = true
 
           var nowTime = new Date().getTime()
@@ -338,86 +339,6 @@ var EventListener = {
               })
             })
         )
-      } else {
-        if (
-          event.request.url.indexOf('http') === 0 &&
-          (event.request.url.includes('dimspos.com/api') ||
-            event.request.url.includes('dimspos.com/cached'))
-        ) {
-          //if no handler was defined
-          //put api response in cache and possibily serve from cache
-          if (event.request.method == 'GET') {
-            if (
-              event.request.url.includes('fetch_version=') &&
-              !event.request.url.includes('/id/')
-            ) {
-              event.respondWith(
-                caches
-                  .match(event.request, { ignoreVary: true })
-                  .then(cachedResponse => {
-                    if (cachedResponse) {
-                      return cachedResponse
-                    }
-
-                    return caches.open(RUNTIME).then(cache => {
-                      return fetch(event.request).then(response => {
-                        if (response.ok) {
-                          var clonnedResponse = response.clone()
-                          // Put a copy of the response in the runtime cache.
-                          return cache
-                            .put(clonedRequest, clonnedResponse)
-                            .then(() => {
-                              return response
-                            })
-                        }
-                        return response
-                      })
-                    })
-                  })
-              )
-            }
-            //cache these below urls but always look for network first // if (
-            //   [
-            //     '/pos_menu',
-            //     '/users/id/',
-            //     '/subscriptions/get_subscription_status',
-            //   ].some(key => event.request.url.includes(key))
-            // )
-            else if (
-              !['/orders', '/reservations'].some(key =>
-                event.request.url.includes(key)
-              )
-            ) {
-              event.respondWith(
-                caches.open(RUNTIME).then(async cache => {
-                  let response = {}
-                  try {
-                    response = await fetch(event.request)
-                  } catch (e) {
-                    response.ok = false
-                  }
-                  if (response.ok) {
-                    var clonnedResponse = response.clone()
-                    //Put a copy of the response in the runtime cache.
-                    return cache.put(clonedRequest, response).then(() => {
-                      return clonnedResponse
-                    })
-                  } else {
-                    return new Promise(resolve =>
-                      caches
-                        .match(event.request, { ignoreVary: true })
-                        .then(cachedResponse => {
-                          if (cachedResponse) {
-                            resolve(cachedResponse)
-                          }
-                        })
-                    )
-                  }
-                })
-              )
-            }
-          }
-        }
       }
     })
   },
@@ -575,34 +496,27 @@ var Sync = {
       Factory.syncHandlers().forEach(obj => {
         syncedObjects.push(obj.sync())
       })
-      try {
-        await Promise.all(syncedObjects)
-        Sync.inprocess = false
-        enabledConsole &&
-          console.log(
-            1,
-            1,
-            'sw:',
-            'All synced',
-            'sync inprocess',
-            Sync.inprocess
-          )
-        client.postMessage({
-          msg: 'sync',
-          data: { status: 'done' },
+
+      Promise.all(syncedObjects)
+        .then(() => {
+          enabledConsole &&
+            console.log(
+              1,
+              1,
+              'sw:',
+              'All synced',
+              'sync inprocess',
+              Sync.inprocess
+            )
+          client.postMessage({
+            msg: 'sync',
+            data: { status: 'done' },
+          })
+          resolve()
         })
-        resolve()
-      } catch (error) {
-        Sync.inprocess = false
-        enabledConsole &&
-          console.log(
-            1,
-            'sw:',
-            'Sync error, complete cycle',
-            'sync inprocess',
-            Sync.inprocess
-          )
-      }
+        .finally(() => {
+          Sync.inprocess = false
+        })
     })
   },
   auth() {
@@ -768,10 +682,14 @@ var Sync = {
                   })
                   reject(error)
                 })
+            } else {
+              //if 422 or any other error
+              reject(response)
             }
           })
           .catch(error => {
             enabledConsole && console.log(1, 'sw:', 'Fetch error', error)
+            reject('error')
           })
       })
     })
@@ -1001,17 +919,16 @@ var Order = {
             }
           }
 
-          try {
-            await Promise.all(syncedObjects)
-            notificationOptions.body = 'Offline orders synced successfully.'
-            self.registration.showNotification(
-              'POS synced',
-              notificationOptions
-            )
-            resolve()
-          } catch (error) {
-            reject(error)
-          }
+          Promise.all(syncedObjects)
+            .then(() => {
+              notificationOptions.body = 'Offline orders synced successfully.'
+              self.registration.showNotification(
+                'POS synced',
+                notificationOptions
+              )
+              resolve()
+            })
+            .catch(error => reject(error))
         }
       }
     })
