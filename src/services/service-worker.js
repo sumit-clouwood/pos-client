@@ -1,6 +1,7 @@
 // custom service-worker.js
 /* global workbox */
 /* eslint-disable no-console */
+let syncInProcess = false
 //---------------------------------------------------------------------------
 //------------------- S E T U P - W O R K B O X  ------------
 //---------------------------------------------------------------------------
@@ -93,7 +94,56 @@ workbox.routing.registerRoute(
 )
 
 /******************************************************************** */
-const ordersQueue = new workbox.backgroundSync.Queue('dimsOrders')
+const ordersQueue = new workbox.backgroundSync.Queue('dimsOrders', {
+  onSync: async ({ queue }) => {
+    if (syncInProcess) {
+      console.log('sync already in process')
+      return false
+    }
+    syncInProcess = true
+    console.info('queue name: ', queue.name)
+
+    //loop through all the entries and add failed ones to another queue
+    let failedRequests = []
+
+    let entry
+    while ((entry = await queue.shiftRequest())) {
+      try {
+        let filteredRequest = entry.request.clone()
+        const handler = await Factory.handler(filteredRequest)
+
+        if (handler && handler.filterRequest) {
+          try {
+            filteredRequest = await handler.filterRequest()
+          } catch (error) {
+            failedRequests.push(entry)
+            continue
+          }
+        }
+        try {
+          await Sync.fetchRequest(filteredRequest)
+        } catch (error) {
+          failedRequests.push(entry)
+          continue
+        }
+      } catch (error) {
+        console.error('Replay failed for request', entry.request, error)
+        failedRequests.push(entry)
+        continue
+      }
+    }
+    console.log('Sync Done, Replay complete!')
+    if (failedRequests.length) {
+      console.log(failedRequests.length, ' requests failed')
+      failedRequests.forEach(async entry => {
+        await queue.unshiftRequest(entry)
+      })
+    }
+    syncInProcess = false
+  },
+  //keep a request for 7 days
+  maxRetentionTime: 60 * 24 * 7,
+})
 
 self.addEventListener('fetch', async event => {
   const request = event.request.clone()
@@ -103,7 +153,12 @@ self.addEventListener('fetch', async event => {
       if (event.request.url.includes('/cached')) {
         const networkFirst = new workbox.strategies.NetworkFirst()
         event.respondWith(networkFirst.handle({ event, request }))
-      } else if (event.request.url.includes('/api')) {
+      } else if (
+        event.request.url.includes('/api') &&
+        !['/orders', '/reservations', '/customer'].some(key =>
+          event.request.url.includes(key)
+        )
+      ) {
         const cacheFirst = new workbox.strategies.CacheFirst()
         event.respondWith(cacheFirst.handle({ event, request }))
       }
@@ -112,27 +167,14 @@ self.addEventListener('fetch', async event => {
     case 'POST':
       {
         const bgSyncLogic = async () => {
+          //open database for operations
+          DB.open(async () => {})
           try {
-            // try live request
             const response = await fetch(event.request.clone())
             return response
           } catch (error) {
-            //live request failed, try handler
-            const clonedRequest = event.request.clone()
-            const handler = await Factory.handler(clonedRequest)
-
-            if (handler && handler.backgroundSync) {
-              //if handler found handle it in your way
-              return handler.backgroundSync()
-            } else {
-              //try changing the request and adding it to background queue
-              let filteredRequest = event.request.clone()
-              if (handler && handler.filterRequest) {
-                filteredRequest = handler.filterRequest()
-              }
-              await ordersQueue.pushRequest({ request: filteredRequest })
-              return error
-            }
+            await ordersQueue.pushRequest({ request: event.request })
+            return error
           }
         }
 
@@ -141,7 +183,6 @@ self.addEventListener('fetch', async event => {
       break
   }
 })
-/******************************************************************** */
 //---------------------------------------------------------------------------
 //------------------- S E T U P - A P P - L O G I C  ------------
 //---------------------------------------------------------------------------
@@ -153,6 +194,8 @@ const Factory = {
     switch (payload.order_type) {
       case 'walk_in':
         return new Walkin(request, payload)
+      case 'call_center':
+        return new Crm(request, payload)
     }
   },
 }
@@ -166,22 +209,31 @@ class Order {
   filterPayload() {
     //don't modify original payload
     let payload = { ...this.payload }
-    delete payload.user
-    delete payload.orderTimeUTC
+    if (payload.orderTimeUTC) {
+      delete payload.orderTimeUTC
+    }
     payload.order_mode = 'offline'
     return payload
   }
+  filterRequest() {}
+  backgroundSync() {}
+  response() {}
 }
 class Walkin extends Order {
-  filterRequest() {
-    let payload = super.filterPayload()
+  async filterRequest() {
+    let payload = this.filterPayload()
+    if (payload.user) {
+      delete payload.user
+    }
 
     if (payload.referral) {
       payload.referral = ''
     }
-    return new Request(this.request, {
-      body: JSON.stringify(payload),
-    })
+    return Promise.resolve(
+      new Request(this.request, {
+        body: JSON.stringify(payload),
+      })
+    )
   }
   response() {
     const time = +new Date()
@@ -201,4 +253,289 @@ class Walkin extends Order {
 class Crm extends Order {
   //create customer and then use customer id for next request
   //make a request and push it to queue
+  async filterRequest() {
+    //either use this.request, get customer info, create customer and then use customer id to create order
+    //or : use this.request, get customer info, create customer, embed customer id into request and add request to queue so it process again
+    // I ll go with first for more control
+    let payload = this.filterPayload()
+    if (!payload.customer) {
+      //create customer
+      try {
+        const customerId = await this.createCustomer(payload.user)
+        payload.customer = customerId
+        return Promise.resolve(
+          new Request(this.request, {
+            body: JSON.stringify(payload),
+          })
+        )
+      } catch (error) {
+        //customer creation failed, revert request
+        return Promise.reject(this.request)
+      }
+    } else {
+      //customer was already created, they selected customer but suddenly interent goes off, so we have customer id with order
+      //just return the request as it is
+      return Promise.resolve(this.request)
+    }
+  }
+
+  async createCustomer(payload) {
+    if (payload.city) {
+      delete payload.city
+    }
+    if (payload.city) {
+      delete payload.city
+    }
+
+    var requestUrl = this.request.url.replace(
+      /model\/.*/,
+      '/model/brand_customers/add'
+    )
+
+    if (!payload.alternative_phone) payload.alternative_phone = null
+    if (!payload.gender) payload.gender = 'undisclosed'
+    if (!payload.customer_group) payload.customer_group = null
+
+    return Sync.request(requestUrl, 'POST', payload)
+  }
+}
+
+//---------------------------------------------------------------------------
+//------------------- U T I L I T Y - C L A S S E S -------------------------
+//---------------------------------------------------------------------------
+var Sync = {
+  headers: null,
+  dbAuthData: null,
+
+  sendTokenToClient: async function(token) {
+    const allClients = await self.clients.matchAll()
+    const client = allClients.filter(client => client.type === 'window')[0]
+    if (client) {
+      client.postMessage({
+        msg: 'token',
+        data: token,
+      })
+    }
+  },
+
+  async auth() {
+    if (this.headers) {
+      //auth was already called so it holds headers
+      return Promise.resolve(this.headers)
+    }
+
+    return new Promise((resolve, reject) => {
+      var authreq = DB.getBucket('auth').openCursor()
+      var authData = []
+      authreq.onsuccess = async function(event) {
+        var cursor = event.target.result
+        if (cursor) {
+          // Keep moving the cursor forward and collecting saved
+          // requests.
+          authData.push(cursor.value)
+          cursor.continue()
+        } else {
+          if (authData && authData[0]) {
+            this.dbAuthData = authData[0]
+
+            this.headers = {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+              authorization: 'Bearer ' + this.dbAuthData.token,
+            }
+
+            resolve(this.headers)
+          } else {
+            reject(event)
+          }
+        }
+      }
+      authreq.onerror = async function(event) {
+        reject(event)
+      }
+    })
+  },
+
+  reauth(requestUrl) {
+    return new Promise((resolve, reject) => {
+      this.auth()
+        .then(headers => {
+          fetch(requestUrl.replace(new RegExp('/api/.*'), '/api/refresh'), {
+            headers: headers,
+            method: 'POST',
+            body: null,
+          })
+            .then(response => response.json())
+            .then(response => {
+              Sync.headers.authorization = 'Bearer ' + response.token
+              Sync.dbAuthData.token = response.token
+
+              DB.getBucket('auth', 'readwrite').put(Sync.dbAuthData)
+              resolve(Sync.headers)
+
+              Sync.sendTokenToClient(response.token)
+            })
+            .catch(function(response) {
+              reject(response)
+            })
+        })
+        .catch(error => {
+          reject(error)
+        })
+    })
+  },
+  async fetchRequest(Request) {
+    const clonedReq = Request.clone()
+    const payload = await clonedReq.json()
+    return this.request(this.request.url, this.request.method, payload)
+  },
+  request(requestUrl, method, payload, unwantedData) {
+    return new Promise((resolve, reject) => {
+      if (unwantedData && unwantedData.length) {
+        unwantedData.forEach(key => delete payload[key])
+      }
+
+      this.auth().then(headers => {
+        fetch(requestUrl, {
+          headers: headers,
+          method: method,
+          body: JSON.stringify(payload),
+        })
+          .then(response => {
+            //handle both code errors and network error
+            if (response.status < 400) {
+              response.json().then(response => {
+                resolve(response)
+              })
+            } else if (response.status == 401) {
+              //network / token expired, reauth
+
+              Sync.reauth(requestUrl)
+                .then(() => {
+                  this.request(requestUrl, method, payload)
+                })
+                .catch(error => {
+                  reject(error)
+                })
+            } else {
+              //422 or some other status code
+              reject(response)
+            }
+          })
+          .catch(() => {})
+      })
+    })
+  },
+}
+const DB = {
+  iDB: null,
+  getBucket: function(storeName, mode) {
+    // retrieve our object store
+    return this.iDB.transaction(storeName, mode).objectStore(storeName)
+  },
+
+  open: function(cb) {
+    if (this.iDB) {
+      if (cb) {
+        cb(this.iDB)
+      }
+    } else {
+      var indexedDBOpenRequest = indexedDB.open('dim-pos')
+
+      indexedDBOpenRequest.onerror = function(error) {
+        // error creating db
+        console.error(1, 'sw:', 'IndexedDB open error:', error)
+      }
+
+      // This will execute each time the database is opened.
+      indexedDBOpenRequest.onsuccess = function() {
+        DB.iDB = this.result
+        if (cb) {
+          cb(DB.iDB)
+        }
+      }
+
+      indexedDBOpenRequest.onblocked = function() {
+        DB.iDB = this.result
+        // Another connection is open, preventing the upgrade,
+        // and it didn't close immediately.
+      }
+    }
+  },
+  cursor: async (storeName, index, key, mode = 'readonly', callback) => {
+    return new Promise((resolve, reject) => {
+      var objectStore = DB.getBucket(storeName, mode)
+      var request = objectStore.index(index).openCursor(IDBKeyRange.only(key))
+      request.onsuccess = async event => {
+        var cursor = event.target.result
+        if (cursor) {
+          //record exists
+          callback(objectStore, cursor).then(() => {
+            cursor.continue()
+          })
+        } else {
+          resolve()
+        }
+      }
+      request.onerror = error => reject(error)
+    })
+  },
+  find: async (storeName, index, key, mode = 'readonly') => {
+    return new Promise((resolve, reject) => {
+      var objectStore = DB.getBucket(storeName, mode)
+      var request = objectStore.index(index).openCursor(IDBKeyRange.only(key))
+      var records = []
+
+      //find data by key
+
+      request.onsuccess = async event => {
+        var cursor = event.target.result
+        if (cursor) {
+          //record exists
+          records.push(cursor.value)
+          cursor.continue()
+        } else {
+          resolve({ records: records, objectStore: objectStore })
+        }
+      }
+      request.onerror = error => reject(error)
+    })
+  },
+  delete: async (storeName, key) => {
+    return new Promise((resolve, reject) => {
+      var objectStore = DB.getBucket(storeName, 'readwrite')
+      var request = objectStore.delete(key)
+      request.onsuccess = () => resolve()
+      request.onerror = error => reject(error)
+    })
+  },
+}
+
+const Logger = {
+  log: function(data) {
+    var format = function(num) {
+      if (num < 10) {
+        return '0' + num
+      }
+      return num
+    }
+    var today = new Date()
+    var date =
+      today.getFullYear() +
+      '-' +
+      format(today.getMonth() + 1) +
+      '-' +
+      format(today.getDate())
+    var time =
+      format(today.getHours()) +
+      ':' +
+      format(today.getMinutes()) +
+      ':' +
+      format(today.getSeconds())
+    data.log_time = date + ' ' + time
+    if (!data.event_time) {
+      data.event_time = data.log_time
+    }
+    DB.getBucket('log', 'readwrite').add(data)
+  },
 }

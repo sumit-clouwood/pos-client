@@ -202,7 +202,6 @@ const actions = {
       order.order_delivery_area = address.delivery_area_id
 
       //add user address for creating online customer request
-      order.user = address
     } else {
       //network online
       order.customer = rootState.customer.customerId
