@@ -140,7 +140,7 @@ const actions = {
     }
   },
   getDineInOrders({ dispatch }) {
-    dispatch('getBookedTables')
+    dispatch('getBookedTablesOnClick')
     dispatch('dineInRunningOrders')
     // dispatch('dineInCompleteOrders')
   },
