@@ -139,7 +139,13 @@ const ordersQueue = new workbox.backgroundSync.Queue('dimsOrders', {
         await queue.unshiftRequest(entry)
       })
     }
-    syncInProcess = false
+    //break the cycle of sync events
+    //if you manually sync each failed entry ll cause a new sync so it ll catch it in infinite loop
+    //wait for failed requests to be added
+    //wait for a minute so sync events for failed requests were fired
+    setTimeout(() => {
+      syncInProcess = false
+    }, 1000 * 60)
   },
   //keep a request for 7 days
   maxRetentionTime: 60 * 24 * 7,
@@ -222,9 +228,6 @@ class Order {
 class Walkin extends Order {
   async filterRequest() {
     let payload = this.filterPayload()
-    if (payload.user) {
-      delete payload.user
-    }
 
     if (payload.referral) {
       payload.referral = ''
@@ -260,9 +263,35 @@ class Crm extends Order {
     let payload = this.filterPayload()
     if (!payload.customer) {
       //create customer
+      let customerPayload = payload.user
+
+      if (!payload.alternative_phone) customerPayload.alternative_phone = null
+      if (!payload.gender) customerPayload.gender = 'undisclosed'
+      if (!payload.customer_group) customerPayload.customer_group = null
+
+      if (customerPayload.country) {
+        delete customerPayload.country
+      }
+      if (customerPayload.city) {
+        delete customerPayload.city
+      }
+
+      if (!customerPayload.building) {
+        customerPayload.building = ''
+      }
+      if (!customerPayload.flat_number) {
+        customerPayload.flat_number = ''
+      }
+      if (!customerPayload.nearest_landmark) {
+        customerPayload.nearest_landmark = ''
+      }
+      if (!customerPayload.street) {
+        customerPayload.street = ''
+      }
+
       try {
-        const customerId = await this.createCustomer(payload.user)
-        payload.customer = customerId
+        const customer = await this.createCustomer(customerPayload)
+        payload.customer = customer.id
         return Promise.resolve(
           new Request(this.request, {
             body: JSON.stringify(payload),
@@ -280,15 +309,8 @@ class Crm extends Order {
   }
 
   async createCustomer(payload) {
-    if (payload.city) {
-      delete payload.city
-    }
-    if (payload.city) {
-      delete payload.city
-    }
-
     var requestUrl = this.request.url.replace(
-      /model\/.*/,
+      /\/model\/.*/,
       '/model/brand_customers/add'
     )
 
@@ -325,34 +347,36 @@ var Sync = {
     }
 
     return new Promise((resolve, reject) => {
-      var authreq = DB.getBucket('auth').openCursor()
-      var authData = []
-      authreq.onsuccess = async function(event) {
-        var cursor = event.target.result
-        if (cursor) {
-          // Keep moving the cursor forward and collecting saved
-          // requests.
-          authData.push(cursor.value)
-          cursor.continue()
-        } else {
-          if (authData && authData[0]) {
-            this.dbAuthData = authData[0]
-
-            this.headers = {
-              Accept: 'application/json',
-              'Content-Type': 'application/json',
-              authorization: 'Bearer ' + this.dbAuthData.token,
-            }
-
-            resolve(this.headers)
+      DB.open(() => {
+        var authreq = DB.getBucket('auth').openCursor()
+        var authData = []
+        authreq.onsuccess = async function(event) {
+          var cursor = event.target.result
+          if (cursor) {
+            // Keep moving the cursor forward and collecting saved
+            // requests.
+            authData.push(cursor.value)
+            cursor.continue()
           } else {
-            reject(event)
+            if (authData && authData[0]) {
+              this.dbAuthData = authData[0]
+
+              this.headers = {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                authorization: 'Bearer ' + this.dbAuthData.token,
+              }
+
+              resolve(this.headers)
+            } else {
+              reject(event)
+            }
           }
         }
-      }
-      authreq.onerror = async function(event) {
-        reject(event)
-      }
+        authreq.onerror = async function(event) {
+          reject(event)
+        }
+      })
     })
   },
 
@@ -384,10 +408,10 @@ var Sync = {
         })
     })
   },
-  async fetchRequest(Request) {
-    const clonedReq = Request.clone()
+  async fetchRequest(NewRequestObj) {
+    const clonedReq = NewRequestObj.clone()
     const payload = await clonedReq.json()
-    return this.request(this.request.url, this.request.method, payload)
+    return this.request(NewRequestObj.url, NewRequestObj.method, payload)
   },
   request(requestUrl, method, payload, unwantedData) {
     return new Promise((resolve, reject) => {
@@ -395,35 +419,41 @@ var Sync = {
         unwantedData.forEach(key => delete payload[key])
       }
 
-      this.auth().then(headers => {
-        fetch(requestUrl, {
-          headers: headers,
-          method: method,
-          body: JSON.stringify(payload),
-        })
-          .then(response => {
-            //handle both code errors and network error
-            if (response.status < 400) {
-              response.json().then(response => {
-                resolve(response)
-              })
-            } else if (response.status == 401) {
-              //network / token expired, reauth
-
-              Sync.reauth(requestUrl)
-                .then(() => {
-                  this.request(requestUrl, method, payload)
-                })
-                .catch(error => {
-                  reject(error)
-                })
-            } else {
-              //422 or some other status code
-              reject(response)
-            }
+      this.auth()
+        .then(headers => {
+          fetch(requestUrl, {
+            headers: headers,
+            method: method,
+            body: JSON.stringify(payload),
           })
-          .catch(() => {})
-      })
+            .then(response => {
+              //handle both code errors and network error
+              if (response.status < 400) {
+                response.json().then(response => {
+                  resolve(response)
+                })
+              } else if (response.status == 401) {
+                //network / token expired, reauth
+
+                Sync.reauth(requestUrl)
+                  .then(() => {
+                    this.request(requestUrl, method, payload)
+                  })
+                  .catch(error => {
+                    reject(error)
+                  })
+              } else {
+                //422 or some other status code
+                reject(response)
+              }
+            })
+            .catch(error => {
+              reject(error)
+            })
+        })
+        .catch(error => {
+          reject(error)
+        })
     })
   },
 }

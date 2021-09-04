@@ -5,24 +5,6 @@ import DateTime from '@/mixins/DateTime.js'
 
 export default {
   saveOrder(data) {
-    const orderTimeUTC = this.getOrderTimeUTC()
-    let msg = {
-      form_data: { ...data, ...orderTimeUTC },
-    }
-
-    try {
-      if ('serviceWorker' in navigator && 'SyncManager' in window) {
-        navigator.serviceWorker.controller.postMessage(msg)
-      } else {
-        console.log('service worker not found in app ')
-      }
-    } catch (e) {
-      console.log("Couldn't send msg to service worker in dev", e, msg)
-    }
-
-    //remove offline data
-    delete data.user
-
     return new Promise((resolve, reject) => {
       DataService.post('/model/orders/add', data)
         .then(response => {
