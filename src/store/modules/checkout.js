@@ -187,23 +187,24 @@ const actions = {
       order.customer = ''
       const address = rootState.customer.offlineData
       // address.delivery_area
-      order.order_building = address.building
-      order.order_street = address.street
-      order.order_flat_number = address.flat_number
-      order.order_nearest_landmark = address.nearest_landmark
+      order.order_building = address.building || ''
+      order.order_street = address.street || ''
+      order.order_flat_number = address.flat_number || ''
+      order.order_nearest_landmark = address.nearest_landmark || ''
       order.order_city = rootGetters['customer/getElementByAreaId'](
         address.delivery_area_id,
         2
-      )
+      ) || ''
       order.order_country = rootGetters['customer/getElementByAreaId'](
         address.delivery_area_id,
         1
-      )
-      order.order_delivery_area = address.delivery_area_id
+      ) || ''
+      order.order_delivery_area = address.delivery_area_id || ''
 
       //add user address for creating online customer request
       address.is_web_admin = false
       order.user = address
+      console.log('user details ', address)
     } else {
       //network online
       order.customer = rootState.customer.customerId

@@ -157,16 +157,19 @@ self.addEventListener('fetch', async event => {
   switch (event.request.method) {
     case 'GET':
       if (event.request.url.includes('/cached')) {
-        const networkFirst = new workbox.strategies.NetworkFirst()
-        event.respondWith(networkFirst.handle({ event, request }))
-      } else if (
-        event.request.url.includes('/api') &&
-        !['/orders', '/reservations', '/customer'].some(key =>
-          event.request.url.includes(key)
-        )
-      ) {
         const cacheFirst = new workbox.strategies.CacheFirst()
         event.respondWith(cacheFirst.handle({ event, request }))
+      } else if (
+        event.request.url.includes('/api') &&
+        ![
+          '/orders',
+          '/reservations',
+          '/customer',
+          '/brand_customers',
+        ].some(key => event.request.url.includes(key))
+      ) {
+        const networkFirst = new workbox.strategies.NetworkFirst()
+        event.respondWith(networkFirst.handle({ event, request }))
       }
       break
 
@@ -179,7 +182,12 @@ self.addEventListener('fetch', async event => {
             const response = await fetch(event.request.clone())
             return response
           } catch (error) {
+            console.log('adding request to queue ', event.request.clone())
             await ordersQueue.pushRequest({ request: event.request })
+            let handler = await Factory.handler(event.request.clone())
+            if (handler && handler.response) {
+              return handler.response()
+            }
             return error
           }
         }
@@ -210,6 +218,7 @@ class Order {
   constructor(request, payload) {
     this.request = request
     this.payload = payload
+    console.log('payload ', this.payload)
   }
 
   filterPayload() {
@@ -219,25 +228,11 @@ class Order {
       delete payload.orderTimeUTC
     }
     payload.order_mode = 'offline'
+    console.log('payload ', payload)
     return payload
   }
   filterRequest() {}
   backgroundSync() {}
-  response() {}
-}
-class Walkin extends Order {
-  async filterRequest() {
-    let payload = this.filterPayload()
-
-    if (payload.referral) {
-      payload.referral = ''
-    }
-    return Promise.resolve(
-      new Request(this.request, {
-        body: JSON.stringify(payload),
-      })
-    )
-  }
   response() {
     const time = +new Date()
     return Promise.resolve({
@@ -252,6 +247,20 @@ class Walkin extends Order {
     })
   }
 }
+class Walkin extends Order {
+  async filterRequest() {
+    let payload = this.filterPayload()
+
+    if (payload.referral) {
+      payload.referral = ''
+    }
+    return Promise.resolve(
+      new Request(this.request, {
+        body: JSON.stringify(payload),
+      })
+    )
+  }
+}
 
 class Crm extends Order {
   //create customer and then use customer id for next request
@@ -261,6 +270,7 @@ class Crm extends Order {
     //or : use this.request, get customer info, create customer, embed customer id into request and add request to queue so it process again
     // I ll go with first for more control
     let payload = this.filterPayload()
+    console.log('payload ', payload)
     if (!payload.customer) {
       //create customer
       let customerPayload = payload.user
@@ -292,6 +302,9 @@ class Crm extends Order {
       try {
         const customer = await this.createCustomer(customerPayload)
         payload.customer = customer.id
+        //remember to remove user from the request as it was to serve only offline purpose
+        delete payload.user
+
         return Promise.resolve(
           new Request(this.request, {
             body: JSON.stringify(payload),
@@ -304,7 +317,13 @@ class Crm extends Order {
     } else {
       //customer was already created, they selected customer but suddenly interent goes off, so we have customer id with order
       //just return the request as it is
-      return Promise.resolve(this.request)
+      //remember to remove user from the request as it was to serve only offline purpose
+      delete payload.user
+      return Promise.resolve(
+        new Request(this.request, {
+          body: JSON.stringify(payload),
+        })
+      )
     }
   }
 
