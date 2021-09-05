@@ -9,7 +9,7 @@ let syncInProcess = false
 // adjust log level for displaying workbox logs
 //workbox.core.setLogLevel(workbox.core.LOG_LEVELS.debug)
 workbox.setConfig({
-  debug: false,
+  debug: true,
 })
 
 // Populate the cache to illustrate cache-only-populated-cache route
@@ -72,9 +72,9 @@ workbox.routing.registerRoute(
 )
 //s3 bucket
 workbox.routing.registerRoute(
-  /\.amazonaws\.com/,
+  /\.cloudfront\.net/,
   new workbox.strategies.CacheFirst({
-    cacheName: 'dimsphotos',
+    cacheName: 'awscontent',
     plugins: [
       new workbox.cacheableResponse.Plugin({
         statuses: [0, 200],
@@ -186,7 +186,10 @@ self.addEventListener('fetch', async event => {
             await ordersQueue.pushRequest({ request: event.request })
             let handler = await Factory.handler(event.request.clone())
             if (handler && handler.response) {
-              return handler.response()
+              const jsonResponse = await handler.response()
+              return new Response(JSON.stringify(jsonResponse), {
+                headers: { 'content-type': 'application/json' },
+              })
             }
             return error
           }
@@ -238,7 +241,7 @@ class Order {
     return Promise.resolve({
       status: 'ok',
       id: time,
-      order_no: this.request.payload.real_created_datetime
+      order_no: this.payload.real_created_datetime
         .toString()
         .replace(/[\s-:]/g, ''),
       token_number: 0,
