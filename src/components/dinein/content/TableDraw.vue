@@ -1068,9 +1068,10 @@ export default {
           // $('#tooltipdata').hide()
           // $('#tooltipdata').show()
           // console.log('orderDetails', this.orderDetails)
-          // if (!this.brand.number_of_guests || this.orderDetails.length > 0) {
-          showModal('#tooltipdata')
-          // }
+          if (!this.brand.number_of_guests || this.brand.book_table) {
+            console.log(this.brand, 'this.brand.number_of_guests')
+            showModal('#tooltipdata')
+          }
           // console.log(
           //   'order details for table',
           //   this.orderDetails,
