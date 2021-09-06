@@ -1068,7 +1068,11 @@ export default {
           // $('#tooltipdata').hide()
           // $('#tooltipdata').show()
           // console.log('orderDetails', this.orderDetails)
-          if (!this.brand.number_of_guests || this.brand.book_table) {
+          if (
+            !this.brand.number_of_guests ||
+            this.brand.book_table ||
+            this.orderDetails.length > 0
+          ) {
             console.log(this.brand, 'this.brand.number_of_guests')
             showModal('#tooltipdata')
           }
