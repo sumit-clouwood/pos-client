@@ -9,7 +9,7 @@
           {{ formatPrice(item.value * quantity) }}
         </div>
       </div>
-      <Quantity v-if="item || current_combo_selected_item" />
+      <Quantity v-if="item || current_combo_selected_item" :item="item" />
     </div>
   </div>
 </template>

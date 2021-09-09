@@ -55,10 +55,16 @@ import Cart from '@/mixins/Cart'
 export default {
   name: 'Header',
   mixins: [Cart],
+  props: {
+    item: [Object, Boolean],
+  },
   computed: {
     ...mapGetters('location', ['_t']),
     ...mapGetters('combo', ['current_combo', 'current_combo_selected_item']),
-    ...mapState('order', ['item', 'orderSource']),
+    ...mapState('order', ['orderSource']),
+    ...mapState({
+      _item: state => state.order.item,
+    }),
     quantity: {
       get() {
         return this.$store.getters['orderForm/quantity']
@@ -71,8 +77,9 @@ export default {
   methods: {
     show() {
       let allowed = true
+      let item = this.item || this._item
       if (
-        typeof this.item.no !== 'undefined' &&
+        typeof item.no !== 'undefined' &&
         this.orderSource !== 'backend'
         //not backend and still editing order? that means its carhop or waiter order
       ) {

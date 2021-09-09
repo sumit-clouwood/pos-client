@@ -89,7 +89,7 @@
               {{ dt(currentItem, 'description') || '' }}
             </div>
             <div class="qunatity">
-              <Quantity />
+              <Quantity :item="false" />
             </div>
             <modifiers-content v-if="hasModifiers" />
             <div class="modal-footer">
