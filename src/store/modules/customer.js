@@ -313,12 +313,12 @@ const actions = {
     })
   },
 
-  setPageNumber: function({ commit }, pageNumber) {
+  setPageNumber: function({ commit, dispatch }, pageNumber) {
     // commit(mutation.SET_LOADING, true)
     commit(mutation.SET_CURRENT_PAGE_NO, pageNumber)
-    // dispatch('fetchAll').then(() => {
-    //   commit(mutation.SET_LOADING, false)
-    // })
+    dispatch('fetchCustomers').then(() => {
+      commit(mutation.SET_LOADING, false)
+    })
   },
 
   setPastOrderPageNumber: function({ commit, dispatch }, pageNumber) {

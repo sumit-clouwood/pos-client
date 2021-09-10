@@ -140,7 +140,7 @@ const actions = {
     }
   },
   getDineInOrders({ dispatch }) {
-    dispatch('getBookedTables')
+    dispatch('getBookedTablesOnClick')
     dispatch('dineInRunningOrders')
     // dispatch('dineInCompleteOrders')
   },
@@ -411,7 +411,7 @@ const actions = {
       }
       let orderOnTable = []
       if (state.tablesOnArea) {
-        state.tablesOnArea.forEach(table => {
+        state.tablesOnArea.forEach((table, index, array) => {
           let is_unavail = 0
           let is_avail_soon = 0
           let is_reserved_empty = 0
@@ -566,12 +566,12 @@ const actions = {
             table_details.status.text = 'available'
             tableStatus.table.push(table_details)
           }
-          // eslint-disable-next-line no-console
-          // console.log(orderOnTable, 'order no  length')
           commit(mutation.ORDER_ON_TABLES, orderOnTable)
+          if (index === array.length - 1) {
+            commit(mutation.TABLE_STATUS, tableStatus)
+          }
         })
       }
-      commit(mutation.TABLE_STATUS, tableStatus)
       resolve()
     })
   },
@@ -891,7 +891,7 @@ const mutations = {
     state.orderOnTables = orderOnTables
   },
   UPDATE_TABLE_STATUS(state, orderOnTables) {
-    state.orderOnTables.table = orderOnTables
+    if (state.orderOnTables) state.orderOnTables.table = orderOnTables
   },
   [mutation.TABLE_SCALE](state, scale) {
     state.tableZoomScale = scale

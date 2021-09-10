@@ -17,7 +17,7 @@ const actions = {
   },
   createCustomer({ commit, dispatch }, data) {
     commit('LOADER', true)
-    return new Promise((resolve, reject) => {
+    return new Promise(resolve => {
       return LoyaltyService.loyaltyCreateCustomer(data)
         .then(response => {
           commit('CREATE_CUSTOMER_STATES', response.data)
@@ -28,7 +28,8 @@ const actions = {
           commit('LOADER', false)
         })
         .catch(err => {
-          reject(err)
+          commit('CREATE_CUSTOMER_STATES', err.data)
+          resolve(err)
           commit('LOADER', false)
         })
     })
