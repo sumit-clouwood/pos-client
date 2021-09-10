@@ -1,6 +1,5 @@
 import DataService from '@/services/DataService'
 const authUrl = process.env.VUE_APP_API_ENDPOINT + '/login'
-const pinloginUrl = process.env.VUE_APP_API_ENDPOINT + '/swipe_login'
 
 export default {
   getAccess() {
@@ -41,7 +40,14 @@ export default {
   pinlogin(data) {
     return new Promise((resolve, reject) => {
       DataService.factory()
-        .post(pinloginUrl, data)
+        .post(
+          process.env.VUE_APP_API_ENDPOINT +
+            '/' +
+            data.brand_id +
+            '/swipe_login',
+          data,
+          'brand'
+        )
         .then(response => {
           //temporary values
           return resolve(response)

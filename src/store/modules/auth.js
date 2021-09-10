@@ -3,7 +3,7 @@ import AuthService from '@/services/data/AuthService'
 import * as mutation from './user/mutation-types'
 import * as PERMS from '@/const/permissions'
 //import db from '@/services/network/DB'
-
+import router from '../../router'
 // initial state
 const getDefaults = () => {
   return {
@@ -33,6 +33,7 @@ const state = getDefaults()
 // getters
 
 const getters = {
+  userId: state => state.currentLoggedInUserId,
   current_user: state => state.userDetails.item,
   all_users: state => state.storeUsers,
   allowed: state => resource => {
@@ -120,7 +121,7 @@ const getters = {
 
 // actions
 const actions = {
-  auth({ commit }, deviceId) {
+  auth({ commit, dispatch }, deviceId) {
     return new Promise((resolve, reject) => {
       //authservice ll look into localstorage for token, if token found return token
       //otherwise return reject
@@ -132,10 +133,122 @@ const actions = {
           }
           commit(mutation.SET_TOKEN, response.data.token)
           commit(mutation.SET_DEVICE_CODE, deviceId)
+          dispatch('configureStore', response)
+
           resolve(response)
         })
         .catch(error => reject(error))
     })
+  },
+
+  login({ commit, dispatch }, data) {
+    return new Promise((resolve, reject) => {
+      AuthService.login(data)
+        .then(response => {
+          if (!response.data.token) {
+            reject(response.data.error)
+            return false
+          }
+          commit('SET_CURRENT_LOGGED_IN_USER_ID', response.data.user.user_id)
+          localStorage.setItem('token', response.data.token)
+
+          dispatch('configureStore', response)
+        })
+        .catch(error => reject(error))
+    })
+  },
+  pinlogin({ commit, dispatch, rootGetters }, { pincode }) {
+    return new Promise((resolve, reject) => {
+      let data = {
+        swipe_card: pincode,
+      }
+      data['brand_id'] = rootGetters['context/brand_id']
+      AuthService.pinlogin(data)
+        .then(response => {
+          commit('SET_CURRENT_LOGGED_IN_USER_ID', response.data.user.user_id)
+          localStorage.setItem('token', response.data.token)
+          commit(mutation.SET_TOKEN, response.data.token)
+
+          dispatch('configureStore', response)
+        })
+        .catch(error => {
+          reject(error)
+        })
+    })
+  },
+  configureStore({ commit, dispatch }, response) {
+    if (response.data.available_stores) {
+      //request coming either from pinlogin or login
+      commit('brand/SET_AVAILABLE_STORES', response.data.available_stores, {
+        root: true,
+      })
+      if (response.data.available_stores.length > 1) {
+        //multiple stores, it ll show a selector from app.vue don't proceed anything here
+        commit('sync/loaded', true, { root: true })
+      } else {
+        //single store
+        let firstStore = null
+        let brandId = null
+        response.data.available_stores.forEach(store => {
+          if (!firstStore) {
+            firstStore = store
+          }
+        })
+        if (response.data.brand) {
+          brandId = response.data.brand
+        } else {
+          brandId = localStorage.getItem('brand_id')
+        }
+
+        dispatch(
+          'context/setBrandStoreContext',
+          {
+            storeId: firstStore._id,
+            brandId: brandId,
+          },
+          { root: true }
+        )
+      }
+    } else {
+      //request coming from auth/auth
+      //first try to get the brand id and store id from url
+      //if not found then try to get it from local storage
+      //if not found respond by error
+      if (
+        router.currentRoute.params.brand_id &&
+        router.currentRoute.params.store_id
+      ) {
+        dispatch(
+          'context/setBrandStoreContext',
+          {
+            brandId: router.currentRoute.params.brand_id,
+            storeId: router.currentRoute.params.store_id,
+          },
+          { root: true }
+        )
+      } else {
+        //get from local storage
+        const brandId = localStorage.getItem('brand_id')
+        const storeId = localStorage.getItem('store_id')
+
+        if (brandId && storeId) {
+          dispatch(
+            'context/setBrandStoreContext',
+            {
+              brandId: brandId,
+              storeId: storeId,
+            },
+            { root: true }
+          )
+        } else {
+          //abort
+          dispatch('abortPos', {
+            title: 'No store found',
+            description: 'Please try logging again',
+          })
+        }
+      }
+    }
   },
   checkDevice({ commit }) {
     //Detect IOS device WebViews
@@ -161,70 +274,6 @@ const actions = {
     console.log('objDevice', objDevice)
     localStorage.setItem('objDevice', JSON.stringify(objDevice))
     commit(mutation.DEVICE_TYPE, objDevice)
-  },
-  login({ commit }, data) {
-    return new Promise((resolve, reject) => {
-      AuthService.login(data)
-        .then(response => {
-          if (!response.data.token) {
-            reject(response.data.error)
-            return false
-          }
-          commit('SET_CURRENT_LOGGED_IN_USER_ID', response.data.user.user_id)
-          localStorage.setItem('token', response.data.token)
-          //wait for localstorage to be updated
-          setTimeout(() => {
-            commit(mutation.SET_TOKEN, response.data.token)
-            resolve(response.data.token)
-          }, 100)
-
-          //wait for localstorage to be updated
-        })
-        .catch(error => reject(error))
-    })
-  },
-  pinlogin({ commit, rootGetters }, { pincode }) {
-    return new Promise((resolve, reject) => {
-      let data = {
-        swipe_card: pincode,
-      }
-      data['store_id'] = rootGetters['context/store_id']
-      data['brand_id'] = rootGetters['context/brand_id']
-      AuthService.pinlogin(data)
-        .then(response => {
-          commit('SET_CURRENT_LOGGED_IN_USER_ID', response.data.user.user_id)
-          localStorage.setItem('token', response.data.token)
-          commit(mutation.SET_TOKEN, response.data.token)
-        })
-        .catch(error => {
-          reject(error)
-        })
-    })
-  },
-  checkLogin({ commit, rootGetters }) {
-    return new Promise((resolve, reject) => {
-      if (localStorage.getItem('token')) {
-        commit(mutation.SET_TOKEN, localStorage.getItem('token'))
-        //get user details again based on current token
-
-        if (localStorage.getItem('brand_id')) {
-          commit('context/SET_BRAND_ID', localStorage.getItem('brand_id'), {
-            root: true,
-          })
-          commit('context/SET_STORE_ID', localStorage.getItem('store_id'), {
-            root: true,
-          })
-        }
-
-        DataService.setContext({
-          brand: rootGetters['context/brand'],
-          store: rootGetters['context/store'],
-        })
-        resolve()
-      } else {
-        reject('No token found in localstorage')
-      }
-    })
   },
   changePassword({ state, commit }, data) {
     return new Promise((resolve, reject) => {
@@ -300,10 +349,9 @@ const actions = {
       { root: true }
     )
   },
-  logout({ commit, dispatch, rootGetters }, data = {}) {
+  logout({ commit, dispatch }, data = {}) {
     return new Promise(resolve => {
       localStorage.setItem('token', '')
-      localStorage.setItem('brand_id', '')
       localStorage.setItem('store_id', '')
       commit(mutation.RESET)
 
@@ -316,11 +364,6 @@ const actions = {
       //preserve brand_id which is needed for switch cashier api
       commit('context/RESET', data, { root: true })
 
-      DataService.setContext({
-        brand: rootGetters['context/brand'],
-        store: rootGetters['context/store'],
-      })
-
       AuthService.logout().then(() => {})
 
       resolve()
@@ -328,17 +371,19 @@ const actions = {
   },
 
   getUserDetails({ commit, state }, userId) {
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
       if (!userId) {
         userId = state.currentLoggedInUserId
       }
       if (!userId) {
-        resolve(false)
+        reject()
       } else {
-        AuthService.userDetails(userId).then(response => {
-          commit(mutation.USER_DETAILS, response.data)
-          resolve(response.data)
-        })
+        AuthService.userDetails(userId)
+          .then(response => {
+            commit(mutation.USER_DETAILS, response.data)
+            resolve(response.data)
+          })
+          .catch(error => reject(error))
       }
     })
   },
@@ -362,7 +407,7 @@ const actions = {
     })
   },
   setRolesAndUsers({ getters, commit, dispatch }) {
-    dispatch('auth/setCurrentRole')
+    dispatch('setCurrentRole')
 
     let cashier = state.rolePermissions.find(role => role.name === 'Cashier')
     commit('SET_CASHIER_ROLE_ID', cashier._id)
@@ -430,10 +475,6 @@ const actions = {
             root: true,
           })
 
-          DataService.setContext({
-            brand: rootGetters['context/brand'],
-            store: rootGetters['context/store'],
-          })
           resolve(user)
         }
       }

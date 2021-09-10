@@ -1,5 +1,5 @@
 <template>
-  <div class="modal fade" id="loyalty-payment" role="dialog">
+  <div class="modal fade" id="loyalty-payment" role="dialog" v-if="brand">
     <div class="modal-dialog modal-dialog-centered">
       <!-- Modal content-->
       <div class="modal-content color-dashboard-background">
@@ -166,7 +166,7 @@ export default {
   computed: {
     ...mapGetters('location', ['formatPrice', '_t']),
     ...mapGetters('order', ['orderType']),
-    ...mapState('location', ['brand']),
+    ...mapGetters('brand', ['brand']),
     ...mapState('checkoutForm', [
       'payments',
       'loyaltyAmount',

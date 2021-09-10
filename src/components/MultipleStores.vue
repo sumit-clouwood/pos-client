@@ -15,7 +15,7 @@
         <div class="modal-body stores-list-container">
           <div class="stores-list">
             <router-link
-              v-for="store in multipleStores"
+              v-for="store in multiStores"
               append
               :key="store._id"
               :to="selectedBrand + '/' + store._id"
@@ -64,11 +64,8 @@ export default {
   computed: {
     ...mapState('location', ['store', 'brand']),
     ...mapState('sync', ['loaded']),
-    ...mapGetters('context', [
-      'isStoreSelected',
-      'haveMultipleStores',
-      'multipleStores',
-    ]),
+    ...mapGetters('context', ['isStoreSelected']),
+    ...mapGetters('brand', ['hasMultiStores', 'multiStores']),
     ...mapState({
       currentStoreId: state => state.context.storeId,
     }),
@@ -82,10 +79,12 @@ export default {
     selectedStoreId(storeId) {
       //show the loader only when switching the store, don't show it right after login when there are multiple stores
       //reset all previous data
+      //reset loaded status of sync
+      this.$store.commit('sync/loaded', false)
       this.$store.dispatch('context/setStoreContext', storeId)
       this.$store.commit(
         'context/SET_CURRENT_STORE',
-        this.multipleStores.find(store => store._id === storeId)
+        this.multiStores.find(store => store._id === storeId)
       )
 
       $('#multiStoresModal').modal('hide')

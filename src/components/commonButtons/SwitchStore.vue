@@ -1,5 +1,5 @@
 <template>
-  <div class="switch-store" v-if="haveMultipleStores">
+  <div class="switch-store" v-if="hasMultiStores">
     <button class="tables-btn-style" @click="showStoresPopup">
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -22,7 +22,8 @@ import { mapGetters } from 'vuex'
 export default {
   name: 'SwitchStore',
   computed: {
-    ...mapGetters('context', ['store', 'haveMultipleStores']),
+    ...mapGetters('context', ['store']),
+    ...mapGetters('brand', ['hasMultiStores']),
   },
   methods: {
     showStoresPopup() {

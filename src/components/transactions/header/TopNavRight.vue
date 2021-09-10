@@ -75,7 +75,7 @@ export default {
         return this.$store.commit('location/SET_LOCALE', val)
       },
     },
-    ...mapGetters('context', ['store', 'haveMultipleStores']),
+    ...mapGetters('context', ['store']),
     ...mapState('location', ['availableLanguages', 'language']),
     //...mapGetters('deliveryManager', ['onlineOrders']),
     ...mapState('sync', ['online']),

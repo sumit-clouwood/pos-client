@@ -53,8 +53,10 @@ export default {
     Footer,
     mobileIndex,
   },
-  created() {
-    this.fetchWaitingTime()
+  mounted() {
+    setTimeout(() => {
+      this.fetchWaitingTime()
+    }, 1000 * 5)
   },
   methods: {
     fetchWaitingTime() {

@@ -8,12 +8,7 @@ other components are nested within.
     <!--<router-link to="/">Home</router-link> |-->
     <!--<router-link to="/about">About</router-link>-->
     <!--</div>-->
-    <div v-if="haveMultipleStores" class="multiplestore-selection">
-      <div v-if="showDebug" style="position:  absolute; left: 100px;">
-        Showing multiple stores selector
-      </div>
-      <MultipleStores />
-    </div>
+
     <div v-if="loggedIn">
       <div
         v-if="showDebug"
@@ -21,7 +16,6 @@ other components are nested within.
         class="debug"
       >
         loading status: {{ loading }} <br />
-        haveMultipleStores : {{ haveMultipleStores }} <br />
         storeId: {{ storeId }}
       </div>
       <template v-if="userError || systemError">
@@ -99,22 +93,18 @@ other components are nested within.
 </template>
 <script>
 /* eslint-disable no-console */
-/* global showModal */
 import * as CONST from '@/constants'
 import Cookie from '@/mixins/Cookie'
 import ResizeMixin from '@/mixins/ResizeHandler'
-import bootstrap from '@/bootstrap'
 import Preloader from '@/components/util/Preloader'
 import { mapState, mapGetters } from 'vuex'
 import moment from 'moment-timezone'
-import MultipleStores from '@/components/MultipleStores'
 
 export default {
   name: 'PrivateView',
   props: {},
   components: {
     Preloader,
-    MultipleStores,
   },
   mixins: [Cookie, ResizeMixin],
   data: function() {
@@ -132,23 +122,9 @@ export default {
       showForceLogout: false,
       interval: undefined,
       multistoreSelector: false,
-      roleRouteChangeBlacklist: [
-        'ModifyBackendOrder',
-        'UpdateDeliveryOrder',
-        'selectGroupForCrmOrder',
-        'selectAddressForCrmOrder',
-        'selectCustomerForTakeawayOrder',
-        'setOrderType',
-        'DeliveryManager',
-      ],
     }
   },
   methods: {
-    setupExternalScripts() {
-      setTimeout(() => {
-        require('@/../public/js/pos_script.js')
-      }, 2000)
-    },
     reloadPage() {
       window.location.reload()
     },
@@ -222,63 +198,6 @@ export default {
           this.progressIncrement = 0
         }
       }, 1000)
-      console.log('bootstrap.setup')
-      bootstrap
-        .setup(this.$store)
-        .then(() => {
-          console.log(
-            'all apis loaded',
-            this.$store.state.context.storesLength,
-            this.storeId
-          )
-          //if multistores show the store selector
-          if (this.$store.state.context.storesLength > 1 && !this.storeId) {
-            this.loading = false
-            this.multistoreSelector = true
-            showModal('#multiStoresModal')
-          } else {
-            this.multistoreSelector = false
-            this.setupExternalScripts()
-          }
-        })
-        .catch(error => {
-          this.loading = false
-          console.trace(error)
-
-          if (error === 'subscription') {
-            //this.showForceLogout = false
-            this.userError = this._t('Store subscription has been expired.')
-            this.userErrorInstructions = this._t(
-              'Please contact your store owner for access.'
-            )
-          } else {
-            //this.showForceLogout = true
-            if (error.data && error.data.error) {
-              this.userError = error.data.error
-              this.userErrorInstructions = this._t(
-                'Please contact your store owner.'
-              )
-            } else if (error.stack) {
-              this.systemError = error.stack
-            } else {
-              this.userError = error
-            }
-
-            //logout here after 3 sec
-            const logoutInterval = setInterval(() => {
-              this.secondsToLogout--
-              if (
-                this.secondsToLogout <= 0 &&
-                process.env.NODE_ENV === 'production' &&
-                !process.VUE_APP_PERSISTENT_ERRORS
-              ) {
-                clearInterval(logoutInterval)
-                this.$store.dispatch('auth/logout')
-              }
-            }, 1000)
-          }
-        })
-        .finally(() => {})
     },
     resetTokenNumber() {
       if (!this.$store.state.sync.online) {
@@ -319,96 +238,6 @@ export default {
         }
       }
     },
-    loadStore() {
-      this.loading = true
-      var self = this
-      this.progressIncrement = 0
-      this.$store.commit('sync/reset')
-      //load store data again, clear old data first and then load new data
-      //reset items, discounts, surcharges everything because each one can be store dependent
-      this.interval = setInterval(() => {
-        this.progressIncrement += 10
-        if (this.progressIncrement > 100) {
-          this.progressIncrement = 0
-        }
-      }, 1000)
-
-      this.$store
-        .dispatch('context/loadStore')
-        .then(() => {
-          //if store is loading from the switch cashier screen then change route to brand home
-          // if (
-          //   self.$route.name === 'cashierLogin' ||
-          //   self.$route.from === 'cashierLogin'
-          // ) {
-
-          //if waiter send it to dine in otherwise end to brandhome/walkin
-          let newRoute = 'BrandHome'
-          if (this.roleName === 'Waiter') {
-            newRoute = 'Dinein'
-          } else if (this.roleName === 'Carhop User') {
-            newRoute = 'Carhop'
-          }
-          if (
-            !this.roleRouteChangeBlacklist.includes(self.$route.name) &&
-            self.$route.name !== newRoute
-          ) {
-            self.$router.replace({
-              name: newRoute,
-              params: {
-                brand_id: self.$store.getters['context/brand_id'],
-                store_id: self.$store.getters['context/store_id'],
-              },
-            })
-          }
-
-          this.setupServiceWorker()
-          this.setupRoutes()
-        })
-        .catch(error => {
-          console.trace(error)
-
-          if (error === 'subscription') {
-            //this.showForceLogout = false
-            this.userError = this._t('Store subscription has been expired.')
-            this.userErrorInstructions = this._t(
-              'Please contact your store owner for access.'
-            )
-          } else {
-            //this.showForceLogout = true
-            if (error.data && error.data.error) {
-              this.userError = error.data.error
-              this.userErrorInstructions = this._t(
-                'Please contact your store owner.'
-              )
-            } else if (error.stack) {
-              this.systemError = error.stack
-            } else {
-              this.userError = error
-            }
-
-            //logout here after 3 sec
-            const logoutInterval = setInterval(() => {
-              this.secondsToLogout--
-              if (
-                this.secondsToLogout <= 0 &&
-                process.env.NODE_ENV === 'production' &&
-                !process.VUE_APP_PERSISTENT_ERRORS
-              ) {
-                clearInterval(logoutInterval)
-                this.$store.dispatch('auth/logout')
-              }
-            }, 1000)
-          }
-        })
-        .finally(() => {
-          clearInterval(this.interval)
-          this.progressIncrement = 100
-          this.loading = false
-          this.$store.dispatch('sync/setLoader', false)
-          this.multistoreSelector = false
-        })
-    },
   },
   created() {
     let scope = this
@@ -417,23 +246,23 @@ export default {
     }, 10000)
   },
   watch: {
+    loaded: {
+      handler: function(newVal, oldVal) {
+        // watch it
+        console.log('sync loaded private changed: ', newVal, ' | was: ', oldVal)
+        if (newVal) {
+          this.loading = false
+        }
+      },
+      deep: true,
+    },
     storePrerequisite(error) {
       if (error) {
         this.userError = this._t(error.title)
         this.userErrorInstructions = this._t(error.description)
       }
     },
-    storeId(storeId) {
-      if (storeId) {
-        this.loadStore()
-      }
-    },
-    loadStoreFromContext(load) {
-      //load store from context only if user has no stores
-      if (load) {
-        this.loadStore()
-      }
-    },
+
     // eslint-disable-next-line no-unused-vars
     $route(to, from) {
       // this.$store.commit('deliveryManager/LIST_TYPE', 'New Orders')
@@ -504,28 +333,25 @@ export default {
     online: 'resetTokenNumber',
   },
   computed: {
+    showDebug() {
+      return process.env.VUE_APP_DEBUG
+    },
     ...mapState({
       defaultLanguage: state =>
         state.location.store ? state.location.store.default_language : false,
     }),
     ...mapState('sync', ['modules']),
-    ...mapState('context', ['currentRoute', 'storeId', 'loadStoreFromContext']),
+    ...mapState('context', ['currentRoute', 'storeId']),
     ...mapGetters('auth', ['loggedIn', 'roleName']),
     ...mapGetters('location', ['isTokenManager', '_t']),
     ...mapState('order', ['orderType']),
-    ...mapState('sync', ['online']),
-    ...mapState('location', [
-      'timezoneString',
-      'openHours',
-      'storePrerequisite',
-    ]),
-    ...mapGetters('context', ['isStoreSelected', 'haveMultipleStores']),
+    ...mapState('sync', ['online', 'loaded']),
+    ...mapState('location', ['timezoneString', 'openHours']),
+    ...mapState('store', ['storePrerequisite']),
+    ...mapGetters('context', ['isStoreSelected']),
 
     apisLoaded() {
       return this.$store.state.location.brand
-    },
-    showDebug() {
-      return process.env.VUE_APP_DEBUG
     },
   },
   //life cycle hooks

@@ -157,7 +157,10 @@ export default {
     }
   },
   beforeMount() {
-    this.$store.dispatch('deliveryManager/getOnlineOrders')
+    this.$store
+      .dispatch('deliveryManager/getOnlineOrders')
+      // eslint-disable-next-line no-console
+      .catch(error => console.log(error))
   },
 }
 </script>

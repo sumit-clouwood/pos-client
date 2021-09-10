@@ -7,8 +7,6 @@ import TimezoneService from '@/services/data/TimezoneService'
 import * as CONST from '@/constants'
 import router from '../../router'
 import moment from 'moment-timezone'
-import { isObjectEmpty } from '@/util.js'
-import db from '@/services/network/DB'
 // initial state
 const getDefaults = () => ({
   currency: 'AED',
@@ -89,83 +87,7 @@ const getters = {
 // actions
 const actions = {
   //coming from login
-  // eslint-disable-next-line no-unused-vars
-  setContext({ state, commit, rootGetters, dispatch }) {
-    return new Promise((resolve, reject) => {
-      LocationService.getLocationData().then(storedata => {
-        if (!storedata.data || isObjectEmpty(storedata.data)) {
-          return reject(
-            `Sorry! current store doesn't belong to you. Please select correct store`
-          )
-        }
-        let availabeStores = storedata.data.available_stores
-        if (!router.currentRoute.params.store_id && availabeStores.length > 1) {
-          commit('context/SET_STORES_LENGTH', availabeStores.length, {
-            root: true,
-          })
-          commit('context/SET_MULTI_STORES', availabeStores, { root: true })
-        }
-        commit(mutation.SET_BRAND, storedata.data.brand)
 
-        if (storedata.data.store) {
-          commit(mutation.SET_STORE, storedata.data.store)
-        } else if (storedata.data.available_stores.length) {
-          commit(mutation.SET_STORE, storedata.data.available_stores[0])
-          const brand = storedata.data.available_brands.find(
-            brand => brand._id == state.store.brand_id
-          )
-          if (brand) {
-            commit(mutation.SET_BRAND, brand)
-          }
-        }
-
-        if (state.store && state.store._id) {
-          //set context as well
-          commit('context/SET_BRAND_ID', state.brand._id, { root: true })
-          commit('context/SET_STORE_ID', state.store._id, { root: true })
-
-          localStorage.setItem('brand_id', state.brand._id)
-          localStorage.setItem('store_id', state.store._id)
-
-          DataService.setContext({
-            brand: rootGetters['context/brand'],
-            store: rootGetters['context/store'],
-          })
-        }
-        let path = storedata.data.start_path
-        if (path != null) {
-          if (availabeStores.length === 1) {
-            if (CONST.POS_START_PATHS.includes(path)) {
-              if (path === 'delivery_home') {
-                path = 'delivery-manager'
-              }
-            } else {
-              path = ''
-            }
-
-            let URL = path + rootGetters['context/store']
-            router.replace(URL)
-            //No need to call get userdetails again, we are already coming from login, where getuser details is already called
-            // dispatch('auth/getUserDetails', storedata.data.user_id, {
-            //   root: true,
-            // })
-          }
-        } else {
-          let currentURL = window.location.href
-          if (currentURL.includes('/pos')) {
-            if (
-              router.currentRoute.params &&
-              (!router.currentRoute.params.brand_id ||
-                !router.currentRoute.params.store_id)
-            ) {
-              location.href = currentURL.split('/pos/')[0]
-            }
-          }
-        }
-        resolve()
-      })
-    })
-  },
   getUIMenu({ commit }) {
     return new Promise((resolve, reject) => {
       LocationService.getLocationData()
@@ -192,57 +114,10 @@ const actions = {
         .catch(er => reject(er))
     })
   },
-  async getLocationData({ commit, rootGetters }, option) {
-    if (
-      state.locationData &&
-      state.locationData.data.store &&
-      rootGetters['context/store_id'] === state.locationData.data.store._id
-    ) {
-      //api versions already set for this store so need to set again
-      return Promise.resolve(state.locationData)
-    }
-    const locationData = await LocationService.getLocationData(option)
-    //set api versions here
-    commit('SET_LOCATION_DATA', locationData)
-    const globalVersions = locationData.data.global_versions.versions
-    const brandVersions = locationData.data.brand.versions
-    const storeVersions = locationData.data.store.versions
-    commit(
-      'sync/SET_API_VERSIONS',
-      Object.assign({}, storeVersions, brandVersions, globalVersions),
-      { root: true }
-    )
-    return locationData
+  async getLocationData({ dispatch }, option) {
+    return dispatch('brand/loadBrand', option, { root: true })
   },
-  async registerTerminal({ rootState, commit }) {
-    return new Promise((resolve, reject) => {
-      LocationService.registerDevice(rootState.auth.deviceId)
-        .then(response => {
-          commit(mutation.SET_TERMINAL_CODE, response.data.id)
-          const data = {
-            id: 1,
-            token: localStorage.getItem('token'),
-            branch_n: state.store.branch_n,
-            terminal_code: state.terminalCode,
-          }
-          db.getBucket('auth')
-            .then(bucket => {
-              db.put(bucket, data)
-            })
-            .catch(error => {
-              reject(error)
-            })
-        })
-        .catch(error => {
-          console.log('device registration failed', error)
-          if (typeof error.data !== 'undefined') {
-            reject(error.data.error)
-          } else {
-            reject('Device registration not permitted for current login')
-          }
-        })
-    })
-  },
+
   //got through brand/store
   fetch({ state, commit, dispatch, rootState, rootGetters }) {
     dispatch('formatDate')
@@ -281,11 +156,12 @@ const actions = {
               })
             }
           }
-          let availableStoreGroups =
-            storedata.data.available_store_groups || false
-          commit('auth/AVAILABLE_STORE_GROUPS', availableStoreGroups, {
-            root: true,
-          })
+          let availableStoreGroups = storedata.data.available_store_groups
+          if (availableStoreGroups && availableStoreGroups.length) {
+            commit('auth/AVAILABLE_STORE_GROUPS', availableStoreGroups, {
+              root: true,
+            })
+          }
           if (storedata.data.brand) {
             commit(mutation.SET_BRAND, storedata.data.brand)
             //set brand api versions
@@ -391,7 +267,10 @@ const actions = {
               // hence we check user name here, if not found load customer details for current
               // store user
 
-              if (!rootState.auth.userDetails.item.name) {
+              if (
+                !rootState.auth.userDetails.item ||
+                !rootState.auth.userDetails.item.name
+              ) {
                 dispatch('auth/getUserDetails', storedata.data.user_id, {
                   root: true,
                 }).then(response => {

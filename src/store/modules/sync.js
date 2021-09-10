@@ -15,7 +15,6 @@ const state = {
   lastFetch: 0,
   offlineSync: false,
   isLoading: false,
-  apiVersions: undefined,
 
   modules: {
     store: CONST.LOADING_STATUS_LOADING,
@@ -31,22 +30,6 @@ const state = {
 
 // getters
 const getters = {
-  all_core_versions: state => state.apiVersions,
-  getVersion: (state, getters) => model => {
-    var collection_remaps = {
-      root_stores: 'stores',
-      new_style_root_delivery_areas: 'new_style_store_delivery_areas',
-      root_order_discounts: 'brand_order_discounts',
-      brand_item_discounts: 'brand_item_discount',
-    }
-    var collection_id = collection_remaps[model] || model
-
-    var ver = getters.all_core_versions
-    if (ver && ver[collection_id] !== undefined) {
-      return ver[collection_id]
-    }
-    return undefined
-  },
   lastFetch: state => fmt => {
     const seconds = (new Date().getTime() - state.lastFetch) / 1000
     switch (fmt) {
@@ -61,6 +44,7 @@ const getters = {
     }
   },
   loadingData: state => state.isLoading,
+  loaded: state => state.loaded,
 }
 
 // actions
@@ -125,9 +109,6 @@ const mutations = {
   },
   SET_IS_LOADING(state, payload) {
     state.isLoading = payload
-  },
-  SET_API_VERSIONS(state, payload) {
-    state.apiVersions = payload
   },
 }
 

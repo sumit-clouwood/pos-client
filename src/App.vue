@@ -1,44 +1,104 @@
 <template>
   <div>
     <!-- user is logged in, there is a store id in url or the user is not admin  -->
-    <private-view v-if="privateContext" class="private-view"></private-view>
+    <div class="multiplestore-selection">
+      <div v-if="showDebug" style="position:  absolute; left: 100px;">
+        Showing multiple stores selector
+      </div>
+      <MultipleStores />
+    </div>
+    <private-view
+      v-if="privateContext && showPrivateContext"
+      class="private-view"
+    ></private-view>
     <!-- Public view -->
     <public-view v-else class="public-view"></public-view>
     <app-notification></app-notification>
     <loader></loader>
+
     <div id="appLoaded"></div>
   </div>
 </template>
 <script>
+/* eslint-disable no-console */
+/* global showModal */
 import PublicView from './PublicView'
 import Loader from '@/components/util/Loader.vue'
 import PrivateView from './PrivateView'
 import AppNotification from './AppNotification'
-import { mapState } from 'vuex'
-
+import bootstrap from '@/bootstrap'
 import DataService from '@/services/DataService'
+import MultipleStores from '@/components/MultipleStores'
+
+import { mapState, mapGetters } from 'vuex'
+
 export default {
   name: 'App',
+  data() {
+    return {
+      showPrivateContext: true,
+      roleRouteChangeBlacklist: [
+        'ModifyBackendOrder',
+        'UpdateDeliveryOrder',
+        'selectGroupForCrmOrder',
+        'selectAddressForCrmOrder',
+        'selectCustomerForTakeawayOrder',
+        'setOrderType',
+        'DeliveryManager',
+      ],
+    }
+  },
   components: {
     Loader,
     PublicView,
     PrivateView,
     AppNotification,
+    MultipleStores,
   },
   computed: {
-    ...mapState('sync', ['online']),
+    ...mapState('sync', ['online', 'loaded']),
+    ...mapState('auth', ['token']),
+    ...mapGetters('brand', ['hasMultiStores']),
+    ...mapState('context', ['storeId']),
     privateContext() {
-      return this.$store.state.auth.token
+      return this.token
+    },
+    showDebug() {
+      return process.env.VUE_APP_DEBUG
     },
   },
-
   watch: {
-    privateContext() {
-      this.setupRouting()
+    loaded: {
+      handler: function(newVal, oldVal) {
+        // watch it
+        console.log('loaded Prop changed: ', newVal, ' | was: ', oldVal)
+      },
+      deep: true,
     },
-    //online: 'switchCashierOnline',
-  },
+    hasMultiStores: {
+      handler: function(newVal, oldVal) {
+        console.log('hasMultiStores Prop changed: ', newVal, ' | was: ', oldVal)
+        this.showPrivateContext = true
 
+        if (newVal && this.token) {
+          this.showPrivateContext = false
+          showModal('#multiStoresModal')
+        }
+      },
+      deep: true,
+    },
+    storeId: {
+      handler: function(newVal, oldVal) {
+        console.log('storeId Prop changed: ', newVal, ' | was: ', oldVal)
+        if (newVal && this.token) {
+          this.showPrivateContext = true
+          console.log('loading new store')
+          this.loadStore()
+        }
+      },
+      deep: true,
+    },
+  },
   methods: {
     // switchCashierOnline() {
     //   if (this.online && localStorage.getItem('offline_mode_login'))
@@ -54,24 +114,59 @@ export default {
     //       })
     // },
     setup() {
+      //set route store/brand id for pin login as pin login works in public view
       this.setupRouting()
-      this.$store.dispatch('auth/checkLogin')
+      this.$store.dispatch('auth/auth').catch(() => {})
+      bootstrap.setup(this.$store)
+      this.setupExternalScripts()
+    },
+    setupExternalScripts() {
+      setTimeout(() => {
+        require('@/../public/js/pos_script.js')
+      }, 2000)
     },
     setupRouting() {
+      //set routing in public view i.e pin login
       if (this.$route.params.brand_id) {
         this.$store.commit('context/SET_BRAND_ID', this.$route.params.brand_id)
         localStorage.setItem('brand_id', this.$route.params.brand_id)
-        this.$store.commit('context/SET_STORE_ID', this.$route.params.store_id)
-        localStorage.setItem('store_id', this.$route.params.store_id)
         DataService.setContext({
           brand: this.$store.getters['context/brand'],
-          store: this.$store.getters['context/store'],
+          store: '',
         })
       }
     },
+    loadStore() {
+      const self = this
+      this.$store
+        .dispatch('store/loadStore')
+        .then(() => {
+          let newRoute = 'BrandHome'
+          if (this.roleName === 'Waiter') {
+            newRoute = 'Dinein'
+          } else if (this.roleName === 'Carhop User') {
+            newRoute = 'Carhop'
+          }
+          if (
+            !this.roleRouteChangeBlacklist.includes(self.$route.name) &&
+            self.$route.name !== newRoute
+          ) {
+            self.$router.replace({
+              name: newRoute,
+              params: {
+                brand_id: self.$store.getters['context/brand_id'],
+                store_id: self.$store.getters['context/store_id'],
+              },
+            })
+          }
+        })
+        .catch(error => {
+          console.trace(error)
+        })
+    },
   },
   mounted() {
-    DataService.setStore(this.$store)
+    DataService.setVuexStore(this.$store)
     this.setup()
     const timeout = window.location.href.match('local')
       ? 1000 * 30

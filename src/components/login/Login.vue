@@ -79,7 +79,6 @@
 <script>
 import { mapGetters } from 'vuex'
 import Progress from '@/components/util/Progress'
-import DataService from '@/services/DataService'
 
 export default {
   computed: {
@@ -108,10 +107,6 @@ export default {
         //reset context only when there is no brand/store id in login
         if (!this.$route.params.brand_id) {
           this.$store.commit('context/RESET', null, { root: true })
-          DataService.setContext({
-            brand: this.$store.getters['context/brand'],
-            store: this.$store.getters['context/store'],
-          })
         }
 
         this.$store

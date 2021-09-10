@@ -1,7 +1,6 @@
 // initial state
 import * as mutation from './context/mutation-types'
 import DataService from '@/services/DataService'
-import bootstrap from '@/bootstrap'
 
 const state = {
   brandId: process.env.VUE_APP_BRAND_ID,
@@ -14,7 +13,6 @@ const state = {
   currentRoute: null,
   availableModules: null,
   currentStore: undefined,
-  loadStoreFromContext: false,
 }
 
 // getters
@@ -61,27 +59,7 @@ const actions = {
       brand: getters.brand,
     })
   },
-  loadStore({ dispatch, getters }) {
-    return new Promise((resolve, reject) => {
-      dispatch('auth/resetModules', null, { root: true })
-      DataService.setContext({
-        brand: getters.brand,
-        store: getters.store,
-      })
 
-      bootstrap
-        .loadStore()
-        .then(() => {
-          resolve()
-          dispatch('sync/setLoader', false, {
-            root: true,
-          })
-        })
-        .catch(error => {
-          reject(error)
-        })
-    })
-  },
   getStoresByGroupID({ state, commit, rootState }, groupId) {
     let availableGroups = rootState.auth.availableStoreGroups.find(
       group => group._id == groupId
@@ -107,10 +85,9 @@ const actions = {
     localStorage.setItem('store_id', storeId)
     dispatch('updateContext')
   },
-  setBrandStoreContext({ dispatch, commit }, { brandId, storeId }) {
-    commit('SET_BRAND_ID', brandId)
-    commit('SET_STORE_ID', storeId)
-    dispatch('updateContext')
+  setBrandStoreContext({ dispatch }, { brandId, storeId }) {
+    dispatch('setBrandContext', brandId)
+    dispatch('setStoreContext', storeId)
   },
 }
 
@@ -150,7 +127,6 @@ const mutations = {
     state.storesLength = 1
     state.currentRoute = null
     state.availableModules = null
-    state.loadStoreFromContext = false
   },
   [mutation.SET_MULTI_STORES](state, multiStores) {
     state.multiStores = multiStores
@@ -163,9 +139,6 @@ const mutations = {
   },
   SET_CURRENT_STORE(state, store) {
     state.currentStore = store
-  },
-  LOAD_STORE_FROM_CONTEXT(state, context) {
-    state.loadStoreFromContext = context
   },
 }
 

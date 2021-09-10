@@ -21,6 +21,8 @@ import holdOrders from './modules/holdOrders'
 import transactionOrders from './modules/transactionOrders'
 import payment from './modules/payment'
 import invoice from './modules/invoice'
+import store from './modules/store'
+import brand from './modules/brand'
 import loyalty from './modules/loyalty'
 import context from './modules/context'
 import reports from './modules/reports'
@@ -53,9 +55,10 @@ Vue.use(Datetime)
 
 //const debug = process.env.NODE_ENV !== 'production'
 
-const store = new Vuex.Store({
+const xstore = new Vuex.Store({
   modules: {
     auth,
+    store,
     sync,
     location,
     modifier,
@@ -85,6 +88,7 @@ const store = new Vuex.Store({
     reports,
     dineinReservation,
     combo,
+    brand,
   },
   strict: false,
   //plugins: debug ? [createLogger()] : [],
@@ -100,4 +104,4 @@ const store = new Vuex.Store({
 //   // The mutation comes in the format of `{ type, payload }`.
 // })
 
-export default store
+export default xstore

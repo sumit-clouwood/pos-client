@@ -391,10 +391,10 @@ export default {
     ...mapActions('deliveryManager', ['selectDriver']),
     ...mapActions('order', ['selectedOrderDetails', 'updateOrderAction']),
   },
-  created() {
+  created() {},
+  mounted() {
     this.onlineOrderSetup()
   },
-  mounted() {},
 }
 </script>
 

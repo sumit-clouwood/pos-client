@@ -2,7 +2,7 @@
   <div class="stores-list-container multi-store-menu-pos">
     <div class="stores-list">
       <router-link
-        v-for="store in multipleStores"
+        v-for="store in multiStores"
         :key="store._id"
         :to="selectedBrand + '/' + store._id"
         v-model="storeId"
@@ -37,11 +37,8 @@ export default {
   },
   computed: {
     ...mapState('location', ['store', 'brand']),
-    ...mapGetters('context', [
-      'isStoreSelected',
-      'haveMultipleStores',
-      'multipleStores',
-    ]),
+    ...mapGetters('context', ['isStoreSelected']),
+    ...mapGetters('brand', ['multiStores', 'hasMultiStores']),
     ...mapGetters({
       selectedBrand: ['context/brand'],
       defaultStore: ['context/store'],

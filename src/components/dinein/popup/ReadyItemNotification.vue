@@ -103,7 +103,7 @@ export default {
     ...mapState('dinein', ['allBookedTables']),
     ...mapState('auth', ['userDetails']),
   },
-  created() {
+  mounted() {
     bus.$on('stopCarhopNotificationSound', option => {
       if (!option && this.$store.state.order.orderType.OTApi === 'carhop') {
         this.pauseSound()

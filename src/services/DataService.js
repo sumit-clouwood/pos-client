@@ -67,7 +67,7 @@ createAuthRefreshInterceptor(axios, refreshAuthLogic)
 
 export default {
   context: { store: '', brand: '' },
-  setStore(store) {
+  setVuexStore(store) {
     this.store = store
   },
   setContext(context) {
@@ -116,7 +116,7 @@ export default {
   get(url, level, cdn = true) {
     let apiVersion = false
 
-    if (!url.includes('pos_menu')) {
+    if (!url.includes('versions')) {
       let uriparts = url
         .substring(1)
         .replace('model/', '')
@@ -124,7 +124,7 @@ export default {
 
       let model = uriparts[0].split('?')[0]
 
-      apiVersion = $store.getters['sync/getVersion'](model)
+      apiVersion = $store.getters['store/getVersion'](model)
 
       let glue = '?'
 
@@ -153,7 +153,7 @@ export default {
         apiVersion &&
         CDN_ENABLED &&
         cdn &&
-        !url.match(new RegExp('/pos_menu|/id/|/orders|/reservations'))
+        !url.match(new RegExp('/versions|/id/|/orders|/reservations'))
       ) {
         endpoint = apiURL.replace(new RegExp('/api$'), '/cached/api')
       }
