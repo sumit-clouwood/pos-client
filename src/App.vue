@@ -12,7 +12,9 @@
       class="private-view"
     ></private-view>
     <!-- Public view -->
-    <public-view v-else class="public-view"></public-view>
+    <template v-else>
+      <public-view v-if="!token" class="public-view"></public-view>
+    </template>
     <app-notification></app-notification>
     <loader></loader>
 

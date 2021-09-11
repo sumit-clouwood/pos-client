@@ -150,6 +150,7 @@ const actions = {
             return false
           }
           commit('SET_CURRENT_LOGGED_IN_USER_ID', response.data.user.user_id)
+          commit(mutation.SET_TOKEN, response.data.token)
           localStorage.setItem('token', response.data.token)
 
           dispatch('configureStore', response)
@@ -182,32 +183,29 @@ const actions = {
       commit('brand/SET_AVAILABLE_STORES', response.data.available_stores, {
         root: true,
       })
+      let brandId = null
+
+      if (response.data.brand_id) {
+        brandId = response.data.brand_id
+      } else {
+        brandId = localStorage.getItem('brand_id')
+      }
+
+      dispatch('context/setBrandContext', brandId, { root: true })
+
       if (response.data.available_stores.length > 1) {
         //multiple stores, it ll show a selector from app.vue don't proceed anything here
         commit('sync/loaded', true, { root: true })
       } else {
         //single store
         let firstStore = null
-        let brandId = null
         response.data.available_stores.forEach(store => {
           if (!firstStore) {
             firstStore = store
           }
         })
-        if (response.data.brand) {
-          brandId = response.data.brand
-        } else {
-          brandId = localStorage.getItem('brand_id')
-        }
 
-        dispatch(
-          'context/setBrandStoreContext',
-          {
-            storeId: firstStore._id,
-            brandId: brandId,
-          },
-          { root: true }
-        )
+        dispatch('context/setStoreContext', firstStore._id, { root: true })
       }
     } else {
       //request coming from auth/auth
