@@ -9,7 +9,7 @@ let syncInProcess = false
 // adjust log level for displaying workbox logs
 //workbox.core.setLogLevel(workbox.core.LOG_LEVELS.debug)
 workbox.setConfig({
-  debug: true,
+  debug: false,
 })
 
 // Populate the cache to illustrate cache-only-populated-cache route

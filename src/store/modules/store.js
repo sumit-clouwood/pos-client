@@ -87,12 +87,16 @@ const actions = {
       dispatch('category/fetchAll', null, { root: true }),
       dispatch('payment/fetchAll', null, { root: true }),
       dispatch('modifier/fetchAll', null, { root: true }),
+      dispatch('discount/fetchAll', null, { root: true }),
+      dispatch('invoice/printRules', null, { root: true }).then(() => {
+        dispatch('invoice/fetchTemplates', null, { root: true })
+      }),
     ])
   },
 
   defferedLoadOpenApis({ dispatch }) {
     dispatch('surcharge/fetchAll', null, { root: true })
-    dispatch('discount/fetchAll', null, { root: true })
+
     //in parallel check store requirements validations, subscription, terminal registration
     dispatch('checkStorePrerequisite')
     let promised = Promise.allSettled([
@@ -107,10 +111,6 @@ const actions = {
       dispatch('customer/fetchCRMCustomerFields', null, { root: true }),
 
       dispatch('location/referrals', null, { root: true }),
-
-      dispatch('invoice/printRules', null, { root: true }).then(() => {
-        dispatch('invoice/fetchTemplates', null, { root: true })
-      }),
     ]).catch(error => {
       console.trace(error)
     })
