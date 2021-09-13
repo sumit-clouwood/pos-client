@@ -35,6 +35,26 @@ const actions = {
     return new Promise(resolve => {
       //call versions and ui_menu api in parallel
       commit('sync/loaded', false, { root: true })
+
+      dispatch('location/fetch', null, { root: true })
+        .then(() => {
+          console.log('brand loaded')
+          dispatch('location/timezone', null, { root: true })
+        })
+        .catch(error => {
+          dispatch('abortPos', {
+            title: 'Brand failed to load.',
+            description: error,
+          })
+        })
+
+      //try fetching user details if user id available, otherwise we ll get user info from ui_menu
+      if (rootGetters['auth/userId']) {
+        dispatch('auth/getUserDetails', rootGetters['auth/userId'], {
+          root: true,
+        })
+      }
+
       dispatch('getApiVersions')
         .then(() => {
           console.log('api versions loaded')
@@ -58,23 +78,6 @@ const actions = {
             description: error,
           })
         })
-      dispatch('location/fetch', null, { root: true })
-        .then(() => {
-          console.log('brand loaded')
-          dispatch('location/timezone', null, { root: true })
-        })
-        .catch(error => {
-          dispatch('abortPos', {
-            title: 'Brand failed to load.',
-            description: error,
-          })
-        })
-      //try fetching user details if user id available, otherwise we ll get user info from ui_menu
-      if (rootGetters['auth/userId']) {
-        dispatch('auth/getUserDetails', rootGetters['auth/userId'], {
-          root: true,
-        })
-      }
     })
   },
 
