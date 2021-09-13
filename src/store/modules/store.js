@@ -35,38 +35,28 @@ const actions = {
     return new Promise(resolve => {
       //call versions and ui_menu api in parallel
       commit('sync/loaded', false, { root: true })
-
-      dispatch('getApiVersions')
+      dispatch('auth/resetModules', null, { root: true })
+      dispatch('location/timezone', null, { root: true })
+      Promise.all([
+        (dispatch('location/fetch', null, { root: true }),
+        dispatch('getApiVersions')),
+      ])
         .then(() => {
-          dispatch('location/fetch', null, { root: true })
-            .then(() => {
-              console.log('brand loaded')
-              dispatch('location/timezone', null, { root: true })
-              dispatch('loadOpenApis').then(() => {
-                commit('sync/loaded', true, { root: true })
-                resolve()
-              })
-              try {
-                dispatch('defferedLoadOpenApis').finally(() => {})
-              } catch (error) {
-                //inner level catch safe
-                console.trace(error)
-              }
-            })
-            .catch(error => {
-              dispatch('abortPos', {
-                title: 'Brand failed to load.',
-                description: error,
-              })
-            })
-          console.log('api versions loaded')
-          dispatch('auth/resetModules', null, { root: true })
-          console.log('loading open apis')
+          console.log('brand loaded')
+          dispatch('loadOpenApis').then(() => {
+            commit('sync/loaded', true, { root: true })
+            resolve()
+          })
+          try {
+            dispatch('defferedLoadOpenApis').finally(() => {})
+          } catch (error) {
+            //inner level catch safe
+            console.trace(error)
+          }
         })
         .catch(error => {
-          console.trace(error)
           dispatch('abortPos', {
-            title: 'Api versions failed to load.',
+            title: 'Brand failed to load.',
             description: error,
           })
         })
