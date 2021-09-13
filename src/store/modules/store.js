@@ -36,14 +36,37 @@ const actions = {
       //call versions and ui_menu api in parallel
       commit('sync/loaded', false, { root: true })
 
-      dispatch('location/fetch', null, { root: true })
+      dispatch('getApiVersions')
         .then(() => {
-          console.log('brand loaded')
-          dispatch('location/timezone', null, { root: true })
+          dispatch('location/fetch', null, { root: true })
+            .then(() => {
+              console.log('brand loaded')
+              dispatch('location/timezone', null, { root: true })
+              dispatch('loadOpenApis').then(() => {
+                commit('sync/loaded', true, { root: true })
+                resolve()
+              })
+              try {
+                dispatch('defferedLoadOpenApis').finally(() => {})
+              } catch (error) {
+                //inner level catch safe
+                console.trace(error)
+              }
+            })
+            .catch(error => {
+              dispatch('abortPos', {
+                title: 'Brand failed to load.',
+                description: error,
+              })
+            })
+          console.log('api versions loaded')
+          dispatch('auth/resetModules', null, { root: true })
+          console.log('loading open apis')
         })
         .catch(error => {
+          console.trace(error)
           dispatch('abortPos', {
-            title: 'Brand failed to load.',
+            title: 'Api versions failed to load.',
             description: error,
           })
         })
@@ -54,30 +77,6 @@ const actions = {
           root: true,
         })
       }
-
-      dispatch('getApiVersions')
-        .then(() => {
-          console.log('api versions loaded')
-          dispatch('auth/resetModules', null, { root: true })
-          console.log('loading open apis')
-          try {
-            dispatch('defferedLoadOpenApis').finally(() => {})
-          } catch (error) {
-            //inner level catch safe
-            console.trace(error)
-          }
-          dispatch('loadOpenApis').then(() => {
-            commit('sync/loaded', true, { root: true })
-            resolve()
-          })
-        })
-        .catch(error => {
-          console.trace(error)
-          dispatch('abortPos', {
-            title: 'Api versions failed to load.',
-            description: error,
-          })
-        })
     })
   },
 
