@@ -393,7 +393,9 @@ export default {
   },
   created() {},
   mounted() {
-    this.onlineOrderSetup()
+    setTimeout(() => {
+      this.onlineOrderSetup()
+    }, 1000 * 10)
   },
 }
 </script>

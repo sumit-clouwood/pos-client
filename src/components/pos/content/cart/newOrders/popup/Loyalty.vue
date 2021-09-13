@@ -1,5 +1,5 @@
 <template>
-  <div class="modal fade" id="loyalty-payment" role="dialog" v-if="brand">
+  <div class="modal fade" id="loyalty-payment" role="dialog" v-show="brand">
     <div class="modal-dialog modal-dialog-centered">
       <!-- Modal content-->
       <div class="modal-content color-dashboard-background">
