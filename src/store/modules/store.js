@@ -40,16 +40,16 @@ const actions = {
           console.log('api versions loaded')
           dispatch('auth/resetModules', null, { root: true })
           console.log('loading open apis')
-          dispatch('loadOpenApis').then(() => {
-            commit('sync/loaded', true, { root: true })
-            resolve()
-          })
           try {
             dispatch('defferedLoadOpenApis').finally(() => {})
           } catch (error) {
             //inner level catch safe
             console.trace(error)
           }
+          dispatch('loadOpenApis').then(() => {
+            commit('sync/loaded', true, { root: true })
+            resolve()
+          })
         })
         .catch(error => {
           console.trace(error)
