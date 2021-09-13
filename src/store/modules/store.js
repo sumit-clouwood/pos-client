@@ -34,6 +34,7 @@ const actions = {
   loadStore({ rootGetters, dispatch, commit }) {
     return new Promise(resolve => {
       //call versions and ui_menu api in parallel
+      commit('sync/loaded', false, { root: true })
       dispatch('getApiVersions')
         .then(() => {
           console.log('api versions loaded')
