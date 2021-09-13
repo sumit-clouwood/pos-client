@@ -7,10 +7,12 @@
       </div>
       <MultipleStores />
     </div>
-    <private-view
-      v-if="privateContext && showPrivateContext"
-      class="private-view"
-    ></private-view>
+    <template v-if="privateContext && showPrivateContext">
+      <div v-if="showDebug" style="position:  absolute; left: 400px;">
+        in private view
+      </div>
+      <private-view class="private-view"></private-view>
+    </template>
     <!-- Public view -->
     <template v-else>
       <public-view v-if="!token" class="public-view"></public-view>
