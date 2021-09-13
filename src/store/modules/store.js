@@ -32,25 +32,30 @@ const actions = {
     commit('SET_API_DEPENDENCY_VERSIONS', versions.data.dep_tree)
   },
   loadStore({ rootGetters, dispatch, commit }) {
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
       //call versions and ui_menu api in parallel
       commit('sync/loaded', false, { root: true })
       dispatch('auth/resetModules', null, { root: true })
       Promise.all([
-        (dispatch('location/fetch', null, { root: true }),
-        dispatch('getApiVersions')),
+        dispatch('location/fetch', null, { root: true }),
+        dispatch('getApiVersions'),
       ])
         .then(() => {
-          console.log('brand loaded')
+          console.log('brand loaded and versions fetched, loading open apis')
           dispatch('loadOpenApis').then(() => {
             commit('sync/loaded', true, { root: true })
+            console.log('open apis loaded')
             resolve()
           })
           try {
-            dispatch('defferedLoadOpenApis').finally(() => {})
+            console.log('loading deffered apis')
+            dispatch('defferedLoadOpenApis').finally(() => {
+              console.log('deffered apis loaded')
+            })
           } catch (error) {
             //inner level catch safe
             console.trace(error)
+            reject(error)
           }
         })
         .catch(error => {
@@ -58,6 +63,7 @@ const actions = {
             title: 'Brand failed to load.',
             description: error,
           })
+          reject(error)
         })
 
       //try fetching user details if user id available, otherwise we ll get user info from ui_menu

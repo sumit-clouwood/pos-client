@@ -22,7 +22,12 @@ self.addEventListener('activate', function(event) {
   self.clients.claim()
   const promiseChain = caches.keys().then(cacheNames => {
     // Step through each cache name and delete it
-    return Promise.all(cacheNames.map(cacheName => caches.delete(cacheName)))
+    return Promise.all(
+      cacheNames.map(cacheName => {
+        console.log('deleting cache ', cacheName)
+        return caches.delete(cacheName)
+      })
+    )
   })
 
   // Keep the service worker alive until all caches are deleted.
