@@ -36,7 +36,6 @@ const actions = {
       //call versions and ui_menu api in parallel
       commit('sync/loaded', false, { root: true })
       dispatch('auth/resetModules', null, { root: true })
-      dispatch('location/timezone', null, { root: true })
       Promise.all([
         (dispatch('location/fetch', null, { root: true }),
         dispatch('getApiVersions')),
@@ -83,6 +82,7 @@ const actions = {
   },
 
   defferedLoadOpenApis({ dispatch }) {
+    dispatch('location/timezone', null, { root: true })
     dispatch('surcharge/fetchAll', null, { root: true })
     dispatch('discount/fetchAll', null, { root: true })
     //in parallel check store requirements validations, subscription, terminal registration
