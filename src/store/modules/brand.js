@@ -25,7 +25,6 @@ const actions = {
     commit('SET_BRAND_DATA', brandData)
     //SET EXPLICILITY BECAUSE WE MUTATE AVAILABLE STORES FROM 3 PLACE, 1. LOGIN, 2. PIN LOGIN, 3. UI_MENU
     // SO WE CAN USE THIS MUTATOR TO MUTATE FROM ANY OF ABOVE 3
-    commit('SET_AVAILABLE_STORES', brandData.available_stores)
     return brandData
   },
   async loadBrand({ dispatch }) {
@@ -38,7 +37,9 @@ const getters = {
   brandData: state => (state.brandData ? state.brandData.data : {}),
   availableModules: (state, getters) => getters.brandData.available_modules,
   enabledModules: (state, getters) => getters.brandData.enabled_modules,
-  availableStores: state => state.availableStores || [],
+  availableStores: state => {
+    return state.availableStores || []
+  },
   hasMultiStores: (state, getters) => getters.availableStores.length > 1,
   multiStores: (state, getters, rootState, rootGetters) => {
     if (rootGetters['context/currentStoreGroupId']) {
@@ -108,7 +109,9 @@ const getters = {
 // mutations
 const mutations = {
   SET_BRAND_DATA: (state, data) => (state.brandData = data),
-  SET_AVAILABLE_STORES: (state, data) => (state.availableStores = data),
+  SET_AVAILABLE_STORES: (state, data) => {
+    state.availableStores = data
+  },
 }
 
 export default {
