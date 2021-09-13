@@ -11,7 +11,8 @@
       <div v-if="showDebug" style="position:  absolute; left: 400px;">
         in private view
       </div>
-      <private-view class="private-view"></private-view>
+      <div v-if="error">{{ error }}</div>
+      <private-view v-else class="private-view"></private-view>
     </template>
     <!-- Public view -->
     <template v-else>
@@ -40,6 +41,7 @@ export default {
   name: 'App',
   data() {
     return {
+      error: false,
       showPrivateContext: true,
       roleRouteChangeBlacklist: [
         'ModifyBackendOrder',
@@ -141,6 +143,7 @@ export default {
       }
     },
     loadStore() {
+      this.error = false
       const self = this
       this.$store
         .dispatch('store/loadStore')
@@ -165,7 +168,7 @@ export default {
           }
         })
         .catch(error => {
-          console.trace(error)
+          this.error = console.trace(error)
         })
     },
   },

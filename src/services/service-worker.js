@@ -20,6 +20,13 @@ self.addEventListener('install', event => {
 self.addEventListener('activate', function(event) {
   console.log('service worker activate', event)
   self.clients.claim()
+  const promiseChain = caches.keys().then(cacheNames => {
+    // Step through each cache name and delete it
+    return Promise.all(cacheNames.map(cacheName => caches.delete(cacheName)))
+  })
+
+  // Keep the service worker alive until all caches are deleted.
+  event.waitUntil(promiseChain)
 })
 
 // apply precaching. In the built version, the precacheManifest will
