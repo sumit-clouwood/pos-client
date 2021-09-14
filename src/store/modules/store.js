@@ -108,7 +108,7 @@ const actions = {
         dispatch('auth/setRolesAndUsers', null, { root: true })
       }),
       //load delivery areas only from below customer
-      dispatch('customer/fetchDeliveryArea', null, { root: true }),
+      dispatch('customer/fetchDeliveryArea', '', { root: true }),
       dispatch('customer/fetchCRMCustomerFields', null, { root: true }),
 
       dispatch('location/referrals', null, { root: true }),
@@ -241,7 +241,10 @@ const getters = {
   getVersion: (state, getters) => model => {
     let version = getters.findVersion(model)
     if (version) {
-      version += ',' + getters.findDependencies(model)
+      const deps = getters.findDependencies(model)
+      if (deps) {
+        version += ',' + deps
+      }
     }
     return version
   },
