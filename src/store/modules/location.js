@@ -25,7 +25,6 @@ const getDefaults = () => ({
   userShortDetails: false,
   permissions: false,
   apiDate: '',
-  terminalCode: null,
   timezones: [],
   openHours: null,
   brandStores: false,
@@ -449,9 +448,7 @@ const mutations = {
   [mutation.SET_OPEN_HOURS](state, openHours) {
     state.openHours = openHours
   },
-  [mutation.SET_TERMINAL_CODE](state, terminalCode) {
-    state.terminalCode = terminalCode
-  },
+
   [mutation.SET_BRAND_STORES](state, brandStores) {
     state.brandStores = brandStores
   },

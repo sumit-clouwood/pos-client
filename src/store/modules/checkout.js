@@ -813,7 +813,7 @@ const actions = {
                 const transitionOrderNo =
                   rootState.location.store.branch_n +
                   '-' +
-                  rootState.location.terminalCode +
+                  rootState.store.terminalCode +
                   '-' +
                   orderPlacementTime
 
@@ -1051,7 +1051,7 @@ const actions = {
     order.new_real_transition_order_no =
       rootState.location.store.branch_n +
       '-' +
-      rootState.location.terminalCode +
+      rootState.store.terminalCode +
       '-' +
       rootState.order.startTime
     delete order.real_created_datetime
