@@ -178,7 +178,10 @@ const actions = {
     })
   },
   configureStore({ commit, dispatch }, response) {
-    if (response.data.available_stores) {
+    if (
+      response.data.available_stores &&
+      response.data.available_stores.length
+    ) {
       //request coming either from pinlogin or login
       commit('brand/SET_AVAILABLE_STORES', response.data.available_stores, {
         root: true,
