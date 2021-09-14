@@ -252,8 +252,6 @@ export default {
         console.log('sync loaded private changed: ', newVal, ' | was: ', oldVal)
         if (newVal) {
           this.loading = false
-        } else {
-          this.loading = true
         }
       },
       deep: true,
