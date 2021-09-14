@@ -33,12 +33,14 @@ const actions = {
   },
   loadStore({ rootGetters, dispatch, commit }) {
     return new Promise((resolve, reject) => {
+      commit('SET_STORE_PREREQUISITE', false)
+
       //call versions and ui_menu api in parallel
       commit('sync/loaded', false, { root: true })
       dispatch('auth/resetModules', null, { root: true })
       Promise.all([
-        dispatch('location/fetch', null, { root: true }),
         dispatch('getApiVersions'),
+        dispatch('location/fetch', null, { root: true }),
       ])
         .then(() => {
           console.log('brand loaded and versions fetched, loading open apis')
@@ -50,6 +52,8 @@ const actions = {
           try {
             console.log('loading deffered apis')
             dispatch('defferedLoadOpenApis').finally(() => {
+              dispatch('checkStorePrerequisite')
+
               console.log('deffered apis loaded')
             })
           } catch (error) {
@@ -75,10 +79,9 @@ const actions = {
     })
   },
 
-  loadOpenApis({ state, dispatch, commit }) {
+  loadOpenApis({ state, dispatch }) {
     DataService.setLang(state.locale)
     //no store prerequiste needed right now
-    commit('SET_STORE_PREREQUISITE', false)
     //call ui_menu
     return Promise.allSettled([
       dispatch('category/fetchAll', null, { root: true }),
@@ -92,7 +95,6 @@ const actions = {
     dispatch('surcharge/fetchAll', null, { root: true })
     dispatch('discount/fetchAll', null, { root: true })
     //in parallel check store requirements validations, subscription, terminal registration
-    dispatch('checkStorePrerequisite')
     let promised = Promise.allSettled([
       Promise.all([
         dispatch('auth/fetchAllStoreUsers', null, { root: true }),
@@ -129,17 +131,21 @@ const actions = {
     //reset collections for orders
     commit('SET_STORE_PREREQUISITE', error)
   },
-  async registerTerminal({ commit }, deviceId) {
+  async registerTerminal({ rootState, commit }, deviceId) {
     return new Promise((resolve, reject) => {
+      console.log('registering terminal with id: ', deviceId)
       StoreService.registerDevice(deviceId)
         .then(response => {
+          console.log(response)
           commit('SET_TERMINAL_CODE', response.data.id)
           const data = {
             id: 1,
             token: localStorage.getItem('token'),
-            //branch_n: state.store.branch_n,
+            branch_n: rootState.location.store.branch_n,
             terminal_code: state.terminalCode,
           }
+          console.log('resolving')
+          resolve()
           db.getBucket('auth')
             .then(bucket => {
               db.put(bucket, data)
@@ -165,12 +171,13 @@ const actions = {
       commit('auth/SET_DEVICE_CODE', browserId, { root: true })
       dispatch('registerTerminal', browserId)
         .then()
-        .catch(() =>
+        .catch(error => {
+          console.trace(error)
           dispatch('abortPos', {
             title: 'Device registration not allowed.',
             description: 'Please contact your store owner for access',
           })
-        )
+        })
     })
     //check subscription
     StoreService.validateStoreSubscription()
@@ -178,7 +185,7 @@ const actions = {
         if (response.data && response.data.is_expired) {
           dispatch('abortPos', {
             title: 'Store subscription has been expired.',
-            StoreService,
+            description: 'Please contact your store owner for access',
           })
         }
       })

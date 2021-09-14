@@ -252,6 +252,8 @@ export default {
         console.log('sync loaded private changed: ', newVal, ' | was: ', oldVal)
         if (newVal) {
           this.loading = false
+        } else {
+          this.loading = true
         }
       },
       deep: true,
@@ -260,6 +262,19 @@ export default {
       if (error) {
         this.userError = this._t(error.title)
         this.userErrorInstructions = this._t(error.description)
+
+        //logout here after 3 sec
+        const logoutInterval = setInterval(() => {
+          this.secondsToLogout--
+          if (
+            this.secondsToLogout <= 0 &&
+            process.env.NODE_ENV === 'production' &&
+            !process.VUE_APP_PERSISTENT_ERRORS
+          ) {
+            clearInterval(logoutInterval)
+            this.$store.dispatch('auth/logout')
+          }
+        }, 1000)
       }
     },
 

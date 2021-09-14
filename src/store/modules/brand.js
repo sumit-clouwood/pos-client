@@ -25,6 +25,10 @@ const actions = {
     commit('SET_BRAND_DATA', brandData)
     //SET EXPLICILITY BECAUSE WE MUTATE AVAILABLE STORES FROM 3 PLACE, 1. LOGIN, 2. PIN LOGIN, 3. UI_MENU
     // SO WE CAN USE THIS MUTATOR TO MUTATE FROM ANY OF ABOVE 3
+    //set available stores only if not already set from user, i.e used refresh screen
+    if (state.availableStores === undefined) {
+      commit('SET_AVAILABLE_STORES', brandData.data.available_stores)
+    }
     return brandData
   },
   async loadBrand({ dispatch }) {
