@@ -15,7 +15,7 @@ const state = {
   lastFetch: 0,
   offlineSync: false,
   isLoading: false,
-
+  loading_store: false,
   modules: {
     store: CONST.LOADING_STATUS_LOADING,
     catalog: CONST.LOADING_STATUS_LOADING,
@@ -109,6 +109,9 @@ const mutations = {
   },
   SET_IS_LOADING(state, payload) {
     state.isLoading = payload
+  },
+  loading_store(state, status) {
+    state.loading_store = status
   },
 }
 

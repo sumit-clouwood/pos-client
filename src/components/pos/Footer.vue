@@ -537,7 +537,7 @@
     <Card />
     <GiftCardInfo />
     <SearchLoyaltyCustomer />
-    <Loyalty />
+    <Loyalty v-if="brand" />
     <Invoice />
     <OrderDetailsPopup />
     <InformationPopup :responseInformation="this.message" :title="this.title" />
@@ -687,6 +687,7 @@ export default {
     ...mapState('dinein', ['availableTables', 'covers']),
     ...mapState('sync', ['online']),
     ...mapGetters('location', ['formatPrice', '_t']),
+    ...mapGetters('brand', ['brand']),
     ...mapGetters('modules', ['enabled']),
     ...mapState({
       loyaltyCard: state => state.customer.customerLoyalty.card,

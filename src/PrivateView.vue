@@ -110,7 +110,6 @@ export default {
   data: function() {
     return {
       reloadButton: false,
-      loading: true,
       systemError: false,
       userError: false,
       progressIncrement: 0,
@@ -246,16 +245,6 @@ export default {
     }, 10000)
   },
   watch: {
-    loaded: {
-      handler: function(newVal, oldVal) {
-        // watch it
-        console.log('sync loaded private changed: ', newVal, ' | was: ', oldVal)
-        if (newVal) {
-          this.loading = false
-        }
-      },
-      deep: true,
-    },
     storePrerequisite(error) {
       if (error) {
         this.userError = this._t(error.title)
@@ -352,6 +341,7 @@ export default {
     ...mapState({
       defaultLanguage: state =>
         state.location.store ? state.location.store.default_language : false,
+      loading: state => state.sync.loading_store,
     }),
     ...mapState('sync', ['modules']),
     ...mapState('context', ['currentRoute', 'storeId']),
@@ -384,7 +374,7 @@ export default {
     // Then we set the value in the --vh custom property to the root of the document
     document.documentElement.style.setProperty('--vh', `${vh}px`)
     if (this.$router.currentRoute.name === 'Dinein') {
-      this.loading = false
+      this.$store.commit('sync/loading_store', false)
       return
     }
   },

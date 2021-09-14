@@ -86,7 +86,7 @@ export default {
         console.log('hasMultiStores Prop changed: ', newVal, ' | was: ', oldVal)
         this.showPrivateContext = true
 
-        if (newVal && this.token) {
+        if (newVal && this.token && !this.storeId) {
           this.showPrivateContext = false
           showModal('#multiStoresModal')
         }

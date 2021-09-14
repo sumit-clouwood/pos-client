@@ -10,7 +10,7 @@
     <!-- <cashier />
     <method-card /> -->
     <QRMethod />
-    <loyalty />
+    <loyalty v-if="brand" />
     <selectDiscount />
     <add-note />
     <cart-input />
@@ -31,7 +31,7 @@ import loyalty from './loyalty.vue'
 import selectDiscount from './selectDiscount.vue'
 import addNote from './addNote.vue'
 import cartInput from './cartInput.vue'
-
+import { mapGetters } from 'vuex'
 export default {
   components: {
     mobileNotification,
@@ -48,6 +48,9 @@ export default {
     selectDiscount,
     addNote,
     cartInput,
+  },
+  computed: {
+    ...mapGetters('brand', ['brand']),
   },
 }
 </script>

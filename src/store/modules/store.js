@@ -33,6 +33,7 @@ const actions = {
   },
   loadStore({ rootGetters, dispatch, commit }) {
     return new Promise((resolve, reject) => {
+      commit('sync/loading_store', true, { root: true })
       commit('SET_STORE_PREREQUISITE', false)
 
       //call versions and ui_menu api in parallel
@@ -47,6 +48,8 @@ const actions = {
           dispatch('loadOpenApis').then(() => {
             commit('sync/loaded', true, { root: true })
             console.log('open apis loaded')
+            commit('sync/loading_store', false, { root: true })
+
             resolve()
           })
           try {
@@ -57,6 +60,8 @@ const actions = {
               console.log('deffered apis loaded')
             })
           } catch (error) {
+            commit('sync/loading_store', false, { root: true })
+
             //inner level catch safe
             console.trace(error)
             reject(error)
@@ -128,6 +133,8 @@ const actions = {
   },
 
   abortPos({ commit }, error) {
+    commit('sync/loading_store', false, { root: true })
+
     //reset collections for orders
     commit('SET_STORE_PREREQUISITE', error)
   },
