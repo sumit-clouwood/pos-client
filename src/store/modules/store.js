@@ -40,32 +40,34 @@ const actions = {
       commit('sync/loaded', false, { root: true })
       dispatch('auth/resetModules', null, { root: true })
       Promise.all([
-        dispatch('getApiVersions'),
-        dispatch('location/fetch', null, { root: true }),
-      ])
-        .then(() => {
-          console.log('brand loaded and versions fetched, loading open apis')
+        dispatch('getApiVersions').then(() => {
           dispatch('loadOpenApis').then(() => {
+            console.log('open apis loaded, resolving')
             commit('sync/loaded', true, { root: true })
             console.log('open apis loaded')
             commit('sync/loading_store', false, { root: true })
-            try {
-              console.log('loading deffered apis')
-              dispatch('defferedLoadOpenApis').finally(() => {
-                dispatch('checkStorePrerequisite')
-
-                console.log('deffered apis loaded')
-              })
-            } catch (error) {
-              commit('sync/loading_store', false, { root: true })
-
-              //inner level catch safe
-              console.trace(error)
-              reject(error)
-            }
-
             resolve()
           })
+        }),
+        dispatch('location/fetch', null, { root: true }),
+      ])
+        .then(() => {
+          console.log('brand loaded and versions fetched')
+
+          try {
+            console.log('loading deffered apis')
+            dispatch('defferedLoadOpenApis').finally(() => {
+              dispatch('checkStorePrerequisite')
+
+              console.log('deffered apis loaded')
+            })
+          } catch (error) {
+            commit('sync/loading_store', false, { root: true })
+
+            //inner level catch safe
+            console.trace(error)
+            reject(error)
+          }
         })
         .catch(error => {
           dispatch('abortPos', {
