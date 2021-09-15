@@ -37,12 +37,8 @@ const state = {
   processing: false,
 }
 const getters = {
-  drivers: (state, getters, rootState) =>
-    state.drivers.filter(
-      driver =>
-        driver.brand_stores.includes(rootState.context.storeId) ||
-        driver.brand_access_type === 'all'
-    ),
+  drivers: (state, getters, rootState, rootGetters) =>
+    rootGetters['auth/getDrivers'] || [],
   deliveryServiceDriver: (state, getters, rootState) =>
     state.deliveryServiceDriver.filter(
       driver =>
@@ -201,7 +197,6 @@ const actions = {
               dispatch('fetchDMOrderDetail')
             }
             if (state.deliveryServiceDriver.length < 1) {
-              dispatch('getDrivers')
               dispatch('getDeliveryServiceDriver')
             }
           }
@@ -213,17 +208,7 @@ const actions = {
       commit(mutation.SET_LOADING, false)
     }
   },
-  getDrivers({ commit, rootGetters }) {
-    let role = rootGetters['auth/getRole']('Driver')
-    if (role) {
-      const drivers = rootGetters['auth/all_users'].filter(
-        user => user.brand_role == role._id
-      )
-      if (drivers.length) {
-        commit(mutation.DRIVERS, drivers)
-      }
-    }
-  },
+
   getDeliveryServiceDriver({ commit, rootGetters }) {
     let brandId = rootGetters['context/brand'].replace('/', '')
     DMService.getDeliveryServices(brandId).then(response => {

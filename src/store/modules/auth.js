@@ -26,7 +26,6 @@ const getDefaults = () => {
     offlinePinCode: null,
     deviceType: false,
     currentLoggedInUserId: undefined,
-    allusers: undefined,
   }
 }
 const state = getDefaults()
@@ -35,7 +34,9 @@ const state = getDefaults()
 const getters = {
   userId: state => state.currentLoggedInUserId,
   current_user: state => state.userDetails.item,
-  all_users: state => state.storeUsers,
+  all_users: state => {
+    return state.storeUsers
+  },
   allowed: state => resource => {
     if (!state.role) {
       //super admin
@@ -115,6 +116,20 @@ const getters = {
       }
       return cashier.brand_stores.includes(rootState.context.storeId)
     }),
+  getDrivers: (state, getters, rootState) => {
+    let role = getters.getRole('Driver')
+    if (role) {
+      return getters.all_users.filter(user => {
+        if (
+          user.brand_role == role._id &&
+          (user.brand_access_type === 'all' ||
+            user.brand_stores.includes(rootState.context.storeId))
+        ) {
+          return user
+        }
+      })
+    }
+  },
   cashier: state => loginInfo =>
     state.cashiers.find(cashier => cashier._id === loginInfo.user_id),
 }
@@ -400,9 +415,6 @@ const actions = {
     return new Promise(resolve => {
       AuthService.getAllUsers().then(response => {
         commit('SET_STORE_USERS', response.data.data)
-        commit('location/SET_BRAND_STORES', response.data.page_lookups.stores, {
-          root: true,
-        })
         resolve(response)
       })
     })
@@ -548,9 +560,6 @@ const mutations = {
   },
   SET_CURRENT_LOGGED_IN_USER_ID(state, id) {
     state.currentLoggedInUserId = id
-  },
-  SET_ALL_USERS(state, users) {
-    state.allusers = users
   },
 }
 
