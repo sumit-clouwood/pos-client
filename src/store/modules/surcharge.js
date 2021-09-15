@@ -25,10 +25,10 @@ const getters = {
       return 0
     }
     if (surcharge.type === CONST.VALUE) {
-      const beforeTax = surcharge.value / ((100 + surcharge.tax_sum) / 100)
-      return surcharge.value - beforeTax
+      return Num.round((surcharge.value * surcharge.tax_sum) / 100)
     }
   },
+
   surcharge: (state, getters, rootState, rootGetters) => {
     if (rootGetters['auth/multistore']) {
       return 0
