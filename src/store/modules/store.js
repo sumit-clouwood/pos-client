@@ -63,6 +63,12 @@ const actions = {
               console.trace(error)
               reject(error)
             }
+            //try fetching user details if user id available, otherwise we ll get user info from ui_menu
+            if (rootGetters['auth/userId']) {
+              dispatch('auth/getUserDetails', rootGetters['auth/userId'], {
+                root: true,
+              })
+            }
 
             resolve()
           })
@@ -74,13 +80,6 @@ const actions = {
           })
           reject(error)
         })
-
-      //try fetching user details if user id available, otherwise we ll get user info from ui_menu
-      if (rootGetters['auth/userId']) {
-        dispatch('auth/getUserDetails', rootGetters['auth/userId'], {
-          root: true,
-        })
-      }
     })
   },
 
