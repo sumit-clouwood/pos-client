@@ -141,10 +141,11 @@ import { mapState, mapActions, mapGetters } from 'vuex'
 import progressbar from '@/components/util/progressbar'
 import CreditCustomerDetails from './CreditCustomer/CreditCustomerDetails'
 import * as CONST from '@/constants'
+import DateTime from '@/mixins/DateTime'
 
 export default {
   name: 'credit-customer',
-  props: {},
+  mixins: [DateTime],
   components: {
     CreditCustomerDetails,
     progressbar,
@@ -163,13 +164,20 @@ export default {
   computed: {
     ...mapState({
       customers: state => state.customer.customer_list,
-      customerProfile: state =>
-        state.customer.customer ? state.customer.customer : false,
-      pastOrders: state => state.customer.pastOrders,
+      customerDetails: state =>
+        state.customer.creditCustomerDetails
+          ? state.customer.creditCustomerDetails
+          : false,
+      pastOrders: state => state.customer.creditCustomer,
     }),
+    customerProfile() {
+      if (this.customerId && this.customerDetails)
+        return this.customerDetails._id[this.customerId]
+      else return this.customerDetails._id.first()
+    },
     ...mapState('loyalty', ['loyalty']),
     ...mapGetters('location', ['_t', 'formatPrice']),
-    ...mapState('location', ['store']),
+    ...mapState('location', ['store', 'timezoneString']),
   },
   methods: {
     setCustomerPlaceOrder(id) {
@@ -201,7 +209,20 @@ export default {
       $(target).modal('show')
       // $('.nogeneral').hide()
     },
-
+    created_date_time(order) {
+      if (order.future_order_datetime) {
+        return this.convertDatetime(
+          order.future_order_datetime,
+          this.timezoneString,
+          'Do MMMM YYYY h:mm:ss A'
+        )
+      }
+      return this.convertDatetime(
+        order.real_created_datetime,
+        this.timezoneString,
+        'Do MMMM YYYY h:mm:ss A'
+      )
+    },
     fetchCustomer: function() {
       if (this.customerId) {
         this.searchCustomerErr = ''
@@ -302,7 +323,7 @@ export default {
                                      ${order.order_type.replace(/[_-]/g, ' ')}
                                   </span>
                                   <span>
-                                     ${order.created_at}
+                                     ${this.created_date_time(order)}
                                   </span>
                             </div>
                         </div>`
