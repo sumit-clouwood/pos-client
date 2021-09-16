@@ -164,10 +164,17 @@ export default {
   computed: {
     ...mapState({
       customers: state => state.customer.customer_list,
-      customerProfile: state =>
-        state.customer.customer ? state.customer.customer : false,
+      customerDetails: state =>
+        state.customer.creditCustomerDetails
+          ? state.customer.creditCustomerDetails
+          : false,
       pastOrders: state => state.customer.creditCustomer,
     }),
+    customerProfile() {
+      if (this.customerId && this.customerDetails)
+        return this.customerDetails._id[this.customerId]
+      else return this.customerDetails._id.first()
+    },
     ...mapState('loyalty', ['loyalty']),
     ...mapGetters('location', ['_t', 'formatPrice']),
     ...mapState('location', ['store', 'timezoneString']),
