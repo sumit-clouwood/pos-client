@@ -721,7 +721,6 @@ export default {
   },
   methods: {
     generateQRCode() {
-      debugger
       if (!this.order) return false
       var qrcode = new QRCode('qrcode')
       qrcode.clear()
