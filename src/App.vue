@@ -168,7 +168,9 @@ export default {
           }
         })
         .catch(error => {
-          this.error = console.trace(error)
+          if (error) {
+            this.error = error
+          }
         })
     },
   },

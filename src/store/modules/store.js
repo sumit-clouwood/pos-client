@@ -31,7 +31,7 @@ const actions = {
     )
     commit('SET_API_DEPENDENCY_VERSIONS', versions.data.dep_tree)
   },
-  loadStore({ rootGetters, dispatch, commit }) {
+  loadStore({ dispatch, commit }) {
     return new Promise((resolve, reject) => {
       commit('sync/loading_store', true, { root: true })
       commit('SET_STORE_PREREQUISITE', false)
@@ -50,52 +50,67 @@ const actions = {
             console.log('open apis loaded')
             commit('sync/loading_store', false, { root: true })
             resolve()
-
-            try {
-              console.log('loading deffered apis')
-              dispatch('defferedLoadOpenApis').finally(() => {
-                dispatch('checkStorePrerequisite')
-
-                console.log('deffered apis loaded')
-              })
-            } catch (error) {
-              commit('sync/loading_store', false, { root: true })
-
-              //inner level catch safe
-              console.trace(error)
-              reject(error)
-            }
           })
+          try {
+            console.log('loading deffered apis')
+            dispatch('defferedLoadOpenApis').finally(() => {
+              dispatch('checkStorePrerequisite')
+
+              console.log('deffered apis loaded')
+            })
+          } catch (error) {
+            commit('sync/loading_store', false, { root: true })
+
+            //inner level catch safe
+            console.trace(error)
+            reject(error)
+          }
         })
         .catch(error => {
+          if (error.response) {
+            // Request made and server responded
+            console.log(error.response.data)
+            console.log(error.response.status)
+            console.log(error.response.headers)
+          } else if (error.request) {
+            // The request was made but no response was received
+            console.log(error.request)
+          } else {
+            // Something happened in setting up the request that triggered an Error
+            console.log('Error', error.message)
+          }
+          console.log(typeof error)
           dispatch('abortPos', {
             title: 'Brand failed to load.',
-            description: error,
+            description: error.response.data.message + '.',
           })
-          reject(error)
+          // show error on abort screen so don't pass anything to reject
+          reject()
         })
-
-      //try fetching user details if user id available, otherwise we ll get user info from ui_menu
-      if (rootGetters['auth/userId']) {
-        dispatch('auth/getUserDetails', rootGetters['auth/userId'], {
-          root: true,
-        })
-      }
     })
   },
 
-  loadOpenApis({ state, dispatch }) {
+  loadOpenApis({ state, dispatch, rootState, rootGetters }) {
     DataService.setLang(state.locale)
     //no store prerequiste needed right now
     //call ui_menu
     return Promise.allSettled([
-      dispatch('category/fetchAll', null, { root: true }),
+      dispatch('category/fetchAll', null, { root: true }).then(() => {
+        if (!rootState.sync.reloaded) {
+          const categories = rootGetters['category/categories']
+          dispatch('category/browse', categories[0], { root: true })
+        }
+      }),
       dispatch('payment/fetchAll', null, { root: true }),
       dispatch('modifier/fetchAll', null, { root: true }),
     ])
   },
 
-  defferedLoadOpenApis({ dispatch }) {
+  defferedLoadOpenApis({ dispatch, rootGetters }) {
+    //try fetching user details if user id available, otherwise we ll get user info from ui_menu
+    dispatch('auth/getUserDetails', rootGetters['auth/userId'], {
+      root: true,
+    })
     dispatch('location/timezone', null, { root: true })
     dispatch('surcharge/fetchAll', null, { root: true })
     dispatch('discount/fetchAll', null, { root: true })

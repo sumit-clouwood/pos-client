@@ -181,59 +181,48 @@ const getters = {
 
 // actions, often async
 const actions = {
-  fetchAll(
-    { commit, dispatch, getters, rootState, rootGetters },
-    storeId = null
-  ) {
-    return new Promise((resolve, reject) => {
-      CategoryService.categories(storeId)
-        .then(response => {
-          commit(mutation.SET_CATEGORIES, {
-            categories: response.data.data,
-            multistore: storeId
-              ? storeId
-              : rootGetters['auth/multistore']
-              ? rootState.context.storeId
-              : false,
-          })
-          //continue loading other stuff
-          CategoryService.subcategories(storeId).then(response => {
-            commit(mutation.SET_SUBCATEGORIES, {
-              subcategories: response.data.data,
-              multistore: storeId
-                ? storeId
-                : rootGetters['auth/multistore']
-                ? rootState.context.storeId
-                : false,
-            })
-            CategoryService.items(storeId).then(response => {
-              let items = response.data.data
-              //for multistore items we need to set store_id with item
-              if (rootGetters['auth/multistore']) {
-                items = items.map(item => {
-                  item.store_id = storeId ? storeId : rootState.context.storeId
-                  return item
-                })
-              }
-              commit(mutation.SET_ITEMS, {
-                items: items,
-                multistore: storeId
-                  ? storeId
-                  : rootGetters['auth/multistore']
-                  ? rootState.context.storeId
-                  : false,
-              })
-
-              if (!rootState.sync.reloaded && !storeId) {
-                const categories = getters.categories
-                dispatch('browse', categories[0])
-              }
-              resolve()
-            })
-          })
+  async fetchAll({ commit, rootState, rootGetters }, storeId = null) {
+    return Promise.all([
+      CategoryService.categories(storeId).then(response => {
+        commit(mutation.SET_CATEGORIES, {
+          categories: response.data.data,
+          multistore: storeId
+            ? storeId
+            : rootGetters['auth/multistore']
+            ? rootState.context.storeId
+            : false,
         })
-        .catch(error => reject(error))
-    })
+      }),
+      //continue loading other stuff
+      CategoryService.subcategories(storeId).then(response => {
+        commit(mutation.SET_SUBCATEGORIES, {
+          subcategories: response.data.data,
+          multistore: storeId
+            ? storeId
+            : rootGetters['auth/multistore']
+            ? rootState.context.storeId
+            : false,
+        })
+      }),
+      CategoryService.items(storeId).then(response => {
+        let items = response.data.data
+        //for multistore items we need to set store_id with item
+        if (rootGetters['auth/multistore']) {
+          items = items.map(item => {
+            item.store_id = storeId ? storeId : rootState.context.storeId
+            return item
+          })
+        }
+        commit(mutation.SET_ITEMS, {
+          items: items,
+          multistore: storeId
+            ? storeId
+            : rootGetters['auth/multistore']
+            ? rootState.context.storeId
+            : false,
+        })
+      }),
+    ])
   },
   fetchMeasurementUnits({ commit }, storeId = null) {
     //load measurement units in parallel

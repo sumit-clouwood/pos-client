@@ -118,7 +118,7 @@ const actions = {
   },
 
   //got through brand/store
-  fetch({ state, commit, dispatch, rootState, rootGetters }) {
+  fetch({ state, commit, dispatch, rootGetters }) {
     dispatch('formatDate')
     dispatch('auth/checkDevice', '', { root: true })
     return new Promise((resolve, reject) => {
@@ -265,27 +265,15 @@ const actions = {
               // so in that case we specifically  need to fetch the user details
               // hence we check user name here, if not found load customer details for current
               // store user
-
-              if (
-                !rootState.auth.userDetails.item ||
-                !rootState.auth.userDetails.item.name
-              ) {
-                dispatch('auth/getUserDetails', storedata.data.user_id, {
-                  root: true,
-                }).then(response => {
-                  resolve({
-                    userDetails: response.item,
-                    stores: multiStoreIds,
-                    availableStoreGroups: availableStoreGroups,
-                  })
-                })
-              } else {
-                resolve({
-                  userDetails: rootState.auth.userDetails.item,
-                  stores: multiStoreIds,
-                  availableStoreGroups: availableStoreGroups,
-                })
-              }
+              commit(
+                'auth/SET_CURRENT_LOGGED_IN_USER_ID',
+                storedata.data.user_id,
+                { root: true }
+              )
+              resolve({
+                stores: multiStoreIds,
+                availableStoreGroups: availableStoreGroups,
+              })
             }
           }
         })
