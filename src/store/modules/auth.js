@@ -258,10 +258,14 @@ const actions = {
           )
         } else {
           //abort
-          dispatch('abortPos', {
-            title: 'No store found',
-            description: 'Please try logging again',
-          })
+          dispatch(
+            'store/abortPos',
+            {
+              title: 'No store found',
+              description: 'Please try logging again',
+            },
+            { root: true }
+          )
         }
       }
     }
