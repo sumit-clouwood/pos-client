@@ -98,6 +98,8 @@ export default {
             if (secondsToLogout <= 0) {
               clearInterval(logoutInterval)
               this.$store.dispatch('auth/logout')
+              this.userError = false
+              this.userErrorInstructions = ''
             }
           }, 1000)
         }
