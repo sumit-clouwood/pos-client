@@ -1,5 +1,11 @@
 <template>
   <div>
+    <div v-if="userError">
+      <div class="center-error">
+        <h3>{{ userError }}</h3>
+        <p>{{ userErrorInstructions }}</p>
+      </div>
+    </div>
     <!-- user is logged in, there is a store id in url or the user is not admin  -->
     <div class="multiplestore-selection">
       <div v-if="showDebug" style="position:  absolute; left: 100px;">
@@ -41,6 +47,9 @@ export default {
   name: 'App',
   data() {
     return {
+      userError: false,
+      userErrorInstructions: '',
+
       error: false,
       showPrivateContext: true,
       roleRouteChangeBlacklist: [
@@ -66,6 +75,9 @@ export default {
     ...mapState('auth', ['token']),
     ...mapGetters('brand', ['hasMultiStores']),
     ...mapState('context', ['storeId']),
+    ...mapState('store', ['storePrerequisite']),
+    ...mapGetters('location', ['_t']),
+
     privateContext() {
       return this.token
     },
@@ -74,6 +86,23 @@ export default {
     },
   },
   watch: {
+    storePrerequisite(error) {
+      if (error) {
+        this.userError = this._t(error.title)
+        this.userErrorInstructions = this._t(error.description)
+        if (process.env.NODE_ENV === 'production') {
+          let secondsToLogout = 30
+          //logout here after 30 sec
+          const logoutInterval = setInterval(() => {
+            secondsToLogout--
+            if (secondsToLogout <= 0) {
+              clearInterval(logoutInterval)
+              this.$store.dispatch('auth/logout')
+            }
+          }, 1000)
+        }
+      }
+    },
     loaded: {
       handler: function(newVal, oldVal) {
         // watch it
@@ -192,4 +221,9 @@ export default {
 </script>
 <style lang="scss">
 @import './assets/scss/style.scss';
+.center-error {
+  text-align: center;
+  width: 100%;
+  padding-top: 150px;
+}
 </style>

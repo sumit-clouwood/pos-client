@@ -18,32 +18,10 @@ other components are nested within.
         loading status: {{ loading }} <br />
         storeId: {{ storeId }}
       </div>
-      <template v-if="userError || systemError">
-        <!-- if there is a user error show user error -->
-        <div v-if="userError">
-          <div class="center-error">
-            <h3>{{ userError }}</h3>
-            <p>{{ userErrorInstructions }}</p>
-          </div>
-        </div>
-        <!-- else if there is a system error show user error -->
-        <section v-else-if="systemError" class="center-error">
-          <h3>
-            We're sorry, we're not able to proceed at the moment, please try
-            back later.
-          </h3>
-          <h5>Technical info:</h5>
-          <p v-html="systemError"></p>
-        </section>
-        <!-- check if there is any user or system error -->
-        <h5 v-if="showForceLogout">
-          Logging out in
-          <span class="text-danger">{{ secondsToLogout }}</span> seconds
-        </h5>
-      </template>
+
       <!-- there is no system or user error, check loading -->
 
-      <div v-else-if="loading">
+      <div v-if="loading">
         <ul class="ullist-inventory-location loading-view pl-0 pt-2">
           <li class="p-3">
             <span class="margin220">
@@ -81,13 +59,7 @@ other components are nested within.
           </li>
         </ul>
       </div>
-      <div v-else-if="multistoreSelector"></div>
       <router-view v-else />
-    </div>
-    <div v-else>
-      <p>
-        {{ this._t('Authorization failed') }}
-      </p>
     </div>
   </div>
 </template>
@@ -110,17 +82,10 @@ export default {
   data: function() {
     return {
       reloadButton: false,
-      systemError: false,
-      userError: false,
       progressIncrement: 0,
       orderId: null,
       tableId: null,
-      subscriptionError: false,
-      secondsToLogout: 30,
-      userErrorInstructions: '',
-      showForceLogout: false,
       interval: undefined,
-      multistoreSelector: false,
     }
   },
   methods: {
@@ -186,11 +151,6 @@ export default {
       }
     },
     setup() {
-      this.multistoreSelector = false
-      this.secondsToLogout = 20
-      this.subscriptionError = false
-      this.showForceLogout = false
-
       this.interval = setInterval(() => {
         this.progressIncrement += 10
         if (this.progressIncrement > 100) {
@@ -245,26 +205,6 @@ export default {
     }, 10000)
   },
   watch: {
-    storePrerequisite(error) {
-      if (error) {
-        this.userError = this._t(error.title)
-        this.userErrorInstructions = this._t(error.description)
-
-        //logout here after 3 sec
-        const logoutInterval = setInterval(() => {
-          this.secondsToLogout--
-          if (
-            this.secondsToLogout <= 0 &&
-            //process.env.NODE_ENV === 'production' &&
-            !process.VUE_APP_PERSISTENT_ERRORS
-          ) {
-            clearInterval(logoutInterval)
-            this.$store.dispatch('auth/logout')
-          }
-        }, 1000)
-      }
-    },
-
     // eslint-disable-next-line no-unused-vars
     $route(to, from) {
       // this.$store.commit('deliveryManager/LIST_TYPE', 'New Orders')
@@ -350,7 +290,6 @@ export default {
     ...mapState('order', ['orderType']),
     ...mapState('sync', ['online', 'loaded']),
     ...mapState('location', ['timezoneString', 'openHours']),
-    ...mapState('store', ['storePrerequisite']),
     ...mapGetters('context', ['isStoreSelected']),
 
     apisLoaded() {
@@ -381,10 +320,3 @@ export default {
 }
 //vanilla js
 </script>
-<style lang="scss" scoped>
-.center-error {
-  text-align: center;
-  width: 100%;
-  padding-top: 150px;
-}
-</style>
