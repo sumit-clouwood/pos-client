@@ -108,8 +108,8 @@ export default {
             if (event.oldVersion < 6) {
               console.log('delete eventsBucket and orderPostRequestBucket')
 
-              idb.deleteObjectStore('eventsBucket')
-              idb.deleteObjectStore('orderPostRequestBucket')
+              idb.deleteObjectStore('events')
+              idb.deleteObjectStore('order_post_requests')
             }
 
             var transaction = event.target.transaction
