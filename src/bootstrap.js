@@ -102,13 +102,14 @@ export default {
               this.dataStore()
               this.orderWorkflowBucket()
             }
+            console.log('all buckets created')
             //in 3 and 5 we created events and store buckets
             //if old version was 5 or below 5
             if (event.oldVersion < 6) {
               console.log('delete eventsBucket and orderPostRequestBucket')
 
-              db.deleteObjectStore('eventsBucket')
-              db.deleteObjectStore('orderPostRequestBucket')
+              idb.deleteObjectStore('eventsBucket')
+              idb.deleteObjectStore('orderPostRequestBucket')
             }
 
             var transaction = event.target.transaction
