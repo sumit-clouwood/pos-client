@@ -34,7 +34,7 @@
           <div class="bs-datetime-selector">
             <form>
               <datetime
-                type="date"
+                type="datetime"
                 title="Date from"
                 v-model="getSetDateFrom"
                 placeholder="Date from"
@@ -46,11 +46,18 @@
                   year: 'numeric',
                   month: 'long',
                   day: 'numeric',
+                  hour: 'numeric',
+                  minute: '2-digit',
                 }"
+                :hour-step="1"
+                :minute-step="60"
+                :min-datetime="minDatetime"
+                :max-datetime="maxDatetime"
                 auto
+                :phrases="{ ok: 'Continue', cancel: 'Exit' }"
               ></datetime>
               <datetime
-                type="date"
+                type="datetime"
                 v-model="getSetDateTo"
                 title="Date to"
                 placeholder="Date to"
@@ -61,10 +68,16 @@
                   year: 'numeric',
                   month: 'long',
                   day: 'numeric',
+                  hour: 'numeric',
+                  minute: '2-digit',
                 }"
+                :hour-step="1"
+                :minute-step="60"
+                :min-datetime="minDatetime"
+                :max-datetime="maxDatetime"
                 :week-start="1"
                 auto
-                :phrases="{ ok: 'oK', cancel: 'Exit' }"
+                :phrases="{ ok: 'Continue', cancel: 'Exit' }"
               ></datetime>
               <button
                 class="btn btn-success btn-large color-main"
@@ -935,6 +948,8 @@ export default {
       todayDate: moment().format('Do MMMM YYYY'),
       todayTime: moment().format('h:mm:ss a'),
       dashboard: this.redirectToBS('dashboard'),
+      minDatetime: null,
+      maxDatetime: new Date().toISOString(),
     }
   },
   components: {
@@ -967,7 +982,9 @@ export default {
       },
       set(dateFrom) {
         let _from = moment(dateFrom).format('YYYY-MM-DD')
+        let time_from = moment(dateFrom).format('HH')
         this.$store.commit('reports/DATE_FROM', _from)
+        this.$store.commit('reports/HOUR_FROM', parseInt(time_from))
       },
     },
     getItemTotal() {
@@ -996,7 +1013,9 @@ export default {
       },
       set(dateTo) {
         let _to = moment(dateTo).format('YYYY-MM-DD')
+        let time_to = moment(dateTo).format('HH')
         this.$store.commit('reports/DATE_TO', _to)
+        this.$store.commit('reports/HOUR_TO', parseInt(time_to))
       },
     },
     company_logo() {
