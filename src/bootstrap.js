@@ -82,13 +82,35 @@ export default {
 
   setupDB(resolver = null) {
     return new Promise(resolve => {
-      const version = 5
+      const version = 6
       db.openDatabase(version)
         .then(({ idb, flag, event }) => {
           console.log('db opened flag: ', flag)
           if (flag === 'upgrade') {
             console.log('creating buckets')
-            this.createBuckets(event, version)
+
+            //if old version is 0, new is 1
+            if (event.oldVersion < 1) {
+              this.authBucket()
+            }
+
+            if (event.oldVersion < 2) {
+              this.logBucket()
+            }
+
+            if (event.oldVersion < 5) {
+              this.dataStore()
+              this.orderWorkflowBucket()
+            }
+            //in 3 and 5 we created events and store buckets
+            //if old version was 5 or below 5
+            if (event.oldVersion < 6) {
+              console.log('delete eventsBucket and orderPostRequestBucket')
+
+              db.deleteObjectStore('eventsBucket')
+              db.deleteObjectStore('orderPostRequestBucket')
+            }
+
             var transaction = event.target.transaction
             transaction.oncomplete = function(event) {
               // Now store is available to be populated
@@ -118,7 +140,6 @@ export default {
 
   authBucket() {
     db.createBucket('auth')
-    $store.commit('sync/setIdbVersion', 1)
     console.log('auth bucket created')
   },
   logBucket() {
@@ -141,7 +162,6 @@ export default {
     })
 
     console.log('log bucket created')
-    $store.commit('sync/setIdbVersion', 4)
   },
   orderWorkflowBucket() {
     const bucket = db.createBucket('workflow_order', {
@@ -175,28 +195,11 @@ export default {
     })
 
     console.log('order workflow bucket created')
-    $store.commit('sync/setIdbVersion', 5)
   },
   dataStore() {
     const bucket = db.createBucket('store', { keyPath: 'key' })
     bucket.createIndex('key', 'key', { unique: true })
     console.log('datastore bucket created')
-    $store.commit('sync/setIdbVersion', 5)
-  },
-
-  createBuckets(event, version) {
-    //createbucket doesn't wait so don't need promise here
-    const buckets = [
-      ['authBucket'],
-      ['logBucket'],
-      ['dataStore', 'orderWorkflowBucket'],
-    ]
-
-    for (let i = event.oldVersion; i < version; i++) {
-      for (const j in buckets[i]) {
-        this[buckets[i][j]]()
-      }
-    }
   },
 
   setNetwork() {

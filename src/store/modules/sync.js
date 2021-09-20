@@ -7,7 +7,6 @@ const state = {
   loaded: false,
   online: true,
   idb: null,
-  idbVersion: 1,
   reloaded: false,
   appUpdateNotification: false,
   cacheFirst: false,
@@ -84,9 +83,6 @@ const mutations = {
     state.loaded = loaded
   },
 
-  setIdbVersion(state, version) {
-    state.idbVersion = version
-  },
   setIdb(state, handle) {
     state.idb = handle
   },
