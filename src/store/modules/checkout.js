@@ -2085,23 +2085,26 @@ const actions = {
 
   handleSystemErrors({ dispatch, rootState }, response) {
     let error = ''
-    if (response.data.status == 'form_errors') {
-      for (let i in response.data.form_errors) {
-        if (typeof response.data.form_errors[i] === 'string') {
-          error += ' ' + response.data.form_errors[i]
-        } else {
-          response.data.form_errors[i].forEach(err => (error += ' ' + err))
+    if (response.data) {
+      if (response.data.status == 'form_errors') {
+        for (let i in response.data.form_errors) {
+          if (typeof response.data.form_errors[i] === 'string') {
+            error += ' ' + response.data.form_errors[i]
+          } else {
+            response.data.form_errors[i].forEach(err => (error += ' ' + err))
+          }
         }
+        /*let past_order_history = rootState.order.selectedOrder ? rootState.order.selectedOrder.item.order_action_history : []
+        if(past_order_history.length > 1) past_order_history.pop()*/
+      } else {
+        error =
+          typeof response.data.error !== 'undefined'
+            ? response.data.error
+            : response.data.message
       }
-      /*let past_order_history = rootState.order.selectedOrder ? rootState.order.selectedOrder.item.order_action_history : []
-      if(past_order_history.length > 1) past_order_history.pop()*/
     } else {
-      error =
-        typeof response.data.error !== 'undefined'
-          ? response.data.error
-          : response.data.message
-    }
-
+      error = response
+    }  
     return dispatch('setMessage', {
       result: 'error',
       msg: error,
@@ -2109,7 +2112,7 @@ const actions = {
   },
   handleRejectedResponse({ dispatch }, { response, offline = false }) {
     // eslint-disable-next-line no-console
-    console.log(response)
+    console.log(response, typeof response, response.message, response.status)
     if (
       offline &&
       (response.message === 'Network Error' ||
@@ -2137,7 +2140,7 @@ const actions = {
         msg: err_msg,
       })
     } else {
-      return dispatch('handleNetworkError', response)
+      return dispatch('handleSystemErrors', response)
     }
 
     return Promise.reject(err_msg)
