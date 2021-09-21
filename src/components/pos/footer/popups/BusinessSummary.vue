@@ -72,7 +72,9 @@
             <div class="bs-time-selector">
               <label>{{ _t('Time From') }} </label>
               <div class="dropdown">
-                <button class="dropbtn">{{ hoursFrom }}</button>
+                <button class="dropbtn">
+                  {{ hoursFrom == 24 ? 'Start' : hoursFrom }}
+                </button>
                 <div class="dropdown-content">
                   <span @click="timeSelection('HOUR_FROM', 24)">
                     {{ _t('Start of Day') }}
@@ -83,18 +85,14 @@
                     :key="i"
                     >{{ i }}
                   </span>
-                  <span @click="timeSelection('HOUR_FROM', 24)">
-                    {{ _t('End of Day') }}
-                  </span>
                 </div>
               </div>
               <label> {{ _t('To') }} </label>
               <div class="dropdown">
-                <button class="dropbtn">{{ hoursTo }}</button>
+                <button class="dropbtn">
+                  {{ hoursTo == 24 ? 'End' : hoursTo }}
+                </button>
                 <div class="dropdown-content">
-                  <span @click="timeSelection('HOUR_TO', 24)">
-                    {{ _t('Start of Day') }}
-                  </span>
                   <span
                     @click="timeSelection('HOUR_TO', j)"
                     v-for="j in 23"
@@ -1205,6 +1203,7 @@ export default {
 .dropdown-content {
   display: none;
   position: absolute;
+  margin-top: 0.1075rem !important;
   background-color: #f9f9f9;
   min-width: 160px;
   box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
