@@ -16,7 +16,10 @@ const state = {
   loader: false,
 }
 
-const getters = {}
+const getters = {
+  hoursFrom: state => state.hour_from,
+  hoursTo: state => state.hour_to,
+}
 
 const actions = {
   businessSummary({ commit, state, rootState }) {
