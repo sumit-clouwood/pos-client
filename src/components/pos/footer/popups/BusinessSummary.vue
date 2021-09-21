@@ -34,7 +34,7 @@
           <div class="bs-datetime-selector">
             <form>
               <datetime
-                type="datetime"
+                type="date"
                 title="Date from"
                 v-model="getSetDateFrom"
                 placeholder="Date from"
@@ -46,18 +46,11 @@
                   year: 'numeric',
                   month: 'long',
                   day: 'numeric',
-                  hour: 'numeric',
-                  minute: '2-digit',
                 }"
-                :hour-step="1"
-                :minute-step="60"
-                :min-datetime="minDatetime"
-                :max-datetime="maxDatetime"
                 auto
-                :phrases="{ ok: 'Continue', cancel: 'Exit' }"
               ></datetime>
               <datetime
-                type="datetime"
+                type="date"
                 v-model="getSetDateTo"
                 title="Date to"
                 placeholder="Date to"
@@ -68,26 +61,61 @@
                   year: 'numeric',
                   month: 'long',
                   day: 'numeric',
-                  hour: 'numeric',
-                  minute: '2-digit',
                 }"
-                :hour-step="1"
-                :minute-step="60"
-                :min-datetime="minDatetime"
-                :max-datetime="maxDatetime"
                 :week-start="1"
                 auto
-                :phrases="{ ok: 'Continue', cancel: 'Exit' }"
+                :phrases="{ ok: 'oK', cancel: 'Exit' }"
               ></datetime>
+            </form>
+          </div>
+          <div>
+            <div class="bs-time-selector">
+              <label>{{ _t('Time From') }} </label>
+              <div class="dropdown">
+                <button class="dropbtn">{{ hoursFrom }}</button>
+                <div class="dropdown-content">
+                  <span @click="timeSelection('HOUR_FROM', 24)">
+                    {{ _t('Start of Day') }}
+                  </span>
+                  <span
+                    @click="timeSelection('HOUR_FROM', i)"
+                    v-for="i in 23"
+                    :key="i"
+                    >{{ i }}
+                  </span>
+                  <span @click="timeSelection('HOUR_FROM', 24)">
+                    {{ _t('End of Day') }}
+                  </span>
+                </div>
+              </div>
+              <label> {{ _t('To') }} </label>
+              <div class="dropdown">
+                <button class="dropbtn">{{ hoursTo }}</button>
+                <div class="dropdown-content">
+                  <span @click="timeSelection('HOUR_TO', 24)">
+                    {{ _t('Start of Day') }}
+                  </span>
+                  <span
+                    @click="timeSelection('HOUR_TO', j)"
+                    v-for="j in 23"
+                    :key="j + 25"
+                    >{{ j }}
+                  </span>
+                  <span @click="timeSelection('HOUR_TO', 24)">
+                    {{ _t('End of Day') }}
+                  </span>
+                </div>
+              </div>
+
               <button
-                class="btn btn-success btn-large color-main"
+                class="btn-report btn btn-success btn-large color-main color-text-invert"
                 type="button"
                 v-on:click="getReport"
               >
-                <i class="fa fa-refresh fa"></i>
-                <!--{{ _t('Get Report') }}-->
+                <!-- <i class="fa fa-refresh fa"></i> -->
+                {{ _t('Get Report') }}
               </button>
-            </form>
+            </div>
           </div>
         </div>
         <div class="modal-body row business-summary" v-if="loader">
@@ -948,8 +976,6 @@ export default {
       todayDate: moment().format('Do MMMM YYYY'),
       todayTime: moment().format('h:mm:ss a'),
       dashboard: this.redirectToBS('dashboard'),
-      minDatetime: null,
-      maxDatetime: new Date().toISOString(),
     }
   },
   components: {
@@ -967,6 +993,7 @@ export default {
   },
   computed: {
     ...mapGetters('location', ['_t', 'formatPrice', 'permitted']),
+    ...mapGetters('reports', ['hoursFrom', 'hoursTo']),
     ...mapState('reports', [
       'BSData',
       'totalPayments',
@@ -982,9 +1009,7 @@ export default {
       },
       set(dateFrom) {
         let _from = moment(dateFrom).format('YYYY-MM-DD')
-        let time_from = moment(dateFrom).format('HH')
         this.$store.commit('reports/DATE_FROM', _from)
-        this.$store.commit('reports/HOUR_FROM', parseInt(time_from))
       },
     },
     getItemTotal() {
@@ -1013,9 +1038,7 @@ export default {
       },
       set(dateTo) {
         let _to = moment(dateTo).format('YYYY-MM-DD')
-        let time_to = moment(dateTo).format('HH')
         this.$store.commit('reports/DATE_TO', _to)
-        this.$store.commit('reports/HOUR_TO', parseInt(time_to))
       },
     },
     company_logo() {
@@ -1026,6 +1049,13 @@ export default {
     },
   },
   methods: {
+    timeSelection(hour, time) {
+      var dropdownContent = document.querySelectorAll('.dropdown-content')
+      for (let el of dropdownContent) el.style.visibility = 'hidden'
+      for (let el of dropdownContent) el.style = ''
+
+      this.$store.commit('reports/' + hour, time)
+    },
     redirectToBS(link) {
       return (
         window.location.href.replace(new RegExp('(/pos)?' + '.*'), '/' + link) +
@@ -1140,6 +1170,66 @@ export default {
     size: landscape;
   }
 }
+.bs-time-selector {
+  display: grid;
+  left: 30px;
+  grid-template-columns: auto auto auto auto auto;
+  grid-column-gap: 6px;
+  position: absolute;
+  -webkit-box-align: baseline;
+  -ms-flex-align: baseline;
+  align-items: baseline;
+  top: 135px;
+  z-index: 8;
+}
+.btn-report {
+  padding: 10px 10px;
+  margin-left: 6px;
+  height: 40px;
+}
+.dropbtn {
+  background-color: #fff;
+  color: #020202;
+  padding: 8px;
+  font-size: 13px;
+  cursor: pointer;
+  width: 65px;
+  border: 1px #d5d5d8 solid;
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+}
+
+.dropdown-content span {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown-content span:hover {
+  color: rgb(255, 255, 255);
+  background-color: #5056ca;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+.dropdown:hover .dropbtn {
+  background-color: #5056ca;
+}
 h5 {
   line-height: 25px;
 }
@@ -1226,8 +1316,8 @@ h5 {
 }
 .bs-datetime-selector {
   display: grid;
-  left: 3px;
-  grid-template-columns: auto auto auto;
+  left: 25px;
+  grid-template-columns: auto auto;
   grid-column-gap: 5px;
   position: absolute;
   align-items: baseline;
@@ -1251,7 +1341,7 @@ h5 {
 }
 @media only screen and (max-width: 599px) {
   .business-summary {
-    top: 60px;
+    top: 100px;
   }
 }
 </style>
