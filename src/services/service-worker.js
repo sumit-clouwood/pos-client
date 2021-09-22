@@ -15,6 +15,7 @@ workbox.setConfig({
 // Populate the cache to illustrate cache-only-populated-cache route
 self.addEventListener('install', event => {
   console.log('service worker installed', event)
+  DB.open(async () => {})
 })
 
 self.addEventListener('activate', function(event) {
@@ -209,20 +210,23 @@ self.addEventListener('fetch', async event => {
       {
         const bgSyncLogic = async () => {
           //open database for operations
-          DB.open(async () => {})
           try {
             const response = await fetch(event.request.clone())
             const clonedReq = event.request.clone()
             const payload = await clonedReq.json()
-            Logger.log({
-              event_time: payload.real_created_datetime,
-              event_title: payload.balance_due,
-              event_type: 'sw:order_sent_online',
-              event_data: {
-                request: payload,
-                response: response,
-              },
-            })
+            try {
+              Logger.log({
+                event_time: payload.real_created_datetime,
+                event_title: payload.balance_due,
+                event_type: 'sw:order_sent_online',
+                event_data: {
+                  request: payload,
+                  response: response,
+                },
+              })
+            } catch (e) {
+              console.log(e)
+            }
             return response
           } catch (error) {
             console.log(
