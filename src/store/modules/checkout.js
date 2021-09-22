@@ -2122,12 +2122,14 @@ const actions = {
         // Something happened in setting up the request that triggered an Error
         console.log('Error', error.message);
       }
-    }  
-    return dispatch('setMessage', {
-      result: 'error',
-      msg: error.message || error,
-      desc: error.response.data
-    })
+    }
+    if (!error.response || !error.response.status || error.response.status != 401) {
+      return dispatch('setMessage', {
+        result: 'error',
+        msg: error.message || error,
+        desc: error.response.data
+      })
+    }
   },
   handleRejectedResponse({ dispatch }, { response, offline = false }) {
     // eslint-disable-next-line no-console
