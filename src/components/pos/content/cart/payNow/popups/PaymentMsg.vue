@@ -12,12 +12,17 @@
         </div>
         <div class="modal-body change-amount-option">
           <div class="amount-change-wrap">
-            <h5
-              class="color-text"
-              v-if="msg.message && msg.message !== 'loading'"
-            >
-              {{ msg.message }}
-            </h5>
+            <template v-if="msg.message && msg.message !== 'loading'">
+              <h5 class="color-text">
+                {{ msg.message }}
+              </h5>
+              <div v-if="msg.desc">
+                <div class="smalldesc" :class="{ expand: expandedCss }">
+                  {{ msg.desc }}
+                </div>
+                <a href="#" @click.prevent="expandError">Read more</a>
+              </div>
+            </template>
             <Preloader v-else />
           </div>
         </div>
@@ -87,7 +92,15 @@ export default {
   components: {
     Preloader,
   },
+  data() {
+    return {
+      expandedCss: false,
+    }
+  },
   methods: {
+    expandError() {
+      this.expandedCss = !this.expandedCss
+    },
     acceptMsg() {
       hideModal('#pay-now')
       hideModal('#payment-msg')
@@ -128,7 +141,14 @@ export default {
 @import '@/assets/scss/pixels_rem.scss';
 @import '@/assets/scss/variables.scss';
 @import '@/assets/scss/mixins.scss';
-
+.smalldesc {
+  max-height: 52px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  &.expand {
+    max-height: 450px;
+  }
+}
 @include responsive(mobile) {
   #payment-msg {
     .modal-dialog {
