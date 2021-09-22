@@ -28,6 +28,8 @@ const actions = {
           commit('LOADER', false)
         })
         .catch(err => {
+          commit('CREATE_CUSTOMER_STATES', err.data)
+          resolve(err)
           reject(err)
           commit('LOADER', false)
         })
