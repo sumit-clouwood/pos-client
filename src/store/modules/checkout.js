@@ -1877,7 +1877,10 @@ const actions = {
               ) {
                 dispatch('setToken', state.order.token_number)
               }
-              commit(mutation.PRINT, true)
+              console.log(error, error.message, error.response, error.status, error.response.status)
+              if (!error.response || error.response.status < 500) {
+                commit(mutation.PRINT, true)
+              }
               resolve()
             })
             .catch(() => resolve())
@@ -2082,31 +2085,52 @@ const actions = {
 
   handleSystemErrors({ dispatch, rootState }, response) {
     let error = ''
-    if (response.data.status == 'form_errors') {
-      for (let i in response.data.form_errors) {
-        if (typeof response.data.form_errors[i] === 'string') {
-          error += ' ' + response.data.form_errors[i]
-        } else {
-          response.data.form_errors[i].forEach(err => (error += ' ' + err))
+    if (response.data) {
+      if (response.data.status == 'form_errors') {
+        for (let i in response.data.form_errors) {
+          if (typeof response.data.form_errors[i] === 'string') {
+            error += ' ' + response.data.form_errors[i]
+          } else {
+            response.data.form_errors[i].forEach(err => (error += ' ' + err))
+          }
         }
+        /*let past_order_history = rootState.order.selectedOrder ? rootState.order.selectedOrder.item.order_action_history : []
+        if(past_order_history.length > 1) past_order_history.pop()*/
+      } else {
+        error =
+          typeof response.data.error !== 'undefined'
+            ? response.data.error
+            : response.data.message
       }
-      /*let past_order_history = rootState.order.selectedOrder ? rootState.order.selectedOrder.item.order_action_history : []
-      if(past_order_history.length > 1) past_order_history.pop()*/
     } else {
-      error =
-        typeof response.data.error !== 'undefined'
-          ? response.data.error
-          : response.data.message
+      error = response
+      if (error.response) {
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx
+        console.log(error.response.data);
+        console.log(error.response.status);
+        console.log(error.response.headers);
+      } else if (error.request) {
+        // The request was made but no response was received
+        // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+        // http.ClientRequest in node.js
+        console.log(error.request);
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        console.log('Error', error.message);
+      }
     }
-
-    return dispatch('setMessage', {
-      result: 'error',
-      msg: error,
-    })
+    if (!error.response || !error.response.status || error.response.status != 401) {  
+      return dispatch('setMessage', {
+        result: 'error',
+        msg: error.message || error,
+        desc: error.response.data
+      })
+    }
   },
   handleRejectedResponse({ dispatch }, { response, offline = false }) {
     // eslint-disable-next-line no-console
-    console.log(response)
+    console.log(response, typeof response, response.message, response.status)
     if (
       offline &&
       (response.message === 'Network Error' ||
@@ -2134,7 +2158,7 @@ const actions = {
         msg: err_msg,
       })
     } else {
-      return dispatch('handleNetworkError', response)
+      return dispatch('handleSystemErrors', response)
     }
 
     return Promise.reject(err_msg)
@@ -2160,10 +2184,10 @@ const actions = {
     )
     return Promise.resolve()
   },
-  setMessage({ commit }, { result, msg = '' }) {
+  setMessage({ commit }, { result, msg = '', desc = '' }) {
     commit(
       'checkoutForm/SET_MSG',
-      { message: msg, result: result },
+      { message: msg, result: result, desc: desc },
       {
         root: true,
       }
