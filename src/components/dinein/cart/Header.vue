@@ -27,10 +27,10 @@
         >
           <i class="fa fa-times" aria-hidden="true"></i>
         </span>
-        <p v-if="selectedCustomer.email != ''">
+        <p v-if="selectedCustomer.email != '' && selectedCustomer.name == ''">
           {{ _t('Email') }} : {{ selectedCustomer.email }}
         </p>
-        <p v-if="selectedCustomer.name != '' && selectedCustomer.email == ''">
+        <p v-if="selectedCustomer.name != ''">
           {{ _t('Name') }} : {{ selectedCustomer.name }}
         </p>
         <div v-if="selectedCustomer.phone_number">
@@ -148,7 +148,7 @@
 </template>
 
 <script>
-/* global $ */
+/* global $ hideModal */
 import { bus } from '@/eventBus'
 
 import { mapState, mapGetters, mapActions } from 'vuex'
@@ -259,7 +259,9 @@ export default {
     printSplit() {
       this.executePayment({ action: 'dine-in-order-preview' }).then(() => {
         setTimeout(() => {
-          $('#payment-msg').modal('hide')
+          this.$store.commit('checkoutForm/SET_PROCESSING', false)
+          // $('#payment-msg').modal('hide')
+          hideModal('#payment-msg')
         }, 700)
       })
     },
