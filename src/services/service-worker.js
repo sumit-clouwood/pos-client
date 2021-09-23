@@ -213,8 +213,9 @@ self.addEventListener('fetch', async event => {
           try {
             const response = await fetch(event.request.clone())
             const clonedReq = event.request.clone()
-            const payload = await clonedReq.json()
+
             try {
+              const payload = await clonedReq.json()
               Logger.log({
                 event_time: payload.real_created_datetime,
                 event_title: payload.balance_due,
