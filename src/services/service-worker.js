@@ -211,9 +211,8 @@ self.addEventListener('fetch', async event => {
         const bgSyncLogic = async () => {
           //open database for operations
           try {
-            const response = await fetch(event.request.clone())
             const clonedReq = event.request.clone()
-
+            const response = await fetch(event.request.clone())
             try {
               const payload = await clonedReq.json()
               Logger.log({
