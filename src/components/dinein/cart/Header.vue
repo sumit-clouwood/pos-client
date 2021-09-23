@@ -27,10 +27,10 @@
         >
           <i class="fa fa-times" aria-hidden="true"></i>
         </span>
-        <p v-if="selectedCustomer.email != ''">
+        <p v-if="selectedCustomer.email != '' && selectedCustomer.name == ''">
           {{ _t('Email') }} : {{ selectedCustomer.email }}
         </p>
-        <p v-if="selectedCustomer.name != '' && selectedCustomer.email == ''">
+        <p v-if="selectedCustomer.name != ''">
           {{ _t('Name') }} : {{ selectedCustomer.name }}
         </p>
         <div v-if="selectedCustomer.phone_number">
