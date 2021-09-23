@@ -235,9 +235,9 @@ self.addEventListener('fetch', async event => {
               error == 'TypeError: Failed to fetch'
             )
             if (
-              // !error ||
-              // error == 'TypeError: Failed to fetch' ||
-              // !error.status ||
+              !error ||
+              error == 'TypeError: Failed to fetch' ||
+              !error.status ||
               error.status < 500
             ) {
               console.log('adding request to queue ', event.request.clone())
