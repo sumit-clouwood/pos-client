@@ -15,10 +15,10 @@ workbox.setConfig({
 // Populate the cache to illustrate cache-only-populated-cache route
 self.addEventListener('install', event => {
   console.log('service worker installed', event)
-  DB.open(async () => {})
 })
 
 self.addEventListener('activate', function(event) {
+  DB.open(async () => {})
   console.log('service worker activate', event)
   self.clients.claim()
   const promiseChain = caches.keys().then(cacheNames => {
@@ -211,10 +211,10 @@ self.addEventListener('fetch', async event => {
         const bgSyncLogic = async () => {
           //open database for operations
           try {
-            const response = await fetch(event.request.clone())
             const clonedReq = event.request.clone()
-            const payload = await clonedReq.json()
+            const response = await fetch(event.request.clone())
             try {
+              const payload = await clonedReq.json()
               Logger.log({
                 event_time: payload.real_created_datetime,
                 event_title: payload.balance_due,
@@ -235,9 +235,9 @@ self.addEventListener('fetch', async event => {
               error == 'TypeError: Failed to fetch'
             )
             if (
-              // !error ||
-              // error == 'TypeError: Failed to fetch' ||
-              // !error.status ||
+              !error ||
+              error == 'TypeError: Failed to fetch' ||
+              !error.status ||
               error.status < 500
             ) {
               console.log('adding request to queue ', event.request.clone())
@@ -246,11 +246,15 @@ self.addEventListener('fetch', async event => {
               //send response back
               let handler = await Factory.handler(event.request.clone())
               if (handler && handler.response) {
-                const jsonResponse = await handler.response(error)
-                if (jsonResponse) {
-                  return new Response(JSON.stringify(jsonResponse), {
-                    headers: { 'content-type': 'application/json' },
-                  })
+                try {
+                  const jsonResponse = await handler.response(error)
+                  if (jsonResponse) {
+                    return new Response(JSON.stringify(jsonResponse), {
+                      headers: { 'content-type': 'application/json' },
+                    })
+                  }
+                } catch (e) {
+                  console.log(e)
                 }
               }
             }
@@ -300,19 +304,8 @@ class Order {
   filterRequest() {}
   backgroundSync() {}
   response(error) {
-    //response is sent for failed request
-    Logger.log({
-      event_time: this.payload.real_created_datetime,
-      event_title: this.payload.balance_due,
-      event_type: 'sw:order_save_offline',
-      event_data: {
-        request: this.payload,
-        response: error,
-      },
-    })
-
     const time = +new Date()
-    return Promise.resolve({
+    let prom = Promise.resolve({
       status: 'ok',
       id: time,
       order_no: this.payload.real_created_datetime
@@ -322,6 +315,23 @@ class Order {
       generate_time: time,
       flash_message: ' Order Added',
     })
+
+    //response is sent for failed request
+    try {
+      Logger.log({
+        event_time: this.payload.real_created_datetime,
+        event_title: this.payload.balance_due,
+        event_type: 'sw:order_save_offline',
+        event_data: {
+          request: this.payload,
+          response: error,
+        },
+      })
+    } catch (e) {
+      console.log(e)
+    }
+
+    return prom
   }
 }
 class Walkin extends Order {
@@ -680,6 +690,8 @@ const Logger = {
     if (!data.event_time) {
       data.event_time = data.log_time
     }
-    DB.getBucket('log', 'readwrite').add(data)
+    DB.open(async () => {
+      DB.getBucket('log', 'readwrite').add(data)
+    })
   },
 }
