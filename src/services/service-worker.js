@@ -450,8 +450,8 @@ class Crm extends Order {
 //------------------- U T I L I T Y - C L A S S E S -------------------------
 //---------------------------------------------------------------------------
 var Sync = {
-  headers: null,
-  dbAuthData: null,
+  headers: {},
+  dbAuthData: {},
 
   sendTokenToClient: async function(token) {
     const allClients = await self.clients.matchAll()
@@ -465,7 +465,7 @@ var Sync = {
   },
 
   async auth() {
-    if (this.headers) {
+    if (this.headers.authorization) {
       //auth was already called so it holds headers
       return Promise.resolve(this.headers)
     }
@@ -483,15 +483,15 @@ var Sync = {
             cursor.continue()
           } else {
             if (authData && authData[0]) {
-              this.dbAuthData = authData[0]
+              Sync.dbAuthData = authData[0]
 
-              this.headers = {
+              Sync.headers = {
                 Accept: 'application/json',
                 'Content-Type': 'application/json',
-                authorization: 'Bearer ' + this.dbAuthData.token,
+                authorization: 'Bearer ' + Sync.dbAuthData.token,
               }
 
-              resolve(this.headers)
+              resolve(Sync.headers)
             } else {
               reject(event)
             }
