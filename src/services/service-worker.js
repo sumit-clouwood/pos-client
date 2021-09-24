@@ -577,7 +577,7 @@ var Sync = {
                 //   })
 
                 //force reload pos
-                Sync.sendMessageToClient('token-expired', response)
+                Sync.sendMessageToClient('token-expired', response.status)
 
                 reject(response)
               } else {
@@ -705,7 +705,11 @@ const Logger = {
       data.event_time = data.log_time
     }
     DB.open(async () => {
-      DB.getBucket('log', 'readwrite').add(data)
+      try {
+        DB.getBucket('log', 'readwrite').add(data)
+      } catch (e) {
+        console.log(e)
+      }
     })
   },
 }
