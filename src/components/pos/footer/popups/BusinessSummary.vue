@@ -31,44 +31,44 @@
             </label>
             <label> Store</label>
           </div>-->
-          <div class="bs-datetime-selector">
-            <form>
-              <datetime
-                type="date"
-                title="Date from"
-                v-model="getSetDateFrom"
-                placeholder="Date from"
-                value-zone="local"
-                zone="local"
-                :week-start="1"
-                input-class="btn schedule-input btn-large datepicker-here color-dashboard-background"
-                :format="{
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric',
-                }"
-                auto
-              ></datetime>
-              <datetime
-                type="date"
-                v-model="getSetDateTo"
-                title="Date to"
-                placeholder="Date to"
-                value-zone="local"
-                zone="local"
-                input-class="btn schedule-input btn-large datepicker-here color-dashboard-background"
-                :format="{
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric',
-                }"
-                :week-start="1"
-                auto
-                :phrases="{ ok: 'oK', cancel: 'Exit' }"
-              ></datetime>
-            </form>
-          </div>
           <div>
+            <div class="bs-datetime-selector">
+              <form>
+                <datetime
+                  type="date"
+                  title="Date from"
+                  v-model="getSetDateFrom"
+                  placeholder="Date from"
+                  value-zone="local"
+                  zone="local"
+                  :week-start="1"
+                  input-class="btn schedule-input btn-large datepicker-here color-dashboard-background"
+                  :format="{
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                  }"
+                  auto
+                ></datetime>
+                <datetime
+                  type="date"
+                  v-model="getSetDateTo"
+                  title="Date to"
+                  placeholder="Date to"
+                  value-zone="local"
+                  zone="local"
+                  input-class="btn schedule-input btn-large datepicker-here color-dashboard-background"
+                  :format="{
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                  }"
+                  :week-start="1"
+                  auto
+                  :phrases="{ ok: 'oK', cancel: 'Exit' }"
+                ></datetime>
+              </form>
+            </div>
             <div class="bs-time-selector">
               <label>{{ _t('Time From') }} </label>
               <div class="dropdown">
@@ -1195,10 +1195,10 @@ export default {
   border: 1px #d5d5d8 solid;
 }
 
-.dropdown {
+/* .dropdown {
   position: relative;
   display: inline-block;
-}
+} */
 
 .dropdown-content {
   display: none;
