@@ -261,8 +261,12 @@ self.addEventListener('fetch', async event => {
             return error
           }
         }
-
-        event.respondWith(bgSyncLogic())
+        if (
+          event.request.url.includes('/api') &&
+          ['/orders'].some(key => event.request.url.includes(key))
+        ) {
+          event.respondWith(bgSyncLogic())
+        }
       }
       break
   }
