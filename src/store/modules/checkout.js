@@ -2126,7 +2126,7 @@ const actions = {
     return dispatch('setMessage', {
       result: 'error',
       msg: error.message || error,
-      desc: error.response.data
+      desc: error.response ? error.response.data : error
     })
   },
   handleRejectedResponse({ dispatch }, { response, offline = false }) {
