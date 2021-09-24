@@ -208,63 +208,64 @@ self.addEventListener('fetch', async event => {
 
     case 'POST':
       {
-        const bgSyncLogic = async () => {
-          //open database for operations
-          try {
-            const clonedReq = event.request.clone()
-            const response = await fetch(event.request.clone())
-            try {
-              const payload = await clonedReq.json()
-              Logger.log({
-                event_time: payload.real_created_datetime,
-                event_title: payload.balance_due,
-                event_type: 'sw:order_sent_online',
-                event_data: {
-                  request: payload,
-                  response: response,
-                },
-              })
-            } catch (e) {
-              console.log(e)
-            }
-            return response
-          } catch (error) {
-            console.log(
-              error,
-              typeof error,
-              error == 'TypeError: Failed to fetch'
-            )
-            if (
-              !error ||
-              error == 'TypeError: Failed to fetch' ||
-              !error.status ||
-              error.status < 500
-            ) {
-              console.log('adding request to queue ', event.request.clone())
-              await ordersQueue.pushRequest({ request: event.request })
-
-              //send response back
-              let handler = await Factory.handler(event.request.clone())
-              if (handler && handler.response) {
-                try {
-                  const jsonResponse = await handler.response(error)
-                  if (jsonResponse) {
-                    return new Response(JSON.stringify(jsonResponse), {
-                      headers: { 'content-type': 'application/json' },
-                    })
-                  }
-                } catch (e) {
-                  console.log(e)
-                }
-              }
-            }
-            return error
-          }
-        }
         if (
           event.request.url.includes('/api') &&
           ['/orders'].some(key => event.request.url.includes(key))
         ) {
+          const bgSyncLogic = async () => {
+            //open database for operations
+            try {
+              const clonedReq = event.request.clone()
+              const response = await fetch(event.request.clone())
+              try {
+                const payload = await clonedReq.json()
+                Logger.log({
+                  event_time: payload.real_created_datetime,
+                  event_title: payload.balance_due,
+                  event_type: 'sw:order_sent_online',
+                  event_data: {
+                    request: payload,
+                    response: response,
+                  },
+                })
+              } catch (e) {
+                console.log(e)
+              }
+              return response
+            } catch (error) {
+              console.log(
+                error,
+                typeof error,
+                error == 'TypeError: Failed to fetch'
+              )
+              if (
+                !error ||
+                error == 'TypeError: Failed to fetch' ||
+                !error.status ||
+                error.status < 500
+              ) {
+                console.log('adding request to queue ', event.request.clone())
+                await ordersQueue.pushRequest({ request: event.request })
+
+                //send response back
+                let handler = await Factory.handler(event.request.clone())
+                if (handler && handler.response) {
+                  try {
+                    const jsonResponse = await handler.response(error)
+                    if (jsonResponse) {
+                      return new Response(JSON.stringify(jsonResponse), {
+                        headers: { 'content-type': 'application/json' },
+                      })
+                    }
+                  } catch (e) {
+                    console.log(e)
+                  }
+                }
+              }
+              return error
+            }
+          }
+
           event.respondWith(bgSyncLogic())
         }
       }
