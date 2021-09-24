@@ -463,7 +463,16 @@ var Sync = {
       })
     }
   },
-
+  sendMessageToClient: async function(msg, data) {
+    const allClients = await self.clients.matchAll()
+    const client = allClients.filter(client => client.type === 'window')[0]
+    if (client) {
+      client.postMessage({
+        msg: msg,
+        data: data,
+      })
+    }
+  },
   async auth() {
     if (this.headers.authorization) {
       //auth was already called so it holds headers
@@ -559,13 +568,18 @@ var Sync = {
               } else if (response.status == 401) {
                 //network / token expired, reauth
 
-                Sync.reauth(requestUrl)
-                  .then(() => {
-                    this.request(requestUrl, method, payload)
-                  })
-                  .catch(error => {
-                    reject(error)
-                  })
+                // Sync.reauth(requestUrl)
+                //   .then(() => {
+                //     this.request(requestUrl, method, payload)
+                //   })
+                //   .catch(error => {
+                //     reject(error)
+                //   })
+
+                //force reload pos
+                Sync.sendMessageToClient('token-expired', response)
+
+                reject(response)
               } else {
                 //422 or some other status code
                 reject(response)

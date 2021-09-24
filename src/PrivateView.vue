@@ -71,6 +71,7 @@ import ResizeMixin from '@/mixins/ResizeHandler'
 import Preloader from '@/components/util/Preloader'
 import { mapState, mapGetters } from 'vuex'
 import moment from 'moment-timezone'
+import StoreService from '@/services/data/StoreService'
 
 export default {
   name: 'PrivateView',
@@ -137,6 +138,14 @@ export default {
             console.log('*** event received from service worker', event)
             if (event.data.msg == 'token') {
               console.log('event received from sw', event)
+            }
+            if (event.data.msg == 'token-expired') {
+              console.log(event.data)
+              console.log('refreshing the token')
+              //this.$store.dispatch('auth/logout')
+              //fetch versions api
+              StoreService.getApiVersions()
+              console.log('token refreshed')
             }
             if (event.data.msg === 'sync') {
               if (event.data.data.status === 'done') {
