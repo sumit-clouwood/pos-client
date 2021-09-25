@@ -383,6 +383,8 @@ const actions = {
 
       //preserve brand_id which is needed for switch cashier api
       commit('context/RESET', data, { root: true })
+      commit('store/RESET', null, { root: true })
+      commit('brand/RESET', null, { root: true })
 
       AuthService.logout().then(() => {})
 

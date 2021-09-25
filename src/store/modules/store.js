@@ -314,6 +314,9 @@ const mutations = {
   SET_STORE_PREREQUISITE(state, value) {
     state.storePrerequisite = value
   },
+  RESET(state) {
+    Object.assign(state, getDefaults())
+  },
 }
 
 export default {

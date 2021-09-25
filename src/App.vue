@@ -117,9 +117,18 @@ export default {
         console.log('hasMultiStores Prop changed: ', newVal, ' | was: ', oldVal)
         this.showPrivateContext = true
 
-        if (newVal && this.token && !this.storeId) {
-          this.showPrivateContext = false
-          showModal('#multiStoresModal')
+        if (newVal && this.token) {
+          if (!this.storeId) {
+            this.showPrivateContext = false
+            showModal('#multiStoresModal')
+          } else {
+            //store id already in context via url
+            this.showPrivateContext = true
+            console.log(
+              'store id already in context via url, loading new store'
+            )
+            this.loadStore()
+          }
         }
       },
       deep: true,

@@ -116,6 +116,9 @@ const mutations = {
   SET_AVAILABLE_STORES: (state, data) => {
     state.availableStores = data
   },
+  RESET(state) {
+    Object.assign(state, getDefaults())
+  },
 }
 
 export default {
