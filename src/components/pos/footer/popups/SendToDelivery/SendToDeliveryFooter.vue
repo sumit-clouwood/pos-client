@@ -37,6 +37,7 @@
           class="btn referal-btn dropdown-toggle shorten-sentence color-text color-secondary"
           data-toggle="modal"
           data-target="#select-referral"
+          @click="calculateHeights"
         >
           {{ changedReferral ? changedReferral.referralName : _t('Referral') }}
         </button>
@@ -134,6 +135,7 @@
 <script>
 /* global $, showModal, hidePayNow */
 import moment from 'moment-timezone'
+import { bus } from '@/eventBus'
 
 import { Datetime } from 'vue-datetime'
 import { mapState, mapActions, mapGetters } from 'vuex'
@@ -186,6 +188,9 @@ export default {
     ...mapGetters('modules', ['enabled']),
   },
   methods: {
+    calculateHeights() {
+      bus.$emit('open-referrals-popup', true)
+    },
     calculateLoyaltyAmount() {
       if (!this.online) {
         this.$store.commit('order/setAlert', {
