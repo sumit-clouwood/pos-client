@@ -39,7 +39,7 @@ const actions = {
     let delivery_area = {} //Delivery Area
     let kitchen_menu_items = []
     let jsonResponse = false
-    //Item according to Kitchens Sections
+    //Item according to Kitchens Sections 'category_in_multiple_kot'
     let kitchenSectionsItems = state.kitchenitems
     if (kitchenSectionsItems.length) {
       orderData.items.forEach(item => {

@@ -330,6 +330,35 @@
               <span>{{ _t('Select') + ' ' + _t('Discount') }}</span>
             </a>
           </li>
+          <li
+            class="footer-slider-list-item color-secondary"
+            data-toggle="modal"
+            data-target="#open-discount"
+            id="discount-footer"
+          >
+            <a
+              class="footer-slider-list-item-link color-text-invert"
+              role="button"
+            >
+              <svg
+                aria-hidden="true"
+                focusable="false"
+                data-prefix="fas"
+                data-icon="badge-percent"
+                role="img"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 512 512"
+                class="svg-inline--fa fa-badge-percent fa-w-16 fa-2x"
+              >
+                <path
+                  fill="currentColor"
+                  d="M512 256c0-37.7-23.7-69.9-57.1-82.4 14.7-32.4 8.8-71.9-17.9-98.6-26.7-26.7-66.2-32.6-98.6-17.9C325.9 23.7 293.7 0 256 0s-69.9 23.7-82.4 57.1c-32.4-14.7-72-8.8-98.6 17.9-26.7 26.7-32.6 66.2-17.9 98.6C23.7 186.1 0 218.3 0 256s23.7 69.9 57.1 82.4c-14.7 32.4-8.8 72 17.9 98.6 26.6 26.6 66.1 32.7 98.6 17.9 12.5 33.3 44.7 57.1 82.4 57.1s69.9-23.7 82.4-57.1c32.6 14.8 72 8.7 98.6-17.9 26.7-26.7 32.6-66.2 17.9-98.6 33.4-12.5 57.1-44.7 57.1-82.4zm-320-96c17.67 0 32 14.33 32 32s-14.33 32-32 32-32-14.33-32-32 14.33-32 32-32zm12.28 181.65c-6.25 6.25-16.38 6.25-22.63 0l-11.31-11.31c-6.25-6.25-6.25-16.38 0-22.63l137.37-137.37c6.25-6.25 16.38-6.25 22.63 0l11.31 11.31c6.25 6.25 6.25 16.38 0 22.63L204.28 341.65zM320 352c-17.67 0-32-14.33-32-32s14.33-32 32-32 32 14.33 32 32-14.33 32-32 32z"
+                  class
+                ></path>
+              </svg>
+              <span>{{ _t('Open') + ' ' + _t('Discount') }}</span>
+            </a>
+          </li>
           <template
             v-if="
               allowed(PERMS.CAN_REMOVE_SURCHRAGES) ||
@@ -514,6 +543,7 @@
     <AddNote />
     <item-note></item-note>
     <Discount />
+    <open-discount></open-discount>
     <Referral />
     <SendToDelivery />
     <ManageCustomer v-if="online" />
@@ -563,6 +593,7 @@ import DineIn from './footer/popups/DineIn'
 import AddNote from './footer/popups/AddNote'
 import itemNote from './footer/popups/itemNote'
 import Discount from './footer/popups/Discount'
+import OpenDiscount from './footer/popups/OpenDiscount'
 import SendToDelivery from './footer/popups/SendToDelivery'
 import ManageCustomer from './footer/popups/ManageCustomer'
 import OfflineManageCustomer from './footer/popups/OfflineManageCustomer'
@@ -622,6 +653,7 @@ export default {
     AddNote,
     itemNote,
     Discount,
+    OpenDiscount,
     CustomerNote,
     ManageCustomer,
     OfflineManageCustomer,
