@@ -81,6 +81,7 @@ const getters = {
   currency: state => state.currency,
   timezone: state => (state.store ? state.store.timezone : null),
   timezoneString: state => state.timezoneString,
+  referrals: state => state.referrals,
 }
 
 // actions

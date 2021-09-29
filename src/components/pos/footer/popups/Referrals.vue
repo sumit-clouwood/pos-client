@@ -10,22 +10,35 @@
             {{ _t('Select Referral') }}
           </h5>
         </div>
+        <div
+          class="referral-bottom-arrow food-arrow"
+          v-show="showScrollDown"
+          @click="scroll('up')"
+        >
+          <i class="fa fa-chevron-down" aria-hidden="true"></i>
+        </div>
+
         <div class="modal-body row dining-options-block select-discount">
           <!--<p v-if="errors !== ''" class="errors text-danger">{{ errors }}</p>-->
           <!--<p v-if="msg" class="text-info">{{ msg }}</p>-->
-          <div class="error mx-auto" v-if="!getReferrals">
+          <div class="error mx-auto" v-show="!referrals">
             <p class="text-danger text-center">
               <span> {{ _t('Referrals are not available.') }}</span>
             </p>
           </div>
-          <div v-else class="dining-option-block select-discount-option">
+          <div
+            v-show="referrals"
+            class="dining-option-block select-discount-option"
+            ref="referralsContainer"
+          >
             <div
               class="option-contain"
+              ref="entityReferral"
               :class="{
                 active: referral._id === changedReferral.referralId,
                 'color-dashboard-background': true,
               }"
-              v-for="referral in getReferrals"
+              v-for="referral in referrals"
               :key="referral._id"
               @click="
                 selectedReferral({
@@ -47,7 +60,16 @@
             </div>
           </div>
         </div>
+
         <div class="modal-footer discount-footer">
+          <div
+            class="refferal-top-arrow food-arrow"
+            @click="scroll('down')"
+            v-show="showScrollUp"
+          >
+            <i class="fa fa-chevron-up" aria-hidden="true"></i>
+          </div>
+
           <div class="btn-announce">
             <button
               class="btn btn-danger btn-large color-text-invert color-button"
@@ -65,20 +87,36 @@
 </template>
 
 <script>
-import { mapGetters, mapState } from 'vuex'
+import { mapGetters } from 'vuex'
+import Scroll from '@/mixins/Scroll'
+import { bus } from '@/eventBus'
+
 export default {
   name: 'Referrals',
   props: {},
+  mounted() {
+    bus.$on('open-referrals-popup', () => {
+      this.$nextTick(() => {
+        setTimeout(() => {
+          this.calculateScrolls().catch(() => {})
+        }, 500)
+      })
+    })
+  },
   data() {
     return {
       changedReferral: { referralName: 'Referral' },
+      container: 'referralsContainer',
+      entity: 'entityReferral',
+      margin: 100,
+      keepEntitiesInScroll: 0,
+      scrollcalc: false,
     }
   },
+  mixins: [Scroll],
   computed: {
-    ...mapState({
-      getReferrals: state => state.location.referrals,
-    }),
-    ...mapGetters('location', ['_t']),
+    ...mapGetters('location', ['_t', 'referrals']),
+    ...mapGetters('customer', ['isAddressSelected']),
   },
   methods: {
     selectedReferral(referral) {
@@ -86,6 +124,7 @@ export default {
       this.$store.commit('order/SET_REFERRAL', this.changedReferral)
     },
   },
+  watch: {},
 }
 </script>
 <style lang="sass" scoped>
@@ -97,4 +136,18 @@ export default {
 
 .modal-dialog
     max-width: 40%
+
+.food-arrow
+  right: 10px;
+
+.referral-bottom-arrow
+  top: 53px;
+
+.refferal-top-arrow
+  &.food-arrow
+    right: 10px;
+    bottom: 64px;
+
+.select-discount
+  scroll-behavior: smooth
 </style>
