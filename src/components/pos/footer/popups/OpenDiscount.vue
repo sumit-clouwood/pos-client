@@ -166,8 +166,9 @@ export default {
       this.discount_type = 'value'
       this.discount_included_surcharge = false
       this.discount_amount = 0
+      this.applyOrderDiscount(false)
     },
-    applyOrderDiscount: function() {
+    applyOrderDiscount: function(isModalHide = true) {
       let discount = {
         _id: 'open_discount',
         name: 'Open Discount',
@@ -184,13 +185,13 @@ export default {
         max_discount_value: 0,
         min_cart_value: 0,
       }
-      // eslint-disable-next-line no-console
-      console.log(discount, 'discount')
       this.$store.dispatch('discount/selectOrderDiscount', discount)
       this.$store
         .dispatch('discount/applyOrderDiscount')
         .then(() => {
-          hideModal('#open-discount')
+          if (isModalHide) {
+            hideModal('#open-discount')
+          }
           this.discountHendlerChange()
         })
         .catch()
