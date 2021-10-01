@@ -33,7 +33,7 @@
     <OrderDetailsPopup />
     <div class="pagination-customer-details" v-if="!loading">
       <paginate
-        v-if="params.totalPages"
+        v-if="params.totalPages > 1"
         :page-count="params.totalPages"
         :page-range="1"
         :margin-pages="1"
@@ -42,6 +42,7 @@
         :next-text="_t('Next')"
         :container-class="paginationDirection"
         :page-class="_t('page-item')"
+        v-model="params.page"
       >
       </paginate>
     </div>
