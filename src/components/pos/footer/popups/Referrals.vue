@@ -126,6 +126,7 @@ export default {
 }
 </script>
 <style lang="sass" scoped>
+
 .refferals-wrapper
   max-height: 20rem;
   overflow: hidden;
