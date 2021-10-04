@@ -1029,7 +1029,7 @@ var Order = {
               console.log(
                 1,
                 'sw:',
-                'order sync failed but it is not network error so remove error from indexed db',
+                'order sync failed but it is not network error',
                 response.form_errors,
                 response
               )
@@ -1043,25 +1043,25 @@ var Order = {
               },
             })
 
-            requestUpdate = DB.getBucket(ORDER_DOCUMENT, 'readwrite').delete(
-              savedRequest.payload.real_created_datetime
-            )
+            // requestUpdate = DB.getBucket(ORDER_DOCUMENT, 'readwrite').delete(
+            //   savedRequest.payload.real_created_datetime
+            // )
 
-            requestUpdate.onerror = function(event) {
-              enabledConsole &&
-                console.log(1, 'sw:', 'order delete failed', event)
-            }
-            requestUpdate.onsuccess = function(event) {
-              // Success - the data is updated!
-              enabledConsole &&
-                console.log(
-                  1,
-                  'sw:',
-                  'errored order deleted successfully',
-                  event
-                )
-              resolve(response)
-            }
+            // requestUpdate.onerror = function(event) {
+            //   enabledConsole &&
+            //     console.log(1, 'sw:', 'order delete failed', event)
+            // }
+            // requestUpdate.onsuccess = function(event) {
+            //   // Success - the data is updated!
+            //   enabledConsole &&
+            //     console.log(
+            //       1,
+            //       'sw:',
+            //       'errored order deleted successfully',
+            //       event
+            //     )
+            // }
+            resolve(response)
           }
         })
         .catch(error => {
