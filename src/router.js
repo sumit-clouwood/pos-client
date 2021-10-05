@@ -155,7 +155,7 @@ router.beforeEach((to, from, next) => {
   //if to is switch cashier, we should reset all the data
   if (to.name === 'cashierLogin') {
     //we need brand id for switch cashier so preserve it
-    Store.dispatch('auth/logout', { preserve: ['brand_id', 'store_id'] })
+    Store.dispatch('auth/logout', { preserve: ['brand_id'] })
     next()
   } else {
     //resolve immediately
