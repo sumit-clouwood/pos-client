@@ -1,6 +1,7 @@
 // custom service-worker.js
 /* global workbox */
 /* eslint-disable no-console */
+//console.log = function() {}
 let syncInProcess = false
 //---------------------------------------------------------------------------
 //------------------- S E T U P - W O R K B O X  ------------
@@ -129,6 +130,7 @@ const ordersQueue = new workbox.backgroundSync.Queue('dimsOrders', {
           try {
             filteredRequest = await handler.filterRequest()
           } catch (error) {
+            console.log(error)
             failedRequests.push(entry)
             continue
           }
@@ -137,26 +139,35 @@ const ordersQueue = new workbox.backgroundSync.Queue('dimsOrders', {
         const payload = await clonedReq.json()
         try {
           const response = await Sync.fetchRequest(filteredRequest)
-          Logger.log({
-            event_time: payload.real_created_datetime,
-            event_title: payload.balance_due,
-            event_type: 'sw:offline_order_synced',
-            event_data: {
-              request: payload,
-              response: response,
-            },
-          })
+          try {
+            Logger.log({
+              event_time: payload.real_created_datetime,
+              event_title: payload.balance_due,
+              event_type: 'sw:offline_order_synced',
+              event_data: {
+                request: payload,
+                response: response,
+              },
+            })
+          } catch (e) {
+            console.log(e)
+          }
         } catch (error) {
+          console.log(error)
           failedRequests.push(entry)
-          Logger.log({
-            event_time: payload.real_created_datetime,
-            event_title: payload.balance_due,
-            event_type: 'sw:offline_order_sync_failed',
-            event_data: {
-              request: payload,
-              response: error,
-            },
-          })
+          try {
+            Logger.log({
+              event_time: payload.real_created_datetime,
+              event_title: payload.balance_due,
+              event_type: 'sw:offline_order_sync_failed',
+              event_data: {
+                request: payload,
+                response: error,
+              },
+            })
+          } catch (e) {
+            console.log(e)
+          }
           continue
         }
       } catch (error) {
@@ -219,15 +230,19 @@ self.addEventListener('fetch', async event => {
               const response = await fetch(event.request.clone())
               try {
                 const payload = await clonedReq.json()
-                Logger.log({
-                  event_time: payload.real_created_datetime,
-                  event_title: payload.balance_due,
-                  event_type: 'sw:order_sent_online',
-                  event_data: {
-                    request: payload,
-                    response: response,
-                  },
-                })
+                try {
+                  Logger.log({
+                    event_time: payload.real_created_datetime,
+                    event_title: payload.balance_due,
+                    event_type: 'sw:order_sent_online',
+                    event_data: {
+                      request: payload,
+                      response: response,
+                    },
+                  })
+                } catch (e) {
+                  console.log(e)
+                }
               } catch (e) {
                 console.log(e)
               }
@@ -248,10 +263,12 @@ self.addEventListener('fetch', async event => {
                 await ordersQueue.pushRequest({ request: event.request })
 
                 //send response back
-                let handler = await Factory.handler(event.request.clone())
-                if (handler && handler.response) {
+                let resonseHandler = await Factory.handler(
+                  event.request.clone()
+                )
+                if (resonseHandler && resonseHandler.response) {
                   try {
-                    const jsonResponse = await handler.response(error)
+                    const jsonResponse = await resonseHandler.response(error)
                     if (jsonResponse) {
                       return new Response(JSON.stringify(jsonResponse), {
                         headers: { 'content-type': 'application/json' },
@@ -392,42 +409,60 @@ class Crm extends Order {
       }
 
       try {
+        console.log('creating customer', customerPayload)
         const customer = await this.createCustomer(customerPayload)
-        payload.customer = customer.id
-        Logger.log({
-          event_time: this.payload.real_created_datetime,
-          event_title: this.payload.balance_due,
-          event_type: 'sw:order_customer_created',
-          event_data: {
-            request: this.payload,
-            response: customer,
-          },
-        })
-        //remember to remove user from the request as it was to serve only offline purpose
-        delete payload.user
+        console.log('customer created', customer)
+        if (customer && customer.id) {
+          payload.customer = customer.id
+          try {
+            Logger.log({
+              event_time: this.payload.real_created_datetime,
+              event_title: this.payload.balance_due,
+              event_type: 'sw:order_customer_created',
+              event_data: {
+                request: this.payload,
+                response: customer,
+              },
+            })
+          } catch (e) {
+            console.log(e)
+          }
+          //remember to remove user from the request as it was to serve only offline purpose
+          delete payload.user
 
-        return Promise.resolve(
-          new Request(this.request, {
-            body: JSON.stringify(payload),
-          })
-        )
+          return Promise.resolve(
+            new Request(this.request, {
+              body: JSON.stringify(payload),
+            })
+          )
+        } else {
+          console.log('customer failed', customer)
+          return Promise.reject(this.request)
+        }
       } catch (error) {
+        console.log('customer creating failed', error)
         //customer creation failed, revert request
-        Logger.log({
-          event_time: this.payload.real_created_datetime,
-          event_title: this.payload.balance_due,
-          event_type: 'sw:order_customer_create_failed',
-          event_data: {
-            request: this.payload,
-            response: error,
-          },
-        })
+        try {
+          Logger.log({
+            event_time: this.payload.real_created_datetime,
+            event_title: this.payload.balance_due,
+            event_type: 'sw:order_customer_create_failed',
+            event_data: {
+              request: this.payload,
+              response: error,
+            },
+          })
+        } catch (e) {
+          console.log(e)
+        }
+        console.log('rejecting request')
         return Promise.reject(this.request)
       }
     } else {
       //customer was already created, they selected customer but suddenly interent goes off, so we have customer id with order
       //just return the request as it is
       //remember to remove user from the request as it was to serve only offline purpose
+      console.log('customer was already created')
       delete payload.user
       return Promise.resolve(
         new Request(this.request, {
@@ -446,7 +481,7 @@ class Crm extends Order {
     if (!payload.alternative_phone) payload.alternative_phone = null
     if (!payload.gender) payload.gender = 'undisclosed'
     if (!payload.customer_group) payload.customer_group = null
-
+    console.log('creating customer')
     return Sync.request(requestUrl, 'POST', payload)
   }
 }
@@ -454,29 +489,28 @@ class Crm extends Order {
 //---------------------------------------------------------------------------
 //------------------- U T I L I T Y - C L A S S E S -------------------------
 //---------------------------------------------------------------------------
+
 var Sync = {
   headers: {},
   dbAuthData: {},
 
   sendTokenToClient: async function(token) {
-    const allClients = await self.clients.matchAll()
-    const client = allClients.filter(client => client.type === 'window')[0]
-    if (client) {
+    const clients = await self.clients.matchAll()
+    clients.forEach(client => {
       client.postMessage({
         msg: 'token',
         data: token,
       })
-    }
+    })
   },
   sendMessageToClient: async function(msg, data) {
-    const allClients = await self.clients.matchAll()
-    const client = allClients.filter(client => client.type === 'window')[0]
-    if (client) {
+    const clients = await self.clients.matchAll()
+    clients.forEach(client => {
       client.postMessage({
         msg: msg,
         data: data,
       })
-    }
+    })
   },
   async auth() {
     if (this.headers.authorization) {
@@ -522,22 +556,31 @@ var Sync = {
     return new Promise((resolve, reject) => {
       this.auth()
         .then(headers => {
+          console.log('old headers', headers)
           fetch(requestUrl.replace(new RegExp('/api/.*'), '/api/refresh'), {
             headers: headers,
             method: 'POST',
             body: null,
           })
-            .then(response => response.json())
-            .then(response => {
-              Sync.headers.authorization = 'Bearer ' + response.token
-              Sync.dbAuthData.token = response.token
+            .then(async fetchResponse => {
+              if (fetchResponse.status == 200) {
+                let response = await fetchResponse.json()
 
-              DB.getBucket('auth', 'readwrite').put(Sync.dbAuthData)
-              resolve(Sync.headers)
+                console.log('new token response', response)
+                Sync.headers.authorization = 'Bearer ' + response.token
+                Sync.dbAuthData.token = response.token
 
-              Sync.sendTokenToClient(response.token)
+                DB.getBucket('auth', 'readwrite').put(Sync.dbAuthData)
+                resolve(Sync.headers)
+                console.log('sending message to client')
+                Sync.sendTokenToClient(response.token)
+              } else {
+                reject()
+              }
             })
+
             .catch(function(response) {
+              console.log('error gernrating new token', response)
               reject(response)
             })
         })
@@ -559,32 +602,41 @@ var Sync = {
 
       this.auth()
         .then(headers => {
+          console.log('headers', headers)
           fetch(requestUrl, {
             headers: headers,
             method: method,
             body: JSON.stringify(payload),
           })
             .then(response => {
+              console.log(response)
               //handle both code errors and network error
-              if (response.status < 400) {
+              if (response.status == 200) {
                 response.json().then(response => {
                   resolve(response)
                 })
               } else if (response.status == 401) {
                 //network / token expired, reauth
-
-                // Sync.reauth(requestUrl)
-                //   .then(() => {
-                //     this.request(requestUrl, method, payload)
-                //   })
-                //   .catch(error => {
-                //     reject(error)
-                //   })
+                console.log('token might be expired, refresh it')
+                Sync.reauth(requestUrl)
+                  .then(() => {
+                    console.log('reauth done')
+                    this.request(requestUrl, method, payload)
+                      .then(response => {
+                        resolve(response)
+                      })
+                      .catch(error => {
+                        console.log('reauth error ', error)
+                        reject(error)
+                      })
+                  })
+                  .catch(error => {
+                    console.log('reauth error', error)
+                    reject(error)
+                  })
 
                 //force reload pos
-                Sync.sendMessageToClient('token-expired', response.status)
-
-                reject(response)
+                //Sync.sendMessageToClient('token-expired', response.status)
               } else {
                 //422 or some other status code
                 reject(response)

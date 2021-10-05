@@ -1,32 +1,37 @@
 <template>
   <div>
-    <div v-if="userError">
+    <div v-if="userError || error">
       <div class="center-error">
-        <h3>{{ userError }}</h3>
-        <p>{{ userErrorInstructions }}</p>
+        <template v-if="userError">
+          <h3>{{ userError }}</h3>
+          <p>{{ userErrorInstructions }}</p>
+        </template>
+        <template v-else>
+          <div v-if="error">{{ error }}</div>
+        </template>
       </div>
     </div>
     <!-- user is logged in, there is a store id in url or the user is not admin  -->
-    <div class="multiplestore-selection">
-      <div v-if="showDebug" style="position:  absolute; left: 100px;">
-        Showing multiple stores selector
+    <template v-else>
+      <div class="multiplestore-selection">
+        <div v-if="showDebug" style="position:  absolute; left: 100px;">
+          Showing multiple stores selector
+        </div>
+        <MultipleStores />
       </div>
-      <MultipleStores />
-    </div>
-    <template v-if="privateContext && showPrivateContext">
-      <div v-if="showDebug" style="position:  absolute; left: 400px;">
-        in private view
-      </div>
-      <div v-if="error">{{ error }}</div>
-      <private-view v-else class="private-view"></private-view>
+      <template v-if="privateContext && showPrivateContext">
+        <div v-if="showDebug" style="position:  absolute; left: 400px;">
+          in private view
+        </div>
+        <private-view class="private-view"></private-view>
+      </template>
+      <template v-else>
+        <public-view v-if="!token" class="public-view"></public-view>
+      </template>
+      <app-notification></app-notification>
+      <loader></loader>
     </template>
     <!-- Public view -->
-    <template v-else>
-      <public-view v-if="!token" class="public-view"></public-view>
-    </template>
-    <app-notification></app-notification>
-    <loader></loader>
-
     <div id="appLoaded"></div>
   </div>
 </template>
@@ -165,6 +170,7 @@ export default {
       this.$store.dispatch('auth/auth').catch(() => {})
       bootstrap.setup(this.$store)
       this.setupExternalScripts()
+      this.setupServiceWorker()
     },
     setupExternalScripts() {
       setTimeout(() => {
@@ -212,6 +218,51 @@ export default {
             this.error = error
           }
         })
+    },
+    setupServiceWorker() {
+      if ('serviceWorker' in navigator && 'SyncManager' in window) {
+        setTimeout(() => {
+          navigator.serviceWorker.ready
+            .then(registration => {
+              Notification.requestPermission()
+              return registration.sync.register('syncpos')
+            })
+            .then(function() {})
+            .catch(function() {
+              // system was unable to register for a sync,
+              // this could be an OS-level restriction
+            })
+        }, 3000)
+      }
+      if ('serviceWorker' in navigator) {
+        let scope = this
+        setTimeout(() => {
+          navigator.serviceWorker.addEventListener('message', event => {
+            console.log('*** event received from service worker', event)
+            if (event.data.msg == 'token') {
+              console.log('event received from sw', event)
+              //set token here in state and localstorage
+              localStorage.setItem('token', event.data.data)
+              this.$store.commit('auth/SET_TOKEN', event.data.data)
+            }
+            if (event.data.msg == 'token-expired') {
+              console.log(event.data)
+              console.log('refreshing the token')
+              //this.$store.dispatch('auth/logout')
+              //fetch versions api
+              console.log('token refreshed')
+            }
+            if (event.data.msg === 'sync') {
+              if (event.data.data.status === 'done') {
+                scope.$store.dispatch(
+                  'sync/offlineSync',
+                  event.data.data.status
+                )
+              }
+            }
+          })
+        }, 3000)
+      }
     },
   },
   mounted() {

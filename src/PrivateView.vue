@@ -116,49 +116,7 @@ export default {
         }
       }
     },
-    setupServiceWorker() {
-      if ('serviceWorker' in navigator && 'SyncManager' in window) {
-        setTimeout(() => {
-          navigator.serviceWorker.ready
-            .then(registration => {
-              Notification.requestPermission()
-              return registration.sync.register('syncpos')
-            })
-            .then(function() {})
-            .catch(function() {
-              // system was unable to register for a sync,
-              // this could be an OS-level restriction
-            })
-        }, 3000)
-      }
-      if ('serviceWorker' in navigator) {
-        let scope = this
-        setTimeout(() => {
-          navigator.serviceWorker.addEventListener('message', event => {
-            console.log('*** event received from service worker', event)
-            if (event.data.msg == 'token') {
-              console.log('event received from sw', event)
-            }
-            if (event.data.msg == 'token-expired') {
-              console.log(event.data)
-              console.log('refreshing the token')
-              //this.$store.dispatch('auth/logout')
-              //fetch versions api
-              StoreService.getApiVersions()
-              console.log('token refreshed')
-            }
-            if (event.data.msg === 'sync') {
-              if (event.data.data.status === 'done') {
-                scope.$store.dispatch(
-                  'sync/offlineSync',
-                  event.data.data.status
-                )
-              }
-            }
-          })
-        }, 3000)
-      }
-    },
+
     setup() {
       this.interval = setInterval(() => {
         this.progressIncrement += 10
