@@ -71,7 +71,7 @@ import ResizeMixin from '@/mixins/ResizeHandler'
 import Preloader from '@/components/util/Preloader'
 import { mapState, mapGetters } from 'vuex'
 import moment from 'moment-timezone'
-import StoreService from '@/services/data/StoreService'
+// import StoreService from '@/services/data/StoreService'
 
 export default {
   name: 'PrivateView',

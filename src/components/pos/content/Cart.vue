@@ -82,6 +82,7 @@ export default {
     ...mapState('checkout', ['order']),
     ...mapGetters('order', ['items']),
     ...mapGetters(['mainOrdersHendler']),
+    ...mapState('location', ['store']),
     ...mapState('order', ['cartType', 'orderType']),
   },
   methods: {
@@ -104,6 +105,31 @@ export default {
     resetBarcode() {
       //let barcode = this.$barcodeScanner.getPreviousCode()
       // do something...
+    },
+    emptyCartForOtherBrands() {
+      if (process.env.VUE_APP_SOCKET_DISABLE) {
+        return false
+      }
+      let store = this.store ? this.store._id : undefined
+      // let scope = this
+      if (!store) {
+        return false
+      }
+      this.$socket.client.on(
+        'store-notification-channel:App\\Events\\StoreNotification:' + store,
+        function(socket_notification) {
+          let order = localStorage.getItem('locked_order_id')
+          // eslint-disable-next-line no-console
+          console.log(socket_notification, 'socket_notification', store)
+          if (
+            socket_notification &&
+            order &&
+            socket_notification.order_id === order
+          ) {
+            this.$router.push('/dine-in' + store)
+          }
+        }
+      )
     },
   },
   components: {
@@ -132,6 +158,7 @@ export default {
           this.loading = false
         })
       }
+      this.emptyCartForOtherBrands()
     }, 1000)
 
     //this.$barcodeScanner.hasListener() // return Boolean
@@ -139,6 +166,17 @@ export default {
     //this.$barcodeScanner.setSensitivity(200) // sets barcode scanner recognition sensitivity to 200 ms
   },
   destroyed() {
+    let order = localStorage.getItem('locked_order_id')
+    if (order) {
+      this.$store.dispatch(
+        'order/lockUnlockOrder',
+        { orderId: order, status: { order_lock: false } },
+        {
+          root: true,
+        }
+      )
+      localStorage.removeItem('locked_order_id')
+    }
     // Remove listener when component is destroyed
     this.$barcodeScanner.destroy()
   },

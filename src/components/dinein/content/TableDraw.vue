@@ -405,6 +405,7 @@ export default {
       bookedEmptyTables: [],
       selectedOrderId: undefined,
       unlock: 'Unlock',
+      orderUnlockData: undefined,
     }
   },
   updated() {
@@ -555,29 +556,42 @@ export default {
           }
         )
         .then(() => {
+          this.$store.dispatch(
+            'order/closeOpenOrderFromOtherSystem',
+            {
+              orderId: this.selectedOrderId,
+              status: { order_lock: false },
+            },
+            {
+              root: true,
+            }
+          )
           hideModal('#orderLock')
           this.unlock = 'Unlock'
+          // this.updateOrder(this.orderUnlockData)
         })
     },
     updateOrder(data) {
-      // let is_order_lock = false
-      // if (this.allBookedTables.lookup.orders._id) {
-      //   is_order_lock = this.allBookedTables.lookup.orders._id[data.orderId]
-      //     .order_lock
-      // }
-      // if (is_order_lock) {
-      //   this.selectedOrderId = data.orderId
-      //   showModal('#orderLock')
-      //   return true
-      // } else {
-      //   this.$store.dispatch(
-      //     'order/lockUnlockOrder',
-      //     { orderId: data.orderId, status: { order_lock: true } },
-      //     {
-      //       root: true,
-      //     }
-      //   )
-      // }
+      this.orderUnlockData = data
+      let is_order_lock = false
+      if (this.allBookedTables.lookup.orders._id) {
+        is_order_lock = this.allBookedTables.lookup.orders._id[data.orderId]
+          .order_lock
+      }
+      if (is_order_lock) {
+        this.selectedOrderId = data.orderId
+        showModal('#orderLock')
+        return true
+      } else {
+        this.$store.dispatch(
+          'order/lockUnlockOrder',
+          { orderId: data.orderId, status: { order_lock: true } },
+          {
+            root: true,
+          }
+        )
+      }
+      localStorage.setItem('locked_order_id', data.orderId)
       this.$store.commit('dinein/SELECTED_TABLE', this.selectedTableData)
       this.$store.commit(
         'dinein/SELECTED_TABLE_RESERVATION',
