@@ -85,6 +85,7 @@ export const ORDER_PAYMENT_TYPE_LOYALTY = 'Loyalty Points'
 export const ORDER_SOURCE_POS = 'cashier_app'
 export const PAYMENT_TYPE_ONLINE_ID = 'online'
 export const ORDER_SOURCE_WEBSITE = 'online'
+export const OPEN_DISCOUNT = 'open_discount'
 
 export const PERCENTAGE = 'percentage'
 export const VALUE = 'value'

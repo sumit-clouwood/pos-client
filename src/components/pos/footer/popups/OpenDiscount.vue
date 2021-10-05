@@ -82,23 +82,23 @@
             <span v-html="_t('Other order discount already applied.')"></span>
           </p>
         </div>
+        <div
+          class="error mx-auto  mb-2"
+          v-if="
+            orderError &&
+              !(
+                appliedItemDiscounts.length ||
+                !items.length ||
+                !discounts.length
+              )
+          "
+        >
+          <p>&nbsp;</p>
+          <p class="text-danger text-center">
+            <span v-html="_t(orderError)"></span>
+          </p>
+        </div>
         <div class="modal-footer discount-footer">
-          <div
-            class="error mx-auto"
-            v-if="
-              orderError &&
-                !(
-                  appliedItemDiscounts.length ||
-                  !items.length ||
-                  !discounts.length
-                )
-            "
-          >
-            <p>&nbsp;</p>
-            <p class="text-danger text-center">
-              <span v-html="_t(orderError)"></span>
-            </p>
-          </div>
           <div class="btn-announce">
             <button
               class="btn btn-danger btn-large color-text-invert color-button"
