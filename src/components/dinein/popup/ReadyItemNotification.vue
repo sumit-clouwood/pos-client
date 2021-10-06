@@ -172,12 +172,6 @@ export default {
               }
             })
           }
-          // area: "12"
-          // message: "Asking for bill"
-          // namespace: "5ed612da3eb8f75172356fa3"
-          // order_no: 2125975
-          // order_type: "dine_in"
-          // table_no: 1
           if (!is_duplicate) {
             notifications.push(socket_notification.data)
             scope.$store.commit('dinein/QR_TABLE_NOTIFICATION', notifications)

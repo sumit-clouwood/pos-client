@@ -176,7 +176,15 @@ export default {
       let new_items_list = []
       if (!notification.length) return false
       notification.forEach(data => {
-        if (data.order_no !== notifications.order_no) {
+        if (
+          data.order_no === notifications.order_no &&
+          notifications.message !== data.message
+        ) {
+          new_items_list.push(data)
+        } else if (
+          data.order_no !== notifications.order_no &&
+          notifications.table_no !== data.table_no
+        ) {
           new_items_list.push(data)
         }
       })
