@@ -159,15 +159,33 @@ export default {
         function(socket_notification) {
           let notifications =
             localStorage.getItem('qr_table_notification') || []
+          let is_duplicate = false
           if (notifications.length) {
             notifications = JSON.parse(notifications)
+            notifications.forEach(notification => {
+              if (
+                notification.order_no === socket_notification.data.order_no &&
+                notification.message === socket_notification.data.message &&
+                notification.table_no === socket_notification.data.table_no
+              ) {
+                is_duplicate = true
+              }
+            })
           }
-          notifications.push(socket_notification.data)
-          scope.$store.commit('dinein/QR_TABLE_NOTIFICATION', notifications)
-          localStorage.setItem(
-            'qr_table_notification',
-            JSON.stringify(notifications)
-          )
+          // area: "12"
+          // message: "Asking for bill"
+          // namespace: "5ed612da3eb8f75172356fa3"
+          // order_no: 2125975
+          // order_type: "dine_in"
+          // table_no: 1
+          if (!is_duplicate) {
+            notifications.push(socket_notification.data)
+            scope.$store.commit('dinein/QR_TABLE_NOTIFICATION', notifications)
+            localStorage.setItem(
+              'qr_table_notification',
+              JSON.stringify(notifications)
+            )
+          }
         }
       )
       if (!user) return false
