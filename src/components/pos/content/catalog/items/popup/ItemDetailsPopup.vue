@@ -94,6 +94,7 @@
             <modifiers-content v-if="hasModifiers" />
             <div class="modal-footer">
               <button
+                v-if="showCartButton"
                 type="button"
                 class="add-to-cart-btn btn btn-success btn-large color-main color-text-invert font-weight-bold"
                 @click.prevent="addToOrder(currentItem)"
@@ -172,6 +173,9 @@ export default {
     },
     lengthOfTotalItems() {
       return this.items.length
+    },
+    showCartButton() {
+      return this.currentItem.item_type !== 'scale_item'
     },
   },
   methods: {
