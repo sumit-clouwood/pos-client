@@ -2,6 +2,8 @@
 import CategoryService from '@/services/data/CategoryService'
 import * as mutation from './category/mutation-types'
 import * as CONSTANTS from '@/constants'
+import moment from 'moment-timezone'
+import Availability from '@/plugins/helpers/Availability.js'
 // initial state
 const getDefaults = () => {
   return {
@@ -123,14 +125,16 @@ const getters = {
       )
     )
   },
-  items: (state, getters) => {
+  items: (state, getters, rootState) => {
+    let storeTimeZone = rootState.location.timezoneString
     if (state.searchTerm) {
       const searchKey = state.searchTerm.toLowerCase()
       return getters.rawItems.filter(
         item =>
-          (item.barcode && item.barcode.toLowerCase().match(searchKey)) ||
-          (item.item_code && item.item_code.toLowerCase().match(searchKey)) ||
-          (item.name && item.name.toLowerCase().match(searchKey))
+          Availability.available(item, storeTimeZone) &&
+          ((item.barcode && item.barcode.toLowerCase().match(searchKey)) ||
+            (item.item_code && item.item_code.toLowerCase().match(searchKey)) ||
+            (item.name && item.name.toLowerCase().match(searchKey)))
       )
     }
     let items = []
@@ -143,7 +147,38 @@ const getters = {
       items = categoryItems.concat(subcategoryItems)
     }
 
-    return items
+    return items.filter(item => Availability.available(item, storeTimeZone))
+  },
+  getItemTime: (state, getters, rootState) => item => {
+    if (item.all_day_long) return true
+    let storeTimeZone = rootState.location.timezoneString
+    const storeCurrentDate = moment()
+      .tz(storeTimeZone)
+      .utc()
+      .valueOf()
+    let DateTimeFrom = 0
+    if (item.from_date && item.from && item.from !== '00:00') {
+      DateTimeFrom = moment
+        .tz(item.from_date + ' ' + item.from, 'YYYY-MM-DD HH:mm', storeTimeZone)
+        .utc()
+        .valueOf()
+    }
+    let DateTimeTo = 0
+    if (item.until_date && item.until && item.until !== '00:00') {
+      DateTimeTo = moment
+        .tz(
+          item.until_date + ' ' + item.until,
+          'YYYY-MM-DD HH:mm',
+          storeTimeZone
+        )
+        .utc()
+        .valueOf()
+    }
+    if (DateTimeFrom > storeCurrentDate && DateTimeTo < storeCurrentDate) {
+      return true
+    } else if (DateTimeFrom === 0 && DateTimeTo === 0) {
+      return true
+    } else return false
   },
   itemByCode: (state, getters) => itemCode => {
     return getters.rawItems.find(item => item.barcode === itemCode)
