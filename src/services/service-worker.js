@@ -84,21 +84,21 @@ workbox.routing.registerRoute(
     ],
   })
 )
-//s3 bucket
-workbox.routing.registerRoute(
-  /\.cloudfront\.net/,
-  new workbox.strategies.CacheFirst({
-    cacheName: 'awscontent',
-    plugins: [
-      new workbox.cacheableResponse.Plugin({
-        statuses: [0, 200],
-      }),
-      new workbox.expiration.Plugin({
-        maxAgeSeconds: 60 * 60 * 24 * 90,
-      }),
-    ],
-  })
-)
+// //s3 bucket
+// workbox.routing.registerRoute(
+//   /\.cloudfront\.net/,
+//   new workbox.strategies.CacheFirst({
+//     cacheName: 'awscontent',
+//     plugins: [
+//       new workbox.cacheableResponse.Plugin({
+//         statuses: [0, 200],
+//       }),
+//       new workbox.expiration.Plugin({
+//         maxAgeSeconds: 60 * 60 * 24 * 90,
+//       }),
+//     ],
+//   })
+// )
 
 workbox.routing.registerRoute(
   /^https:\/\/stackpath\.bootstrapcdn\.com/,
@@ -206,6 +206,7 @@ self.addEventListener('fetch', async event => {
       } else if (
         event.request.url.includes('/api') &&
         ![
+          '/maps',
           '/orders',
           '/reservations',
           '/customer',
