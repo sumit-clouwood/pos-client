@@ -82,7 +82,7 @@ const actions = {
           console.log(typeof error)
           dispatch('abortPos', {
             title: 'Brand failed to load.',
-            description: error.response.data.message + '.',
+            description: error.response ? error.response.data + '.' : error,
           })
           // show error on abort screen so don't pass anything to reject
           reject()
