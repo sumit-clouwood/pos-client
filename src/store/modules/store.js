@@ -94,7 +94,7 @@ const actions = {
     DataService.setLang(state.locale)
     //no store prerequiste needed right now
     //call ui_menu
-    return Promise.allSettled([
+    return Promise.all([
       dispatch('category/fetchAll', null, { root: true }).then(() => {
         if (!rootState.sync.reloaded) {
           const categories = rootGetters['category/categories']
@@ -115,7 +115,7 @@ const actions = {
     dispatch('surcharge/fetchAll', null, { root: true })
     dispatch('discount/fetchAll', null, { root: true })
     //in parallel check store requirements validations, subscription, terminal registration
-    let promised = Promise.allSettled([
+    let promised = Promise.all([
       Promise.all([
         dispatch('auth/fetchAllStoreUsers', null, { root: true }),
         dispatch('auth/fetchRoles', null, { root: true }),
