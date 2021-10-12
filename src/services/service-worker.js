@@ -110,10 +110,12 @@ workbox.routing.registerRoute(
 /******************************************************************** */
 const ordersQueue = new workbox.backgroundSync.Queue('dimsOrders', {
   onSync: async ({ queue }) => {
+    console.log('trying to sync')
     if (syncInProcess) {
-      console.log('sync already in process')
+      console.log('sync already in process, sync rejected')
       return false
     }
+    console.log('sync started')
     syncInProcess = true
     console.info('queue name: ', queue.name)
 
@@ -288,6 +290,14 @@ self.addEventListener('fetch', async event => {
         }
       }
       break
+  }
+})
+
+self.addEventListener('message', event => {
+  console.log('messate received in sw', event)
+  if (event.data === 'replayRequests') {
+    console.log('replaying requests from ordersQueue')
+    ordersQueue.replayRequests()
   }
 })
 //---------------------------------------------------------------------------

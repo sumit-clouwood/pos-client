@@ -204,11 +204,26 @@ export default {
   },
 
   setNetwork() {
-    NetworkService.status(status => {
+    NetworkService.status((status, msg) => {
       //this function below ll be called every one minutes because it
       //is set as interval in netwrokserivce to run every one minute
       // so call back ll run every minute
 
+      if (process.env.NODE_ENV === 'production' && msg === 'on') {
+        console.log('system gets on, send sync')
+        if (window.PrintHandle != null && !$store.state.sync.status) {
+          if (
+            'serviceWorker' in navigator &&
+            navigator.serviceWorker.controller
+          ) {
+            navigator.serviceWorker.controller.postMessage({
+              sync: 1,
+            })
+          } else {
+            console.log('sorry navigator not present')
+          }
+        }
+      }
       $store.commit('sync/status', status)
     })
   },
