@@ -217,7 +217,7 @@ export default {
             navigator.serviceWorker.controller
           ) {
             navigator.serviceWorker.controller.postMessage({
-              sync: 1,
+              replayRequests: true,
             })
           } else {
             console.log('sorry navigator not present')
