@@ -295,7 +295,7 @@ self.addEventListener('fetch', async event => {
 
 self.addEventListener('message', event => {
   console.log('messate received in sw', event)
-  if (event.data === 'replayRequests') {
+  if (event.data && event.data.replayRequests) {
     console.log('replaying requests from ordersQueue')
     ordersQueue.replayRequests()
   }
