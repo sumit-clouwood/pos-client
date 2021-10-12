@@ -282,7 +282,7 @@ export default {
         let total_pending_credit_orders = 0
         print_body = `<div style="display: grid;
                                 grid-column-gap: 10px;
-                                grid-template-columns: 1fr 1fr 1fr 1fr;
+                                grid-template-columns: 1fr 1fr 1fr;
                                 text-transform: capitalize;
                                 grid-gap: 10px;
                                 background: #f9f9f9;
@@ -294,7 +294,6 @@ export default {
                         <b>${this._t('Order no')}</b>
                         <b>${this._t('Amount')}</b>
                         <b>${this._t('Order Type')}</b>
-                        <b>${this._t('Date')}</b>
                         </div>`
         this.pastOrders.forEach(order => {
           if (
@@ -305,14 +304,14 @@ export default {
             amount += parseFloat(order.balance_due)
             total_pending_credit_orders += 1
             print_body += `<div style="display: grid;
-                            grid-gap: 10px;
+                            grid-gap: 8px;
                             border: 1px dashed gray;
                             align-items: baseline;
                             margin-bottom: 5px;
                             padding: 5px 15px;">
                             <div style="display: grid;
-                                grid-column-gap: 10px;
-                                grid-template-columns: 1fr 1fr 1fr 1fr;">
+                                grid-column-gap: 8px;
+                                grid-template-columns: 1fr 1fr 1fr">
                                   <span>
                                     #${order.order_no}
                                   </span>
@@ -322,9 +321,13 @@ export default {
                                   <span style="text-transform: capitalize;">
                                      ${order.order_type.replace(/[_-]/g, ' ')}
                                   </span>
-                                  <span>
+                            </div>
+                            <div style="display: grid;
+                                text-align: center;
+                                grid-template-columns: 1fr; font-style: italic">
+                                  <small>
                                      ${this.created_date_time(order)}
-                                  </span>
+                                  </small>
                             </div>
                         </div>`
           }

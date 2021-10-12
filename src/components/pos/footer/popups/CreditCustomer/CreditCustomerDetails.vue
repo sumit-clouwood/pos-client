@@ -177,11 +177,11 @@ export default {
           total_pending_credit_orders: total_pending_credit_orders,
         }
       }
+      // order.order_system_status === 'normal' &&
       this.pastOrders.forEach(order => {
         if (
           order.credit &&
           order.order_payments.length === 1 &&
-          order.order_system_status === 'normal' &&
           order.order_payments[0].name === CONST.CUSTOMER_CREDIT
         ) {
           amount += parseFloat(order.balance_due)

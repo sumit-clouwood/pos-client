@@ -90,13 +90,13 @@ export default {
         return this.convertDatetime(
           order.future_order_datetime,
           this.timezoneString,
-          'Do MMMM YYYY h:mm:ss A'
+          'Do MMM YYYY h:mm:ss A'
         )
       }
       return this.convertDatetime(
         order.real_created_datetime,
         this.timezoneString,
-        'Do MMMM YYYY h:mm:ss A'
+        'Do MMM YYYY h:mm:ss A'
       )
     },
     ...mapActions('order', ['selectedOrderDetails']),
