@@ -260,6 +260,7 @@ const actions = {
               commit(mutation.LAST_ORDERS, response.data.page_lookups.orders)
             }
             commit(mutation.CUSTOMER_LIST, response.data.data)
+            commit('RESET_SEARCH')
             resolve(response.data.data)
           } else {
             reject(response.data.data)
@@ -654,6 +655,9 @@ const mutations = {
   },
   [mutation.FETCH_ALL](state, pageId) {
     state.pageId = pageId
+    state.params.query = ''
+  },
+  RESET_SEARCH(state) {
     state.params.query = ''
   },
   [mutation.PARAMS](state, paramsCollection) {

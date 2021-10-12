@@ -7,6 +7,7 @@
       <input
         type="text"
         class="search-field-input"
+        id="searchCustomerTerm"
         :placeholder="_t('Search') + ' ' + _t('customer')"
         @keyup="searchCustomer"
       />
@@ -22,12 +23,15 @@ export default {
   data: function() {
     return {
       inputTimer: null,
-      searchTerms: '',
+      // searchTerms: '',
     }
   },
   methods: {},
   computed: {
     ...mapGetters('location', ['_t']),
+    // ...mapState({
+    //   searchTerm: state => state.customer.params.query,
+    // }),
   },
   created() {
     this.searchCustomer = debounce(

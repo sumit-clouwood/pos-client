@@ -745,6 +745,7 @@ export default {
 
     loyaltyHendlerChange() {
       if (this.online) {
+        this.$store.dispatch('customer/fetchCustomers')
         this.loaylty_apply_modal = '#search-loyalty-customer'
         this.$store.dispatch('loyaltyHendlerChange')
       } else {
@@ -760,6 +761,7 @@ export default {
       }
     },
     creditCustomerAction() {
+      this.$store.dispatch('customer/fetchCustomers')
       /**/
     },
     newOrders() {

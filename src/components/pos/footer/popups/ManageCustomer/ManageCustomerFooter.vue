@@ -66,8 +66,13 @@ export default {
     closeManageCustomer() {
       hideModal('#manage-customer')
       $('#manage-customer').modal('hide')
+      this.emptySearchTerm()
+    },
+    emptySearchTerm() {
+      $('#searchCustomerTerm').val('')
     },
     addCustomerForm: function() {
+      this.emptySearchTerm()
       if (
         ['carhop', 'dine_in', 'walk_in', 'takeaway'].includes(
           this.$store.state.order.orderType.OTApi
