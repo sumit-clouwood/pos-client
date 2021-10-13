@@ -298,6 +298,7 @@ export default {
         this.pastOrders.forEach(order => {
           if (
             order.credit &&
+            order.order_system_status === 'normal' &&
             order.order_payments.length === 1 &&
             order.order_payments[0].name === CONST.CUSTOMER_CREDIT
           ) {
