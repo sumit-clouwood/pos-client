@@ -1,6 +1,12 @@
 <template>
   <!-- Manage Customers -->
-  <div class="modal fade" id="manage-customer" role="dialog">
+  <div
+    class="modal fade"
+    id="manage-customer"
+    role="dialog"
+    data-keyboard="false"
+    data-backdrop="static"
+  >
     <div class="modal-dialog modal-dialog-centered modal-dialog-centered">
       <!-- Modal content-->
       <div class="modal-content color-dashboard-background">
