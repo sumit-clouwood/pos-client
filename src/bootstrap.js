@@ -210,18 +210,19 @@ export default {
       // so call back ll run every minute
 
       if (process.env.NODE_ENV === 'production' && msg === 'on') {
-        console.log('system gets on, send sync')
         //if (window.PrintHandle != null && !$store.state.sync.status) {
         //$store.state.sync.status can be 'on', true, false
         //if it is true that means system was just started, if it was on that means system gets online from offline
         //so sync if system is starting or system was offline previously
         if ($store.state.sync.online !== 'on') {
           $store.commit('sync/status', 'on')
+          console.log('system gets on, send sync to sw')
 
           if (
             'serviceWorker' in navigator &&
             navigator.serviceWorker.controller
           ) {
+            console.log('posting message to servcieworker')
             navigator.serviceWorker.controller.postMessage({
               replayRequests: true,
             })
