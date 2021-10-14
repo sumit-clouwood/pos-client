@@ -245,7 +245,7 @@ self.addEventListener('fetch', async event => {
       {
         if (
           event.request.url.includes('/api') &&
-          ['/orders'].some(key => event.request.url.includes(key))
+          ['/orders/add'].some(key => event.request.url.includes(key))
         ) {
           const bgSyncLogic = async () => {
             //open database for operations
