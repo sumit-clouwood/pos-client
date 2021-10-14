@@ -18,22 +18,31 @@ self.addEventListener('install', event => {
   console.log('service worker installed', event)
 })
 
+var clearOldCaches = function(event) {
+  event.waitUntil(
+    caches.keys().then(function(cacheNames) {
+      let validCacheSet = new Set(Object.values(workbox.core.cacheNames))
+      console.log(validCacheSet)
+      return Promise.all(
+        cacheNames
+          .filter(function(cacheName) {
+            console.log(cacheName, validCacheSet.has(cacheName))
+            return !validCacheSet.has(cacheName)
+          })
+          .map(function(cacheName) {
+            console.log('cache to delete', cacheName)
+            return caches.delete(cacheName)
+          })
+      )
+    })
+  )
+}
+
 self.addEventListener('activate', function(event) {
   DB.open(async () => {})
   console.log('service worker activate', event)
   self.clients.claim()
-  const promiseChain = caches.keys().then(cacheNames => {
-    // Step through each cache name and delete it
-    return Promise.all(
-      cacheNames.map(cacheName => {
-        console.log('deleting cache ', cacheName)
-        return caches.delete(cacheName)
-      })
-    )
-  })
-
-  // Keep the service worker alive until all caches are deleted.
-  event.waitUntil(promiseChain)
+  clearOldCaches(event)
 })
 
 // apply precaching. In the built version, the precacheManifest will
@@ -84,21 +93,21 @@ workbox.routing.registerRoute(
     ],
   })
 )
-// //s3 bucket
-// workbox.routing.registerRoute(
-//   /\.cloudfront\.net/,
-//   new workbox.strategies.CacheFirst({
-//     cacheName: 'awscontent',
-//     plugins: [
-//       new workbox.cacheableResponse.Plugin({
-//         statuses: [0, 200],
-//       }),
-//       new workbox.expiration.Plugin({
-//         maxAgeSeconds: 60 * 60 * 24 * 90,
-//       }),
-//     ],
-//   })
-// )
+//s3 bucket
+workbox.routing.registerRoute(
+  /\.cloudfront\.net/,
+  new workbox.strategies.CacheFirst({
+    cacheName: 'awscontent',
+    plugins: [
+      new workbox.cacheableResponse.Plugin({
+        statuses: [0, 200],
+      }),
+      new workbox.expiration.Plugin({
+        maxAgeSeconds: 60 * 60 * 24 * 90,
+      }),
+    ],
+  })
+)
 
 workbox.routing.registerRoute(
   /^https:\/\/stackpath\.bootstrapcdn\.com/,
@@ -108,90 +117,102 @@ workbox.routing.registerRoute(
 )
 
 /******************************************************************** */
-const ordersQueue = new workbox.backgroundSync.Queue('dimsOrders', {
-  onSync: async ({ queue }) => {
-    console.log('trying to sync')
-    if (syncInProcess) {
-      console.log('sync already in process, sync rejected')
-      return false
-    }
-    console.log('sync started')
-    syncInProcess = true
-    console.info('queue name: ', queue.name)
+const syncBackgroundQueue = async queue => {
+  console.log('trying to sync')
+  if (syncInProcess) {
+    console.log('sync already in process, sync rejected')
+    return false
+  }
+  console.log('sync started')
+  syncInProcess = true
+  console.info('queue name: ', queue.name)
 
-    //loop through all the entries and add failed ones to another queue
-    let failedRequests = []
+  //loop through all the entries and add failed ones to another queue
+  let failedRequests = []
 
-    let entry
-    while ((entry = await queue.shiftRequest())) {
-      try {
-        let filteredRequest = entry.request.clone()
-        const handler = await Factory.handler(filteredRequest)
+  let entry
+  while ((entry = await queue.shiftRequest())) {
+    try {
+      let filteredRequest = entry.request.clone()
+      const handler = await Factory.handler(filteredRequest)
 
-        if (handler && handler.filterRequest) {
-          try {
-            filteredRequest = await handler.filterRequest()
-          } catch (error) {
-            console.log(error)
-            failedRequests.push(entry)
-            continue
-          }
-        }
-        const clonedReq = entry.request.clone()
-        const payload = await clonedReq.json()
+      if (handler && handler.filterRequest) {
         try {
-          const response = await Sync.fetchRequest(filteredRequest)
-          try {
-            Logger.log({
-              event_time: payload.real_created_datetime,
-              event_title: payload.balance_due,
-              event_type: 'sw:offline_order_synced',
-              event_data: {
-                request: payload,
-                response: response,
-              },
-            })
-          } catch (e) {
-            console.log(e)
-          }
+          filteredRequest = await handler.filterRequest()
         } catch (error) {
           console.log(error)
           failedRequests.push(entry)
-          try {
-            Logger.log({
-              event_time: payload.real_created_datetime,
-              event_title: payload.balance_due,
-              event_type: 'sw:offline_order_sync_failed',
-              event_data: {
-                request: payload,
-                response: error,
-              },
-            })
-          } catch (e) {
-            console.log(e)
-          }
+          continue
+        }
+      }
+      const clonedReq = entry.request.clone()
+      const payload = await clonedReq.json()
+      try {
+        const response = await Sync.fetchRequest(filteredRequest)
+        try {
+          Logger.log({
+            event_time: payload.real_created_datetime,
+            event_title: payload.balance_due,
+            event_type: 'sw:offline_order_synced',
+            event_data: {
+              request: payload,
+              response: response,
+            },
+          })
+        } catch (e) {
+          console.log(e)
+        }
+        console.log('bgorder response from server', response)
+        if (response.status != 'ok' || !response.id) {
+          console.log('server returns error, revert to bgqueue')
+          failedRequests.push(entry)
           continue
         }
       } catch (error) {
-        console.error('Replay failed for request', entry.request, error)
+        console.log(error)
         failedRequests.push(entry)
+        try {
+          Logger.log({
+            event_time: payload.real_created_datetime,
+            event_title: payload.balance_due,
+            event_type: 'sw:offline_order_sync_failed',
+            event_data: {
+              request: payload,
+              response: error,
+            },
+          })
+        } catch (e) {
+          console.log(e)
+        }
         continue
       }
+    } catch (error) {
+      console.error('Replay failed for request', entry.request, error)
+      failedRequests.push(entry)
+      continue
     }
-    console.log('Sync Done, Replay complete!')
-    if (failedRequests.length) {
-      console.log(failedRequests.length, ' requests failed')
-      failedRequests.forEach(async entry => {
-        await queue.unshiftRequest(entry)
-      })
-    }
-    //break the cycle of sync events
-    //if you manually sync each failed entry ll cause a new sync so it ll catch it in infinite loop
-    //wait for failed requests to be added
-    //wait for a minute so sync events for failed requests were fired
-    setTimeout(() => {
-      syncInProcess = false
-    }, 1000 * 60)
+  }
+  console.log('Sync Done, Replay complete!')
+  if (failedRequests.length) {
+    console.log(failedRequests.length, ' requests failed')
+    failedRequests.forEach(async entry => {
+      await queue.unshiftRequest(entry)
+    })
+  }
+  //break the cycle of sync events
+  //if you manually sync each failed entry ll cause a new sync so it ll catch it in infinite loop
+  //wait for failed requests to be added
+  //wait for a minute so sync events for failed requests were fired
+  setTimeout(() => {
+    syncInProcess = false
+  }, 1000 * 60)
+}
+const ordersQueue = new workbox.backgroundSync.Queue('dimsOrders', {
+  onSync: async ({ queue }) => {
+    console.log(queue)
+    console.log('dont sync on browser sync event, rather sync manually')
+    //don't sync on browser sync event, rather sync it manaully when sync message is received from our app
+    //syncBackgroundQueue(queue)
   },
   //keep a request for 7 days
   maxRetentionTime: 60 * 24 * 7,
@@ -224,31 +245,30 @@ self.addEventListener('fetch', async event => {
       {
         if (
           event.request.url.includes('/api') &&
-          ['/orders'].some(key => event.request.url.includes(key))
+          ['/orders/add'].some(key => event.request.url.includes(key))
         ) {
           const bgSyncLogic = async () => {
             //open database for operations
+            const clonedReq = event.request.clone()
+            const payload = await clonedReq.json()
+
             try {
-              const clonedReq = event.request.clone()
               const response = await fetch(event.request.clone())
+
               try {
-                const payload = await clonedReq.json()
-                try {
-                  Logger.log({
-                    event_time: payload.real_created_datetime,
-                    event_title: payload.balance_due,
-                    event_type: 'sw:order_sent_online',
-                    event_data: {
-                      request: payload,
-                      response: response,
-                    },
-                  })
-                } catch (e) {
-                  console.log(e)
-                }
+                Logger.log({
+                  event_time: payload.real_created_datetime,
+                  event_title: payload.balance_due,
+                  event_type: 'sw:order_sent_online',
+                  event_data: {
+                    request: payload,
+                    response: response,
+                  },
+                })
               } catch (e) {
                 console.log(e)
               }
+
               return response
             } catch (error) {
               console.log(
@@ -263,22 +283,25 @@ self.addEventListener('fetch', async event => {
                 error.status < 500
               ) {
                 console.log('adding request to queue ', event.request.clone())
-                await ordersQueue.pushRequest({ request: event.request })
 
-                //send response back
-                let resonseHandler = await Factory.handler(
-                  event.request.clone()
-                )
-                if (resonseHandler && resonseHandler.response) {
-                  try {
-                    const jsonResponse = await resonseHandler.response(error)
-                    if (jsonResponse) {
-                      return new Response(JSON.stringify(jsonResponse), {
-                        headers: { 'content-type': 'application/json' },
-                      })
+                if (['walk_in', 'call_center'].includes(payload.order_type)) {
+                  await ordersQueue.pushRequest({ request: event.request })
+
+                  //send response back
+                  let resonseHandler = await Factory.handler(
+                    event.request.clone()
+                  )
+                  if (resonseHandler && resonseHandler.response) {
+                    try {
+                      const jsonResponse = await resonseHandler.response(error)
+                      if (jsonResponse) {
+                        return new Response(JSON.stringify(jsonResponse), {
+                          headers: { 'content-type': 'application/json' },
+                        })
+                      }
+                    } catch (e) {
+                      console.log(e)
                     }
-                  } catch (e) {
-                    console.log(e)
                   }
                 }
               }
@@ -297,7 +320,7 @@ self.addEventListener('message', event => {
   console.log('messate received in sw', event)
   if (event.data && event.data.replayRequests) {
     console.log('replaying requests from ordersQueue')
-    ordersQueue.replayRequests()
+    syncBackgroundQueue(ordersQueue)
   }
 })
 //---------------------------------------------------------------------------
