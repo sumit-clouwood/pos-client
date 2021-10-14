@@ -211,7 +211,13 @@ export default {
 
       if (process.env.NODE_ENV === 'production' && msg === 'on') {
         console.log('system gets on, send sync')
-        if (window.PrintHandle != null && !$store.state.sync.status) {
+        //if (window.PrintHandle != null && !$store.state.sync.status) {
+        //$store.state.sync.status can be 'on', true, false
+        //if it is true that means system was just started, if it was on that means system gets online from offline
+        //so sync if system is starting or system was offline previously
+        if ($store.state.sync.online !== 'on') {
+          $store.commit('sync/status', 'on')
+
           if (
             'serviceWorker' in navigator &&
             navigator.serviceWorker.controller
@@ -223,8 +229,9 @@ export default {
             console.log('sorry navigator not present')
           }
         }
+      } else {
+        $store.commit('sync/status', false)
       }
-      $store.commit('sync/status', status)
     })
   },
 }
