@@ -209,7 +209,7 @@ export default {
       //is set as interval in netwrokserivce to run every one minute
       // so call back ll run every minute
 
-      if (process.env.NODE_ENV === 'production' && msg === 'on') {
+      if (msg === 'on') {
         //if (window.PrintHandle != null && !$store.state.sync.status) {
         //$store.state.sync.status can be 'on', true, false
         //if it is true that means system was just started, if it was on that means system gets online from offline
