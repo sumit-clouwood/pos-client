@@ -204,19 +204,24 @@ export default {
   },
 
   setNetwork() {
+    let lastOfflineStatusTime = 0
     NetworkService.status((status, msg) => {
       //this function below ll be called every one minutes because it
       //is set as interval in netwrokserivce to run every one minute
       // so call back ll run every minute
 
-      if (process.env.NODE_ENV === 'production' && msg === 'on') {
+      if (msg === 'on') {
         //if (window.PrintHandle != null && !$store.state.sync.status) {
         //$store.state.sync.status can be 'on', true, false
         //if it is true that means system was just started, if it was on that means system gets online from offline
         //so sync if system is starting or system was offline previously
         if ($store.state.sync.online !== 'on') {
+          console.log(
+            'system gets on, send sync to sw, system old status',
+            $store.state.sync.online
+          )
+
           $store.commit('sync/status', 'on')
-          console.log('system gets on, send sync to sw')
 
           if (
             'serviceWorker' in navigator &&
@@ -231,7 +236,11 @@ export default {
           }
         }
       } else {
-        $store.commit('sync/status', false)
+        const now = +new Date()
+        if (now > lastOfflineStatusTime + 1000 * 5) {
+          lastOfflineStatusTime = now
+          $store.commit('sync/status', false)
+        }
       }
     })
   },
