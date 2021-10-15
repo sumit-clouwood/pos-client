@@ -215,8 +215,12 @@ export default {
         //if it is true that means system was just started, if it was on that means system gets online from offline
         //so sync if system is starting or system was offline previously
         if ($store.state.sync.online !== 'on') {
+          console.log(
+            'system gets on, send sync to sw, system old status',
+            $store.state.sync.online
+          )
+
           $store.commit('sync/status', 'on')
-          console.log('system gets on, send sync to sw')
 
           if (
             'serviceWorker' in navigator &&
