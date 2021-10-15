@@ -172,6 +172,12 @@ export default {
   },
   watch: {
     // eslint-disable-next-line no-unused-vars
+    loaded(newVal, oldVal) {
+      if (newVal && newVal !== oldVal) {
+        this.setupRoutes()
+      }
+    },
+    // eslint-disable-next-line no-unused-vars
     $route(to, from) {
       // this.$store.commit('deliveryManager/LIST_TYPE', 'New Orders')
       this.$store.commit('order/NEED_SUPERVISOR_ACCESS', false)
