@@ -204,6 +204,7 @@ export default {
   },
 
   setNetwork() {
+    let lastOfflineStatusTime = 0
     NetworkService.status((status, msg) => {
       //this function below ll be called every one minutes because it
       //is set as interval in netwrokserivce to run every one minute
@@ -235,7 +236,11 @@ export default {
           }
         }
       } else {
-        $store.commit('sync/status', false)
+        const now = +new Date()
+        if (now > lastOfflineStatusTime + 1000 * 5) {
+          lastOfflineStatusTime = now
+          $store.commit('sync/status', false)
+        }
       }
     })
   },
