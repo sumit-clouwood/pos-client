@@ -125,6 +125,59 @@
         </a>
       </div>
       <div
+        v-show="brand.open_discount"
+        class="footer-slider-list-item"
+        data-toggle="modal"
+        data-target="#open-discount"
+      >
+        <svg
+          width="21"
+          height="20"
+          version="1.1"
+          id="Capa_1"
+          xmlns="http://www.w3.org/2000/svg"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+          x="0px"
+          y="0px"
+          viewBox="0 0 485 485"
+          style="enable-background:new 0 0 485 485;"
+          xml:space="preserve"
+        >
+          <g>
+            <path
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+              d="M231.684,242.404c0-24.813-20.187-45-45-45s-45,20.187-45,
+              45s20.187,45,45,45S231.684,267.217,231.684,242.404z
+                M171.684,242.404c0-8.271,6.729-15,15-15s15,6.729,15,
+                15s-6.729,15-15,15S171.684,250.675,171.684,242.404z"
+            />
+            <path
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+              d="M298.316,309.036c-24.813,0-45,20.187-45,45s20.187,
+              45,45,45s45-20.187,45-45S323.13,309.036,298.316,309.036z
+                M298.316,369.036c-8.271,0-15-6.729-15-15s6.729-15,15-15s15,
+                6.729,15,15S306.588,369.036,298.316,369.036z"
+            />
+            <path
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+              d="M162.813,356.69l138.155-138.155l21.213,21.213L184.025,377.903L162.813,356.69z"
+            />
+            <path
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+              d="M413.134,12.054H71.866L0,134.415v338.531h485V134.415L413.134,12.054z M89.038,42.054h306.924l47.832,81.44H41.206
+                L89.038,42.054z M30,442.946V153.494h425v289.451H30V442.946z"
+            />
+          </g>
+        </svg>
+        <a class="footer-slider-list-item-link">
+          <span>{{ _t('Open Discount') }}</span>
+        </a>
+      </div>
+      <div
         class="footer-slider-list-item"
         data-toggle="modal"
         data-target="#dining-option"
@@ -230,6 +283,7 @@ export default {
   computed: {
     ...mapGetters(['footerMenuHendler']),
     ...mapGetters('location', ['formatPrice', '_t']),
+    ...mapGetters('brand', ['brand']),
     ...mapGetters('modules', ['enabled']),
     ...mapState({
       loyaltyCard: state => state.customer.customerLoyalty.card,
