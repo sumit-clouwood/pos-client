@@ -21,7 +21,7 @@ export default {
           cb(false, 'off', event)
         }
       }
-    }, 1000 * 1)
+    }, 1000 * 2)
 
     window.addEventListener(
       'load',
