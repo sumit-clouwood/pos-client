@@ -15,6 +15,8 @@ workbox.setConfig({
 
 // Populate the cache to illustrate cache-only-populated-cache route
 self.addEventListener('install', event => {
+  //early open database, for some devices
+  DB.open(async () => {})
   console.log('service worker installed', event)
 })
 
@@ -27,10 +29,20 @@ var clearOldCaches = function(event) {
         cacheNames
           .filter(function(cacheName) {
             console.log(cacheName, validCacheSet.has(cacheName))
-            return !validCacheSet.has(cacheName)
+            let invalidCache = !validCacheSet.has(cacheName)
+            if (invalidCache) {
+              console.log('invalid cache', invalidCache)
+              return invalidCache
+            } else {
+              //valid cache
+              if (!cacheName.match('background')) {
+                return cacheName
+              }
+            }
           })
           .map(function(cacheName) {
-            console.log('cache to delete', cacheName)
+            console.log('Deleting old caches: ')
+            console.log('cache to delete: > ', cacheName)
             return caches.delete(cacheName)
           })
       )
@@ -39,7 +51,6 @@ var clearOldCaches = function(event) {
 }
 
 self.addEventListener('activate', function(event) {
-  DB.open(async () => {})
   console.log('service worker activate', event)
   self.clients.claim()
   clearOldCaches(event)
