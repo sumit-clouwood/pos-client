@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 <template>
   <Preloader v-if="dataBeingLoaded" />
   <div
@@ -401,12 +402,21 @@
           </template>
         </tfoot>
       </table>
+      <div id="qrcode" style="height:25px"></div>
+      <img
+        id="qimg"
+        src=""
+        height="200px"
+        width="200px"
+        style="display: block; margin-left: auto; margin-right: auto;"
+      />
     </div>
     <div class="footer" v-html="template.footer"></div>
   </div>
 </template>
-
+<script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
 <script>
+/* eslint-disable max-len */
 import Preloader from '@/components/util/Preloader'
 import { mapGetters, mapState } from 'vuex'
 var moment = require('moment')
@@ -423,6 +433,7 @@ export default {
     return {
       currentBrand: this.$store.state.location.brand,
       referral: false,
+      qrInvoice: '',
     }
   },
   mounted() {
@@ -439,7 +450,10 @@ export default {
     all_data_fully_loaded: function(new_value) {
       // eslint-disable-next-line
       if (new_value == true) {
-        this.$nextTick(() => this.$emit('print_ready'))
+        this.$nextTick(() => {
+          this.generateQRCode()
+          this.$emit('print_ready')
+        })
       }
     },
   },
@@ -450,7 +464,7 @@ export default {
     ...mapState('location', ['userShortDetails']),
     ...mapState('location', ['timezoneString']),
     ...mapState('dinein', ['selectedTableRservationData']),
-    ...mapState('order', ['orderType']),
+    ...mapState('order', ['orderType', 'orderId']),
 
     showBarcode() {
       return this.template.show_item_barcode
@@ -576,8 +590,10 @@ export default {
 
       return false
     },
-    //If the customer is set in the order, we check if there is a property with customer info. If there is -
-    // we output it. If there are no, we use sample customer. If customer is not set on the order -
+    //If the customer is set in the order,
+    //we check if there is a property with customer info. If there is -
+    // we output it. If there are no,
+    //we use sample customer. If customer is not set on the order -
     // that means there should be no customer in that order
     customer() {
       if (this.order) {
@@ -620,13 +636,15 @@ export default {
       return this.template[this.order.order_type + '_label']
     },
     all_data_fully_loaded() {
-      //these are needed at main app to trigger loads for collections in question
+      //these are needed at main app to trigger
+      //loads for collections in question
       if (this.order_to_print && this.template && this.print) {
         return true
       }
       return false
     },
-    //This is a method to generate fake order for invoice generation. No need to have bottom part of it at the POS
+    //This is a method to generate fake order for invoice generation.
+    // No need to have bottom part of it at the POS
     order() {
       if (this.dataBeingLoaded) {
         return null
@@ -702,6 +720,33 @@ export default {
     },
   },
   methods: {
+    generateQRCode() {
+      if (!this.order) return false
+      var qrcode = new QRCode('qrcode')
+      qrcode.clear()
+      let base_url = process.env.VUE_APP_SOCKET_ENDPOINT
+      let website =
+        base_url +
+        '/order-invoice/' +
+        this.currentBrand._id +
+        '/' +
+        this.currentStore._id +
+        '/' +
+        this.orderId
+      qrcode.makeCode(website)
+
+      var base64Data = qrcode._oDrawing._elCanvas.toDataURL('image/png')
+
+      this.qrInvoice = base64Data
+      $('#qimg').attr('src', base64Data)
+      // this.toDataURL(
+      //   this.qrInvoice,
+      //   base64 => {
+      //     this.qrInvoice = base64Data
+      //   },
+      //   'image/png'
+      // )
+    },
     item_gross_price(item) {
       if (item.type === CONST.SCALE_ITEM_TYPE) {
         let cost = parseFloat(item.unit_price) + parseFloat(item.unit_tax)
@@ -818,7 +863,8 @@ export default {
       }
       return total < 0 ? '0.00' : total
     },
-    //These methods would need to be updated at POS to search for objects in POS store
+    //These methods would need to be updated
+    //at POS to search for objects in POS store
     //These functions
     translate_item(orderItem) {
       return this.translate_entity(orderItem, 'name')
@@ -897,3 +943,17 @@ export default {
   },
 }
 </script>
+<style scoped>
+#qrcode-container {
+  /* display: none; */
+}
+
+#qimg {
+  width: 60px;
+  height: 60px;
+  margin-top: 10px;
+}
+/*.qrcode img {
+  margin: 0 auto;
+} */
+</style>
