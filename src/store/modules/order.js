@@ -1759,6 +1759,15 @@ const actions = {
           orderDetails.store_name = collectedData.store_name
           orderDetails.invoice = collectedData.store_invoice_templates
           //Check if there is a table number in order details
+          if (response.data.item.store_order_no) {
+            commit(
+              'checkout/SET_STORE_ORDER_NO',
+              response.data.item.store_order_no,
+              { root: true }
+            )
+          } else {
+            commit('checkout/SET_STORE_ORDER_NO', undefined, { root: true })
+          }
           if (typeof collectedData.table_number != 'undefined') {
             orderDetails.table_number = collectedData.table_number
           }

@@ -18,6 +18,7 @@ const state = {
   print: false,
   loading: false,
   orderNumber: null,
+  storeOrderNo: undefined,
   changeAmountStatus: false,
   paymentMsgStatus: false,
   processing: false,
@@ -1113,6 +1114,7 @@ const actions = {
                   root: true,
                 })
                 commit('SET_ORDER_NUMBER', rootState.order.orderData.order_no)
+                // dispatch('setStoreOrderNo', undefined)
                 const msg = rootGetters['location/_t'](
                   'Order placed Successfully'
                 )
@@ -1181,7 +1183,22 @@ const actions = {
       })
     })
   },
-
+  setStoreOrderNo({commit, rootState}, response){
+    if (response) {
+      if (response.data.store_order_no) {
+        commit('SET_STORE_ORDER_NO', response.data.store_order_no)
+      } else {
+        commit('SET_STORE_ORDER_NO', undefined)
+      }
+    } else {
+      if (rootState.order.selectedOrder.item.store_order_no) {
+        commit('SET_STORE_ORDER_NO', rootState.order.selectedOrder.item.store_order_no)
+      }
+      else {
+        commit('SET_STORE_ORDER_NO', undefined)
+      }
+    }
+  },
   createDineOrder(
     { dispatch, commit, getters, rootGetters, state, rootState },
     action
@@ -1192,6 +1209,7 @@ const actions = {
           if (response.data.status === 'ok') {
             commit('order/SET_ORDER_ID', response.data.id, { root: true })
             commit('SET_ORDER_NUMBER', response.data.order_no)
+            dispatch('setStoreOrderNo', response)
             commit(
               'LOAYLTY_EARN_POINTS',
               response.data.loyalty_cards_with_points
@@ -1327,6 +1345,7 @@ const actions = {
                   'SET_ORDER_NUMBER',
                   rootState.order.selectedOrder.item.order_no
                 )
+                dispatch('setStoreOrderNo', undefined)
                 /* Commented because twice in IOS*/
                 /*dispatch('printingServer/printingServerInvoiceRaw', state.order, {
                   root: true,
@@ -1537,6 +1556,7 @@ const actions = {
                 'SET_ORDER_NUMBER',
                 rootState.order.selectedOrder.item.order_no
               )
+              dispatch('setStoreOrderNo', undefined)
               dispatch(
                 'setToken',
                 rootState.order.selectedOrder.item.token_number
@@ -1654,6 +1674,7 @@ const actions = {
                   'SET_ORDER_NUMBER',
                   rootState.order.selectedOrder.item.order_no
                 )
+                dispatch('setStoreOrderNo', undefined)
                 dispatch(
                   'setToken',
                   rootState.order.selectedOrder.item.token_number
@@ -1796,8 +1817,10 @@ const actions = {
               })
               if (response.data.order_no) {
                 commit('SET_ORDER_NUMBER', response.data.order_no)
+                dispatch('setStoreOrderNo', response)
               } else {
                 commit('SET_ORDER_NUMBER', rootState.order.orderData.order_no)
+                dispatch('setStoreOrderNo', undefined)
               }
               dispatch('setToken', response.data.token_number)
               const msg = rootGetters['location/_t']('Order has been modified.')
@@ -1843,6 +1866,7 @@ const actions = {
           if (response.data.status === 'ok') {
             commit('order/SET_ORDER_ID', response.data.id, { root: true })
             commit('SET_ORDER_NUMBER', response.data.order_no)
+            dispatch('setStoreOrderNo', response)
             commit(
               'LOAYLTY_EARN_POINTS',
               response.data.loyalty_cards_with_points
@@ -1898,6 +1922,7 @@ const actions = {
           if (response.data.status === 'ok') {
             commit('order/SET_ORDER_ID', response.data.id, { root: true })
             commit('SET_ORDER_NUMBER', response.data.order_no)
+            dispatch('setStoreOrderNo', response)
             commit('deliveryManager/LIST_TYPE', 'New Orders', { root: true })
             commit('deliveryManager/SET_DM_ORDER_STATUS', 'in-progress', {
               root: true,
@@ -1941,6 +1966,7 @@ const actions = {
           if (response.data.status === 'ok') {
             commit('order/SET_ORDER_ID', response.data.id, { root: true })
             commit('SET_ORDER_NUMBER', response.data.order_no)
+            dispatch('setStoreOrderNo', response)
             commit(
               'LOAYLTY_EARN_POINTS',
               response.data.loyalty_cards_with_points
@@ -2041,6 +2067,7 @@ const actions = {
           if (response.data.status === 'ok') {
             commit('order/SET_ORDER_ID', response.data.id, { root: true })
             commit('SET_ORDER_NUMBER', response.data.order_no)
+            dispatch('setStoreOrderNo', response)
             commit(
               'LOAYLTY_EARN_POINTS',
               response.data.loyalty_cards_with_points
@@ -2335,6 +2362,9 @@ const mutations = {
   },
   [mutation.PRINT](state, flag) {
     state.print = flag
+  },
+  ['SET_STORE_ORDER_NO'](state, orderNo) {
+    state.storeOrderNo = orderNo
   },
   [mutation.SET_ORDER_NUMBER](state, orderNumber) {
     state.orderNumber = orderNumber

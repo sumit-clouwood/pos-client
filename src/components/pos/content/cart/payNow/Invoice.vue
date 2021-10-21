@@ -418,7 +418,9 @@ export default {
               padding: 0.6em;
               font-size: 1.4em;
           }
-
+          .brand_ref_invoice_no {
+             padding: unset; 
+          }
           .invoice-body .footer {
               display: grid;
               padding: 1.25em 0;

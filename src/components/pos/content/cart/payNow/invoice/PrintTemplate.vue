@@ -30,7 +30,28 @@
     </div>
     <div class="main">
       <div class="main-title">{{ template.title_label }}</div>
-      <div class="main-subtitle" v-if="!preview">
+      <div
+        v-if="currentBrand.is_store_order_number && !preview"
+        class="main-subtitle"
+      >
+        <div v-if="storeOrderNoInfo">
+          {{ template.invoice_number_label }}
+          {{ storeOrderNoInfo }}
+        </div>
+        <div class="brand_ref_invoice_no">
+          <span
+            >{{
+              storeOrderNoInfo
+                ? _t('Brand Ref')
+                : template.invoice_number_label
+            }}: {{ getPrintDataTime }}</span
+          >
+        </div>
+      </div>
+      <div
+        class="main-subtitle"
+        v-if="!preview && !currentBrand.is_store_order_number"
+      >
         {{ template.invoice_number_label }}
         {{ getPrintDataTime }}
       </div>
@@ -402,14 +423,16 @@
           </template>
         </tfoot>
       </table>
-      <div id="qrcode" style="height:25px"></div>
-      <img
-        id="qimg"
-        src=""
-        height="200px"
-        width="200px"
-        style="display: block; margin-left: auto; margin-right: auto;"
-      />
+      <div v-if="currentBrand.is_store_order_number">
+        <div id="qrcode" style="height:25px"></div>
+        <img
+          id="qimg"
+          src=""
+          height="200px"
+          width="200px"
+          style="display: block; margin-left: auto; margin-right: auto;"
+        />
+      </div>
     </div>
     <div class="footer" v-html="template.footer"></div>
   </div>
@@ -458,7 +481,7 @@ export default {
     },
   },
   computed: {
-    ...mapState('checkout', ['print']),
+    ...mapState('checkout', ['print', 'storeOrderNo']),
     ...mapGetters('location', ['_t', 'isTokenManager', 'getReferral']),
     ...mapGetters('customer', ['getDeliveryArea']),
     ...mapState('location', ['userShortDetails']),
@@ -501,6 +524,15 @@ export default {
       } else {
         return dateTime
       }
+    },
+    storeOrderNoInfo() {
+      if (this.storeOrderNo) {
+        if (this.active_store.store_prefix) {
+          return this.active_store.store_prefix + this.storeOrderNo
+        }
+        return this.storeOrderNo
+      }
+      return false
     },
     crm_module_enabled: function() {
       let cb =
@@ -721,7 +753,7 @@ export default {
   },
   methods: {
     generateQRCode() {
-      if (!this.order) return false
+      if (!this.order || !this.currentBrand.is_store_order_number) return false
       var qrcode = new QRCode('qrcode')
       qrcode.clear()
       let base_url = process.env.VUE_APP_SOCKET_ENDPOINT
