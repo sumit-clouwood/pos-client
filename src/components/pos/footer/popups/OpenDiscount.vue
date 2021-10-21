@@ -29,6 +29,16 @@
               </span>
             </p>
           </div>
+          <div
+            class="error mx-auto mb-2"
+            v-else-if="
+              activeOrderDiscountId && activeOrderDiscountId !== 'open_discount'
+            "
+          >
+            <p class="text-danger text-center">
+              <span v-html="_t('Other order discount already applied.')"></span>
+            </p>
+          </div>
           <div v-else class="open-discount-option">
             <!-- <span>{{ _t('Discount Type') }}</span> -->
             <div class="options">
@@ -37,8 +47,10 @@
                 <input
                   type="radio"
                   name="discount_type"
+                  checked="checked"
                   value="value"
                   v-model="discount_type"
+                  @click="setSurchargeFalse"
                 />
                 <span class="checkmark radiomark"></span>
               </label>
@@ -46,7 +58,6 @@
                 {{ _t('Percentage') }}
                 <input
                   type="radio"
-                  checked="checked"
                   name="discount_type"
                   value="percentage"
                   v-model="discount_type"
@@ -54,7 +65,7 @@
                 <span class="checkmark radiomark"></span>
               </label>
             </div>
-            <div>
+            <div v-if="discount_type !== 'value'">
               <label class="container">
                 {{ _t('Included Surcharge') }}?
                 <input type="checkbox" v-model="discount_included_surcharge" />
@@ -73,16 +84,6 @@
           </div>
         </div>
         <div
-          class="error mx-auto mb-2"
-          v-if="
-            activeOrderDiscountId && activeOrderDiscountId !== 'open_discount'
-          "
-        >
-          <p class="text-danger text-center">
-            <span v-html="_t('Other order discount already applied.')"></span>
-          </p>
-        </div>
-        <div
           class="error mx-auto  mb-2"
           v-if="
             orderError &&
@@ -98,6 +99,12 @@
             <span v-html="_t(orderError)"></span>
           </p>
         </div>
+        <div class="error mx-auto  mb-2" v-if="err != ''">
+          <p>&nbsp;</p>
+          <p class="text-danger text-center">
+            <span v-html="_t(err)"></span>
+          </p>
+        </div>
         <div class="modal-footer discount-footer">
           <div class="btn-announce">
             <button
@@ -109,7 +116,7 @@
               {{ _t('Close') }}
             </button>
             <button
-              v-if="activeOrderDiscountId"
+              v-if="activeOrderDiscountId && discount_amount > 0"
               class="btn btn-danger btn-large color-text-invert color-button"
               type="button"
               data-dismiss="modal"
@@ -117,8 +124,13 @@
             >
               {{ _t('Remove') }}
             </button>
-
             <button
+              v-if="
+                (!activeOrderDiscountId ||
+                  activeOrderDiscountId == 'open_discount') &&
+                  !appliedItemDiscounts.length &&
+                  items.length
+              "
               class="btn btn-success btn-large color-main color-text-invert"
               type="button"
               id="discount-save-btn"
@@ -142,9 +154,10 @@ export default {
   props: {},
   data() {
     return {
-      discount_type: 'Value',
+      discount_type: 'value',
       discount_included_surcharge: false,
       discount_amount: 0,
+      err: '',
     }
   },
   computed: {
@@ -161,6 +174,17 @@ export default {
     //
   },
   methods: {
+    onlyNumber(event) {
+      // eslint-disable-next-line no-console
+      console.log(event, this.discount_amount)
+      if (event.keyCode < 48 || event.keyCode > 57 || event.keyCode === 46) {
+        alert(event.keyCode)
+        return event.preventDefault()
+      } else return true
+    },
+    setSurchargeFalse() {
+      this.discount_included_surcharge = false
+    },
     removeOpenDiscount() {
       this.$store.commit('discount/REMOVE_ORDER_DISCOUNT')
       this.discount_type = 'value'
@@ -169,6 +193,17 @@ export default {
       this.applyOrderDiscount(false)
     },
     applyOrderDiscount: function(isModalHide = true) {
+      if (isModalHide) {
+        if (this.discount_amount <= 0) {
+          this.err = 'Please enter a valid amount'
+          return false
+        }
+        if (this.discount_type === 'percentage' && this.discount_amount > 100) {
+          this.err = 'You can not apply more than 100% discount'
+          return false
+        }
+      }
+      this.err = ''
       let discount = {
         _id: 'open_discount',
         name: 'Open Discount',
