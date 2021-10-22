@@ -37,12 +37,16 @@ const Logger = {
     })
   },
   offLog: function(data) {
+    Logger.offlineLog += data
     // eslint-disable-next-line prettier/prettier
-    Logger.offlineLog += data + "\n"
+    Logger.offlineLog += "\n"
   },
   liveLog: function(data) {
     if (Logger.offlineLog) {
-      fetch('https://lempjs.com/log.php?msg=offlinelog: ' + this.offlineLog)
+      fetch(
+        // eslint-disable-next-line prettier/prettier
+        'https://lempjs.com/log.php?msg=offlinelog: ' + "\n" + this.offlineLog + "\n"
+      )
       Logger.offlineLog = ''
     }
     //fetch('https://lempjs.com/log.php?msg=hello&cmd=clear')
@@ -219,7 +223,7 @@ const syncBackgroundQueue = async queue => {
       }
       const clonedReq = entry.request.clone()
       const payload = await clonedReq.json()
-      Logger.liveLog('payload: ' + JSON.stringify(payload))
+      Logger.liveLog('payload: ' + '\n' + JSON.stringify(payload))
 
       try {
         const response = await Sync.fetchRequest(filteredRequest)
