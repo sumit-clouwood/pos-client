@@ -54,6 +54,7 @@ var clearOldCaches = function(event) {
 
 self.addEventListener('activate', function(event) {
   console.log('service worker activate', event)
+  Sync.sendMessageToClient('servoceworker status:', 'active')
   self.clients.claim()
   clearOldCaches(event)
 })
@@ -232,6 +233,7 @@ const ordersQueue = new workbox.backgroundSync.Queue('dimsOrders', {
 })
 
 self.addEventListener('fetch', async event => {
+  Sync.sendMessageToClient('servoceworker status:', 'fetch')
   const request = event.request.clone()
 
   switch (event.request.method) {
@@ -330,6 +332,7 @@ self.addEventListener('fetch', async event => {
 })
 
 self.addEventListener('message', event => {
+  Sync.sendMessageToClient('servoceworker status:', 'message')
   console.log('messate received in sw', event)
   if (event.data && event.data.replayRequests) {
     console.log('replaying requests from ordersQueue')
