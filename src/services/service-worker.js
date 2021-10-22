@@ -2,6 +2,7 @@
 /* global workbox */
 /* eslint-disable no-console */
 //console.log = function() {}
+console.log('in serviceworkerjs')
 let syncInProcess = false
 //---------------------------------------------------------------------------
 //------------------- S E T U P - W O R K B O X  ------------
@@ -10,11 +11,12 @@ let syncInProcess = false
 // adjust log level for displaying workbox logs
 //workbox.core.setLogLevel(workbox.core.LOG_LEVELS.debug)
 workbox.setConfig({
-  debug: false,
+  debug: true,
 })
 
 // Populate the cache to illustrate cache-only-populated-cache route
 self.addEventListener('install', event => {
+  console.log('installing sw')
   //early open database, for some devices
   DB.open(async () => {})
   console.log('service worker installed', event)
