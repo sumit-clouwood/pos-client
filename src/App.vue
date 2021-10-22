@@ -234,9 +234,10 @@ export default {
             })
         }, 3000)
       }
-      if ('serviceWorker' in navigator) {
-        let scope = this
-        setTimeout(() => {
+
+      setTimeout(() => {
+        if ('serviceWorker' in navigator) {
+          let scope = this
           navigator.serviceWorker.addEventListener('message', event => {
             console.log('*** event received from service worker', event)
             if (event.data.msg == 'token') {
@@ -261,8 +262,10 @@ export default {
               }
             }
           })
-        }, 3000)
-      }
+        } else {
+          console.log('sorry no serviceworker found', navigator)
+        }
+      }, 3000)
     },
   },
   mounted() {

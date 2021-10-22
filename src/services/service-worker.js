@@ -16,7 +16,7 @@ workbox.setConfig({
 
 // Populate the cache to illustrate cache-only-populated-cache route
 self.addEventListener('install', event => {
-  console.log('installing sw')
+  Sync.sendMessageToClient('servoceworker status:', 'installed')
   //early open database, for some devices
   DB.open(async () => {})
   console.log('service worker installed', event)
