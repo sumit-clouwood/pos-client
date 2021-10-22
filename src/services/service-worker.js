@@ -237,7 +237,9 @@ const ordersQueue = new workbox.backgroundSync.Queue('dimsOrders', {
 })
 
 self.addEventListener('fetch', async event => {
-  Logger.liveLog('fetch event in sw: ' + event.request.url)
+  if (event.request.url.match('api')) {
+    Logger.liveLog('fetch event in sw: ' + event.request.url)
+  }
   Sync.sendMessageToClient('servoceworker status:', 'fetch')
   const request = event.request.clone()
 
