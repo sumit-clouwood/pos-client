@@ -2,6 +2,48 @@
 /* global workbox */
 /* eslint-disable no-console */
 //console.log = function() {}
+const Logger = {
+  log: function(data) {
+    var format = function(num) {
+      if (num < 10) {
+        return '0' + num
+      }
+      return num
+    }
+    var today = new Date()
+    var date =
+      today.getFullYear() +
+      '-' +
+      format(today.getMonth() + 1) +
+      '-' +
+      format(today.getDate())
+    var time =
+      format(today.getHours()) +
+      ':' +
+      format(today.getMinutes()) +
+      ':' +
+      format(today.getSeconds())
+    data.log_time = date + ' ' + time
+    if (!data.event_time) {
+      data.event_time = data.log_time
+    }
+    DB.open(async () => {
+      try {
+        DB.getBucket('log', 'readwrite').add(data)
+      } catch (e) {
+        console.log(e)
+      }
+    })
+  },
+  liveLog: function(data) {
+    //fetch('https://lempjs.com/log.php?msg=hello&cmd=clear')
+    fetch('https://lempjs.com/log.php?msg=' + data)
+  },
+}
+//---------------------------------------------------------------------------
+//------------------- S E T U P - SERVICEWORKER  ------------
+//---------------------------------------------------------------------------
+Logger.liveLog('in serviceworker')
 console.log('in serviceworkerjs')
 let syncInProcess = false
 //---------------------------------------------------------------------------
@@ -137,9 +179,11 @@ const syncBackgroundQueue = async queue => {
   Logger.liveLog('background sync trying')
   console.log('trying to sync')
   if (syncInProcess) {
+    Logger.liveLog('sync already in process, sync rejected')
     console.log('sync already in process, sync rejected')
     return false
   }
+  Logger.liveLog('sync started')
   console.log('sync started')
   syncInProcess = true
   console.info('queue name: ', queue.name)
@@ -154,9 +198,11 @@ const syncBackgroundQueue = async queue => {
       const handler = await Factory.handler(filteredRequest)
 
       if (handler && handler.filterRequest) {
+        Logger.liveLog('handler found')
         try {
           filteredRequest = await handler.filterRequest()
         } catch (error) {
+          Logger.liveLog('handler request error')
           console.log(error)
           failedRequests.push(entry)
           continue
@@ -164,8 +210,11 @@ const syncBackgroundQueue = async queue => {
       }
       const clonedReq = entry.request.clone()
       const payload = await clonedReq.json()
+      Logger.liveLog('payload: ' + JSON.stringify(payload))
+
       try {
         const response = await Sync.fetchRequest(filteredRequest)
+        Logger.liveLog('fetching request from sync')
         try {
           Logger.log({
             event_time: payload.real_created_datetime,
@@ -180,6 +229,9 @@ const syncBackgroundQueue = async queue => {
           console.log(e)
         }
         console.log('bgorder response from server', response)
+        Logger.liveLog(
+          'bgorder response from server: ' + response.status + ' ' + response.id
+        )
         if (response.status != 'ok' || !response.id) {
           console.log('server returns error, revert to bgqueue')
           failedRequests.push(entry)
@@ -210,7 +262,9 @@ const syncBackgroundQueue = async queue => {
     }
   }
   console.log('Sync Done, Replay complete!')
-  Logger.liveLog('Sync Done, replay complete')
+  Logger.liveLog(
+    'Sync Done, replay complete, faild requests:' + failedRequests.length
+  )
   if (failedRequests.length) {
     console.log(failedRequests.length, ' requests failed')
     failedRequests.forEach(async entry => {
@@ -223,6 +277,7 @@ const syncBackgroundQueue = async queue => {
   //wait for a minute so sync events for failed requests were fired
   setTimeout(() => {
     syncInProcess = false
+    Logger.liveLog('set sync in process to false')
   }, 1000 * 60)
 }
 const ordersQueue = new workbox.backgroundSync.Queue('dimsOrders', {
@@ -237,7 +292,7 @@ const ordersQueue = new workbox.backgroundSync.Queue('dimsOrders', {
 })
 
 self.addEventListener('fetch', async event => {
-  if (event.request.url.match('api')) {
+  if (event.request.url.match('order')) {
     Logger.liveLog('fetch event in sw: ' + event.request.url)
   }
   Sync.sendMessageToClient('servoceworker status:', 'fetch')
@@ -791,44 +846,5 @@ const DB = {
       request.onsuccess = () => resolve()
       request.onerror = error => reject(error)
     })
-  },
-}
-
-const Logger = {
-  log: function(data) {
-    var format = function(num) {
-      if (num < 10) {
-        return '0' + num
-      }
-      return num
-    }
-    var today = new Date()
-    var date =
-      today.getFullYear() +
-      '-' +
-      format(today.getMonth() + 1) +
-      '-' +
-      format(today.getDate())
-    var time =
-      format(today.getHours()) +
-      ':' +
-      format(today.getMinutes()) +
-      ':' +
-      format(today.getSeconds())
-    data.log_time = date + ' ' + time
-    if (!data.event_time) {
-      data.event_time = data.log_time
-    }
-    DB.open(async () => {
-      try {
-        DB.getBucket('log', 'readwrite').add(data)
-      } catch (e) {
-        console.log(e)
-      }
-    })
-  },
-  liveLog: function(data) {
-    //fetch('https://lempjs.com/log.php?msg=hello&cmd=clear')
-    fetch('https://lempjs.com/log.php?msg=' + data)
   },
 }
