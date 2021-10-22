@@ -110,6 +110,8 @@ export default {
         order: order,
         payment_type: false,
       })
+      this.$store.commit('order/CUSTOM_CREDIT_AMOUNT', 0)
+      this.$store.commit('customer/CREDIT_CUSTOMER_PAYMENT', 'order_wise')
       $('.order-history-data.active').removeClass('active')
       $('#credit_customer' + order._id).addClass('active')
       $('#credit-payment-methods').attr('style', 'display:block')

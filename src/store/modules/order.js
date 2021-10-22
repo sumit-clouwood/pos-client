@@ -26,6 +26,7 @@ const state = {
   // itemDeliveryTime: 0,
   items: [],
   item: false,
+  customCreditAmount: 0,
   errors: '',
   orderType: { OTview: 'Walk In', OTApi: 'walk_in' },
   orderNote: '',
@@ -1910,38 +1911,65 @@ const actions = {
   },
   creditOrderPay({ state, dispatch, rootState, commit }) {
     return new Promise((resolve, reject) => {
-      let order_id = state.creditOrderPayment.order._id
+      let order_id = state.creditOrderPayment.order
+        ? state.creditOrderPayment.order._id
+        : ''
       let order_payment = { order_payments: [] }
-      if (state.creditOrderPayment.order.order_payments.length) {
+      let credit_customer_payment = rootState.customer.credit_customer_payment
+      let customer = rootState.customer.customerId
+      let customeCreditAmount = state.customCreditAmount
+
+      if (
+        state.creditOrderPayment.order &&
+        state.creditOrderPayment.order.order_payments.length
+      ) {
         order_payment.order_payments.push(
           state.creditOrderPayment.order.order_payments[0]
         )
       }
-      let selected_paymwnt_method = state.creditOrderPayment.order_payments
+      let selected_payment_method = state.creditOrderPayment.order_payments
+      let amount = state.creditOrderPayment.order
+        ? state.creditOrderPayment.order.balance_due
+        : customeCreditAmount
       let prepare_payment = {
-        collected: state.creditOrderPayment.order.balance_due,
-        entity_id: selected_paymwnt_method._id,
-        name: selected_paymwnt_method.name,
+        collected: amount,
+        entity_id: selected_payment_method._id,
+        name: selected_payment_method.name,
         param1: null,
-        param2: parseFloat(state.creditOrderPayment.order.balance_due),
+        param2: parseFloat(amount),
         param3: null,
       }
       commit('creditCustomerPaymentLoader', true)
       order_payment.order_payments.push(prepare_payment)
-      OrderService.creditOrderPayment(order_id, order_payment)
-        .then(response => {
-          let customer = rootState.customer.customerId
-          dispatch('customer/creditCustomerList', customer, {
-            root: true,
-          }).then(() => {
-            commit('creditCustomerPaymentLoader', false)
+      if (credit_customer_payment === 'order_wise') {
+        OrderService.creditOrderPayment(order_id, order_payment)
+          .then(response => {
+            dispatch('customer/creditCustomerList', customer, {
+              root: true,
+            }).then(() => {
+              commit('creditCustomerPaymentLoader', false)
+            })
+            resolve(response)
           })
-          resolve(response)
-        })
-        .catch(err => {
-          commit('creditCustomerPaymentLoader', false)
-          reject(err)
-        })
+          .catch(err => {
+            commit('creditCustomerPaymentLoader', false)
+            reject(err)
+          })
+      } else {
+        OrderService.creditOrderCustomPayment(customer, order_payment)
+          .then(response => {
+            dispatch('customer/creditCustomerList', customer, {
+              root: true,
+            }).then(() => {
+              commit('creditCustomerPaymentLoader', false)
+            })
+            resolve(response)
+          })
+          .catch(err => {
+            commit('creditCustomerPaymentLoader', false)
+            reject(err)
+          })
+      }
     })
   },
   beforeRedirectResetCartDineIn({ dispatch, rootState }) {
@@ -2220,6 +2248,9 @@ const mutations = {
   },
   MOVE_SELECTED_ITEMS(state, status) {
     state.selectItemsToMove = status
+  },
+  CUSTOM_CREDIT_AMOUNT(state, amount) {
+    state.customCreditAmount = amount
   },
   CREDIT_ORDER_PAYMENT(state, order) {
     if (order.order) {

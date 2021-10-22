@@ -7,6 +7,7 @@ import * as CONST from '@/constants'
 
 const getDefaults = () => {
   return {
+    credit_customer_payment: 'order_wise',
     customer_list: [],
     customer: false,
     crm_fields: undefined,
@@ -770,6 +771,9 @@ const mutations = {
   },
   CRM_ADDRESS_FIELD: (state, fields) => {
     state.crm_address_fields = fields
+  },
+  CREDIT_CUSTOMER_PAYMENT: (state, type) => {
+    state.credit_customer_payment = type
   },
   IS_BRAND_HAS_DELIVERY_ORDER: (state, status) => {
     state.isBrandHasDeliveryOrder = status

@@ -81,6 +81,15 @@
           {{ _t('No order found') }}
         </div>
         <div id="credit-payment-methods">
+          <form v-if="credit_customer_payment === 'custom'">
+            <label for="credit-payment">{{ _t('Please enter amount') }}:</label>
+            <input
+              type="number"
+              autocomplete="off"
+              class="form-control input-text"
+              v-model="customer_payment_amount"
+            />
+          </form>
           <PaymentMethods />
           <div class="actions">
             <div
@@ -146,6 +155,7 @@ export default {
       activeTab: 'details',
       msg: undefined,
       payment_status: undefined,
+      customer_payment_amount: '',
     }
   },
   props: {
@@ -168,6 +178,7 @@ export default {
       else return this.customerDetails._id.first()
     },
     ...mapState('checkoutForm', ['method']),
+    ...mapState('customer', ['credit_customer_payment']),
     remainingAmount() {
       let amount = 0
       let total_pending_credit_orders = 0
@@ -230,8 +241,16 @@ export default {
         order: false,
         payment_type: this.method,
       })
+      if (this.customer_payment_amount) {
+        this.$store.commit(
+          'order/CUSTOM_CREDIT_AMOUNT',
+          this.customer_payment_amount
+        )
+      }
       this.creditOrderPay().then(() => {
         this.msg = 'Order has been paid successfully.'
+        this.customer_payment_amount = ''
+        this.$store.commit('order/CUSTOM_CREDIT_AMOUNT', 0)
         let scope = this
         setTimeout(function() {
           scope.msg = undefined
@@ -266,13 +285,26 @@ export default {
 #credit-payment-methods {
   display: none;
   position: absolute;
-  top: 200px;
+  top: 160px;
   background: #90909096;
-  padding-top: 20px;
+  padding-top: 15px;
   padding-left: 20px;
-  padding-right: 10px;
+  padding-right: 20px;
   padding-bottom: 20px;
+  z-index: 1;
   // left: 100px;
+  form {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    padding: 8px 10px;
+    background-color: #fff;
+    margin-bottom: 10px;
+    border-radius: 3px;
+    box-shadow: 0 0 0 1px rgba(80, 86, 202, 0.6);
+    label {
+      padding-top: 5px;
+    }
+  }
   .actions {
     position: absolute;
     bottom: 0;

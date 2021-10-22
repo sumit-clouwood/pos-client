@@ -104,6 +104,12 @@ export default {
       payments
     )
   },
+  creditOrderCustomPayment(customerId, payments) {
+    return DataService.post(
+      `/model/brand_customers/id/${customerId}/credit_payment`,
+      payments
+    )
+  },
   getModifyReasons() {
     return DataService.get(`/model/brand_modify_reasons?no_limit=true`, 'brand')
   },

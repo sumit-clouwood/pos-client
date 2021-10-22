@@ -94,6 +94,14 @@
                 v-if="customer_details"
                 type="button"
                 class="btn btn-success color-text-invert color-button"
+                @click="customerPayment"
+              >
+                {{ _t('Custom Payment') }}
+              </button>
+              <button
+                v-if="customer_details"
+                type="button"
+                class="btn btn-success color-text-invert color-button"
                 @click="printBS"
               >
                 {{ _t('Print Remaining Orders') }}
@@ -242,6 +250,10 @@ export default {
       } else {
         this.searchCustomerErr = 'Please Select Customer'
       }
+    },
+    customerPayment() {
+      this.$store.commit('customer/CREDIT_CUSTOMER_PAYMENT', 'custom')
+      $('#credit-payment-methods').attr('style', 'display:block')
     },
     printBS() {
       let dt = this.$store.state.auth.deviceType
