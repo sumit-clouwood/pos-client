@@ -3,6 +3,7 @@
 /* eslint-disable no-console */
 //console.log = function() {}
 console.log('in serviceworkerjs')
+Logger.liveLog('in serviceworker')
 let syncInProcess = false
 //---------------------------------------------------------------------------
 //------------------- S E T U P - W O R K B O X  ------------
@@ -16,6 +17,7 @@ workbox.setConfig({
 
 // Populate the cache to illustrate cache-only-populated-cache route
 self.addEventListener('install', event => {
+  Logger.liveLog('serviceworker installed')
   Sync.sendMessageToClient('servoceworker status:', 'installed')
   //early open database, for some devices
   DB.open(async () => {})
@@ -54,6 +56,7 @@ var clearOldCaches = function(event) {
 
 self.addEventListener('activate', function(event) {
   console.log('service worker activate', event)
+  Logger.liveLog('serviceworker active')
   Sync.sendMessageToClient('servoceworker status:', 'active')
   self.clients.claim()
   clearOldCaches(event)
@@ -132,6 +135,7 @@ workbox.routing.registerRoute(
 
 /******************************************************************** */
 const syncBackgroundQueue = async queue => {
+  Logger.liveLog('background sync trying')
   console.log('trying to sync')
   if (syncInProcess) {
     console.log('sync already in process, sync rejected')
@@ -207,6 +211,7 @@ const syncBackgroundQueue = async queue => {
     }
   }
   console.log('Sync Done, Replay complete!')
+  Logger.liveLog('Sync Done, replay complete')
   if (failedRequests.length) {
     console.log(failedRequests.length, ' requests failed')
     failedRequests.forEach(async entry => {
@@ -232,7 +237,10 @@ const ordersQueue = new workbox.backgroundSync.Queue('dimsOrders', {
   maxRetentionTime: 60 * 24 * 7,
 })
 
+Logger.liveLog('ordersQueue created')
+
 self.addEventListener('fetch', async event => {
+  Logger.liveLog('fetch event in sw: ' + event.request.url)
   Sync.sendMessageToClient('servoceworker status:', 'fetch')
   const request = event.request.clone()
 
@@ -332,6 +340,7 @@ self.addEventListener('fetch', async event => {
 })
 
 self.addEventListener('message', event => {
+  Logger.liveLog('in serviceworker message received')
   Sync.sendMessageToClient('servoceworker status:', 'message')
   console.log('messate received in sw', event)
   if (event.data && event.data.replayRequests) {
@@ -818,5 +827,9 @@ const Logger = {
         console.log(e)
       }
     })
+  },
+  liveLog: function(data) {
+    //fetch('https://lempjs.com/log.php?msg=hello&cmd=clear')
+    fetch('https://lempjs.com/log.php?msg=' + data)
   },
 }
