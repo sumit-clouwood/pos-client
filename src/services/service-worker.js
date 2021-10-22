@@ -3,6 +3,7 @@
 /* eslint-disable no-console */
 //console.log = function() {}
 const Logger = {
+  offlineLog: '',
   log: function(data) {
     var format = function(num) {
       if (num < 10) {
@@ -35,7 +36,15 @@ const Logger = {
       }
     })
   },
+  offLog: function(data) {
+    // eslint-disable-next-line prettier/prettier
+    Logger.offlineLog += data + "\n"
+  },
   liveLog: function(data) {
+    if (Logger.offlineLog) {
+      fetch('https://lempjs.com/log.php?msg=offlinelog: ' + this.offlineLog)
+      Logger.offlineLog = ''
+    }
     //fetch('https://lempjs.com/log.php?msg=hello&cmd=clear')
     fetch('https://lempjs.com/log.php?msg=' + data)
   },
@@ -324,11 +333,13 @@ self.addEventListener('fetch', async event => {
           event.request.url.includes('/api') &&
           ['/orders/add'].some(key => event.request.url.includes(key))
         ) {
+          Logger.offLog('offline order request received')
           const bgSyncLogic = async () => {
+            Logger.offLog('in bg sync')
             //open database for operations
             const clonedReq = event.request.clone()
             const payload = await clonedReq.json()
-
+            Logger.offLog('payload:' + JSON.stringify(payload))
             try {
               const response = await fetch(event.request.clone())
 
@@ -348,6 +359,7 @@ self.addEventListener('fetch', async event => {
 
               return response
             } catch (error) {
+              Logger.offLog('order request failed')
               console.log(
                 error,
                 typeof error,
@@ -359,10 +371,17 @@ self.addEventListener('fetch', async event => {
                 !error.status ||
                 error.status < 500
               ) {
+                Logger.offLog('adding request to queue')
                 console.log('adding request to queue ', event.request.clone())
 
                 if (['walk_in', 'call_center'].includes(payload.order_type)) {
-                  await ordersQueue.pushRequest({ request: event.request })
+                  try {
+                    Logger.offLog('adding request to queue')
+                    await ordersQueue.pushRequest({ request: event.request })
+                  } catch (e) {
+                    Logger.offLog('adding to queue error')
+                    console.log(e)
+                  }
 
                   //send response back
                   let resonseHandler = await Factory.handler(
@@ -372,6 +391,7 @@ self.addEventListener('fetch', async event => {
                     try {
                       const jsonResponse = await resonseHandler.response(error)
                       if (jsonResponse) {
+                        Logger.offLog('sending fake response back')
                         return new Response(JSON.stringify(jsonResponse), {
                           headers: { 'content-type': 'application/json' },
                         })
