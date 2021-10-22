@@ -3,7 +3,6 @@
 /* eslint-disable no-console */
 //console.log = function() {}
 console.log('in serviceworkerjs')
-Logger.liveLog('in serviceworker')
 let syncInProcess = false
 //---------------------------------------------------------------------------
 //------------------- S E T U P - W O R K B O X  ------------
@@ -236,8 +235,6 @@ const ordersQueue = new workbox.backgroundSync.Queue('dimsOrders', {
   //keep a request for 7 days
   maxRetentionTime: 60 * 24 * 7,
 })
-
-Logger.liveLog('ordersQueue created')
 
 self.addEventListener('fetch', async event => {
   Logger.liveLog('fetch event in sw: ' + event.request.url)
