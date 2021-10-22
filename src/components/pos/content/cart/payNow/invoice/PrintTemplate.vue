@@ -30,11 +30,8 @@
     </div>
     <div class="main">
       <div class="main-title">{{ template.title_label }}</div>
-      <div
-        v-if="currentBrand.is_store_order_number && !preview"
-        class="main-subtitle"
-      >
-        <div v-if="storeOrderNoInfo">
+      <div v-if="storeOrderNoInfo && !preview" class="main-subtitle">
+        <div>
           {{ template.invoice_number_label }}
           {{ storeOrderNoInfo }}
         </div>
@@ -48,10 +45,7 @@
           >
         </div>
       </div>
-      <div
-        class="main-subtitle"
-        v-if="!preview && !currentBrand.is_store_order_number"
-      >
+      <div class="main-subtitle" v-else>
         {{ template.invoice_number_label }}
         {{ getPrintDataTime }}
       </div>
