@@ -1698,6 +1698,13 @@ const actions = {
               root: true,
             })
             commit('discount/APPLY_ORDER_DISCOUNT', discount, { root: true })
+          } else {
+            //check if open discount
+            if (orderDiscount.entity_id === CONST.OPEN_DISCOUNT) {
+              commit('discount/APPLY_ORDER_DISCOUNT', orderDiscount, {
+                root: true,
+              })
+            }
           }
         })
       }
