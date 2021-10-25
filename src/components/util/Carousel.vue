@@ -4,7 +4,7 @@
     ref="carousel"
     v-if="!show && !showAggregator"
   >
-    <div class="carousel">
+    <div class="carousel payment-carosal-customer-slide-button">
       <transition name="slider">
         <ul
           :style="{ transform: 'translate3d(' + positionX + 'px, 0px, 0px)' }"

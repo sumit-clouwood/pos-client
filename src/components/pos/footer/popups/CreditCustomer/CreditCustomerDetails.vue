@@ -81,7 +81,16 @@
           {{ _t('No order found') }}
         </div>
         <div id="credit-payment-methods">
-          <form v-if="credit_customer_payment === 'custom'">
+          <i class="arrow right" @click="shiftSlideLeft"></i>
+          <i class="arrow left" @click="shiftSlideRight"></i>
+          <span v-if="error_payment" class="text-danger-payment"
+            >{{ _t('You can not add amount less than 1 or more than') }}&nbsp;
+            {{ remainingAmount.amount }}</span
+          >
+          <form
+            v-if="credit_customer_payment === 'custom'"
+            class="add-error-class"
+          >
             <label for="credit-payment">{{ _t('Please enter amount') }}:</label>
             <input
               type="number"
@@ -100,7 +109,7 @@
               {{ _t('Pay') }}
             </div>
             <div
-              class="button text-button btn btn-danger close-payment"
+              class="button text-button btn btn-danger process-payment"
               type="button"
               @click="hidePayments"
             >
@@ -156,6 +165,7 @@ export default {
       msg: undefined,
       payment_status: undefined,
       customer_payment_amount: '',
+      error_payment: false,
     }
   },
   props: {
@@ -227,6 +237,15 @@ export default {
     hidePayments() {
       $('#credit-payment-methods').attr('style', 'display:none')
     },
+    shiftSlideLeft() {
+      $('.payment-carosal-customer-slide-button ul').attr(
+        'style',
+        'transform: translate3d(-400px, 0px, 0px)'
+      )
+    },
+    shiftSlideRight() {
+      $('.payment-carosal-customer-slide-button ul').removeAttr('style')
+    },
     is_order_paid(order) {
       if (
         order.credit &&
@@ -241,7 +260,21 @@ export default {
         order: false,
         payment_type: this.method,
       })
-      if (this.customer_payment_amount) {
+      // eslint-disable-next-line no-unused-vars
+      let creditOrderPayment = this.$store.state.order.creditOrderPayment
+      this.error_payment = false
+      if (this.customer_payment_amount || !creditOrderPayment.order) {
+        if (
+          parseFloat(this.customer_payment_amount) >
+            parseFloat(this.remainingAmount.amount) ||
+          parseFloat(this.customer_payment_amount) < 0.01 ||
+          isNaN(parseFloat(this.customer_payment_amount))
+        ) {
+          this.error_payment = true
+          $('.add-error-class').addClass('error')
+          return false
+        }
+        $('.add-error-class').removeClass('error')
         this.$store.commit(
           'order/CUSTOM_CREDIT_AMOUNT',
           this.customer_payment_amount
@@ -281,19 +314,59 @@ export default {
     padding-top: 3px;
   }
 }
+.process-payment {
+  padding: 10px 40px;
+}
+.text-danger-payment {
+  color: #c40000;
+  font-weight: bold;
+}
+.arrow {
+  border: solid #f8f6f6ed;
+  border-width: 0 9px 9px 0px;
+  display: inline-block;
+  padding: 12px;
+  border-radius: 10px;
+  cursor: pointer;
+}
 
+.right {
+  right: 40px;
+  bottom: 103px;
+  transform: rotate(-45deg);
+  -webkit-transform: rotate(-45deg);
+  position: absolute;
+}
+
+.left {
+  left: 40px;
+  bottom: 100px;
+  transform: rotate(135deg);
+  -webkit-transform: rotate(135deg);
+  position: absolute;
+}
 #credit-payment-methods {
   display: none;
   position: absolute;
-  top: 160px;
-  background: #90909096;
-  padding-top: 15px;
-  padding-left: 20px;
-  padding-right: 20px;
-  padding-bottom: 20px;
+  top: 21%;
+  background: #909090d4;
+  padding-top: 5%;
+  padding-left: 10%;
+  padding-right: 10%;
+  padding-bottom: 5%;
   z-index: 1;
+  border-radius: 5px;
+  box-shadow: 0 0 10px 2px rgba(80, 86, 202, 0.79);
   // left: 100px;
   form {
+    &.error {
+      color: red;
+      border: 1px solid red;
+      input {
+        color: red;
+        border: 1px solid red;
+      }
+    }
     display: grid;
     grid-template-columns: 1fr 2fr;
     padding: 8px 10px;
