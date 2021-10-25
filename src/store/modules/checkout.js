@@ -925,7 +925,7 @@ const actions = {
                       ? discount.value
                       : discount.rate,
                   include_surcharge: discount.include_surcharge,
-                  entity_id: discount._id,
+                  entity_id: discount._id || discount.entity_id,
                 }
                 order.order_discounts.push(orderDiscount)
               }
