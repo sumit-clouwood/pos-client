@@ -235,6 +235,8 @@ export default {
   methods: {
     ...mapActions('order', ['selectedOrderDetails', 'creditOrderPay']),
     hidePayments() {
+      this.error_payment = false
+      $('.add-error-class').removeClass('error')
       $('#credit-payment-methods').attr('style', 'display:none')
     },
     shiftSlideLeft() {
