@@ -200,11 +200,19 @@ export default {
       }
       // order.order_system_status === 'normal' &&
       this.pastOrders.forEach(order => {
+        let creditPaymentRemaining = false
+        order.order_payments.forEach(payment => {
+          if (
+            payment.name === CONST.CUSTOMER_CREDIT &&
+            parseFloat(payment.collected) > 0
+          ) {
+            creditPaymentRemaining = true
+          }
+        })
         if (
           order.credit &&
           order.order_system_status === 'normal' &&
-          order.order_payments.length === 1 &&
-          order.order_payments[0].name === CONST.CUSTOMER_CREDIT
+          creditPaymentRemaining
         ) {
           amount += parseFloat(order.balance_due)
           total_pending_credit_orders += 1
@@ -249,11 +257,16 @@ export default {
       $('.payment-carosal-customer-slide-button ul').removeAttr('style')
     },
     is_order_paid(order) {
-      if (
-        order.credit &&
-        order.order_payments.length === 1 &&
-        order.order_payments[0].name === CONST.CUSTOMER_CREDIT
-      ) {
+      let creditPaymentRemaining = false
+      order.order_payments.forEach(payment => {
+        if (
+          payment.name === CONST.CUSTOMER_CREDIT &&
+          parseFloat(payment.collected) > 0
+        ) {
+          creditPaymentRemaining = true
+        }
+      })
+      if (order.credit && creditPaymentRemaining) {
         return false
       } else return true
     },
