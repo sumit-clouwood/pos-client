@@ -2,7 +2,7 @@ import DataService from '@/services/DataService'
 
 export default {
   modifiers(storeId = null) {
-    const apiUrl = `/model/brand_item_modifiers?ascending=1&byColumn=0&orderBy=priority&no_limit=true`
+    const apiUrl = `/model/brand_item_modifiers?ascending=1&byColumn=1&orderBy=priority&no_limit=true&shown_pos=true`
     if (storeId) {
       return DataService.getT(`/${storeId}${apiUrl}`, 'brand')
     }

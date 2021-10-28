@@ -90,14 +90,14 @@
         <div class="modal-footer">
           <div class="btn-announce">
             <div class="btn-loyalty">
-              <button
+              <!-- <button
                 v-if="customer_details"
                 type="button"
                 class="btn btn-success color-text-invert color-button"
                 @click="customerPayment"
               >
                 {{ _t('Custom Payment') }}
-              </button>
+              </button> -->
               <button
                 v-if="customer_details"
                 type="button"
