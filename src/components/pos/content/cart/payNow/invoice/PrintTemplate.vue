@@ -750,7 +750,7 @@ export default {
       if (!this.order || !this.currentBrand.is_store_order_number) return false
       var qrcode = new QRCode('qrcode')
       qrcode.clear()
-      let base_url = process.env.VUE_APP_SOCKET_ENDPOINT
+      let base_url = process.env.WEB_HOST
       let website =
         base_url +
         '/order-invoice/' +
