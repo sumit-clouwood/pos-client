@@ -599,6 +599,7 @@
     <DineInTableSelection
       v-if="brand && brand.move_table && availableTables && cartType !== 'hold'"
     />
+    <DineInMergeTableSelection></DineInMergeTableSelection>
     <alert-popup></alert-popup>
     <scale-popup></scale-popup>
     <item-delivery-time-slots></item-delivery-time-slots>
@@ -650,6 +651,7 @@ import UpSelliing from '@/components/pos/content/catalog/upSelling/UpSelling'
 
 import genericOpenItem from '@/components/pos/openItem/genericItem'
 import DineInTableSelection from '@/components/dinein/cart/popup/DineInTableSelection'
+import DineInMergeTableSelection from '@/components/dinein/cart/popup/DineInMergeTableSelection'
 import DineInCoverSelection from '@/components/dinein/cart/popup/DineInCoverSelection.vue'
 import ScalePopup from '@/components/pos/content/catalog/items/popup/ScalePopup.vue'
 
@@ -710,6 +712,7 @@ export default {
     UpSelliing,
     genericOpenItem,
     DineInTableSelection,
+    DineInMergeTableSelection,
     DineInCoverSelection,
     ScalePopup,
   },

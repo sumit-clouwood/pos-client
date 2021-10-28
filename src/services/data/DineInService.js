@@ -74,6 +74,13 @@ export default {
     )
   },
 
+  mergedTables(reservationId, status, tables) {
+    return DataService.post(
+      `/model/reservations/id/${reservationId}/${status}`,
+      tables
+    )
+  },
+
   dineInCovers() {
     return DataService.get(
       `/model/brand_dine_in_covers?page_id=brand_dine_in_covers_main_tbl&query=&limit=10&ascending=1&page=1&byColumn=0&orderBy=priority`,

@@ -50,6 +50,7 @@ const state = {
   reservationData: null,
   isModified: false,
   moveItemTableId: undefined,
+  mergeTables: undefined,
   currentTableReservationData: null,
   readyItemNotification: [],
   qrTableNotification: [],
@@ -755,6 +756,26 @@ const actions = {
       })
     }
   },
+  mergeTable({ commit, dispatch }, data) {
+    // if (state.selectedTable) {
+    //   commit(
+    //     mutation.SELECTED_TABLE_RESERVATION,
+    //     state.selectedTable.table_number
+    //   )
+    // }
+
+    if (data.reservation_id != 'false') {
+      const params = [
+        data.reservation_id,
+        'merge_table',
+        { table_ids: data.table_ids },
+      ]
+      DineInService.mergedTables(...params).then(() => {
+        commit(mutation.RESERVATION_ID, data.reservationid)
+        dispatch('getBookedTablesOnClick', false) //update it for optimization
+      })
+    }
+  },
   updateItemGuest({ state, commit }, { item, guest }) {
     let action = 'add'
     if (state.bills && state.bills[item]) {
@@ -947,6 +968,9 @@ const mutations = {
   },*/
   MOVE_ITEM_TABLE_ID(state, tableId) {
     state.moveItemTableId = tableId
+  },
+  MERGE_TABLES(state, tables) {
+    state.mergeTables = tables
   },
   [mutation.CURRENT_TABLE_RESERVATION](state, reservationData) {
     state.currentTableReservationData = reservationData
