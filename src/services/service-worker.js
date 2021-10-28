@@ -2,62 +2,6 @@
 /* global workbox */
 /* eslint-disable no-console */
 //console.log = function() {}
-const Logger = {
-  offlineLog: '',
-  log: function(data) {
-    var format = function(num) {
-      if (num < 10) {
-        return '0' + num
-      }
-      return num
-    }
-    var today = new Date()
-    var date =
-      today.getFullYear() +
-      '-' +
-      format(today.getMonth() + 1) +
-      '-' +
-      format(today.getDate())
-    var time =
-      format(today.getHours()) +
-      ':' +
-      format(today.getMinutes()) +
-      ':' +
-      format(today.getSeconds())
-    data.log_time = date + ' ' + time
-    if (!data.event_time) {
-      data.event_time = data.log_time
-    }
-    DB.open(async () => {
-      try {
-        DB.getBucket('log', 'readwrite').add(data)
-      } catch (e) {
-        console.log(e)
-      }
-    })
-  },
-  offLog: function(data) {
-    Logger.offlineLog += data
-    // eslint-disable-next-line prettier/prettier
-    Logger.offlineLog += "\n"
-  },
-  liveLog: function(data) {
-    if (Logger.offlineLog) {
-      fetch(
-        // eslint-disable-next-line prettier/prettier
-        'https://lempjs.com/log.php?msg=offlinelog: ' + "\n" + this.offlineLog + "\n"
-      )
-      Logger.offlineLog = ''
-    }
-    //fetch('https://lempjs.com/log.php?msg=hello&cmd=clear')
-    fetch('https://lempjs.com/log.php?msg=' + data)
-  },
-}
-//---------------------------------------------------------------------------
-//------------------- S E T U P - SERVICEWORKER  ------------
-//---------------------------------------------------------------------------
-Logger.liveLog('in serviceworker')
-console.log('in serviceworkerjs')
 let syncInProcess = false
 //---------------------------------------------------------------------------
 //------------------- S E T U P - W O R K B O X  ------------
@@ -71,8 +15,6 @@ workbox.setConfig({
 
 // Populate the cache to illustrate cache-only-populated-cache route
 self.addEventListener('install', event => {
-  Logger.liveLog('serviceworker installed')
-  Sync.sendMessageToClient('servoceworker status:', 'installed')
   //early open database, for some devices
   DB.open(async () => {})
   console.log('service worker installed', event)
@@ -110,8 +52,6 @@ var clearOldCaches = function(event) {
 
 self.addEventListener('activate', function(event) {
   console.log('service worker activate', event)
-  Logger.liveLog('serviceworker active')
-  Sync.sendMessageToClient('servoceworker status:', 'active')
   self.clients.claim()
   clearOldCaches(event)
 })
@@ -189,14 +129,11 @@ workbox.routing.registerRoute(
 
 /******************************************************************** */
 const syncBackgroundQueue = async queue => {
-  Logger.liveLog('background sync trying')
   console.log('trying to sync')
   if (syncInProcess) {
-    Logger.liveLog('sync already in process, sync rejected')
     console.log('sync already in process, sync rejected')
     return false
   }
-  Logger.liveLog('sync started')
   console.log('sync started')
   syncInProcess = true
   console.info('queue name: ', queue.name)
@@ -211,11 +148,9 @@ const syncBackgroundQueue = async queue => {
       const handler = await Factory.handler(filteredRequest)
 
       if (handler && handler.filterRequest) {
-        Logger.liveLog('handler found')
         try {
           filteredRequest = await handler.filterRequest()
         } catch (error) {
-          Logger.liveLog('handler request error')
           console.log(error)
           failedRequests.push(entry)
           continue
@@ -223,11 +158,8 @@ const syncBackgroundQueue = async queue => {
       }
       const clonedReq = entry.request.clone()
       const payload = await clonedReq.json()
-      Logger.liveLog('payload: ' + '\n' + JSON.stringify(payload))
-
       try {
         const response = await Sync.fetchRequest(filteredRequest)
-        Logger.liveLog('fetching request from sync')
         try {
           Logger.log({
             event_time: payload.real_created_datetime,
@@ -242,9 +174,6 @@ const syncBackgroundQueue = async queue => {
           console.log(e)
         }
         console.log('bgorder response from server', response)
-        Logger.liveLog(
-          'bgorder response from server: ' + response.status + ' ' + response.id
-        )
         if (response.status != 'ok' || !response.id) {
           console.log('server returns error, revert to bgqueue')
           failedRequests.push(entry)
@@ -275,9 +204,6 @@ const syncBackgroundQueue = async queue => {
     }
   }
   console.log('Sync Done, Replay complete!')
-  Logger.liveLog(
-    'Sync Done, replay complete, faild requests:' + failedRequests.length
-  )
   if (failedRequests.length) {
     console.log(failedRequests.length, ' requests failed')
     failedRequests.forEach(async entry => {
@@ -290,7 +216,6 @@ const syncBackgroundQueue = async queue => {
   //wait for a minute so sync events for failed requests were fired
   setTimeout(() => {
     syncInProcess = false
-    Logger.liveLog('set sync in process to false')
   }, 1000 * 60)
 }
 const ordersQueue = new workbox.backgroundSync.Queue('dimsOrders', {
@@ -305,10 +230,6 @@ const ordersQueue = new workbox.backgroundSync.Queue('dimsOrders', {
 })
 
 self.addEventListener('fetch', async event => {
-  if (event.request.url.match('order')) {
-    Logger.liveLog('fetch event in sw: ' + event.request.url)
-  }
-  Sync.sendMessageToClient('servoceworker status:', 'fetch')
   const request = event.request.clone()
 
   switch (event.request.method) {
@@ -337,13 +258,11 @@ self.addEventListener('fetch', async event => {
           event.request.url.includes('/api') &&
           ['/orders/add'].some(key => event.request.url.includes(key))
         ) {
-          Logger.offLog('offline order request received')
           const bgSyncLogic = async () => {
-            Logger.offLog('in bg sync')
             //open database for operations
             const clonedReq = event.request.clone()
             const payload = await clonedReq.json()
-            Logger.offLog('payload:' + JSON.stringify(payload))
+
             try {
               const response = await fetch(event.request.clone())
 
@@ -363,7 +282,6 @@ self.addEventListener('fetch', async event => {
 
               return response
             } catch (error) {
-              Logger.offLog('order request failed')
               console.log(
                 error,
                 typeof error,
@@ -375,17 +293,10 @@ self.addEventListener('fetch', async event => {
                 !error.status ||
                 error.status < 500
               ) {
-                Logger.offLog('adding request to queue')
                 console.log('adding request to queue ', event.request.clone())
 
                 if (['walk_in', 'call_center'].includes(payload.order_type)) {
-                  try {
-                    Logger.offLog('adding request to queue')
-                    await ordersQueue.pushRequest({ request: event.request })
-                  } catch (e) {
-                    Logger.offLog('adding to queue error')
-                    console.log(e)
-                  }
+                  await ordersQueue.pushRequest({ request: event.request })
 
                   //send response back
                   let resonseHandler = await Factory.handler(
@@ -395,7 +306,6 @@ self.addEventListener('fetch', async event => {
                     try {
                       const jsonResponse = await resonseHandler.response(error)
                       if (jsonResponse) {
-                        Logger.offLog('sending fake response back')
                         return new Response(JSON.stringify(jsonResponse), {
                           headers: { 'content-type': 'application/json' },
                         })
@@ -418,8 +328,6 @@ self.addEventListener('fetch', async event => {
 })
 
 self.addEventListener('message', event => {
-  Logger.liveLog('in serviceworker message received')
-  Sync.sendMessageToClient('servoceworker status:', 'message')
   console.log('messate received in sw', event)
   if (event.data && event.data.replayRequests) {
     console.log('replaying requests from ordersQueue')
@@ -869,6 +777,41 @@ const DB = {
       var request = objectStore.delete(key)
       request.onsuccess = () => resolve()
       request.onerror = error => reject(error)
+    })
+  },
+}
+
+const Logger = {
+  log: function(data) {
+    var format = function(num) {
+      if (num < 10) {
+        return '0' + num
+      }
+      return num
+    }
+    var today = new Date()
+    var date =
+      today.getFullYear() +
+      '-' +
+      format(today.getMonth() + 1) +
+      '-' +
+      format(today.getDate())
+    var time =
+      format(today.getHours()) +
+      ':' +
+      format(today.getMinutes()) +
+      ':' +
+      format(today.getSeconds())
+    data.log_time = date + ' ' + time
+    if (!data.event_time) {
+      data.event_time = data.log_time
+    }
+    DB.open(async () => {
+      try {
+        DB.getBucket('log', 'readwrite').add(data)
+      } catch (e) {
+        console.log(e)
+      }
     })
   },
 }
