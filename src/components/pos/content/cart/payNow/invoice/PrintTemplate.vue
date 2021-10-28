@@ -420,8 +420,7 @@
       <div v-if="currentBrand.is_store_order_number">
         <div id="qrcode" style="height:25px"></div>
         <img
-          id="qimg"
-          src=""
+          :src="qrInvoice"
           height="200px"
           width="200px"
           style="display: block; margin-left: auto; margin-right: auto;"
@@ -468,8 +467,9 @@ export default {
       // eslint-disable-next-line
       if (new_value == true) {
         this.$nextTick(() => {
-          this.generateQRCode()
-          this.$emit('print_ready')
+          this.generateQRCode().then(() => {
+            this.$emit('print_ready')
+          })
         })
       }
     },
@@ -747,31 +747,26 @@ export default {
   },
   methods: {
     generateQRCode() {
-      if (!this.order || !this.currentBrand.is_store_order_number) return false
-      var qrcode = new QRCode('qrcode')
-      qrcode.clear()
-      let base_url = process.env.VUE_APP_WEB_HOST
-      let website =
-        base_url +
-        '/order-invoice/' +
-        this.currentBrand._id +
-        '/' +
-        this.currentStore._id +
-        '/' +
-        this.orderId
-      qrcode.makeCode(website)
+      return new Promise(resolve => {
+        if (!this.order || !this.currentBrand.is_store_order_number)
+          return false
+        var qrcode = new QRCode('qrcode')
+        qrcode.clear()
+        let base_url = process.env.VUE_APP_WEB_HOST
+        let website =
+          base_url +
+          '/order-invoice/' +
+          this.currentBrand._id +
+          '/' +
+          this.currentStore._id +
+          '/' +
+          this.orderId
+        qrcode.makeCode(website)
 
-      var base64Data = qrcode._oDrawing._elCanvas.toDataURL('image/png')
+        this.qrInvoice = qrcode._oDrawing._elCanvas.toDataURL('image/png')
 
-      this.qrInvoice = base64Data
-      $('#qimg').attr('src', base64Data)
-      // this.toDataURL(
-      //   this.qrInvoice,
-      //   base64 => {
-      //     this.qrInvoice = base64Data
-      //   },
-      //   'image/png'
-      // )
+        resolve()
+      })
     },
     item_gross_price(item) {
       if (item.type === CONST.SCALE_ITEM_TYPE) {
