@@ -929,7 +929,10 @@ const actions = {
             resolve(discountData)
           } else {
             if (orderDiscount.type === CONST.VALUE) {
-              if (orderDiscount.value > subtotal) {
+              const orderDiscountValue =
+                orderDiscount.value || orderDiscount.price
+
+              if (orderDiscountValue > subtotal) {
                 dispatch('discount/clearOrderDiscount', null, { root: true })
                 commit(
                   'discount/SET_ORDER_ERROR',
@@ -938,7 +941,7 @@ const actions = {
                 )
                 reject(CONST.DISCOUNT_ORDER_ERROR_TOTAL)
               } else {
-                orderTotalDiscount = orderDiscount.value
+                orderTotalDiscount = orderDiscountValue
 
                 const percentDiscountOnOrderTotalIncludingSurcharge = Num.round(
                   (orderTotalDiscount * 100) / (subtotal + totalSurcharge)
@@ -1044,7 +1047,10 @@ const actions = {
           } else {
             //const totalSurcharge = rootGetters['surcharge/surcharge']
             if (orderDiscount.type === CONST.VALUE) {
-              if (orderDiscount.value > subtotal) {
+              const orderDiscountValue =
+                orderDiscount.value || orderDiscount.price
+
+              if (orderDiscountValue > subtotal) {
                 dispatch('discount/clearOrderDiscount', null, { root: true })
                 commit(
                   'discount/SET_ORDER_ERROR',
@@ -1054,7 +1060,7 @@ const actions = {
                 reject(CONST.DISCOUNT_ORDER_ERROR_TOTAL)
               } else {
                 const percentDiscountOnSubTotal = Num.round(
-                  (orderDiscount.value * 100) / subtotal
+                  (orderDiscountValue * 100) / subtotal
                 )
                 taxTotalDiscount = Num.round(
                   (totalTax * percentDiscountOnSubTotal) / 100
@@ -1063,7 +1069,7 @@ const actions = {
                 surchargeTotalDiscount = 0
 
                 const discountData = {
-                  orderDiscount: orderDiscount.value,
+                  orderDiscount: orderDiscountValue,
                   taxDiscount: taxTotalDiscount,
                   surchargeDiscount: surchargeTotalDiscount,
                 }
