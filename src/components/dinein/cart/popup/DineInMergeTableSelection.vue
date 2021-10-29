@@ -54,12 +54,13 @@
           </div>
         </div>
         <div class="modal-footer">
+          <span class="text-danger" v-if="error"> {{ error }}</span>
           <div class="btn-announce">
             <button
               class="btn btn-success btn-large color-main color-text-invert"
               type="button"
               id="discount-save-btn"
-              @click="mergeSelectedTables(true)"
+              @click="mergeSelectedTables(false)"
             >
               {{ _t('Merge') }}
             </button>
@@ -86,13 +87,13 @@ export default {
   name: 'DineInMergeTableSelection',
   data() {
     return {
-      selectedTableMerge: [],
-      moveTableDetails: [],
+      // moveTableDetails: [],
       tableBookedAlert: '',
       scrollBlockHeight: 0,
       scrollBlockInitHeight: 0,
       scrollBlockItemHeight: 0,
       scrollPosition: 0,
+      error: undefined,
     }
   },
   props: {
@@ -107,9 +108,28 @@ export default {
   },
   computed: {
     ...mapGetters('location', ['_t']),
-    ...mapState('dinein', ['availableTables', 'selectedTable']),
+    ...mapState('dinein', [
+      'availableTables',
+      'selectedTable',
+      'allBookedTables',
+    ]),
     ...mapGetters('context', ['store']),
-    ...mapState('order', ['selectItemsToMove']),
+    selectedTableMerge() {
+      let merged_tables = []
+      if (this.allBookedTables.orders) {
+        this.allBookedTables.orders.forEach(order_table => {
+          if (
+            order_table.merge_table_ids &&
+            order_table.merge_table_ids.length &&
+            order_table.assigned_table_id == this.selectedTable._id
+          ) {
+            merged_tables.push(...order_table.merge_table_ids)
+          }
+        })
+        merged_tables.push(this.selectedTable._id)
+      }
+      return merged_tables
+    },
   },
   methods: {
     showScrollButtons() {
@@ -129,7 +149,7 @@ export default {
       return arr
     },
     setTable: function(table) {
-      this.moveTableDetails.push(table)
+      // this.moveTableDetails.push(table)
       if (this.selectedTableMerge.includes(table.table_id)) {
         this.removeItemOnce(this.selectedTableMerge, table.table_id)
       } else {
@@ -145,13 +165,12 @@ export default {
       }
     },
     mergeSelectedTables(moveToDineIn) {
+      this.removeItemOnce(this.selectedTableMerge, this.selectedTable._id)
       let tables = this.selectedTableMerge
       if (tables.length) {
         this.$store.commit('dinein/MERGE_TABLES', tables)
         let reservationId = localStorage.getItem('reservationId')
         //Move Table Functionality.
-        // eslint-disable-next-line no-debugger
-        debugger
         let data = {
           table_ids: tables,
           reservation_id: reservationId,
@@ -160,15 +179,23 @@ export default {
         this.$store.dispatch('dinein/mergeTable', data)
       } else {
         this.$store.commit('dinein/MERGE_TABLES', undefined)
+        this.error = 'Please select tables for merge'
+        return false
       }
-      if (moveToDineIn && typeof this.moveTableDetails == 'object')
+      if (moveToDineIn && typeof this.selectedTableMerge == 'object')
         this.$router.push('/dine-in' + this.store)
       $('#dine-in-merge-table-selection').modal('toggle')
     },
     removeSelectedTable: function() {
-      this.$store.commit('dinein/MOVE_ITEM_TABLE_ID', undefined)
-      this.$store.commit('order/RESET_SPLIT_BILL')
+      this.$store.commit('dinein/MERGE_TABLES', undefined)
+      let reservationId = localStorage.getItem('reservationId')
 
+      let data = {
+        table_ids: [],
+        reservation_id: reservationId,
+        status: 'merge_table',
+      }
+      this.$store.dispatch('dinein/mergeTable', data)
       $('#dine-in-merge-table-selection').modal('hide')
     },
     areaCalculation(operation) {
