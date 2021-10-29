@@ -149,37 +149,7 @@ const getters = {
 
     return items.filter(item => Availability.available(item, storeTimeZone))
   },
-  getItemTime: (state, getters, rootState) => item => {
-    if (item.all_day_long) return true
-    let storeTimeZone = rootState.location.timezoneString
-    const storeCurrentDate = moment()
-      .tz(storeTimeZone)
-      .utc()
-      .valueOf()
-    let DateTimeFrom = 0
-    if (item.from_date && item.from && item.from !== '00:00') {
-      DateTimeFrom = moment
-        .tz(item.from_date + ' ' + item.from, 'YYYY-MM-DD HH:mm', storeTimeZone)
-        .utc()
-        .valueOf()
-    }
-    let DateTimeTo = 0
-    if (item.until_date && item.until && item.until !== '00:00') {
-      DateTimeTo = moment
-        .tz(
-          item.until_date + ' ' + item.until,
-          'YYYY-MM-DD HH:mm',
-          storeTimeZone
-        )
-        .utc()
-        .valueOf()
-    }
-    if (DateTimeFrom > storeCurrentDate && DateTimeTo < storeCurrentDate) {
-      return true
-    } else if (DateTimeFrom === 0 && DateTimeTo === 0) {
-      return true
-    } else return false
-  },
+
   itemByCode: (state, getters) => itemCode => {
     return getters.rawItems.find(item => item.barcode === itemCode)
   },
