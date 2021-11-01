@@ -66,8 +66,7 @@
                 v-else-if="
                   (value.length === 1 &&
                     creditOrderPayment.order &&
-                    creditOrderPayment.order.order_payments[0].name !=
-                      dt(value[0])) ||
+                    checkIsCredit(creditOrderPayment.order) != dt(value[0])) ||
                     (value.length === 1 && !creditOrderPayment.order)
                 "
                 :key="currentKey"
@@ -214,6 +213,18 @@ export default {
     },
   },
   methods: {
+    checkIsCredit(order) {
+      if (order.custom) {
+        return CONST.CUSTOMER_CREDIT
+      }
+      let creditPaymentRemaining = ''
+      order.order_payments.forEach(payment => {
+        if (payment.name === CONST.CUSTOMER_CREDIT) {
+          creditPaymentRemaining = payment.name
+        }
+      })
+      return creditPaymentRemaining
+    },
     iconPath(value) {
       let path = value.length > 0 ? value[0].icon : ''
       if (!path.includes('https://')) {

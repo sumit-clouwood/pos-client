@@ -252,6 +252,10 @@ export default {
       }
     },
     customerPayment() {
+      this.$store.commit('order/CREDIT_ORDER_PAYMENT', {
+        order: { custom: true },
+        payment_type: false,
+      })
       this.$store.commit('customer/CREDIT_CUSTOMER_PAYMENT', 'custom')
       $('#credit-payment-methods').attr('style', 'display:block')
     },

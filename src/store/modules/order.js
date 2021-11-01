@@ -1933,6 +1933,7 @@ const actions = {
       let customeCreditAmount = state.customCreditAmount
 
       if (
+        !state.creditOrderPayment.order.custom &&
         state.creditOrderPayment.order &&
         state.creditOrderPayment.order.order_payments.length
       ) {
@@ -1941,9 +1942,10 @@ const actions = {
         )
       }
       let selected_payment_method = state.creditOrderPayment.order_payments
-      let amount = state.creditOrderPayment.order
-        ? state.creditOrderPayment.order.balance_due
-        : customeCreditAmount
+      let amount =
+        state.creditOrderPayment.order && !state.creditOrderPayment.order.custom
+          ? state.creditOrderPayment.order.balance_due
+          : customeCreditAmount
       let prepare_payment = {
         collected: amount,
         entity_id: selected_payment_method._id,

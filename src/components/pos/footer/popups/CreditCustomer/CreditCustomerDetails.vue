@@ -278,7 +278,7 @@ export default {
       // eslint-disable-next-line no-unused-vars
       let creditOrderPayment = this.$store.state.order.creditOrderPayment
       this.error_payment = false
-      if (this.customer_payment_amount || !creditOrderPayment.order) {
+      if (this.customer_payment_amount || creditOrderPayment.order.custom) {
         if (
           parseFloat(this.customer_payment_amount) >
             parseFloat(this.remainingAmount.amount) ||
