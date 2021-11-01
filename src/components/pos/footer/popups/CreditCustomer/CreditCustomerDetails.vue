@@ -201,11 +201,13 @@ export default {
       // order.order_system_status === 'normal' &&
       this.pastOrders.forEach(order => {
         let creditPaymentRemaining = false
+        let creditPayment = 0
         order.order_payments.forEach(payment => {
           if (
             payment.name === CONST.CUSTOMER_CREDIT &&
             parseFloat(payment.collected) > 0
           ) {
+            creditPayment = payment.collected
             creditPaymentRemaining = true
           }
         })
@@ -214,7 +216,7 @@ export default {
           order.order_system_status === 'normal' &&
           creditPaymentRemaining
         ) {
-          amount += parseFloat(order.balance_due)
+          amount += parseFloat(creditPayment)
           total_pending_credit_orders += 1
         }
       })
@@ -258,11 +260,13 @@ export default {
     },
     is_order_paid(order) {
       let creditPaymentRemaining = false
+      // let creditPayment = 0
       order.order_payments.forEach(payment => {
         if (
           payment.name === CONST.CUSTOMER_CREDIT &&
           parseFloat(payment.collected) > 0
         ) {
+          // creditPayment = payment.collected
           creditPaymentRemaining = true
         }
       })

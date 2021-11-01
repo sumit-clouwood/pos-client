@@ -21,7 +21,7 @@
         </span>
       </div>
       <div>
-        <b> {{ formatPrice(order.balance_due) }}</b>
+        <b> {{ formatPrice(remainingCreditAmount(order)) }}</b>
       </div>
       <div
         class="button text-button btn btn-success"
@@ -67,6 +67,7 @@
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex'
 import DateTime from '@/mixins/DateTime'
+import * as CONST from '@/constants'
 
 /* global $ */
 export default {
@@ -88,6 +89,18 @@ export default {
     ...mapGetters('location', ['formatPrice', '_t']),
   },
   methods: {
+    remainingCreditAmount(order) {
+      let creditPayment = 0
+      order.order_payments.forEach(payment => {
+        if (
+          payment.name === CONST.CUSTOMER_CREDIT &&
+          parseFloat(payment.collected) > 0
+        ) {
+          creditPayment = payment.collected
+        }
+      })
+      return creditPayment
+    },
     created_date_time(order) {
       if (order.future_order_datetime) {
         return this.convertDatetime(

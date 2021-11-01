@@ -313,11 +313,13 @@ export default {
                         </div>`
         this.pastOrders.forEach(order => {
           let creditPaymentRemaining = false
+          let creditPayment = 0
           order.order_payments.forEach(payment => {
             if (
               payment.name === CONST.CUSTOMER_CREDIT &&
               parseFloat(payment.collected) > 0
             ) {
+              creditPayment = payment.collected
               creditPaymentRemaining = true
             }
           })
@@ -326,7 +328,7 @@ export default {
             order.order_system_status === 'normal' &&
             creditPaymentRemaining
           ) {
-            amount += parseFloat(order.balance_due)
+            amount += parseFloat(creditPayment)
             total_pending_credit_orders += 1
             print_body += `<div style="display: grid;
                             grid-gap: 8px;
@@ -341,7 +343,7 @@ export default {
                                     #${order.order_no}
                                   </span>
                                   <span>
-                                     ${this.formatPrice(order.balance_due)}
+                                     ${this.formatPrice(creditPayment)}
                                   </span>
                                   <span style="text-transform: capitalize;">
                                      ${order.order_type.replace(/[_-]/g, ' ')}
