@@ -2,7 +2,6 @@
 import CategoryService from '@/services/data/CategoryService'
 import * as mutation from './category/mutation-types'
 import * as CONSTANTS from '@/constants'
-import moment from 'moment-timezone'
 import Availability from '@/plugins/helpers/Availability.js'
 // initial state
 const getDefaults = () => {
