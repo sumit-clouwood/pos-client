@@ -7,6 +7,7 @@
           >{{ _t('Reserved') }}
         </li>
         <li id="unavailable-seat">
+          <span class="merged-tables">M</span>
           <span>{{ tableStatus.unavailableCount }}</span
           >{{ _t('Unavailable') }}
         </li>
@@ -275,3 +276,8 @@ export default {
   },
 }
 </script>
+<style scoped lang="scss">
+.merged-tables {
+  background-color: #d5abab !important;
+}
+</style>

@@ -668,6 +668,14 @@ export default {
 
         d3.select(selectedItem)
           .select('svg')
+          .attr('style', function() {
+            let statusText = dis.tableStatus.table.find(
+              ts => ts.id === data._id
+            )
+            if (statusText && statusText.status.text === 'merged')
+              return 'pointer-events: none;cursor: no-drop;'
+            return ''
+          })
           .selectAll('path:nth-last-of-type(1)')
           .attr('fill', function() {
             let fillcolor = dis.tableStatus.table.find(ts => ts.id === data._id)
@@ -953,7 +961,6 @@ export default {
               transform.transformRotate +
               ')'
           )
-        // .attr('fill', '#fff')
 
         this.setTableColour(a[i], data)
         d3.select(a[i]).on('click', function(data, index, all) {

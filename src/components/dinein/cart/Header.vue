@@ -78,7 +78,7 @@
           @click="showSplitBill"
           id="split-bill-button"
         >
-          {{ _t('Split') }} {{ _t('Bill') }}
+          {{ _t('Split Bill') }}
         </button>
       </div>
       <div
@@ -123,6 +123,16 @@
             id="split-bill-print-button"
           >
             {{ _t('Print') }}
+          </button>
+        </div>
+        <div class="driver-container">
+          <button
+            class="btn btn-success"
+            data-target="#dine-in-merge-table-selection"
+            data-toggle="modal"
+            @click="scrollTableMerge('up')"
+          >
+            {{ _t('Merge Tables') }}
           </button>
         </div>
         <span class="tables-draw" v-if="selectedTable">
@@ -241,6 +251,9 @@ export default {
     scrollTable(option) {
       bus.$emit('check-move-tables-height', option)
     },
+    scrollTableMerge(option) {
+      bus.$emit('check-merge-tables-height', option)
+    },
     moveItems() {
       /*select items*/
       /*select table from popup*/
@@ -296,6 +309,9 @@ export default {
 .smallbuttons {
   button {
   }
+}
+.merge-tables {
+  left: 100px;
 }
 .main-orders-contacts {
   position: relative;

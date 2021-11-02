@@ -733,6 +733,10 @@ export default {
   max-width: 100% !important;
   width: 430px;
 }
+#NewReservation #dine-in-merge-table-selection .modal-dialog {
+  max-width: 100% !important;
+  width: 430px;
+}
 .time_slot_block {
   max-height: 320px;
   overflow-y: auto;
