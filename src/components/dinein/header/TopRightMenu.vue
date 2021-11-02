@@ -14,7 +14,7 @@
         @click="
           fetchOrdersWithTableDetails({
             title: 'all',
-            pageId: 'getBookedTables',
+            pageId: 'getDineInOrders',
           })
         "
       >
@@ -119,6 +119,7 @@
             <i aria-hidden="true" class="fa fa-times"></i>
           </div>
           <div class="dine-btn-footer-wrapper">
+            <!-- getBookedTablesOnClick  -->
             <button
               type
               id="all-tables"
@@ -127,7 +128,7 @@
               @click="
                 fetchOrdersWithTableDetails({
                   title: 'all',
-                  pageId: 'getBookedTables',
+                  pageId: 'getDineInOrders',
                 })
               "
             >
@@ -273,6 +274,8 @@ export default {
       this.$router.push(this.store + '/transactions')
     },
     fetchOrdersWithTableDetails: function(orderStatus) {
+      // eslint-disable-next-line no-debugger
+      debugger
       this.$store.commit('dinein/SET_PAGE_NO', 1)
       this.$store
         .dispatch('dinein/updateDineInOrderStatus', orderStatus)

@@ -783,7 +783,7 @@ const actions = {
       })
     }
   },
-  mergeTable({ commit, dispatch }, data) {
+  mergeTable({ dispatch }, data) {
     // if (state.selectedTable) {
     //   commit(
     //     mutation.SELECTED_TABLE_RESERVATION,
@@ -798,7 +798,7 @@ const actions = {
         { merge_table_ids: data.table_ids },
       ]
       DineInService.mergedTables(...params).then(() => {
-        commit(mutation.RESERVATION_ID, data.reservationid)
+        // commit(mutation.RESERVATION_ID, data.reservationid)
         dispatch('getBookedTablesOnClick', false) //update it for optimization
       })
     }

@@ -30,7 +30,7 @@
               <span
                 class="table-status"
                 :class="
-                  selectedTableMerge.includes(table.table_id) ? 'active' : ''
+                  selectedTableIdsMerge.includes(table.table_id) ? 'active' : ''
                 "
                 v-for="(table, i) in availableTables"
                 :key="table.id + i"
@@ -94,6 +94,7 @@ export default {
       scrollBlockItemHeight: 0,
       scrollPosition: 0,
       error: undefined,
+      selectedTableMerge: [],
     }
   },
   props: {
@@ -114,7 +115,23 @@ export default {
       'allBookedTables',
     ]),
     ...mapGetters('context', ['store']),
-    selectedTableMerge() {
+    // selectedTableMerge() {
+    //   let merged_tables = []
+    //   if (this.allBookedTables.orders) {
+    //     this.allBookedTables.orders.forEach(order_table => {
+    //       if (
+    //         order_table.merge_table_ids &&
+    //         order_table.merge_table_ids.length &&
+    //         order_table.assigned_table_id == this.selectedTable._id
+    //       ) {
+    //         merged_tables.push(...order_table.merge_table_ids)
+    //       }
+    //     })
+    //     merged_tables.push(this.selectedTable._id)
+    //   }
+    //   return merged_tables
+    // },
+    selectedTableIdsMerge() {
       let merged_tables = []
       if (this.allBookedTables.orders) {
         this.allBookedTables.orders.forEach(order_table => {
@@ -127,6 +144,16 @@ export default {
           }
         })
         merged_tables.push(this.selectedTable._id)
+      }
+      if (this.selectedTableMerge.length) {
+        this.selectedTableMerge.forEach(tbl => {
+          if (merged_tables.includes(tbl)) {
+            this.removeItemOnce(merged_tables, tbl)
+          } else {
+            merged_tables = [...merged_tables, tbl]
+          }
+        })
+        // this.removeItemOnce(this.selectedTableIdsMerge, this.selectedTable._id)
       }
       return merged_tables
     },
@@ -150,23 +177,29 @@ export default {
     },
     setTable: function(table) {
       // this.moveTableDetails.push(table)
+      if (table.table_id === this.selectedTable._id) {
+        // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+        this.error = "Sorry you can't remove main table"
+        return false
+      }
+      this.error = undefined
       if (this.selectedTableMerge.includes(table.table_id)) {
         this.removeItemOnce(this.selectedTableMerge, table.table_id)
       } else {
         this.selectedTableMerge.push(table.table_id)
       }
-      if (
-        table.color == '#c84c4c' &&
-        table.table_id != this.selectedTable._id
-      ) {
-        this.tableBookedAlert = 'This table already have orders'
-      } else {
-        this.tableBookedAlert = ''
-      }
+      // if (
+      //   table.color == '#c84c4c' &&
+      //   table.table_id != this.selectedTable._id
+      // ) {
+      //   this.tableBookedAlert = 'This table already have orders'
+      // } else {
+      //   this.tableBookedAlert = ''
+      // }
     },
     mergeSelectedTables(moveToDineIn) {
-      this.removeItemOnce(this.selectedTableMerge, this.selectedTable._id)
-      let tables = this.selectedTableMerge
+      this.removeItemOnce(this.selectedTableIdsMerge, this.selectedTable._id)
+      let tables = this.selectedTableIdsMerge
       if (tables.length) {
         this.$store.commit('dinein/MERGE_TABLES', tables)
         let reservationId = localStorage.getItem('reservationId')
@@ -187,15 +220,15 @@ export default {
       $('#dine-in-merge-table-selection').modal('toggle')
     },
     removeSelectedTable: function() {
-      this.$store.commit('dinein/MERGE_TABLES', undefined)
-      let reservationId = localStorage.getItem('reservationId')
+      // this.$store.commit('dinein/MERGE_TABLES', undefined)
+      // let reservationId = localStorage.getItem('reservationId')
 
-      let data = {
-        table_ids: [],
-        reservation_id: reservationId,
-        status: 'merge_table',
-      }
-      this.$store.dispatch('dinein/mergeTable', data)
+      // let data = {
+      //   table_ids: [],
+      //   reservation_id: reservationId,
+      //   status: 'merge_table',
+      // }
+      // this.$store.dispatch('dinein/mergeTable', data)
       $('#dine-in-merge-table-selection').modal('hide')
     },
     areaCalculation(operation) {
