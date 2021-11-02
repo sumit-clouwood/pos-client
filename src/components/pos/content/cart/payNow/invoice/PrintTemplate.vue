@@ -748,24 +748,25 @@ export default {
   methods: {
     generateQRCode() {
       return new Promise(resolve => {
-        if (!this.order || !this.currentBrand.is_store_order_number)
-          return false
-        var qrcode = new QRCode('qrcode')
-        qrcode.clear()
-        let base_url = process.env.VUE_APP_WEB_HOST
-        let website =
-          base_url +
-          '/order-invoice/' +
-          this.currentBrand._id +
-          '/' +
-          this.currentStore._id +
-          '/' +
-          this.orderId
-        qrcode.makeCode(website)
+        if (!this.order || !this.currentBrand.is_store_order_number) {
+          resolve()
+        } else {
+          var qrcode = new QRCode('qrcode')
+          qrcode.clear()
+          let base_url = process.env.VUE_APP_WEB_HOST
+          let website =
+            base_url +
+            '/order-invoice/' +
+            this.currentBrand._id +
+            '/' +
+            this.currentStore._id +
+            '/' +
+            this.orderId
+          qrcode.makeCode(website)
 
-        this.qrInvoice = qrcode._oDrawing._elCanvas.toDataURL('image/png')
-
-        resolve()
+          this.qrInvoice = qrcode._oDrawing._elCanvas.toDataURL('image/png')
+          resolve()
+        }
       })
     },
     item_gross_price(item) {
