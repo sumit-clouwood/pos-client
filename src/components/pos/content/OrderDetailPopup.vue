@@ -95,6 +95,7 @@
               allowed(PERMS.MODIFY_ORDER) &&
                 typeof selectedOrder.item !== 'undefined' &&
                 !multistore &&
+                !selectedOrder.item.credit &&
                 selectedOrder.item.order_status === 'finished'
             "
             type="button"

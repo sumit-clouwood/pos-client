@@ -96,7 +96,7 @@
           {{ _t('Cancel Transaction') }}
         </button>
         <button
-          v-if="!multistore"
+          v-if="!multistore && !order.credit"
           class="btn btn-large btn-success popup-btn-save color-text-invert color-main pos-button-design btn-tans-mbl"
           @click="modifyOrder(1)"
         >
@@ -117,7 +117,7 @@
           {{ _t('Cancel Transaction') }}
         </button>
         <button
-          v-if="!multistore"
+          v-if="!multistore && !order.credit"
           class="btn btn-large btn-success popup-btn-save color-text-invert color-main pos-button-design  btn-tans-mbl"
           @click="modifyOrder(1)"
         >

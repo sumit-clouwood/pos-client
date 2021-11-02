@@ -85,7 +85,7 @@
           <i class="arrow left" @click="shiftSlideRight"></i>
           <span v-if="error_payment" class="text-danger-payment"
             >{{ _t("You can't add more than") }}&nbsp;
-            {{ remainingAmount.amount }}</span
+            {{ formatPrice(remainingAmount.amount) }}</span
           >
           <form
             v-if="credit_customer_payment === 'custom'"
@@ -234,18 +234,14 @@ export default {
         let creditPayment = 0
         order.order_payments.forEach(payment => {
           if (
-            payment.name === CONST.CUSTOMER_CREDIT &&
+            payment.name !== CONST.CUSTOMER_CREDIT &&
             parseFloat(payment.collected) > 0
           ) {
             creditPayment = payment.collected
           }
         })
-        if (
-          order.credit &&
-          order.order_system_status !== 'cancelled' &&
-          creditPayment < 0.01
-        ) {
-          amount += parseFloat(order.balance_due)
+        if (order.credit && order.order_system_status !== 'cancelled') {
+          amount += parseFloat(creditPayment)
         }
       })
       return amount
