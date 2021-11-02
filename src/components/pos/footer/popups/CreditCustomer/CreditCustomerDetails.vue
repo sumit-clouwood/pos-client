@@ -84,7 +84,7 @@
           <i class="arrow right" @click="shiftSlideLeft"></i>
           <i class="arrow left" @click="shiftSlideRight"></i>
           <span v-if="error_payment" class="text-danger-payment"
-            >{{ _t('You can not add amount less than 1 or more than') }}&nbsp;
+            >{{ _t("You can't add more than") }}&nbsp;
             {{ remainingAmount.amount }}</span
           >
           <form
