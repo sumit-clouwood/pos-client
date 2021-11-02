@@ -1,7 +1,12 @@
 <template>
   <div>
     <div
-      v-if="order.credit && !payment_status && orderType === 'remaining'"
+      v-if="
+        order.credit &&
+          !payment_status &&
+          order.order_system_status !== 'cancelled' &&
+          orderType === 'remaining'
+      "
       class="order-history-data"
       :id="'credit_customer' + order._id"
     >
@@ -32,7 +37,12 @@
       </div>
     </div>
     <div
-      v-if="order.credit && payment_status && orderType === 'paid'"
+      v-if="
+        order.credit &&
+          payment_status &&
+          order.order_system_status !== 'cancelled' &&
+          orderType === 'paid'
+      "
       class="order-history-data"
       :id="order._id"
     >

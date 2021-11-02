@@ -231,10 +231,19 @@ export default {
       }
       let amount = 0
       this.pastOrders.forEach(order => {
+        let creditPayment = 0
+        order.order_payments.forEach(payment => {
+          if (
+            payment.name === CONST.CUSTOMER_CREDIT &&
+            parseFloat(payment.collected) > 0
+          ) {
+            creditPayment = payment.collected
+          }
+        })
         if (
           order.credit &&
-          order.order_system_status === 'normal' &&
-          order.order_payments.length > 1
+          order.order_system_status !== 'cancelled' &&
+          creditPayment < 0.01
         ) {
           amount += parseFloat(order.balance_due)
         }
