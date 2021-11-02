@@ -84,7 +84,7 @@
           <i class="arrow right" @click="shiftSlideLeft"></i>
           <i class="arrow left" @click="shiftSlideRight"></i>
           <span v-if="error_payment" class="text-danger-payment"
-            >{{ _t('You can not add amount less than 1 or more than') }}&nbsp;
+            >{{ _t("You can't add more than") }}&nbsp;
             {{ remainingAmount.amount }}</span
           >
           <form
@@ -201,11 +201,13 @@ export default {
       // order.order_system_status === 'normal' &&
       this.pastOrders.forEach(order => {
         let creditPaymentRemaining = false
+        let creditPayment = 0
         order.order_payments.forEach(payment => {
           if (
             payment.name === CONST.CUSTOMER_CREDIT &&
             parseFloat(payment.collected) > 0
           ) {
+            creditPayment = payment.collected
             creditPaymentRemaining = true
           }
         })
@@ -214,7 +216,7 @@ export default {
           order.order_system_status === 'normal' &&
           creditPaymentRemaining
         ) {
-          amount += parseFloat(order.balance_due)
+          amount += parseFloat(creditPayment)
           total_pending_credit_orders += 1
         }
       })
@@ -229,10 +231,19 @@ export default {
       }
       let amount = 0
       this.pastOrders.forEach(order => {
+        let creditPayment = 0
+        order.order_payments.forEach(payment => {
+          if (
+            payment.name === CONST.CUSTOMER_CREDIT &&
+            parseFloat(payment.collected) > 0
+          ) {
+            creditPayment = payment.collected
+          }
+        })
         if (
           order.credit &&
-          order.order_system_status === 'normal' &&
-          order.order_payments.length > 1
+          order.order_system_status !== 'cancelled' &&
+          creditPayment < 0.01
         ) {
           amount += parseFloat(order.balance_due)
         }
@@ -258,11 +269,13 @@ export default {
     },
     is_order_paid(order) {
       let creditPaymentRemaining = false
+      // let creditPayment = 0
       order.order_payments.forEach(payment => {
         if (
           payment.name === CONST.CUSTOMER_CREDIT &&
           parseFloat(payment.collected) > 0
         ) {
+          // creditPayment = payment.collected
           creditPaymentRemaining = true
         }
       })
@@ -278,7 +291,7 @@ export default {
       // eslint-disable-next-line no-unused-vars
       let creditOrderPayment = this.$store.state.order.creditOrderPayment
       this.error_payment = false
-      if (this.customer_payment_amount || !creditOrderPayment.order) {
+      if (this.customer_payment_amount || creditOrderPayment.order.custom) {
         if (
           parseFloat(this.customer_payment_amount) >
             parseFloat(this.remainingAmount.amount) ||

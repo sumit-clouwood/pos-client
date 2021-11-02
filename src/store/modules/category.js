@@ -2,6 +2,7 @@
 import CategoryService from '@/services/data/CategoryService'
 import * as mutation from './category/mutation-types'
 import * as CONSTANTS from '@/constants'
+import Availability from '@/plugins/helpers/Availability.js'
 // initial state
 const getDefaults = () => {
   return {
@@ -123,14 +124,16 @@ const getters = {
       )
     )
   },
-  items: (state, getters) => {
+  items: (state, getters, rootState) => {
+    let storeTimeZone = rootState.location.timezoneString
     if (state.searchTerm) {
       const searchKey = state.searchTerm.toLowerCase()
       return getters.rawItems.filter(
         item =>
-          (item.barcode && item.barcode.toLowerCase().match(searchKey)) ||
-          (item.item_code && item.item_code.toLowerCase().match(searchKey)) ||
-          (item.name && item.name.toLowerCase().match(searchKey))
+          Availability.available(item, storeTimeZone) &&
+          ((item.barcode && item.barcode.toLowerCase().match(searchKey)) ||
+            (item.item_code && item.item_code.toLowerCase().match(searchKey)) ||
+            (item.name && item.name.toLowerCase().match(searchKey)))
       )
     }
     let items = []
@@ -143,8 +146,9 @@ const getters = {
       items = categoryItems.concat(subcategoryItems)
     }
 
-    return items
+    return items.filter(item => Availability.available(item, storeTimeZone))
   },
+
   itemByCode: (state, getters) => itemCode => {
     return getters.rawItems.find(item => item.barcode === itemCode)
   },

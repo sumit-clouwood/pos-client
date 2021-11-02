@@ -90,14 +90,14 @@
         <div class="modal-footer">
           <div class="btn-announce">
             <div class="btn-loyalty">
-              <!-- <button
+              <button
                 v-if="customer_details"
                 type="button"
                 class="btn btn-success color-text-invert color-button"
                 @click="customerPayment"
               >
                 {{ _t('Custom Payment') }}
-              </button> -->
+              </button>
               <button
                 v-if="customer_details"
                 type="button"
@@ -252,6 +252,10 @@ export default {
       }
     },
     customerPayment() {
+      this.$store.commit('order/CREDIT_ORDER_PAYMENT', {
+        order: { custom: true },
+        payment_type: false,
+      })
       this.$store.commit('customer/CREDIT_CUSTOMER_PAYMENT', 'custom')
       $('#credit-payment-methods').attr('style', 'display:block')
     },
@@ -309,11 +313,13 @@ export default {
                         </div>`
         this.pastOrders.forEach(order => {
           let creditPaymentRemaining = false
+          let creditPayment = 0
           order.order_payments.forEach(payment => {
             if (
               payment.name === CONST.CUSTOMER_CREDIT &&
               parseFloat(payment.collected) > 0
             ) {
+              creditPayment = payment.collected
               creditPaymentRemaining = true
             }
           })
@@ -322,7 +328,7 @@ export default {
             order.order_system_status === 'normal' &&
             creditPaymentRemaining
           ) {
-            amount += parseFloat(order.balance_due)
+            amount += parseFloat(creditPayment)
             total_pending_credit_orders += 1
             print_body += `<div style="display: grid;
                             grid-gap: 8px;
@@ -337,7 +343,7 @@ export default {
                                     #${order.order_no}
                                   </span>
                                   <span>
-                                     ${this.formatPrice(order.balance_due)}
+                                     ${this.formatPrice(creditPayment)}
                                   </span>
                                   <span style="text-transform: capitalize;">
                                      ${order.order_type.replace(/[_-]/g, ' ')}
