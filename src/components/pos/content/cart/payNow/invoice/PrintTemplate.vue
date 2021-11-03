@@ -417,17 +417,21 @@
           </template>
         </tfoot>
       </table>
-      <div v-if="currentBrand.is_store_order_number">
-        <div id="qrcode" style="height:25px"></div>
-        <img
-          :src="qrInvoice"
-          height="200px"
-          width="200px"
-          style="display: block; margin-left: auto; margin-right: auto;"
-        />
-      </div>
     </div>
     <div class="footer" v-html="template.footer"></div>
+    <div v-if="currentBrand.is_store_order_number" style="position: absolute;">
+      <div
+        id="qrcode"
+        style="padding-top: 10px; margin-top:10px; 
+          overflow: hidden;"
+      ></div>
+      <img
+        :src="qrInvoice"
+        style="display: block; margin-left: 10px;
+           margin-right: 10px; margin-top: 10px;
+           max-width: 90%; height: auto;"
+      />
+    </div>
   </div>
 </template>
 <script src="http://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
@@ -974,10 +978,8 @@ export default {
   /* display: none; */
 }
 
-#qimg {
-  width: 60px;
-  height: 60px;
-  margin-top: 10px;
+#qrcode {
+  overflow: hidden;
 }
 /*.qrcode img {
   margin: 0 auto;
