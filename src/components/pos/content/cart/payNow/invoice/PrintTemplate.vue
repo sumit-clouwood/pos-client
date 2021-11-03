@@ -430,7 +430,7 @@
     <div class="footer" v-html="template.footer"></div>
   </div>
 </template>
-<script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+<script src="http://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
 <script>
 /* eslint-disable max-len */
 import Preloader from '@/components/util/Preloader'
@@ -751,20 +751,24 @@ export default {
         if (!this.order || !this.currentBrand.is_store_order_number) {
           resolve()
         } else {
-          var qrcode = new QRCode('qrcode')
-          qrcode.clear()
-          let base_url = process.env.VUE_APP_WEB_HOST
-          let website =
-            base_url +
-            '/order-invoice/' +
-            this.currentBrand._id +
-            '/' +
-            this.currentStore._id +
-            '/' +
-            this.orderId
-          qrcode.makeCode(website)
+          try {
+            var qrcode = new QRCode('qrcode')
+            qrcode.clear()
+            let base_url = process.env.VUE_APP_WEB_HOST
+            let website =
+              base_url +
+              '/order-invoice/' +
+              this.currentBrand._id +
+              '/' +
+              this.currentStore._id +
+              '/' +
+              this.orderId
+            qrcode.makeCode(website)
 
-          this.qrInvoice = qrcode._oDrawing._elCanvas.toDataURL('image/png')
+            this.qrInvoice = qrcode._oDrawing._elCanvas.toDataURL('image/png')
+          } catch (e) {
+            console.log(e)
+          }
           resolve()
         }
       })
