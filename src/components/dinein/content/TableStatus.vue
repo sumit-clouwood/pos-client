@@ -278,6 +278,6 @@ export default {
 </script>
 <style scoped lang="scss">
 .merged-tables {
-  background-color: #d5abab !important;
+  background-color: #ff6865 !important;
 }
 </style>

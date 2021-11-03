@@ -454,7 +454,7 @@ const actions = {
           }
           if (table_already_booked) {
             tableStatus.unavailableCount += 1
-            table_details.status.color = '#ec07072e'
+            table_details.status.color = '#ff6865'
             table_details.status.text = 'merged'
             tableStatus.table.push(table_details)
             return false
