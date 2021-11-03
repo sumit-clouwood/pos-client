@@ -237,7 +237,7 @@ export default {
             payment.name !== CONST.CUSTOMER_CREDIT &&
             parseFloat(payment.collected) > 0
           ) {
-            creditPayment = payment.collected
+            creditPayment += parseFloat(payment.collected)
           }
         })
         if (order.credit && order.order_system_status !== 'cancelled') {
