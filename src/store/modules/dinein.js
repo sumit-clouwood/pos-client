@@ -50,6 +50,7 @@ const state = {
   reservationData: null,
   isModified: false,
   moveItemTableId: undefined,
+  mergeTables: undefined,
   currentTableReservationData: null,
   readyItemNotification: [],
   qrTableNotification: [],
@@ -409,9 +410,39 @@ const actions = {
         emptyTableCount: 0,
         table: [],
       }
+      let merged_tables = []
+      let empty_reserved_table = []
+      if (state.allBookedTables.orders) {
+        state.allBookedTables.orders.filter(order_table => {
+          if (
+            order_table.merge_table_ids &&
+            order_table.merge_table_ids.length
+          ) {
+            merged_tables.push({
+              table_id: order_table.assigned_table_id,
+              merged_table_ids: order_table.merge_table_ids,
+            })
+          }
+          if (order_table.status === 'reserved') {
+            empty_reserved_table[order_table.assigned_table_id] = {
+              time: order_table.start_time,
+              date: order_table.start_date,
+            }
+          }
+        })
+      }
+
       let orderOnTable = []
       if (state.tablesOnArea) {
         state.tablesOnArea.forEach((table, index, array) => {
+          let table_already_booked = undefined
+          if (merged_tables.length) {
+            merged_tables.forEach(mt => {
+              if (mt.merged_table_ids.includes(table._id)) {
+                table_already_booked = table._id
+              }
+            })
+          }
           let is_unavail = 0
           let is_avail_soon = 0
           let is_reserved_empty = 0
@@ -421,21 +452,18 @@ const actions = {
             number: table.number,
             status: {},
           }
-
+          if (table_already_booked) {
+            tableStatus.unavailableCount += 1
+            table_details.status.color = '#ec07072e'
+            table_details.status.text = 'merged'
+            tableStatus.table.push(table_details)
+            return false
+          }
           if (state.allBookedTables && state.allBookedTables.orders) {
             orders = state.allBookedTables.orders.filter(
               order => order.assigned_table_id === table._id
             )
           }
-          let empty_reserved_table = []
-          state.allBookedTables.orders.filter(order_table => {
-            if (order_table.status === 'reserved') {
-              empty_reserved_table[order_table.assigned_table_id] = {
-                time: order_table.start_time,
-                date: order_table.start_date,
-              }
-            }
-          })
           if (orders.length) {
             let tableArray = []
             let table_book_date_time = empty_reserved_table[table._id]
@@ -755,6 +783,26 @@ const actions = {
       })
     }
   },
+  mergeTable({ dispatch }, data) {
+    // if (state.selectedTable) {
+    //   commit(
+    //     mutation.SELECTED_TABLE_RESERVATION,
+    //     state.selectedTable.table_number
+    //   )
+    // }
+
+    if (data.reservation_id != 'false') {
+      const params = [
+        data.reservation_id,
+        'merge_table',
+        { merge_table_ids: data.table_ids },
+      ]
+      DineInService.mergedTables(...params).then(() => {
+        // commit(mutation.RESERVATION_ID, data.reservationid)
+        dispatch('getBookedTablesOnClick', false) //update it for optimization
+      })
+    }
+  },
   updateItemGuest({ state, commit }, { item, guest }) {
     let action = 'add'
     if (state.bills && state.bills[item]) {
@@ -947,6 +995,9 @@ const mutations = {
   },*/
   MOVE_ITEM_TABLE_ID(state, tableId) {
     state.moveItemTableId = tableId
+  },
+  MERGE_TABLES(state, tables) {
+    state.mergeTables = tables
   },
   [mutation.CURRENT_TABLE_RESERVATION](state, reservationData) {
     state.currentTableReservationData = reservationData
