@@ -1,251 +1,255 @@
 <template>
   <!-- Online order popup -->
-  <div class="modal online-order-modal" id="online-order" role="dialog">
-    <div class="modal-dialog">
-      <!-- Modal content-->
-      <div class="modal-content color-dashboard-background">
-        <div class="modal-header customer-header">
-          <h4
-            class="customer-title color-text-invert"
-            v-if="onlineOrders.count"
-          >
-            {{
-              _t(
-                'Additional order are almost ready. Would you like to take them with you '
-              )
-            }}
-            ?
-          </h4>
-          <h4 class="customer-title color-text-invert" v-else>
-            {{ _t('No more orders') }}
-          </h4>
-          <button
-            type="button"
-            class="close pull-right color-text"
-            data-dismiss="modal"
-            @click="hideOnlineModal()"
-          >
-            &times;
-          </button>
-        </div>
-        <Progress :msg="_t('Loading new orders') + '...'" v-if="loading" />
-        <div>
-          <div
-            class="modal-body online-order-wrapper"
-            v-if="onlineOrders.count"
-          >
-            <div class="table-responsive">
-              <table v-if="onlineOrders.count" class="table table-block-page">
-                <tbody>
-                  <tr
-                    :key="index"
-                    v-for="(order, index) in onlineOrders.orders"
-                  >
-                    <td>
-                      <div class="order-item">
-                        <div class="order-header">
-                          <div class="number-id-button">
-                            <span class="order-id">
-                              <span
-                                @click="selectedOrderDetails(order._id)"
-                                class="open-details-popup cursor-pointer"
-                                data-dismiss="modal"
-                                data-target=".bd-example-modal-lg"
-                                data-toggle="modal"
-                              >
-                                #{{ order.order_no }} (
-                                {{
-                                  order.order_type
-                                    .replace(/[_-]/g, ' ')
-                                    .replace(/^./, function(t) {
-                                      return t.toUpperCase()
-                                    })
-                                }}
-                                )
-                                <span
-                                  class="btn-future"
-                                  v-if="order.future_order_datetime !== ''"
-                                >
-                                  {{ _t('Future Order') }}</span
-                                >
-                              </span>
-                            </span>
-                          </div>
-                          <div class="order_price-container">
-                            <div class="order_price">
-                              {{ order.balance_due + ' ' + order.currency }}
-                            </div>
-                          </div>
-                          <div
-                            class="order_time"
-                            v-if="order.future_order_datetime !== ''"
-                          >
-                            {{
-                              convertDatetime(
-                                order.future_order_datetime,
-                                timezoneString
-                              )
-                            }}
-                          </div>
-                          <div class="order_time" v-else>
-                            {{
-                              convertDatetime(
-                                order.real_created_datetime,
-                                timezoneString
-                              )
-                            }}
-                          </div>
-                          <div
-                            class="button-block"
-                            style="visibility: visible;"
-                          >
-                            <div>
-                              <span
-                                :key="LabelIndex"
-                                style="margin: 0.2rem"
-                                v-for="(label,
-                                LabelIndex) in actionDetails.actionLabel"
-                              >
-                                <button
-                                  @click.stop="
-                                    updateOrder({
-                                      order: order,
-                                      orderType: order.order_type,
-                                      actionTrigger:
-                                        actionDetails.action[LabelIndex],
-                                    })
-                                  "
-                                  class="button text-button btn btn-success"
-                                  type="button"
-                                >
-                                  <div class="button-content-container">
-                                    <div class="button-icon-container"></div>
-                                    <div class="button-caption">
-                                      {{
-                                        actionDetails.actionLabel[LabelIndex]
-                                      }}
-                                    </div>
-                                  </div>
-                                </button>
-                              </span>
-                            </div>
-                          </div>
-                          <div v-if="branch[order.store_id]">
-                            {{ branch[order.store_id]['name'] }}
-                          </div>
-                          <div></div>
-                        </div>
-                        <div class="order-body">
-                          <div class="order-items-list">
-                            <div
-                              :key="index"
-                              class="order-name"
-                              v-for="(i, index) in order.items"
-                            >
-                              <div class="main-item">
-                                {{
-                                  typeof order.items[index] != 'undefined'
-                                    ? order.items[index].name
-                                    : ''
-                                }}<span></span>
-                              </div>
-                              <div
-                                :key="index"
-                                class="modifiers"
-                                v-for="(item, index) in order.item_modifiers"
-                              >
-                                <span v-if="item.for_item == i.no">
-                                  <span v-if="item.qty > 0"
-                                    >+{{ item.qty }}</span
-                                  >
-                                  {{ item.name }}
-                                </span>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        <div
-                          class="order-footer"
-                          :class="{ active: activeIndex.includes(order._id) }"
-                        >
-                          <!--<span class="timeago elapsedTime delManTime" title=""></span>-->
-
-                          <div class="runningtimes">
-                            <div
-                              class="order-address"
-                              v-if="order.order_building"
-                            >
-                              <div class="order-delivery-area">
-                                <span v-if="order.order_flat_number">
-                                  {{ order.order_flat_number }},</span
-                                >
-                                <span v-if="order.order_building">
-                                  {{ order.order_building }},</span
-                                >
-                                <span v-if="order.order_street">
-                                  {{ order.order_street }},</span
-                                >
-                                <span v-if="order.order_city">
-                                  {{ order.order_city }}</span
-                                >
-                              </div>
-                            </div>
-                            <span
-                              style="font-size: 0.9rem; justify-content:center;"
-                              v-else
-                              :id="
-                                'createdOrder-' +
-                                  convertDatetime(
-                                    order.real_created_datetime,
-                                    timezoneString,
-                                    'YYYY-MM-DD HH:mm:ss'
-                                  )
-                              "
-                              >{{
-                                orderTimer(
-                                  convertDatetime(
-                                    order.real_created_datetime,
-                                    timezoneString,
-                                    'YYYY-MM-DD HH:mm:ss'
-                                  ),
-                                  timezoneString
-                                )
-                              }}</span
-                            >
-                          </div>
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-              <InformationPopup
-                :response-information="err"
-                title="Information"
-                :activated-class="'text-danger'"
-              />
-            </div>
-          </div>
-          <div class="modal-body text-center" v-else>
-            <h4 class="customer-title color-text-invert">
+  <div>
+    <div class="modal online-order-modal" id="online-order" role="dialog">
+      <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content color-dashboard-background">
+          <div class="modal-header customer-header">
+            <h4
+              class="customer-title color-text-invert"
+              v-if="onlineOrders.count"
+            >
+              {{
+                _t(
+                  'Additional order are almost ready. Would you like to take them with you'
+                )
+              }}
+              ?
+            </h4>
+            <h4 class="customer-title color-text-invert" v-else>
               {{ _t('No more orders') }}
             </h4>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <div class="btn-announce pull-right">
             <button
               type="button"
-              class="btn btn-danger cancel-announce"
+              class="close pull-right color-text"
               data-dismiss="modal"
               @click="hideOnlineModal()"
             >
-              Close
+              &times;
             </button>
+          </div>
+          <Progress :msg="_t('Loading new orders') + '...'" v-if="loading" />
+          <div>
+            <div
+              class="modal-body online-order-wrapper"
+              v-if="onlineOrders.count"
+            >
+              <div class="table-responsive">
+                <table v-if="onlineOrders.count" class="table table-block-page">
+                  <tbody>
+                    <tr
+                      :key="index"
+                      v-for="(order, index) in onlineOrders.orders"
+                    >
+                      <td>
+                        <div class="order-item">
+                          <div class="order-header">
+                            <div class="number-id-button">
+                              <span class="order-id">
+                                <span
+                                  @click="selectedOrderDetails(order._id)"
+                                  class="open-details-popup cursor-pointer"
+                                  data-dismiss="modal"
+                                  data-target=".bd-example-modal-lg"
+                                  data-toggle="modal"
+                                >
+                                  #{{ order.order_no }} (
+                                  {{
+                                    order.order_type
+                                      .replace(/[_-]/g, ' ')
+                                      .replace(/^./, function(t) {
+                                        return t.toUpperCase()
+                                      })
+                                  }}
+                                  )
+                                  <span
+                                    class="btn-future"
+                                    v-if="order.future_order_datetime !== ''"
+                                  >
+                                    {{ _t('Future Order') }}</span
+                                  >
+                                </span>
+                              </span>
+                            </div>
+                            <div class="order_price-container">
+                              <div class="order_price">
+                                {{ order.balance_due + ' ' + order.currency }}
+                              </div>
+                            </div>
+                            <div
+                              class="order_time"
+                              v-if="order.future_order_datetime !== ''"
+                            >
+                              {{
+                                convertDatetime(
+                                  order.future_order_datetime,
+                                  timezoneString
+                                )
+                              }}
+                            </div>
+                            <div class="order_time" v-else>
+                              {{
+                                convertDatetime(
+                                  order.real_created_datetime,
+                                  timezoneString
+                                )
+                              }}
+                            </div>
+                            <div
+                              class="button-block"
+                              style="visibility: visible;"
+                            >
+                              <div>
+                                <span
+                                  :key="LabelIndex"
+                                  style="margin: 0.2rem"
+                                  v-for="(label,
+                                  LabelIndex) in actionDetails.actionLabel"
+                                >
+                                  <button
+                                    @click.stop="
+                                      updateOrder({
+                                        order: order,
+                                        orderType: order.order_type,
+                                        actionTrigger:
+                                          actionDetails.action[LabelIndex],
+                                      })
+                                    "
+                                    class="button text-button btn btn-success"
+                                    type="button"
+                                  >
+                                    <div class="button-content-container">
+                                      <div class="button-icon-container"></div>
+                                      <div class="button-caption">
+                                        {{
+                                          actionDetails.actionLabel[LabelIndex]
+                                        }}
+                                      </div>
+                                    </div>
+                                  </button>
+                                </span>
+                              </div>
+                            </div>
+                            <div v-if="branch[order.store_id]">
+                              {{ branch[order.store_id]['name'] }}
+                            </div>
+                            <div></div>
+                          </div>
+                          <div class="order-body">
+                            <div class="order-items-list">
+                              <div
+                                :key="index"
+                                class="order-name"
+                                v-for="(i, index) in order.items"
+                              >
+                                <div class="main-item">
+                                  {{
+                                    typeof order.items[index] != 'undefined'
+                                      ? order.items[index].name
+                                      : ''
+                                  }}<span></span>
+                                </div>
+                                <div
+                                  :key="index"
+                                  class="modifiers"
+                                  v-for="(item, index) in order.item_modifiers"
+                                >
+                                  <span v-if="item.for_item == i.no">
+                                    <span v-if="item.qty > 0"
+                                      >+{{ item.qty }}</span
+                                    >
+                                    {{ item.name }}
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div
+                            class="order-footer"
+                            :class="{ active: activeIndex.includes(order._id) }"
+                          >
+                            <!--<span class="timeago elapsedTime delManTime" title=""></span>-->
+
+                            <div class="runningtimes">
+                              <div
+                                class="order-address"
+                                v-if="order.order_building"
+                              >
+                                <div class="order-delivery-area">
+                                  <span v-if="order.order_flat_number">
+                                    {{ order.order_flat_number }},</span
+                                  >
+                                  <span v-if="order.order_building">
+                                    {{ order.order_building }},</span
+                                  >
+                                  <span v-if="order.order_street">
+                                    {{ order.order_street }},</span
+                                  >
+                                  <span v-if="order.order_city">
+                                    {{ order.order_city }}</span
+                                  >
+                                </div>
+                              </div>
+                              <span
+                                style="font-size: 0.9rem; 
+                                justify-content:center;"
+                                v-else
+                                :id="
+                                  'createdOrder-' +
+                                    convertDatetime(
+                                      order.real_created_datetime,
+                                      timezoneString,
+                                      'YYYY-MM-DD HH:mm:ss'
+                                    )
+                                "
+                                >{{
+                                  orderTimer(
+                                    convertDatetime(
+                                      order.real_created_datetime,
+                                      timezoneString,
+                                      'YYYY-MM-DD HH:mm:ss'
+                                    ),
+                                    timezoneString
+                                  )
+                                }}</span
+                              >
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <InformationPopup
+                  :response-information="err"
+                  title="Information"
+                  :activated-class="'text-danger'"
+                />
+              </div>
+            </div>
+            <div class="modal-body text-center" v-else>
+              <h4 class="customer-title color-text-invert">
+                {{ _t('No more orders') }}
+              </h4>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <div class="btn-announce pull-right">
+              <button
+                type="button"
+                class="btn btn-danger cancel-announce"
+                data-dismiss="modal"
+                @click="hideOnlineModal()"
+              >
+                {{ _t('Close') }}
+              </button>
+            </div>
           </div>
         </div>
       </div>
     </div>
+    <CancelOtherOrdersPopup :order="zometoOrder"></CancelOtherOrdersPopup>
   </div>
 </template>
 
@@ -256,6 +260,8 @@ import { mapState, mapActions, mapGetters } from 'vuex'
 import DateTime from '@/mixins/DateTime'
 import InformationPopup from '@/components/pos/content/InformationPopup'
 import Progress from '@/components/util/Progress'
+import * as CONST from '@/constants'
+import CancelOtherOrdersPopup from '@/components/transactions/content/orderDetails/CancelOtherOrdersPopup'
 
 var audio = new Audio('https://d3jjfdwi6rnqlf.cloudfront.net/doorbell.mp3')
 var nopromise = {
@@ -281,6 +287,7 @@ export default {
       lastOrderId: '',
       isAudioPlaying: false,
       dateTime: '',
+      zometoOrder: undefined,
       err: null,
       activeIndex: [],
       actionDetails: {
@@ -294,6 +301,7 @@ export default {
   components: {
     Progress,
     InformationPopup,
+    CancelOtherOrdersPopup,
   },
   mixins: [DateTime],
   computed: {
@@ -326,14 +334,32 @@ export default {
     ...mapActions('deliveryManager', ['showOrderDetails']),
     updateOrder(data) {
       this.$store.commit('deliveryManager/SET_LOADING', true)
-      this.updateOrderAction(data)
-        .then(() => {
-          this.$store.dispatch('deliveryManager/getOnlineOrders')
-        })
-        .catch(er => {
-          this.err = er.data ? er.data.error : er.message
-          if (this.err) $('.information-popup').modal('show')
-        })
+      if (
+        this.isZomatoOrder(data.order) &&
+        data.actionTrigger === 'delivery_reject'
+      ) {
+        this.zometoOrder = data.order
+        $('#cancellationReasonOtherOrders').modal('show')
+        return true
+      } else {
+        this.zometoOrder = undefined
+        this.updateOrderAction(data)
+          .then(() => {
+            this.$store.dispatch('deliveryManager/getOnlineOrders')
+          })
+          .catch(er => {
+            this.err = er.data ? er.data.error : er.message
+            if (this.err) $('.information-popup').modal('show')
+          })
+      }
+    },
+    isZomatoOrder(order) {
+      if (
+        order['aggregator_data'] &&
+        order['aggregator_data']['source'] == CONST.AGGREGATOR_SOURCE_ZOMATO
+      )
+        return true
+      return false
     },
     hideOnlineModal() {
       $('.online-order-modal').hide()

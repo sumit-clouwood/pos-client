@@ -46,7 +46,10 @@
                       @click="showDropdown('my-dropdown')"
                     />
                   </form>
-                  <div id="my-dropdown" class="dropdown-content cursor-pointer">
+                  <div
+                    id="my-dropdown"
+                    class="dropdown-content cursor-pointer rejection-reason"
+                  >
                     <span
                       class="dropdown"
                       v-for="(index, value) in reasons"
@@ -242,6 +245,13 @@ function showModal(modalName) {
 
 <style lang="scss" scoped>
 @import '@/assets/scss/mixins.scss';
+.rejection-reason {
+  width: 100% !important;
+  padding: 9px 18px 10px 10px;
+  span {
+    padding: 0.775rem 1rem !important;
+  }
+}
 @include responsive(mobile) {
   #cancellationReasonOtherOrders,
   #successCancel,
