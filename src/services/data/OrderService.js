@@ -171,4 +171,7 @@ export default {
   orderLock(id, data) {
     return DataService.post(`/model/orders/id/${id}/order_lock`, data)
   },
+  cancelZometoOrder(data, id) {
+    return DataService.post(`/model/orders/id/${id}/reject_order`, data)
+  },
 }

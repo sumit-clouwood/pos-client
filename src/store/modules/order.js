@@ -1922,6 +1922,18 @@ const actions = {
         })
     })
   },
+  // eslint-disable-next-line no-empty-pattern
+  zometoOrderRejection({}, data) {
+    return new Promise((resolve, reject) => {
+      OrderService.cancelZometoOrder(data.message, data.id)
+        .then(response => {
+          resolve(response)
+        })
+        .catch(response => {
+          reject(response)
+        })
+    })
+  },
   creditOrderPay({ state, dispatch, rootState, commit }) {
     return new Promise((resolve, reject) => {
       let order_id = state.creditOrderPayment.order

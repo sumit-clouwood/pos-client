@@ -247,13 +247,9 @@
                     "
                     >{{ _t('Talabat#') }}</template
                   >
-                  <template
-                    v-if="
-                      order.aggregator_data.source ==
-                        CONST.AGGREGATOR_SOURCE_ZOMATO
-                    "
-                    >{{ _t('Zomato#') }}</template
-                  >
+                  <template v-if="isZomatoOrder(order)">{{
+                    _t('Zomato#')
+                  }}</template>
                   {{ order.aggregator_data.order_id }}
                 </span>
                 <div>
@@ -365,6 +361,7 @@
     <h5 v-else class="center-block text-center pt-5">
       {{ _t('No Orders Found') }}
     </h5>
+    <CancelOtherOrdersPopup :order="zometoOrder"></CancelOtherOrdersPopup>
     <InformationPopup
       v-if="err"
       :response-information="err"
@@ -378,6 +375,8 @@
 import { mapState, mapActions, mapGetters } from 'vuex'
 import DateTime from '@/mixins/DateTime'
 import InformationPopup from '@/components/pos/content/InformationPopup'
+import CancelOtherOrdersPopup from '@/components/transactions/content/orderDetails/CancelOtherOrdersPopup'
+import * as CONST from '@/constants'
 
 /* global $ */
 export default {
@@ -387,6 +386,7 @@ export default {
     return {
       orderCount: 2,
       dateTime: '',
+      zometoOrder: undefined,
       err: null,
       activeIndex: [],
       processedOrder: [],
@@ -400,6 +400,7 @@ export default {
   },
   components: {
     InformationPopup,
+    CancelOtherOrdersPopup,
   },
   props: {
     actionDetails: Object,
@@ -439,27 +440,44 @@ export default {
     clearInterval(this.orderTime)
   },
   methods: {
+    isZomatoOrder(order) {
+      if (
+        order['aggregator_data'] &&
+        order['aggregator_data']['source'] == CONST.AGGREGATOR_SOURCE_ZOMATO
+      )
+        return true
+      return false
+    },
     ...mapActions('deliveryManager', ['showOrderDetails']),
     updateOrder(data) {
       let _class = '.class' + data.order._id
-
       this.order_status = false
       this.processedOrder.push(data.order._id)
-      this.updateOrderAction(data)
-        .then(res => {
-          if (res.data.status === 'ok') {
-            // let item_block = document.getElementsByClassName(_class)
-            for (let el of document.querySelectorAll(_class)) {
-              el.style.visibility = 'hidden'
-              el.style.display = 'none'
+      if (
+        this.isZomatoOrder(data.order) &&
+        data.actionTrigger === 'delivery_reject'
+      ) {
+        this.zometoOrder = data.order
+        $('#cancellationReasonOtherOrders').modal('show')
+        return true
+      } else {
+        this.zometoOrder = undefined
+        this.updateOrderAction(data)
+          .then(res => {
+            if (res.data.status === 'ok') {
+              // let item_block = document.getElementsByClassName(_class)
+              for (let el of document.querySelectorAll(_class)) {
+                el.style.visibility = 'hidden'
+                el.style.display = 'none'
+              }
+              // item_block.style.display = 'none'
             }
-            // item_block.style.display = 'none'
-          }
-        })
-        .catch(er => {
-          this.err = er.data ? er.data.error : er.message
-          if (this.err) $('.information-popup').modal('show')
-        })
+          })
+          .catch(er => {
+            this.err = er.data ? er.data.error : er.message
+            if (this.err) $('.information-popup').modal('show')
+          })
+      }
     },
     AssigneeOrder(data) {
       // eslint-disable-next-line no-console
