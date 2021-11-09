@@ -1,5 +1,5 @@
 <template>
-  <!-- Online order popup -->
+  <!-- Online order popup --->
   <div class="modal online-order-modal" id="online-order" role="dialog">
     <div class="modal-dialog">
       <!-- Modal content-->
