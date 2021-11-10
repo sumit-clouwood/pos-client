@@ -349,8 +349,8 @@
                         ),
                         timezoneString
                       )
-                    }}</span
-                  >
+                    }}
+                  </span>
                 </div>
               </div>
             </div>
@@ -361,7 +361,7 @@
     <h5 v-else class="center-block text-center pt-5">
       {{ _t('No Orders Found') }}
     </h5>
-    <CancelOtherOrdersPopup :order="zometoOrder"></CancelOtherOrdersPopup>
+    <CancelOtherOrdersPopup></CancelOtherOrdersPopup>
     <InformationPopup
       v-if="err"
       :response-information="err"
@@ -386,7 +386,6 @@ export default {
     return {
       orderCount: 2,
       dateTime: '',
-      zometoOrder: undefined,
       err: null,
       activeIndex: [],
       processedOrder: [],
@@ -453,15 +452,15 @@ export default {
       let _class = '.class' + data.order._id
       this.order_status = false
       this.processedOrder.push(data.order._id)
+      this.$store.commit('order/setZometoOrder', undefined)
       if (
         this.isZomatoOrder(data.order) &&
         data.actionTrigger === 'delivery_reject'
       ) {
-        this.zometoOrder = data.order
+        this.$store.commit('order/setZometoOrder', data.order)
         $('#cancellationReasonOtherOrders').modal('show')
         return true
       } else {
-        this.zometoOrder = undefined
         this.updateOrderAction(data)
           .then(res => {
             if (res.data.status === 'ok') {

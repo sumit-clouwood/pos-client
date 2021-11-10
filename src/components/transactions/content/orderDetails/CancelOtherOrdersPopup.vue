@@ -70,7 +70,7 @@
               <button
                 type="button"
                 class="btn btn-success"
-                @click="cancelOrderAction(order)"
+                @click="cancelOrderAction"
               >
                 {{ _t('Submit') }}
               </button>
@@ -140,12 +140,9 @@ export default {
       processing: false,
     }
   },
-  props: {
-    order: Object,
-  },
   computed: {
     ...mapGetters('location', ['_t']),
-    ...mapState('order', ['errors', 'inventoryBehavior']),
+    ...mapState('order', ['errors', 'inventoryBehavior', 'zometoOrder']),
     ...mapGetters('modules', ['enabled']),
     reasons() {
       return {
@@ -168,14 +165,16 @@ export default {
     showDropdown: function(className) {
       $('#' + className).toggle()
     },
-    cancelOrderAction: function(order) {
-      if (this.processing) {
-        return
-      }
+    cancelOrderAction: function() {
+      // if (this.processing) {
+      //   return
+      // }
+      // eslint-disable-next-line no-console
+      console.log(this.zometoOrder)
       this.processing = true
       let data = {
         message: { zomato_rejection_message_id: this.showSelectedReason },
-        id: order._id,
+        id: this.zometoOrder._id,
       }
       this.zometoOrderRejection(data)
         .then(response => {

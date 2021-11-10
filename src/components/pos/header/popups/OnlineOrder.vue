@@ -131,6 +131,19 @@
                                 </span>
                               </div>
                             </div>
+                            <div class="order-id">
+                              <template
+                                v-if="
+                                  order.aggregator_data.source ==
+                                    CONST.AGGREGATOR_SOURCE_TALABAT
+                                "
+                                >{{ _t('Talabat#') }}</template
+                              >
+                              <template v-if="isZomatoOrder(order)">{{
+                                _t('Zomato#')
+                              }}</template>
+                              {{ order.aggregator_data.order_id }}
+                            </div>
                             <div v-if="branch[order.store_id]">
                               {{ branch[order.store_id]['name'] }}
                             </div>
@@ -249,7 +262,7 @@
         </div>
       </div>
     </div>
-    <CancelOtherOrdersPopup :order="zometoOrder"></CancelOtherOrdersPopup>
+    <CancelOtherOrdersPopup></CancelOtherOrdersPopup>
   </div>
 </template>
 
@@ -287,7 +300,6 @@ export default {
       lastOrderId: '',
       isAudioPlaying: false,
       dateTime: '',
-      zometoOrder: undefined,
       err: null,
       activeIndex: [],
       actionDetails: {
@@ -338,11 +350,13 @@ export default {
         this.isZomatoOrder(data.order) &&
         data.actionTrigger === 'delivery_reject'
       ) {
-        this.zometoOrder = data.order
+        this.$store.commit('order/setZometoOrder', data.order)
+
         $('#cancellationReasonOtherOrders').modal('show')
         return true
       } else {
-        this.zometoOrder = undefined
+        this.$store.commit('order/setZometoOrder', undefined)
+
         this.updateOrderAction(data)
           .then(() => {
             this.$store.dispatch('deliveryManager/getOnlineOrders')

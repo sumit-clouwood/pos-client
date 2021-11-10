@@ -57,6 +57,7 @@ const state = {
   needSupervisorAccess: false,
   newOrder: null,
   alert: {},
+  zometoOrder: undefined,
   creditCustomerPaymentLoader: false,
   noteBeforeItem: undefined,
   orderItemData: undefined,
@@ -1923,10 +1924,11 @@ const actions = {
     })
   },
   // eslint-disable-next-line no-empty-pattern
-  zometoOrderRejection({}, data) {
+  zometoOrderRejection({ dispatch }, data) {
     return new Promise((resolve, reject) => {
       OrderService.cancelZometoOrder(data.message, data.id)
         .then(response => {
+          dispatch('deliveryManager/fetchDMOrderDetail', {}, { root: true })
           resolve(response)
         })
         .catch(response => {
@@ -2352,6 +2354,9 @@ const mutations = {
     if (state.item) {
       state.item.editMode = mode
     }
+  },
+  setZometoOrder(state, order) {
+    state.zometoOrder = order
   },
 
   [mutation.NEED_SUPERVISOR_ACCESS](state, status) {
