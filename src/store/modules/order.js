@@ -1924,11 +1924,11 @@ const actions = {
     })
   },
   // eslint-disable-next-line no-empty-pattern
-  zometoOrderRejection({ dispatch }, data) {
+  zometoOrderRejection({}, data) {
     return new Promise((resolve, reject) => {
       OrderService.cancelZometoOrder(data.message, data.id)
         .then(response => {
-          dispatch('deliveryManager/fetchDMOrderDetail', {}, { root: true })
+          // dispatch('deliveryManager/fetchDMOrderDetail', {}, { root: true })
           resolve(response)
         })
         .catch(response => {

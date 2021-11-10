@@ -345,7 +345,6 @@ export default {
   methods: {
     ...mapActions('deliveryManager', ['showOrderDetails']),
     updateOrder(data) {
-      this.$store.commit('deliveryManager/SET_LOADING', true)
       if (
         this.isZomatoOrder(data.order) &&
         data.actionTrigger === 'delivery_reject'
@@ -355,6 +354,8 @@ export default {
         $('#cancellationReasonOtherOrders').modal('show')
         return true
       } else {
+        this.$store.commit('deliveryManager/SET_LOADING', true)
+
         this.$store.commit('order/setZometoOrder', undefined)
 
         this.updateOrderAction(data)
@@ -376,6 +377,7 @@ export default {
       return false
     },
     hideOnlineModal() {
+      this.$store.commit('deliveryManager/SET_LOADING', false)
       $('.online-order-modal').hide()
       $('#online-order')
         .dialog()

@@ -302,7 +302,7 @@ export default {
         return this._t('Guest')
       }
       let name = 'N/A'
-      if (orderDetail) {
+      if (orderDetail && orderDetail.lookups.users._id.length > 0) {
         name = Object.values(orderDetail.lookups.users._id)[0]['name']
       }
       return name

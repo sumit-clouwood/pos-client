@@ -282,8 +282,6 @@ export default {
       this.params.pageId ==
         'home_delivery_acceptance                                       '
     ) {
-      // eslint-disable-next-line no-console
-      console.log('why')
       let orderStatus = {
         orderStatus: 'in-progress',
         collected: 'no',

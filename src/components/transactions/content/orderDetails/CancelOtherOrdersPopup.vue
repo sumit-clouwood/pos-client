@@ -70,7 +70,7 @@
               <button
                 type="button"
                 class="btn btn-success"
-                @click="cancelOrderAction"
+                @click="orderAction"
               >
                 {{ _t('Submit') }}
               </button>
@@ -134,8 +134,8 @@ export default {
   },
   data() {
     return {
-      showSelectedReason: '',
-      showSelectedReasonMsg: '',
+      showSelectedReason: undefined,
+      showSelectedReasonMsg: undefined,
       errorMessage: '',
       processing: false,
     }
@@ -165,36 +165,24 @@ export default {
     showDropdown: function(className) {
       $('#' + className).toggle()
     },
-    cancelOrderAction: function() {
-      // if (this.processing) {
-      //   return
-      // }
-      // eslint-disable-next-line no-console
-      console.log(this.zometoOrder)
-      this.processing = true
+    orderAction: function() {
+      if (!this.showSelectedReason) {
+        this.errorMessage = 'Zomato rejection message is required.'
+        $('#information-popup').modal('show')
+        return false
+      }
+      this.$store.commit('deliveryManager/SET_LOADING', true)
+      // this.processing = true
       let data = {
         message: { zomato_rejection_message_id: this.showSelectedReason },
         id: this.zometoOrder._id,
       }
       this.zometoOrderRejection(data)
         .then(response => {
-          // eslint-disable-next-line no-console
-          console.log(response)
           if (
             response.data.status !== 'fail' &&
             response.data.status !== 'form_errors'
           ) {
-            //Reload order list again.
-            // let scope = this
-            // scope.$store
-            //   .dispatch('transactionOrders/getTransactionOrders', {
-            //     root: true,
-            //   })
-            //   .then(function() {
-            //     scope.$store.dispatch(
-            //       'transactionOrders/selectFirstTransactionOrder'
-            //     )
-            //   })
             closeModal('#cancellationReasonOtherOrders')
             showModal('#successCancel')
           } else {
@@ -211,7 +199,6 @@ export default {
                   ? response.data.error
                   : response.data.message
 
-              this.$store.commit('deliveryManager/SET_LOADING', false)
               closeModal('#cancellationReasonOtherOrders')
             }
             if (response.data.status != 'ok') {
@@ -220,8 +207,12 @@ export default {
               closeModal('#cancellationReasonOtherOrders')
             }
           }
-          this.showSelectedReason = ''
-          this.showSelectedBehavior = ''
+          this.$store.dispatch('deliveryManager/getOnlineOrders')
+
+          // this.$store.commit('deliveryManager/SET_LOADING', false)
+
+          this.showSelectedReason = undefined
+          this.showSelectedBehavior = undefined
           this.supervisorPassword = ''
         })
         .catch(error => {
