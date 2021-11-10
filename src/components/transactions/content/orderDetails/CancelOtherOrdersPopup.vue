@@ -210,10 +210,14 @@ export default {
                 typeof response.data.error !== 'undefined'
                   ? response.data.error
                   : response.data.message
+
+              this.$store.commit('deliveryManager/SET_LOADING', false)
+              closeModal('#cancellationReasonOtherOrders')
             }
             if (response.data.status != 'ok') {
               this.errorMessage = error
               $('#information-popup').modal('show')
+              closeModal('#cancellationReasonOtherOrders')
             }
           }
           this.showSelectedReason = ''

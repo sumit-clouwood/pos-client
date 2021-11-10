@@ -28,6 +28,8 @@
               {{
                 typeof responseInformation.message !== 'undefined'
                   ? responseInformation.message
+                  : responseInformation.data
+                  ? responseInformation.data.error
                   : responseInformation
               }}
             </h5>
