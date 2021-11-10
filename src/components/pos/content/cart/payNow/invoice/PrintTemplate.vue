@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 <template>
   <Preloader v-if="dataBeingLoaded" />
   <div
@@ -421,7 +420,10 @@
     <div class="footer">
       <div v-html="template.footer"></div>
       <div v-if="currentBrand.is_store_order_number">
-        <div id="qrcode" style="width:140px; height:140px; margin:0 auto;">
+        <div
+          id="qrcode"
+          style="width:140px; height:140px; margin:0 auto; overflow: hidden"
+        >
           <img
             :src="qrInvoice"
             height="140px"
@@ -972,15 +974,3 @@ export default {
   },
 }
 </script>
-<style scoped>
-#qrcode-container {
-  /* display: none; */
-}
-
-#qrcode {
-  overflow: hidden;
-}
-/*.qrcode img {
-  margin: 0 auto;
-} */
-</style>
