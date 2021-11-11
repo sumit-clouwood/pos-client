@@ -50,7 +50,9 @@
                       )
                     </b>
                   </span>
-                  <span>
+                  <span
+                    v-if="notificationDetails.order_type != 'unlock_dine_in'"
+                  >
                     {{ _t('Area') }}:
                     <b class="text-capitalize">{{
                       notificationDetails.area
@@ -58,10 +60,15 @@
                   </span>
                 </div>
                 <div class="item-served">
-                  <i class="item-name-normal text-capitalize"
+                  <i
+                    class="item-name-normal text-capitalize"
+                    v-if="notificationDetails.order_type != 'unlock_dine_in'"
                     >{{ _t('At table') }} {{ notificationDetails.table_no }}
                     {{ _t('customer') }} {{ notificationDetails.message }}</i
                   >
+                  <i class="item-name-normal text-capitalize" v-else>
+                    {{ _t('Order unlock by other user') }}
+                  </i>
                   <span v-if="notificationDetails.namespace === 'new_order'">
                     <order-accept-reject
                       :order="notificationDetails.order"
