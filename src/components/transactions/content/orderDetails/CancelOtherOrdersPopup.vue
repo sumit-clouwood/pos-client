@@ -119,7 +119,9 @@
         </div>
       </div>
     </div>
-    <InformationPopup :responseInformation="errorMessage" title="Alert" />
+    <div v-if="errorMessage.length">
+      <InformationPopup :responseInformation="errorMessage" title="Alert-" />
+    </div>
   </div>
 </template>
 
