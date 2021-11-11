@@ -139,22 +139,15 @@ export default {
             socket_notification.data.order_id === order
           ) {
             // eslint-disable-next-line no-console
-            console.log(
-              socket_notification,
-              'socket_notification - 2',
-              store,
-              brand_store,
-              scopeThis.brandId,
-              scopeThis.storeId
-            )
+            console.log(socket_notification, 'socket_notification - 2')
             scopeThis.$router.push('/dine-in' + brand_store)
-            scopeThis.$router.replace({
-              name: 'Dinein',
-              params: {
-                brand_id: scopeThis.brandId,
-                store_id: scopeThis.storeId,
-              },
-            })
+            // scopeThis.$router.replace({
+            //   name: 'Dinein',
+            //   params: {
+            //     brand_id: scopeThis.brandId,
+            //     store_id: scopeThis.storeId,
+            //   },
+            // })
           }
         }
       )
