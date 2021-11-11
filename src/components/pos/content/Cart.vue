@@ -113,7 +113,7 @@ export default {
         return false
       }
       let store = this.store ? this.store._id : undefined
-      // let scope = this
+      let scopeThis = this
       if (!store) {
         return false
       }
@@ -133,7 +133,6 @@ export default {
             store,
             brand_store
           )
-          // scope.$router.push('/dine-in' + brand_store + '/11')
           if (
             socket_notification &&
             order &&
@@ -145,15 +144,15 @@ export default {
               'socket_notification - 2',
               store,
               brand_store,
-              this.brandId,
-              this.storeId
+              scopeThis.brandId,
+              scopeThis.storeId
             )
-            // this.$router.push('/dine-in' + brand_store)
-            this.$router.replace({
+            scopeThis.$router.push('/dine-in' + brand_store)
+            scopeThis.$router.replace({
               name: 'Dinein',
               params: {
-                brand_id: this.brandId,
-                store_id: this.storeId,
+                brand_id: scopeThis.brandId,
+                store_id: scopeThis.storeId,
               },
             })
           }
