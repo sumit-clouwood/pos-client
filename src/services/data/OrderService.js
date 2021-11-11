@@ -134,6 +134,7 @@ export default {
     }
     return DataService.post(`/model/orders/id/${id}/modify_${type}order`, order)
   },
+
   SetPOSWaitingTime(waiting_time, store_id) {
     return DataService.post(
       `/model/stores/id/${store_id}/store_waiting_time_action_id`,
@@ -173,5 +174,8 @@ export default {
   },
   cancelZometoOrder(data, id) {
     return DataService.post(`/model/orders/id/${id}/reject_order`, data)
+  },
+  updateCartByUnlockOrder(data) {
+    return DataService.post(`/model/stores/socket_notification`, data)
   },
 }

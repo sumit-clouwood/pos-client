@@ -2051,6 +2051,23 @@ const actions = {
       })
     })
   },
+  // eslint-disable-next-line no-empty-pattern
+  closeOpenOrderFromOtherSystem({}, { orderId, status }) {
+    return new Promise(resolve => {
+      // if(getters.isFloorTableAvailable.table_id){
+      //   data.table_no = getters.dineinTable(getters.isFloorTableAvailable.table_id).number
+      //   data.area = getters.dineinArea(getters.isFloorTableAvailable.floor_id).name
+      // }
+      let data = {
+        order_type: 'unlock_dine_in',
+        order_id: orderId,
+        status: status,
+      }
+      OrderService.updateCartByUnlockOrder(data).then(() => {
+        resolve()
+      })
+    })
+  },
 }
 
 // function playSound(locationId, onlineOrders) {
