@@ -126,6 +126,9 @@ export default {
           // eslint-disable-next-line no-console
           console.log(
             socket_notification,
+            socket_notification.data,
+            socket_notification.order_id,
+            socket_notification.data.order_id,
             'socket_notification',
             store,
             brand_store
@@ -134,7 +137,7 @@ export default {
           if (
             socket_notification &&
             order &&
-            socket_notification.order_id === order
+            socket_notification.data.order_id === order
           ) {
             // eslint-disable-next-line no-console
             console.log(
