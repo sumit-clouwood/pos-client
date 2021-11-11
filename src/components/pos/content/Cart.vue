@@ -84,6 +84,7 @@ export default {
     ...mapGetters(['mainOrdersHendler']),
     ...mapState('location', ['store']),
     ...mapState('order', ['cartType', 'orderType']),
+    // ...mapGetters('context', ['store']),
   },
   methods: {
     addItem(event) {
@@ -115,6 +116,8 @@ export default {
       if (!store) {
         return false
       }
+      let brand_store = this.$store.getters['context/store']
+
       this.$socket.client.on(
         'store-notification-channel:App\\Events\\StoreNotification:' + store,
         function(socket_notification) {
@@ -126,7 +129,7 @@ export default {
             order &&
             socket_notification.order_id === order
           ) {
-            this.$router.push('/dine-in' + store)
+            this.$router.push('/dine-in' + brand_store)
           }
         }
       )
