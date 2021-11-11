@@ -123,7 +123,13 @@ export default {
         function(socket_notification) {
           let order = localStorage.getItem('locked_order_id')
           // eslint-disable-next-line no-console
-          console.log(socket_notification, 'socket_notification', store)
+          console.log(
+            socket_notification,
+            'socket_notification',
+            store,
+            brand_store
+          )
+          this.$router.push('/dine-in' + brand_store + '/11')
           if (
             socket_notification &&
             order &&
