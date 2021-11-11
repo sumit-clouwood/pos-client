@@ -112,7 +112,7 @@ export default {
         return false
       }
       let store = this.store ? this.store._id : undefined
-      // let scope = this
+      let scope = this
       if (!store) {
         return false
       }
@@ -129,13 +129,13 @@ export default {
             store,
             brand_store
           )
-          this.$router.push('/dine-in' + brand_store + '/11')
+          // scope.$router.push('/dine-in' + brand_store + '/11')
           if (
             socket_notification &&
             order &&
             socket_notification.order_id === order
           ) {
-            this.$router.push('/dine-in' + brand_store)
+            scope.$router.push('/dine-in' + brand_store)
           }
         }
       )
