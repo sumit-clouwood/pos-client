@@ -118,26 +118,18 @@ export default {
         return false
       }
       let brand_store = this.$store.getters['context/store']
-
+      let requestRedirect = false
       this.$socket.client.on(
         'store-notification-channel:App\\Events\\StoreNotification:' + store,
         function(socket_notification) {
           let order = localStorage.getItem('locked_order_id')
-          // eslint-disable-next-line no-console
-          console.log(
-            socket_notification,
-            socket_notification.data,
-            socket_notification.order_id,
-            socket_notification.data.order_id,
-            'socket_notification',
-            store,
-            brand_store
-          )
           if (
             socket_notification &&
             order &&
-            socket_notification.data.order_id === order
+            socket_notification.data.order_id === order &&
+            !requestRedirect
           ) {
+            requestRedirect = true
             // eslint-disable-next-line no-console
             console.log(socket_notification, 'socket_notification - 2')
             scopeThis.$router.push('/dine-in' + brand_store)
