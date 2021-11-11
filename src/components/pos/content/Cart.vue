@@ -85,6 +85,7 @@ export default {
     ...mapState('location', ['store']),
     ...mapState('order', ['cartType', 'orderType']),
     // ...mapGetters('context', ['store']),
+    ...mapState('context', ['brandId', 'storeId']),
   },
   methods: {
     addItem(event) {
@@ -112,7 +113,7 @@ export default {
         return false
       }
       let store = this.store ? this.store._id : undefined
-      let scope = this
+      // let scope = this
       if (!store) {
         return false
       }
@@ -135,7 +136,23 @@ export default {
             order &&
             socket_notification.order_id === order
           ) {
-            scope.$router.push('/dine-in' + brand_store)
+            // eslint-disable-next-line no-console
+            console.log(
+              socket_notification,
+              'socket_notification - 2',
+              store,
+              brand_store,
+              this.brandId,
+              this.storeId
+            )
+            // this.$router.push('/dine-in' + brand_store)
+            this.$router.replace({
+              name: 'Dinein',
+              params: {
+                brand_id: this.brandId,
+                store_id: this.storeId,
+              },
+            })
           }
         }
       )
@@ -152,7 +169,6 @@ export default {
     dineInItems,
     mobileFooter,
   },
-  mounted() {},
   created() {
     setTimeout(() => {
       const eventBus = this.$barcodeScanner.init(this.onBarcodeScanned, {
@@ -199,8 +215,8 @@ export default {
 @import '@/assets/scss/pixels_rem.scss';
 @import '@/assets/scss/variables.scss';
 @import '@/assets/scss/mixins.scss';
-.main-orders {
-}
+// .main-orders {
+// }
 @include responsive(mobile) {
   .main-orders.walkinPOScart {
     position: fixed;
