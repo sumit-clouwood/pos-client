@@ -33,6 +33,7 @@ const state = {
   orderOnTables: {},
   availableTables: false,
   selectedTable: false,
+  unmergeTableSelection: false,
   reservation: false,
   reservationId: false,
   moveItemReservationId: false,
@@ -54,6 +55,7 @@ const state = {
   currentTableReservationData: null,
   readyItemNotification: [],
   qrTableNotification: [],
+  mergedTables: [],
 }
 const getters = {
   getCurrentTableRunningReservations: state => {
@@ -66,6 +68,9 @@ const getters = {
       }
       return false
     })
+  },
+  mergedTableWithParent: state => {
+    return state.mergedTables
   },
   getOrderStatus: () => order_status => {
     if (
@@ -431,7 +436,7 @@ const actions = {
           }
         })
       }
-
+      commit('MERGED_TABLES', merged_tables)
       let orderOnTable = []
       if (state.tablesOnArea) {
         state.tablesOnArea.forEach((table, index, array) => {
@@ -784,13 +789,6 @@ const actions = {
     }
   },
   mergeTable({ dispatch }, data) {
-    // if (state.selectedTable) {
-    //   commit(
-    //     mutation.SELECTED_TABLE_RESERVATION,
-    //     state.selectedTable.table_number
-    //   )
-    // }
-
     if (data.reservation_id != 'false') {
       const params = [
         data.reservation_id,
@@ -799,7 +797,7 @@ const actions = {
       ]
       DineInService.mergedTables(...params).then(() => {
         // commit(mutation.RESERVATION_ID, data.reservationid)
-        dispatch('getBookedTablesOnClick', false) //update it for optimization
+        dispatch('getBookedTablesOnClick', true) //update it for optimization
       })
     }
   },
@@ -1011,6 +1009,9 @@ const mutations = {
   [mutation.SELECTED_TABLE](state, selectedTable) {
     state.selectedTable = selectedTable
   },
+  UNMERGE_SELECTED_TABLE(state, unmergeTableSelection) {
+    state.unmergeTableSelection = unmergeTableSelection
+  },
   [mutation.TABLE_SPLIT](state, slitStatus) {
     state.split = slitStatus
   },
@@ -1034,6 +1035,9 @@ const mutations = {
   },
   QR_TABLE_NOTIFICATION(state, data) {
     state.qrTableNotification = data
+  },
+  MERGED_TABLES(state, data) {
+    state.mergedTables = data
   },
   [mutation.SELECTED_TABLE_RESERVATION](state, reservationData) {
     state.selectedTableRservationData = reservationData
