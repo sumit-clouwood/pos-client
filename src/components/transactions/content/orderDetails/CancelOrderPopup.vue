@@ -223,8 +223,6 @@ export default {
       $('.dropdown-content').hide()
     },
     showDropdown: function(className) {
-      // eslint-disable-next-line no-console
-      console.log(className, $('#' + className))
       $('#' + className).toggle()
     },
     selectedBehavior: function(behavior) {
