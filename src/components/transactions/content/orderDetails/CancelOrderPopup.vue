@@ -43,10 +43,13 @@
                       class="input-search-driver"
                       id="get-customer-list"
                       v-model="showSelectedReason"
-                      @click="showDropdown('my-dropdown')"
+                      @click="showDropdown('cancelReasons')"
                     />
                   </form>
-                  <div id="my-dropdown" class="dropdown-content cursor-pointer">
+                  <div
+                    id="cancelReasons"
+                    class="dropdown-content  cancel-order-dd cursor-pointer"
+                  >
                     <span
                       class="dropdown"
                       v-for="reason in cancellationReason"
@@ -220,6 +223,8 @@ export default {
       $('.dropdown-content').hide()
     },
     showDropdown: function(className) {
+      // eslint-disable-next-line no-console
+      console.log(className, $('#' + className))
       $('#' + className).toggle()
     },
     selectedBehavior: function(behavior) {

@@ -96,7 +96,7 @@ export default {
         this.userError = this._t(error.title)
         this.userErrorInstructions = this._t(error.description)
         if (process.env.NODE_ENV === 'production') {
-          let secondsToLogout = 30
+          let secondsToLogout = 15
           //logout here after 30 sec
           const logoutInterval = setInterval(() => {
             secondsToLogout--
