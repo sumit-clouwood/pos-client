@@ -13,24 +13,22 @@
         </div>
         <div class="modal-body row dining-options-block select-discount">
           <span>
-            {{ _t('Selected table number') }}
-            <b>{{ unmergeTableSelection.number }}</b>
             <span
               v-if="getMergeTablesForSelectedTable.merged_table_ids.length > 1"
             >
-              {{ _t('is merged with table number') }}
+              {{ _t('Table Number') }}
               <span
                 v-for="(id,
                 index) in getMergeTablesForSelectedTable.merged_table_ids"
                 :key="index"
               >
-                <b v-if="id !== unmergeTableSelection._id">
-                  {{ getTableNumber(id, 'number') }},
-                </b>
+                <b> {{ getTableNumber(id, 'number') }}, </b>
               </span>
-              {{ _t('and these all are connected with table number') }}
+              {{ _t('are merged and connected with Main Table Number') }}
             </span>
             <span v-else>
+              {{ _t('Selected table number') }}
+              <b>{{ unmergeTableSelection.number }}</b>
               {{ _t('is connected with table number') }}
             </span>
 
