@@ -38,7 +38,13 @@
                   getMergeTablesForSelectedTable.table_id,
                   'number'
                 )
-              }}
+              }} </b
+            >.
+          </span>
+          <span class="unmerge-confirmation">
+            <b
+              >{{ _t('Do you want to unmerge Table Number') }}
+              {{ unmergeTableSelection.number }} ?
             </b>
           </span>
         </div>
@@ -167,33 +173,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-// @import '@/assets/scss/pixels_rem.scss';
-// @import '@/assets/scss/variables.scss';
-// @import '@/assets/scss/mixins.scss';
-
-// @include responsive(mobile) {
-//   #switchWaiter {
-//     overflow: hidden !important;
-//     .modal-dialog {
-//       max-width: 100% !important;
-//       margin: 0px !important;
-//       margin-top: 2rem !important;
-//       .modal-content {
-//         width: 95% !important;
-//         margin: auto !important;
-//         .modal-body {
-//           padding-left: 0px !important;
-//           padding-right: 0px !important;
-//           width: 90%;
-//         }
-//         #available-tables {
-//           width: 100%;
-//           .table-status-container {
-//             grid-template-columns: 1fr 1fr !important;
-//           }
-//         }
-//       }
-//     }
-//   }
-// }
+span.unmerge-confirmation {
+  margin-top: 20 px;
+}
 </style>
