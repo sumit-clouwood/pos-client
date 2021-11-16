@@ -102,10 +102,6 @@ export default {
       type: String,
       default: 'Merge Tables Selection',
     },
-    tableStatusByDate: {
-      type: String,
-      default: '',
-    },
   },
   computed: {
     ...mapGetters('location', ['_t']),
@@ -115,22 +111,6 @@ export default {
       'allBookedTables',
     ]),
     ...mapGetters('context', ['store']),
-    // selectedTableMerge() {
-    //   let merged_tables = []
-    //   if (this.allBookedTables.orders) {
-    //     this.allBookedTables.orders.forEach(order_table => {
-    //       if (
-    //         order_table.merge_table_ids &&
-    //         order_table.merge_table_ids.length &&
-    //         order_table.assigned_table_id == this.selectedTable._id
-    //       ) {
-    //         merged_tables.push(...order_table.merge_table_ids)
-    //       }
-    //     })
-    //     merged_tables.push(this.selectedTable._id)
-    //   }
-    //   return merged_tables
-    // },
     selectedTableIdsMerge() {
       let merged_tables = []
       if (this.allBookedTables.orders) {

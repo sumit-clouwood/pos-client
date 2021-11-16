@@ -323,6 +323,9 @@
         </div>
       </div>
     </div>
+    <div v-if="showUnmerge">
+      <unmergeTable></unmergeTable>
+    </div>
   </div>
 </template>
 <script>
@@ -342,12 +345,13 @@ import DateTime from '@/mixins/DateTime'
 import * as PERMS from '@/const/permissions'
 import OrderHelper from '@/plugins/helpers/Order'
 import moment from 'moment-timezone'
+import unmergeTable from '@/components/dinein/popup/UnmergeTable'
 
 export default {
   name: 'TableDraw',
   computed: {
     ...mapGetters('location', ['_t']),
-    ...mapGetters('dinein', ['getTableEmptyTime']),
+    ...mapGetters('dinein', ['mergedTableWithParent']),
     ...mapState('location', ['timezoneString', 'brand']),
     ...mapState('auth', ['userDetails']),
     ...mapState('dinein', [
@@ -373,6 +377,7 @@ export default {
     TableStatus,
     AllTables,
     switchWaiter,
+    unmergeTable,
   },
   data() {
     return {
@@ -387,6 +392,7 @@ export default {
       height: '950px',
       selectedTableD3: '',
       selectedTableData: false,
+      showUnmerge: false,
       svgWidth: 250,
       svgHeight: 100,
       orderDetails: [],
@@ -682,14 +688,15 @@ export default {
 
         d3.select(selectedItem)
           .select('svg')
-          .attr('style', function() {
-            let statusText = dis.tableStatus.table.find(
-              ts => ts.id === data._id
-            )
-            if (statusText && statusText.status.text === 'merged')
-              return 'pointer-events: none;cursor: no-drop;'
-            return ''
-          })
+          // .attr('style', function() {
+          //   let statusText = dis.tableStatus.table.find(
+          //     ts => ts.id === data._id
+          //   )
+          //   if (statusText && statusText.status.text === 'merged')
+          //     // return 'pointer-events: none;cursor: no-drop;'
+          //     return ''
+          //   return ''
+          // })
           .selectAll('path:nth-last-of-type(1)')
           .attr('fill', function() {
             let fillcolor = dis.tableStatus.table.find(ts => ts.id === data._id)
@@ -1031,6 +1038,25 @@ export default {
         .getBoundingClientRect()
     },
     showOptions(datum, index, all) {
+      this.$store.commit('dinein/UNMERGE_SELECTED_TABLE', false)
+      this.showUnmerge = true
+      // eslint-disable-next-line no-debugger
+      console.log(datum, index, all, this.mergedTableWithParent)
+      let mergedTable = undefined
+      if (this.mergedTableWithParent.length > 0) {
+        this.mergedTableWithParent.forEach(table => {
+          table.merged_table_ids.forEach(mTable => {
+            if (mTable === datum._id) {
+              mergedTable = table
+            }
+          })
+        })
+      }
+      if (mergedTable) {
+        this.$store.commit('dinein/UNMERGE_SELECTED_TABLE', datum)
+        showModal('#unmerge-table')
+        return false
+      }
       this.$store
         .dispatch('dinein/getBookedTablesOnClick', false, { root: true })
         .then(() => {
