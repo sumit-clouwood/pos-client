@@ -5,6 +5,7 @@
     data-target="#select-discount-item"
     data-dismiss="modal"
     class="buttoned colorwhite discountitembutton"
+    @click="itemDiscountPopup"
   >
     <svg
       aria-hidden="true"
@@ -27,8 +28,14 @@
 </template>
 
 <script>
+import { bus } from '@/eventBus'
 export default {
   name: 'DiscountButton',
   props: {},
+  methods: {
+    itemDiscountPopup() {
+      bus.$emit('open-item-discount-popup', true)
+    },
+  },
 }
 </script>
