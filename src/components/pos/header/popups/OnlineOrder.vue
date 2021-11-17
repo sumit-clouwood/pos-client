@@ -394,7 +394,7 @@ export default {
       })
     },
     playSound() {
-      console.log('play sound')
+      // console.log('play sound')
       let promise = audio.play() || nopromise
       promise.catch(error => {
         console.log(error)
@@ -402,7 +402,7 @@ export default {
       // this.isAudioPlaying = true
     },
     pauseSound() {
-      console.log('pausing sound')
+      // console.log('pausing sound')
       let promise = audio.pause() || nopromise
       promise.catch(error => {
         console.log(error)
