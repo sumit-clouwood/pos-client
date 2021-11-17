@@ -1041,7 +1041,7 @@ export default {
       this.$store.commit('dinein/UNMERGE_SELECTED_TABLE', false)
       this.showUnmerge = true
       // eslint-disable-next-line no-debugger
-      console.log(datum, index, all, this.mergedTableWithParent)
+      // console.log(datum, index, all, this.mergedTableWithParent)
       let mergedTable = undefined
       if (this.mergedTableWithParent.length > 0) {
         this.mergedTableWithParent.forEach(table => {
