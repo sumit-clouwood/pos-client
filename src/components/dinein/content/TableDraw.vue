@@ -323,9 +323,7 @@
         </div>
       </div>
     </div>
-    <div v-if="showUnmerge">
-      <unmergeTable></unmergeTable>
-    </div>
+    <unmergeTable></unmergeTable>
   </div>
 </template>
 <script>
@@ -699,7 +697,9 @@ export default {
           // })
           .selectAll('path:nth-last-of-type(1)')
           .attr('fill', function() {
-            let fillcolor = dis.tableStatus.table.find(ts => ts.id === data._id)
+            let fillcolor = dis.tableStatus
+              ? dis.tableStatus.table.find(ts => ts.id === data._id)
+              : false
             /*let colourTable = '#FF9C9A'
                             if (fillcolor.status.color == '#62bb31') {
                               colourTable = '#99CA86'
@@ -713,7 +713,9 @@ export default {
           .select('svg>g:last-child')
           .selectAll('path')
           .attr('fill', function() {
-            let fc = dis.tableStatus.table.find(ts => ts.id === data._id)
+            let fc = dis.tableStatus
+              ? dis.tableStatus.table.find(ts => ts.id === data._id)
+              : false
             /*let colourChairs = '#CC3232'
                             if (fc.id === data._id) {
                               if (fc.status.color == '#62bb31') {
@@ -1038,9 +1040,7 @@ export default {
         .getBoundingClientRect()
     },
     showOptions(datum, index, all) {
-      this.$store.commit('dinein/UNMERGE_SELECTED_TABLE', false)
-      this.showUnmerge = true
-      // eslint-disable-next-line no-debugger
+      this.$store.commit('dinein/UNMERGE_SELECTED_TABLE', false) // eslint-disable-next-line no-debugger
       // console.log(datum, index, all, this.mergedTableWithParent)
       let mergedTable = undefined
       if (this.mergedTableWithParent.length > 0) {
@@ -1055,6 +1055,7 @@ export default {
       if (mergedTable) {
         this.$store.commit('dinein/UNMERGE_SELECTED_TABLE', datum)
         showModal('#unmerge-table')
+        this.showUnmerge = true
         return false
       }
       this.$store

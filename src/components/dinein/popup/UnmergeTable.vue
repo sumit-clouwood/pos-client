@@ -2,7 +2,7 @@
   <div class="modal fade" id="unmerge-table" role="dialog">
     <div
       class="modal-dialog modal-dialog-centered"
-      v-if="unmergeTableSelection"
+      v-if="unmergeTableSelection && getMergeTablesForSelectedTable"
     >
       <!-- Modal content-->
       <div class="modal-content color-dashboard-background">
@@ -126,7 +126,7 @@ export default {
   methods: {
     getTableNumber(id, element) {
       let table = this.tablesOnArea.find(t => t._id === id)
-      return table[element]
+      return table ? table[element] : '0'
     },
     getReservationId(selectedMergedTables) {
       let reservation = null
