@@ -96,7 +96,8 @@
                 typeof selectedOrder.item !== 'undefined' &&
                 !multistore &&
                 !selectedOrder.item.credit &&
-                selectedOrder.item.order_status === 'finished'
+                selectedOrder.item.order_status === 'finished' &&
+                selectedOrder.item.order_source !== 'aggregator'
             "
             type="button"
             class="button text-button btn btn-success color-main color-text-invert"

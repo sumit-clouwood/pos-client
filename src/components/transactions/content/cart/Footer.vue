@@ -96,7 +96,12 @@
           {{ _t('Cancel Transaction') }}
         </button>
         <button
-          v-if="!multistore && !order.credit"
+          v-if="
+            allowed(PERMS.MODIFY_ORDER) &&
+              !multistore &&
+              !order.credit &&
+              order.order_source !== 'aggregator'
+          "
           class="btn btn-large btn-success popup-btn-save color-text-invert color-main pos-button-design btn-tans-mbl"
           @click="modifyOrder(1)"
         >
@@ -117,7 +122,12 @@
           {{ _t('Cancel Transaction') }}
         </button>
         <button
-          v-if="!multistore && !order.credit"
+          v-if="
+            allowed(PERMS.MODIFY_ORDER) &&
+              !multistore &&
+              !order.credit &&
+              order.order_source !== 'aggregator'
+          "
           class="btn btn-large btn-success popup-btn-save color-text-invert color-main pos-button-design  btn-tans-mbl"
           @click="modifyOrder(1)"
         >
