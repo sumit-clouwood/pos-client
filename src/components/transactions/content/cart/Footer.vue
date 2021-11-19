@@ -121,6 +121,7 @@
         >
           {{ _t('Cancel Transaction') }}
         </button>
+        <!-- aggregator will only come from zometo and talabat. -->
         <button
           v-if="
             allowed(PERMS.MODIFY_ORDER) &&
