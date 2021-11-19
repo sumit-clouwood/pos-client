@@ -100,7 +100,7 @@
             allowed(PERMS.MODIFY_ORDER) &&
               !multistore &&
               !order.credit &&
-              order.order_source !== 'aggregator'
+              order.order_source === 'cashier_app'
           "
           class="btn btn-large btn-success popup-btn-save color-text-invert color-main pos-button-design btn-tans-mbl"
           @click="modifyOrder(1)"
@@ -135,7 +135,7 @@
             allowed(PERMS.MODIFY_ORDER) &&
               !multistore &&
               !order.credit &&
-              order.order_source !== 'aggregator'
+              order.order_source === 'cashier_app'
           "
           class="btn btn-large btn-success popup-btn-save color-text-invert color-main pos-button-design  btn-tans-mbl"
           @click="modifyOrder(1)"
