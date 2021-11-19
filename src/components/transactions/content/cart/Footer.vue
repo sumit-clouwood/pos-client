@@ -121,7 +121,15 @@
         >
           {{ _t('Cancel Transaction') }}
         </button>
-        <!-- aggregator will only come from zometo and talabat. -->
+        <!-- aggregator will only come from zometo and talabat.
+          we will add few handles like when online order modify and
+          than we remove all items and remove customer 
+          than chnage order type to takeaway and add new items 
+          it will take order source as aggergator for takeaway order
+          for that we need to add few handle and
+          reset rootState.order.selectedOrder.item.order_source this as well 
+          when remove all data
+         -->
         <button
           v-if="
             allowed(PERMS.MODIFY_ORDER) &&
