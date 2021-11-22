@@ -761,10 +761,11 @@ export default {
     },
     OrderCreatedAtUtc() {
       let dateTime = new DateTimeHelper()
+      let slice_local = this.current_locale.slice(0, 2)
       var result = dateTime
         .convert_datetime_to_local_moment(
           this.order.real_created_datetime,
-          this.current_locale
+          slice_local
         )
         .format()
       var value = parseInt(this.order.real_created_datetime.$date.$numberLong)
@@ -783,7 +784,10 @@ export default {
     getQRCode() {
       debugger
       //second parameter should string always
-      var sellerNameBuf = this.getTLVForValue('1', this.currentStore.name)
+      var sellerNameBuf = this.getTLVForValue(
+        '1',
+        this.currentStore.company_name
+      )
       var vatRegistrationNameBuf = this.getTLVForValue(
         '2',
         this.currentStore.vat_tax_number
