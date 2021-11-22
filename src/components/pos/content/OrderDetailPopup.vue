@@ -90,13 +90,15 @@
               <div class="button-caption">{{ _t('Cancel Order') }}</div>
             </div>
           </button>
+          <!-- aggregator will only come from zometo and talabat. -->
           <button
             v-if="
               allowed(PERMS.MODIFY_ORDER) &&
                 typeof selectedOrder.item !== 'undefined' &&
                 !multistore &&
                 !selectedOrder.item.credit &&
-                selectedOrder.item.order_status === 'finished'
+                selectedOrder.item.order_status === 'finished' &&
+                selectedOrder.item.order_source === 'cashier_app'
             "
             type="button"
             class="button text-button btn btn-success color-main color-text-invert"

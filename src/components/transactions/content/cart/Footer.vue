@@ -96,7 +96,12 @@
           {{ _t('Cancel Transaction') }}
         </button>
         <button
-          v-if="!multistore && !order.credit"
+          v-if="
+            allowed(PERMS.MODIFY_ORDER) &&
+              !multistore &&
+              !order.credit &&
+              order.order_source === 'cashier_app'
+          "
           class="btn btn-large btn-success popup-btn-save color-text-invert color-main pos-button-design btn-tans-mbl"
           @click="modifyOrder(1)"
         >
@@ -116,8 +121,22 @@
         >
           {{ _t('Cancel Transaction') }}
         </button>
+        <!-- aggregator will only come from zometo and talabat.
+          we will add few handles like when online order modify and
+          than we remove all items and remove customer 
+          than chnage order type to takeaway and add new items 
+          it will take order source as aggergator for takeaway order
+          for that we need to add few handle and
+          reset rootState.order.selectedOrder.item.order_source this as well 
+          when remove all data
+         -->
         <button
-          v-if="!multistore && !order.credit"
+          v-if="
+            allowed(PERMS.MODIFY_ORDER) &&
+              !multistore &&
+              !order.credit &&
+              order.order_source === 'cashier_app'
+          "
           class="btn btn-large btn-success popup-btn-save color-text-invert color-main pos-button-design  btn-tans-mbl"
           @click="modifyOrder(1)"
         >
