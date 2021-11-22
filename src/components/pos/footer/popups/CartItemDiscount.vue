@@ -12,30 +12,41 @@
           <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
           <h4 class="customer-title">{{ _t('Item Discount') }}</h4>
         </div>
-        <div class="modal-body row dining-options-block select-discount">
-          <div
-            v-show="!appliedOrderDiscount && !itemError"
-            class="dining-option-block select-discount-option"
-          >
+        <div
+          class="item-discount-bottom-arrow food-arrow"
+          v-show="showScrollDown"
+          @click="scroll('up')"
+        >
+          <i class="fa fa-chevron-down" aria-hidden="true"></i>
+        </div>
+        <div class="modal-body row">
+          <div class="item-discount-wrapper">
             <div
-              class="option-contain"
-              :class="{
-                active: activeItemDiscountId == discount._id,
-              }"
-              v-for="discount in itemDiscounts"
-              :key="discount._id"
-              @click.prevent="selectItemDiscount(discount)"
+              v-show="!appliedOrderDiscount && !itemError"
+              class="select-discount-option item-discounts"
+              ref="itemDiscountContainer"
             >
-              <p>
-                <span v-if="discount.type === 'percentage'">
-                  {{ discount.rate }} %
-                </span>
-                <span v-else-if="discount.type === 'fixed_price'">
-                  {{ _t('Fixed Price') }} {{ formatPrice(discount.value) }}
-                </span>
-                <span v-else> {{ formatPrice(discount.value) }} </span>
-              </p>
-              <span class="mores">{{ dt(discount) }}</span>
+              <div
+                class="option-contain"
+                :class="{
+                  active: activeItemDiscountId == discount._id,
+                }"
+                v-for="discount in itemDiscounts"
+                :key="discount._id"
+                @click.prevent="selectItemDiscount(discount)"
+                ref="entityItemDiscount"
+              >
+                <p>
+                  <span v-if="discount.type === 'percentage'">
+                    {{ discount.rate }} %
+                  </span>
+                  <span v-else-if="discount.type === 'fixed_price'">
+                    {{ _t('Fixed Price') }} {{ formatPrice(discount.value) }}
+                  </span>
+                  <span v-else> {{ formatPrice(discount.value) }} </span>
+                </p>
+                <span class="mores">{{ dt(discount) }}</span>
+              </div>
             </div>
           </div>
           <div class="error mx-auto" v-show="appliedOrderDiscount">
@@ -57,6 +68,14 @@
           </div>
         </div>
         <div class="modal-footer">
+          <div
+            class="item-discount-top-arrow food-arrow"
+            @click="scroll('down')"
+            v-show="showScrollUp"
+          >
+            <i class="fa fa-chevron-up" aria-hidden="true"></i>
+          </div>
+
           <div class="btn-announce">
             <button
               v-show="
@@ -91,13 +110,21 @@
 <script>
 /* global hideModal */
 import { mapGetters, mapActions, mapState } from 'vuex'
+import { bus } from '@/eventBus'
+import Scroll from '@/mixins/Scroll'
 export default {
   name: 'CartItemDiscount',
   data() {
     return {
       errors: 'No discount available on this item.',
+      container: 'itemDiscountContainer',
+      entity: 'entityItemDiscount',
+      margin: 100,
+      keepEntitiesInScroll: 0,
+      scrollcalc: false,
     }
   },
+  mixins: [Scroll],
   computed: {
     ...mapGetters('location', ['formatPrice', '_t']),
     ...mapGetters('discount', ['itemDiscounts', 'activeItemDiscountId']),
@@ -117,5 +144,42 @@ export default {
       this.$store.commit('discount/SET_ITEM_ERROR', false)
     },
   },
+  mounted() {
+    bus.$on('open-item-discount-popup', () => {
+      this.$nextTick(() => {
+        setTimeout(() => {
+          this.calculateScrolls().catch(() => {})
+        }, 300)
+      })
+    })
+  },
 }
 </script>
+<style lang="sass" scoped>
+.item-discount-wrapper
+  max-height: 20rem;
+  overflow: hidden;
+  width: 100%;
+  scroll-behavior: smooth;
+
+  .item-discounts
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 1.25rem;
+
+    .option-contain
+      cursor: pointer;
+      text-align: left;
+      padding: 0.6rem;
+
+.food-arrow
+  right: 10px;
+
+.item-discount-bottom-arrow
+  top: 50px;
+
+.item-discount-top-arrow
+  &.food-arrow
+    right: 10px;
+    bottom: 84px;
+</style>
