@@ -443,6 +443,7 @@ import { mapGetters, mapState } from 'vuex'
 var moment = require('moment')
 import DateTime from '@/mixins/DateTime'
 import * as CONST from '@/constants'
+import DateTimeHelper from '@/plugins/helpers/DateTime'
 
 export default {
   name: 'PrintTemplate',
@@ -751,6 +752,62 @@ export default {
     },
   },
   methods: {
+    getTLVForValue(tagNum, tagValue) {
+      var tagBuf = Buffer.from([tagNum], 'utf8')
+      var tagValueLenBuf = Buffer.from([tagValue.length], 'utf8')
+      var tagValueBuf = Buffer.from(tagValue, 'utf8')
+      var bufsArray = [tagBuf, tagValueLenBuf, tagValueBuf]
+      return Buffer.concat(bufsArray)
+    },
+    OrderCreatedAtUtc() {
+      let dateTime = new DateTimeHelper()
+      var result = dateTime
+        .convert_datetime_to_local_moment(
+          this.order.real_created_datetime,
+          this.current_locale
+        )
+        .format()
+      var value = parseInt(this.order.real_created_datetime.$date.$numberLong)
+      if (value) {
+        if (!moment.utc(value).isValid()) return result
+        var fmt_in = moment(value)._f
+        result = moment
+          .utc(value, fmt_in)
+          .local()
+          .utc()
+          .format()
+      }
+      return result
+    },
+    // tagNum, tagValue
+    getQRCode() {
+      debugger
+      //second parameter should string always
+      var sellerNameBuf = this.getTLVForValue('1', this.currentStore.name)
+      var vatRegistrationNameBuf = this.getTLVForValue(
+        '2',
+        this.currentStore.vat_tax_number
+      )
+      var timestampBuf = this.getTLVForValue('3', this.OrderCreatedAtUtc())
+      var taxTotalNameBuf = this.getTLVForValue(
+        '4',
+        this.format_number(this.order.balance_due)
+      )
+      var vatTotalBuf = this.getTLVForValue(
+        '5',
+        this.format_number(this.order.total_tax)
+      )
+      var tagsBufsArray = [
+        sellerNameBuf,
+        vatRegistrationNameBuf,
+        timestampBuf,
+        taxTotalNameBuf,
+        vatTotalBuf,
+      ]
+      var qrCodeBuf = Buffer.concat(tagsBufsArray)
+      var qrCodeB64 = qrCodeBuf.toString('base64')
+      return qrCodeB64
+    },
     generateQRCode() {
       return new Promise(resolve => {
         if (!this.order || !this.currentBrand.is_store_order_number) {
@@ -759,15 +816,15 @@ export default {
           try {
             var qrcode = new QRCode('qrcode')
             qrcode.clear()
-            let base_url = process.env.VUE_APP_WEB_HOST
-            let website =
-              base_url +
-              '/order-invoice/' +
-              this.currentBrand._id +
-              '/' +
-              this.currentStore._id +
-              '/' +
-              this.orderId
+            // let base_url = process.env.VUE_APP_WEB_HOST
+            let website = this.getQRCode()
+            // base_url +
+            // '/order-invoice/' +
+            // this.currentBrand._id +
+            // '/' +
+            // this.currentStore._id +
+            // '/' +
+            // this.orderId
             qrcode.makeCode(website)
 
             this.qrInvoice = qrcode._oDrawing._elCanvas.toDataURL('image/png')

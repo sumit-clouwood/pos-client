@@ -1,3 +1,4 @@
+import moment from 'moment-timezone'
 export default class {
   constructor(date) {
     this.date = date ? date : new Date()
@@ -144,7 +145,17 @@ export default class {
       this.year
     )
   }
-
+  convert_datetime_to_local_moment(datetime, current_locale) {
+    moment.locale(current_locale)
+    var value = parseInt(datetime.$date.$numberLong)
+    var result = ''
+    if (value) {
+      if (!moment.utc(value).isValid()) return ''
+      // var fmt_in = moment(value)._f
+      result = moment.utc(value).local()
+    }
+    return result
+  }
   convertTime24to12(time) {
     // Check correct time format and split into components
     let fixTime = 0
