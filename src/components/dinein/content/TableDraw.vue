@@ -232,7 +232,7 @@
           <div class="modal-header customer-header">
             <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
             <h5 class="customer-title">
-              {{ _t('Please add number of guests.') }}
+              {{ _t('Please add number of guests') }}.
             </h5>
           </div>
           <div class="modal-body font-weight-bold">
@@ -508,13 +508,11 @@ export default {
         .parent('div')
         .hide()
     },
-    ...mapActions('location', ['getUIMenu']),
     newOrder(reservationId, pos) {
       this.$store.commit(
         'dinein/SELECTED_TABLE_RESERVATION',
         this.selectedTableData.number
       )
-      // this.getUIMenu() // disable it for optimization
       let makeId = '#id_' + this.selectedTableId
       $(makeId)
         .find('svg')

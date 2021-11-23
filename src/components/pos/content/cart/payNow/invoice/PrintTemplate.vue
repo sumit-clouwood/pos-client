@@ -762,13 +762,24 @@ export default {
     OrderCreatedAtUtc() {
       let dateTime = new DateTimeHelper()
       let slice_local = this.current_locale.slice(0, 2)
-      var result = dateTime
-        .convert_datetime_to_local_moment(
-          this.order.real_created_datetime,
-          slice_local
-        )
-        .format()
-      var value = parseInt(this.order.real_created_datetime.$date.$numberLong)
+      var result = ''
+      moment.locale(slice_local)
+      if (!this.order.real_created_datetime.$date) {
+        result = this.order.real_created_datetime
+      } else {
+        var result = dateTime
+          .convert_datetime_to_local_moment(
+            this.order.real_created_datetime,
+            slice_local
+          )
+          .format()
+      }
+      var value = ''
+      if (!this.order.real_created_datetime.$date) {
+        value = this.order.real_created_datetime
+      } else {
+        value = parseInt(this.order.real_created_datetime.$date.$numberLong)
+      }
       if (value) {
         if (!moment.utc(value).isValid()) return result
         var fmt_in = moment(value)._f
