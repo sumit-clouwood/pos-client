@@ -793,7 +793,6 @@ export default {
     },
     // tagNum, tagValue
     getQRCode() {
-      debugger
       //second parameter should string always
       var sellerNameBuf = this.getTLVForValue(
         '1',

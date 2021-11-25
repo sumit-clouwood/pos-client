@@ -156,6 +156,12 @@ const actions = {
       console.log('Fake order or an order already in progress')
       return Promise.reject('Fake order or an order already in progress')
     }
+    
+    if (!rootState.store.terminalCode) {
+      // eslint-disable-next-line no-console
+      console.log('TerminalCode not present')
+      return Promise.reject('Terminal Code not found, please wait to load or reload the app')
+    }
 
     // set the async state
     commit(mutation.SET_PROCESSING, true)
