@@ -160,24 +160,39 @@ const syncBackgroundQueue = async queue => {
       const payload = await clonedReq.json()
       try {
         const response = await Sync.fetchRequest(filteredRequest)
-        try {
-          Logger.log({
-            event_time: payload.real_created_datetime,
-            event_title: payload.balance_due,
-            event_type: 'sw:offline_order_synced',
-            event_data: {
-              request: payload,
-              response: response,
-            },
-          })
-        } catch (e) {
-          console.log(e)
-        }
+
         console.log('bgorder response from server', response)
         if (response.status != 'ok' || !response.id) {
           console.log('server returns error, revert to bgqueue')
           failedRequests.push(entry)
+          try {
+            Logger.log({
+              event_time: payload.real_created_datetime,
+              event_title: payload.balance_due,
+              event_type: 'sw:offline_order_error',
+              event_data: {
+                request: payload,
+                response: response,
+              },
+            })
+          } catch (e) {
+            console.log(e)
+          }
           continue
+        } else {
+          try {
+            Logger.log({
+              event_time: payload.real_created_datetime,
+              event_title: payload.balance_due,
+              event_type: 'sw:offline_order_synced',
+              event_data: {
+                request: payload,
+                response: response,
+              },
+            })
+          } catch (e) {
+            console.log(e)
+          }
         }
       } catch (error) {
         console.log(error)
@@ -267,13 +282,15 @@ self.addEventListener('fetch', async event => {
               const response = await fetch(event.request.clone())
 
               try {
+                const clonedResponse = response.clone()
+                const jsonClonedResponse = await clonedResponse.json()
                 Logger.log({
                   event_time: payload.real_created_datetime,
                   event_title: payload.balance_due,
                   event_type: 'sw:order_sent_online',
                   event_data: {
                     request: payload,
-                    response: response,
+                    response: jsonClonedResponse,
                   },
                 })
               } catch (e) {
