@@ -146,7 +146,7 @@ const actions = {
     if (state.processing === true) {
       // eslint-disable-next-line
       console.log('Dual event detected')
-      return Promise.reject('Dual event detected')
+      return Promise.reject()
     }
 
     //if no order start time then reject otherwise
@@ -154,13 +154,13 @@ const actions = {
     if (!rootState.order.startTime) {
       // eslint-disable-next-line no-console
       console.log('Fake order or an order already in progress')
-      return Promise.reject('Fake order or an order already in progress')
+      return Promise.reject()
     }
     
     if (!rootState.store.terminalCode) {
       // eslint-disable-next-line no-console
       console.log('TerminalCode not present')
-      return Promise.reject('Terminal Code not found, please wait to load or reload the app')
+      return Promise.reject('Terminal code not loaded yet, please wait for a few seconds or reload the POS.')
     }
 
     // set the async state
