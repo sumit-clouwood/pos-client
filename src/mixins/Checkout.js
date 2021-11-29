@@ -176,13 +176,20 @@ export default {
             this.showMsg()
             resolve()
           })
-          .catch(() => {
-            setTimeout(() => {
-              console.log('payment fail')
+          .catch(error => {
+            console.log('payment fail', error)
+            if (error) {
+              this.$store.commit('checkoutForm/SET_MSG', {
+                message: error,
+                result: 'error',
+              })
+              $('#payment-msg').modal('show')
+            }
 
+            setTimeout(() => {
               $('#payment-msg').modal('hide')
               $('#payment-screen-footer').prop('disabled', false)
-            }, 500)
+            }, 5000)
             reject()
           })
           .finally(() => {

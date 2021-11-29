@@ -79,7 +79,7 @@ const actions = {
             // Something happened in setting up the request that triggered an Error
             console.log('Error', error.message)
           }
-          console.log(typeof error)
+          console.trace(error)
           dispatch('abortPos', {
             title: 'Brand failed to load.',
             description: error.response ? error.response.data + '.' : error,
