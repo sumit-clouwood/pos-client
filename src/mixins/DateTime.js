@@ -117,6 +117,9 @@ export default {
   },
 
   getUTCDateTime() {
+    //moment returns date in arabic format if arabic local is arabic
+    //but we need date in english format as we need to send it to backend
+    moment.locale('en')
     return moment.utc().format('YYYY-MM-DD HH:mm:ss')
   },
 
