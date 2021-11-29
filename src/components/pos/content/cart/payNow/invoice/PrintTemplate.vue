@@ -419,7 +419,7 @@
     </div>
     <div class="footer">
       <div v-html="template.footer"></div>
-      <div v-if="currentBrand.is_store_order_number">
+      <div v-if="currentBrand.is_store_order_number && isOrderPaidOrNot">
         <div
           id="qrcode"
           style="width:140px; height:140px; margin:0 auto; overflow: hidden"
@@ -749,6 +749,19 @@ export default {
         this.$store.state.location.brand.company_logo
         ? this.$store.state.location.brand.company_logo
         : ''
+    },
+    isOrderPaidOrNot() {
+      let is_call_center =
+        this.order.order_type === CONST.ORDER_TYPE_CALL_CENTER
+      let is_cod_order = false
+      if (is_call_center)
+        is_cod_order = this.referral.referral_type === CONST.REFERRAL_TYPE_COD
+
+      let is_payment_done = this.order.order_payments.length
+      // if (is_call_center && is_cod_order && is_payment_done) return true
+      if (is_payment_done || is_call_center) return true
+      // if (is_call_center && !is_cod_order) return true
+      return false
     },
   },
   methods: {
