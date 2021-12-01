@@ -435,9 +435,9 @@
     </div>
   </div>
 </template>
-<script src="http://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
 <script>
 /* eslint-disable max-len */
+/* global QRCode */
 import Preloader from '@/components/util/Preloader'
 import { mapGetters, mapState } from 'vuex'
 var moment = require('moment')
@@ -753,9 +753,9 @@ export default {
     isOrderPaidOrNot() {
       let is_call_center =
         this.order.order_type === CONST.ORDER_TYPE_CALL_CENTER
-      let is_cod_order = false
-      if (is_call_center)
-        is_cod_order = this.referral.referral_type === CONST.REFERRAL_TYPE_COD
+      //let is_cod_order = false
+      //if (is_call_center)
+      //is_cod_order = this.referral.referral_type === CONST.REFERRAL_TYPE_COD
 
       let is_payment_done = this.order.order_payments.length
       // if (is_call_center && is_cod_order && is_payment_done) return true
@@ -780,7 +780,7 @@ export default {
       if (!this.order.real_created_datetime.$date) {
         result = this.order.real_created_datetime
       } else {
-        var result = dateTime
+        result = dateTime
           .convert_datetime_to_local_moment(
             this.order.real_created_datetime,
             slice_local
@@ -856,6 +856,7 @@ export default {
 
             this.qrInvoice = qrcode._oDrawing._elCanvas.toDataURL('image/png')
           } catch (e) {
+            // eslint-disable-next-line no-console
             console.log(e)
           }
           resolve()
